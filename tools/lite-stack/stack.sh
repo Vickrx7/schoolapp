@@ -86,7 +86,22 @@ start_bg() { # name, logfile, command...
   echo $! > "$DATA/$name.pid"
 }
 
+# Reads `key = value` from a section of supabase/config.toml.
+toml_value() { # section key
+  awk -v section="[$1]" -v key="$2" '
+    $0 == section { inside = 1; next }
+    /^\[/ { inside = 0 }
+    inside && $1 == key && $2 == "=" { print $3; exit }
+  ' "$ROOT/supabase/config.toml"
+}
+
 start_services() {
+  # Same mapping as the Supabase CLI: [auth] enable_signup allows new accounts, while
+  # [auth.email] enable_signup turns the whole email provider (codes and links) on or off.
+  local signup email_provider
+  signup="$(toml_value auth enable_signup)"
+  email_provider="$(toml_value auth.email enable_signup)"
+
   start_bg mailpit "$DATA/mailpit.log" "$BIN/mailpit" --listen "127.0.0.1:$MAIL_HTTP_PORT" --smtp "127.0.0.1:$MAIL_SMTP_PORT" --smtp-auth-accept-any --smtp-auth-allow-insecure
 
   start_bg gateway "$DATA/gateway.log" node "$HERE/proxy.mjs"
@@ -100,10 +115,10 @@ start_services() {
     GOTRUE_DB_MIGRATIONS_PATH="$BIN/migrations" \
     GOTRUE_SITE_URL="$SITE_URL" \
     GOTRUE_URI_ALLOW_LIST="$SITE_URL/**,http://127.0.0.1:3000/**" \
-    GOTRUE_DISABLE_SIGNUP=true \
+    GOTRUE_DISABLE_SIGNUP="$([[ "$signup" == true ]] && echo false || echo true)" \
     GOTRUE_JWT_SECRET="$JWT_SECRET" GOTRUE_JWT_EXP=3600 GOTRUE_JWT_AUD=authenticated \
     GOTRUE_JWT_ADMIN_ROLES=service_role \
-    GOTRUE_EXTERNAL_EMAIL_ENABLED=true GOTRUE_MAILER_AUTOCONFIRM=false \
+    GOTRUE_EXTERNAL_EMAIL_ENABLED="${email_provider:-true}" GOTRUE_MAILER_AUTOCONFIRM=false \
     GOTRUE_MAILER_OTP_EXP=3600 GOTRUE_MAILER_OTP_LENGTH=6 \
     GOTRUE_SMTP_HOST=127.0.0.1 GOTRUE_SMTP_PORT="$MAIL_SMTP_PORT" GOTRUE_SMTP_USER=local GOTRUE_SMTP_PASS=local \
     GOTRUE_SMTP_ADMIN_EMAIL="no-reply@lynx-ecole.local" GOTRUE_SMTP_SENDER_NAME="Lynx École" \

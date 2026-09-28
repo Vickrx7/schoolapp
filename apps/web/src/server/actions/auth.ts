@@ -24,8 +24,9 @@ export async function requestLoginCode(rawEmail: string): Promise<ActionResult> 
   if (error) {
     if (error.status === 429) return fail('tooManyAttempts');
     // Unknown addresses get the same answer as known ones, so the form cannot be used to
-    // find out who has an account.
-    if (error.status === 400 || error.status === 422 || /signup/i.test(error.message))
+    // find out who has an account. Any other error (e.g. email sign-in turned off on the
+    // auth server) is reported, not hidden behind "a code was sent".
+    if (error.code === 'otp_disabled' || /signups not allowed/i.test(error.message))
       return okVoid();
     console.error(
       JSON.stringify({
