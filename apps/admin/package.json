@@ -1,0 +1,17 @@
+{
+  "name": "@lynx/admin",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "cli": "tsx --env-file-if-exists=../web/.env.local src/cli.ts"
+  },
+  "dependencies": {
+    "@lynx/config": "workspace:*",
+    "@lynx/db": "workspace:*",
+    "@supabase/supabase-js": "^2.117.2",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {}
+}

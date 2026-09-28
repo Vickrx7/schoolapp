@@ -1,0 +1,210 @@
+'use client';
+
+import { useTranslations } from 'next-intl';
+import { useMemo, type FormEvent } from 'react';
+import { Button } from '@/components/ui/button';
+import { Badge, Notice } from '@/components/ui/card';
+import { Field, Input, Textarea } from '@/components/ui/field';
+import { useAction } from '@/hooks/use-action';
+import { useDraft } from '@/hooks/use-draft';
+import { saveLesson } from '@/server/actions/planning';
+
+export interface LessonDraft {
+  title: string;
+  objectives: string | null;
+  materials: string | null;
+  content: string | null;
+  subNotes: string | null;
+  durationMinutes: number | null;
+  expectationIds: string[];
+}
+
+export interface ExpectationOption {
+  id: string;
+  code: string;
+  text: string;
+  kind: 'overall' | 'specific';
+  verified: boolean;
+  strand: string | null;
+}
+
+export function LessonForm({
+  classId,
+  unitId,
+  lessonId,
+  initial,
+  expectations,
+  onDone,
+}: {
+  classId: string;
+  unitId: string;
+  lessonId?: string;
+  initial?: LessonDraft;
+  expectations: ExpectationOption[];
+  onDone: () => void;
+}) {
+  const t = useTranslations('lessons');
+  const tCommon = useTranslations('common');
+  const start = useMemo(
+    () => ({
+      title: initial?.title ?? '',
+      objectives: initial?.objectives ?? '',
+      materials: initial?.materials ?? '',
+      content: initial?.content ?? '',
+      subNotes: initial?.subNotes ?? '',
+      duration: initial?.durationMinutes ? String(initial.durationMinutes) : '',
+      expectationIds: initial?.expectationIds ?? [],
+    }),
+    [initial],
+  );
+  // Drafts are kept on this device until saved, so nothing is lost if the connection drops.
+  const draft = useDraft(`lesson:${unitId}:${lessonId ?? 'new'}`, start);
+  const v = draft.value;
+  const save = useAction(saveLesson, {
+    successMessage: t('saved'),
+    onSuccess: () => {
+      draft.clear();
+      onDone();
+    },
+  });
+
+  const submit = (e: FormEvent) => {
+    e.preventDefault();
+    void save.run(
+      classId,
+      unitId,
+      {
+        title: v.title,
+        objectives: v.objectives,
+        materials: v.materials,
+        content: v.content,
+        subNotes: v.subNotes,
+        durationMinutes: v.duration === '' ? null : Number(v.duration),
+        expectationIds: v.expectationIds,
+      },
+      lessonId,
+    );
+  };
+
+  const strands = [...new Set(expectations.map((e) => e.strand ?? ''))];
+  const toggle = (id: string) =>
+    draft.update(
+      'expectationIds',
+      v.expectationIds.includes(id)
+        ? v.expectationIds.filter((x) => x !== id)
+        : [...v.expectationIds, id],
+    );
+
+  return (
+    <form onSubmit={submit} className="space-y-4" noValidate>
+      {draft.restored ? (
+        <Notice className="flex items-center justify-between gap-2">
+          <span>{tCommon('draftRestored')}</span>
+          <Button variant="ghost" size="sm" onClick={draft.discard}>
+            {tCommon('discardDraft')}
+          </Button>
+        </Notice>
+      ) : null}
+      <Field label={t('lessonTitle')} htmlFor="lesson-title" error={save.fieldError('title')}>
+        <Input
+          id="lesson-title"
+          value={v.title}
+          maxLength={160}
+          onChange={(e) => draft.update('title', e.target.value)}
+        />
+      </Field>
+      <Field label={`${t('objectives')} (${tCommon('optional')})`} htmlFor="lesson-objectives">
+        <Textarea
+          id="lesson-objectives"
+          value={v.objectives}
+          onChange={(e) => draft.update('objectives', e.target.value)}
+          className="min-h-16"
+        />
+      </Field>
+      <Field label={`${t('materials')} (${tCommon('optional')})`} htmlFor="lesson-materials">
+        <Textarea
+          id="lesson-materials"
+          value={v.materials}
+          onChange={(e) => draft.update('materials', e.target.value)}
+          className="min-h-16"
+        />
+      </Field>
+      <Field label={`${t('content')} (${tCommon('optional')})`} htmlFor="lesson-content">
+        <Textarea
+          id="lesson-content"
+          value={v.content}
+          onChange={(e) => draft.update('content', e.target.value)}
+          className="min-h-32"
+        />
+      </Field>
+      <Field
+        label={`${t('subNotes')} (${tCommon('optional')})`}
+        htmlFor="lesson-subnotes"
+        hint={t('subNotesHint')}
+      >
+        <Textarea
+          id="lesson-subnotes"
+          value={v.subNotes}
+          onChange={(e) => draft.update('subNotes', e.target.value)}
+          className="min-h-16"
+        />
+      </Field>
+      <Field
+        label={`${t('duration')} (${tCommon('optional')})`}
+        htmlFor="lesson-duration"
+        error={save.fieldError('durationMinutes')}
+        className="max-w-40"
+      >
+        <Input
+          id="lesson-duration"
+          inputMode="numeric"
+          value={v.duration}
+          onChange={(e) => draft.update('duration', e.target.value.replace(/\D/g, '').slice(0, 3))}
+        />
+      </Field>
+      {expectations.length ? (
+        <fieldset className="space-y-2">
+          <legend className="text-sm font-medium text-slate-700">{t('expectations')}</legend>
+          <p className="text-sm text-slate-500">{t('expectationsHint')}</p>
+          <div className="max-h-64 space-y-3 overflow-y-auto rounded-lg border border-slate-200 p-3">
+            {strands.map((strand) => (
+              <div key={strand}>
+                {strand ? (
+                  <p className="mb-1 text-xs font-semibold text-slate-500 uppercase">{strand}</p>
+                ) : null}
+                <ul className="space-y-1">
+                  {expectations
+                    .filter((e) => (e.strand ?? '') === strand)
+                    .map((e) => (
+                      <li key={e.id}>
+                        <label className="flex cursor-pointer items-start gap-2 rounded p-1 text-sm hover:bg-slate-50">
+                          <input
+                            type="checkbox"
+                            className="mt-0.5 size-4 shrink-0"
+                            checked={v.expectationIds.includes(e.id)}
+                            onChange={() => toggle(e.id)}
+                          />
+                          <span>
+                            <span className="font-semibold">{e.code}</span> {e.text}{' '}
+                            {!e.verified ? <Badge tone="warning">{t('unverified')}</Badge> : null}
+                          </span>
+                        </label>
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </fieldset>
+      ) : null}
+      <div className="flex justify-end gap-2 pt-2">
+        <Button variant="secondary" onClick={onDone}>
+          {tCommon('cancel')}
+        </Button>
+        <Button type="submit" disabled={save.pending || !v.title.trim()}>
+          {save.pending ? tCommon('saving') : tCommon('save')}
+        </Button>
+      </div>
+    </form>
+  );
+}
