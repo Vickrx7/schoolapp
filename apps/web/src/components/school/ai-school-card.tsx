@@ -88,6 +88,7 @@ export function AiSchoolCard({
               message={t('aiEnableConfirm', { school: school.name })}
               confirmLabel={t('aiEnable')}
               size="md"
+              tone="primary"
               onConfirm={() => enable.run(school.id, true)}
             />
           )
