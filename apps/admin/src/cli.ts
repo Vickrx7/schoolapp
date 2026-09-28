@@ -179,6 +179,10 @@ const commands: Record<string, () => Promise<string>> = {
       const { data, error } = await db.auth.admin.createUser({ email, email_confirm: true });
       if (error || !data.user) throw new CliError(`create auth user: ${error?.message}`);
       userId = data.user.id;
+    } else {
+      // Re-inviting someone who was deactivated lifts the sign-in block.
+      const { error } = await db.auth.admin.updateUserById(userId, { ban_duration: 'none' });
+      if (error) throw new CliError(`unblock sign-in: ${error.message}`);
     }
     check(
       await db
@@ -218,9 +222,10 @@ const commands: Record<string, () => Promise<string>> = {
         .maybeSingle(),
       `user ${email}`,
     );
-    // Also end any open sessions.
-    await db.auth.admin.signOut(data.id).catch(() => undefined);
-    return `${email} is deactivated and can no longer see any data.`;
+    // Block sign-in at the auth level too (the database already denies all access).
+    const { error } = await db.auth.admin.updateUserById(data.id, { ban_duration: '876000h' });
+    if (error) throw new CliError(`block sign-in: ${error.message}`);
+    return `${email} is deactivated: they can no longer sign in or see any data.`;
   },
 
   async 'set-module'() {

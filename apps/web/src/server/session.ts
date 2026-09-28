@@ -30,27 +30,34 @@ export interface SessionContext {
   email: string;
   displayName: string;
   honorific: string | null;
+  preferredLocale: string;
   roles: { role: AppRole; boardId: string; schoolId: string | null }[];
   schools: SchoolContext[];
   boards: { id: string; name: string; settings: BoardSettings; isAdmin: boolean }[];
 }
 
+export type SessionState =
+  | { status: 'anonymous' }
+  /** Signed in, but the account has no profile or was deactivated. */
+  | { status: 'inactive' }
+  | { status: 'active'; session: SessionContext };
+
 /** The signed-in user's profile, roles, schools and licensed modules (once per request). */
-export const getSession = cache(async (): Promise<SessionContext | null> => {
+export const loadSessionState = cache(async (): Promise<SessionState> => {
   const supabase = await createSupabaseServerClient();
   const { data: auth } = await supabase.auth.getUser();
-  if (!auth.user) return null;
+  if (!auth.user) return { status: 'anonymous' };
 
   const userId = auth.user.id;
   const [profile, roles] = await Promise.all([
     supabase
       .from('users')
-      .select('email, display_name, honorific, deactivated_at')
+      .select('email, display_name, honorific, preferred_locale, deactivated_at')
       .eq('id', userId)
       .maybeSingle(),
     supabase.from('user_roles').select('role, board_id, school_id').eq('user_id', userId),
   ]);
-  if (!profile.data || profile.data.deactivated_at) return null;
+  if (!profile.data || profile.data.deactivated_at) return { status: 'inactive' };
 
   const roleRows = roles.data ?? [];
   const schoolIds = [
@@ -79,11 +86,12 @@ export const getSession = cache(async (): Promise<SessionContext | null> => {
       : Promise.resolve({ data: [] as never[] }),
   ]);
 
-  return {
+  const session: SessionContext = {
     userId,
     email: profile.data.email,
     displayName: profile.data.display_name,
     honorific: profile.data.honorific,
+    preferredLocale: profile.data.preferred_locale,
     roles: roleRows.map((r) => ({ role: r.role, boardId: r.board_id, schoolId: r.school_id })),
     schools: (schools.data ?? []).map((s) => {
       const today = localDateIn(s.timezone);
@@ -116,13 +124,20 @@ export const getSession = cache(async (): Promise<SessionContext | null> => {
       isAdmin: roleRows.some((r) => r.board_id === b.id && r.role === 'board_admin'),
     })),
   };
+  return { status: 'active', session };
 });
 
-/** For pages and actions that require a signed-in user. */
+export async function getSession(): Promise<SessionContext | null> {
+  const state = await loadSessionState();
+  return state.status === 'active' ? state.session : null;
+}
+
+/** For pages and actions that require a signed-in, active user. */
 export async function requireSession(): Promise<SessionContext> {
-  const session = await getSession();
-  if (!session) redirect('/login');
-  return session;
+  const state = await loadSessionState();
+  if (state.status === 'anonymous') redirect('/login');
+  if (state.status === 'inactive') redirect('/auth/no-access');
+  return state.session;
 }
 
 export const hasRole = (school: SchoolContext, ...roles: AppRole[]) =>
