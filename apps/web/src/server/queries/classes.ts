@@ -1,5 +1,6 @@
 import 'server-only';
 import { cache } from 'react';
+import { localized } from '@/i18n/config';
 import type { SessionContext } from '../session';
 import { teachingSchools } from '../session';
 import { createSupabaseServerClient } from '../supabase';
@@ -12,7 +13,10 @@ export interface ClassFormOptions {
 }
 
 /** Choices for creating or editing a class. */
-export async function loadClassFormOptions(session: SessionContext): Promise<ClassFormOptions> {
+export async function loadClassFormOptions(
+  session: SessionContext,
+  locale: string,
+): Promise<ClassFormOptions> {
   const schools = teachingSchools(session);
   const supabase = await createSupabaseServerClient();
   const boardIds = [...new Set(schools.map((s) => s.boardId))];
@@ -30,13 +34,16 @@ export async function loadClassFormOptions(session: SessionContext): Promise<Cla
         schools.map((s) => s.id),
       )
       .order('name'),
-    supabase.from('grades').select('code, label_fr, ordinal').order('ordinal'),
+    supabase.from('grades').select('code, label_fr, label_en, ordinal').order('ordinal'),
   ]);
   return {
     schools: schools.map((s) => ({ id: s.id, name: s.name, boardId: s.boardId })),
     schoolYears: (years.data ?? []).map((y) => ({ id: y.id, boardId: y.board_id, name: y.name })),
     rooms: (rooms.data ?? []).map((r) => ({ id: r.id, schoolId: r.school_id, name: r.name })),
-    grades: (grades.data ?? []).map((g) => ({ code: g.code, label: g.label_fr })),
+    grades: (grades.data ?? []).map((g) => ({
+      code: g.code,
+      label: localized(locale, g.label_fr, g.label_en),
+    })),
   };
 }
 
@@ -49,12 +56,15 @@ export interface ClassSummary {
   studentCount: number;
 }
 
-export async function listMyClasses(session: SessionContext): Promise<ClassSummary[]> {
+export async function listMyClasses(
+  session: SessionContext,
+  locale: string,
+): Promise<ClassSummary[]> {
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase
     .from('class_teachers')
     .select(
-      'role, classes!inner(id, name, school_id, class_grades(grade_code, grades(label_fr, ordinal)), students(count))',
+      'role, classes!inner(id, name, school_id, class_grades(grade_code, grades(label_fr, label_en, ordinal)), students(count))',
     )
     .eq('user_id', session.userId);
   return (data ?? [])
@@ -65,7 +75,9 @@ export async function listMyClasses(session: SessionContext): Promise<ClassSumma
       role: row.role,
       gradeLabels: [...row.classes.class_grades]
         .sort((a, b) => (a.grades?.ordinal ?? 0) - (b.grades?.ordinal ?? 0))
-        .map((g) => g.grades?.label_fr ?? g.grade_code),
+        .map((g) =>
+          g.grades ? localized(locale, g.grades.label_fr, g.grades.label_en) : g.grade_code,
+        ),
       studentCount: (row.classes.students as unknown as { count: number }[])[0]?.count ?? 0,
     }))
     .sort((a, b) => a.name.localeCompare(b.name, 'fr-CA'));

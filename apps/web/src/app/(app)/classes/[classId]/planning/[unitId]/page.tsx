@@ -1,6 +1,7 @@
 import { localDateIn, nextLessons, type ProgressStatus } from '@lynx/domain';
 import { ChevronLeft } from 'lucide-react';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
+import { localized } from '@/i18n/config';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { LessonList } from '@/components/planning/lesson-list';
@@ -20,12 +21,13 @@ export default async function UnitPage({
   const cls = (await loadClass(session, classId))!;
   const school = findSchool(session, cls.schoolId)!;
   const t = await getTranslations();
+  const locale = await getLocale();
   const supabase = await createSupabaseServerClient();
 
   const { data: unit } = await supabase
     .from('units')
     .select(
-      'id, title, description, status, subject_id, subjects(label_fr, color), unit_lessons(id, sequence_number, title, objectives, materials, content, sub_notes, duration_minutes, unit_lesson_expectations(expectation_id))',
+      'id, title, description, status, subject_id, subjects(label_fr, label_en, color), unit_lessons(id, sequence_number, title, objectives, materials, content, sub_notes, duration_minutes, unit_lesson_expectations(expectation_id))',
     )
     .eq('id', unitId)
     .eq('class_id', classId)
@@ -90,7 +92,9 @@ export default async function UnitPage({
               style={{ backgroundColor: unit.subjects?.color ?? '#94a3b8' }}
               aria-hidden
             />
-            {unit.subjects?.label_fr}
+            {unit.subjects
+              ? localized(locale, unit.subjects.label_fr, unit.subjects.label_en)
+              : null}
           </p>
           <h2 className="text-xl font-bold">{unit.title}</h2>
           {unit.description ? (

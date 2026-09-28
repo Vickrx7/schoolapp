@@ -47,7 +47,7 @@ export default async function TodayPage({
   const today = localDateIn(timezone);
   const { date: requested } = await searchParams;
   const date = requested && isLocalDate(requested) ? requested : today;
-  const data = await loadToday(session, date);
+  const data = await loadToday(session, date, locale);
   const isToday = date === today;
   const nowMinutes = isToday ? localMinutesIn(timezone) : null;
   const multipleClasses = new Set(data.blocks.map((b) => b.classId)).size > 1;
@@ -131,10 +131,10 @@ export default async function TodayPage({
                       {e.startTime || e.endTime ? (
                         <span className="text-slate-600">
                           {e.startTime && e.endTime
-                            ? formatTimeRange(e.startTime, e.endTime)
+                            ? formatTimeRange(e.startTime, e.endTime, locale)
                             : e.startTime
-                              ? formatTime(e.startTime)
-                              : formatTime(e.endTime!)}
+                              ? formatTime(e.startTime, locale)
+                              : formatTime(e.endTime!, locale)}
                         </span>
                       ) : null}
                     </li>
@@ -190,6 +190,7 @@ async function BlockCard({
   current: boolean;
 }) {
   const t = await getTranslations();
+  const locale = await getLocale();
   const inactive = block.status === 'cancelled' || block.status === 'replaced';
   const heading =
     block.subject?.label ??
@@ -207,7 +208,7 @@ async function BlockCard({
         )}
       >
         <span className="shrink-0 whitespace-nowrap tabular-nums sm:w-32">
-          {formatTimeRange(block.effectiveStart, block.effectiveEnd)}
+          {formatTimeRange(block.effectiveStart, block.effectiveEnd, locale)}
         </span>
         <span>{block.title ?? heading}</span>
         {statusLabel ? <Badge tone="warning">{statusLabel}</Badge> : null}
@@ -232,7 +233,7 @@ async function BlockCard({
         <div className="min-w-0 flex-1 p-4">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
             <span className="text-sm font-medium tabular-nums text-slate-600">
-              {formatTimeRange(block.effectiveStart, block.effectiveEnd)}
+              {formatTimeRange(block.effectiveStart, block.effectiveEnd, locale)}
             </span>
             <h2 className={cn('font-semibold', inactive && 'line-through')}>{heading}</h2>
             {showClass ? <Badge>{block.className}</Badge> : null}

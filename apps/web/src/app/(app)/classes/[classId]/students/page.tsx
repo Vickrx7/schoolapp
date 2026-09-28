@@ -1,4 +1,5 @@
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
+import { localized } from '@/i18n/config';
 import { StudentsManager } from '@/components/students/students-manager';
 import { Notice } from '@/components/ui/card';
 import { loadClass } from '@/server/queries/classes';
@@ -14,6 +15,7 @@ export default async function StudentsPage({ params }: { params: Promise<{ class
   const cls = (await loadClass(session, classId))!;
   const school = findSchool(session, cls.schoolId)!;
   const t = await getTranslations('students');
+  const locale = await getLocale();
   const supabase = await createSupabaseServerClient();
 
   const [students, levels] = await Promise.all([
@@ -25,7 +27,7 @@ export default async function StudentsPage({ params }: { params: Promise<{ class
       .order('first_name'),
     supabase
       .from('language_levels')
-      .select('id, label_fr, owner_user_id, sort_order')
+      .select('id, label_fr, label_en, owner_user_id, sort_order')
       .eq('board_id', school.boardId)
       .eq('active', true)
       .order('sort_order'),
@@ -48,7 +50,10 @@ export default async function StudentsPage({ params }: { params: Promise<{ class
             (a, b) =>
               Number(b.active) - Number(a.active) || collator.compare(a.firstName, b.firstName),
           )}
-        levels={(levels.data ?? []).map((l) => ({ id: l.id, label: l.label_fr }))}
+        levels={(levels.data ?? []).map((l) => ({
+          id: l.id,
+          label: localized(locale, l.label_fr, l.label_en),
+        }))}
         alertsAvailable={school.studentAlertsEnabled && serverEnv().ALERTS_ENCRYPTION_KEYS !== ''}
       />
     </div>

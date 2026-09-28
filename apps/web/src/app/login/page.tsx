@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
+import { LanguageSwitch } from '@/components/app/language-switch';
 import { APP_NAME } from '@/lib/app-name';
 import { safeNextPath } from '@/lib/safe-path';
 import { LoginForm } from './login-form';
@@ -23,6 +24,9 @@ export default async function LoginPage({
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/icon.svg" alt="" className="size-12" />
           <span className="text-xl font-bold">{APP_NAME}</span>
+          <span className="ml-auto">
+            <LanguageSwitch />
+          </span>
         </div>
         <h1 className="text-2xl font-bold">{t('title')}</h1>
         <p className="mt-2 mb-6 text-slate-600">{t('intro')}</p>

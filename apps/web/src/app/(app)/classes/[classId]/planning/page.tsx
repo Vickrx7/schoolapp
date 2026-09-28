@@ -1,4 +1,4 @@
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { NewUnitButton } from '@/components/planning/new-unit-button';
 import { UnitStatusButton } from '@/components/planning/unit-actions';
@@ -27,7 +27,7 @@ export default async function PlanningPage({ params }: { params: Promise<{ class
       .order('sort_order')
       .order('created_at'),
     supabase.from('lesson_progress').select('lesson_id, status').eq('class_id', classId),
-    loadSubjectsForGrades(cls.gradeOrdinals, board?.settings),
+    loadSubjectsForGrades(cls.gradeOrdinals, board?.settings, await getLocale()),
   ]);
 
   const done = new Set(

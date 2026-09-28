@@ -2,7 +2,7 @@
 
 import type { TimetableBlock } from '@lynx/domain';
 import { AlertTriangle, Plus } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useState, type CSSProperties } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
@@ -34,6 +34,7 @@ export function TimetableBoard({
   defaults: { start: string; end: string };
 }) {
   const t = useTranslations();
+  const locale = useLocale();
   const [editing, setEditing] = useState<BoardBlock | 'new' | null>(null);
   const days = Array.from({ length: dayCount }, (_, i) => i + 1);
   const dayLabel = (d: number) =>
@@ -87,7 +88,7 @@ export function TimetableBoard({
                             }
                           >
                             <span className="block text-xs text-slate-500 tabular-nums">
-                              {formatTimeRange(b.startTime, b.endTime)}
+                              {formatTimeRange(b.startTime, b.endTime, locale)}
                             </span>
                             <span className="block font-medium">
                               {subject?.label ?? b.title ?? t(`timetable.kinds.${b.kind}`)}

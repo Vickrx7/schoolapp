@@ -1,5 +1,5 @@
 import { findOverlaps, timeToMinutes } from '@lynx/domain';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { TimetableBoard } from '@/components/timetable/timetable-board';
 import { Notice } from '@/components/ui/card';
 import { toTimetableBlock } from '@/server/queries/mappers';
@@ -25,7 +25,7 @@ export default async function TimetablePage({ params }: { params: Promise<{ clas
       )
       .eq('class_id', classId),
     supabase.from('rooms').select('id, name').eq('school_id', school.id).order('name'),
-    loadSubjectsForGrades(cls.gradeOrdinals, board?.settings),
+    loadSubjectsForGrades(cls.gradeOrdinals, board?.settings, await getLocale()),
   ]);
 
   const rows = blocksRes.data ?? [];

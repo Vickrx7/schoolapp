@@ -53,7 +53,9 @@
     "confirmButton": "Me connecter",
     "confirmFailed": "Ce lien est expiré ou a déjà été utilisé. Demandez un nouveau code.",
     "backToLogin": "Retour à la connexion",
-    "noAccess": "Votre compte n’a pas encore accès à une école. Communiquez avec la direction ou l’équipe de soutien."
+    "noAccess": "Votre compte n’a pas encore accès à une école. Communiquez avec la direction ou l’équipe de soutien.",
+    "otherLanguage": "English",
+    "otherLanguageLocale": "en-CA"
   },
   "errors": {
     "title": "Oups, un problème est survenu.",
@@ -371,6 +373,13 @@
       "facilities": "Conciergerie et entretien",
       "board_admin": "Administration du conseil",
       "parent": "Parent"
-    }
+    },
+    "language": "Langue de l’application",
+    "languageHint": "Ce que vous saisissez (leçons, noms, événements) reste tel quel.",
+    "languageSaved": "Langue mise à jour."
+  },
+  "languages": {
+    "fr-CA": "Français",
+    "en-CA": "English"
   }
 }

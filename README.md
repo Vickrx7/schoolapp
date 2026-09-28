@@ -11,7 +11,7 @@ lesson tracking and (next) substitute hand-off, built for teachers first.
 
 ```
 apps/
-  web/            Next.js app (App Router, PWA). UI text in apps/web/messages/fr-CA.json
+  web/            Next.js app (App Router, PWA). UI text in apps/web/messages/{fr-CA,en-CA}.json
   worker/         Background jobs and event outbox dispatcher (graphile-worker, Postgres only)
   admin/          CLI to onboard boards, schools and staff (invite-only accounts)
 packages/

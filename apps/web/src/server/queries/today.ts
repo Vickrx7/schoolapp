@@ -12,6 +12,7 @@ import {
   type ProgressStatus,
   type TeachingSlot,
 } from '@lynx/domain';
+import { localized } from '@/i18n/config';
 import type { SchoolContext, SessionContext } from '../session';
 import { teachingSchools } from '../session';
 import { createSupabaseServerClient } from '../supabase';
@@ -68,7 +69,11 @@ export interface TodayData {
   blocks: TodayBlock[];
 }
 
-export async function loadToday(session: SessionContext, date: LocalDate): Promise<TodayData> {
+export async function loadToday(
+  session: SessionContext,
+  date: LocalDate,
+  locale: string,
+): Promise<TodayData> {
   const schools = teachingSchools(session);
   const supabase = await createSupabaseServerClient();
 
@@ -108,7 +113,7 @@ export async function loadToday(session: SessionContext, date: LocalDate): Promi
       .from('lesson_progress')
       .select('lesson_id, status, taught_on')
       .in('class_id', classIds),
-    supabase.from('subjects').select('id, label_fr, color'),
+    supabase.from('subjects').select('id, label_fr, label_en, color'),
     supabase.from('rooms').select('id, name').in('school_id', schoolIds),
   ]);
 
@@ -126,7 +131,10 @@ export async function loadToday(session: SessionContext, date: LocalDate): Promi
     .gte('ends_on', earliestAnchor);
 
   const subjects = new Map(
-    (subjectsRes.data ?? []).map((s) => [s.id, { id: s.id, label: s.label_fr, color: s.color }]),
+    (subjectsRes.data ?? []).map((s) => [
+      s.id,
+      { id: s.id, label: localized(locale, s.label_fr, s.label_en), color: s.color },
+    ]),
   );
   const rooms = new Map((roomsRes.data ?? []).map((r) => [r.id, r.name]));
   const allBlocks = (blocksRes.data ?? []).map(toTimetableBlock);

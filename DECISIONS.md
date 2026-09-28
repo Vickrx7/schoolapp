@@ -216,10 +216,17 @@ their own. Students can have a default level.
 
 ## UI
 
-**D-033 — French UI, i18n from day one.** next-intl with `messages/fr-CA.json` (typed: a missing key
-fails the build). No locale in URLs; the locale comes from a cookie, so English can be added by
-providing `messages/en-CA.json`. Inclusive writing: neutral wording where possible ("la direction",
-"la personne suppléante"), the middle dot only where unavoidable ("Enseignant·e").
+**D-033 — French first, with an English toggle.** next-intl with `messages/fr-CA.json` (typed: a
+missing key fails the build) and `messages/en-CA.json` (a unit test fails if its keys or ICU
+placeholders drift from the French file). French is the default for everyone. Anyone can switch to
+English on the login page or in Profil; the choice is stored in a `locale` cookie and, when signed
+in, in `users.preferred_locale`, which is applied again at the next sign-in on any device. No locale
+in URLs. Only the interface is translated: what staff type (lessons, units, events, names) is shown
+as typed. Reference labels with an English column (subjects, language levels) follow the interface
+language; curriculum strands stay French. Times read "8 h 45" in French and "8:45 a.m." in English.
+The login email stays in French for now (the auth server sends one template). Inclusive writing:
+neutral wording where possible ("la direction", "la personne suppléante"), the middle dot only where
+unavoidable ("Enseignant·e").
 
 **D-034 — Phone-first, accessible.** Tap targets are at least 44 px, bottom navigation on phones,
 native pickers for dates, times and selects. Target: WCAG 2.0 AA (Ontario's AODA). The end-to-end

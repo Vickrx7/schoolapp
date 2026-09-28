@@ -1,4 +1,4 @@
-import { getTranslations } from 'next-intl/server';
+import { getLocale } from 'next-intl/server';
 import { ClassSettings } from '@/components/classes/class-settings';
 import { loadClass, loadClassFormOptions } from '@/server/queries/classes';
 import { requireSession } from '@/server/session';
@@ -12,9 +12,8 @@ export default async function ClassSettingsPage({
   const { classId } = await params;
   const session = await requireSession();
   const cls = (await loadClass(session, classId))!;
-  const options = await loadClassFormOptions(session);
+  const options = await loadClassFormOptions(session, await getLocale());
   const supabase = await createSupabaseServerClient();
-  await getTranslations('classes');
 
   // Teachers at this school who could join the class team.
   const { data: colleagues } = await supabase

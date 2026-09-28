@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
+import { LanguageForm } from '@/components/school/language-form';
 import { ProfileForm } from '@/components/school/profile-form';
 import { Button } from '@/components/ui/button';
 import { Badge, Card, CardBody } from '@/components/ui/card';
@@ -25,6 +26,7 @@ export default async function ProfilePage() {
       <Card>
         <CardBody className="space-y-4 pt-4">
           <ProfileForm displayName={session.displayName} honorific={session.honorific ?? ''} />
+          <LanguageForm />
           <div>
             <p className="text-sm font-medium text-slate-700">{t('email')}</p>
             <p className="text-slate-900">{session.email}</p>

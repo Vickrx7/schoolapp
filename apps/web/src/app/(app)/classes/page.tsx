@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { NewClassButton } from '@/components/classes/new-class-button';
@@ -17,9 +17,10 @@ export default async function ClassesPage() {
   const session = await requireSession();
   if (teachingSchools(session).length === 0) redirect('/calendar');
   const t = await getTranslations('classes');
+  const locale = await getLocale();
   const [classes, options] = await Promise.all([
-    listMyClasses(session),
-    loadClassFormOptions(session),
+    listMyClasses(session, locale),
+    loadClassFormOptions(session, locale),
   ]);
 
   return (

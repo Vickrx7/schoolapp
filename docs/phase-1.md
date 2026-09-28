@@ -16,7 +16,8 @@
   events to handlers, including mock adapters for PA/bells, doors (VantageCore), intercoms,
   cameras and SMS/voice.
 - Invite-only sign-in with a 6-digit email code or a scanner-safe link; French login email.
-- French (Canada) UI with every string in `apps/web/messages/fr-CA.json`.
+- French (Canada) UI, with an English toggle on the login page and in Profil (remembered per
+  account). Every string is in `apps/web/messages/fr-CA.json` and `en-CA.json`.
 - Admin CLI to onboard boards, schools, school years and staff.
 
 **For teachers**

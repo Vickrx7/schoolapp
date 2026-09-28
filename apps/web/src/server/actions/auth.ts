@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { fail, okVoid, type ActionResult } from '@/lib/action-result';
 import { safeNextPath } from '@/lib/safe-path';
 import { createSupabaseServerClient } from '../supabase';
+import { syncLocaleAtSignIn } from '../locale';
 
 const emailSchema = z.email().max(320);
 const codeSchema = z.string().regex(/^\d{6}$/);
@@ -51,6 +52,7 @@ export async function verifyLoginCode(rawEmail: string, rawCode: string): Promis
     type: 'email',
   });
   if (error) return fail(error.status === 429 ? 'tooManyAttempts' : 'invalidCode');
+  await syncLocaleAtSignIn(supabase);
   return okVoid();
 }
 
@@ -65,6 +67,7 @@ export async function confirmLoginLink(formData: FormData): Promise<void> {
 
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: 'email' });
+  if (!error) await syncLocaleAtSignIn(supabase);
   redirect(error ? '/auth/confirm?error=1' : next);
 }
 

@@ -30,16 +30,27 @@ async function latestCode(email: string, after: number): Promise<string> {
   throw new Error(`no login code arrived for ${email}`);
 }
 
-/** Signs in through the real email-code flow (codes are read from the local Mailpit). */
-export async function login(page: Page, email: string) {
-  await page.goto('/login');
+/**
+ * Signs in through the real email-code flow (codes are read from the local Mailpit).
+ * Works whichever language the login page is in.
+ */
+export async function login(page: Page, email: string, { stayOnPage = false } = {}) {
+  if (!stayOnPage) await page.goto('/login');
   const started = Date.now();
-  await page.getByLabel('Adresse courriel').fill(email);
-  await page.getByRole('button', { name: 'Recevoir un code' }).click();
-  await expect(page.getByLabel('Code à 6 chiffres')).toBeVisible();
+  await page.getByLabel(/^(Adresse courriel|Email address)$/).fill(email);
+  const codeField = page.getByLabel(/^(Code à 6 chiffres|6-digit code)$/);
+  const tooSoon = page.getByText(/^(Trop de tentatives|Too many attempts)/);
+  // Auth allows one code per address per second; signing in twice in a row can hit that.
+  for (let attempt = 0; ; attempt++) {
+    await page.getByRole('button', { name: /^(Recevoir un code|Send me a code)$/ }).click();
+    await expect(codeField.or(tooSoon)).toBeVisible();
+    if (await codeField.isVisible()) break;
+    if (attempt === 3) throw new Error(`login codes for ${email} are rate limited`);
+    await page.waitForTimeout(1500);
+  }
   const code = await latestCode(email, started);
-  await page.getByLabel('Code à 6 chiffres').fill(code);
-  await page.getByRole('button', { name: 'Me connecter' }).click();
+  await codeField.fill(code);
+  await page.getByRole('button', { name: /^(Me connecter|Sign in)$/ }).click();
   await page.waitForURL(/\/(today|calendar)/);
 }
 

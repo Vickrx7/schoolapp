@@ -97,11 +97,11 @@ export default async function CalendarPage() {
                               : ''}
                             {' · '}
                             {e.start_time && e.end_time
-                              ? formatTimeRange(e.start_time, e.end_time)
+                              ? formatTimeRange(e.start_time, e.end_time, locale)
                               : e.start_time
-                                ? t('from', { time: formatTime(e.start_time) })
+                                ? t('from', { time: formatTime(e.start_time, locale) })
                                 : e.end_time
-                                  ? t('until', { time: formatTime(e.end_time) })
+                                  ? t('until', { time: formatTime(e.end_time, locale) })
                                   : t('allDay')}
                           </p>
                           <p className="font-medium">{e.title}</p>

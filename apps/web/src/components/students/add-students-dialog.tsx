@@ -43,6 +43,7 @@ export function AddStudentsDialog({
   const [mode, setMode] = useState<Mode>('paste');
   const draft = useDraft(`students:${classId}`, { text: '' });
   const [csv, setCsv] = useState<CsvState | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
 
   const candidates: RosterCandidate[] = useMemo(() => {
     if (mode === 'paste')
@@ -57,6 +58,7 @@ export function AddStudentsDialog({
       draft.clear();
       draft.setValue({ text: '' });
       setCsv(null);
+      setFileName(null);
       setOpen(false);
       toast.success(t('added', { count }));
     },
@@ -65,6 +67,7 @@ export function AddStudentsDialog({
   const onFile = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    setFileName(file.name);
     // The file is read here, in the browser. Only the chosen column's values are sent.
     const text = decodeCsvBytes(await file.arrayBuffer());
     const parsed = Papa.parse<string[]>(text, { skipEmptyLines: 'greedy' });
@@ -130,13 +133,22 @@ export function AddStudentsDialog({
         ) : (
           <div className="space-y-3">
             <p className="text-sm text-slate-600">{t('csvHelp')}</p>
-            <input
-              type="file"
-              accept=".csv,text/csv,text/plain"
-              onChange={onFile}
-              aria-label={t('chooseFile')}
-              className="block w-full text-sm file:mr-3 file:min-h-11 file:rounded-lg file:border-0 file:bg-brand-50 file:px-4 file:font-medium file:text-brand-700"
-            />
+            {/* A styled label instead of the browser's own button, whose text follows the
+                browser's language rather than the app's. */}
+            <div className="flex flex-wrap items-center gap-3">
+              <label className="inline-flex min-h-11 cursor-pointer items-center rounded-lg bg-brand-50 px-4 font-medium text-brand-700 focus-within:ring-2 focus-within:ring-brand-500 hover:bg-brand-100">
+                {t('chooseFile')}
+                <input
+                  type="file"
+                  accept=".csv,text/csv,text/plain"
+                  onChange={onFile}
+                  className="sr-only"
+                />
+              </label>
+              {fileName ? (
+                <span className="text-sm break-all text-slate-600">{fileName}</span>
+              ) : null}
+            </div>
             {csv ? (
               <>
                 <Field label={t('chooseColumn')} htmlFor="csv-column">
