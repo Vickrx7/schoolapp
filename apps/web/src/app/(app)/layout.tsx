@@ -1,10 +1,9 @@
 import { getTranslations } from 'next-intl/server';
 import type { ReactNode } from 'react';
 import { AppNav } from '@/components/app/app-nav';
-import { Button } from '@/components/ui/button';
+import { SignOutForm } from '@/components/app/sign-out-form';
 import { Notice } from '@/components/ui/card';
 import { APP_NAME } from '@/lib/app-name';
-import { signOut } from '@/server/actions/auth';
 import { aiSchools, hasRole, requireSession, teachingSchools } from '@/server/session';
 
 export default async function AppLayout({ children }: { children: ReactNode }) {
@@ -15,11 +14,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
     return (
       <main className="mx-auto max-w-md space-y-4 px-4 py-16">
         <Notice tone="warning">{t('auth.noAccess')}</Notice>
-        <form action={signOut}>
-          <Button type="submit" variant="secondary">
-            {t('nav.signOut')}
-          </Button>
-        </form>
+        <SignOutForm />
       </main>
     );
   }

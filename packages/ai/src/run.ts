@@ -17,9 +17,17 @@ export interface RunOptions<I, O> {
   systemPrompt: string;
   /** Raw input from the request; validated here. */
   input: unknown;
-  /** Everyone whose name must not leave: the school's students and staff. */
+  /**
+   * Everyone whose name must not leave: students and staff of every school the requester
+   * works in (never fewer people than the requester's preview used).
+   */
   people: readonly KnownPerson[];
   maxAttempts?: number;
+  /**
+   * The longest the whole request may take, every attempt included. A call still running
+   * then is abandoned (error 'timeout') and not retried.
+   */
+  timeoutMs?: number;
   now?: Date;
 }
 
@@ -97,9 +105,19 @@ export async function runFeature<I, O>(options: RunOptions<I, O>): Promise<RunRe
   }
 
   const maxAttempts = options.maxAttempts ?? 3;
+  const signal =
+    options.timeoutMs === undefined ? undefined : AbortSignal.timeout(options.timeoutMs);
   const problems: string[] = [];
   let model = provider.model;
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    if (signal?.aborted) {
+      return result('failed', 'timeout', {
+        sentText: attempt > 1 ? user : null,
+        attempts: attempt - 1,
+        model,
+        problems: [...problems, 'no time left for another attempt'],
+      });
+    }
     let response;
     try {
       response = await provider.generate({
@@ -108,9 +126,16 @@ export async function runFeature<I, O>(options: RunOptions<I, O>): Promise<RunRe
         schema: feature.outputSchema,
         maxTokens: feature.maxTokens,
         fake: () => feature.fake(input),
+        ...(signal ? { signal } : {}),
       });
     } catch (error) {
+      // The call may have failed after the provider started (a broken or timed-out stream):
+      // keep what it reported, since it is billed. Timeouts are not retried either.
       const code = error instanceof AiProviderError ? error.code : 'aiError';
+      if (error instanceof AiProviderError) {
+        if (error.usage) addUsage(usage, error.usage);
+        if (error.requestId) requestIds.push(error.requestId);
+      }
       return result('failed', code, {
         sentText: user,
         attempts: attempt,
@@ -123,13 +148,13 @@ export async function runFeature<I, O>(options: RunOptions<I, O>): Promise<RunRe
     if (response.requestId) requestIds.push(response.requestId);
 
     if (response.stopReason === 'refusal') {
-      return result('failed', 'aiRefused', { sentText: user, attempts: attempt, model });
+      return result('failed', 'aiRefused', { sentText: user, attempts: attempt, model, problems });
     }
     if (
       response.stopReason === 'max_tokens' ||
       response.stopReason === 'model_context_window_exceeded'
     ) {
-      return result('failed', 'aiTooLong', { sentText: user, attempts: attempt, model });
+      return result('failed', 'aiTooLong', { sentText: user, attempts: attempt, model, problems });
     }
     if (!response.output) {
       problems.push(`attempt ${attempt}: ${response.stopReason}`);

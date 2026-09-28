@@ -123,6 +123,7 @@ export default async function UnitPage({
         </div>
       </div>
       <LessonList
+        userId={session.userId}
         classId={classId}
         unitId={unitId}
         lessons={lessons}

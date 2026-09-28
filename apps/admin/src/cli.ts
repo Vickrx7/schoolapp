@@ -327,9 +327,15 @@ const commands: Record<string, () => Promise<string>> = {
     const multiplier = amount('ceiling-multiplier');
     if (allowed !== undefined) ai.allowed = allowed;
     if (pooling !== undefined) ai.pooling = pooling;
-    if (defaultAllowance !== undefined) ai.defaultMonthlyAllowanceUsd = defaultAllowance;
+    // Same bounds as the app (packages/domain settings.ts) and the database's guard trigger.
+    if (defaultAllowance !== undefined) {
+      if (defaultAllowance > 100_000)
+        throw new CliError('--default-allowance must be at most 100000');
+      ai.defaultMonthlyAllowanceUsd = defaultAllowance;
+    }
     if (multiplier !== undefined) {
-      if (multiplier < 1) throw new CliError('--ceiling-multiplier must be at least 1');
+      if (multiplier < 1 || multiplier > 10)
+        throw new CliError('--ceiling-multiplier must be between 1 and 10');
       ai.ceilingMultiplier = multiplier;
     }
     check(

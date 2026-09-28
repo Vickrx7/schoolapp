@@ -1,5 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
 import { DEMO, login } from './helpers';
 
 // Needs the worker running with AI_PROVIDER=fake (as in CI): nothing leaves the machine.
@@ -15,6 +15,41 @@ const TEXT =
   'Zoé observe un castor près de la rivière. Le castor construit un barrage avec des branches. ' +
   'Il vit en famille dans une hutte.';
 
+const suffix = () => Date.now().toString().slice(-5);
+
+/** A click before the page is interactive is lost: retry until the dialog opens. */
+async function confirm(page: Page, trigger: Locator, button: string) {
+  const dialog = page.getByRole('dialog');
+  await expect(async () => {
+    if (!(await dialog.isVisible())) await trigger.click();
+    await expect(dialog).toBeVisible({ timeout: 1000 });
+  }).toPass();
+  await dialog.getByRole('button', { name: button }).click();
+}
+
+/** Fills and sends a request from the form, then waits for its page. */
+async function sendRequest(page: Page, title: string, { level }: { level?: string } = {}) {
+  await page.goto('/differentiate');
+  await page.getByLabel('Titre').fill(title);
+  await page.getByLabel('Texte, consignes ou activité').fill(TEXT);
+  if (level) await page.getByLabel(level).check();
+  await page.getByRole('button', { name: 'Vérifier avant d’envoyer' }).click();
+  await page.getByRole('button', { name: 'Envoyer à l’IA' }).click();
+  await page.waitForURL(/\/differentiate\/[0-9a-f-]{36}$/);
+}
+
+/** Removes a finished request from « Demandes récentes ». */
+async function discardRequest(page: Page, title: string) {
+  await page.goto('/differentiate');
+  // Not the saved text of the same title, in the list below.
+  const row = page
+    .getByRole('listitem')
+    .filter({ hasText: title })
+    .filter({ has: page.getByRole('button', { name: 'Retirer' }) });
+  await confirm(page, row.getByRole('button', { name: 'Retirer' }), 'Retirer');
+  await expect(row).toHaveCount(0);
+}
+
 test('the principal turns AI on, then a teacher differentiates a text without names leaving', async ({
   page,
   context,
@@ -24,7 +59,8 @@ test('the principal turns AI on, then a teacher differentiates a text without na
   // AI is off until the direction turns it on.
   await login(page, DEMO.principal);
   await page.goto('/school');
-  const enable = page.getByRole('button', { name: 'Activer l’IA' });
+  // Exact: « Désactiver l’IA » contains the same words.
+  const enable = page.getByRole('button', { name: 'Activer l’IA', exact: true });
   const isOn = page.getByText('L’IA est activée.');
   // Wait for the AI card before deciding (it may already be on after a retry).
   await expect(enable.or(isOn)).toBeVisible();
@@ -95,4 +131,195 @@ test('a teacher adds a language level of their own', async ({ page }) => {
   await expect(page.getByText('Niveau ajouté.')).toBeVisible();
   await page.goto('/differentiate');
   await expect(page.getByText(name)).toBeVisible();
+});
+
+// The tests below need AI on for the demo school (the first test turns it on).
+
+test('a failed request keeps the teacher’s text', async ({ page }) => {
+  test.setTimeout(90_000);
+  await login(page, DEMO.teacher3);
+  // The fake AI repeats the title in every version, and a level name in a title is refused
+  // (students must not see it): this request always fails, after three attempts.
+  const title = `Le castor, niveau Débutant ${suffix()}`;
+  await sendRequest(page, title);
+  await expect(page.getByText('La demande n’a pas pu être complétée.')).toBeVisible({
+    timeout: 30_000,
+  });
+  await expectAccessible(page);
+
+  // The form comes back filled from the request itself (on any device)...
+  await page.getByRole('link', { name: 'Reprendre ce texte' }).click();
+  await page.waitForURL(/\/differentiate\?from=/);
+  await expect(page.getByLabel('Titre')).toHaveValue(title);
+  await expect(page.getByLabel('Texte, consignes ou activité')).toHaveValue(TEXT);
+
+  // ...and the draft on this device was kept too: sending it didn't throw it away.
+  await page.goto('/differentiate');
+  await expect(
+    page.getByText('Votre dernière demande n’a pas abouti : son texte a été récupéré.'),
+  ).toBeVisible();
+  await expect(page.getByLabel('Titre')).toHaveValue(title);
+  await expect(page.getByLabel('Texte, consignes ou activité')).toHaveValue(TEXT);
+  await page.getByRole('button', { name: 'Effacer le brouillon' }).click();
+  await expect(page.getByLabel('Titre')).toHaveValue('');
+
+  await discardRequest(page, title);
+});
+
+test('a long text asks for fewer levels before anything is sent', async ({ page }) => {
+  await login(page, DEMO.teacher3);
+  await page.goto('/differentiate');
+  await page.getByLabel('Titre').fill(`Le long castor ${suffix()}`);
+  // About 8,000 characters: too long for the four levels checked by default.
+  await page
+    .getByLabel('Texte, consignes ou activité')
+    .fill('Le castor construit un barrage avec des branches. '.repeat(160));
+  const check = page.getByRole('button', { name: 'Vérifier avant d’envoyer' });
+  await check.click();
+  await expect(
+    page.getByText(
+      'Ce texte est trop long pour autant de niveaux. Raccourcissez-le ou choisissez moins de niveaux.',
+    ),
+  ).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Envoyer à l’IA' })).toHaveCount(0);
+
+  // With two levels, the same text can go.
+  await page.getByLabel('Avancé').uncheck();
+  await page.getByLabel('Enrichi').uncheck();
+  await check.click();
+  await expect(page.getByRole('button', { name: 'Envoyer à l’IA' })).toBeVisible();
+});
+
+test('saving a result says what to fix instead of doing nothing', async ({ page }) => {
+  test.setTimeout(90_000);
+  await login(page, DEMO.teacher3);
+  const title = `Le castor ${suffix()}`;
+  await sendRequest(page, title);
+  await expect(page.getByRole('heading', { name: 'Débutant' })).toBeVisible({ timeout: 30_000 });
+
+  // Opening a result stores nothing, so the next visit doesn't claim a draft was restored.
+  await page.reload();
+  await expect(page.getByRole('heading', { name: 'Débutant' })).toBeVisible();
+  await page.waitForLoadState('networkidle');
+  await expect(page.getByText('Brouillon non enregistré récupéré.')).toHaveCount(0);
+
+  // A dash instead of « : » makes the whole line a word, longer than a word may be.
+  const glossary = page.getByLabel('Glossaire').first();
+  await glossary.fill(
+    'castor : animal\n' +
+      'castor — animal qui construit des barrages avec des branches, de la boue et des pierres près des rivières',
+  );
+  await page.getByRole('button', { name: 'Enregistrer', exact: true }).click();
+  await expect(page.getByText('Ligne 2 : Ce texte est trop long.')).toBeVisible();
+  await expect(page).toHaveURL(/\/differentiate\/[0-9a-f-]{36}$/);
+
+  // Phones show one level at a time: the level tabs are full-size tap targets.
+  await page.setViewportSize({ width: 390, height: 844 });
+  const tabs = page.getByRole('group', { name: 'Niveaux' }).getByRole('button');
+  await expect(tabs.first()).toBeVisible();
+  for (const tab of await tabs.all()) {
+    expect((await tab.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
+  }
+  await expect(page.getByText('Ligne 2 : Ce texte est trop long.')).toBeVisible();
+  await page.setViewportSize({ width: 1280, height: 720 });
+
+  await glossary.fill('castor : animal qui construit des barrages');
+  await page.getByRole('button', { name: 'Enregistrer', exact: true }).click();
+  await page.waitForURL(/\/differentiate\/saved\/[0-9a-f-]{36}$/);
+
+  await confirm(page, page.getByRole('button', { name: 'Supprimer ce texte' }), 'Supprimer');
+  await page.waitForURL(/\/differentiate$/);
+  await discardRequest(page, title);
+});
+
+test('another account on the same computer never gets a draft', async ({ page, context }) => {
+  await login(page, DEMO.teacher3);
+  await page.goto('/differentiate');
+  await page.getByLabel('Titre').fill('Brouillon d’Isabelle');
+  await page.getByLabel('Texte, consignes ou activité').fill(TEXT);
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          Object.keys(localStorage).filter((k) => k.startsWith('lynx-draft:differentiate:new:'))
+            .length,
+      ),
+    )
+    .toBe(1);
+  await context.clearCookies();
+
+  await login(page, DEMO.teacher5);
+  await page.goto('/differentiate');
+  await expect(page.getByRole('heading', { name: 'Texte différencié' })).toBeVisible();
+  await page.waitForLoadState('networkidle');
+  await expect(page.getByText('Brouillon non enregistré récupéré.')).toHaveCount(0);
+  await expect(page.getByLabel('Titre')).toHaveValue('');
+  await expect(page.getByLabel('Texte, consignes ou activité')).toHaveValue('');
+});
+
+test('signing out removes the drafts from this computer', async ({ page }) => {
+  await login(page, DEMO.teacher3);
+  await page.goto('/differentiate');
+  await page.getByLabel('Titre').fill('Brouillon à effacer');
+  await page.getByLabel('Texte, consignes ou activité').fill(TEXT);
+  const drafts = () =>
+    page.evaluate(
+      () => Object.keys(localStorage).filter((k) => k.startsWith('lynx-draft:')).length,
+    );
+  await expect.poll(drafts).toBe(1);
+
+  await page.goto('/profile');
+  // Wait until the page is interactive: the drafts are removed by the page's own script.
+  await page.waitForLoadState('networkidle');
+  await page.getByRole('button', { name: 'Se déconnecter' }).click();
+  await page.waitForURL(/\/login/);
+  await expect.poll(drafts).toBe(0);
+});
+
+test('a level used by a request or a saved text is kept until nothing uses it', async ({
+  page,
+}) => {
+  test.setTimeout(90_000);
+  await login(page, DEMO.teacher5);
+  await page.goto('/differentiate/levels');
+  const name = `Accueil ${suffix()}`;
+  await page.getByLabel('Nom du niveau').last().fill(name);
+  await page.getByLabel('Description pour l’IA').last().fill('Mots très simples et images.');
+  await page.getByRole('button', { name: 'Ajouter un niveau' }).click();
+  await expect(page.getByText('Niveau ajouté.')).toBeVisible();
+
+  const title = `Le hibou ${suffix()}`;
+  await sendRequest(page, title, { level: name });
+  await expect(page.getByRole('heading', { name })).toBeVisible({ timeout: 30_000 });
+  const result = page.url();
+
+  // Deleting it now would make the result impossible to save.
+  const inUse = page.getByText(
+    'Ce niveau sert encore à une demande récente ou à un texte enregistré. Décochez « Actif » pour le masquer plutôt.',
+  );
+  await page.goto('/differentiate/levels');
+  const row = page.locator('li').filter({ has: page.locator(`input[value="${name}"]`) });
+  await confirm(page, row.getByRole('button', { name: 'Supprimer' }), 'Supprimer');
+  await expect(inUse).toBeVisible();
+
+  await page.goto(result);
+  await page.getByRole('button', { name: 'Enregistrer', exact: true }).click();
+  await page.waitForURL(/\/differentiate\/saved\/[0-9a-f-]{36}$/);
+  await expect(page.getByRole('heading', { name })).toBeVisible();
+  const saved = page.url();
+
+  // Without the request, the saved text still holds it: deleting it would drop that version.
+  await discardRequest(page, title);
+  await page.goto('/differentiate/levels');
+  await confirm(page, row.getByRole('button', { name: 'Supprimer' }), 'Supprimer');
+  await expect(inUse).toBeVisible();
+  await page.goto(saved);
+  await expect(page.getByRole('heading', { name })).toBeVisible();
+
+  // Once nothing uses it, it can go.
+  await confirm(page, page.getByRole('button', { name: 'Supprimer ce texte' }), 'Supprimer');
+  await page.waitForURL(/\/differentiate$/);
+  await page.goto('/differentiate/levels');
+  await confirm(page, row.getByRole('button', { name: 'Supprimer' }), 'Supprimer');
+  await expect(page.getByText('Niveau supprimé.')).toBeVisible();
 });

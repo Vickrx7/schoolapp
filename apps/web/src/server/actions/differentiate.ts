@@ -3,6 +3,7 @@
 import {
   differentiateInputSchema,
   differentiateItemTypes,
+  MAX_TEXT_TIMES_LEVELS,
   type DifferentiateInput,
 } from '@lynx/ai/features/differentiate';
 import { Redactor, type BlockedKind, type KnownPerson, type Segment } from '@lynx/ai/privacy';
@@ -17,16 +18,23 @@ import { parseInput } from './validation';
 
 type Supabase = Awaited<ReturnType<typeof createSupabaseServerClient>>;
 
-const formSchema = z.object({
-  schoolId: z.uuid(),
-  title: z.string().trim().min(1, 'required').max(200, 'tooLong'),
-  text: z.string().trim().min(20, 'tooShort').max(12_000, 'tooLong'),
-  objective: z.string().trim().max(500, 'tooLong'),
-  itemType: z.enum(differentiateItemTypes),
-  gradeCode: z.string().min(1, 'required'),
-  subjectId: z.uuid().nullable(),
-  levelIds: z.array(z.uuid()).min(2, 'atLeastTwoLevels').max(6, 'tooMany'),
-});
+const formSchema = z
+  .object({
+    schoolId: z.uuid(),
+    title: z.string().trim().min(1, 'required').max(200, 'tooLong'),
+    text: z.string().trim().min(20, 'tooShort').max(12_000, 'tooLong'),
+    objective: z.string().trim().max(500, 'tooLong'),
+    itemType: z.enum(differentiateItemTypes),
+    gradeCode: z.string().min(1, 'required'),
+    subjectId: z.uuid().nullable(),
+    levelIds: z.array(z.uuid()).min(2, 'atLeastTwoLevels').max(6, 'tooMany'),
+  })
+  .superRefine((form, ctx) => {
+    // A long text for many levels would not finish in time (see MAX_TEXT_TIMES_LEVELS).
+    if (form.text.length * form.levelIds.length > MAX_TEXT_TIMES_LEVELS) {
+      ctx.addIssue({ code: 'custom', path: ['text'], message: 'tooLongForLevels' });
+    }
+  });
 export type DifferentiateForm = z.input<typeof formSchema>;
 
 /** Builds the job input from the form, with labels read from the database. */
@@ -40,14 +48,25 @@ async function buildInput(
       .select('id, label_fr, description_fr, owner_user_id, sort_order')
       .in('id', form.levelIds)
       .eq('active', true),
-    supabase.from('grades').select('label_fr').eq('code', form.gradeCode).maybeSingle(),
+    supabase.from('grades').select('label_fr, ordinal').eq('code', form.gradeCode).maybeSingle(),
     form.subjectId
-      ? supabase.from('subjects').select('label_fr').eq('id', form.subjectId).maybeSingle()
+      ? supabase
+          .from('subjects')
+          .select('label_fr, grade_min, grade_max')
+          .eq('id', form.subjectId)
+          .maybeSingle()
       : Promise.resolve({ data: null }),
   ]);
   const rows = levels.data ?? [];
   if (rows.length !== form.levelIds.length || !grade.data) return null;
   if (form.subjectId && !subject.data) return null;
+  // A subject that isn't taught in this grade would mislead the AI and be saved with the text.
+  if (
+    subject.data &&
+    (grade.data.ordinal < subject.data.grade_min || grade.data.ordinal > subject.data.grade_max)
+  ) {
+    return null;
+  }
   rows.sort(
     (a, b) =>
       Number(a.owner_user_id !== null) - Number(b.owner_user_id !== null) ||
@@ -76,7 +95,8 @@ async function buildInput(
 
 /**
  * The people this user can see (their classes' students, their colleagues), for the preview.
- * The worker checks again with the whole school's roster before anything is sent.
+ * The worker checks again with a roster that includes everyone this user can see, in every
+ * school.
  */
 async function visiblePeople(supabase: Supabase): Promise<KnownPerson[]> {
   const [students, users] = await Promise.all([
@@ -186,13 +206,14 @@ export async function discardAiJob(jobId: string): Promise<ActionResult> {
 // Saving and editing results
 // ---------------------------------------------------------------------------------------
 
-const line = (max: number) => z.string().trim().min(1).max(max);
+// Messages are error keys: the editor shows them on the field, with the line they come from.
+const line = (max: number) => z.string().trim().min(1, 'required').max(max, 'tooLong');
 const versionSchema = z.object({
   languageLevelId: z.uuid(),
   title: z.string().trim().min(1, 'required').max(200, 'tooLong'),
   text: z.string().trim().min(1, 'required').max(40_000, 'tooLong'),
   glossary: z
-    .array(z.object({ term: line(80), definition: z.string().trim().max(500) }))
+    .array(z.object({ term: line(80), definition: z.string().trim().max(500, 'tooLong') }))
     .max(30, 'tooMany'),
   visualSupports: z.array(line(300)).max(10, 'tooMany'),
   questions: z.array(line(500)).max(12, 'tooMany'),
@@ -201,7 +222,7 @@ const versionSchema = z.object({
 const resultSchema = z.object({
   title: z.string().trim().min(1, 'required').max(200, 'tooLong'),
   objective: z.string().trim().max(1000, 'tooLong'),
-  versions: z.array(versionSchema).min(1).max(6),
+  versions: z.array(versionSchema).min(1, 'required').max(6, 'tooMany'),
 });
 export type DifferentiationResult = z.input<typeof resultSchema>;
 
@@ -218,24 +239,37 @@ function toContent(objective: string, v: z.infer<typeof versionSchema>): Version
   };
 }
 
-/** Saves a finished request as a private draft in the library. */
+/**
+ * Saves a finished request as a private draft in the library. A level deleted since the
+ * request is left out (`skippedLevels`) rather than making the whole text unsaveable.
+ */
 export async function saveDifferentiation(
   jobId: string,
   raw: DifferentiationResult,
-): Promise<ActionResult<{ itemId: string }>> {
+): Promise<ActionResult<{ itemId: string; skippedLevels: number }>> {
   await requireSession();
   const parsed = parseInput(resultSchema, raw);
   if (!parsed.ok) return parsed.result;
+  if (!z.uuid().safeParse(jobId).success) return fail('notFound');
   const supabase = await createSupabaseServerClient();
-  const { data: job } = await supabase
-    .from('ai_jobs')
-    .select('input')
-    .eq('id', jobId)
-    .maybeSingle();
+  const [{ data: job }, { data: levels, error: levelsError }] = await Promise.all([
+    supabase.from('ai_jobs').select('input').eq('id', jobId).maybeSingle(),
+    supabase
+      .from('language_levels')
+      .select('id')
+      .in(
+        'id',
+        parsed.data.versions.map((v) => v.languageLevelId),
+      ),
+  ]);
   const input = differentiateInputSchema.safeParse(job?.input);
   if (!input.success) return fail('notFound');
+  if (levelsError) return fail(reportError('saveDifferentiation', levelsError));
 
-  const { objective, versions } = parsed.data;
+  const known = new Set((levels ?? []).map((l) => l.id));
+  const objective = parsed.data.objective;
+  const versions = parsed.data.versions.filter((v) => known.has(v.languageLevelId));
+  if (!versions.length) return fail('notFound');
   const { data, error } = await supabase.rpc('save_ai_job_to_library', {
     p_job_id: jobId,
     p_type: input.data.itemType,
@@ -262,7 +296,7 @@ export async function saveDifferentiation(
   });
   if (error) return fail(reportError('saveDifferentiation', error));
   revalidatePath('/differentiate');
-  return ok({ itemId: data });
+  return ok({ itemId: data, skippedLevels: parsed.data.versions.length - versions.length });
 }
 
 export async function updateSavedDifferentiation(

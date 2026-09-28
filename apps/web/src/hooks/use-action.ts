@@ -16,6 +16,7 @@ const KNOWN_ERRORS = new Set([
   'network',
   'required',
   'tooLong',
+  'tooLongForLevels',
   'tooMany',
   'invalidTime',
   'invalidDate',
@@ -31,6 +32,7 @@ const KNOWN_ERRORS = new Set([
   'aiBudgetReached',
   'aiBusy',
   'personalInfo',
+  'levelInUse',
 ]);
 
 /** Translates an error key from a server action; unknown keys fall back to a generic message. */
@@ -85,5 +87,5 @@ export function useAction<Args extends unknown[], T>(
 
   const fieldError = (name: string) => errorText(fieldErrors[name]) ?? undefined;
 
-  return { run, pending, error, errorText: errorText(error), fieldError };
+  return { run, pending, error, errorText: errorText(error), fieldError, fieldErrors };
 }

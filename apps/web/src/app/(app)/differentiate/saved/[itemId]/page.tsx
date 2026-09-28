@@ -20,7 +20,7 @@ export default async function SavedDifferentiationPage({
 }: {
   params: Promise<{ itemId: string }>;
 }) {
-  await requireSession();
+  const session = await requireSession();
   const { itemId } = await params;
   if (!z.uuid().safeParse(itemId).success) notFound();
   const locale = await getLocale();
@@ -48,6 +48,8 @@ export default async function SavedDifferentiationPage({
       <ResultEditor
         mode="saved"
         id={item.id}
+        userId={session.userId}
+        version={item.version}
         initial={{
           title: item.title,
           objective: item.objective,

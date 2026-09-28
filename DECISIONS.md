@@ -243,30 +243,50 @@ the teacher screens; their oversight views come in Phase 6.
 
 **D-037 — AI runs in the worker, never in the browser or the web server.** A request is a row in
 `ai_jobs`, created by `request_ai_job()` (checks role, the school switch, the budget and a rate
-limit: 3 open requests and 40 per hour per person). The worker runs it, holds the only copy of the
-provider key, and is the only writer of `ai_generations` (tokens, cost, latency, prompt version,
-model, provider request id). The page polls the job. Long calls never block a web request, and
-usage records cannot be forged or deleted through the API.
+limit: 3 open requests and 40 per hour per person, counted in `ai_request_log`, a log with no
+content and no API access, so discarding a finished job does not give a request back). Requests
+from one person are handled one at a time. The worker runs it, holds the only copy of the provider
+key, and is the only writer of `ai_generations` (tokens, cost, latency, prompt version, model,
+provider request id: the API's `request-id`). The page polls the job less often as time passes (up
+to every 10 s), pauses in hidden tabs, keeps trying after errors and stops after 15 minutes with a
+message. Long calls never block a web request, and usage records cannot be forged or deleted
+through the API.
 
 **D-038 — Nothing personal leaves Canada.** Every request is treated as leaving the country, so
 before any call (`packages/ai/src/privacy.ts`):
 
-- Every student of the school and every staff member of the school and board becomes a marker
-  (« Élève A », « Adulte B »), matched with or without accents and in any case. Staff are also
-  matched by honorific and surname (« Mme Tremblay »), surname alone and first name alone.
-  First names that are everyday words (Pierre, Claire, Rose...) are matched only when
-  capitalized.
-- Emails, phone numbers, long identifiers (OEN, health card), postal codes, street addresses and
-  a child's birth date (a date near « née », « anniversaire »..., or a record-style date with a
-  recent year) block the request. It is not "cleaned up", the teacher removes them.
+- Every student and staff member of every school where the requester holds a role, the
+  board-level staff of those boards, everyone in a board the requester administers, and the
+  requester become a marker (« Élève A », « Adulte B »). The worker's list is never narrower than
+  what the teacher's preview uses.
+- Names are matched with or without accents (also ł, ø, æ, œ...), in any case and in any
+  alphabet. Staff are also matched by honorific and any part of their name (« Mme Tremblay »,
+  « Madame Isabelle »), by a part alone, and by each half of a compound name (« Mme Gagnon »,
+  « Roy » for Anne Gagnon-Roy). Names that are everyday words (Pierre, Claire, Aimé; staff
+  surnames such as Côté, Parent, Plante) are matched only when capitalized or after an honorific.
+  Particles (de, du, des, la, le, d', saint, van...) are never a name on their own: they stay with
+  what follows (« De Grandpré », « La Salle »), and the part after them (« Salle », « Amour » in
+  D'Amour) is matched alone only when capitalized. Particles and parts shorter than three letters
+  (« Lê », « Au », « Tạ ») are matched alone only after an honorific (« Mme Lê »), so a staff
+  member's name can't turn « de », « la » or « au » into a name everywhere.
+- Text is normalized before any check (invisible characters removed, hyphens inside words made
+  plain), and the normalized text is what is sent.
+- Emails, phone numbers, long identifiers (OEN, health card), postal codes, street addresses in
+  French or English order, and a child's birth date (a date near « née », « anniversaire »,
+  « born »..., in French or English order, or a record-style date with a recent year and any
+  separator) block the request. It is not "cleaned up", the teacher removes them.
 - A final check runs on the exact outbound text and refuses to send if a name or detail remains.
+  It normalizes its own copy and also looks for names split by punctuation.
 - Requests carry no user, school, board or account identifiers.
 - The teacher sees exactly what will be sent before sending (names highlighted), and can open
   the exact text that was sent afterwards.
 - Names come back only on our servers: students with the roster spelling, staff as the teacher
-  wrote them. Known limits: a name the app doesn't know (a parent, a sibling) can only be caught
-  by the teacher at the preview; a historical figure who shares a student's first name
-  (« Samuel de Champlain ») is replaced too, then restored.
+  wrote them. A name that could be several people, or a staff name written in lowercase, gets its
+  own marker and comes back exactly as written. Marker-like text already in the teacher's input
+  (« l'élève A ») is never given to a person and never turned into a name. Known limits: a name
+  the app doesn't know (a parent, a sibling, a student from a school where the teacher doesn't
+  work) can only be caught by the teacher at the preview; a historical figure who shares a
+  student's first name (« Samuel de Champlain ») is replaced too, then restored.
 
 **D-039 — AI is off until the direction turns it on, and a board can forbid it.** Per-school
 switch on the École page (principal or vice-principal, audited). `boards.settings.ai.allowed =
@@ -277,10 +297,13 @@ dollars per calendar month (school time zone), not the price charged to boards. 
 an allowance (its `ai_budgets` row, else the board default, else 50 USD). A school can always use
 its own allowance; past it, when pooling is on, it can borrow what the board's other AI-enabled
 schools haven't used, up to its ceiling (default 2x the allowance). So a board can go over its
-pool by at most what was borrowed, which shows on the monthly report. The check runs before each
-request (a request in flight can go slightly over). Failed calls cost money and are counted. The
-operator sets budgets with `pnpm admin set-ai-budget` / `set-ai-board` and bills from
-`pnpm admin ai-usage --csv`. Payment collection comes later (Phase 6).
+pool by at most what was borrowed, which shows on the monthly report. The check runs when a
+request is made and again when the worker starts it, so only calls already running can go
+slightly over. Failed calls cost money and are counted. The operator sets budgets with
+`pnpm admin set-ai-budget` / `set-ai-board` and bills from `pnpm admin ai-usage --csv`. Payment
+collection comes later (Phase 6). Board AI settings (`boards.settings.ai`, including `allowed`)
+and `ai_budgets` are operator-only: a trigger refuses changes to `settings.ai` from API users, and
+values outside the app's bounds (allowance 0–100 000, multiplier 1–10) are refused for everyone.
 
 **D-041 — Model, prompts and quality.** Default model Claude Opus 5.5 at medium effort (chosen by
 the product owner for the beta), both configurable (`AI_MODEL`, `AI_EFFORT`) with prices in
@@ -303,7 +326,32 @@ levels of their own; board levels are changed by the operator for now.
 
 **D-043 — AI data retention.** `ai_jobs` (the teacher's input, the answer and the exact text sent)
 are deleted after 30 days (`AI_JOB_RETENTION_DAYS`); saved drafts stay in the library. Usage
-records in `ai_generations` hold no text and are kept.
+records in `ai_generations` hold no text and are kept. The request log (`ai_request_log`: job id,
+user id and time, no text) is deleted after one day.
+
+**D-044 — Drafts are kept per person and survive a failed AI request (amends D-035).** Long text
+forms (lessons, pasted rosters, AI requests and results) save a draft on the device once the
+teacher edits them, never a copy of what was merely opened. Drafts are keyed by user, so another
+account on a shared computer never sees them, and signing out removes every draft from the
+device. A draft edited from an older saved version is offered, not restored over newer content.
+The text of an AI request is kept until the request succeeds, and a failed request offers
+« Reprendre ce texte ».
+
+**D-045 — AI calls fit in a time limit (amends D-041 and D-042).** Answers are streamed with
+`max_tokens` 64 000 (thinking counts toward it). A job has 13 minutes in all, under the 15 minutes
+after which maintenance fails a stuck job. Refusals, cut-off answers and timeouts are not retried,
+and an abandoned or broken call is still counted: with the input the API reported and, since the
+API counts output only at the end of an answer, an estimate of its output (the larger of the text
+received and about 100 tokens per second of generation, at most `max_tokens`). To finish in time, the
+form refuses a text longer than 30 000 characters divided by the number of levels (12 000 for 2
+levels, 5 000 for 6). `pnpm ai:eval` has an eleventh case at that largest size. Server-side
+refusal fallbacks (a beta) stay off: they would bring in another model and its price (D-041).
+
+**D-046 — What staff see on the AI screens (amends D-039 and D-042).** Staff screens show AI as
+turned off by the board when the board forbids it. Student copies are in French, the content's
+language, whatever the interface language. A personal level used by a request or a saved text
+can't be deleted, only turned off; a result whose level was deleted since is saved without that
+version, with a warning.
 
 ## Schema additions beyond SPEC section 8
 

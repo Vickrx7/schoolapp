@@ -11,18 +11,21 @@ import {
 import { UserPlus } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import Papa from 'papaparse';
-import { useMemo, useState, type ChangeEvent } from 'react';
+import { useEffect, useMemo, useState, type ChangeEvent } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Notice } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Field, Select, Textarea } from '@/components/ui/field';
 import { useAction } from '@/hooks/use-action';
-import { useDraft } from '@/hooks/use-draft';
+import { removeDrafts, useDraft } from '@/hooks/use-draft';
 import { cn } from '@/lib/utils';
 import { addStudents } from '@/server/actions/students';
 
 type Mode = 'paste' | 'csv';
+
+/** Drafts saved before they were kept per user: another account's roster may be in them. */
+const LEGACY_DRAFT = /^students:[0-9a-f-]{36}$/;
 
 interface CsvState {
   headers: string[];
@@ -31,9 +34,11 @@ interface CsvState {
 }
 
 export function AddStudentsDialog({
+  userId,
   classId,
   existingNames,
 }: {
+  userId: string;
   classId: string;
   existingNames: string[];
 }) {
@@ -41,7 +46,9 @@ export function AddStudentsDialog({
   const tCommon = useTranslations('common');
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<Mode>('paste');
-  const draft = useDraft(`students:${classId}`, { text: '' });
+  // A pasted roster names students: kept per user, never shown to another account.
+  const draft = useDraft(`students:${userId}:${classId}`, { text: '' });
+  useEffect(() => removeDrafts((key) => LEGACY_DRAFT.test(key)), []);
   const [csv, setCsv] = useState<CsvState | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
 

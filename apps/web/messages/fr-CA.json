@@ -82,10 +82,11 @@
     "pageNotFound": "Cette page n’existe pas ou vous n’y avez pas accès.",
     "goToday": "Aller à Aujourd’hui",
     "tooShort": "Ce texte est trop court.",
+    "tooLongForLevels": "Ce texte est trop long pour autant de niveaux. Raccourcissez-le ou choisissez moins de niveaux.",
     "atLeastTwoLevels": "Choisissez au moins deux niveaux.",
     "aiDisabled": "L’IA n’est pas activée pour votre école. La direction peut l’activer dans la page École.",
     "aiBudgetReached": "Votre école a atteint sa limite d’IA pour ce mois-ci. Communiquez avec la direction.",
-    "aiBusy": "Trop de demandes en cours. Attendez que les précédentes se terminent.",
+    "aiBusy": "Trop de demandes en cours ou dans la dernière heure. Attendez un peu, puis réessayez.",
     "personalInfo": "Le texte contient des renseignements personnels. Retirez-les avant d’envoyer.",
     "invalidInput": "La demande n’est pas valide.",
     "aiUnavailable": "Le service d’IA n’est pas disponible pour le moment. Réessayez plus tard.",
@@ -95,7 +96,8 @@
     "aiTooLong": "Le texte est trop long pour être traité en une seule fois. Essayez un texte plus court.",
     "invalidOutput": "La réponse de l’IA n’était pas utilisable. Réessayez.",
     "aiError": "Une erreur est survenue avec le service d’IA. Réessayez.",
-    "timeout": "La demande a pris trop de temps. Réessayez."
+    "timeout": "La demande a pris trop de temps. Réessayez.",
+    "levelInUse": "Ce niveau sert encore à une demande récente ou à un texte enregistré. Décochez « Actif » pour le masquer plutôt."
   },
   "days": {
     "1": "lundi",
@@ -388,7 +390,8 @@
     "aiPool": "Réserve partagée du conseil : {spent} utilisés sur {total}.",
     "aiLimitReached": "Limite atteinte pour ce mois-ci.",
     "aiOnlyDirection": "Seule la direction peut activer ou désactiver l’IA.",
-    "aiBoardOff": "Votre conseil scolaire n’a pas autorisé l’IA pour ses écoles. Communiquez avec le conseil pour en discuter."
+    "aiBoardOff": "Votre conseil scolaire n’a pas autorisé l’IA pour ses écoles. Communiquez avec le conseil pour en discuter.",
+    "aiStatusBoardOff": "L’IA est désactivée par le conseil scolaire : aucun texte n’est envoyé."
   },
   "profile": {
     "title": "Profil",
@@ -423,7 +426,7 @@
     "school": "École",
     "titleLabel": "Titre",
     "textLabel": "Texte, consignes ou activité",
-    "textHint": "Jusqu’à environ trois pages. Ne collez pas de renseignements personnels : courriels, numéros, adresses ou dates de naissance.",
+    "textHint": "Jusqu’à environ trois pages pour deux niveaux, moins s’il y en a plus. Ne collez pas de renseignements personnels : courriels, numéros, adresses ou dates de naissance.",
     "objectiveLabel": "Objectif d’apprentissage",
     "objectiveHint": "Facultatif. Sinon, l’IA le dégage du texte.",
     "itemType": "Type de contenu",
@@ -495,7 +498,22 @@
     "sentText": "Voir exactement ce qui a été envoyé",
     "view": "Ouvrir",
     "levelTabs": "Niveaux",
-    "draftLabel": "Brouillon"
+    "draftLabel": "Brouillon",
+    "aiBoardOffNotice": "Votre conseil scolaire n’a pas autorisé l’IA : la direction de l’école ne peut pas l’activer.",
+    "failedDraftRestored": "Votre dernière demande n’a pas abouti : son texte a été récupéré.",
+    "resumed": "Le texte de votre demande précédente est rempli. Vérifiez-le, puis envoyez-le de nouveau.",
+    "failedKept": "Votre texte n’est pas perdu : reprenez-le pour l’envoyer de nouveau, tel quel ou modifié.",
+    "resume": "Reprendre ce texte",
+    "tooLong": "C’est plus long que prévu.",
+    "tooLongHint": "Le service d’IA est peut-être occupé ou arrêté. Votre texte n’est pas perdu : vérifiez de nouveau plus tard ou reprenez-le dans une nouvelle demande.",
+    "checkAgain": "Vérifier de nouveau",
+    "checking": "Vérification…",
+    "reconnecting": "Connexion au serveur interrompue. Nouvelle tentative en cours…",
+    "lineError": "Ligne {line} : {error}",
+    "fixErrors": "Certaines informations ne sont pas valides. Corrigez les champs indiqués en rouge, puis enregistrez de nouveau.",
+    "draftOlder": "Ce texte a été modifié ailleurs après vos derniers changements sur cet appareil, qui n’ont pas été enregistrés. La version la plus récente est affichée.",
+    "recoverDraft": "Reprendre mes changements",
+    "savedWithoutLevels": "Texte enregistré. {count, plural, one {Un niveau supprimé entre-temps n’a pas été gardé.} other {# niveaux supprimés entre-temps n’ont pas été gardés.}}"
   },
   "levels": {
     "title": "Niveaux de langue",

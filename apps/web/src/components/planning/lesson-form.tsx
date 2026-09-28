@@ -1,13 +1,16 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useMemo, type FormEvent } from 'react';
+import { useEffect, useMemo, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge, Notice } from '@/components/ui/card';
 import { Field, Input, Textarea } from '@/components/ui/field';
 import { useAction } from '@/hooks/use-action';
-import { useDraft } from '@/hooks/use-draft';
+import { removeDrafts, useDraft } from '@/hooks/use-draft';
 import { saveLesson } from '@/server/actions/planning';
+
+/** Drafts saved before they were kept per user: another account's lesson may be in them. */
+const LEGACY_DRAFT = /^lesson:[0-9a-f-]{36}:([0-9a-f-]{36}|new)$/;
 
 export interface LessonDraft {
   title: string;
@@ -29,6 +32,7 @@ export interface ExpectationOption {
 }
 
 export function LessonForm({
+  userId,
   classId,
   unitId,
   lessonId,
@@ -36,6 +40,7 @@ export function LessonForm({
   expectations,
   onDone,
 }: {
+  userId: string;
   classId: string;
   unitId: string;
   lessonId?: string;
@@ -58,7 +63,9 @@ export function LessonForm({
     [initial],
   );
   // Drafts are kept on this device until saved, so nothing is lost if the connection drops.
-  const draft = useDraft(`lesson:${unitId}:${lessonId ?? 'new'}`, start);
+  // Per user, so another account on a shared computer never gets them.
+  const draft = useDraft(`lesson:${userId}:${unitId}:${lessonId ?? 'new'}`, start);
+  useEffect(() => removeDrafts((key) => LEGACY_DRAFT.test(key)), []);
   const v = draft.value;
   const save = useAction(saveLesson, {
     successMessage: t('saved'),

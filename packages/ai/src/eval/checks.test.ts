@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { DifferentiateOutput } from '../features/differentiate';
+import { MAX_TEXT_TIMES_LEVELS, type DifferentiateOutput } from '../features/differentiate';
 import { averageSentenceLength, checkDifferentiation } from './checks';
 import { differentiateCases } from './differentiate-cases';
 
@@ -67,8 +67,13 @@ describe('evaluation checks', () => {
     );
   });
 
-  it('has ten cases with unique ids', () => {
-    expect(differentiateCases).toHaveLength(10);
-    expect(new Set(differentiateCases.map((c) => c.id)).size).toBe(10);
+  it('has ten sample cases plus the largest request the app accepts, with unique ids', () => {
+    expect(differentiateCases).toHaveLength(11);
+    expect(new Set(differentiateCases.map((c) => c.id)).size).toBe(11);
+    const size = (c: (typeof differentiateCases)[number]) =>
+      c.text.length * (c.levels?.length ?? 4);
+    expect(differentiateCases.filter((c) => size(c) > MAX_TEXT_TIMES_LEVELS)).toEqual([]);
+    const largest = differentiateCases.find((c) => c.levels?.length === 6);
+    expect(largest && size(largest)).toBeGreaterThan(0.9 * MAX_TEXT_TIMES_LEVELS);
   });
 });

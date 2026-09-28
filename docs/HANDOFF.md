@@ -70,8 +70,8 @@ the new branch on `claude/nifty-fermat-8hhl1l` and open a PR on top of it.
 Playwright tests (desktop + phone), lint, typecheck, format, generated DB types up to date.
 
 **Not verified:** nothing has been sent to the real Claude API yet. The Anthropic path
-(`packages/ai/src/providers.ts`: `messages.create` with `output_config.format` from
-`zodOutputFormat`, effort `medium`, no `thinking` param, `max_tokens` 16 000) is untested live.
+(`packages/ai/src/providers.ts`: `messages.stream` + `finalMessage()` with `output_config.format`
+(JSON schema only), effort `medium`, no `thinking` param, `max_tokens` 64 000) is untested live.
 Everything runs on the fake provider. That's the first thing to do (section 6).
 
 **Half-built:** nothing is half-built in code. Tables for Phases 3–6 exist (substitutes, library,
@@ -122,6 +122,8 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   browser tests would call (and pay for) the real API.
 - **Restart the worker after changing `packages/ai`.** `pnpm start` runs tsx without watch;
   `pnpm dev:worker` watches and reads `apps/web/.env.local`.
+- **Stop the worker before `pnpm test:int`.** A running worker takes the outbox test's job before
+  the test can see it (CI starts the worker only after the integration tests).
 - **Stopping processes safely.** Don't kill with `pkill -f "next start"` or `pkill -f "tsx ..."`:
   the pattern matches your own shell and kills it (exit 144). `pgrep -x next-server` doesn't match
   either, because the process is named `next-server (v16…)`. Use
@@ -203,10 +205,11 @@ Network access "Trusted" (same as Default) is enough: npm, GitHub release downlo
 
 ## 6. Next steps (in order)
 
-1. **Real-API evaluation.** Run `pnpm ai:eval --yes` (10 fictional cases, about $1; the report is
-   written to `packages/ai/eval-results/`, which is git-ignored, so send it to Mike). Check that the
-   provider code works on Opus 5.5 (structured output, effort, `max_tokens` with thinking), then
-   review the French. If the prompt needs changes, add `prompts/differentiate/v2.md` and bump
+1. **Real-API evaluation.** Run `pnpm ai:eval --yes` (11 fictional cases, about $1.60; the report
+   is written to `packages/ai/eval-results/`, which is git-ignored, so send it to Mike). Check that
+   the provider code works on Opus 5.5 (streamed structured output, effort, `max_tokens` with
+   thinking, and the time the largest case takes against the 13-minute limit), then review the
+   French. If the prompt needs changes, add `prompts/differentiate/v2.md` and bump
    `promptVersion`; never edit a version that has been used.
 2. **Get PR #1 reviewed and merged** (see branch note in section 2).
 3. **Hosted beta** so Mike and the teachers can use it:
@@ -223,21 +226,29 @@ Network access "Trusted" (same as Default) is enough: npm, GitHub release downlo
 **Known issues and risks:**
 
 - **Real API untested** (above).
-- **The preview under-reports replacements.** It de-identifies with the names the teacher can see;
-  the worker uses the whole school roster before sending.
-- **Unknown names** (a parent's, say) only get caught by the teacher at the preview.
+- **The preview can under-report replacements.** The worker de-identifies with at least everyone
+  the preview knows, so the preview can under-report replacements but never over-promise.
+- **Unknown names** (a parent's, a student from a school where the teacher doesn't work) only get
+  caught by the teacher at the preview.
 - **Historical figures** who share a student's first name get replaced, then restored.
-- **The budget is a soft limit**, checked before each request.
+- **Very short names** that match a French word once accents are removed (« Tú », « Lê », « An »)
+  replace that word everywhere. A student named « Tú » would make the last check refuse every
+  request for that school (the prompt begins with « Tu aides »). Fix: match such names only with
+  their exact accents.
+- **Very short parts of staff names and particles** (« Lê », « Au », « Jo »; « De », « La ») are
+  replaced on their own only after an honorific (« Mme Lê »): alone they are everyday words. The
+  full name, and « De Grandpré » or « La Salle » capitalized, are still replaced.
+- **The budget is a soft limit:** checked when a request is made and again when the worker starts
+  it, so calls already running can go slightly over.
 - **Fake-provider costs count toward budgets** in development.
-- **`ConfirmButton` is always red**, even for « Activer l'IA » (cosmetic).
 - **Other e2e tests could hit the pre-hydration click issue** on a slow CI runner.
-- **Stale test count:** `docs/phase-1.md` still says 159 pgTAP tests (now 217).
-- **Deleting a personal level fails** ("in use") if a saved text has a version for it; turning it
-  off works.
+- **Deleting a level in use is refused** with a message suggesting to turn it off. A finished
+  request keeps its levels blocked until the teacher removes it (or 30 days).
 
 **Waiting on Mike:** the product name; the hosted beta accounts; the zero-data-retention request;
 OK on the budget pooling nuance; whether the France-French promo voice is fine; go-ahead for the
-Phase 3 plan.
+Phase 3 plan; whether to turn on the API's server-side refusal fallbacks (a beta; it brings in a
+second model and its price, D-045).
 
 ## 7. The paste message for the new session (verbatim)
 

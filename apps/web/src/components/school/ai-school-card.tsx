@@ -2,10 +2,17 @@
 
 import { useLocale, useTranslations } from 'next-intl';
 import { ConfirmButton } from '@/components/app/confirm-button';
+import { aiStatus } from '@/components/differentiate/ai-status';
 import { Button } from '@/components/ui/button';
 import { Badge, Card, CardBody, CardHeader, CardTitle, Notice } from '@/components/ui/card';
 import { useAction } from '@/hooks/use-action';
 import { setSchoolAi } from '@/server/actions/school';
+
+const BADGE = {
+  on: { tone: 'success', key: 'aiStatusOn' },
+  off: { tone: 'neutral', key: 'aiStatusOff' },
+  boardOff: { tone: 'warning', key: 'aiStatusBoardOff' },
+} as const;
 
 export interface AiUsage {
   spent: number;
@@ -32,6 +39,8 @@ export function AiSchoolCard({
   const money = new Intl.NumberFormat(locale, { style: 'currency', currency: 'USD' });
   const enable = useAction(setSchoolAi, { successMessage: t('aiEnabledSaved') });
   const disable = useAction(setSchoolAi, { successMessage: t('aiDisabledSaved') });
+  // What staff actually get: the board's rule wins over the school's switch (D-039).
+  const badge = BADGE[aiStatus(school)];
 
   return (
     <Card>
@@ -39,9 +48,7 @@ export function AiSchoolCard({
         <CardTitle>
           {t('aiTitle')} · {school.name}
         </CardTitle>
-        <Badge tone={school.aiEnabled ? 'success' : 'neutral'}>
-          {school.aiEnabled ? t('aiStatusOn') : t('aiStatusOff')}
-        </Badge>
+        <Badge tone={badge.tone}>{t(badge.key)}</Badge>
       </CardHeader>
       <CardBody className="space-y-3">
         <p className="text-slate-700">{t('aiIntro')}</p>

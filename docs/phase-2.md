@@ -16,8 +16,8 @@
   feature checks, up to three attempts.
 - Budgets: a monthly allowance per school (in provider US dollars), pooled per board, with a
   ceiling per school. Usage report for billing: `pnpm admin ai-usage --board <slug> --csv`.
-- Evaluation set: 10 fictional texts from Jardin to 8e année with automatic checks
-  (`pnpm ai:eval`).
+- Evaluation set: 10 fictional texts from Jardin to 8e année, plus one at the largest size the
+  app accepts, with automatic checks (`pnpm ai:eval`).
 
 **For teachers: « Différencier »**
 
@@ -54,7 +54,7 @@ AI_MODEL=claude-opus-5-5
 AI_EFFORT=medium
 ```
 
-Then restart the worker. To try the prompts on the evaluation set first (about $1):
+Then restart the worker. To try the prompts on the evaluation set first (about $1.60):
 
 ```bash
 pnpm ai:eval --yes          # report in packages/ai/eval-results/
@@ -81,6 +81,35 @@ pnpm admin ai-usage --board <board> [--month 2026-10] [--csv]
 5. Edit a sentence in the Débutant version, print all levels (each on its own page, no level
    name), then save. Show it under « Mes textes différenciés ».
 6. Back as the principal, show this month's usage on the École page.
+
+## Known limits
+
+- **Real API not tried yet.** Everything runs on the fake provider; the Anthropic code is tested
+  against a fake API only.
+- **Length.** A long text for many levels is refused: text length times the number of levels must
+  stay under 30 000 characters (about three pages for 2 levels, one page for 6), so the answer
+  comes back within the worker's 13-minute limit.
+- **Names the app doesn't know** (a parent, a sibling, a student from a school where the teacher
+  doesn't work) are caught only by the teacher at the preview.
+- **The preview can show fewer replacements than the worker makes**, never more: the worker knows
+  everyone the preview knows, and more.
+- **Historical figures** who share a student's first name are replaced, then restored.
+- **Very short names** that match a French word once accents are removed (« Tú », « Lê », « An »)
+  replace that word everywhere. A student named « Tú » would make the last check refuse every
+  request from that school, because the prompt begins with « Tu aides ».
+- **Very short parts of staff names and particles** (« Lê », « Au », « Jo »; « De », « La ») are
+  replaced on their own only after an honorific (« Mme Lê »): alone they are everyday words. The
+  full name, and « De Grandpré » or « La Salle » capitalized, are still replaced.
+- **Budgets are a soft limit.** They are checked when a request is made and again when the worker
+  starts it; calls already running can go slightly over. Fake-provider costs count in
+  development.
+- **One message for both request limits.** « Trop de demandes » covers 3 requests at a time and
+  40 per hour.
+- **Levels in use.** A personal level used by a recent request or a saved text can't be deleted
+  until the teacher removes them (requests go after 30 days anyway). Turning the level off works
+  right away.
+- **Sign-out on a slow page.** Drafts are removed when the sign-out button runs the page's script;
+  a click before the page has finished loading signs out but leaves the drafts on the device.
 
 ## What to test with real teachers
 

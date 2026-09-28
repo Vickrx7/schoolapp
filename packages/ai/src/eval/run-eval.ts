@@ -3,7 +3,7 @@
  * packages/ai/eval-results/. Run before any prompt change (SPEC 10).
  *
  *   pnpm ai:eval --provider fake                 # free, checks the harness itself
- *   pnpm ai:eval --yes                           # Claude (AI_MODEL, AI_EFFORT); costs about $1
+ *   pnpm ai:eval --yes                           # Claude (AI_MODEL, AI_EFFORT); costs about $1.60
  *   pnpm ai:eval --yes --case castor-3e --version v2
  *
  * Reads ANTHROPIC_API_KEY, AI_MODEL and AI_EFFORT from the environment (or apps/web/.env.local).
@@ -11,7 +11,11 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
-import { differentiateFeature, type DifferentiateInput } from '../features/differentiate';
+import {
+  differentiateFeature,
+  MAX_TEXT_TIMES_LEVELS,
+  type DifferentiateInput,
+} from '../features/differentiate';
 import { priceFor } from '../pricing';
 import { loadPrompt } from '../prompts';
 import { createAnthropicProvider, createFakeProvider, type Effort } from '../providers';
@@ -54,9 +58,15 @@ const cases = differentiateCases.filter((c) => !values.case || c.id === values.c
 if (!cases.length) throw new Error(`no case named ${values.case}`);
 
 if (provider.name !== 'fake' && !values.yes) {
+  // About $0.12 for a short text with four levels, more as text × levels grows.
+  const estimate = cases.reduce(
+    (sum, c) =>
+      sum + 0.1 + (0.3 * c.text.length * (c.levels ?? LEVELS).length) / MAX_TEXT_TIMES_LEVELS,
+    0,
+  );
   console.log(
     `This sends ${cases.length} fictional texts to ${model} (effort ${effort}).\n` +
-      `Estimated cost: about $${(cases.length * 0.12).toFixed(2)} USD. Re-run with --yes to go ahead.`,
+      `Estimated cost: about $${estimate.toFixed(2)} USD. Re-run with --yes to go ahead.`,
   );
   process.exit(0);
 }
@@ -85,12 +95,15 @@ for (const c of cases) {
     gradeLabel: c.gradeLabel,
     subjectId: null,
     subjectLabel: c.subjectLabel,
-    levels: LEVELS.map((l, i) => ({
+    levels: (c.levels ?? LEVELS).map((l, i) => ({
       key: `L${i + 1}`,
       languageLevelId: `00000000-0000-4000-8000-00000000000${i + 1}`,
       ...l,
     })),
   };
+  if (input.text.length * input.levels.length > MAX_TEXT_TIMES_LEVELS) {
+    throw new Error(`${c.id} is larger than the app accepts (MAX_TEXT_TIMES_LEVELS)`);
+  }
   process.stdout.write(`${c.id} … `);
   const run = await runFeature({
     feature: differentiateFeature,

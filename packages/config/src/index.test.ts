@@ -17,6 +17,7 @@ describe('loadEnv', () => {
       AI_PROVIDER: 'none',
       AI_MODEL: 'claude-opus-5-5',
       AI_EFFORT: 'medium',
+      AI_JOB_RETENTION_DAYS: 30,
     });
     expect(() =>
       loadEnv(workerEnvSchema, { DATABASE_URL: 'postgres://x', AI_PROVIDER: 'anthropic' }),

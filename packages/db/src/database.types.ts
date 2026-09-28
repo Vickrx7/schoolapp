@@ -261,6 +261,32 @@ export type Database = {
           },
         ];
       };
+      ai_request_log: {
+        Row: {
+          job_id: string;
+          user_id: string;
+          created_at: string;
+        };
+        Insert: {
+          job_id: string;
+          user_id: string;
+          created_at?: string;
+        };
+        Update: {
+          job_id?: string;
+          user_id?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'ai_request_log_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       audit_log: {
         Row: {
           id: number;

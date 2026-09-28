@@ -1,11 +1,10 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
+import { SignOutForm } from '@/components/app/sign-out-form';
 import { LanguageForm } from '@/components/school/language-form';
 import { ProfileForm } from '@/components/school/profile-form';
-import { Button } from '@/components/ui/button';
 import { Badge, Card, CardBody } from '@/components/ui/card';
 import { PageHeader } from '@/components/ui/page';
-import { signOut } from '@/server/actions/auth';
 import { requireSession } from '@/server/session';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -16,7 +15,6 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function ProfilePage() {
   const session = await requireSession();
   const t = await getTranslations('profile');
-  const tNav = await getTranslations('nav');
   const schoolName = (id: string | null) => session.schools.find((s) => s.id === id)?.name;
   const boardName = (id: string) => session.boards.find((b) => b.id === id)?.name;
 
@@ -46,11 +44,7 @@ export default async function ProfilePage() {
           </div>
         </CardBody>
       </Card>
-      <form action={signOut}>
-        <Button type="submit" variant="secondary">
-          {tNav('signOut')}
-        </Button>
-      </form>
+      <SignOutForm />
     </div>
   );
 }

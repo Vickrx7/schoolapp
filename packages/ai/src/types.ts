@@ -22,6 +22,8 @@ export interface ProviderRequest<T> {
   maxTokens: number;
   /** Deterministic answer for the fake provider (tests, demos, CI). */
   fake: () => T;
+  /** Aborts the call when the request's time is up (see RunOptions.timeoutMs). */
+  signal?: AbortSignal;
 }
 
 export interface ProviderResult<T> {
@@ -50,15 +52,24 @@ export type AiErrorCode =
   | 'aiRefused'
   | 'aiTooLong'
   | 'invalidOutput'
+  | 'timeout'
   | 'aiError';
 
 export class AiProviderError extends Error {
+  /** The provider's id for the failed request, for support and billing reconciliation. */
+  readonly requestId: string | null;
+  /** Tokens the provider reported before the call failed: a broken stream is still billed. */
+  readonly usage: TokenUsage | null;
+
   constructor(
     readonly code: AiErrorCode,
     message: string,
+    details: { requestId?: string | null; usage?: TokenUsage | null } = {},
   ) {
     super(message);
     this.name = 'AiProviderError';
+    this.requestId = details.requestId ?? null;
+    this.usage = details.usage ?? null;
   }
 }
 

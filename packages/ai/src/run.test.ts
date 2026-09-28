@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { differentiateFeature, type DifferentiateInput } from './features/differentiate';
 import { priceFor, estimateCostUsd, UnknownModelPriceError } from './pricing';
+import { loadPrompt } from './prompts';
 import { createFakeProvider } from './providers';
 import { runFeature } from './run';
 import type { AiProvider, ProviderRequest, ProviderResult } from './types';
@@ -116,12 +117,12 @@ describe('runFeature', () => {
     expect(result.problems).toEqual(['attempt 1: missing level L2']);
   });
 
-  it('gives up after three unusable answers', async () => {
-    const { provider } = spyProvider(() => ({
+  it('gives up after three unusable answers, and counts all three', async () => {
+    const { provider, requests } = spyProvider((_, n) => ({
       output: null,
       stopReason: 'invalid_json',
       model: 'fake',
-      requestId: null,
+      requestId: `req_${n}`,
       usage: { inputTokens: 1, outputTokens: 1, cacheReadTokens: 0, cacheWriteTokens: 0 },
     }));
     const result = await runFeature({ ...base, provider, input });
@@ -130,6 +131,119 @@ describe('runFeature', () => {
       errorCode: 'invalidOutput',
       attempts: 3,
     });
+    expect(requests).toHaveLength(3);
+    expect(result.usage.inputTokens).toBe(3);
+    expect(result.costUsd).toBeGreaterThan(0);
+    expect(result.sentText).toBe(requests[0]!.user);
+    expect(result.providerRequestIds).toEqual(['req_1', 'req_2', 'req_3']);
+    expect(result.problems).toEqual([
+      'attempt 1: invalid_json',
+      'attempt 2: invalid_json',
+      'attempt 3: invalid_json',
+    ]);
+  });
+
+  it('retries answers that fail the feature checks, up to three times', async () => {
+    const { provider, requests } = spyProvider((req) => {
+      const full = req.fake() as ReturnType<typeof differentiateFeature.fake>;
+      return {
+        output: { ...full, objective: ' ' },
+        stopReason: 'end_turn',
+        model: 'fake',
+        requestId: null,
+        usage: { inputTokens: 1, outputTokens: 1, cacheReadTokens: 0, cacheWriteTokens: 0 },
+      };
+    });
+    const result = await runFeature({ ...base, provider, input });
+    expect(result).toMatchObject({ status: 'invalid_output', errorCode: 'invalidOutput' });
+    expect(requests).toHaveLength(3);
+    expect(result.output).toBeNull();
+  });
+
+  it('makes exactly as many calls as maxAttempts allows', async () => {
+    const { provider, requests } = spyProvider(() => ({
+      output: null,
+      stopReason: 'invalid_schema',
+      model: 'fake',
+      requestId: null,
+      usage: { inputTokens: 1, outputTokens: 1, cacheReadTokens: 0, cacheWriteTokens: 0 },
+    }));
+    const result = await runFeature({ ...base, provider, input, maxAttempts: 1 });
+    expect(result).toMatchObject({ status: 'invalid_output', attempts: 1 });
+    expect(requests).toHaveLength(1);
+  });
+
+  it('stops at a refusal that follows an unusable answer', async () => {
+    const usage = { inputTokens: 10, outputTokens: 5, cacheReadTokens: 0, cacheWriteTokens: 0 };
+    const { provider, requests } = spyProvider((_, n) => ({
+      output: null,
+      stopReason: n === 1 ? 'invalid_json' : 'refusal',
+      model: 'fake',
+      requestId: null,
+      usage,
+    }));
+    const result = await runFeature({ ...base, provider, input });
+    expect(result).toMatchObject({ status: 'failed', errorCode: 'aiRefused', attempts: 2 });
+    expect(requests).toHaveLength(2);
+    expect(result.usage.inputTokens).toBe(20);
+    expect(result.sentText).toBe(requests[0]!.user);
+  });
+
+  it('keeps the usage of earlier attempts and of a call that failed after sending', async () => {
+    const usage = { inputTokens: 10, outputTokens: 5, cacheReadTokens: 0, cacheWriteTokens: 0 };
+    const { provider, requests } = spyProvider((_, n) => {
+      if (n === 2) {
+        throw new AiProviderError('aiUnavailable', 'stream broke', {
+          requestId: 'req_broken',
+          usage: { ...usage, outputTokens: 0 },
+        });
+      }
+      return { output: null, stopReason: 'invalid_json', model: 'fake', requestId: 'req_1', usage };
+    });
+    const result = await runFeature({ ...base, provider, input });
+    expect(result).toMatchObject({ status: 'failed', errorCode: 'aiUnavailable', attempts: 2 });
+    expect(requests).toHaveLength(2);
+    expect(result.usage).toMatchObject({ inputTokens: 20, outputTokens: 5 });
+    expect(result.costUsd).toBeGreaterThan(0);
+    expect(result.providerRequestIds).toEqual(['req_1', 'req_broken']);
+    expect(result.sentText).toBe(requests[0]!.user);
+  });
+
+  it('abandons a call at the deadline and does not start another one', async () => {
+    // Answers slowly and unusably; the deadline passes during the first call.
+    const { provider, requests } = spyProvider(() => ({
+      output: null,
+      stopReason: 'invalid_json',
+      model: 'fake',
+      requestId: null,
+      usage: { inputTokens: 1, outputTokens: 1, cacheReadTokens: 0, cacheWriteTokens: 0 },
+    }));
+    const slow: AiProvider = {
+      ...provider,
+      async generate<T>(request: ProviderRequest<T>) {
+        await new Promise((r) => setTimeout(r, 60));
+        return provider.generate(request);
+      },
+    };
+    const result = await runFeature({ ...base, provider: slow, input, timeoutMs: 30 });
+    expect(result).toMatchObject({ status: 'failed', errorCode: 'timeout', attempts: 1 });
+    expect(requests).toHaveLength(1);
+    expect(requests[0]!.signal).toBeInstanceOf(AbortSignal);
+    expect(result.sentText).toBe(requests[0]!.user);
+    expect(result.usage.inputTokens).toBe(1);
+  });
+
+  it('does not retry a call that timed out', async () => {
+    const { provider, requests } = spyProvider(() => {
+      throw new AiProviderError('timeout', 'too slow', {
+        usage: { inputTokens: 7, outputTokens: 0, cacheReadTokens: 0, cacheWriteTokens: 0 },
+      });
+    });
+    const result = await runFeature({ ...base, provider, input });
+    expect(result).toMatchObject({ status: 'failed', errorCode: 'timeout', attempts: 1 });
+    expect(requests).toHaveLength(1);
+    expect(result.usage.inputTokens).toBe(7);
+    expect(result.sentText).toBe(requests[0]!.user);
   });
 
   it('does not retry a refusal or a cut-off answer', async () => {
@@ -147,6 +261,8 @@ describe('runFeature', () => {
       const result = await runFeature({ ...base, provider, input });
       expect(result).toMatchObject({ status: 'failed', errorCode });
       expect(requests).toHaveLength(1);
+      expect(result.sentText).toBe(requests[0]!.user);
+      expect(result.usage.outputTokens).toBe(1);
     }
   });
 
@@ -157,7 +273,82 @@ describe('runFeature', () => {
       generate: () => Promise.reject(new AiProviderError('aiConfig', 'bad key')),
     };
     const result = await runFeature({ ...base, provider, input });
-    expect(result).toMatchObject({ status: 'failed', errorCode: 'aiConfig' });
+    expect(result).toMatchObject({ status: 'failed', errorCode: 'aiConfig', attempts: 1 });
+    // Counted as sent: the worker records an attempt even when nothing came back.
+    expect(result.sentText).not.toBeNull();
+  });
+
+  it('refuses to send a name that sits in a field the feature does not redact', async () => {
+    for (const extra of [
+      { subjectLabel: 'Sciences avec Léa' },
+      { gradeLabel: 'Classe de Mme Tremblay' },
+    ]) {
+      const { provider, requests } = spyProvider();
+      const result = await runFeature({ ...base, provider, input: { ...input, ...extra } });
+      expect(result).toMatchObject({
+        status: 'failed',
+        errorCode: 'personalInfo',
+        sentText: null,
+        problems: ['outbound name'],
+      });
+      expect(requests).toHaveLength(0);
+    }
+  });
+
+  it('refuses to send a name that is in the system prompt', async () => {
+    const { provider, requests } = spyProvider();
+    const result = await runFeature({
+      ...base,
+      provider,
+      input,
+      systemPrompt: 'Tu aides Isabelle Tremblay.',
+    });
+    expect(result).toMatchObject({ status: 'failed', errorCode: 'personalInfo', sentText: null });
+    expect(requests).toHaveLength(0);
+  });
+
+  it('runs with the real prompt when staff names hold particles or very short parts', async () => {
+    // « De », « La », « Du » and « Lê » are also words of the prompt and of most texts.
+    const { provider, requests } = spyProvider();
+    const result = await runFeature({
+      ...base,
+      provider,
+      input,
+      systemPrompt: await loadPrompt('differentiate', 'v1'),
+      people: [
+        ...people,
+        { name: 'Marc De Grandpré', kind: 'staff' },
+        { name: 'Luc Des Rosiers', kind: 'staff' },
+        { name: 'Julie Du Sablon', kind: 'staff' },
+        { name: 'Marie La Salle', kind: 'staff' },
+        { name: 'Minh Lê', kind: 'staff' },
+        { name: 'Anh Tạ', kind: 'staff' },
+      ],
+    });
+    expect(result.status).toBe('succeeded');
+    expect(requests[0]!.user).toContain('près de la rivière');
+  });
+
+  it('de-identifies the objective and the level descriptions too', async () => {
+    const { provider, requests } = spyProvider();
+    const result = await runFeature({
+      ...base,
+      provider,
+      input: {
+        ...input,
+        objective: 'Léa et ses amis comprennent le rôle du castor.',
+        levels: [
+          { ...input.levels[0]!, description: 'Pour Léa : phrases courtes.' },
+          input.levels[1]!,
+        ],
+      },
+    });
+    expect(result.status).toBe('succeeded');
+    const sent = `${requests[0]!.system}\n${requests[0]!.user}`;
+    expect(sent).not.toMatch(/Léa/);
+    expect(sent).toContain('Élève A et ses amis');
+    expect(sent).toContain('Pour Élève A : phrases courtes.');
+    expect(result.output!.objective).toContain('Léa et ses amis');
   });
 });
 
@@ -171,6 +362,7 @@ describe('pricing', () => {
     };
     expect(estimateCostUsd(usage, priceFor('claude-opus-5-5'))).toBeCloseTo(0.108, 6);
     expect(estimateCostUsd(usage, priceFor('claude-sonnet-5'))).toBeCloseTo(0.054, 6);
+    expect(estimateCostUsd(usage, priceFor('claude-sonnet-5-5'))).toBeCloseTo(0.054, 6);
   });
 
   it('refuses to guess the price of an unknown model, unless configured', () => {

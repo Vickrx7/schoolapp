@@ -1,14 +1,16 @@
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, RotateCcw } from 'lucide-react';
 import type { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { z } from 'zod';
 import { JobProgress } from '@/components/differentiate/job-progress';
+import { jobEditorVersions } from '@/components/differentiate/job-view';
 import { ResultEditor } from '@/components/differentiate/result-editor';
+import { Button } from '@/components/ui/button';
 import { Card, CardBody, Notice } from '@/components/ui/card';
 import { PageHeader } from '@/components/ui/page';
-import { loadJob } from '@/server/queries/differentiate';
+import { loadJob, loadLanguageLevels } from '@/server/queries/differentiate';
 import { requireSession } from '@/server/session';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -21,7 +23,7 @@ export default async function DifferentiateJobPage({
 }: {
   params: Promise<{ jobId: string }>;
 }) {
-  await requireSession();
+  const session = await requireSession();
   const { jobId } = await params;
   if (!z.uuid().safeParse(jobId).success) notFound();
   const job = await loadJob(jobId);
@@ -40,7 +42,15 @@ export default async function DifferentiateJobPage({
       {t('differentiate.title')}
     </Link>
   );
-  const labelFor = new Map(job.input.levels.map((l) => [l.key, l]));
+  const resumeHref = `/differentiate?from=${job.id}`;
+
+  // Level names follow the interface language; the request stored the French ones.
+  const levelLabels = async () =>
+    new Map((await loadLanguageLevels(await getLocale())).map((l) => [l.id, l.label]));
+  const versions =
+    job.status === 'succeeded' && job.result
+      ? jobEditorVersions(job.input, job.result, await levelLabels())
+      : null;
 
   return (
     <div className="space-y-4">
@@ -48,7 +58,12 @@ export default async function DifferentiateJobPage({
         <PageHeader back={back} title={job.input.title} />
       </div>
       {job.status === 'queued' || job.status === 'running' ? (
-        <JobProgress jobId={job.id} status={job.status} />
+        <JobProgress
+          jobId={job.id}
+          status={job.status}
+          createdAt={job.createdAt}
+          resumeHref={resumeHref}
+        />
       ) : null}
       {job.status === 'failed' ? (
         <Card>
@@ -57,38 +72,23 @@ export default async function DifferentiateJobPage({
               <p className="font-medium">{t('differentiate.failed')}</p>
               <p>{tErrors(errorKey as 'aiError')}</p>
             </Notice>
-            <Link href="/differentiate" className="text-brand-700 underline">
-              {t('common.retry')}
-            </Link>
+            <p className="text-sm text-slate-600">{t('differentiate.failedKept')}</p>
+            <Button asChild>
+              <Link href={resumeHref}>
+                <RotateCcw aria-hidden />
+                {t('differentiate.resume')}
+              </Link>
+            </Button>
           </CardBody>
         </Card>
       ) : null}
-      {job.status === 'succeeded' && job.result ? (
+      {versions && job.result ? (
         <>
           <ResultEditor
             mode="job"
             id={job.id}
-            initial={{
-              title: job.input.title,
-              objective: job.result.objective,
-              versions: job.result.versions.flatMap((v) => {
-                const level = labelFor.get(v.level);
-                return level
-                  ? [
-                      {
-                        languageLevelId: level.languageLevelId,
-                        levelLabel: level.label,
-                        title: v.title,
-                        text: v.text,
-                        glossary: v.glossary,
-                        visualSupports: v.visualSupports,
-                        questions: v.questions,
-                        teacherNote: v.teacherNote,
-                      },
-                    ]
-                  : [];
-              }),
-            }}
+            userId={session.userId}
+            initial={{ title: job.input.title, objective: job.result.objective, versions }}
           />
           {job.sentText ? (
             <details className="rounded-xl border border-slate-200 bg-white p-4 print:hidden">

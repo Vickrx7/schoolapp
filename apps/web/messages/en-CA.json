@@ -82,10 +82,11 @@
     "pageNotFound": "This page doesn’t exist or you don’t have access to it.",
     "goToday": "Go to Today",
     "tooShort": "This text is too short.",
+    "tooLongForLevels": "This text is too long for this many levels. Shorten it or choose fewer levels.",
     "atLeastTwoLevels": "Choose at least two levels.",
     "aiDisabled": "AI is not turned on for your school. The principal can turn it on from the School page.",
     "aiBudgetReached": "Your school has reached its AI limit for this month. Contact your principal.",
-    "aiBusy": "Too many requests in progress. Wait for the earlier ones to finish.",
+    "aiBusy": "Too many requests in progress or in the last hour. Wait a little, then try again.",
     "personalInfo": "The text contains personal information. Remove it before sending.",
     "invalidInput": "This request is not valid.",
     "aiUnavailable": "The AI service is not available right now. Try again later.",
@@ -95,7 +96,8 @@
     "aiTooLong": "The text is too long to process at once. Try a shorter text.",
     "invalidOutput": "The AI’s answer was not usable. Try again.",
     "aiError": "Something went wrong with the AI service. Try again.",
-    "timeout": "The request took too long. Try again."
+    "timeout": "The request took too long. Try again.",
+    "levelInUse": "This level is still used by a recent request or a saved text. Uncheck “Active” to hide it instead."
   },
   "days": {
     "1": "Monday",
@@ -388,7 +390,8 @@
     "aiPool": "Board’s shared pool: {spent} used of {total}.",
     "aiLimitReached": "Limit reached for this month.",
     "aiOnlyDirection": "Only the principal or vice-principal can turn AI on or off.",
-    "aiBoardOff": "Your school board has not allowed AI for its schools. Contact the board to discuss it."
+    "aiBoardOff": "Your school board has not allowed AI for its schools. Contact the board to discuss it.",
+    "aiStatusBoardOff": "AI is turned off by the school board: no text is sent."
   },
   "profile": {
     "title": "Profile",
@@ -423,7 +426,7 @@
     "school": "School",
     "titleLabel": "Title",
     "textLabel": "Text, instructions or activity",
-    "textHint": "Up to about three pages. Don’t paste personal information: emails, numbers, addresses or birth dates.",
+    "textHint": "Up to about three pages for two levels, less for more levels. Don’t paste personal information: emails, numbers, addresses or birth dates.",
     "objectiveLabel": "Learning goal",
     "objectiveHint": "Optional. Otherwise the AI finds it in the text.",
     "itemType": "Content type",
@@ -495,7 +498,22 @@
     "sentText": "See exactly what was sent",
     "view": "Open",
     "levelTabs": "Levels",
-    "draftLabel": "Draft"
+    "draftLabel": "Draft",
+    "aiBoardOffNotice": "Your school board has not allowed AI: your principal can’t turn it on.",
+    "failedDraftRestored": "Your last request didn’t go through: its text was restored.",
+    "resumed": "The text of your earlier request is filled in. Check it, then send it again.",
+    "failedKept": "Your text isn’t lost: reuse it to send it again, as is or edited.",
+    "resume": "Reuse this text",
+    "tooLong": "This is taking longer than expected.",
+    "tooLongHint": "The AI service may be busy or stopped. Your text isn’t lost: check again later or reuse it in a new request.",
+    "checkAgain": "Check again",
+    "checking": "Checking…",
+    "reconnecting": "Lost the connection to the server. Trying again…",
+    "lineError": "Line {line}: {error}",
+    "fixErrors": "Some of the information isn’t valid. Fix the fields shown in red, then save again.",
+    "draftOlder": "This text was changed elsewhere after your last changes on this device, which weren’t saved. The most recent version is shown.",
+    "recoverDraft": "Use my changes instead",
+    "savedWithoutLevels": "Text saved. {count, plural, one {A level deleted in the meantime was left out.} other {# levels deleted in the meantime were left out.}}"
   },
   "levels": {
     "title": "Language levels",

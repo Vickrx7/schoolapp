@@ -19,6 +19,15 @@ export const differentiateLevelSchema = z.object({
   description: z.string().trim().max(1000).nullable(),
 });
 
+/**
+ * The most text × levels the app sends in one request (characters of text times the number of
+ * levels): 5,000 characters for 6 levels, 12,000 for 2. The answer grows with both, and this
+ * keeps the largest requests well inside the worker's time limit for a job (13 minutes).
+ * Checked by the web form, with its own message; the input schema below stays wider so a
+ * request already stored remains readable.
+ */
+export const MAX_TEXT_TIMES_LEVELS = 30_000;
+
 export const differentiateInputSchema = z.object({
   title: z.string().trim().min(1).max(200),
   text: z.string().trim().min(20).max(12_000),
@@ -70,7 +79,11 @@ export const differentiateFeature: FeatureDefinition<DifferentiateInput, Differe
   promptVersion: 'v1',
   inputSchema: differentiateInputSchema,
   outputSchema: differentiateOutputSchema,
-  maxTokens: 16_000,
+  // Room for adaptive thinking plus the whole answer at the largest input allowed: 12,000
+  // characters (about 4k tokens of French) rewritten for 6 levels, each with its glossary,
+  // questions and notes, is about 30k tokens before any thinking. Opus 5.5 always thinks and
+  // thinking counts toward this limit. Needs a streamed call (see providers.ts).
+  maxTokens: 64_000,
 
   redactInput(input: DifferentiateInput, redactor: Redactor) {
     const blocked: BlockedFinding[] = [];

@@ -17,14 +17,18 @@ on and whose board allows it. Students never use AI features and never send anyt
 ## What happens when a teacher asks for a differentiated text
 
 1. **Preview, in the browser.** The teacher pastes a text and clicks « Vérifier avant d'envoyer ».
-   The server replaces the names it knows with markers and shows the teacher exactly what would be
-   sent. Personal details it detects (below) block the request until the teacher removes them.
+   The server cleans the text (below), replaces the names it knows with markers and shows the
+   teacher exactly what would be sent. Personal details it detects (below) block the request until
+   the teacher removes them.
 2. **Queue.** On « Envoyer », the request is stored in the Canadian database (`ai_jobs`) with the
    teacher's text as typed. Only the teacher who made it can read it.
 3. **De-identification, again, on the server.** The background worker, which alone holds the
-   provider key, replaces every student of the school and every staff member of the school and
-   board with a marker (« Élève A », « Adulte B »). It then checks the final text one last time and
-   refuses to send it if a known name or a personal detail remains.
+   provider key, replaces every student and staff member of every school where the teacher works,
+   and the staff of those boards, with a marker (« Élève A », « Adulte B »). It knows at least
+   everyone the preview knew. It then checks the final text one last time and refuses to send it
+   if a known name or a personal detail remains. This last check does not rely on the first pass:
+   it cleans its own copy of the text again and also looks for names split by punctuation
+   (« Lé.a », « Marie.Ève »).
 4. **The call.** The worker sends, over HTTPS (TLS):
    - the system prompt (a fixed file from the code repository, `prompts/differentiate/v1.md`),
    - the de-identified text, its title and learning goal,
@@ -37,11 +41,51 @@ on and whose board allows it. Students never use AI features and never send anyt
 5. **The answer comes back** to the worker in Canada, which puts the real names back in place of
    the markers and stores the result for the teacher.
 
+## How names are found
+
+- **The text is cleaned first.** Text pasted from web pages, PDFs or Word often carries invisible
+  characters (soft hyphens, zero-width spaces and joiners) that would split a name in two. They
+  are removed, and odd hyphens inside words (such as the non-breaking hyphen in « Marie‑Ève »)
+  become plain hyphens. The cleaned text is exactly what is checked and sent.
+- **Every known person, in any spelling.** Names are matched with or without accents and in any
+  case. Letters such as ł, ø, đ, ı, æ, œ and ß also match their plain form (« Łukasz » and
+  « Lukasz »), and names in any alphabet are matched (« Анна », « 李明 »). The words of a name may
+  be separated by spaces, any kind of hyphen or dash, apostrophes or underscores.
+- **Staff by any part of their name.** « Mme Tremblay », « Madame Isabelle », « Tremblay » or
+  « Isabelle » alone, and each half of a compound name: « Mme Gagnon » or « Roy » for Anne
+  Gagnon-Roy, « Jean » for Jean-François Bélanger.
+- **Names that are everyday words** (Pierre, Claire, Rose, Aimé, or staff surnames such as Côté,
+  Parent or Plante) are matched only when capitalized, or after an honorific (« Mme parent »).
+- **Particles and very short parts.** « De », « Des », « Du », « La », « Le », « D' »,
+  « Saint », « Van »... in a staff name are everyday words, never a name on their own. They stay
+  with what follows (« De Grandpré », « La Salle », « D'Amour »), and the part after them is
+  matched alone only when capitalized (« Salle », but not « la salle de classe »). Particles and
+  parts shorter than three letters (« Lê », « Au », « Tạ ») are matched alone only after an
+  honorific: « Mme Lê », « M. Au ».
+- **Never the wrong person.** When a name could be several people (two staff members named Roy,
+  a student and a teacher both named Isabelle), it is still replaced, and it comes back in the
+  answer exactly as the teacher wrote it, never as a guess at who it was. The same goes for a
+  staff name written in lowercase, which could be an ordinary word.
+- **The teacher's own labels stay generic.** If the text already says « l'élève A » (in a math
+  problem, for example), real people get other letters, and « l'élève A » is never turned into a
+  real name in the answer.
+
 ## Personal details that block a request
 
-Emails, phone numbers, long identification numbers (such as an OEN or a health card number),
-postal codes, street addresses, and a child's birth date. The teacher removes them and checks
-again. The app never sends a "cleaned" version of a text that contained them.
+- Emails.
+- Phone numbers, including ones written with other dashes, spaces or a slash
+  (« 613‑555‑1234 », « 613 - 555 - 1234 », « 613/555-1234 »).
+- Long identification numbers, such as an OEN or a health card number.
+- Postal codes, including ones with a non-breaking space or a dash in the middle.
+- Street addresses, in French or English order (« 12, rue des Érables », « 1500 prom. Riverside »,
+  « 450 Elgin Street », « 123 Bank St. »).
+- A child's birth date: a date near « née », « naissance », « anniversaire », « born » or
+  « birthday », in French or English order (« 3 mai 2017 », « May 3, 2017 »), without a year or
+  with a recent one; or a record-style date with a recent year (2017-05-03, 2017/05/03,
+  2017.05.03, 03/05/2017).
+
+The teacher removes them and checks again. The app never blanks them out itself to send the rest
+of the text.
 
 ## What is kept, where and for how long
 
@@ -50,6 +94,7 @@ again. The app never sends a "cleaned" version of a text that contained them.
 | The teacher's text, the answer, and the exact de-identified text sent (`ai_jobs`)                  | Canadian database | 30 days, then deleted                                |
 | Saved differentiated texts (library drafts)                                                        | Canadian database | Until the teacher deletes them                       |
 | Usage records: date, feature, prompt version, model, token counts, cost, status (`ai_generations`) | Canadian database | Kept (no text)                                       |
+| Request log for the hourly limit: job id, user id, time (`ai_request_log`)                         | Canadian database | 1 day (no text)                                      |
 | What the provider receives                                                                         | The AI provider   | Under the provider's own retention terms (see below) |
 
 ## The provider
@@ -63,12 +108,30 @@ can require its own approved cloud account or a model hosted in Canada instead (
 
 - Per school: AI is off until the principal or vice-principal turns it on (audited).
 - Per board: AI can be forbidden for all schools.
-- Budgets: monthly spending caps per school and per board, set by the platform operator.
+- Budgets: monthly spending caps per school and per board, set only by the platform operator
+  (boards cannot change them). They are checked when a request is made and again just before it
+  is sent.
+- Limits per person: 3 requests at a time and 40 per hour.
 - Every request's usage is logged; the principal sees the month's usage on the École page.
 
 ## Known limits
 
-- A name the app doesn't know (a parent, a sibling, a student from another school) can only be
-  caught by the teacher at the preview step. The preview reminds them to check.
+- A name the app doesn't know (a parent, a sibling, a student from a school where the teacher
+  doesn't work) can only be caught by the teacher at the preview step. The preview reminds them to
+  check.
 - A historical figure who shares a student's first name (« Samuel de Champlain » when a student is
   named Samuel) is also replaced, then restored in the answer.
+- A name that is also an everyday word and is typed in lowercase (« pierre » for a student named
+  Pierre) is not replaced; the preview shows it unhighlighted.
+- A name disguised with punctuation (« Lé.a ») is not replaced in the preview, but the last check
+  refuses to send it.
+- Very short names that match a French word once accents are removed (« Tú » and « tu », « Lê »
+  and « le ») also replace that word everywhere. A student named « Tú » would make the last check
+  refuse every request from that school, because the instructions sent to the AI begin with
+  « Tu aides ».
+- A very short part of a staff name used alone, without an honorific (« Lê » for Minh Lê), is not
+  replaced: alone it is an everyday word. The teacher sees it unhighlighted in the preview.
+- The detectors can occasionally block an ordinary text (an English title such as « 9 Supreme
+  Court », a version number that looks like a recent date). The teacher rewords it. Street types
+  that are also French words (court, place, square) count only when capitalized, so « En 1980,
+  Terry Fox court » goes through.

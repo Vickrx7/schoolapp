@@ -23,6 +23,7 @@ export interface LessonItem extends LessonDraft {
 }
 
 export function LessonList({
+  userId,
   classId,
   unitId,
   lessons,
@@ -30,6 +31,8 @@ export function LessonList({
   today,
   expectations,
 }: {
+  /** The signed-in user: drafts are kept per user. */
+  userId: string;
   classId: string;
   unitId: string;
   lessons: LessonItem[];
@@ -157,6 +160,7 @@ export function LessonList({
             className="sm:max-w-2xl"
           >
             <LessonForm
+              userId={userId}
               classId={classId}
               unitId={unitId}
               lessonId={editing === 'new' ? undefined : editing.id}
