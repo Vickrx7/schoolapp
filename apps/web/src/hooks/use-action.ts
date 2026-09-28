@@ -25,6 +25,12 @@ const KNOWN_ERRORS = new Set([
   'subjectRequired',
   'notAName',
   'alertsKeyMissing',
+  'tooShort',
+  'atLeastTwoLevels',
+  'aiDisabled',
+  'aiBudgetReached',
+  'aiBusy',
+  'personalInfo',
 ]);
 
 /** Translates an error key from a server action; unknown keys fall back to a generic message. */

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Notice } from '@/components/ui/card';
 import { APP_NAME } from '@/lib/app-name';
 import { signOut } from '@/server/actions/auth';
-import { hasRole, requireSession, teachingSchools } from '@/server/session';
+import { aiSchools, hasRole, requireSession, teachingSchools } from '@/server/session';
 
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const session = await requireSession();
@@ -25,14 +25,22 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
   }
 
   const showTeaching = teachingSchools(session).length > 0;
+  const showDifferentiate = aiSchools(session).length > 0;
   const showSchool = session.schools.some((s) =>
     hasRole(s, 'principal', 'vice_principal', 'office_admin'),
   );
 
   return (
     <>
-      <AppNav appName={APP_NAME} showTeaching={showTeaching} showSchool={showSchool} />
-      <main className="mx-auto max-w-5xl px-4 pt-6 pb-28 md:pb-12">{children}</main>
+      <AppNav
+        appName={APP_NAME}
+        showTeaching={showTeaching}
+        showDifferentiate={showDifferentiate}
+        showSchool={showSchool}
+      />
+      <main className="mx-auto max-w-5xl px-4 pt-6 pb-28 md:pb-12 print:max-w-none print:p-0">
+        {children}
+      </main>
     </>
   );
 }

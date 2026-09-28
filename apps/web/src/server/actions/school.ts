@@ -79,3 +79,18 @@ export async function deleteCycleAnchor(anchorId: string): Promise<ActionResult>
   revalidatePath('/today');
   return okVoid();
 }
+
+/** Turns AI on or off for a school (direction only; audited by the database). */
+export async function setSchoolAi(schoolId: string, enabled: boolean): Promise<ActionResult> {
+  if (typeof enabled !== 'boolean') return fail('invalid');
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from('schools')
+    .update({ ai_enabled: enabled })
+    .eq('id', schoolId)
+    .select('id');
+  if (error) return fail(reportError('setSchoolAi', error));
+  if (!data?.length) return fail('forbidden');
+  revalidatePath('/', 'layout');
+  return okVoid();
+}

@@ -57,7 +57,7 @@ jobs:
           pnpm db:types:direct
           git diff --exit-code packages/db/src/database.types.ts
 
-      - name: Integration tests (event outbox)
+      - name: Integration tests (event outbox, AI jobs)
         run: pnpm test:int
 
       - name: Configure the web app for the local stack
@@ -70,6 +70,11 @@ jobs:
 
       - run: pnpm --filter @lynx/web build
       - run: pnpm --filter @lynx/web exec playwright install --with-deps chromium
+      - name: Start the worker (fake AI provider; nothing leaves the runner)
+        run: |
+          AI_PROVIDER=fake AI_FAKE_DELAY_MS=300 nohup pnpm --filter @lynx/worker start > worker.log 2>&1 &
+          for i in $(seq 1 30); do grep -q 'worker started' worker.log && break; sleep 1; done
+          tail -n 5 worker.log
       - name: End-to-end tests
         run: pnpm test:e2e
 
@@ -77,5 +82,7 @@ jobs:
         if: failure()
         with:
           name: playwright-report
-          path: apps/web/playwright-report
+          path: |
+            apps/web/playwright-report
+            worker.log
           retention-days: 7

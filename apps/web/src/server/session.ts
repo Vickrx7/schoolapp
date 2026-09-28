@@ -20,6 +20,7 @@ export interface SchoolContext {
   scheduleType: ScheduleType;
   cycleLength: number | null;
   studentAlertsEnabled: boolean;
+  aiEnabled: boolean;
   settings: SchoolSettings;
   modules: ModuleKey[];
   roles: AppRole[];
@@ -70,7 +71,7 @@ export const loadSessionState = cache(async (): Promise<SessionState> => {
       ? supabase
           .from('schools')
           .select(
-            'id, board_id, name, short_name, timezone, schedule_type, cycle_length, student_alerts_enabled, settings',
+            'id, board_id, name, short_name, timezone, schedule_type, cycle_length, student_alerts_enabled, ai_enabled, settings',
           )
           .in('id', schoolIds)
           .order('name')
@@ -104,6 +105,7 @@ export const loadSessionState = cache(async (): Promise<SessionState> => {
         scheduleType: s.schedule_type,
         cycleLength: s.cycle_length,
         studentAlertsEnabled: s.student_alerts_enabled,
+        aiEnabled: s.ai_enabled,
         settings: parseSchoolSettings(s.settings),
         modules: (entitlements.data ?? [])
           .filter(
@@ -149,6 +151,15 @@ export const hasModule = (school: SchoolContext, module: ModuleKey) =>
 /** Schools where the user teaches and the Teaching module is licensed. */
 export const teachingSchools = (session: SessionContext) =>
   session.schools.filter((s) => hasRole(s, 'teacher') && hasModule(s, 'teaching'));
+
+/** Whether a school's AI is on: its principal turned it on and its board allows AI. */
+export const aiOn = (session: SessionContext, school: SchoolContext) =>
+  school.aiEnabled &&
+  (session.boards.find((b) => b.id === school.boardId)?.settings.ai.allowed ?? true);
+
+/** Schools where the user may use AI features (teachers and direction). */
+export const aiSchools = (session: SessionContext) =>
+  session.schools.filter((s) => hasRole(s, 'teacher', 'principal', 'vice_principal'));
 
 export const findSchool = (session: SessionContext, schoolId: string) =>
   session.schools.find((s) => s.id === schoolId) ?? null;

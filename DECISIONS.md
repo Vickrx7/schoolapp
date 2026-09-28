@@ -239,6 +239,72 @@ form as typed. Checking off a lesson is optimistic with an "Annuler" undo.
 **D-036 — Class pages are for the class's teaching team.** Principals and office staff don't get
 the teacher screens; their oversight views come in Phase 6.
 
+## AI (Phase 2)
+
+**D-037 — AI runs in the worker, never in the browser or the web server.** A request is a row in
+`ai_jobs`, created by `request_ai_job()` (checks role, the school switch, the budget and a rate
+limit: 3 open requests and 40 per hour per person). The worker runs it, holds the only copy of the
+provider key, and is the only writer of `ai_generations` (tokens, cost, latency, prompt version,
+model, provider request id). The page polls the job. Long calls never block a web request, and
+usage records cannot be forged or deleted through the API.
+
+**D-038 — Nothing personal leaves Canada.** Every request is treated as leaving the country, so
+before any call (`packages/ai/src/privacy.ts`):
+
+- Every student of the school and every staff member of the school and board becomes a marker
+  (« Élève A », « Adulte B »), matched with or without accents and in any case. Staff are also
+  matched by honorific and surname (« Mme Tremblay »), surname alone and first name alone.
+  First names that are everyday words (Pierre, Claire, Rose...) are matched only when
+  capitalized.
+- Emails, phone numbers, long identifiers (OEN, health card), postal codes, street addresses and
+  a child's birth date (a date near « née », « anniversaire »..., or a record-style date with a
+  recent year) block the request. It is not "cleaned up", the teacher removes them.
+- A final check runs on the exact outbound text and refuses to send if a name or detail remains.
+- Requests carry no user, school, board or account identifiers.
+- The teacher sees exactly what will be sent before sending (names highlighted), and can open
+  the exact text that was sent afterwards.
+- Names come back only on our servers: students with the roster spelling, staff as the teacher
+  wrote them. Known limits: a name the app doesn't know (a parent, a sibling) can only be caught
+  by the teacher at the preview; a historical figure who shares a student's first name
+  (« Samuel de Champlain ») is replaced too, then restored.
+
+**D-039 — AI is off until the direction turns it on, and a board can forbid it.** Per-school
+switch on the École page (principal or vice-principal, audited). `boards.settings.ai.allowed =
+false` turns AI off for every school of a board, whatever its principals chose.
+
+**D-040 — Budgets in provider dollars, pooled per board.** Amounts are the provider's cost in US
+dollars per calendar month (school time zone), not the price charged to boards. Each school gets
+an allowance (its `ai_budgets` row, else the board default, else 50 USD). A school can always use
+its own allowance; past it, when pooling is on, it can borrow what the board's other AI-enabled
+schools haven't used, up to its ceiling (default 2x the allowance). So a board can go over its
+pool by at most what was borrowed, which shows on the monthly report. The check runs before each
+request (a request in flight can go slightly over). Failed calls cost money and are counted. The
+operator sets budgets with `pnpm admin set-ai-budget` / `set-ai-board` and bills from
+`pnpm admin ai-usage --csv`. Payment collection comes later (Phase 6).
+
+**D-041 — Model, prompts and quality.** Default model Claude Opus 5.5 at medium effort (chosen by
+the product owner for the beta), both configurable (`AI_MODEL`, `AI_EFFORT`) with prices in
+`packages/ai/src/pricing.ts` or `AI_PRICE_*`. System prompts are versioned files
+(`prompts/<feature>/<version>.md`); the version is stored with every generation and saved item.
+Answers use structured outputs and are validated with Zod plus feature checks (every level once,
+sizes, no level name in a title), with up to three attempts; refusals and cut-off answers are not
+retried. `pnpm ai:eval` runs 10 fictional cases with automatic checks and writes a report for a
+teacher to read; run it before any prompt change. A fake provider answers locally for
+development, CI and demos. Other providers (a board's own cloud account, a local model) plug into
+the same `AiProvider` interface when a board asks; only Anthropic and the fake exist now.
+
+**D-042 — Texte différencié.** The teacher pastes a text, instructions or an activity, picks the
+grade, subject and levels (2 to 6), checks the preview and sends. Every version is editable (title,
+text, glossary, questions, visual supports, teacher note). Printouts put each level on its own page
+with no level name on it, only a small number for the teacher, so no student sees themselves
+labelled « Débutant ». Results are saved as private library drafts (source `ai_generated`, prompt
+version, model), one version per level plus the original text as the base version. Teachers can add
+levels of their own; board levels are changed by the operator for now.
+
+**D-043 — AI data retention.** `ai_jobs` (the teacher's input, the answer and the exact text sent)
+are deleted after 30 days (`AI_JOB_RETENTION_DAYS`); saved drafts stay in the library. Usage
+records in `ai_generations` hold no text and are kept.
+
 ## Schema additions beyond SPEC section 8
 
 `school_years`, `rooms`, `class_grades`, `school_cycle_anchors`, `unit_lesson_expectations`,

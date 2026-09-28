@@ -1,6 +1,6 @@
 'use client';
 
-import { CalendarDays, CircleUser, House, School, Users } from 'lucide-react';
+import { CalendarDays, CircleUser, House, Layers, School, Users } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -8,13 +8,14 @@ import { cn } from '@/lib/utils';
 
 type Item = {
   href: string;
-  key: 'today' | 'classes' | 'calendar' | 'school' | 'profile';
+  key: 'today' | 'classes' | 'differentiate' | 'calendar' | 'school' | 'profile';
   icon: typeof House;
 };
 
 const ALL_ITEMS: Item[] = [
   { href: '/today', key: 'today', icon: House },
   { href: '/classes', key: 'classes', icon: Users },
+  { href: '/differentiate', key: 'differentiate', icon: Layers },
   { href: '/calendar', key: 'calendar', icon: CalendarDays },
   { href: '/school', key: 'school', icon: School },
   { href: '/profile', key: 'profile', icon: CircleUser },
@@ -23,23 +24,25 @@ const ALL_ITEMS: Item[] = [
 export function AppNav({
   appName,
   showTeaching,
+  showDifferentiate,
   showSchool,
 }: {
   appName: string;
   showTeaching: boolean;
+  showDifferentiate: boolean;
   showSchool: boolean;
 }) {
   const t = useTranslations('nav');
   const pathname = usePathname();
-  const items = ALL_ITEMS.filter(
-    (i) => (i.key !== 'today' && i.key !== 'classes') || showTeaching,
-  ).filter((i) => i.key !== 'school' || showSchool);
+  const items = ALL_ITEMS.filter((i) => (i.key !== 'today' && i.key !== 'classes') || showTeaching)
+    .filter((i) => i.key !== 'differentiate' || showDifferentiate)
+    .filter((i) => i.key !== 'school' || showSchool);
   const active = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
   return (
     <>
       {/* Top bar (all sizes); links shown from tablet width up. */}
-      <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
+      <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur print:hidden">
         <div className="mx-auto flex h-14 max-w-5xl items-center gap-6 px-4">
           <Link href="/today" className="flex items-center gap-2 font-bold text-slate-900">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -67,7 +70,7 @@ export function AppNav({
       {/* Bottom tab bar on phones. */}
       <nav
         aria-label={t('mainNavigation')}
-        className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white pb-[env(safe-area-inset-bottom)] md:hidden"
+        className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white pb-[env(safe-area-inset-bottom)] md:hidden print:hidden"
       >
         <ul className="mx-auto flex max-w-md justify-around">
           {items.map((item) => (
@@ -76,7 +79,7 @@ export function AppNav({
                 href={item.href}
                 aria-current={active(item.href) ? 'page' : undefined}
                 className={cn(
-                  'flex min-h-14 flex-col items-center justify-center gap-0.5 text-xs text-slate-500',
+                  'flex min-h-14 flex-col items-center justify-center gap-0.5 px-0.5 text-center text-xs leading-tight text-slate-500',
                   active(item.href) && 'text-brand-700',
                 )}
               >

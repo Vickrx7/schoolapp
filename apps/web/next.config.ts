@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
   // Self-contained server bundle for the Docker image (board-hosted installs).
   output: 'standalone',
   outputFileTracingRoot: new URL('../..', import.meta.url).pathname,
-  transpilePackages: ['@lynx/domain', '@lynx/config', '@lynx/db'],
+  transpilePackages: ['@lynx/domain', '@lynx/config', '@lynx/db', '@lynx/ai'],
   poweredByHeader: false,
   async headers() {
     return [{ source: '/:path*', headers: securityHeaders }];
