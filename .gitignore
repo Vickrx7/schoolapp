@@ -1,0 +1,34 @@
+node_modules/
+.pnpm-store/
+.next/
+out/
+dist/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+
+# env
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# supabase local
+supabase/.branches/
+supabase/.temp/
+supabase/.env
+
+# Docker-free local stack runtime data
+tools/lite-stack/.data/
+tools/lite-stack/.bin/
+
+# test output
+test-results/
+playwright-report/
+blob-report/
+
+.DS_Store
+*.log
+
+# AI evaluation reports (may be large; share the ones worth keeping)
+packages/ai/eval-results/

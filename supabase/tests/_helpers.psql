@@ -1,0 +1,192 @@
+-- Shared helpers for the pgTAP suite. Included with \ir at the top of each test file,
+-- inside the test's transaction, so everything here is rolled back afterwards.
+-- (The .psql extension keeps pg_prove from running this file as a test on its own.)
+
+create extension if not exists pgtap with schema extensions;
+set search_path = public, extensions;
+
+create schema tests;
+grant usage on schema tests to anon, authenticated;
+
+create table tests.ids (key text primary key, id uuid not null);
+grant select, insert on tests.ids to anon, authenticated;
+
+-- Volatile on purpose: the planner pre-evaluates stable functions with an older snapshot.
+create function tests.id(p_key text)
+returns uuid
+language plpgsql
+volatile
+as $$
+declare
+  v_id uuid;
+begin
+  select id into v_id from tests.ids where key = p_key;
+  if v_id is null then
+    raise exception 'unknown test id: %', p_key;
+  end if;
+  return v_id;
+end;
+$$;
+
+create function tests.remember(p_key text, p_id uuid)
+returns uuid
+language sql
+as $$
+  insert into tests.ids (key, id) values (p_key, p_id) returning id;
+$$;
+
+create function tests.create_user(p_key text)
+returns uuid
+language plpgsql
+as $$
+declare
+  v_id uuid := gen_random_uuid();
+  v_email text := replace(p_key, '_', '.') || '@test.lynx.test';
+begin
+  insert into auth.users (instance_id, id, aud, role, email, email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at)
+  values ('00000000-0000-0000-0000-000000000000', v_id, 'authenticated', 'authenticated', v_email, now(), '{}', '{}', now(), now());
+  insert into public.users (id, email, display_name) values (v_id, v_email, p_key);
+  return tests.remember(p_key, v_id);
+end;
+$$;
+
+create function tests.authenticate_as(p_key text)
+returns void
+language plpgsql
+as $$
+begin
+  perform set_config('request.jwt.claims',
+    json_build_object('sub', tests.id(p_key), 'role', 'authenticated')::text, true);
+  perform set_config('request.jwt.claim.sub', tests.id(p_key)::text, true);
+  perform set_config('role', 'authenticated', true);
+end;
+$$;
+
+create function tests.authenticate_anon()
+returns void
+language plpgsql
+as $$
+begin
+  perform set_config('request.jwt.claims', '{"role": "anon"}', true);
+  perform set_config('request.jwt.claim.sub', '', true);
+  perform set_config('role', 'anon', true);
+end;
+$$;
+
+create function tests.clear_authentication()
+returns void
+language plpgsql
+as $$
+begin
+  perform set_config('role', 'none', true);
+  perform set_config('request.jwt.claims', '', true);
+  perform set_config('request.jwt.claim.sub', '', true);
+end;
+$$;
+
+grant execute on all functions in schema tests to anon, authenticated;
+
+-- Standard fixture: two boards, three schools, one person per role, three classes.
+create function tests.build_fixture()
+returns void
+language plpgsql
+as $$
+declare
+  v_fra uuid := (select id from public.subjects where code = 'fra' and board_id is null);
+  v_mat uuid := (select id from public.subjects where code = 'mat' and board_id is null);
+begin
+  perform tests.remember('board_a', gen_random_uuid());
+  perform tests.remember('board_b', gen_random_uuid());
+  insert into public.boards (id, name, slug) values
+    (tests.id('board_a'), 'Board A', 'board-a-' || substr(tests.id('board_a')::text, 1, 8)),
+    (tests.id('board_b'), 'Board B', 'board-b-' || substr(tests.id('board_b')::text, 1, 8));
+  perform public.provision_board_defaults(tests.id('board_a'));
+  perform public.provision_board_defaults(tests.id('board_b'));
+
+  perform tests.remember('school_a1', gen_random_uuid());
+  perform tests.remember('school_a2', gen_random_uuid());
+  perform tests.remember('school_b1', gen_random_uuid());
+  insert into public.schools (id, board_id, name, slug, student_alerts_enabled) values
+    (tests.id('school_a1'), tests.id('board_a'), 'School A1', 'a1', true),
+    (tests.id('school_a2'), tests.id('board_a'), 'School A2', 'a2', false),
+    (tests.id('school_b1'), tests.id('board_b'), 'School B1', 'b1', true);
+
+  perform tests.remember('year_a', gen_random_uuid());
+  perform tests.remember('year_b', gen_random_uuid());
+  insert into public.school_years (id, board_id, name, starts_on, ends_on) values
+    (tests.id('year_a'), tests.id('board_a'), '2026-2027', '2026-09-01', '2027-06-30'),
+    (tests.id('year_b'), tests.id('board_b'), '2026-2027', '2026-09-01', '2027-06-30');
+
+  perform tests.create_user('teacher_a');
+  perform tests.create_user('teacher_a_other');
+  perform tests.create_user('subject_teacher');
+  perform tests.create_user('principal_a');
+  perform tests.create_user('office_a');
+  perform tests.create_user('principal_a2');
+  perform tests.create_user('board_admin_a');
+  perform tests.create_user('teacher_b');
+  perform tests.create_user('former_teacher');
+  perform tests.create_user('outsider');
+
+  insert into public.user_roles (user_id, role, board_id, school_id) values
+    (tests.id('teacher_a'), 'teacher', tests.id('board_a'), tests.id('school_a1')),
+    (tests.id('teacher_a_other'), 'teacher', tests.id('board_a'), tests.id('school_a1')),
+    (tests.id('subject_teacher'), 'teacher', tests.id('board_a'), tests.id('school_a1')),
+    (tests.id('principal_a'), 'principal', tests.id('board_a'), tests.id('school_a1')),
+    (tests.id('office_a'), 'office_admin', tests.id('board_a'), tests.id('school_a1')),
+    (tests.id('principal_a2'), 'principal', tests.id('board_a'), tests.id('school_a2')),
+    (tests.id('board_admin_a'), 'board_admin', tests.id('board_a'), null),
+    (tests.id('teacher_b'), 'teacher', tests.id('board_b'), tests.id('school_b1')),
+    (tests.id('former_teacher'), 'teacher', tests.id('board_a'), tests.id('school_a1'));
+  update public.users set deactivated_at = now() where id = tests.id('former_teacher');
+
+  perform tests.remember('class_a', gen_random_uuid());
+  perform tests.remember('class_a_other', gen_random_uuid());
+  perform tests.remember('class_b', gen_random_uuid());
+  insert into public.classes (id, school_id, school_year_id, name) values
+    (tests.id('class_a'), tests.id('school_a1'), tests.id('year_a'), 'Class A'),
+    (tests.id('class_a_other'), tests.id('school_a1'), tests.id('year_a'), 'Class A other'),
+    (tests.id('class_b'), tests.id('school_b1'), tests.id('year_b'), 'Class B');
+  insert into public.class_grades (class_id, grade_code) values
+    (tests.id('class_a'), '3'), (tests.id('class_a_other'), '5'), (tests.id('class_b'), '3');
+  insert into public.class_teachers (class_id, user_id, role) values
+    (tests.id('class_a'), tests.id('teacher_a'), 'homeroom'),
+    (tests.id('class_a'), tests.id('subject_teacher'), 'subject'),
+    (tests.id('class_a_other'), tests.id('teacher_a_other'), 'homeroom'),
+    (tests.id('class_a_other'), tests.id('former_teacher'), 'subject'),
+    (tests.id('class_b'), tests.id('teacher_b'), 'homeroom');
+
+  perform tests.remember('student_a1', gen_random_uuid());
+  perform tests.remember('student_a2', gen_random_uuid());
+  perform tests.remember('student_a_other', gen_random_uuid());
+  perform tests.remember('student_b', gen_random_uuid());
+  insert into public.students (id, class_id, first_name) values
+    (tests.id('student_a1'), tests.id('class_a'), 'Léa'),
+    (tests.id('student_a2'), tests.id('class_a'), 'Nathan'),
+    (tests.id('student_a_other'), tests.id('class_a_other'), 'Zoé'),
+    (tests.id('student_b'), tests.id('class_b'), 'Adam');
+
+  insert into public.timetable_blocks (class_id, day_key, start_time, end_time, kind, subject_id) values
+    (tests.id('class_a'), 1, '08:55', '09:45', 'subject', v_fra),
+    (tests.id('class_a_other'), 1, '08:55', '09:45', 'subject', v_mat),
+    (tests.id('class_b'), 1, '08:55', '09:45', 'subject', v_fra);
+
+  perform tests.remember('unit_a', gen_random_uuid());
+  perform tests.remember('unit_b', gen_random_uuid());
+  insert into public.units (id, class_id, subject_id, title, status) values
+    (tests.id('unit_a'), tests.id('class_a'), v_fra, 'Unit A', 'active'),
+    (tests.id('unit_b'), tests.id('class_b'), v_fra, 'Unit B', 'active');
+
+  perform tests.remember('lesson_a1', gen_random_uuid());
+  perform tests.remember('lesson_a2', gen_random_uuid());
+  perform tests.remember('lesson_a3', gen_random_uuid());
+  perform tests.remember('lesson_b1', gen_random_uuid());
+  insert into public.unit_lessons (id, unit_id, sequence_number, title) values
+    (tests.id('lesson_a1'), tests.id('unit_a'), 1, 'Lesson A1'),
+    (tests.id('lesson_a2'), tests.id('unit_a'), 2, 'Lesson A2'),
+    (tests.id('lesson_a3'), tests.id('unit_a'), 3, 'Lesson A3'),
+    (tests.id('lesson_b1'), tests.id('unit_b'), 1, 'Lesson B1');
+
+  delete from public.event_outbox;
+end;
+$$;

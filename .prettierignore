@@ -1,0 +1,13 @@
+pnpm-lock.yaml
+supabase/migrations/
+supabase/tests/
+supabase/seed.sql
+supabase/templates/
+.next/
+node_modules/
+tools/lite-stack/.data/
+tools/lite-stack/.bin/
+SPEC.md
+apps/web/playwright-report/
+apps/web/test-results/
+apps/web/next-env.d.ts

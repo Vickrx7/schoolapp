@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    name: Lint, typecheck, unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: cp .env.example apps/web/.env.local
+      - run: pnpm format:check
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+
+  database-and-e2e:
+    name: Database (RLS) tests, integration and end-to-end
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres
+      MAILPIT_URL: http://127.0.0.1:54324
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: Start local Supabase (database, auth, API, mail catcher only)
+        run: pnpm exec supabase start -x realtime,storage-api,imgproxy,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
+
+      - name: RLS and schema tests (pgTAP)
+        run: pnpm exec supabase test db
+
+      - name: Generated database types are up to date
+        run: |
+          pnpm db:types:direct
+          git diff --exit-code packages/db/src/database.types.ts
+
+      - name: Integration tests (event outbox, AI jobs)
+        run: pnpm test:int
+
+      - name: Configure the web app for the local stack
+        run: |
+          cp .env.example apps/web/.env.local
+          # The defaults in .env.example match the CLI's local keys; prefer live values if present.
+          eval "$(pnpm exec supabase status -o env | grep -E '^(API_URL|ANON_KEY)=' || true)"
+          if [ -n "${API_URL:-}" ]; then echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL" >> apps/web/.env.local; fi
+          if [ -n "${ANON_KEY:-}" ]; then echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_KEY" >> apps/web/.env.local; fi
+
+      - run: pnpm --filter @lynx/web build
+      - run: pnpm --filter @lynx/web exec playwright install --with-deps chromium
+      - name: Start the worker (fake AI provider; nothing leaves the runner)
+        run: |
+          AI_PROVIDER=fake AI_FAKE_DELAY_MS=300 nohup pnpm --filter @lynx/worker start > worker.log 2>&1 &
+          for i in $(seq 1 30); do grep -q 'worker started' worker.log && break; sleep 1; done
+          tail -n 5 worker.log
+      - name: End-to-end tests
+        run: pnpm test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: |
+            apps/web/playwright-report
+            worker.log
+          retention-days: 7

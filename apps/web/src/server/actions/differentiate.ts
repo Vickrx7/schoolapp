@@ -1,0 +1,306 @@
+'use server';
+
+import {
+  differentiateInputSchema,
+  differentiateItemTypes,
+  type DifferentiateInput,
+} from '@lynx/ai/features/differentiate';
+import { Redactor, type BlockedKind, type KnownPerson, type Segment } from '@lynx/ai/privacy';
+import { revalidatePath } from 'next/cache';
+import { z } from 'zod';
+import { fail, ok, okVoid, type ActionResult } from '@/lib/action-result';
+import { reportError } from '../errors';
+import type { VersionContent } from '../queries/differentiate';
+import { aiSchools, requireSession } from '../session';
+import { createSupabaseServerClient } from '../supabase';
+import { parseInput } from './validation';
+
+type Supabase = Awaited<ReturnType<typeof createSupabaseServerClient>>;
+
+const formSchema = z.object({
+  schoolId: z.uuid(),
+  title: z.string().trim().min(1, 'required').max(200, 'tooLong'),
+  text: z.string().trim().min(20, 'tooShort').max(12_000, 'tooLong'),
+  objective: z.string().trim().max(500, 'tooLong'),
+  itemType: z.enum(differentiateItemTypes),
+  gradeCode: z.string().min(1, 'required'),
+  subjectId: z.uuid().nullable(),
+  levelIds: z.array(z.uuid()).min(2, 'atLeastTwoLevels').max(6, 'tooMany'),
+});
+export type DifferentiateForm = z.input<typeof formSchema>;
+
+/** Builds the job input from the form, with labels read from the database. */
+async function buildInput(
+  supabase: Supabase,
+  form: z.infer<typeof formSchema>,
+): Promise<DifferentiateInput | null> {
+  const [levels, grade, subject] = await Promise.all([
+    supabase
+      .from('language_levels')
+      .select('id, label_fr, description_fr, owner_user_id, sort_order')
+      .in('id', form.levelIds)
+      .eq('active', true),
+    supabase.from('grades').select('label_fr').eq('code', form.gradeCode).maybeSingle(),
+    form.subjectId
+      ? supabase.from('subjects').select('label_fr').eq('id', form.subjectId).maybeSingle()
+      : Promise.resolve({ data: null }),
+  ]);
+  const rows = levels.data ?? [];
+  if (rows.length !== form.levelIds.length || !grade.data) return null;
+  if (form.subjectId && !subject.data) return null;
+  rows.sort(
+    (a, b) =>
+      Number(a.owner_user_id !== null) - Number(b.owner_user_id !== null) ||
+      a.sort_order - b.sort_order,
+  );
+  const input = {
+    title: form.title,
+    text: form.text,
+    objective: form.objective,
+    itemType: form.itemType,
+    gradeCode: form.gradeCode,
+    // The content is French, so the AI gets the French labels.
+    gradeLabel: grade.data.label_fr,
+    subjectId: form.subjectId,
+    subjectLabel: subject.data?.label_fr ?? null,
+    levels: rows.map((l, i) => ({
+      key: `L${i + 1}`,
+      languageLevelId: l.id,
+      label: l.label_fr,
+      description: l.description_fr,
+    })),
+  };
+  const parsed = differentiateInputSchema.safeParse(input);
+  return parsed.success ? parsed.data : null;
+}
+
+/**
+ * The people this user can see (their classes' students, their colleagues), for the preview.
+ * The worker checks again with the whole school's roster before anything is sent.
+ */
+async function visiblePeople(supabase: Supabase): Promise<KnownPerson[]> {
+  const [students, users] = await Promise.all([
+    supabase.from('students').select('first_name'),
+    supabase.from('users').select('display_name'),
+  ]);
+  return [
+    ...(students.data ?? []).map((s) => ({ name: s.first_name, kind: 'student' as const })),
+    ...(users.data ?? []).map((u) => ({ name: u.display_name, kind: 'staff' as const })),
+  ];
+}
+
+export interface PreviewResult {
+  title: Segment[];
+  objective: Segment[];
+  text: Segment[];
+  replaced: number;
+  blocked: { kind: BlockedKind; match: string }[];
+}
+
+async function prepare(raw: DifferentiateForm) {
+  const session = await requireSession();
+  const parsed = parseInput(formSchema, raw);
+  if (!parsed.ok) return { ok: false as const, result: parsed.result };
+  if (!aiSchools(session).some((s) => s.id === parsed.data.schoolId)) {
+    return { ok: false as const, result: fail('forbidden') };
+  }
+  const supabase = await createSupabaseServerClient();
+  const input = await buildInput(supabase, parsed.data);
+  if (!input) return { ok: false as const, result: fail('invalid') };
+  const redactor = new Redactor(await visiblePeople(supabase));
+  const title = redactor.redact(input.title);
+  const objective = redactor.redact(input.objective);
+  const text = redactor.redact(input.text);
+  const blocked = [...title.blocked, ...objective.blocked, ...text.blocked].map((b) => ({
+    kind: b.kind,
+    match: b.match,
+  }));
+  const preview: PreviewResult = {
+    title: title.segments,
+    objective: objective.segments,
+    text: text.segments,
+    replaced: redactor.replacements().length,
+    blocked,
+  };
+  return { ok: true as const, supabase, schoolId: parsed.data.schoolId, input, preview };
+}
+
+/** Shows the teacher exactly what would be sent, and any personal detail to remove. */
+export async function previewDifferentiation(
+  raw: DifferentiateForm,
+): Promise<ActionResult<PreviewResult>> {
+  const prepared = await prepare(raw);
+  if (!prepared.ok) return prepared.result;
+  return ok(prepared.preview);
+}
+
+const AI_ERRORS: Record<string, string> = {
+  LXA01: 'aiDisabled',
+  LXA02: 'aiBudgetReached',
+  LXA03: 'aiBusy',
+};
+
+export async function requestDifferentiation(
+  raw: DifferentiateForm,
+): Promise<ActionResult<{ jobId: string }>> {
+  const prepared = await prepare(raw);
+  if (!prepared.ok) return prepared.result;
+  if (prepared.preview.blocked.length) return fail('personalInfo');
+  const { data, error } = await prepared.supabase.rpc('request_ai_job', {
+    p_school_id: prepared.schoolId,
+    p_feature: 'differentiate',
+    p_input: prepared.input,
+  });
+  if (error) {
+    const known = error.code ? AI_ERRORS[error.code] : undefined;
+    return fail(known ?? reportError('requestDifferentiation', error));
+  }
+  revalidatePath('/differentiate');
+  return ok({ jobId: data });
+}
+
+export async function getAiJobStatus(
+  jobId: string,
+): Promise<ActionResult<{ status: 'queued' | 'running' | 'succeeded' | 'failed' }>> {
+  if (!z.uuid().safeParse(jobId).success) return fail('notFound');
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from('ai_jobs')
+    .select('status')
+    .eq('id', jobId)
+    .maybeSingle();
+  if (error) return fail(reportError('getAiJobStatus', error));
+  if (!data) return fail('notFound');
+  return ok({ status: data.status });
+}
+
+export async function discardAiJob(jobId: string): Promise<ActionResult> {
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from('ai_jobs').delete().eq('id', jobId);
+  if (error) return fail(reportError('discardAiJob', error));
+  revalidatePath('/differentiate');
+  return okVoid();
+}
+
+// ---------------------------------------------------------------------------------------
+// Saving and editing results
+// ---------------------------------------------------------------------------------------
+
+const line = (max: number) => z.string().trim().min(1).max(max);
+const versionSchema = z.object({
+  languageLevelId: z.uuid(),
+  title: z.string().trim().min(1, 'required').max(200, 'tooLong'),
+  text: z.string().trim().min(1, 'required').max(40_000, 'tooLong'),
+  glossary: z
+    .array(z.object({ term: line(80), definition: z.string().trim().max(500) }))
+    .max(30, 'tooMany'),
+  visualSupports: z.array(line(300)).max(10, 'tooMany'),
+  questions: z.array(line(500)).max(12, 'tooMany'),
+  teacherNote: z.string().trim().max(1000, 'tooLong'),
+});
+const resultSchema = z.object({
+  title: z.string().trim().min(1, 'required').max(200, 'tooLong'),
+  objective: z.string().trim().max(1000, 'tooLong'),
+  versions: z.array(versionSchema).min(1).max(6),
+});
+export type DifferentiationResult = z.input<typeof resultSchema>;
+
+function toContent(objective: string, v: z.infer<typeof versionSchema>): VersionContent {
+  return {
+    schema: 'differentiated_text/v1',
+    objective,
+    title: v.title,
+    text: v.text,
+    glossary: v.glossary,
+    visualSupports: v.visualSupports,
+    questions: v.questions,
+    teacherNote: v.teacherNote,
+  };
+}
+
+/** Saves a finished request as a private draft in the library. */
+export async function saveDifferentiation(
+  jobId: string,
+  raw: DifferentiationResult,
+): Promise<ActionResult<{ itemId: string }>> {
+  await requireSession();
+  const parsed = parseInput(resultSchema, raw);
+  if (!parsed.ok) return parsed.result;
+  const supabase = await createSupabaseServerClient();
+  const { data: job } = await supabase
+    .from('ai_jobs')
+    .select('input')
+    .eq('id', jobId)
+    .maybeSingle();
+  const input = differentiateInputSchema.safeParse(job?.input);
+  if (!input.success) return fail('notFound');
+
+  const { objective, versions } = parsed.data;
+  const { data, error } = await supabase.rpc('save_ai_job_to_library', {
+    p_job_id: jobId,
+    p_type: input.data.itemType,
+    p_title: parsed.data.title,
+    p_versions: [
+      // The teacher's original text, kept as the base version.
+      {
+        language_level_id: null,
+        content: {
+          schema: 'differentiated_text/v1',
+          original: true,
+          objective,
+          title: input.data.title,
+          text: input.data.text,
+        },
+      },
+      ...versions.map((v) => ({
+        language_level_id: v.languageLevelId,
+        content: toContent(objective, v),
+      })),
+    ],
+    p_grade_code: input.data.gradeCode,
+    ...(input.data.subjectId ? { p_subject_id: input.data.subjectId } : {}),
+  });
+  if (error) return fail(reportError('saveDifferentiation', error));
+  revalidatePath('/differentiate');
+  return ok({ itemId: data });
+}
+
+export async function updateSavedDifferentiation(
+  itemId: string,
+  raw: DifferentiationResult,
+): Promise<ActionResult> {
+  await requireSession();
+  const parsed = parseInput(resultSchema, raw);
+  if (!parsed.ok) return parsed.result;
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from('library_items')
+    .update({ title: parsed.data.title })
+    .eq('id', itemId)
+    .select('id');
+  if (error) return fail(reportError('updateSavedDifferentiation', error));
+  if (!data?.length) return fail('forbidden');
+  for (const v of parsed.data.versions) {
+    const { error: versionError } = await supabase
+      .from('library_item_versions')
+      .update({ content: toContent(parsed.data.objective, v) })
+      .eq('item_id', itemId)
+      .eq('language_level_id', v.languageLevelId);
+    if (versionError) return fail(reportError('updateSavedDifferentiation', versionError));
+  }
+  revalidatePath(`/differentiate/saved/${itemId}`);
+  return okVoid();
+}
+
+export async function deleteSavedDifferentiation(itemId: string): Promise<ActionResult> {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from('library_items')
+    .delete()
+    .eq('id', itemId)
+    .select('id');
+  if (error) return fail(reportError('deleteSavedDifferentiation', error));
+  if (!data?.length) return fail('forbidden');
+  revalidatePath('/differentiate');
+  return okVoid();
+}

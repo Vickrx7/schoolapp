@@ -1,0 +1,7 @@
+# Generated or downloaded: rebuild with the steps in README.md
+build/
+models/
+venv/
+__pycache__/
+*.mp4
+storyboard*.png
