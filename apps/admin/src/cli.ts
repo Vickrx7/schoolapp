@@ -9,9 +9,14 @@
  *   pnpm admin invite --email admin@conseil.ca --name "Nathalie Roy" --role board_admin --board csc-exemple
  *   pnpm admin deactivate --email prof@conseil.ca
  *   pnpm admin set-module --school csc-exemple/ecole-a --module library --enabled false
+ *
+ * AI budgets (US dollars of provider cost per month; see DECISIONS.md, D-040):
+ *   pnpm admin set-ai-budget --school csc-exemple/ecole-a --allowance 100 [--ceiling 200] [--plan plus]
+ *   pnpm admin set-ai-board --board csc-exemple [--allowed true] [--default-allowance 50] [--ceiling-multiplier 2] [--pooling true]
+ *   pnpm admin ai-usage --board csc-exemple [--month 2026-10] [--csv]
  */
 import { loadEnv } from '@lynx/config';
-import { Constants, type Database } from '@lynx/db';
+import { Constants, type Database, type Json } from '@lynx/db';
 import { createClient } from '@supabase/supabase-js';
 import { parseArgs } from 'node:util';
 import { z } from 'zod';
@@ -45,6 +50,15 @@ const { values } = parseArgs({
     honorific: { type: 'string' },
     module: { type: 'string' },
     enabled: { type: 'string' },
+    allowance: { type: 'string' },
+    ceiling: { type: 'string' },
+    plan: { type: 'string' },
+    allowed: { type: 'string' },
+    'default-allowance': { type: 'string' },
+    'ceiling-multiplier': { type: 'string' },
+    pooling: { type: 'string' },
+    month: { type: 'string' },
+    csv: { type: 'boolean' },
   },
 });
 
@@ -102,6 +116,36 @@ async function findAuthUserId(email: string): Promise<string | null> {
     if (list.users.length < 200) return null;
   }
   return null;
+}
+
+const money = (n: number) => `${n.toFixed(2)} USD`;
+const bool = (key: keyof typeof values) => {
+  const v = values[key];
+  if (v === undefined) return undefined;
+  if (v !== 'true' && v !== 'false') throw new CliError(`--${key} must be true or false`);
+  return v === 'true';
+};
+const amount = (key: keyof typeof values) => {
+  const v = values[key];
+  if (v === undefined) return undefined;
+  const n = Number(v);
+  if (!Number.isFinite(n) || n < 0) throw new CliError(`--${key} must be a positive number`);
+  return n;
+};
+
+/** The calendar month (YYYY-MM) a timestamp falls in, in a school's time zone. */
+function monthIn(timeZone: string, iso: string): string {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+  }).formatToParts(new Date(iso));
+  return `${parts.find((p) => p.type === 'year')?.value}-${parts.find((p) => p.type === 'month')?.value}`;
+}
+
+function csvCell(v: string | number | boolean): string {
+  const s = String(v);
+  return /[",\n]/.test(s) ? `"${s.replaceAll('"', '""')}"` : s;
 }
 
 const commands: Record<string, () => Promise<string>> = {
@@ -241,6 +285,140 @@ const commands: Record<string, () => Promise<string>> = {
       'set module',
     );
     return `Module ${module} is now ${enabled ? 'enabled' : 'disabled'} for ${school.name}.`;
+  },
+
+  async 'set-ai-budget'() {
+    const { school } = await schoolByPath(need('school'));
+    const allowance = amount('allowance');
+    if (allowance === undefined) throw new CliError('--allowance is required');
+    const ceiling = amount('ceiling');
+    if (ceiling !== undefined && ceiling < allowance)
+      throw new CliError('--ceiling must be at least the allowance');
+    check(
+      await db
+        .from('ai_budgets')
+        .upsert(
+          {
+            school_id: school.id,
+            monthly_allowance_usd: allowance,
+            monthly_ceiling_usd: ceiling ?? null,
+            plan: values.plan?.trim() || null,
+          },
+          { onConflict: 'school_id' },
+        )
+        .select('school_id')
+        .single(),
+      'set AI budget',
+    );
+    return `${school.name}: ${money(allowance)} per month${ceiling !== undefined ? `, up to ${money(ceiling)} with the board pool` : ''}.`;
+  },
+
+  async 'set-ai-board'() {
+    const slug = need('board');
+    const board = check(
+      await db.from('boards').select('id, name, settings').eq('slug', slug).maybeSingle(),
+      `board "${slug}"`,
+    );
+    const settings = (board.settings ?? {}) as Record<string, unknown>;
+    const ai = { ...((settings.ai as Record<string, unknown> | undefined) ?? {}) };
+    const allowed = bool('allowed');
+    const pooling = bool('pooling');
+    const defaultAllowance = amount('default-allowance');
+    const multiplier = amount('ceiling-multiplier');
+    if (allowed !== undefined) ai.allowed = allowed;
+    if (pooling !== undefined) ai.pooling = pooling;
+    if (defaultAllowance !== undefined) ai.defaultMonthlyAllowanceUsd = defaultAllowance;
+    if (multiplier !== undefined) {
+      if (multiplier < 1) throw new CliError('--ceiling-multiplier must be at least 1');
+      ai.ceilingMultiplier = multiplier;
+    }
+    check(
+      await db
+        .from('boards')
+        .update({ settings: { ...settings, ai } as Json })
+        .eq('id', board.id)
+        .select('id')
+        .single(),
+      'update board',
+    );
+    return `${board.name} AI settings: ${JSON.stringify(ai)}`;
+  },
+
+  async 'ai-usage'() {
+    const board = await boardBySlug(need('board'));
+    const month = values.month ?? new Date().toISOString().slice(0, 7);
+    if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(month))
+      throw new CliError('--month must look like 2026-10');
+    const { data: schools } = await db
+      .from('schools')
+      .select('id, name, timezone, ai_enabled')
+      .eq('board_id', board.id)
+      .order('name');
+    // A day of margin on each side; each row is then placed in its school's own month.
+    const start = new Date(`${month}-01T00:00:00Z`);
+    const from = new Date(start.getTime() - 86_400_000).toISOString();
+    const to = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth() + 1, 2)).toISOString();
+    const rows: {
+      school_id: string | null;
+      created_at: string;
+      input_tokens: number;
+      output_tokens: number;
+      estimated_cost_usd: number;
+    }[] = [];
+    for (let offset = 0; ; offset += 1000) {
+      const { data, error } = await db
+        .from('ai_generations')
+        .select('school_id, created_at, input_tokens, output_tokens, estimated_cost_usd')
+        .eq('board_id', board.id)
+        .gte('created_at', from)
+        .lt('created_at', to)
+        .order('created_at')
+        .range(offset, offset + 999);
+      if (error) throw new CliError(`usage: ${error.message}`);
+      rows.push(...(data ?? []));
+      if (!data || data.length < 1000) break;
+    }
+    const lines = (schools ?? []).map((s) => {
+      const mine = rows.filter(
+        (r) => r.school_id === s.id && monthIn(s.timezone, r.created_at) === month,
+      );
+      return {
+        school: s.name,
+        aiEnabled: s.ai_enabled,
+        requests: mine.length,
+        inputTokens: mine.reduce((n, r) => n + r.input_tokens, 0),
+        outputTokens: mine.reduce((n, r) => n + r.output_tokens, 0),
+        costUsd: mine.reduce((n, r) => n + Number(r.estimated_cost_usd), 0),
+      };
+    });
+    const total = lines.reduce((n, l) => n + l.costUsd, 0);
+    if (values.csv) {
+      return [
+        'month,board,school,ai_enabled,requests,input_tokens,output_tokens,cost_usd',
+        ...lines.map((l) =>
+          [
+            month,
+            board.name,
+            l.school,
+            l.aiEnabled,
+            l.requests,
+            l.inputTokens,
+            l.outputTokens,
+            l.costUsd.toFixed(4),
+          ]
+            .map(csvCell)
+            .join(','),
+        ),
+      ].join('\n');
+    }
+    return [
+      `${board.name}, ${month}`,
+      ...lines.map(
+        (l) =>
+          `  ${l.school}: ${l.requests} requests, ${money(l.costUsd)}${l.aiEnabled ? '' : ' (AI off)'}`,
+      ),
+      `  Total: ${money(total)}`,
+    ].join('\n');
   },
 };
 

@@ -9,6 +9,7 @@ export function buildTaskList(options: {
   subscriptions: readonly Subscription[];
   context: HandlerContext;
   batchSize: number;
+  aiJobRetentionDays: number;
 }): TaskList {
   const dispatch: Task = async (_payload, helpers) => {
     // Drain the outbox in batches.
@@ -35,5 +36,16 @@ export function buildTaskList(options: {
     await sub.run(event, options.context);
   };
 
-  return { dispatch_outbox: dispatch, handle_event: handleEvent };
+  // Fails AI jobs stuck after a crash and deletes old ones (inputs can name students).
+  const aiMaintenance: Task = async (_payload, helpers) => {
+    const deleted = await helpers.withPgClient((client) =>
+      client.query<{ deleted: number }>('select app.ai_jobs_maintenance($1) as deleted', [
+        options.aiJobRetentionDays,
+      ]),
+    );
+    const count = deleted.rows[0]?.deleted ?? 0;
+    if (count > 0) options.context.logger.info('old AI jobs deleted', { count });
+  };
+
+  return { dispatch_outbox: dispatch, handle_event: handleEvent, ai_maintenance: aiMaintenance };
 }

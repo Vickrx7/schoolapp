@@ -14,10 +14,22 @@ export const boardSettingsSchema = z.object({
   anglaisStartGrade: z.number().int().min(-1).max(8).catch(4),
   /** When an unreviewed substitute plan is released automatically (school local time). */
   subPlanAutoReleaseTime: hhmm.catch('07:30'),
-  /** Monthly AI spending cap per school, in US dollars (the provider bills in USD). */
-  aiMonthlyBudgetUsdPerSchool: z.number().min(0).max(10_000).catch(25),
-  /** Whether AI features are available at all for this board. */
-  aiEnabled: z.boolean().catch(true),
+  /**
+   * AI budgets (read by the database too: app.ai_budget_status and request_ai_job).
+   * Amounts are the provider cost in US dollars per month.
+   */
+  ai: z
+    .object({
+      /** False: no school of the board can use AI, whatever its principal chooses. */
+      allowed: z.boolean().catch(true),
+      /** Allowance for schools without their own budget (set with the admin CLI). */
+      defaultMonthlyAllowanceUsd: z.number().min(0).max(100_000).catch(50),
+      /** Default ceiling for borrowing from the pool: allowance x this. */
+      ceilingMultiplier: z.number().min(1).max(10).catch(2),
+      /** Whether schools may borrow what other schools of the board have not used. */
+      pooling: z.boolean().catch(true),
+    })
+    .catch({ allowed: true, defaultMonthlyAllowanceUsd: 50, ceilingMultiplier: 2, pooling: true }),
   /** Retention for class-mode results kept by teachers, in days. */
   classModeResultsRetentionDays: z.number().int().min(1).max(3650).catch(365),
 });

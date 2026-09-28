@@ -12,8 +12,7 @@ describe('board and school settings', () => {
     expect(parseBoardSettings({})).toEqual({
       anglaisStartGrade: 4,
       subPlanAutoReleaseTime: '07:30',
-      aiMonthlyBudgetUsdPerSchool: 25,
-      aiEnabled: true,
+      ai: { allowed: true, defaultMonthlyAllowanceUsd: 50, ceilingMultiplier: 2, pooling: true },
       classModeResultsRetentionDays: 365,
     });
     expect(parseSchoolSettings(null)).toEqual({ contact: {}, dayStart: '08:45', dayEnd: '15:20' });

@@ -64,6 +64,38 @@ export type Database = {
           },
         ];
       };
+      ai_budgets: {
+        Row: {
+          school_id: string;
+          plan: string | null;
+          monthly_allowance_usd: number;
+          monthly_ceiling_usd: number | null;
+          updated_at: string;
+        };
+        Insert: {
+          school_id: string;
+          plan?: string | null;
+          monthly_allowance_usd: number;
+          monthly_ceiling_usd?: number | null;
+          updated_at?: string;
+        };
+        Update: {
+          school_id?: string;
+          plan?: string | null;
+          monthly_allowance_usd?: number;
+          monthly_ceiling_usd?: number | null;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'ai_budgets_school_id_fkey';
+            columns: ['school_id'];
+            isOneToOne: true;
+            referencedRelation: 'schools';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       ai_generations: {
         Row: {
           id: string;
@@ -83,6 +115,7 @@ export type Database = {
           error_code: string | null;
           batch_id: string | null;
           created_at: string;
+          provider_request_id: string | null;
         };
         Insert: {
           id?: string;
@@ -102,6 +135,7 @@ export type Database = {
           error_code?: string | null;
           batch_id?: string | null;
           created_at?: string;
+          provider_request_id?: string | null;
         };
         Update: {
           id?: string;
@@ -121,6 +155,7 @@ export type Database = {
           error_code?: string | null;
           batch_id?: string | null;
           created_at?: string;
+          provider_request_id?: string | null;
         };
         Relationships: [
           {
@@ -139,6 +174,86 @@ export type Database = {
           },
           {
             foreignKeyName: 'ai_generations_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      ai_jobs: {
+        Row: {
+          id: string;
+          board_id: string;
+          school_id: string;
+          user_id: string;
+          feature: string;
+          input: Json;
+          status: Database['public']['Enums']['ai_job_status'];
+          sent_text: string | null;
+          result: Json | null;
+          error_code: string | null;
+          ai_generation_id: string | null;
+          created_at: string;
+          started_at: string | null;
+          finished_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          board_id: string;
+          school_id: string;
+          user_id: string;
+          feature: string;
+          input: Json;
+          status?: Database['public']['Enums']['ai_job_status'];
+          sent_text?: string | null;
+          result?: Json | null;
+          error_code?: string | null;
+          ai_generation_id?: string | null;
+          created_at?: string;
+          started_at?: string | null;
+          finished_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          board_id?: string;
+          school_id?: string;
+          user_id?: string;
+          feature?: string;
+          input?: Json;
+          status?: Database['public']['Enums']['ai_job_status'];
+          sent_text?: string | null;
+          result?: Json | null;
+          error_code?: string | null;
+          ai_generation_id?: string | null;
+          created_at?: string;
+          started_at?: string | null;
+          finished_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'ai_jobs_ai_generation_id_fkey';
+            columns: ['ai_generation_id'];
+            isOneToOne: false;
+            referencedRelation: 'ai_generations';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'ai_jobs_board_id_fkey';
+            columns: ['board_id'];
+            isOneToOne: false;
+            referencedRelation: 'boards';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'ai_jobs_school_id_fkey';
+            columns: ['school_id'];
+            isOneToOne: false;
+            referencedRelation: 'schools';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'ai_jobs_user_id_fkey';
             columns: ['user_id'];
             isOneToOne: false;
             referencedRelation: 'users';
@@ -1517,6 +1632,7 @@ export type Database = {
           settings: Json;
           created_at: string;
           updated_at: string;
+          ai_enabled: boolean;
         };
         Insert: {
           id?: string;
@@ -1531,6 +1647,7 @@ export type Database = {
           settings?: Json;
           created_at?: string;
           updated_at?: string;
+          ai_enabled?: boolean;
         };
         Update: {
           id?: string;
@@ -1545,6 +1662,7 @@ export type Database = {
           settings?: Json;
           created_at?: string;
           updated_at?: string;
+          ai_enabled?: boolean;
         };
         Relationships: [
           {
@@ -2400,6 +2518,19 @@ export type Database = {
     };
     Views: { [_ in never]: never };
     Functions: {
+      ai_usage_summary: {
+        Args: { p_school_id: string };
+        Returns: {
+          allowance_usd: number;
+          ceiling_usd: number;
+          school_spent_usd: number;
+          pool_usd: number;
+          pool_spent_usd: number;
+          pooling: boolean;
+          available: boolean;
+          requests_this_month: number;
+        }[];
+      };
       create_class: {
         Args: {
           p_school_id: string;
@@ -2441,6 +2572,21 @@ export type Database = {
         Args: { p_unit_id: string; p_lesson_ids: string[] };
         Returns: undefined;
       };
+      request_ai_job: {
+        Args: { p_school_id: string; p_feature: string; p_input: Json };
+        Returns: string;
+      };
+      save_ai_job_to_library: {
+        Args: {
+          p_job_id: string;
+          p_type: Database['public']['Enums']['library_item_type'];
+          p_title: string;
+          p_versions: Json;
+          p_grade_code?: string;
+          p_subject_id?: string;
+        };
+        Returns: string;
+      };
       save_student_alert: {
         Args: {
           p_student_id: string;
@@ -2464,6 +2610,7 @@ export type Database = {
       absence_part: 'full_day' | 'am' | 'pm';
       absence_status: 'draft' | 'published' | 'cancelled';
       ai_generation_status: 'succeeded' | 'failed' | 'invalid_output';
+      ai_job_status: 'queued' | 'running' | 'succeeded' | 'failed';
       alert_category: 'allergy' | 'medical' | 'safety' | 'other';
       app_role:
         | 'teacher'
@@ -2637,6 +2784,7 @@ export const Constants = {
       absence_part: ['full_day', 'am', 'pm'],
       absence_status: ['draft', 'published', 'cancelled'],
       ai_generation_status: ['succeeded', 'failed', 'invalid_output'],
+      ai_job_status: ['queued', 'running', 'succeeded', 'failed'],
       alert_category: ['allergy', 'medical', 'safety', 'other'],
       app_role: [
         'teacher',

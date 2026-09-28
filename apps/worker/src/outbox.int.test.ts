@@ -85,8 +85,14 @@ describe('outbox dispatch', () => {
     );
     const tasks = buildTaskList({
       subscriptions: subs,
-      context: { integrations: createMockIntegrations(), logger: createLogger('test') },
+      context: {
+        integrations: createMockIntegrations(),
+        logger: createLogger('test'),
+        pool,
+        ai: null,
+      },
       batchSize: 10,
+      aiJobRetentionDays: 30,
     });
     const helpers = {
       withPgClient: async <T>(fn: (c: pg.PoolClient) => Promise<T>) => {

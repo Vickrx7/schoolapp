@@ -6,6 +6,8 @@
  * same event (retries), so use event.eventId as the idempotency key.
  */
 import type { Integrations } from '@lynx/integrations';
+import type { Pool } from 'pg';
+import { runAiJob, type AiRuntime } from './ai';
 import type { Logger } from './logger';
 
 export interface OutboxEvent {
@@ -22,6 +24,9 @@ export interface OutboxEvent {
 export interface HandlerContext {
   integrations: Integrations;
   logger: Logger;
+  pool: Pool;
+  /** Null when AI is turned off for this deployment (AI_PROVIDER=none). */
+  ai: AiRuntime | null;
 }
 
 export type EventHandler = (event: OutboxEvent, ctx: HandlerContext) => Promise<void>;
@@ -51,6 +56,15 @@ export function buildSubscriptions(options: { logEvents: boolean }): Subscriptio
       },
     });
   }
+
+  // AI requests: the job row holds the input; the event only says which job to run.
+  subs.push({
+    handler: 'ai_run_job',
+    events: ['ai.job_requested'],
+    run: async (event, { pool, ai, logger }) => {
+      if (event.aggregateId) await runAiJob(event.aggregateId, { pool, ai, logger });
+    },
+  });
 
   // Example of an integration reacting to an event. absence.published arrives in Phase 3;
   // then this issues the substitute a day-only door credential through VantageCore.

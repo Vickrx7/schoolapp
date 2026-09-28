@@ -29,3 +29,6 @@ blob-report/
 
 .DS_Store
 *.log
+
+# AI evaluation reports (may be large; share the ones worth keeping)
+packages/ai/eval-results/

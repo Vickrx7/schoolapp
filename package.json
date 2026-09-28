@@ -25,7 +25,8 @@
     "db:types": "supabase gen types typescript --local > packages/db/src/database.types.ts && prettier --write packages/db/src/database.types.ts",
     "admin": "pnpm --filter @lynx/admin run cli",
     "test:int": "vitest run --config vitest.int.config.ts",
-    "db:types:direct": "tsx tools/gen-db-types.ts && prettier --write packages/db/src/database.types.ts"
+    "db:types:direct": "tsx tools/gen-db-types.ts && prettier --write packages/db/src/database.types.ts",
+    "ai:eval": "tsx --env-file-if-exists=apps/web/.env.local packages/ai/src/eval/run-eval.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",

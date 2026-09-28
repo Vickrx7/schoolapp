@@ -6,6 +6,7 @@ import { loadEnv, workerEnvSchema } from '@lynx/config';
 import { createIntegrations } from '@lynx/integrations';
 import { run } from 'graphile-worker';
 import pg from 'pg';
+import { createAiRuntime } from './ai';
 import { buildSubscriptions } from './handlers';
 import { createLogger } from './logger';
 import { buildTaskList } from './tasks';
@@ -17,6 +18,7 @@ pool.on('error', (err) => logger.error('idle database connection failed', { erro
 
 const subscriptions = buildSubscriptions({ logEvents: env.LOG_EVENTS });
 const integrations = createIntegrations(env.INTEGRATIONS_MODE, createLogger('integrations'));
+const ai = createAiRuntime(env);
 
 const runner = await run({
   pgPool: pool,
@@ -24,11 +26,15 @@ const runner = await run({
   noHandleSignals: true,
   taskList: buildTaskList({
     subscriptions,
-    context: { integrations, logger: createLogger('events') },
+    context: { integrations, logger: createLogger('events'), pool, ai },
     batchSize: env.OUTBOX_BATCH_SIZE,
+    aiJobRetentionDays: env.AI_JOB_RETENTION_DAYS,
   }),
-  // Safety net: sweep the outbox every minute in case a notification was missed.
-  crontab: '* * * * * dispatch_outbox ?jobKey=dispatch_outbox&jobKeyMode=preserve_run_at',
+  crontab: [
+    // Safety net: sweep the outbox every minute in case a notification was missed.
+    '* * * * * dispatch_outbox ?jobKey=dispatch_outbox&jobKeyMode=preserve_run_at',
+    '17 * * * * ai_maintenance ?jobKey=ai_maintenance',
+  ].join('\n'),
 });
 
 const wake = () =>
@@ -63,6 +69,7 @@ await wake();
 logger.info('worker started', {
   concurrency: env.WORKER_CONCURRENCY,
   integrations: env.INTEGRATIONS_MODE,
+  ai: ai ? `${ai.provider.name}:${ai.provider.model}` : 'off',
 });
 
 process.once('SIGTERM', () => void shutdown('SIGTERM'));

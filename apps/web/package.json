@@ -11,6 +11,7 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
+    "@lynx/ai": "workspace:*",
     "@lynx/config": "workspace:*",
     "@lynx/db": "workspace:*",
     "@lynx/domain": "workspace:*",

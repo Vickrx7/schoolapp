@@ -6,10 +6,21 @@ describe('loadEnv', () => {
     const env = loadEnv(webServerEnvSchema, {
       NEXT_PUBLIC_SUPABASE_URL: 'http://127.0.0.1:54321',
       NEXT_PUBLIC_SUPABASE_ANON_KEY: 'x'.repeat(40),
-      AI_PROVIDER: '',
+      NEXT_PUBLIC_APP_NAME: '',
     });
-    expect(env.AI_PROVIDER).toBe('none');
     expect(env.NEXT_PUBLIC_APP_NAME).toBe('Lynx École');
+  });
+
+  it('keeps AI off by default and needs a key for Anthropic', () => {
+    const env = loadEnv(workerEnvSchema, { DATABASE_URL: 'postgres://x', AI_PROVIDER: '' });
+    expect(env).toMatchObject({
+      AI_PROVIDER: 'none',
+      AI_MODEL: 'claude-opus-5-5',
+      AI_EFFORT: 'medium',
+    });
+    expect(() =>
+      loadEnv(workerEnvSchema, { DATABASE_URL: 'postgres://x', AI_PROVIDER: 'anthropic' }),
+    ).toThrow(/ANTHROPIC_API_KEY/);
   });
 
   it('lists every problem in one readable error', () => {

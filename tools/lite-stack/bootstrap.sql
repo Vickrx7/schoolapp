@@ -35,14 +35,22 @@ grant usage on schema auth to anon, authenticated, service_role, postgres;
 grant create on database postgres to supabase_auth_admin;
 alter role supabase_auth_admin set search_path = auth;
 
--- Supabase grants API roles broad default privileges on public; RLS does the rest.
+-- Supabase grants API roles broad default privileges on public; RLS does the rest. Only on
+-- a fresh database: re-running this after the migrations would undo the foundation
+-- migration's "closed by default" privileges, which the Supabase CLI never does.
 grant usage on schema public to anon, authenticated, service_role;
-alter default privileges for role postgres in schema public
-  grant all on tables to anon, authenticated, service_role;
-alter default privileges for role postgres in schema public
-  grant all on functions to anon, authenticated, service_role;
-alter default privileges for role postgres in schema public
-  grant all on sequences to anon, authenticated, service_role;
+do $$
+begin
+  if to_regnamespace('lite_stack') is null then
+    alter default privileges for role postgres in schema public
+      grant all on tables to anon, authenticated, service_role;
+    alter default privileges for role postgres in schema public
+      grant all on functions to anon, authenticated, service_role;
+    alter default privileges for role postgres in schema public
+      grant all on sequences to anon, authenticated, service_role;
+  end if;
+end
+$$;
 
 -- Migration bookkeeping for the lite stack's own runner.
 create schema if not exists lite_stack;
