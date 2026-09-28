@@ -1,5 +1,6 @@
 import { findOverlaps, timeToMinutes } from '@lynx/domain';
 import { getLocale, getTranslations } from 'next-intl/server';
+import { notFound } from 'next/navigation';
 import { TimetableBoard } from '@/components/timetable/timetable-board';
 import { Notice } from '@/components/ui/card';
 import { toTimetableBlock } from '@/server/queries/mappers';
@@ -11,7 +12,10 @@ import { createSupabaseServerClient } from '@/server/supabase';
 export default async function TimetablePage({ params }: { params: Promise<{ classId: string }> }) {
   const { classId } = await params;
   const session = await requireSession();
-  const cls = (await loadClass(session, classId))!;
+  // The layout shows "not found" for a missing class, but pages render at the same time
+  // (e.g. right after the class was deleted), so check here too.
+  const cls = await loadClass(session, classId);
+  if (!cls) notFound();
   const school = findSchool(session, cls.schoolId)!;
   const board = session.boards.find((b) => b.id === school.boardId);
   const t = await getTranslations('timetable');

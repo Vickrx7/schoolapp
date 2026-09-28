@@ -1,4 +1,5 @@
 import { getLocale, getTranslations } from 'next-intl/server';
+import { notFound } from 'next/navigation';
 import { localized } from '@/i18n/config';
 import { StudentsManager } from '@/components/students/students-manager';
 import { Notice } from '@/components/ui/card';
@@ -12,7 +13,10 @@ const collator = new Intl.Collator('fr-CA', { sensitivity: 'base' });
 export default async function StudentsPage({ params }: { params: Promise<{ classId: string }> }) {
   const { classId } = await params;
   const session = await requireSession();
-  const cls = (await loadClass(session, classId))!;
+  // The layout shows "not found" for a missing class, but pages render at the same time
+  // (e.g. right after the class was deleted), so check here too.
+  const cls = await loadClass(session, classId);
+  if (!cls) notFound();
   const school = findSchool(session, cls.schoolId)!;
   const t = await getTranslations('students');
   const locale = await getLocale();

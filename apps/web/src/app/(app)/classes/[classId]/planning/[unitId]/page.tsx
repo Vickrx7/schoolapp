@@ -1,9 +1,9 @@
 import { localDateIn, nextLessons, type ProgressStatus } from '@lynx/domain';
 import { ChevronLeft } from 'lucide-react';
 import { getLocale, getTranslations } from 'next-intl/server';
+import { notFound } from 'next/navigation';
 import { localized } from '@/i18n/config';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
 import { LessonList } from '@/components/planning/lesson-list';
 import { EditUnitButton, UnitStatusButton } from '@/components/planning/unit-actions';
 import { Badge } from '@/components/ui/card';
@@ -18,7 +18,10 @@ export default async function UnitPage({
 }) {
   const { classId, unitId } = await params;
   const session = await requireSession();
-  const cls = (await loadClass(session, classId))!;
+  // The layout shows "not found" for a missing class, but pages render at the same time
+  // (e.g. right after the class was deleted), so check here too.
+  const cls = await loadClass(session, classId);
+  if (!cls) notFound();
   const school = findSchool(session, cls.schoolId)!;
   const t = await getTranslations();
   const locale = await getLocale();

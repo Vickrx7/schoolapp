@@ -1,4 +1,5 @@
 import { getLocale } from 'next-intl/server';
+import { notFound } from 'next/navigation';
 import { ClassSettings } from '@/components/classes/class-settings';
 import { loadClass, loadClassFormOptions } from '@/server/queries/classes';
 import { requireSession } from '@/server/session';
@@ -11,7 +12,10 @@ export default async function ClassSettingsPage({
 }) {
   const { classId } = await params;
   const session = await requireSession();
-  const cls = (await loadClass(session, classId))!;
+  // The layout shows "not found" for a missing class, but pages render at the same time
+  // (e.g. right after the class was deleted), so check here too.
+  const cls = await loadClass(session, classId);
+  if (!cls) notFound();
   const options = await loadClassFormOptions(session, await getLocale());
   const supabase = await createSupabaseServerClient();
 

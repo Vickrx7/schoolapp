@@ -25,6 +25,9 @@ test('the principal turns AI on, then a teacher differentiates a text without na
   await login(page, DEMO.principal);
   await page.goto('/school');
   const enable = page.getByRole('button', { name: 'Activer l’IA' });
+  const isOn = page.getByText('L’IA est activée.');
+  // Wait for the AI card before deciding (it may already be on after a retry).
+  await expect(enable.or(isOn)).toBeVisible();
   if (await enable.isVisible()) {
     const dialog = page.getByRole('dialog');
     // A click before the page is interactive is lost: retry until the dialog opens.
