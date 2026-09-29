@@ -1,0 +1,446 @@
+{
+  "official": false,
+  "verified": false,
+  "subjectCode": "mat",
+  "curriculumVersion": "mat-2020",
+  "sourceNote": "Résumé paraphrasé du curriculum de mathématiques de l’Ontario (2020), à vérifier contre le document officiel.",
+  "strands": [
+    {
+      "code": "A",
+      "labelFr": "Apprentissage socioémotionnel en mathématiques et processus mathématiques",
+      "labelEn": null
+    },
+    {
+      "code": "B",
+      "labelFr": "Nombres",
+      "labelEn": null
+    },
+    {
+      "code": "C",
+      "labelFr": "Algèbre",
+      "labelEn": null
+    },
+    {
+      "code": "D",
+      "labelFr": "Données",
+      "labelEn": null
+    },
+    {
+      "code": "E",
+      "labelFr": "Sens de l’espace",
+      "labelEn": null
+    },
+    {
+      "code": "F",
+      "labelFr": "Littératie financière",
+      "labelEn": null
+    }
+  ],
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "A1",
+      "kind": "overall",
+      "strandCode": "A",
+      "parentCode": null,
+      "textFr": "Mettre en pratique des habiletés socioémotionnelles (reconnaître et gérer ses émotions, persévérer, collaborer, avoir confiance en soi, penser de façon critique et créative) en utilisant les processus mathématiques dans tous les domaines.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B1",
+      "kind": "overall",
+      "strandCode": "B",
+      "parentCode": null,
+      "textFr": "Démontrer une compréhension des nombres naturels, des fractions et des nombres décimaux jusqu’aux centièmes.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B1.1",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B1",
+      "textFr": "Lire, représenter, composer et décomposer des nombres naturels jusqu’à 200 000, et décrire comment on les utilise dans la vie courante.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B1.2",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B1",
+      "textFr": "Comparer et ordonner des nombres naturels jusqu’à 200 000 dans divers contextes.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B1.3",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B1",
+      "textFr": "Représenter, comparer et ordonner, à l’aide de dessins et de modèles, les fractions obtenues dans différentes situations de partage équitable.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B1.5",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B1",
+      "textFr": "Représenter des fractions équivalentes à l’aide de modèles et de droites numériques.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B1.6",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B1",
+      "textFr": "Comparer et ordonner des fractions et des nombres décimaux jusqu’aux centièmes.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B1.7",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B1",
+      "textFr": "Établir des liens entre les fractions et les nombres décimaux (dixièmes et centièmes).",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B1.8",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B1",
+      "textFr": "Arrondir des nombres décimaux au dixième près dans divers contextes.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B2",
+      "kind": "overall",
+      "strandCode": "B",
+      "parentCode": null,
+      "textFr": "Utiliser ses connaissances des nombres et des opérations pour résoudre des problèmes de la vie courante.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B2.1",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B2",
+      "textFr": "Utiliser les propriétés des opérations et les liens entre elles pour résoudre des problèmes à une ou plusieurs étapes avec des nombres naturels et des nombres décimaux, et vérifier ses calculs.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B2.2",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B2",
+      "textFr": "Se rappeler les faits de multiplication de 0 × 0 à 12 × 12 et les faits de division qui s’y rattachent.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B2.4",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B2",
+      "textFr": "Représenter et résoudre des problèmes d’addition et de soustraction de nombres naturels et de nombres décimaux jusqu’aux centièmes à l’aide d’outils, de stratégies et d’algorithmes appropriés.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B2.5",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B2",
+      "textFr": "Représenter et résoudre des problèmes de multiplication de nombres naturels à deux ou trois chiffres par des nombres à deux chiffres, notamment à l’aide du modèle d’aire et d’algorithmes.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B2.6",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B2",
+      "textFr": "Représenter et résoudre des problèmes de division de nombres naturels à trois chiffres par des nombres à deux chiffres, et interpréter le reste selon le contexte.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B2.7",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B2",
+      "textFr": "Multiplier et diviser des nombres naturels à un chiffre par des fractions unitaires, à l’aide d’outils et de dessins.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C1",
+      "kind": "overall",
+      "strandCode": "C",
+      "parentCode": null,
+      "textFr": "Reconnaître, décrire, prolonger et créer diverses suites, dont des suites tirées de la vie courante, et faire des prédictions à leur sujet.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C1.1",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C1",
+      "textFr": "Reconnaître et décrire des suites à motif répété, des suites croissantes et des suites décroissantes, dont des suites croissantes linéaires, y compris dans la vie courante.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C1.2",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C1",
+      "textFr": "Créer des suites croissantes et les traduire d’une représentation à une autre, dont des tables de valeurs et des graphiques.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C1.3",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C1",
+      "textFr": "Déterminer la règle d’une suite pour la prolonger, trouver des éléments manquants et justifier des prédictions.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C2",
+      "kind": "overall",
+      "strandCode": "C",
+      "parentCode": null,
+      "textFr": "Démontrer une compréhension des variables, des expressions, des égalités et des inégalités, et appliquer cette compréhension dans divers contextes.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C2.1",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C2",
+      "textFr": "Traduire des relations d’égalité d’une représentation à une autre, par exemple de mots en expressions algébriques ou en représentations visuelles.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C2.3",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C2",
+      "textFr": "Résoudre des équations comprenant des nombres naturels jusqu’à 100 dans divers contextes, et vérifier les solutions.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C3",
+      "kind": "overall",
+      "strandCode": "C",
+      "parentCode": null,
+      "textFr": "Résoudre des problèmes et créer des représentations informatiques de situations mathématiques à l’aide de concepts et d’habiletés de codage.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C3.1",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C3",
+      "textFr": "Écrire et exécuter du code comprenant des instructions conditionnelles et d’autres structures de contrôle pour résoudre des problèmes.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C3.2",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C3",
+      "textFr": "Lire et modifier du code existant comprenant des instructions conditionnelles et d’autres structures de contrôle, et décrire l’effet des changements sur le résultat.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C4",
+      "kind": "overall",
+      "strandCode": "C",
+      "parentCode": null,
+      "textFr": "Appliquer le processus de modélisation mathématique pour représenter et analyser des situations de la vie courante, faire des prédictions et mieux les comprendre.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D1",
+      "kind": "overall",
+      "strandCode": "D",
+      "parentCode": null,
+      "textFr": "Gérer, analyser et utiliser des données pour formuler des arguments convaincants et prendre des décisions éclairées dans des contextes de la vie courante.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D1.1",
+      "kind": "specific",
+      "strandCode": "D",
+      "parentCode": "D1",
+      "textFr": "Distinguer les données discrètes et les données continues, et donner des exemples de chacune.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D1.2",
+      "kind": "specific",
+      "strandCode": "D",
+      "parentCode": "D1",
+      "textFr": "Recueillir des données par des observations, des expériences, des entrevues ou des sources secondaires pour répondre à des questions d’intérêt, et les organiser dans des tableaux.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D1.3",
+      "kind": "specific",
+      "strandCode": "D",
+      "parentCode": "D1",
+      "textFr": "Choisir le type de diagramme le mieux adapté à un ensemble de données, dont le diagramme à bandes empilées, le construire avec une source, un titre, des étiquettes et une échelle appropriée, et justifier son choix.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D1.5",
+      "kind": "specific",
+      "strandCode": "D",
+      "parentCode": "D1",
+      "textFr": "Déterminer la moyenne, la médiane et le mode d’ensembles de données comprenant des nombres naturels et des nombres décimaux, et expliquer ce que chaque mesure indique.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D1.6",
+      "kind": "specific",
+      "strandCode": "D",
+      "parentCode": "D1",
+      "textFr": "Analyser des données présentées de diverses façons, dont des diagrammes trompeurs, en posant des questions et en y répondant, tirer des conclusions, puis formuler des arguments convaincants et prendre des décisions éclairées.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D2",
+      "kind": "overall",
+      "strandCode": "D",
+      "parentCode": null,
+      "textFr": "Décrire la probabilité que des événements se produisent et utiliser cette information pour faire des prédictions.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D2.1",
+      "kind": "specific",
+      "strandCode": "D",
+      "parentCode": "D2",
+      "textFr": "Exprimer à l’aide de fractions la probabilité que des événements se produisent, la situer sur une ligne de probabilité et s’en servir pour faire des prédictions.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D2.2",
+      "kind": "specific",
+      "strandCode": "D",
+      "parentCode": "D2",
+      "textFr": "Déterminer et comparer la probabilité théorique et la probabilité expérimentale d’un événement.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "E1",
+      "kind": "overall",
+      "strandCode": "E",
+      "parentCode": null,
+      "textFr": "Décrire et représenter des formes, des positions et des déplacements en appliquant des propriétés géométriques et des relations spatiales pour s’orienter dans le monde qui nous entoure.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "E1.1",
+      "kind": "specific",
+      "strandCode": "E",
+      "parentCode": "E1",
+      "textFr": "Reconnaître les propriétés géométriques des triangles et construire différents types de triangles à partir de la mesure de leurs côtés ou de leurs angles.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "E1.4",
+      "kind": "specific",
+      "strandCode": "E",
+      "parentCode": "E1",
+      "textFr": "Situer et lire des points dans le premier quadrant d’un plan cartésien à l’aide de diverses échelles, et décrire les translations qui déplacent un point d’une position à une autre.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "E2",
+      "kind": "overall",
+      "strandCode": "E",
+      "parentCode": null,
+      "textFr": "Comparer, estimer et déterminer des mesures dans divers contextes.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "E2.4",
+      "kind": "specific",
+      "strandCode": "E",
+      "parentCode": "E2",
+      "textFr": "Utiliser un rapporteur d’angle pour mesurer et construire des angles jusqu’à 180°, et classer les angles (aigu, droit, obtus, plat).",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "E2.5",
+      "kind": "specific",
+      "strandCode": "E",
+      "parentCode": "E2",
+      "textFr": "Utiliser les liens entre l’aire du rectangle, du parallélogramme et du triangle pour établir les formules d’aire du parallélogramme et du triangle, et résoudre des problèmes connexes.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "F1",
+      "kind": "overall",
+      "strandCode": "F",
+      "parentCode": null,
+      "textFr": "Démontrer une compréhension de la valeur de l’argent et de notions financières de base, et les appliquer à des situations de la vie courante.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "F1.2",
+      "kind": "specific",
+      "strandCode": "F",
+      "parentCode": "F1",
+      "textFr": "Estimer et calculer le coût de transactions comprenant plusieurs articles en dollars et en cents, taxe de vente comprise, à l’aide de diverses stratégies.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "F1.3",
+      "kind": "specific",
+      "strandCode": "F",
+      "parentCode": "F1",
+      "textFr": "Concevoir des budgets simples pour divers scénarios et expliquer en quoi un budget aide à prendre des décisions financières.",
+      "textEn": null
+    }
+  ]
+}
