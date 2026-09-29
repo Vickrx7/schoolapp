@@ -1,0 +1,213 @@
+{
+  "slug": "suites-croissantes-brouillon",
+  "type": "worksheet",
+  "title": "Les suites croissantes et décroissantes (brouillon)",
+  "summary": "Une fiche de sept questions pour reconnaître, prolonger et décrire des suites croissantes, décroissantes et à motif répété, et pour trouver des éléments manquants.",
+  "source": "ai_generated",
+  "author": "isabelle.tremblay@demo.lynx.test",
+  "school": "saint-exemple",
+  "status": "draft",
+  "shareScope": "private",
+  "reviewRequested": false,
+  "approvedBy": null,
+  "faithReviewed": false,
+  "gradeCodes": ["3"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "C1.1"
+    },
+    {
+      "grade": "3",
+      "code": "C1.3"
+    }
+  ],
+  "durationMinutes": 30,
+  "materials": "Une copie par élève et un crayon. Facultatif : des cubes emboîtables pour construire les suites.",
+  "keywords": "suites, suite croissante, suite décroissante, motif répété, règle, régularité, prolonger, éléments manquants",
+  "tags": ["nombres"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "subFriendly": false,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": "v1",
+  "model": "claude-opus-5-5",
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "Les suites",
+        "objective": "Je reconnais, je prolonge et je décris des suites en trouvant leur règle.",
+        "teacherNote": "Fiche d’environ 30 minutes. Les questions 1 à 5 portent sur la reconnaissance et le prolongement des suites; les questions 6 et 7 demandent d’appliquer et d’inventer une règle. La question 7 se corrige à la main. Pour les élèves qui ont besoin d’appui, fournissez des cubes emboîtables ou une droite numérique.",
+        "instructions": "Lis chaque question attentivement. Pour trouver la règle d’une suite, regarde de combien on augmente ou on diminue d’un nombre à l’autre.",
+        "text": "",
+        "glossary": [
+          {
+            "term": "une suite",
+            "definition": "Des nombres, des formes ou des objets placés dans un ordre qui suit une règle."
+          },
+          {
+            "term": "croissante",
+            "definition": "Qui augmente."
+          },
+          {
+            "term": "décroissante",
+            "definition": "Qui diminue."
+          },
+          {
+            "term": "la règle",
+            "definition": "Ce qui explique comment passer d’un élément au suivant."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "short_answer",
+            "prompt": "Écris les trois nombres qui suivent dans la suite 5, 10, 15, 20.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Quelle est la règle de la suite 90, 80, 70, 60?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "multiple_choice",
+            "prompt": "Quelle suite est croissante?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "50, 45, 40, 35"
+              },
+              {
+                "id": "b",
+                "text": "3, 6, 9, 12"
+              },
+              {
+                "id": "c",
+                "text": "rouge, bleu, rouge, bleu"
+              },
+              {
+                "id": "d",
+                "text": "100, 100, 100, 100"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q4",
+            "kind": "short_answer",
+            "prompt": "Trouve les nombres manquants : 120, 145, ___, 195, ___.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 1
+          },
+          {
+            "id": "q5",
+            "kind": "true_false",
+            "prompt": "La suite carré, cercle, triangle, carré, cercle, triangle est une suite à motif répété.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Lundi, il y a 4 livres sur la tablette de la classe. Chaque jour, Alix en ajoute 4. Combien de livres y a-t-il sur la tablette vendredi?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Invente une suite décroissante de 5 nombres, puis écris sa règle.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Des cubes emboîtables pour construire les suites des questions 1 et 6.",
+          "Une droite numérique de 0 à 250, graduée par dizaines.",
+          "Un exemple de suite affiché au tableau, avec sa règle."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "short_answer",
+            "sampleAnswer": "25, 30, 35",
+            "acceptableAnswers": ["25, 30, 35", "25 30 35", "25, 30 et 35"],
+            "explanation": "La règle : on commence à 5 et on ajoute 5 chaque fois."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "On commence à 90 et on enlève 10 chaque fois.",
+            "acceptableAnswers": [],
+            "explanation": "Chaque nombre est 10 de moins que le précédent : c’est une suite décroissante."
+          },
+          {
+            "questionId": "q3",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "3, 6, 9, 12 augmente de 3 chaque fois. La suite a diminue, la suite c est à motif répété et la suite d ne change pas."
+          },
+          {
+            "questionId": "q4",
+            "kind": "short_answer",
+            "sampleAnswer": "170 et 220",
+            "acceptableAnswers": ["170, 220", "170 et 220", "170 220"],
+            "explanation": "La règle : on ajoute 25 chaque fois. 145 + 25 = 170 et 195 + 25 = 220."
+          },
+          {
+            "questionId": "q5",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Le motif carré, cercle, triangle se répète."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "20 livres : 4, 8, 12, 16, 20.",
+            "acceptableAnswers": ["20", "20 livres", "vingt"],
+            "explanation": "Lundi 4, mardi 8, mercredi 12, jeudi 16, vendredi 20."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "80, 70, 60, 50, 40. Règle : on commence à 80 et on enlève 10 chaque fois.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la suite doit diminuer selon une règle constante, et la règle doit donner le nombre de départ et ce qu’on enlève chaque fois."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

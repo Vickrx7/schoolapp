@@ -1,0 +1,75 @@
+{
+  "slug": "mesurer-dans-la-cour",
+  "type": "outdoor_activity",
+  "title": "Estimer et mesurer dans la cour",
+  "summary": "Dans la cour, des équipes de trois vérifient leurs repères (1 cm et 1 m), estiment puis mesurent quatre longueurs en centimètres ou en mètres, tracent à la craie une ligne de 3 m et mesurent avec une règle qui ne commence pas à zéro.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["3"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "E2.1"
+    },
+    {
+      "grade": "3",
+      "code": "E2.2"
+    }
+  ],
+  "durationMinutes": 45,
+  "materials": "Par équipe : une règle d’un mètre, un ruban à mesurer d’au moins 3 m, une règle de 30 cm, une craie, une planchette à pince, une feuille d’enregistrement et un crayon. Pour le groupe : deux cônes, du ruban-cache et un sifflet.",
+  "keywords": "mesure, longueur, centimètre, mètre, estimation, repères, règle, ruban à mesurer, craie, cour d’école",
+  "tags": ["exterieur", "mouvement", "cooperation"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "J’estime et je mesure des longueurs en centimètres et en mètres, et je sais que 1 m = 100 cm.",
+        "teacherNote": "Conçue pour une personne suppléante : demandez au secrétariat quelle zone de la cour est permise et si la craie y est autorisée, et comptez les élèves avant et après la sortie. Les repères de l’étape 2 sont approximatifs et à vérifier par chaque élève : la largeur du petit doigt d’un enfant de cet âge mesure environ 1 cm, et un grand pas d’enfant mesure habituellement moins de 1 m. Ce qui compte, c’est que chaque élève compare son propre repère avec la règle. Au retour, faites comparer les estimations et les mesures : les estimations s’améliorent-elles d’une longueur à l’autre?",
+        "location": "La cour d’école, sur une surface asphaltée où la craie est permise, dans une zone délimitée que l’adulte voit en entier.",
+        "setup": "Avant la sortie, choisissez quatre longueurs à mesurer dans la zone et écrivez-les sur la feuille d’enregistrement, par exemple : la longueur d’un banc, la largeur d’une porte extérieure, la longueur d’une case de marelle et la distance entre deux cônes placés à 4 m l’un de l’autre. La feuille a trois colonnes : « Longueur à mesurer », « Mon estimation » et « Ma mesure ». Préparez une règle de 30 cm par équipe dont les 5 premiers centimètres sont cachés par du ruban-cache.",
+        "steps": [
+          "Forme ton équipe de trois avec les élèves que l’adulte nomme. Prends le matériel de ton équipe.",
+          "Vérifie tes repères. Avec la règle de 30 cm, mesure la largeur de ton petit doigt : environ 1 cm. Avec la règle d’un mètre, fais un grand pas et compare-le à 1 m. Ces repères t’aideront à estimer.",
+          "Pour chaque longueur de la feuille, estime d’abord la longueur avec tes repères. Écris ton estimation en centimètres ou en mètres.",
+          "Mesurez ensuite la longueur ensemble. Une personne place le zéro de l’instrument au début de la longueur, une personne lit la mesure et une personne l’écrit. Changez de rôle à chaque longueur.",
+          "Si une longueur dépasse 1 m, écris-la de deux façons, par exemple 1 m 20 cm et 120 cm. Rappelle-toi : 1 m = 100 cm.",
+          "Avec la craie, tracez une ligne droite d’exactement 3 m. Placez la règle d’un mètre trois fois, bout à bout, puis vérifiez avec le ruban à mesurer.",
+          "La règle cachée : sur votre règle de 30 cm, les 5 premiers centimètres sont cachés, alors elle commence à 5 cm. Mesurez votre craie avec cette règle. Écrivez où la craie commence, où elle finit, puis trouvez sa longueur. Expliquez comment vous avez fait.",
+          "Au coup de sifflet, revenez au point de rencontre avec votre feuille. Comparez vos estimations et vos mesures avec celles des autres équipes."
+        ],
+        "safetyReminders": [
+          "Reste dans la zone délimitée.",
+          "Quand tu te déplaces, tiens la règle d’un mètre la pointe vers le sol. Ne la fais jamais tourner.",
+          "Ne grimpe sur rien pour mesurer.",
+          "Au coup de sifflet, reviens tout de suite au point de rencontre.",
+          "S’il fait chaud, porte ta casquette et bois de l’eau."
+        ],
+        "weatherAlternative": "En cas de pluie ou de grand froid, faites l’activité dans le gymnase ou dans le corridor : choisissez quatre longueurs à l’intérieur (un tapis, une porte, une table, un banc) et remplacez la craie par du ruban-cache."
+      },
+      "answerKey": null
+    }
+  ]
+}

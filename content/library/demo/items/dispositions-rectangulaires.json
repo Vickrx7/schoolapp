@@ -1,0 +1,1509 @@
+{
+  "slug": "dispositions-rectangulaires",
+  "type": "worksheet",
+  "title": "Multiplier avec des dispositions rectangulaires",
+  "summary": "Fiche d’exercices pour représenter des multiplications jusqu’à 10 × 10 à l’aide de dispositions rectangulaires : rangées de chaises, de jetons et de plants, produits, disposition impossible et une erreur fréquente à expliquer.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["3"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "B2.6"
+    },
+    {
+      "grade": "3",
+      "code": "B2.2"
+    }
+  ],
+  "durationMinutes": 30,
+  "materials": "Une copie de la fiche par élève, dans la version prévue pour son groupe; un crayon; une gomme à effacer. Facultatif : une trentaine de jetons ou de cubes emboîtables par élève.",
+  "keywords": "multiplication, disposition rectangulaire, rangées, produit, faits de multiplication, division, commutativité",
+  "tags": ["nombres"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je représente des multiplications à l’aide de dispositions rectangulaires et je trouve le produit.",
+        "teacherNote": "Fiche d’exercices sur la multiplication jusqu’à 10 × 10 à l’aide de dispositions rectangulaires. Les nombres des questions sont les mêmes dans toutes les versions : seuls la langue et les appuis changent, et la version enrichie ajoute deux défis. Laissez les élèves construire les dispositions avec des jetons ou des cubes avant d’écrire la multiplication. La question 9 se corrige à la main.",
+        "instructions": "Lis chaque question attentivement. Tu peux construire les dispositions avec des jetons ou faire un croquis dans la marge.",
+        "text": "Rappel : une disposition rectangulaire, ce sont des objets placés en rangées égales. Par exemple, une boîte d’œufs a 2 rangées de 6 œufs. On écrit 2 × 6 = 12 et on lit « 2 fois 6 égale 12 ». Le résultat d’une multiplication s’appelle le produit.\n\nSi on tourne la boîte d’un quart de tour, on voit 6 rangées de 2 œufs : 6 × 2 = 12. Le produit reste le même.",
+        "glossary": [
+          {
+            "term": "une rangée",
+            "definition": "Une ligne d’objets placés côte à côte."
+          },
+          {
+            "term": "une disposition rectangulaire",
+            "definition": "Des objets placés en rangées qui ont toutes le même nombre d’objets."
+          },
+          {
+            "term": "le produit",
+            "definition": "Le résultat d’une multiplication."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Dans le gymnase, des chaises sont placées en 4 rangées de 5 chaises. Coche toutes les multiplications qui représentent cette disposition.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "4 × 5"
+              },
+              {
+                "id": "b",
+                "text": "4 + 5"
+              },
+              {
+                "id": "c",
+                "text": "5 × 4"
+              },
+              {
+                "id": "d",
+                "text": "4 × 4"
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Combien de chaises y a-t-il en tout dans le gymnase?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q3",
+            "kind": "matching",
+            "prompt": "Associe chaque disposition à son produit. Un des produits est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "l1",
+                "text": "2 rangées de 7"
+              },
+              {
+                "id": "l2",
+                "text": "3 rangées de 5"
+              },
+              {
+                "id": "l3",
+                "text": "5 rangées de 10"
+              },
+              {
+                "id": "l4",
+                "text": "10 rangées de 2"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "20"
+              },
+              {
+                "id": "rb",
+                "text": "14"
+              },
+              {
+                "id": "rc",
+                "text": "50"
+              },
+              {
+                "id": "rd",
+                "text": "15"
+              },
+              {
+                "id": "re",
+                "text": "25"
+              }
+            ]
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "3 rangées de 8 jetons et 8 rangées de 3 jetons, c’est le même nombre de jetons.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Au jardin de l’école, Gaëlle plante des plants de tomates en 5 rangées. Chaque rangée a 6 plants. Combien de plants plante-t-elle? Écris la multiplication et la réponse.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "q6",
+            "kind": "multiple_choice",
+            "prompt": "Laurier a 12 jetons. Il veut les placer en rangées égales, sans qu’il en reste. Quelle disposition est impossible?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "2 rangées de 6"
+              },
+              {
+                "id": "b",
+                "text": "3 rangées de 4"
+              },
+              {
+                "id": "c",
+                "text": "5 rangées de 2"
+              },
+              {
+                "id": "d",
+                "text": "1 rangée de 12"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Fabien place 40 cubes en 5 rangées égales. Combien de cubes y a-t-il dans chaque rangée?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q8",
+            "kind": "ordering",
+            "prompt": "Place ces dispositions de celle qui a le moins d’objets à celle qui en a le plus.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "items": [
+              {
+                "id": "a",
+                "text": "4 rangées de 10"
+              },
+              {
+                "id": "b",
+                "text": "2 rangées de 9"
+              },
+              {
+                "id": "c",
+                "text": "5 rangées de 5"
+              },
+              {
+                "id": "d",
+                "text": "3 rangées de 7"
+              }
+            ]
+          },
+          {
+            "id": "q9",
+            "kind": "short_answer",
+            "prompt": "Noé dit : « 6 rangées de 2 chaises, c’est 6 + 2 = 8 chaises. » A-t-il raison? Explique ta réponse.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Des jetons ou des cubes emboîtables pour construire chaque disposition.",
+          "Une boîte d’œufs vide (2 rangées de 6) pour montrer une disposition rectangulaire de la vie courante.",
+          "Un tableau des faits de multiplication par 2, 5 et 10 affiché au mur."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "c"],
+            "explanation": "4 rangées de 5, c’est 4 × 5. Si on tourne la disposition, on voit 5 rangées de 4 : 5 × 4. 4 + 5 est une addition, et 4 × 4 ne compte que 4 chaises par rangée."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "20 chaises",
+            "acceptableAnswers": ["20", "20 chaises", "vingt", "vingt chaises"],
+            "explanation": "4 × 5 = 20. On peut aussi compter par bonds de 5 : 5, 10, 15, 20."
+          },
+          {
+            "questionId": "q3",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l4",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "2 × 7 = 14; 3 × 5 = 15; 5 × 10 = 50; 10 × 2 = 20. Le produit 25 n’est pas utilisé."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "3 × 8 = 24 et 8 × 3 = 24. Quand on tourne une disposition, le nombre d’objets ne change pas."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "5 × 6 = 30. Gaëlle plante 30 plants.",
+            "acceptableAnswers": ["30", "30 plants", "5 × 6 = 30", "6 × 5 = 30"],
+            "explanation": "5 rangées de 6 : 5 × 6 = 30. On peut aussi compter par bonds de 6 : 6, 12, 18, 24, 30."
+          },
+          {
+            "questionId": "q6",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "5 rangées de 2 ne font que 10 jetons (5 × 2 = 10). Les autres dispositions font 12 jetons : 2 × 6, 3 × 4 et 1 × 12."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "8 cubes, parce que 5 × 8 = 40.",
+            "acceptableAnswers": ["8", "8 cubes", "huit", "huit cubes"],
+            "explanation": "40 ÷ 5 = 8. On cherche le nombre qui, multiplié par 5, donne 40 : 5 × 8 = 40."
+          },
+          {
+            "questionId": "q8",
+            "kind": "ordering",
+            "orderedIds": ["b", "d", "c", "a"],
+            "explanation": "2 × 9 = 18; 3 × 7 = 21; 5 × 5 = 25; 4 × 10 = 40."
+          },
+          {
+            "questionId": "q9",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. 6 rangées de 2 chaises, c’est 2 + 2 + 2 + 2 + 2 + 2 = 12 chaises, ou 6 × 2 = 12. Noé a additionné le nombre de rangées et le nombre de chaises au lieu de multiplier.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire non, donner 12 et expliquer qu’il faut multiplier (ou additionner 6 fois le nombre 2)."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "debutant",
+      "content": {
+        "title": "",
+        "objective": "Je représente des multiplications à l’aide de dispositions rectangulaires et je trouve le produit.",
+        "teacherNote": "Version Débutant : consignes courtes, exemples dans le rappel, indices et glossaire. Mêmes nombres que les autres versions. Lisez les consignes avec les élèves au besoin et laissez-les construire chaque disposition avec des jetons.",
+        "instructions": "Lis chaque question. Utilise des jetons pour faire les rangées.",
+        "text": "Rappel : une rangée, c’est une ligne d’objets.\n\nExemple : une boîte d’œufs a 2 rangées. Il y a 6 œufs dans chaque rangée. On écrit 2 × 6 = 12.\n\nOn tourne la boîte : il y a 6 rangées de 2 œufs. 6 × 2 = 12. C’est le même nombre d’œufs.",
+        "glossary": [
+          {
+            "term": "une rangée",
+            "definition": "Une ligne d’objets."
+          },
+          {
+            "term": "fois (×)",
+            "definition": "Le signe de la multiplication. 2 × 6 se lit « 2 fois 6 »."
+          },
+          {
+            "term": "le produit",
+            "definition": "La réponse d’une multiplication."
+          },
+          {
+            "term": "en tout",
+            "definition": "Tous ensemble."
+          },
+          {
+            "term": "un jeton",
+            "definition": "Un petit disque qui sert à compter."
+          },
+          {
+            "term": "coche",
+            "definition": "Fais une marque à côté de la bonne réponse."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Il y a 4 rangées de chaises. Chaque rangée a 5 chaises. Coche les multiplications qui vont avec ces chaises.",
+            "hint": "Il y a deux bonnes réponses.",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "4 × 5"
+              },
+              {
+                "id": "b",
+                "text": "4 + 5"
+              },
+              {
+                "id": "c",
+                "text": "5 × 4"
+              },
+              {
+                "id": "d",
+                "text": "4 × 4"
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Combien de chaises y a-t-il en tout?",
+            "hint": "Compte par bonds de 5 : 5, 10…",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q3",
+            "kind": "matching",
+            "prompt": "Relie chaque disposition à son produit. Un produit ne va avec rien.",
+            "hint": "2 rangées de 7, c’est 2 × 7.",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "l1",
+                "text": "2 rangées de 7"
+              },
+              {
+                "id": "l2",
+                "text": "3 rangées de 5"
+              },
+              {
+                "id": "l3",
+                "text": "5 rangées de 10"
+              },
+              {
+                "id": "l4",
+                "text": "10 rangées de 2"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "20"
+              },
+              {
+                "id": "rb",
+                "text": "14"
+              },
+              {
+                "id": "rc",
+                "text": "50"
+              },
+              {
+                "id": "rd",
+                "text": "15"
+              },
+              {
+                "id": "re",
+                "text": "25"
+              }
+            ]
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "3 rangées de 8 jetons et 8 rangées de 3 jetons : c’est le même nombre de jetons.",
+            "hint": "Fais les deux dispositions avec des jetons.",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Gaëlle plante des tomates. Elle fait 5 rangées. Il y a 6 plants dans chaque rangée. Combien de plants y a-t-il? Écris la multiplication et la réponse.",
+            "hint": "5 rangées de 6, c’est 5 × 6.",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "q6",
+            "kind": "multiple_choice",
+            "prompt": "Laurier a 12 jetons. Il fait des rangées égales. Il ne reste aucun jeton. Quelle disposition ne fonctionne pas?",
+            "hint": "Compte les jetons de chaque disposition.",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "2 rangées de 6"
+              },
+              {
+                "id": "b",
+                "text": "3 rangées de 4"
+              },
+              {
+                "id": "c",
+                "text": "5 rangées de 2"
+              },
+              {
+                "id": "d",
+                "text": "1 rangée de 12"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Fabien a 40 cubes. Il fait 5 rangées égales. Combien de cubes y a-t-il dans chaque rangée?",
+            "hint": "5 fois quel nombre donne 40?",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q8",
+            "kind": "ordering",
+            "prompt": "Place les dispositions dans l’ordre. Commence par celle qui a le moins d’objets.",
+            "hint": "Trouve d’abord le produit de chaque disposition.",
+            "points": null,
+            "category": "application",
+            "items": [
+              {
+                "id": "a",
+                "text": "4 rangées de 10"
+              },
+              {
+                "id": "b",
+                "text": "2 rangées de 9"
+              },
+              {
+                "id": "c",
+                "text": "5 rangées de 5"
+              },
+              {
+                "id": "d",
+                "text": "3 rangées de 7"
+              }
+            ]
+          },
+          {
+            "id": "q9",
+            "kind": "short_answer",
+            "prompt": "Noé dit : « 6 rangées de 2 chaises, c’est 6 + 2 = 8 chaises. » A-t-il raison? Écris oui ou non, puis explique.",
+            "hint": "Fais 6 rangées de 2 jetons.",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Des jetons ou des cubes emboîtables pour construire chaque disposition.",
+          "Une boîte d’œufs vide (2 rangées de 6) pour montrer une disposition rectangulaire de la vie courante.",
+          "Un tableau des faits de multiplication par 2, 5 et 10 affiché au mur."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "c"],
+            "explanation": "4 rangées de 5, c’est 4 × 5. Si on tourne la disposition, on voit 5 rangées de 4 : 5 × 4. 4 + 5 est une addition, et 4 × 4 ne compte que 4 chaises par rangée."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "20 chaises",
+            "acceptableAnswers": ["20", "20 chaises", "vingt", "vingt chaises"],
+            "explanation": "4 × 5 = 20. On peut aussi compter par bonds de 5 : 5, 10, 15, 20."
+          },
+          {
+            "questionId": "q3",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l4",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "2 × 7 = 14; 3 × 5 = 15; 5 × 10 = 50; 10 × 2 = 20. Le produit 25 n’est pas utilisé."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "3 × 8 = 24 et 8 × 3 = 24. Quand on tourne une disposition, le nombre d’objets ne change pas."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "5 × 6 = 30. Gaëlle plante 30 plants.",
+            "acceptableAnswers": ["30", "30 plants", "5 × 6 = 30", "6 × 5 = 30"],
+            "explanation": "5 rangées de 6 : 5 × 6 = 30. On peut aussi compter par bonds de 6 : 6, 12, 18, 24, 30."
+          },
+          {
+            "questionId": "q6",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "5 rangées de 2 ne font que 10 jetons (5 × 2 = 10). Les autres dispositions font 12 jetons : 2 × 6, 3 × 4 et 1 × 12."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "8 cubes, parce que 5 × 8 = 40.",
+            "acceptableAnswers": ["8", "8 cubes", "huit", "huit cubes"],
+            "explanation": "40 ÷ 5 = 8. On cherche le nombre qui, multiplié par 5, donne 40 : 5 × 8 = 40."
+          },
+          {
+            "questionId": "q8",
+            "kind": "ordering",
+            "orderedIds": ["b", "d", "c", "a"],
+            "explanation": "2 × 9 = 18; 3 × 7 = 21; 5 × 5 = 25; 4 × 10 = 40."
+          },
+          {
+            "questionId": "q9",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. 6 rangées de 2 chaises, c’est 2 + 2 + 2 + 2 + 2 + 2 = 12 chaises, ou 6 × 2 = 12. Noé a additionné le nombre de rangées et le nombre de chaises au lieu de multiplier.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire non, donner 12 et expliquer qu’il faut multiplier (ou additionner 6 fois le nombre 2)."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "intermediaire",
+      "content": {
+        "title": "",
+        "objective": "Je représente des multiplications à l’aide de dispositions rectangulaires et je trouve le produit.",
+        "teacherNote": "Version Intermédiaire : consignes simples, rappel avec des exemples, indices pour les questions 3, 6, 7 et 8. Mêmes nombres que les autres versions.",
+        "instructions": "Lis chaque question. Tu peux construire les dispositions avec des jetons.",
+        "text": "Rappel : une disposition rectangulaire, ce sont des objets placés en rangées égales. Exemple : une boîte d’œufs a 2 rangées de 6 œufs. On écrit 2 × 6 = 12. Le résultat, 12, s’appelle le produit.\n\nSi on tourne la boîte, on voit 6 rangées de 2 œufs : 6 × 2 = 12. Le produit ne change pas.",
+        "glossary": [
+          {
+            "term": "une rangée",
+            "definition": "Une ligne d’objets placés côte à côte."
+          },
+          {
+            "term": "une disposition rectangulaire",
+            "definition": "Des objets placés en rangées égales."
+          },
+          {
+            "term": "le produit",
+            "definition": "Le résultat d’une multiplication."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Dans le gymnase, des chaises sont placées en 4 rangées de 5 chaises. Coche toutes les multiplications qui représentent cette disposition.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "4 × 5"
+              },
+              {
+                "id": "b",
+                "text": "4 + 5"
+              },
+              {
+                "id": "c",
+                "text": "5 × 4"
+              },
+              {
+                "id": "d",
+                "text": "4 × 4"
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Combien de chaises y a-t-il en tout dans le gymnase?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q3",
+            "kind": "matching",
+            "prompt": "Associe chaque disposition à son produit. Un des produits est de trop.",
+            "hint": "Pour 2 rangées de 7, calcule 2 × 7.",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "l1",
+                "text": "2 rangées de 7"
+              },
+              {
+                "id": "l2",
+                "text": "3 rangées de 5"
+              },
+              {
+                "id": "l3",
+                "text": "5 rangées de 10"
+              },
+              {
+                "id": "l4",
+                "text": "10 rangées de 2"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "20"
+              },
+              {
+                "id": "rb",
+                "text": "14"
+              },
+              {
+                "id": "rc",
+                "text": "50"
+              },
+              {
+                "id": "rd",
+                "text": "15"
+              },
+              {
+                "id": "re",
+                "text": "25"
+              }
+            ]
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "3 rangées de 8 jetons et 8 rangées de 3 jetons, c’est le même nombre de jetons.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Au jardin de l’école, Gaëlle plante des plants de tomates en 5 rangées. Chaque rangée a 6 plants. Combien de plants plante-t-elle? Écris la multiplication et la réponse.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "q6",
+            "kind": "multiple_choice",
+            "prompt": "Laurier a 12 jetons. Il veut les placer en rangées égales, sans qu’il en reste. Quelle disposition ne fonctionne pas?",
+            "hint": "Calcule le nombre de jetons de chaque disposition.",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "2 rangées de 6"
+              },
+              {
+                "id": "b",
+                "text": "3 rangées de 4"
+              },
+              {
+                "id": "c",
+                "text": "5 rangées de 2"
+              },
+              {
+                "id": "d",
+                "text": "1 rangée de 12"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Fabien place 40 cubes en 5 rangées égales. Combien de cubes y a-t-il dans chaque rangée?",
+            "hint": "Quel nombre multiplié par 5 donne 40?",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q8",
+            "kind": "ordering",
+            "prompt": "Place ces dispositions de celle qui a le moins d’objets à celle qui en a le plus.",
+            "hint": "Calcule d’abord le produit de chaque disposition.",
+            "points": null,
+            "category": "application",
+            "items": [
+              {
+                "id": "a",
+                "text": "4 rangées de 10"
+              },
+              {
+                "id": "b",
+                "text": "2 rangées de 9"
+              },
+              {
+                "id": "c",
+                "text": "5 rangées de 5"
+              },
+              {
+                "id": "d",
+                "text": "3 rangées de 7"
+              }
+            ]
+          },
+          {
+            "id": "q9",
+            "kind": "short_answer",
+            "prompt": "Noé dit : « 6 rangées de 2 chaises, c’est 6 + 2 = 8 chaises. » A-t-il raison? Explique ta réponse.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Des jetons ou des cubes emboîtables pour construire chaque disposition.",
+          "Une boîte d’œufs vide (2 rangées de 6) pour montrer une disposition rectangulaire de la vie courante.",
+          "Un tableau des faits de multiplication par 2, 5 et 10 affiché au mur."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "c"],
+            "explanation": "4 rangées de 5, c’est 4 × 5. Si on tourne la disposition, on voit 5 rangées de 4 : 5 × 4. 4 + 5 est une addition, et 4 × 4 ne compte que 4 chaises par rangée."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "20 chaises",
+            "acceptableAnswers": ["20", "20 chaises", "vingt", "vingt chaises"],
+            "explanation": "4 × 5 = 20. On peut aussi compter par bonds de 5 : 5, 10, 15, 20."
+          },
+          {
+            "questionId": "q3",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l4",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "2 × 7 = 14; 3 × 5 = 15; 5 × 10 = 50; 10 × 2 = 20. Le produit 25 n’est pas utilisé."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "3 × 8 = 24 et 8 × 3 = 24. Quand on tourne une disposition, le nombre d’objets ne change pas."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "5 × 6 = 30. Gaëlle plante 30 plants.",
+            "acceptableAnswers": ["30", "30 plants", "5 × 6 = 30", "6 × 5 = 30"],
+            "explanation": "5 rangées de 6 : 5 × 6 = 30. On peut aussi compter par bonds de 6 : 6, 12, 18, 24, 30."
+          },
+          {
+            "questionId": "q6",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "5 rangées de 2 ne font que 10 jetons (5 × 2 = 10). Les autres dispositions font 12 jetons : 2 × 6, 3 × 4 et 1 × 12."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "8 cubes, parce que 5 × 8 = 40.",
+            "acceptableAnswers": ["8", "8 cubes", "huit", "huit cubes"],
+            "explanation": "40 ÷ 5 = 8. On cherche le nombre qui, multiplié par 5, donne 40 : 5 × 8 = 40."
+          },
+          {
+            "questionId": "q8",
+            "kind": "ordering",
+            "orderedIds": ["b", "d", "c", "a"],
+            "explanation": "2 × 9 = 18; 3 × 7 = 21; 5 × 5 = 25; 4 × 10 = 40."
+          },
+          {
+            "questionId": "q9",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. 6 rangées de 2 chaises, c’est 2 + 2 + 2 + 2 + 2 + 2 = 12 chaises, ou 6 × 2 = 12. Noé a additionné le nombre de rangées et le nombre de chaises au lieu de multiplier.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire non, donner 12 et expliquer qu’il faut multiplier (ou additionner 6 fois le nombre 2)."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "avance",
+      "content": {
+        "title": "",
+        "objective": "Je représente des multiplications à l’aide de dispositions rectangulaires et je trouve le produit.",
+        "teacherNote": "Version Avancé : même fiche que la version de base, écrite dans le français attendu en 3e année.",
+        "instructions": "Lis chaque question attentivement. Tu peux construire les dispositions avec des jetons ou faire un croquis dans la marge.",
+        "text": "Rappel : une disposition rectangulaire, ce sont des objets placés en rangées égales. Par exemple, une boîte d’œufs a 2 rangées de 6 œufs. On écrit 2 × 6 = 12 et on lit « 2 fois 6 égale 12 ». Le résultat d’une multiplication s’appelle le produit.\n\nSi on tourne la boîte d’un quart de tour, on voit 6 rangées de 2 œufs : 6 × 2 = 12. Le produit reste le même.",
+        "glossary": [
+          {
+            "term": "une rangée",
+            "definition": "Une ligne d’objets placés côte à côte."
+          },
+          {
+            "term": "une disposition rectangulaire",
+            "definition": "Des objets placés en rangées qui ont toutes le même nombre d’objets."
+          },
+          {
+            "term": "le produit",
+            "definition": "Le résultat d’une multiplication."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Dans le gymnase, des chaises sont placées en 4 rangées de 5 chaises. Coche toutes les multiplications qui représentent cette disposition.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "4 × 5"
+              },
+              {
+                "id": "b",
+                "text": "4 + 5"
+              },
+              {
+                "id": "c",
+                "text": "5 × 4"
+              },
+              {
+                "id": "d",
+                "text": "4 × 4"
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Combien de chaises y a-t-il en tout dans le gymnase?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q3",
+            "kind": "matching",
+            "prompt": "Associe chaque disposition à son produit. Un des produits est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "l1",
+                "text": "2 rangées de 7"
+              },
+              {
+                "id": "l2",
+                "text": "3 rangées de 5"
+              },
+              {
+                "id": "l3",
+                "text": "5 rangées de 10"
+              },
+              {
+                "id": "l4",
+                "text": "10 rangées de 2"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "20"
+              },
+              {
+                "id": "rb",
+                "text": "14"
+              },
+              {
+                "id": "rc",
+                "text": "50"
+              },
+              {
+                "id": "rd",
+                "text": "15"
+              },
+              {
+                "id": "re",
+                "text": "25"
+              }
+            ]
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "3 rangées de 8 jetons et 8 rangées de 3 jetons, c’est le même nombre de jetons.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Au jardin de l’école, Gaëlle plante des plants de tomates en 5 rangées. Chaque rangée a 6 plants. Combien de plants plante-t-elle? Écris la multiplication et la réponse.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "q6",
+            "kind": "multiple_choice",
+            "prompt": "Laurier a 12 jetons. Il veut les placer en rangées égales, sans qu’il en reste. Quelle disposition est impossible?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "2 rangées de 6"
+              },
+              {
+                "id": "b",
+                "text": "3 rangées de 4"
+              },
+              {
+                "id": "c",
+                "text": "5 rangées de 2"
+              },
+              {
+                "id": "d",
+                "text": "1 rangée de 12"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Fabien place 40 cubes en 5 rangées égales. Combien de cubes y a-t-il dans chaque rangée?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q8",
+            "kind": "ordering",
+            "prompt": "Place ces dispositions de celle qui a le moins d’objets à celle qui en a le plus.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "items": [
+              {
+                "id": "a",
+                "text": "4 rangées de 10"
+              },
+              {
+                "id": "b",
+                "text": "2 rangées de 9"
+              },
+              {
+                "id": "c",
+                "text": "5 rangées de 5"
+              },
+              {
+                "id": "d",
+                "text": "3 rangées de 7"
+              }
+            ]
+          },
+          {
+            "id": "q9",
+            "kind": "short_answer",
+            "prompt": "Noé dit : « 6 rangées de 2 chaises, c’est 6 + 2 = 8 chaises. » A-t-il raison? Explique ta réponse.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Des jetons ou des cubes emboîtables pour construire chaque disposition.",
+          "Une boîte d’œufs vide (2 rangées de 6) pour montrer une disposition rectangulaire de la vie courante.",
+          "Un tableau des faits de multiplication par 2, 5 et 10 affiché au mur."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "c"],
+            "explanation": "4 rangées de 5, c’est 4 × 5. Si on tourne la disposition, on voit 5 rangées de 4 : 5 × 4. 4 + 5 est une addition, et 4 × 4 ne compte que 4 chaises par rangée."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "20 chaises",
+            "acceptableAnswers": ["20", "20 chaises", "vingt", "vingt chaises"],
+            "explanation": "4 × 5 = 20. On peut aussi compter par bonds de 5 : 5, 10, 15, 20."
+          },
+          {
+            "questionId": "q3",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l4",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "2 × 7 = 14; 3 × 5 = 15; 5 × 10 = 50; 10 × 2 = 20. Le produit 25 n’est pas utilisé."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "3 × 8 = 24 et 8 × 3 = 24. Quand on tourne une disposition, le nombre d’objets ne change pas."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "5 × 6 = 30. Gaëlle plante 30 plants.",
+            "acceptableAnswers": ["30", "30 plants", "5 × 6 = 30", "6 × 5 = 30"],
+            "explanation": "5 rangées de 6 : 5 × 6 = 30. On peut aussi compter par bonds de 6 : 6, 12, 18, 24, 30."
+          },
+          {
+            "questionId": "q6",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "5 rangées de 2 ne font que 10 jetons (5 × 2 = 10). Les autres dispositions font 12 jetons : 2 × 6, 3 × 4 et 1 × 12."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "8 cubes, parce que 5 × 8 = 40.",
+            "acceptableAnswers": ["8", "8 cubes", "huit", "huit cubes"],
+            "explanation": "40 ÷ 5 = 8. On cherche le nombre qui, multiplié par 5, donne 40 : 5 × 8 = 40."
+          },
+          {
+            "questionId": "q8",
+            "kind": "ordering",
+            "orderedIds": ["b", "d", "c", "a"],
+            "explanation": "2 × 9 = 18; 3 × 7 = 21; 5 × 5 = 25; 4 × 10 = 40."
+          },
+          {
+            "questionId": "q9",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. 6 rangées de 2 chaises, c’est 2 + 2 + 2 + 2 + 2 + 2 = 12 chaises, ou 6 × 2 = 12. Noé a additionné le nombre de rangées et le nombre de chaises au lieu de multiplier.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire non, donner 12 et expliquer qu’il faut multiplier (ou additionner 6 fois le nombre 2)."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "enrichi",
+      "content": {
+        "title": "",
+        "objective": "Je représente des multiplications à l’aide de dispositions rectangulaires et je trouve le produit.",
+        "teacherNote": "Version Enrichi : vocabulaire mathématique plus précis (facteurs, produit, pivoter) et deux défis (questions 10 et 11). Mêmes nombres que les autres versions pour les questions 1 à 9.",
+        "instructions": "Lis attentivement chaque question. Tu peux construire les dispositions avec des jetons ou les esquisser dans la marge. Les deux dernières questions sont des défis.",
+        "text": "Rappel : dans une disposition rectangulaire, les objets sont placés en rangées qui contiennent toutes le même nombre d’objets. Une boîte d’œufs, par exemple, forme une disposition de 2 rangées de 6 : 2 × 6 = 12. Les nombres 2 et 6 sont les facteurs, et 12 est le produit.\n\nSi on fait pivoter la boîte d’un quart de tour, on obtient 6 rangées de 2 : 6 × 2 = 12. L’ordre des facteurs ne change pas le produit.",
+        "glossary": [
+          {
+            "term": "un facteur",
+            "definition": "Chacun des nombres que l’on multiplie."
+          },
+          {
+            "term": "le produit",
+            "definition": "Le résultat d’une multiplication."
+          },
+          {
+            "term": "pivoter",
+            "definition": "Tourner autour d’un point."
+          },
+          {
+            "term": "une disposition rectangulaire",
+            "definition": "Des objets placés en rangées qui contiennent toutes le même nombre d’objets."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Dans le gymnase, les chaises forment une disposition de 4 rangées de 5 chaises. Coche toutes les multiplications qui représentent cette disposition.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "4 × 5"
+              },
+              {
+                "id": "b",
+                "text": "4 + 5"
+              },
+              {
+                "id": "c",
+                "text": "5 × 4"
+              },
+              {
+                "id": "d",
+                "text": "4 × 4"
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Combien de chaises le gymnase contient-il en tout?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q3",
+            "kind": "matching",
+            "prompt": "Associe chaque disposition à son produit. Un des produits est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "l1",
+                "text": "2 rangées de 7"
+              },
+              {
+                "id": "l2",
+                "text": "3 rangées de 5"
+              },
+              {
+                "id": "l3",
+                "text": "5 rangées de 10"
+              },
+              {
+                "id": "l4",
+                "text": "10 rangées de 2"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "20"
+              },
+              {
+                "id": "rb",
+                "text": "14"
+              },
+              {
+                "id": "rc",
+                "text": "50"
+              },
+              {
+                "id": "rd",
+                "text": "15"
+              },
+              {
+                "id": "re",
+                "text": "25"
+              }
+            ]
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "Une disposition de 3 rangées de 8 jetons contient autant de jetons qu’une disposition de 8 rangées de 3 jetons.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Au jardin de l’école, Gaëlle plante des plants de tomates en 5 rangées. Chaque rangée a 6 plants. Combien de plants plante-t-elle? Écris la multiplication et la réponse.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "q6",
+            "kind": "multiple_choice",
+            "prompt": "Laurier veut disposer 12 jetons en rangées égales, sans qu’il en reste. Laquelle de ces dispositions est impossible?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "2 rangées de 6"
+              },
+              {
+                "id": "b",
+                "text": "3 rangées de 4"
+              },
+              {
+                "id": "c",
+                "text": "5 rangées de 2"
+              },
+              {
+                "id": "d",
+                "text": "1 rangée de 12"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Fabien place 40 cubes en 5 rangées égales. Combien de cubes y a-t-il dans chaque rangée?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q8",
+            "kind": "ordering",
+            "prompt": "Place ces dispositions de celle qui a le moins d’objets à celle qui en a le plus.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "items": [
+              {
+                "id": "a",
+                "text": "4 rangées de 10"
+              },
+              {
+                "id": "b",
+                "text": "2 rangées de 9"
+              },
+              {
+                "id": "c",
+                "text": "5 rangées de 5"
+              },
+              {
+                "id": "d",
+                "text": "3 rangées de 7"
+              }
+            ]
+          },
+          {
+            "id": "q9",
+            "kind": "short_answer",
+            "prompt": "Noé affirme : « 6 rangées de 2 chaises, c’est 6 + 2 = 8 chaises. » Son raisonnement est-il juste? Justifie ta réponse à l’aide d’une disposition rectangulaire.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          },
+          {
+            "id": "q10",
+            "kind": "short_answer",
+            "prompt": "Défi : trouve toutes les dispositions rectangulaires possibles avec 24 jetons, avec au plus 10 rangées et au plus 10 jetons par rangée. Écris une multiplication pour chacune.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          },
+          {
+            "id": "q11",
+            "kind": "short_answer",
+            "prompt": "Défi : Alix place 36 chaises en rangées de 4. Bastien place 36 chaises en rangées de 9. Qui a le plus de rangées? Combien de rangées de plus?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Des jetons ou des cubes emboîtables pour construire chaque disposition.",
+          "Une boîte d’œufs vide (2 rangées de 6) pour montrer une disposition rectangulaire de la vie courante.",
+          "Un tableau des faits de multiplication par 2, 5 et 10 affiché au mur."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "c"],
+            "explanation": "4 rangées de 5, c’est 4 × 5. Si on tourne la disposition, on voit 5 rangées de 4 : 5 × 4. 4 + 5 est une addition, et 4 × 4 ne compte que 4 chaises par rangée."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "20 chaises",
+            "acceptableAnswers": ["20", "20 chaises", "vingt", "vingt chaises"],
+            "explanation": "4 × 5 = 20. On peut aussi compter par bonds de 5 : 5, 10, 15, 20."
+          },
+          {
+            "questionId": "q3",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l4",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "2 × 7 = 14; 3 × 5 = 15; 5 × 10 = 50; 10 × 2 = 20. Le produit 25 n’est pas utilisé."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "3 × 8 = 24 et 8 × 3 = 24. Quand on tourne une disposition, le nombre d’objets ne change pas."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "5 × 6 = 30. Gaëlle plante 30 plants.",
+            "acceptableAnswers": ["30", "30 plants", "5 × 6 = 30", "6 × 5 = 30"],
+            "explanation": "5 rangées de 6 : 5 × 6 = 30. On peut aussi compter par bonds de 6 : 6, 12, 18, 24, 30."
+          },
+          {
+            "questionId": "q6",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "5 rangées de 2 ne font que 10 jetons (5 × 2 = 10). Les autres dispositions font 12 jetons : 2 × 6, 3 × 4 et 1 × 12."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "8 cubes, parce que 5 × 8 = 40.",
+            "acceptableAnswers": ["8", "8 cubes", "huit", "huit cubes"],
+            "explanation": "40 ÷ 5 = 8. On cherche le nombre qui, multiplié par 5, donne 40 : 5 × 8 = 40."
+          },
+          {
+            "questionId": "q8",
+            "kind": "ordering",
+            "orderedIds": ["b", "d", "c", "a"],
+            "explanation": "2 × 9 = 18; 3 × 7 = 21; 5 × 5 = 25; 4 × 10 = 40."
+          },
+          {
+            "questionId": "q9",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. 6 rangées de 2 chaises, c’est 2 + 2 + 2 + 2 + 2 + 2 = 12 chaises, ou 6 × 2 = 12. Noé a additionné le nombre de rangées et le nombre de chaises au lieu de multiplier.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire non, donner 12 et expliquer qu’il faut multiplier (ou additionner 6 fois le nombre 2)."
+          },
+          {
+            "questionId": "q10",
+            "kind": "short_answer",
+            "sampleAnswer": "3 × 8, 4 × 6, 6 × 4 et 8 × 3 : 3 rangées de 8, 4 rangées de 6, 6 rangées de 4 et 8 rangées de 3.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : 1 × 24 et 2 × 12 ont plus de 10 jetons par rangée, et 12 × 2 et 24 × 1 ont plus de 10 rangées. Acceptez 3 × 8 et 4 × 6 seulement si l’élève explique que les dispositions tournées donnent 8 × 3 et 6 × 4."
+          },
+          {
+            "questionId": "q11",
+            "kind": "short_answer",
+            "sampleAnswer": "Alix a 9 rangées (9 × 4 = 36) et Bastien a 4 rangées (4 × 9 = 36). Alix a 5 rangées de plus.",
+            "acceptableAnswers": [],
+            "explanation": "36 ÷ 4 = 9 rangées pour Alix; 36 ÷ 9 = 4 rangées pour Bastien; 9 − 4 = 5."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}
