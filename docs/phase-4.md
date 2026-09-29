@@ -193,7 +193,8 @@ names she typed; nobody else reads them, board admins included. PDFs are never s
   user that `authenticated` may run is Phase 1's `app.is_teacher_at_class_school`.
 - **Direct writes are closed:** `authenticated` has `select` on the library tables and `delete`
   on `library_items` (drafts, sent back, archived; row level security), nothing else
-  (`00_schema_invariants`).
+  (`00_schema_invariants`). The one exception is Phase 1's `library_item_ratings` (a user's own
+  rating, under row level security), which no screen uses until the ratings UI (Phase 5).
 - **Visibility (D-065) regression:** board admins no longer read private drafts (tests 06, 07,
   15); search is pinned to `app.library_item_usable_by` (test 17); office staff have no library
   pages or PDFs (e2e).
