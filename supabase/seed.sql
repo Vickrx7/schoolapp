@@ -1,5 +1,7 @@
 -- Demo data for local development and pilot demos. Everything here is fictional.
--- Loaded by `supabase db reset` (and tools/lite-stack/stack.sh reset).
+-- Loaded by `supabase db reset` (and tools/lite-stack/stack.sh reset), followed by
+-- supabase/seeds/*.sql in name order: the demo library (20_library_demo.sql, generated from
+-- content/library/demo by `pnpm library:seed`) and its links to the demo planning.
 --
 -- Demo logins (sign in with the emailed 6-digit code; locally the email lands in Mailpit):
 --   isabelle.tremblay@demo.lynx.test  teacher, 3e année (homeroom)
@@ -7,7 +9,7 @@
 --   paul.leblanc@demo.lynx.test       teacher, Anglais (5e) and EPS prep coverage (3e)
 --   sophie.lavoie@demo.lynx.test      principal
 --   julie.bergeron@demo.lynx.test     office admin
---   nathalie.roy@demo.lynx.test       board admin
+--   nathalie.roy@demo.lynx.test       board admin; reviews library resources (content and faith)
 
 -- ---------------------------------------------------------------------------------------
 -- Board, school, year, rooms
@@ -328,6 +330,12 @@ from (values
   ('20000000-0000-4000-8000-000000030b12'::uuid, 'mat', '3', '10000000-0000-4000-8000-00000000aa02'::uuid, '20000000-0000-4000-8000-000000030b01'::uuid, 'specific', 'B1.2', 'Comparer et ordonner des nombres naturels jusqu''à 1 000.', 'mat-2020', 3),
   ('20000000-0000-4000-8000-000000030b13'::uuid, 'mat', '3', '10000000-0000-4000-8000-00000000aa02'::uuid, '20000000-0000-4000-8000-000000030b01'::uuid, 'specific', 'B1.3', 'Arrondir des nombres naturels à la dizaine ou à la centaine près dans divers contextes.', 'mat-2020', 4),
   ('20000000-0000-4000-8000-000000030b21'::uuid, 'mat', '3', '10000000-0000-4000-8000-00000000aa02'::uuid, null, 'overall', 'B2', 'Utiliser ses connaissances des nombres et des opérations pour résoudre des problèmes.', 'mat-2020', 5),
+  -- 5e année, Français: the same meanings as the 3e codes, for the demo library (D-071). Ids use
+  -- `…051…` because 5e Sciences already has `…050d…`.
+  ('20000000-0000-4000-8000-000000051c01'::uuid, 'fra', '5', '10000000-0000-4000-8000-00000000fa03'::uuid, null::uuid, 'overall', 'C1', 'Utiliser des stratégies pour comprendre divers textes, dont des textes informatifs et narratifs, et réagir à ce qu’elle ou il lit.', 'fra-2023', 1),
+  ('20000000-0000-4000-8000-000000051c12'::uuid, 'fra', '5', '10000000-0000-4000-8000-00000000fa03'::uuid, '20000000-0000-4000-8000-000000051c01'::uuid, 'specific', 'C1.2', 'Dégager l’idée principale et les détails importants d’un texte informatif ou narratif.', 'fra-2023', 2),
+  ('20000000-0000-4000-8000-000000051d01'::uuid, 'fra', '5', '10000000-0000-4000-8000-00000000fa04'::uuid, null, 'overall', 'D1', 'Planifier et rédiger des textes variés pour communiquer de l’information et des idées à un public donné.', 'fra-2023', 3),
+  ('20000000-0000-4000-8000-000000051d11'::uuid, 'fra', '5', '10000000-0000-4000-8000-00000000fa04'::uuid, '20000000-0000-4000-8000-000000051d01'::uuid, 'specific', 'D1.1', 'Organiser ses idées et l’information recueillie à l’aide d’un organisateur graphique avant d’écrire.', 'fra-2023', 4),
   -- 5e année, Mathématiques
   ('20000000-0000-4000-8000-000000050b01'::uuid, 'mat', '5', '10000000-0000-4000-8000-00000000aa02'::uuid, null, 'overall', 'B1', 'Démontrer une compréhension des nombres naturels, des fractions et des nombres décimaux jusqu''aux centièmes.', 'mat-2020', 1),
   ('20000000-0000-4000-8000-000000050b11'::uuid, 'mat', '5', '10000000-0000-4000-8000-00000000aa02'::uuid, '20000000-0000-4000-8000-000000050b01'::uuid, 'specific', 'B1.5', 'Représenter des fractions équivalentes à l''aide de modèles et de droites numériques.', 'mat-2020', 2),
@@ -399,7 +407,8 @@ from (values
   ('30000000-0000-4000-8000-000000000502'::uuid, 8, 'Tester et améliorer', 'Tester le pont et proposer des améliorations.', 'Ponts construits, poids.', 'Tests et réflexion écrite.', null)
 ) as v (unit_id, seq, title, objectives, materials, content, sub_notes);
 
--- Link a few lessons to expectations.
+-- Link a few lessons to expectations. Each unit's next lesson has one, so substitute plans can
+-- find library resources for it (DECISIONS D-077).
 insert into public.unit_lesson_expectations (lesson_id, expectation_id)
 select l.id, e.expectation_id
 from public.unit_lessons l
@@ -410,11 +419,14 @@ join (values
   ('30000000-0000-4000-8000-000000000301'::uuid, 7, '20000000-0000-4000-8000-000000030d11'::uuid),
   ('30000000-0000-4000-8000-000000000302'::uuid, 1, '20000000-0000-4000-8000-000000030b11'::uuid),
   ('30000000-0000-4000-8000-000000000302'::uuid, 4, '20000000-0000-4000-8000-000000030b12'::uuid),
+  ('30000000-0000-4000-8000-000000000302'::uuid, 5, '20000000-0000-4000-8000-000000030b12'::uuid),
   ('30000000-0000-4000-8000-000000000302'::uuid, 6, '20000000-0000-4000-8000-000000030b13'::uuid),
   ('30000000-0000-4000-8000-000000000501'::uuid, 2, '20000000-0000-4000-8000-000000050b11'::uuid),
   ('30000000-0000-4000-8000-000000000501'::uuid, 4, '20000000-0000-4000-8000-000000050b12'::uuid),
   ('30000000-0000-4000-8000-000000000501'::uuid, 5, '20000000-0000-4000-8000-000000050b13'::uuid),
+  ('30000000-0000-4000-8000-000000000501'::uuid, 6, '20000000-0000-4000-8000-000000050b13'::uuid),
   ('30000000-0000-4000-8000-000000000502'::uuid, 2, '20000000-0000-4000-8000-000000050d11'::uuid),
+  ('30000000-0000-4000-8000-000000000502'::uuid, 3, '20000000-0000-4000-8000-000000050d11'::uuid),
   ('30000000-0000-4000-8000-000000000502'::uuid, 5, '20000000-0000-4000-8000-000000050d12'::uuid)
 ) as e (unit_id, seq, expectation_id) on e.unit_id = l.unit_id and e.seq = l.sequence_number;
 
@@ -441,6 +453,14 @@ insert into public.catholic_references (board_id, type, title, text_fr, grade_mi
   ('b0000000-0000-4000-8000-000000000001', 'reflection', 'Dire merci', 'Nomme trois personnes ou trois choses pour lesquelles tu veux dire merci aujourd''hui.', -1, 8, 'temps_ordinaire', '{gratitude,action de grâce}', 'Texte original de démonstration.'),
   ('b0000000-0000-4000-8000-000000000001', 'prayer', 'Prière avant le travail', 'Seigneur, aide-moi à bien écouter, à faire de mon mieux et à aider mes amis aujourd''hui. Amen.', -1, 6, null, '{prière,journée}', 'Texte original de démonstration.'),
   ('b0000000-0000-4000-8000-000000000001', 'prayer', 'Prière de l''Avent', 'Seigneur, pendant ce temps d''attente, rends nos cœurs prêts à t''accueillir et à partager avec les autres. Amen.', -1, 8, 'avent', '{avent,partage}', 'Texte original de démonstration.');
+
+-- ---------------------------------------------------------------------------------------
+-- Library reviewer designated by the board (DECISIONS D-064): Nathalie Roy approves resources
+-- for the board and reviews faith content. The demo library itself is in supabase/seeds/.
+-- ---------------------------------------------------------------------------------------
+
+insert into public.library_reviewers (board_id, user_id, approves_content, reviews_faith) values
+  ('b0000000-0000-4000-8000-000000000001', 'd0000000-0000-4000-8000-000000000006', true, true);
 
 -- ---------------------------------------------------------------------------------------
 -- The substitute portal's database login (DECISIONS D-049), for local development and CI

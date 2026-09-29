@@ -9,6 +9,7 @@ import {
 } from '@lynx/domain';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
+import type { LibraryReviewerRole } from './library/view-model';
 import { createSupabaseServerClient } from './supabase';
 
 export interface SchoolContext {
@@ -35,6 +36,11 @@ export interface SessionContext {
   roles: { role: AppRole; boardId: string; schoolId: string | null }[];
   schools: SchoolContext[];
   boards: { id: string; name: string; settings: BoardSettings; isAdmin: boolean }[];
+  /**
+   * The user's own designations as a library reviewer (DECISIONS D-064), for boards where the
+   * user is active staff (as `app.library_reviewer` requires).
+   */
+  libraryReviewer: LibraryReviewerRole[];
 }
 
 export type SessionState =
@@ -50,13 +56,17 @@ export const loadSessionState = cache(async (): Promise<SessionState> => {
   if (!auth.user) return { status: 'anonymous' };
 
   const userId = auth.user.id;
-  const [profile, roles] = await Promise.all([
+  const [profile, roles, reviewers] = await Promise.all([
     supabase
       .from('users')
       .select('email, display_name, honorific, preferred_locale, deactivated_at')
       .eq('id', userId)
       .maybeSingle(),
     supabase.from('user_roles').select('role, board_id, school_id').eq('user_id', userId),
+    supabase
+      .from('library_reviewers')
+      .select('board_id, approves_content, reviews_faith')
+      .eq('user_id', userId),
   ]);
   if (!profile.data || profile.data.deactivated_at) return { status: 'inactive' };
 
@@ -125,6 +135,15 @@ export const loadSessionState = cache(async (): Promise<SessionState> => {
       settings: parseBoardSettings(b.settings),
       isAdmin: roleRows.some((r) => r.board_id === b.id && r.role === 'board_admin'),
     })),
+    libraryReviewer: (reviewers.data ?? [])
+      .filter((r) =>
+        roleRows.some((role) => role.board_id === r.board_id && role.role !== 'parent'),
+      )
+      .map((r) => ({
+        boardId: r.board_id,
+        approvesContent: r.approves_content,
+        reviewsFaith: r.reviews_faith,
+      })),
   };
   return { status: 'active', session };
 });
@@ -169,6 +188,20 @@ export const aiOn = (session: SessionContext, school: SchoolContext) =>
 /** Schools where the user may use AI features (teachers and direction). */
 export const aiSchools = (session: SessionContext) =>
   session.schools.filter((s) => hasRole(s, 'teacher', 'principal', 'vice_principal'));
+
+/**
+ * Schools where the user may use the library (« Banque de ressources », DECISIONS D-078):
+ * teachers and direction, where the Library module is licensed. Office staff have no library
+ * screens.
+ */
+export const librarySchools = (session: SessionContext) =>
+  session.schools.filter(
+    (s) => hasModule(s, 'library') && hasRole(s, 'teacher', 'principal', 'vice_principal'),
+  );
+
+/** Library pages and navigation: a library school, or a reviewer designation (D-078). */
+export const showLibrary = (session: SessionContext) =>
+  librarySchools(session).length > 0 || session.libraryReviewer.length > 0;
 
 export const findSchool = (session: SessionContext, schoolId: string) =>
   session.schools.find((s) => s.id === schoolId) ?? null;

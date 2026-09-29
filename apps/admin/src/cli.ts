@@ -20,12 +20,32 @@
  * (true and false for a new reviewer), and both false removes the designation:
  *   pnpm admin set-library-reviewer --board csc-exemple --email conseillere@conseil.ca --content true --faith true
  *   pnpm admin list-library-reviewers --board csc-exemple
+ *
+ * Curriculum import (JSON only; see DECISIONS.md, D-070 and D-030). A dry run unless --apply:
+ * it validates the file, compares it with the database and says what would change. A file that
+ * says it holds official or verified text needs --confirm-licence. The file holds one standard
+ * subject's whole curriculum version (sort orders follow the file); strands and attentes are
+ * upserted by code, never deleted, and every library search document is rebuilt. Re-running the
+ * same file changes nothing. tools/fixtures/curriculum-sample.json is an example (4e année
+ * Français summaries, unverified):
+ *   pnpm admin import-curriculum --file tools/fixtures/curriculum-sample.json [--apply] [--confirm-licence]
  */
 import { loadEnv } from '@lynx/config';
+import { LICENCE_WARNING, parseCurriculumFile } from '@lynx/content';
 import { Constants, type Database, type Json } from '@lynx/db';
 import { createClient } from '@supabase/supabase-js';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
 import { parseArgs } from 'node:util';
 import { z } from 'zod';
+import {
+  describePlan,
+  formatErrors,
+  planCurriculumImport,
+  planIsEmpty,
+  type ExistingExpectation,
+  type PlannedExpectation,
+} from './curriculum';
 
 const env = loadEnv(
   z.object({
@@ -67,6 +87,9 @@ const { values } = parseArgs({
     csv: { type: 'boolean' },
     content: { type: 'string' },
     faith: { type: 'string' },
+    file: { type: 'string' },
+    apply: { type: 'boolean' },
+    'confirm-licence': { type: 'boolean' },
   },
 });
 
@@ -154,6 +177,41 @@ function monthIn(timeZone: string, iso: string): string {
 function csvCell(v: string | number | boolean): string {
   const s = String(v);
   return /[",\n]/.test(s) ? `"${s.replaceAll('"', '""')}"` : s;
+}
+
+/** Every attente of a subject's curriculum version (paged: the API returns 1,000 rows at most). */
+async function versionExpectations(
+  subjectId: string,
+  version: string,
+): Promise<ExistingExpectation[]> {
+  const rows: ExistingExpectation[] = [];
+  for (let offset = 0; ; offset += 1000) {
+    const { data, error } = await db
+      .from('curriculum_expectations')
+      .select(
+        'id, grade_code, code, kind, strand_id, parent_id, text_fr, text_en, is_verified, source_note, sort_order',
+      )
+      .eq('subject_id', subjectId)
+      .eq('curriculum_version', version)
+      .order('id')
+      .range(offset, offset + 999);
+    if (error) throw new CliError(`attentes: ${error.message}`);
+    rows.push(...(data ?? []));
+    if (!data || data.length < 1000) break;
+  }
+  return rows;
+}
+
+/** Writes rows 500 at a time; each call is one statement. */
+async function inChunks<T>(
+  rows: readonly T[],
+  write: (chunk: T[]) => PromiseLike<{ error: { message: string } | null }>,
+  what: string,
+): Promise<void> {
+  for (let i = 0; i < rows.length; i += 500) {
+    const { error } = await write(rows.slice(i, i + 500));
+    if (error) throw new CliError(`${what}: ${error.message}`);
+  }
 }
 
 const commands: Record<string, () => Promise<string>> = {
@@ -507,6 +565,138 @@ const commands: Record<string, () => Promise<string>> = {
         const inactive = r.users.deactivated_at ? ' (deactivated: no access)' : '';
         return `  ${r.users.email} (${r.users.display_name}): ${kinds}${inactive}`;
       }),
+    ].join('\n');
+  },
+
+  async 'import-curriculum'() {
+    const given = need('file');
+    // pnpm runs the CLI from apps/admin: the path is relative to where `pnpm admin` was run.
+    const file = path.resolve(process.env.INIT_CWD ?? process.cwd(), given);
+    let text: string;
+    try {
+      text = readFileSync(file, 'utf8');
+    } catch {
+      throw new CliError(`cannot read ${file}`);
+    }
+    const parsed = parseCurriculumFile(text, {
+      confirmLicence: values['confirm-licence'] === true,
+    });
+    if (parsed.errors.some((e) => e.message === 'licenceConfirmationRequired')) {
+      throw new CliError(LICENCE_WARNING);
+    }
+    if (!parsed.data) {
+      throw new CliError(
+        `${given} is not a valid curriculum file:\n${formatErrors(parsed.errors)}`,
+      );
+    }
+    const data = parsed.data;
+    // Confirmed: the warning is still printed, so the operator sees what they confirmed (D-030).
+    if (data.official || data.verified) {
+      console.warn(`Licence confirmed with --confirm-licence.\n${LICENCE_WARNING}\n`);
+    }
+
+    const subject = check(
+      await db
+        .from('subjects')
+        .select('id, label_fr, grade_min, grade_max')
+        .eq('code', data.subjectCode)
+        .is('board_id', null)
+        .maybeSingle(),
+      `standard subject "${data.subjectCode}"`,
+    );
+    const grades = check(await db.from('grades').select('code, ordinal'), 'grades');
+    const strands = await db
+      .from('strands')
+      .select('id, code, label_fr, label_en, sort_order')
+      .eq('subject_id', subject.id)
+      .eq('curriculum_version', data.curriculumVersion);
+    if (strands.error) throw new CliError(`strands: ${strands.error.message}`);
+
+    const plan = planCurriculumImport(data, {
+      grades: new Map(grades.map((g) => [g.code, g.ordinal])),
+      subject: { gradeMin: subject.grade_min, gradeMax: subject.grade_max },
+      strands: strands.data ?? [],
+      expectations: await versionExpectations(subject.id, data.curriculumVersion),
+    });
+    if (plan.errors.length) {
+      throw new CliError(`${given} does not fit the database:\n${formatErrors(plan.errors)}`);
+    }
+    const report = `${given}\n${describePlan(data, subject.label_fr, plan)}`;
+    if (!values.apply)
+      return `${report}\nDry run: nothing was written. Re-run with --apply to import.`;
+    if (planIsEmpty(plan)) return `${report}\nNothing to import: the database already matches.`;
+
+    // Strands, then overall attentes, then specific ones (they point at their overall attente).
+    const version = { subject_id: subject.id, curriculum_version: data.curriculumVersion };
+    await inChunks(
+      plan.strands
+        .filter((s) => s.change !== 'unchanged')
+        .map((s) => ({
+          ...version,
+          code: s.code,
+          label_fr: s.label_fr,
+          label_en: s.label_en,
+          sort_order: s.sort_order,
+        })),
+      (chunk) =>
+        db.from('strands').upsert(chunk, { onConflict: 'subject_id,curriculum_version,code' }),
+      'strands',
+    );
+    const strandIds = check(
+      await db
+        .from('strands')
+        .select('id, code')
+        .eq('subject_id', subject.id)
+        .eq('curriculum_version', data.curriculumVersion),
+      'strands',
+    );
+    const strandId = new Map(strandIds.map((s) => [s.code, s.id]));
+    const row = (e: PlannedExpectation, parentId: string | null) => ({
+      ...version,
+      grade_code: e.grade_code,
+      code: e.code,
+      kind: e.kind,
+      strand_id: e.strandCode === null ? null : (strandId.get(e.strandCode) ?? null),
+      parent_id: parentId,
+      text_fr: e.text_fr,
+      text_en: e.text_en,
+      is_verified: e.is_verified,
+      source_note: e.source_note,
+      sort_order: e.sort_order,
+    });
+    const onConflict = 'subject_id,grade_code,curriculum_version,code';
+    const toWrite = plan.expectations.filter((e) => e.change !== 'unchanged');
+    await inChunks(
+      toWrite.filter((e) => e.kind === 'overall').map((e) => row(e, null)),
+      (chunk) => db.from('curriculum_expectations').upsert(chunk, { onConflict }),
+      'overall attentes',
+    );
+    const overallId = new Map(
+      (await versionExpectations(subject.id, data.curriculumVersion))
+        .filter((e) => e.kind === 'overall')
+        .map((e) => [`${e.grade_code}:${e.code}`, e.id]),
+    );
+    await inChunks(
+      toWrite
+        .filter((e) => e.kind === 'specific')
+        .map((e) => {
+          const parent = overallId.get(`${e.grade_code}:${e.parentCode}`);
+          if (!parent)
+            throw new CliError(`overall attente ${e.grade_code} ${e.parentCode} not found`);
+          return row(e, parent);
+        }),
+      (chunk) => db.from('curriculum_expectations').upsert(chunk, { onConflict }),
+      'specific attentes',
+    );
+
+    // Attente texts are part of every linked item's search document (D-068).
+    const { data: refreshed, error } = await db.rpc('library_refresh_search_all');
+    if (error) throw new CliError(`library search documents: ${error.message}`);
+    const strandCount = plan.strands.filter((s) => s.change !== 'unchanged').length;
+    return [
+      report,
+      `Imported: ${strandCount} strand(s) and ${toWrite.length} attente(s) written.`,
+      `Search documents rebuilt for ${refreshed} library item(s).`,
     ].join('\n');
   },
 };

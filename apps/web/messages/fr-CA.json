@@ -32,7 +32,9 @@
     "signOut": "Se déconnecter",
     "mainNavigation": "Navigation principale",
     "differentiate": "Différencier",
-    "substitutes": "Suppléances"
+    "substitutes": "Suppléances",
+    "library": "Ressources",
+    "more": "Plus"
   },
   "auth": {
     "title": "Connexion",
@@ -115,7 +117,33 @@
     "subPlanAiStale": "Le plan a changé depuis l’aperçu. Vérifiez de nouveau avant d’envoyer.",
     "subPlanAiNothing": "Ce plan n’a aucune période d’enseignement à détailler.",
     "subReportChanged": "Le suivi a changé depuis que vous l’avez ouvert. La page montre maintenant la nouvelle version : vérifiez-la avant de confirmer.",
-    "absenceRequestReused": "Cet envoi a déjà servi pour une autre absence. Vérifiez vos absences, puis touchez « Envoyer » de nouveau."
+    "absenceRequestReused": "Cet envoi a déjà servi pour une autre absence. Vérifiez vos absences, puis touchez « Envoyer » de nouveau.",
+    "libraryNotReady": "Cette ressource n’est pas complète. Complétez ce qui manque, ou remettez-la en brouillon pour l’enregistrer incomplète.",
+    "librarySafetyNotes": "Les notes de sécurité sont obligatoires pour une expérience ou un défi STIM.",
+    "libraryFaithReviewNeeded": "Le contenu de foi doit d’abord être révisé par la personne désignée par le conseil.",
+    "libraryWrongStatus": "Cette action n’est plus possible : l’état de la ressource a changé. Rechargez la page.",
+    "libraryOwnItem": "Vous ne pouvez pas approuver une ressource que vous avez créée.",
+    "libraryLocked": "Une ressource approuvée par le conseil ne peut pas être modifiée.",
+    "libraryConflict": "Cette ressource a changé depuis que vous l’avez ouverte. Rechargez la page pour voir la nouvelle version.",
+    "libraryTooLargeForAi": "Cette ressource est trop longue pour que l’IA en prépare d’autres versions. Raccourcissez-la ou choisissez moins de niveaux.",
+    "libraryLevelExists": "Cette ressource a déjà une version pour ce niveau.",
+    "libraryPersonalLevels": "Cette ressource a des versions pour vos niveaux personnels. Retirez-les avant de la partager.",
+    "libraryStudentNames": "Le texte contient des prénoms d’élèves de votre école. Retirez-les, ou confirmez que ce ne sont pas des noms d’élèves.",
+    "libraryInvalidContent": "Certaines parties de la ressource ne sont pas valides. Vérifiez les champs signalés.",
+    "libraryChanged": "La ressource a changé pendant la préparation. Relancez la demande.",
+    "readiness": {
+      "grades": "Ajoutez au moins une année d’études.",
+      "subject": "Choisissez une matière.",
+      "duration": "Indiquez une durée.",
+      "materials": "Indiquez le matériel (ou « Aucun matériel particulier »).",
+      "tags": "Ajoutez une étiquette ou un mot-clé.",
+      "base": "La version de base est obligatoire.",
+      "expectations": "Liez au moins une attente.",
+      "key": "Ajoutez le corrigé de la version de base.",
+      "levels": "Ajoutez une version pour chaque niveau du conseil avant de proposer la ressource au conseil.",
+      "safety": "Complétez les notes de sécurité.",
+      "content": "Une version n’est pas complète : vérifiez les champs signalés."
+    }
   },
   "days": {
     "1": "lundi",
@@ -1095,5 +1123,234 @@
     "open": "Activités pour les élèves (PDF)",
     "download": "Télécharger les activités des élèves",
     "hint": "Une page par groupe, avec son numéro dans le coin : aucun nom d’élève ni nom de niveau."
-  }
+  },
+  "libraryCommon": {
+    "types": {
+      "lesson_plan": "Plan de leçon",
+      "anchor_chart": "Référentiel",
+      "worked_example": "Exemple résolu",
+      "teacher_guide": "Guide pédagogique",
+      "worksheet": "Fiche d’exercices",
+      "learning_centre": "Centre d’apprentissage",
+      "reading_passage": "Texte de lecture",
+      "vocabulary_bank": "Banque de mots",
+      "exit_ticket": "Billet de sortie",
+      "experiment": "Expérience",
+      "stem_challenge": "Défi STIM",
+      "project": "Projet",
+      "outdoor_activity": "Activité extérieure",
+      "quiz": "Quiz",
+      "unit_test": "Évaluation de fin d’unité",
+      "diagnostic": "Évaluation diagnostique",
+      "rubric": "Grille d’évaluation",
+      "game": "Jeu",
+      "brain_break": "Pause active",
+      "song": "Chanson",
+      "riddle": "Devinettes",
+      "weekly_challenge": "Défi de la semaine",
+      "catholic_reflection": "Réflexion catholique",
+      "culture_hook": "Amorce culturelle",
+      "parent_guide": "Guide pour les familles"
+    },
+    "typeHints": {
+      "lesson_plan": "Le déroulement d’une leçon, étape par étape, avec les critères de réussite.",
+      "anchor_chart": "Une affiche de référence à construire ou à projeter avec la classe.",
+      "worked_example": "Un problème résolu pas à pas, puis quelques questions pour s’exercer.",
+      "teacher_guide": "Comment enseigner la notion : idée maîtresse, idées fausses fréquentes et conseils.",
+      "worksheet": "Des exercices à faire individuellement ou en équipe, avec un corrigé.",
+      "learning_centre": "Un atelier autonome : préparation, étapes pour les élèves et rangement.",
+      "reading_passage": "Un texte à lire, avec un glossaire et des questions de compréhension.",
+      "vocabulary_bank": "Les mots d’un thème, avec leur définition et un exemple.",
+      "exit_ticket": "Une à trois questions pour vérifier la compréhension à la fin d’une leçon.",
+      "experiment": "Une démarche d’enquête scientifique, avec les notes de sécurité.",
+      "stem_challenge": "Un défi de conception à construire et à tester, avec les notes de sécurité.",
+      "project": "Un projet sur plusieurs séances, avec ses étapes et ce que les élèves remettent.",
+      "outdoor_activity": "Une activité dans la cour ou dehors, avec une solution de rechange en cas de mauvais temps.",
+      "quiz": "Des questions faciles à corriger : choix multiple, vrai ou faux, associations…",
+      "unit_test": "Une évaluation par sections, à la fin d’une unité.",
+      "diagnostic": "Pour savoir ce que les élèves savent déjà, avec des pistes d’intervention.",
+      "rubric": "Une grille selon les quatre compétences de la grille d’évaluation du rendement.",
+      "game": "Un jeu pour s’exercer en s’amusant, avec ses règles et ses variantes.",
+      "brain_break": "Quelques minutes pour bouger ou se recentrer entre deux activités.",
+      "song": "Une chanson originale ou sur un air connu, avec des gestes.",
+      "riddle": "Des devinettes à résoudre, avec les réponses dans le corrigé.",
+      "weekly_challenge": "Un défi à relever sur quelques jours, avec des indices.",
+      "catholic_reflection": "Un moment de foi : réflexion, questions, prière et geste à poser.",
+      "culture_hook": "Une amorce sur la francophonie, surtout franco-ontarienne, pour lancer une discussion.",
+      "parent_guide": "Un guide en français et en anglais pour soutenir l’apprentissage à la maison."
+    },
+    "buckets": {
+      "enseigner": "Enseigner",
+      "pratiquer": "Pratiquer",
+      "explorer": "Explorer",
+      "evaluer": "Évaluer",
+      "jouer": "Jouer",
+      "relier": "Relier"
+    },
+    "bucketHints": {
+      "enseigner": "Pour préparer et présenter une notion.",
+      "pratiquer": "Pour que les élèves s’exercent.",
+      "explorer": "Pour chercher, expérimenter et créer.",
+      "evaluer": "Pour vérifier ce que les élèves ont appris.",
+      "jouer": "Pour apprendre en s’amusant et en bougeant.",
+      "relier": "Pour relier l’apprentissage à la foi, à la culture et aux familles."
+    },
+    "status": {
+      "draft": "Brouillon",
+      "teacher_reviewed": "Révisée",
+      "board_approved": "Approuvée par le conseil",
+      "rejected": "À retravailler",
+      "archived": "Archivée"
+    },
+    "requested": "En attente d’approbation",
+    "scope": {
+      "private": "Privée",
+      "school": "Partagée avec l’école",
+      "board": "Partagée avec le conseil"
+    },
+    "formats": {
+      "printable": "À imprimer",
+      "projectable": "À projeter",
+      "interactive": "Interactif"
+    },
+    "supervision": {
+      "standard": "Supervision habituelle",
+      "close": "Supervision étroite",
+      "adult_only": "Manipulations par un adulte seulement"
+    },
+    "categories": {
+      "connaissance": "Connaissance et compréhension",
+      "habiletes": "Habiletés de la pensée",
+      "communication": "Communication",
+      "application": "Mise en application"
+    },
+    "questionKinds": {
+      "multiple_choice": "Choix multiple",
+      "true_false": "Vrai ou faux",
+      "matching": "Associations",
+      "ordering": "Mise en ordre",
+      "short_answer": "Réponse courte"
+    },
+    "duration": {
+      "le15": "15 min ou moins",
+      "le30": "16 à 30 min",
+      "le60": "31 à 60 min",
+      "gt60": "Plus de 60 min",
+      "minutes": "{count} min"
+    },
+    "badges": {
+      "approved": "Approuvée par le conseil",
+      "subFriendly": "Suppléance",
+      "ai": "IA",
+      "faith": "Foi",
+      "toVerify": "À vérifier",
+      "baseOnly": "Version de base seulement",
+      "levels": "{count, plural, one {# niveau} other {# niveaux}}"
+    },
+    "badgesLabel": "Caractéristiques de la ressource",
+    "manualGrading": "Correction manuelle",
+    "baseVersion": "Version de base",
+    "expectationKinds": {
+      "overall": "Attente",
+      "specific": "Contenu d’apprentissage"
+    }
+  },
+  "libraryItem": {
+    "title": "Fiche de la ressource",
+    "back": "Banque de ressources",
+    "tabs": {
+      "label": "Contenu de la ressource",
+      "student": "Pour les élèves",
+      "teacher": "Guide et corrigé",
+      "details": "Détails"
+    },
+    "versions": {
+      "label": "Versions",
+      "base": "Version de base",
+      "otherLevel": "Autre niveau",
+      "personal": "{label} (niveau personnel)",
+      "hint": "Les noms des niveaux ne sont jamais imprimés : chaque feuille porte seulement un petit numéro."
+    },
+    "showKey": "Afficher le corrigé",
+    "hideKey": "Masquer le corrigé",
+    "keyHint": "Le corrigé reste masqué tant que vous ne l’affichez pas, au cas où l’écran serait projeté.",
+    "noStudentSheet": "Cette ressource s’adresse à l’enseignant·e : elle n’a pas de feuille pour les élèves.",
+    "partial": "Une partie de cette ressource ne peut pas être affichée.",
+    "aiDraft": "Brouillon créé par l’IA : relisez-le avant de l’utiliser ou de le partager.",
+    "sentBack": "À retravailler : {note}",
+    "awaiting": "En attente d’approbation depuis le {date}.",
+    "archived": "Cette ressource est archivée : elle n’apparaît plus dans la banque.",
+    "provenance": {
+      "author": "Par {name}",
+      "board": "Ressource du conseil scolaire",
+      "ai": "Préparée avec l’IA",
+      "aiDetails": "Préparée avec l’IA (consigne {prompt}, modèle {model})",
+      "pack": "Ensemble « {title} », version {version}",
+      "created": "Créée le {date}",
+      "updated": "Modifiée le {date}",
+      "approved": "Approuvée le {date}",
+      "licence": "Licence : {licence}"
+    },
+    "usage": "{count, plural, =0 {Utilisée dans aucune unité} one {Utilisée dans # unité} other {Utilisée dans # unités}}",
+    "details": {
+      "grades": "Années d’études",
+      "subject": "Matière",
+      "expectations": "Attentes et contenus d’apprentissage",
+      "noExpectations": "Aucune attente liée.",
+      "duration": "Durée",
+      "materials": "Matériel",
+      "formats": "Formats",
+      "subFriendly": "Pour la suppléance",
+      "subFriendlyYes": "Oui : conçue pour une personne suppléante",
+      "tags": "Étiquettes et mots-clés",
+      "sharing": "Partage",
+      "faith": "Foi",
+      "faithContent": "Contient du contenu de foi",
+      "faithReviewed": "Contenu de foi révisé par la personne désignée",
+      "faithPending": "Le contenu de foi doit être révisé avant d’être partagé avec tout le conseil.",
+      "faithLink": "Lien avec la foi : {text}",
+      "faithOnSheet": "Le lien avec la foi est imprimé sur la feuille de l’élève.",
+      "provenance": "Provenance",
+      "summary": "Résumé",
+      "none": "Non précisé",
+      "no": "Non"
+    },
+    "actions": {
+      "label": "Actions sur la ressource",
+      "edit": "Modifier",
+      "print": "Imprimer"
+    },
+    "print": {
+      "title": "Impression",
+      "back": "Retour à la ressource",
+      "doc": "Document",
+      "student": "Feuille de l’élève",
+      "teacher": "Guide et corrigé",
+      "versions": "Versions",
+      "legend": "Numéro imprimé sur chaque page",
+      "legendItem": "{number} = {label}",
+      "print": "Imprimer",
+      "keepOne": "Gardez au moins une version.",
+      "studentHint": "Une version par page, avec un petit numéro et jamais le nom du niveau.",
+      "teacherHint": "Le guide, puis le corrigé de chaque version choisie, chacun sur sa page.",
+      "preview": "Aperçu de l’impression"
+    },
+    "pdf": {
+      "download": "Télécharger le PDF",
+      "student": "PDF de la feuille de l’élève",
+      "teacher": "PDF du guide et du corrigé"
+    }
+  },
+  "library": {
+    "title": "Banque de ressources",
+    "intro": "Des ressources pour vos classes : lectures, fiches, jeux, évaluations et plus, avec des versions par niveau de français.",
+    "tools": "Outils",
+    "differentiate": "Texte différencié",
+    "differentiateHint": "Collez un texte, des consignes ou une activité : l’IA en prépare une version pour chaque niveau de français."
+  },
+  "libraryEdit": {},
+  "libraryReview": {},
+  "libraryPlanning": {},
+  "libraryAi": {},
+  "subPlanLibrary": {}
 }

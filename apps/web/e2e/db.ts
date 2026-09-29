@@ -3,6 +3,13 @@
  * window around the real clock) and clean up after each spec. Uses DATABASE_URL (set in CI and
  * in the local lite stack) as the database owner, so RLS does not apply here.
  */
+import {
+  TYPE_INFO,
+  sampleCanonical,
+  sampleSafetyNotes,
+  subFriendlyAllowed,
+  type LibraryItemType,
+} from '@lynx/content';
 import pg from 'pg';
 
 // Opened on first use and again after closeDb(): spec files share this module in a worker.
@@ -285,4 +292,153 @@ export async function lessonsWithProgress(classId: string): Promise<string[]> {
     [classId],
   );
   return rows.map((r) => r.lesson_id);
+}
+
+// ---------------------------------------------------------------------------------------
+// Library (Phase 4)
+// ---------------------------------------------------------------------------------------
+
+/** 3e MAT B1.2 « Comparer et ordonner des nombres naturels jusqu’à 1 000 » (supabase/seed.sql). */
+const SEED_EXPECTATION_3_MAT_B12 = '20000000-0000-4000-8000-000000030b12';
+
+export interface ReadyItemOptions {
+  /** A demo account's e-mail, or null for one of the board's own items (`board_created`). */
+  author: string | null;
+  type: LibraryItemType;
+  /** Start it with « E2E- » so `deleteLibraryItems({ titlePrefix: 'E2E-' })` finds it. */
+  title: string;
+  status?: 'draft' | 'teacher_reviewed' | 'board_approved';
+  /** Private by default; board-wide when approved. */
+  scope?: 'private' | 'school' | 'board';
+  /** « Contient du contenu de foi » (a faith review then applies, D-064). */
+  faith?: boolean;
+  /**
+   * A version for every active level of the demo board, titled « <title> — version <n> » (n is
+   * the number printed on its sheets: 2 for the first level) so a test can tell them apart.
+   */
+  levels?: boolean;
+  subFriendly?: boolean;
+}
+
+/**
+ * A resource that is ready to be marked reviewed, proposed and approved, written directly as the
+ * database owner (like `tests.library_item` in the database tests): 3e année, Mathématiques,
+ * B1.2, materials, a keyword, the sample content of its type from `@lynx/content` with its
+ * answer key, safety notes for experiments and STEM challenges, and the board's levels when
+ * asked. Approved items are approved (and faith-reviewed) by the board's reviewer. Returns the
+ * item's id.
+ */
+export async function insertReadyItem(options: ReadyItemOptions): Promise<string> {
+  const status = options.status ?? 'draft';
+  const scope = options.scope ?? (status === 'board_approved' ? 'board' : 'private');
+  const safetyNotes = TYPE_INFO[options.type].needsSafety ? sampleSafetyNotes() : null;
+  const subFriendly = Boolean(options.subFriendly) && subFriendlyAllowed(options.type, safetyNotes);
+  const client = await db().connect();
+  try {
+    await client.query('begin');
+    const {
+      rows: [item],
+    } = await client.query<{ id: string }>(
+      `insert into public.library_items (board_id, school_id, type, title, summary, status,
+         share_scope, source, author_id, subject_id, duration_minutes, materials, keywords,
+         sub_friendly, safety_notes, faith_content, approved_at, approved_by, faith_reviewed_at,
+         faith_reviewed_by)
+       select $1::uuid,
+         case when $2::text is not null or $6::public.share_scope = 'school' then $3::uuid end,
+         $4::public.library_item_type, $5::text,
+         'Une ressource créée pour les tests de bout en bout.', $7::public.library_item_status,
+         $6::public.share_scope, $8::public.library_source, author.id,
+         (select id from public.subjects where code = 'mat' and board_id is null), 30,
+         'Crayons et feuilles', 'e2e nombres', $9::boolean, $10::jsonb, $11::boolean,
+         case when $7::public.library_item_status = 'board_approved' then now() end,
+         case when $7::public.library_item_status = 'board_approved' then reviewer.id end,
+         case when $7::public.library_item_status = 'board_approved' and $11::boolean then now() end,
+         case when $7::public.library_item_status = 'board_approved' and $11::boolean
+           then reviewer.id end
+       from (select 1) one
+       left join public.users author on author.email = $2
+       left join public.users reviewer on reviewer.email = 'nathalie.roy@demo.lynx.test'
+       returning id`,
+      [
+        SEED.board,
+        options.author,
+        SEED.school,
+        options.type,
+        options.title,
+        scope,
+        status,
+        options.author ? 'teacher_created' : 'board_created',
+        subFriendly,
+        safetyNotes,
+        Boolean(options.faith),
+      ],
+    );
+    const itemId = item!.id;
+    await client.query(
+      `insert into public.library_item_grades (item_id, grade_code) values ($1, '3')`,
+      [itemId],
+    );
+    await client.query(
+      `insert into public.library_item_expectations (item_id, expectation_id) values ($1, $2)`,
+      [itemId, SEED_EXPECTATION_3_MAT_B12],
+    );
+    const levels = options.levels
+      ? (
+          await client.query<{ id: string }>(
+            `select id from public.language_levels
+             where board_id = $1 and owner_user_id is null and active order by sort_order, id`,
+            [SEED.board],
+          )
+        ).rows.map((r) => r.id)
+      : [];
+    const versions = [
+      { levelId: null as string | null, ...sampleCanonical(options.type) },
+      ...levels.map((levelId, i) => ({
+        levelId,
+        ...sampleCanonical(options.type, { title: `${options.title} — version ${i + 2}` }),
+      })),
+    ];
+    for (const version of versions) {
+      const {
+        rows: [row],
+      } = await client.query<{ id: string }>(
+        `insert into public.library_item_versions (item_id, language_level_id, schema_version, content)
+         values ($1, $2, 1, $3) returning id`,
+        [itemId, version.levelId, version.content],
+      );
+      if (version.answerKey) {
+        await client.query(
+          `insert into public.library_item_answer_keys (version_id, answer_key) values ($1, $2)`,
+          [row!.id, version.answerKey],
+        );
+      }
+    }
+    await client.query('select app.library_refresh_search($1)', [itemId]);
+    await client.query('commit');
+    return itemId;
+  } catch (error) {
+    await client.query('rollback');
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Deletes library items (their versions, keys and links cascade; lessons that linked them keep
+ * their place without the link): by id, and/or every item whose title starts with a prefix.
+ */
+export async function deleteLibraryItems({
+  ids = [],
+  titlePrefix = null,
+}: {
+  ids?: string[];
+  titlePrefix?: string | null;
+}): Promise<void> {
+  if (!ids.length && !titlePrefix) return;
+  await query(
+    `delete from public.library_items
+     where id = any($1::uuid[]) or ($2::text is not null and left(title, length($2)) = $2)`,
+    [ids, titlePrefix],
+  );
 }

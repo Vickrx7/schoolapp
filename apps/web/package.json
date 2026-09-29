@@ -13,6 +13,7 @@
   "dependencies": {
     "@lynx/ai": "workspace:*",
     "@lynx/config": "workspace:*",
+    "@lynx/content": "workspace:*",
     "@lynx/db": "workspace:*",
     "@lynx/domain": "workspace:*",
     "@react-pdf/renderer": "^4.9.0",

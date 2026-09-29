@@ -169,6 +169,10 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
 - **Migrations are applied once.** The lite stack does not re-apply an edited migration: after
   editing one that is not committed yet, `stack.sh reset`. Never edit a committed migration; add
   a new one (the latest is `20261015090000_library_core.sql`, pgTAP file `16`).
+- **Seeds come in two parts.** `supabase/seed.sql`, then `supabase/seeds/*.sql` by name
+  (`config.toml` `sql_paths` for the CLI, `cmd_seed` in `stack.sh`). `seeds/20_library_demo.sql`
+  is generated from `content/library/demo`: after changing the pack, run `pnpm library:seed`
+  (CI runs `pnpm library:seed:check`); never edit it by hand.
 - **Phase 3 browser tests** need the worker (`AI_PROVIDER=fake`) for the refresh and AI
   scenarios, move code windows around the real clock (`e2e/db.ts` `openCodeWindow`) and clean up
   after themselves; `e2e/mobile.spec.ts` briefly gives Isabelle a vice-principal role.

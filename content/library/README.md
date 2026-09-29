@@ -52,9 +52,12 @@ the pack's title says « à valider en classe ».
 - **Load order:** `pack.json` lists every item once, in load order. `packToSql` refuses a pack
   whose list and files differ.
 - **To SQL:** `packToSql` (`packages/content/src/seed-sql.ts`) turns the pack into one SQL `DO`
-  block. The block looks up every reference by code and raises an error if one is missing. The
-  `pnpm library:seed` script and the generated `supabase/seeds/20_library_demo.sql` come with the
-  Phase 4 library migration.
+  block. The block looks up every reference by code and raises an error if one is missing.
+  `pnpm library:seed` (`tools/build-library-seed.ts`) writes it to
+  `supabase/seeds/20_library_demo.sql`, which is committed. Database resets load it after
+  `supabase/seed.sql` (`sql_paths` in `supabase/config.toml`, and `tools/lite-stack/stack.sh`),
+  followed by `30_demo_links.sql`, which links `ordonner-nombres-1000` to 3e MAT lesson 5. Loading
+  it again does nothing: the block stops when the pack's version is already there.
 - **Formatting:** item files are formatted with Prettier, like the rest of the repository.
 
 ## Checking a change
@@ -62,7 +65,12 @@ the pack's title says « à valider en classe ».
 ```bash
 pnpm exec vitest run packages/content    # includes seed-pack.test.ts (plan tests 49–55)
 pnpm exec prettier --check content
+pnpm library:seed                        # regenerate supabase/seeds/20_library_demo.sql
+pnpm library:seed:check                  # CI: fails when the SQL no longer matches the pack
 ```
+
+After a database reset, `pnpm test:int` also runs `packages/content/src/seed.int.test.ts`: every
+seeded item must match its file and pass the database's own readiness rules.
 
 `packages/content/src/seed-pack.test.ts` reads every file in this pack, plus `supabase/seed.sql`,
 and checks the following:
@@ -76,8 +84,8 @@ and checks the following:
 - **The pack as a whole:**
   - it has 29 items, at least 3 per bucket, with unique slugs and ids;
   - every tag is defined, and the pack converts to SQL;
-  - every attente exists in the seeded curriculum. The four planned 5e Français codes from plan C5
-    are allowed until they are added to `seed.sql`.
+  - every attente exists in the seeded curriculum of `seed.sql`, which includes four 5e Français
+    attentes added for this pack (C1, C1.2, D1, D1.1, with the same meanings as the 3e codes).
 - **Levels:**
   - approved reading passages, worksheets, exit tickets and quizzes have all four board levels;
   - every version keeps the base version's objective;
@@ -236,4 +244,6 @@ notes, answer keys, materials and summaries.
 1. Write `items/<slug>.json` and add the slug to `items` in `pack.json`. Add any new tag to `tags`.
 2. Run the checks above, and update the item count in `seed-pack.test.ts`.
 3. Have a teacher read it. Faith content also needs the faith reviewer.
-4. Once the Phase 4 migration is in, regenerate the SQL seed with `pnpm library:seed`.
+4. Regenerate the SQL seed with `pnpm library:seed` and commit it with the item. Databases pick
+   the change up at their next reset: loading the seed where the pack is already loaded does
+   nothing.

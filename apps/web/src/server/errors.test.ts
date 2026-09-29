@@ -3,7 +3,7 @@ import fr from '../../messages/fr-CA.json';
 
 // errors.ts is server-only; the marker package throws outside a React server bundle.
 vi.mock('server-only', () => ({}));
-const { errorKey } = await import('./errors');
+const { errorKey, readinessFieldErrors, READINESS_CODES } = await import('./errors');
 
 describe('database errors shown to users', () => {
   it('maps the substitute hand-off codes to their messages', () => {
@@ -37,6 +37,44 @@ describe('database errors shown to users', () => {
     }
     // Field errors of the absence form (packages/domain absenceFormSchema).
     expect(fr.errors).toHaveProperty('halfDaySingleDay');
+  });
+
+  it('maps the library codes to their messages', () => {
+    const library = {
+      LXL01: 'libraryNotReady',
+      LXL02: 'librarySafetyNotes',
+      LXL03: 'libraryFaithReviewNeeded',
+      LXL04: 'libraryWrongStatus',
+      LXL05: 'libraryOwnItem',
+      LXL06: 'libraryLocked',
+      LXL07: 'libraryConflict',
+      LXL08: 'libraryTooLargeForAi',
+      LXL09: 'libraryLevelExists',
+      LXL10: 'libraryPersonalLevels',
+    };
+    for (const [code, key] of Object.entries(library)) {
+      expect(errorKey({ code }), code).toBe(key);
+      expect(fr.errors, code).toHaveProperty(key);
+    }
+    // Errors the library's actions return themselves (not SQLSTATEs).
+    for (const key of ['libraryStudentNames', 'libraryInvalidContent', 'libraryChanged']) {
+      expect(fr.errors, key).toHaveProperty(key);
+    }
+  });
+
+  it('turns what a resource is missing into a field error with a message', () => {
+    expect(readinessFieldErrors({ code: 'LXL01', details: 'expectations' })).toEqual({
+      'readiness.expectations': 'readiness.expectations',
+    });
+    for (const code of READINESS_CODES) {
+      const errors = readinessFieldErrors({ code: 'LXL01', details: code });
+      expect(fr.errors, code).toHaveProperty(errors![`readiness.${code}`]!);
+    }
+    // Another error, or a detail the app does not know: no field error.
+    expect(readinessFieldErrors({ code: 'LXL02' })).toBeUndefined();
+    expect(readinessFieldErrors({ code: 'LXL01', details: 'something' })).toBeUndefined();
+    expect(readinessFieldErrors({ code: 'LXL01', details: null })).toBeUndefined();
+    expect(readinessFieldErrors(null)).toBeUndefined();
   });
 
   it('keeps the generic mappings', () => {

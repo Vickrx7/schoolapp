@@ -32,7 +32,9 @@
     "signOut": "Sign out",
     "mainNavigation": "Main navigation",
     "differentiate": "Differentiate",
-    "substitutes": "Substitutes"
+    "substitutes": "Substitutes",
+    "library": "Resources",
+    "more": "More"
   },
   "auth": {
     "title": "Sign in",
@@ -115,7 +117,33 @@
     "subPlanAiStale": "The plan changed since the preview. Check again before sending.",
     "subPlanAiNothing": "This plan has no teaching period to detail.",
     "subReportChanged": "The report changed since you opened it. The page now shows the new version: check it before confirming.",
-    "absenceRequestReused": "This request was already used for another absence. Check your absences, then tap “Send” again."
+    "absenceRequestReused": "This request was already used for another absence. Check your absences, then tap “Send” again.",
+    "libraryNotReady": "This resource is not complete. Fill in what is missing, or return it to draft to save it incomplete.",
+    "librarySafetyNotes": "Safety notes are required for an experiment or a STEM challenge.",
+    "libraryFaithReviewNeeded": "Faith content must first be reviewed by the person the board designated.",
+    "libraryWrongStatus": "This action is no longer possible: the resource’s status has changed. Reload the page.",
+    "libraryOwnItem": "You cannot approve a resource you created.",
+    "libraryLocked": "A board-approved resource cannot be changed.",
+    "libraryConflict": "This resource has changed since you opened it. Reload the page to see the new version.",
+    "libraryTooLargeForAi": "This resource is too long for AI to prepare other versions. Shorten it or choose fewer levels.",
+    "libraryLevelExists": "This resource already has a version for this level.",
+    "libraryPersonalLevels": "This resource has versions for your personal levels. Remove them before sharing it.",
+    "libraryStudentNames": "The text contains first names of students at your school. Remove them, or confirm they are not students’ names.",
+    "libraryInvalidContent": "Some parts of the resource are not valid. Check the highlighted fields.",
+    "libraryChanged": "The resource changed while it was being prepared. Send the request again.",
+    "readiness": {
+      "grades": "Add at least one grade.",
+      "subject": "Choose a subject.",
+      "duration": "Give a duration.",
+      "materials": "List the materials (or “No special materials”).",
+      "tags": "Add a tag or a keyword.",
+      "base": "The base version is required.",
+      "expectations": "Link at least one curriculum expectation.",
+      "key": "Add the answer key of the base version.",
+      "levels": "Add a version for each of the board’s levels before proposing the resource to the board.",
+      "safety": "Complete the safety notes.",
+      "content": "A version is incomplete: check the highlighted fields."
+    }
   },
   "days": {
     "1": "Monday",
@@ -1095,5 +1123,234 @@
     "open": "Student activity sheets (PDF)",
     "download": "Download the student activity sheets",
     "hint": "One page per group, with its number in the corner: no student names and no level names."
-  }
+  },
+  "libraryCommon": {
+    "types": {
+      "lesson_plan": "Lesson plan",
+      "anchor_chart": "Anchor chart",
+      "worked_example": "Worked example",
+      "teacher_guide": "Teaching guide",
+      "worksheet": "Worksheet",
+      "learning_centre": "Learning centre",
+      "reading_passage": "Reading passage",
+      "vocabulary_bank": "Word bank",
+      "exit_ticket": "Exit ticket",
+      "experiment": "Experiment",
+      "stem_challenge": "STEM challenge",
+      "project": "Project",
+      "outdoor_activity": "Outdoor activity",
+      "quiz": "Quiz",
+      "unit_test": "End-of-unit test",
+      "diagnostic": "Diagnostic assessment",
+      "rubric": "Rubric",
+      "game": "Game",
+      "brain_break": "Brain break",
+      "song": "Song",
+      "riddle": "Riddles",
+      "weekly_challenge": "Weekly challenge",
+      "catholic_reflection": "Catholic reflection",
+      "culture_hook": "Cultural hook",
+      "parent_guide": "Family guide"
+    },
+    "typeHints": {
+      "lesson_plan": "A lesson step by step, with success criteria.",
+      "anchor_chart": "A reference chart to build or project with the class.",
+      "worked_example": "A problem solved step by step, then a few practice questions.",
+      "teacher_guide": "How to teach the concept: big idea, common misconceptions and tips.",
+      "worksheet": "Exercises to do individually or in teams, with an answer key.",
+      "learning_centre": "A self-directed centre: set-up, student steps and clean-up.",
+      "reading_passage": "A text to read, with a glossary and comprehension questions.",
+      "vocabulary_bank": "The words of a theme, with definitions and examples.",
+      "exit_ticket": "One to three questions to check understanding at the end of a lesson.",
+      "experiment": "A scientific inquiry, with safety notes.",
+      "stem_challenge": "A design challenge to build and test, with safety notes.",
+      "project": "A project over several sessions, with milestones and deliverables.",
+      "outdoor_activity": "An activity in the schoolyard or outdoors, with a bad-weather alternative.",
+      "quiz": "Quick-to-grade questions: multiple choice, true or false, matching…",
+      "unit_test": "A test in sections, at the end of a unit.",
+      "diagnostic": "To find out what students already know, with next steps.",
+      "rubric": "A rubric built on the four categories of the achievement chart.",
+      "game": "A game to practise while having fun, with rules and variations.",
+      "brain_break": "A few minutes to move or refocus between activities.",
+      "song": "An original song or one to a familiar tune, with actions.",
+      "riddle": "Riddles to solve, with the answers in the key.",
+      "weekly_challenge": "A challenge to take on over a few days, with hints.",
+      "catholic_reflection": "A faith moment: reflection, questions, prayer and an action to take.",
+      "culture_hook": "An opener about French-speaking cultures, especially Franco-Ontarian, to start a discussion.",
+      "parent_guide": "A guide in French and English to support learning at home."
+    },
+    "buckets": {
+      "enseigner": "Teach",
+      "pratiquer": "Practise",
+      "explorer": "Explore",
+      "evaluer": "Assess",
+      "jouer": "Play",
+      "relier": "Connect"
+    },
+    "bucketHints": {
+      "enseigner": "To prepare and present a concept.",
+      "pratiquer": "For students to practise.",
+      "explorer": "To investigate, experiment and create.",
+      "evaluer": "To check what students have learned.",
+      "jouer": "To learn through play and movement.",
+      "relier": "To connect learning with faith, culture and families."
+    },
+    "status": {
+      "draft": "Draft",
+      "teacher_reviewed": "Reviewed",
+      "board_approved": "Board-approved",
+      "rejected": "Needs changes",
+      "archived": "Archived"
+    },
+    "requested": "Awaiting approval",
+    "scope": {
+      "private": "Private",
+      "school": "Shared with the school",
+      "board": "Shared with the board"
+    },
+    "formats": {
+      "printable": "Printable",
+      "projectable": "For projecting",
+      "interactive": "Interactive"
+    },
+    "supervision": {
+      "standard": "Usual supervision",
+      "close": "Close supervision",
+      "adult_only": "Adult handling only"
+    },
+    "categories": {
+      "connaissance": "Knowledge and Understanding",
+      "habiletes": "Thinking",
+      "communication": "Communication",
+      "application": "Application"
+    },
+    "questionKinds": {
+      "multiple_choice": "Multiple choice",
+      "true_false": "True or false",
+      "matching": "Matching",
+      "ordering": "Ordering",
+      "short_answer": "Short answer"
+    },
+    "duration": {
+      "le15": "15 min or less",
+      "le30": "16 to 30 min",
+      "le60": "31 to 60 min",
+      "gt60": "More than 60 min",
+      "minutes": "{count} min"
+    },
+    "badges": {
+      "approved": "Board-approved",
+      "subFriendly": "Substitute-friendly",
+      "ai": "AI",
+      "faith": "Faith",
+      "toVerify": "To be checked",
+      "baseOnly": "Base version only",
+      "levels": "{count, plural, one {# level} other {# levels}}"
+    },
+    "badgesLabel": "About this resource",
+    "manualGrading": "Graded by hand",
+    "baseVersion": "Base version",
+    "expectationKinds": {
+      "overall": "Overall expectation",
+      "specific": "Specific expectation"
+    }
+  },
+  "libraryItem": {
+    "title": "Resource",
+    "back": "Resource bank",
+    "tabs": {
+      "label": "Resource content",
+      "student": "For students",
+      "teacher": "Guide and answer key",
+      "details": "Details"
+    },
+    "versions": {
+      "label": "Versions",
+      "base": "Base version",
+      "otherLevel": "Other level",
+      "personal": "{label} (personal level)",
+      "hint": "Level names are never printed: each sheet only has a small number."
+    },
+    "showKey": "Show the answer key",
+    "hideKey": "Hide the answer key",
+    "keyHint": "The answer key stays hidden until you show it, in case the screen is projected.",
+    "noStudentSheet": "This resource is for the teacher: it has no student sheet.",
+    "partial": "Part of this resource cannot be displayed.",
+    "aiDraft": "Draft created by AI: read it over before using or sharing it.",
+    "sentBack": "Needs changes: {note}",
+    "awaiting": "Awaiting approval since {date}.",
+    "archived": "This resource is archived: it no longer appears in the bank.",
+    "provenance": {
+      "author": "By {name}",
+      "board": "School board resource",
+      "ai": "Prepared with AI",
+      "aiDetails": "Prepared with AI (prompt {prompt}, model {model})",
+      "pack": "Pack “{title}”, version {version}",
+      "created": "Created on {date}",
+      "updated": "Updated on {date}",
+      "approved": "Approved on {date}",
+      "licence": "Licence: {licence}"
+    },
+    "usage": "{count, plural, =0 {Not used in any unit} one {Used in # unit} other {Used in # units}}",
+    "details": {
+      "grades": "Grades",
+      "subject": "Subject",
+      "expectations": "Curriculum expectations",
+      "noExpectations": "No linked expectation.",
+      "duration": "Duration",
+      "materials": "Materials",
+      "formats": "Formats",
+      "subFriendly": "For substitutes",
+      "subFriendlyYes": "Yes: designed for a substitute",
+      "tags": "Tags and keywords",
+      "sharing": "Sharing",
+      "faith": "Faith",
+      "faithContent": "Contains faith content",
+      "faithReviewed": "Faith content reviewed by the designated person",
+      "faithPending": "The faith content must be reviewed before it is shared with the whole board.",
+      "faithLink": "Faith connection: {text}",
+      "faithOnSheet": "The faith connection is printed on the student sheet.",
+      "provenance": "Provenance",
+      "summary": "Summary",
+      "none": "Not specified",
+      "no": "No"
+    },
+    "actions": {
+      "label": "Resource actions",
+      "edit": "Edit",
+      "print": "Print"
+    },
+    "print": {
+      "title": "Print",
+      "back": "Back to the resource",
+      "doc": "Document",
+      "student": "Student sheet",
+      "teacher": "Guide and answer key",
+      "versions": "Versions",
+      "legend": "Number printed on each page",
+      "legendItem": "{number} = {label}",
+      "print": "Print",
+      "keepOne": "Keep at least one version.",
+      "studentHint": "One version per page, with a small number and never the level’s name.",
+      "teacherHint": "The guide, then the answer key of each chosen version, each on its own page.",
+      "preview": "Print preview"
+    },
+    "pdf": {
+      "download": "Download the PDF",
+      "student": "Student sheet PDF",
+      "teacher": "Guide and answer key PDF"
+    }
+  },
+  "library": {
+    "title": "Resource bank",
+    "intro": "Resources for your classes: readings, worksheets, games, assessments and more, with versions for each French level.",
+    "tools": "Tools",
+    "differentiate": "Differentiated text",
+    "differentiateHint": "Paste a text, instructions or an activity: the AI prepares a version for each French level."
+  },
+  "libraryEdit": {},
+  "libraryReview": {},
+  "libraryPlanning": {},
+  "libraryAi": {},
+  "subPlanLibrary": {}
 }

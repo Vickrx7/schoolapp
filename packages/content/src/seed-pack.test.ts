@@ -67,11 +67,10 @@ const SEEDED_EXPECTATIONS = new Set(
   ].map((m) => `${m[1]} ${m[2]} ${m[3]}`),
 );
 /**
- * The four 5e Français attentes the Phase 4 seed adds to `seed.sql` (plan C5), with the same
- * meanings as the 3e codes. Listed here until that change lands; the generated seed's `DO`
- * block raises if one is missing when it loads.
+ * The four 5e Français attentes `seed.sql` has for the demo library (D-071), with the same
+ * meanings as the 3e codes. The generated seed's `DO` block also raises if one is missing.
  */
-const PLANNED_EXPECTATIONS = ['fra 5 C1', 'fra 5 C1.2', 'fra 5 D1', 'fra 5 D1.1'];
+const LIBRARY_EXPECTATIONS = ['fra 5 C1', 'fra 5 C1.2', 'fra 5 D1', 'fra 5 D1.1'];
 
 /** The board levels every new board gets (`provision_board_defaults`), with their labels. */
 const BOARD_LEVELS = [
@@ -203,15 +202,15 @@ describe('seed pack (content/library/demo)', () => {
     expect(() => packToSql(rawPack, raws)).not.toThrow();
   });
 
-  it('51. every attente exists in the seeded curriculum (with the planned 5e Français codes)', () => {
-    expect(SEEDED_EXPECTATIONS.size).toBeGreaterThanOrEqual(18);
+  it('51. every attente exists in the seeded curriculum, including the 5e Français codes', () => {
+    expect(SEEDED_EXPECTATIONS.size).toBeGreaterThanOrEqual(22);
     expect(SEEDED_EXPECTATIONS).toContain('fra 3 C1.2');
-    const known = new Set([...SEEDED_EXPECTATIONS, ...PLANNED_EXPECTATIONS]);
+    for (const code of LIBRARY_EXPECTATIONS) expect(SEEDED_EXPECTATIONS).toContain(code);
     const problems: string[] = [];
     for (const item of items) {
       for (const e of item.expectations) {
         const key = `${item.subjectCode} ${e.grade} ${e.code}`;
-        if (!known.has(key)) problems.push(`${item.slug}: unknown attente ${key}`);
+        if (!SEEDED_EXPECTATIONS.has(key)) problems.push(`${item.slug}: unknown attente ${key}`);
         if (!item.gradeCodes.includes(e.grade)) {
           problems.push(`${item.slug}: attente ${key} is not for one of the item's grades`);
         }

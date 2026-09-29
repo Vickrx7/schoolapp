@@ -8,6 +8,7 @@ import {
   aiSchools,
   hasRole,
   requireSession,
+  showLibrary as libraryShown,
   substituteBoardSchools,
   teachingSchools,
 } from '@/server/session';
@@ -27,7 +28,9 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
 
   const showTeaching = teachingSchools(session).length > 0;
   const showSubstitutes = substituteBoardSchools(session).length > 0;
-  const showDifferentiate = aiSchools(session).length > 0;
+  const showLibrary = libraryShown(session);
+  // « Texte différencié » lives inside the library when it is shown (D-078).
+  const showDifferentiate = aiSchools(session).length > 0 && !showLibrary;
   const showSchool = session.schools.some((s) =>
     hasRole(s, 'principal', 'vice_principal', 'office_admin'),
   );
@@ -38,6 +41,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
         appName={APP_NAME}
         showTeaching={showTeaching}
         showSubstitutes={showSubstitutes}
+        showLibrary={showLibrary}
         showDifferentiate={showDifferentiate}
         showSchool={showSchool}
       />

@@ -29,6 +29,8 @@ jobs:
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
+      - name: The demo library seed matches its content pack
+        run: pnpm library:seed:check
 
   database-and-e2e:
     name: Database (RLS) tests, integration and end-to-end

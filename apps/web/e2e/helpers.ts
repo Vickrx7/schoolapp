@@ -9,6 +9,8 @@ export const DEMO = {
   rotary: 'paul.leblanc@demo.lynx.test',
   principal: 'sophie.lavoie@demo.lynx.test',
   office: 'julie.bergeron@demo.lynx.test',
+  /** Board admin with no school; the demo board's content and faith reviewer (library). */
+  boardAdmin: 'nathalie.roy@demo.lynx.test',
 };
 
 async function latestCode(email: string, after: number): Promise<string> {

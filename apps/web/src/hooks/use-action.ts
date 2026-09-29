@@ -50,6 +50,32 @@ const KNOWN_ERRORS = new Set([
   'subPlanAiNothing',
   'subReportChanged',
   'absenceRequestReused',
+  // Library (server/errors.ts, DECISIONS D-063 to D-073).
+  'libraryNotReady',
+  'librarySafetyNotes',
+  'libraryFaithReviewNeeded',
+  'libraryWrongStatus',
+  'libraryOwnItem',
+  'libraryLocked',
+  'libraryConflict',
+  'libraryTooLargeForAi',
+  'libraryLevelExists',
+  'libraryPersonalLevels',
+  'libraryStudentNames',
+  'libraryInvalidContent',
+  'libraryChanged',
+  // What a resource is missing (readinessFieldErrors, D-067).
+  'readiness.grades',
+  'readiness.subject',
+  'readiness.duration',
+  'readiness.materials',
+  'readiness.tags',
+  'readiness.base',
+  'readiness.expectations',
+  'readiness.key',
+  'readiness.levels',
+  'readiness.safety',
+  'readiness.content',
 ]);
 
 /** Translates an error key from a server action; unknown keys fall back to a generic message. */

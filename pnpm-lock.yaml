@@ -56,6 +56,9 @@ importers:
       '@lynx/config':
         specifier: workspace:*
         version: link:../../packages/config
+      '@lynx/content':
+        specifier: workspace:*
+        version: link:../../packages/content
       '@lynx/db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -74,6 +77,9 @@ importers:
       '@lynx/config':
         specifier: workspace:*
         version: link:../../packages/config
+      '@lynx/content':
+        specifier: workspace:*
+        version: link:../../packages/content
       '@lynx/db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -205,6 +211,13 @@ importers:
       zod:
         specifier: ^4.6.5
         version: 4.6.5
+    devDependencies:
+      '@types/pg':
+        specifier: ^8.23.1
+        version: 8.23.1
+      pg:
+        specifier: ^8.23.0
+        version: 8.23.0
 
   packages/db:
     dependencies:
