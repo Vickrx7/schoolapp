@@ -1,0 +1,264 @@
+{
+  "slug": "comparer-des-nombres-brouillon",
+  "type": "worksheet",
+  "title": "Comparer des nombres (brouillon)",
+  "summary": "Une fiche de neuf questions pour comparer et ordonner des nombres jusqu’à 1 000 avec les symboles <, > et =, et pour raisonner sur la valeur de position.",
+  "source": "ai_generated",
+  "author": "isabelle.tremblay@demo.lynx.test",
+  "school": "saint-exemple",
+  "status": "draft",
+  "shareScope": "private",
+  "gradeCodes": ["3"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "B1.2"
+    }
+  ],
+  "durationMinutes": 30,
+  "materials": "Une copie par élève et un crayon. Facultatif : des blocs de base dix et un tableau de valeur de position.",
+  "keywords": "comparer, ordonner, plus grand que, plus petit que, symboles, valeur de position, ordre croissant",
+  "tags": ["nombres"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "promptVersion": "v1",
+  "model": "claude-opus-5-5",
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "Comparer des nombres",
+        "objective": "Je compare et j’ordonne des nombres naturels jusqu’à 1 000 en utilisant la valeur de position.",
+        "teacherNote": "Fiche d’environ 30 minutes. Les questions 1 à 5 portent sur la comparaison et l’ordre des nombres; les questions 6 à 9 demandent de raisonner sur la valeur de position. La question 9 se corrige à la main. Pour les élèves qui ont besoin d’appui, fournissez un tableau de valeur de position.",
+        "instructions": "Lis chaque question attentivement. Pour comparer deux nombres, compare d’abord les centaines, puis les dizaines, puis les unités. Utilise les symboles < (plus petit que), > (plus grand que) et = (égal à).",
+        "text": "",
+        "glossary": [
+          {
+            "term": "comparer",
+            "definition": "Trouver quel nombre est le plus grand ou le plus petit."
+          },
+          {
+            "term": "ordre croissant",
+            "definition": "Du plus petit au plus grand."
+          },
+          {
+            "term": "chiffre",
+            "definition": "Signe qui sert à écrire les nombres : 0, 1, 2, 3, 4, 5, 6, 7, 8 ou 9."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quel nombre est le plus grand?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "489"
+              },
+              {
+                "id": "b",
+                "text": "509"
+              },
+              {
+                "id": "c",
+                "text": "498"
+              },
+              {
+                "id": "d",
+                "text": "512"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "true_false",
+            "prompt": "635 est plus grand que 653.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Écris le symbole <, > ou = entre les deux nombres : 407 ___ 470",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q4",
+            "kind": "short_answer",
+            "prompt": "Écris le symbole <, > ou = : 800 ___ 8 centaines",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 1
+          },
+          {
+            "id": "q5",
+            "kind": "ordering",
+            "prompt": "Place ces nombres en ordre croissant, du plus petit au plus grand.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "items": [
+              {
+                "id": "a",
+                "text": "536"
+              },
+              {
+                "id": "b",
+                "text": "305"
+              },
+              {
+                "id": "c",
+                "text": "563"
+              },
+              {
+                "id": "d",
+                "text": "356"
+              },
+              {
+                "id": "e",
+                "text": "365"
+              }
+            ]
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Écris le plus grand nombre possible avec les chiffres 4, 9 et 1. Utilise chaque chiffre une seule fois.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 1
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Écris le plus petit nombre possible avec les mêmes chiffres : 4, 9 et 1.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 1
+          },
+          {
+            "id": "q8",
+            "kind": "multiple_choice",
+            "prompt": "Quel nombre est situé entre 690 et 710?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "609"
+              },
+              {
+                "id": "b",
+                "text": "719"
+              },
+              {
+                "id": "c",
+                "text": "699"
+              },
+              {
+                "id": "d",
+                "text": "790"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q9",
+            "kind": "short_answer",
+            "prompt": "Jules dit que 97 est plus grand que 179, parce que 9 est plus grand que 1. Es-tu d’accord? Explique ta réponse.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Un tableau de valeur de position (centaines, dizaines, unités) affiché au mur.",
+          "Des blocs de base dix pour représenter les nombres de la question 5.",
+          "Une droite numérique de 0 à 1 000, graduée par centaines."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["d"],
+            "explanation": "489 et 498 ont 4 centaines; 509 et 512 en ont 5. Entre ces deux nombres, 512 a 1 dizaine et 509 n’en a aucune."
+          },
+          {
+            "questionId": "q2",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Les centaines sont pareilles (6), mais 3 dizaines < 5 dizaines, donc 635 < 653."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "407 < 470",
+            "acceptableAnswers": ["<", "407 < 470", "plus petit que", "est plus petit que"],
+            "explanation": "0 dizaine < 7 dizaines."
+          },
+          {
+            "questionId": "q4",
+            "kind": "short_answer",
+            "sampleAnswer": "800 = 8 centaines",
+            "acceptableAnswers": ["=", "800 = 8 centaines", "égal", "égal à", "est égal à"],
+            "explanation": "8 centaines = 800."
+          },
+          {
+            "questionId": "q5",
+            "kind": "ordering",
+            "orderedIds": ["b", "d", "e", "a", "c"],
+            "explanation": "305 < 356 < 365 < 536 < 563."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "941",
+            "acceptableAnswers": ["941", "neuf cent quarante et un"],
+            "explanation": "Le plus grand chiffre va aux centaines, puis le suivant aux dizaines."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "149",
+            "acceptableAnswers": ["149", "cent quarante-neuf"],
+            "explanation": "Le plus petit chiffre va aux centaines, puis le suivant aux dizaines."
+          },
+          {
+            "questionId": "q8",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "690 < 699 < 710."
+          },
+          {
+            "questionId": "q9",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. 97 n’a pas de centaine, alors que 179 a 1 centaine. Il faut comparer les centaines d’abord : 179 est plus grand que 97.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter toute explication qui compare les centaines ou le nombre de chiffres."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

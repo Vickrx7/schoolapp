@@ -1,0 +1,1097 @@
+{
+  "slug": "canot-des-voyageurs",
+  "type": "reading_passage",
+  "title": "Le canot des voyageurs",
+  "summary": "Texte informatif de cinq paragraphes sur les voyageurs de la traite des fourrures et leurs canots d’écorce, avec des questions sur l’idée principale et les détails importants. Quatre versions selon le niveau de langue.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["5"],
+  "subjectCode": "fra",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "C1.2"
+    }
+  ],
+  "durationMinutes": 40,
+  "materials": "Une copie du texte par élève, dans la version prévue pour son groupe; un crayon.",
+  "keywords": "voyageurs, canot d’écorce, traite des fourrures, portage, histoire franco-ontarienne, idée principale, détails importants",
+  "tags": ["lecture", "francophonie", "ontario", "identite"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je dégage l’idée principale d’un paragraphe informatif et les détails importants qui l’appuient.",
+        "teacherNote": "Les quatre versions ont les mêmes cinq paragraphes et les mêmes idées principales. Faits à vérifier avant l’utilisation en classe : l’époque (environ 1780 à 1820 pour les grandes brigades de Montréal); la longueur des canots (environ 11 m pour le canot du maître, environ 7,5 m pour le canot du nord), leur équipage et leur charge; le poids d’un ballot (environ 90 livres, soit environ 40 kg); les matériaux (écorce de bouleau, cèdre, racines et gomme d’épinette); l’itinéraire par la rivière des Outaouais, le lac Nipissing et la rivière des Français; le lien entre ces chansons et les voyageurs. Le texte parle du savoir des Premières Nations de façon générale; si la classe approfondit ce volet, consulter des ressources produites par les Premières Nations elles-mêmes.",
+        "text": "1. À la fin des années 1700 et au début des années 1800, de nombreux hommes, pour la plupart francophones, travaillaient comme voyageurs. Des compagnies de fourrures de Montréal les engageaient pour transporter des marchandises en canot jusqu’au cœur du continent. Chaque printemps, les voyageurs partaient avec des couvertures, des chaudrons et des outils. Ces objets étaient échangés contre des fourrures avec des Premières Nations. Les canots revenaient ensuite chargés de peaux de castor. La route des voyageurs traversait l’Ontario : la rivière des Outaouais, le lac Nipissing, la rivière des Français, puis les Grands Lacs.\n\n2. Le canot des voyageurs était fait d’écorce de bouleau. Les Premières Nations fabriquaient ce genre de canot bien avant l’arrivée des Européens, et c’est d’elles que les voyageurs ont appris ce savoir-faire. La charpente était en cèdre, un bois léger et solide. Les morceaux d’écorce étaient cousus avec des racines d’épinette, puis les coutures étaient bouchées avec de la gomme d’épinette pour empêcher l’eau d’entrer. Ce canot avait un grand avantage : il était léger, et on pouvait le réparer en route avec des matériaux trouvés dans la forêt.\n\n3. Les voyageurs utilisaient deux sortes de canots. Le canot du maître, long d’environ 11 mètres, servait sur les grandes rivières et les Grands Lacs. Une dizaine d’hommes y prenaient place, avec une soixantaine de ballots de marchandises. Plus à l’ouest, sur des rivières étroites et peu profondes, les voyageurs prenaient plutôt le canot du nord. Plus petit, il mesurait environ 7,5 mètres et transportait cinq ou six hommes et environ la moitié de la charge d’un canot du maître.\n\n4. La vie de voyageur était très exigeante. Les hommes pagayaient souvent du lever au coucher du soleil, en chantant pour garder le même rythme. Quand des rapides ou des chutes bloquaient la route, il fallait faire un portage : les voyageurs sortaient tout du canot et transportaient la charge à pied, par un sentier, jusqu’à l’eau calme. Chaque ballot pesait environ 40 kilogrammes, et un voyageur en portait souvent deux à la fois sur son dos, retenus par une courroie appuyée sur son front. D’autres hommes portaient le canot renversé sur leurs épaules.\n\n5. Aujourd’hui, on se souvient encore des voyageurs, surtout dans les communautés francophones de l’Ontario. Leurs chansons, comme « À la claire fontaine » et « En roulant ma boule », se chantent toujours. Des noms de lieux, comme la rivière des Français, rappellent aussi le passage des francophones sur les cours d’eau de la province. Les voyageurs font partie de l’histoire franco-ontarienne.",
+        "glossary": [
+          {
+            "term": "un voyageur",
+            "definition": "Un homme engagé pour transporter des marchandises en canot à l’époque de la traite des fourrures."
+          },
+          {
+            "term": "l’écorce",
+            "definition": "L’enveloppe extérieure du tronc d’un arbre."
+          },
+          {
+            "term": "la charpente",
+            "definition": "Les pièces de bois qui donnent sa forme et sa solidité au canot."
+          },
+          {
+            "term": "un ballot",
+            "definition": "Un gros paquet de marchandises bien attaché."
+          },
+          {
+            "term": "pagayer",
+            "definition": "Faire avancer un canot avec un aviron."
+          },
+          {
+            "term": "un portage",
+            "definition": "Le transport à pied du canot et de la charge pour contourner un obstacle sur l’eau."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quelle phrase résume le mieux l’idée principale du paragraphe 2?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "b",
+                "text": "La charpente du canot était faite en cèdre."
+              },
+              {
+                "id": "c",
+                "text": "Les coutures étaient bouchées avec de la gomme d’épinette."
+              },
+              {
+                "id": "a",
+                "text": "Le canot d’écorce, fabriqué grâce au savoir des Premières Nations, était léger et facile à réparer."
+              },
+              {
+                "id": "d",
+                "text": "Les voyageurs fabriquaient leurs canots avec du bois d’érable."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Écris dans tes mots l’idée principale du paragraphe 4.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "matching",
+            "prompt": "Associe chaque élément à la description qui lui correspond. Une description est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "m1",
+                "text": "Le canot du maître"
+              },
+              {
+                "id": "m2",
+                "text": "Le canot du nord"
+              },
+              {
+                "id": "m3",
+                "text": "Un ballot"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "Environ 40 kilogrammes de marchandises"
+              },
+              {
+                "id": "rb",
+                "text": "Environ 11 mètres et une dizaine d’hommes"
+              },
+              {
+                "id": "rc",
+                "text": "Environ 2 mètres et une seule personne"
+              },
+              {
+                "id": "rd",
+                "text": "Environ 7,5 mètres et cinq ou six hommes"
+              }
+            ]
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "Faire un portage, c’était transporter le canot et les marchandises à pied pour contourner un obstacle, comme des rapides.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Relève deux détails du texte qui montrent que le travail des voyageurs était difficile.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 3
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Pourquoi le canot d’écorce convenait-il bien à de longs voyages avec des portages? Appuie ta réponse sur deux détails du texte.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 4
+          }
+        ],
+        "visualSupports": [
+          "Une carte de l’Ontario où l’on trace la route des voyageurs : rivière des Outaouais, lac Nipissing, rivière des Français, baie Georgienne, lac Huron et lac Supérieur.",
+          "Deux rubans ou deux cordes au sol, l’un de 11 mètres et l’autre de 7,5 mètres, pour faire sentir la longueur des deux canots.",
+          "Un morceau d’écorce de bouleau tombée au sol (ne jamais écorcer un arbre vivant) et une branche de cèdre.",
+          "Un sac à dos lesté d’environ 4 kilogrammes (le dixième d’un ballot) que les élèves peuvent soupeser."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Le choix a résume tout le paragraphe. Les choix b et c sont des détails, et le choix d est faux."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "La vie des voyageurs était très dure : ils pagayaient toute la journée et portaient de lourdes charges pendant les portages.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter toute phrase qui dit que le travail ou la vie des voyageurs était difficile. Une réponse qui ne donne qu’un détail (le poids d’un ballot) est trop petite."
+          },
+          {
+            "questionId": "q3",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "m1",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "m2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "m3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "Paragraphes 3 et 4 : canot du maître, environ 11 mètres; canot du nord, environ 7,5 mètres; ballot, environ 40 kilogrammes. La description « environ 2 mètres » est de trop."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Vrai : le paragraphe 4 explique que le portage permet de contourner les rapides ou les chutes en marchant par un sentier."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "Ils pagayaient souvent du lever au coucher du soleil, et ils portaient souvent deux ballots d’environ 40 kilogrammes chacun.",
+            "acceptableAnswers": [],
+            "explanation": "Détails possibles : pagayer du lever au coucher du soleil; faire des portages; porter deux ballots d’environ 40 kg; porter le canot sur les épaules."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Il était léger, alors les voyageurs pouvaient le porter pendant les portages. De plus, on pouvait le réparer en route avec de l’écorce, des racines et de la gomme trouvées dans la forêt.",
+            "acceptableAnswers": [],
+            "explanation": "La réponse relie deux paragraphes : la légèreté et la réparation (paragraphe 2) et les portages (paragraphe 4)."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "debutant",
+      "content": {
+        "title": "",
+        "objective": "Je dégage l’idée principale d’un paragraphe informatif et les détails importants qui l’appuient.",
+        "teacherNote": "Version Débutant : phrases courtes, une idée par phrase, vocabulaire fréquent et glossaire. L’idée principale est travaillée avec un choix multiple et une phrase à compléter. Les quatre versions ont les mêmes cinq paragraphes et les mêmes idées principales.",
+        "text": "1. Il y a plus de 200 ans, des hommes travaillaient comme voyageurs. La plupart parlaient français. Ils voyageaient en canot. Ils transportaient des couvertures, des chaudrons et des outils. Ils échangeaient ces objets contre des fourrures avec des Premières Nations. Ensuite, ils rapportaient les fourrures à Montréal. Leur route passait par les rivières et les lacs de l’Ontario.\n\n2. Le canot des voyageurs était fait d’écorce de bouleau. Les Premières Nations fabriquaient déjà ces canots avant l’arrivée des Européens. Les voyageurs ont appris d’elles. Le canot avait une charpente en bois de cèdre. On cousait l’écorce avec des racines d’épinette. La gomme d’épinette empêchait l’eau d’entrer. Le canot était léger. On pouvait le réparer dans la forêt.\n\n3. Il y avait deux sortes de canots. Le canot du maître était très long : environ 11 mètres. Une dizaine d’hommes pagayaient à bord. On l’utilisait sur les Grands Lacs. Le canot du nord était plus petit : environ 7,5 mètres. Cinq ou six hommes pagayaient à bord. On l’utilisait sur les petites rivières.\n\n4. Le travail des voyageurs était très dur. Ils pagayaient du matin au soir. Ils chantaient pour pagayer ensemble. Parfois, il y avait des rapides. Alors, les voyageurs faisaient un portage. Ils marchaient sur un sentier avec le canot et les marchandises. Un ballot pesait environ 40 kilogrammes. Un voyageur portait souvent deux ballots sur son dos.\n\n5. Aujourd’hui, on se souvient des voyageurs. On chante encore leurs chansons, comme « À la claire fontaine ». Des lieux de l’Ontario rappellent leur passage, comme la rivière des Français. Les voyageurs font partie de l’histoire franco-ontarienne.",
+        "glossary": [
+          {
+            "term": "un canot",
+            "definition": "Un bateau long et étroit. On le fait avancer avec un aviron."
+          },
+          {
+            "term": "l’écorce",
+            "definition": "La partie qui couvre le tronc d’un arbre."
+          },
+          {
+            "term": "un aviron",
+            "definition": "Un bâton plat pour faire avancer un canot."
+          },
+          {
+            "term": "pagayer",
+            "definition": "Faire avancer un canot avec un aviron."
+          },
+          {
+            "term": "une fourrure",
+            "definition": "La peau d’un animal avec ses poils."
+          },
+          {
+            "term": "des rapides",
+            "definition": "Un endroit où l’eau d’une rivière coule très vite."
+          },
+          {
+            "term": "un portage",
+            "definition": "Marcher avec le canot pour éviter des rapides."
+          },
+          {
+            "term": "un ballot",
+            "definition": "Un gros paquet de marchandises."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "De quoi parle surtout le paragraphe 2?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "b",
+                "text": "Les chansons des voyageurs."
+              },
+              {
+                "id": "a",
+                "text": "Le canot d’écorce et sa fabrication."
+              },
+              {
+                "id": "c",
+                "text": "Le poids des ballots."
+              },
+              {
+                "id": "d",
+                "text": "Les deux sortes de canots."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Quelle est l’idée principale du paragraphe 4?",
+            "hint": "Commence ta phrase par « Le travail des voyageurs… ».",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "matching",
+            "prompt": "Relie chaque élément à sa mesure. Une mesure est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "m1",
+                "text": "Le canot du maître"
+              },
+              {
+                "id": "m2",
+                "text": "Le canot du nord"
+              },
+              {
+                "id": "m3",
+                "text": "Un ballot"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "environ 40 kilogrammes"
+              },
+              {
+                "id": "rb",
+                "text": "environ 11 mètres"
+              },
+              {
+                "id": "rc",
+                "text": "environ 2 mètres"
+              },
+              {
+                "id": "rd",
+                "text": "environ 7,5 mètres"
+              }
+            ]
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "Pendant un portage, les voyageurs marchaient avec le canot et les marchandises.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Écris deux choses difficiles dans le travail des voyageurs.",
+            "hint": "Relis le paragraphe 4.",
+            "points": null,
+            "category": "connaissance",
+            "lines": 3
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Pourquoi le canot d’écorce était-il pratique pour les voyageurs? Donne une raison.",
+            "hint": "Relis les deux dernières phrases du paragraphe 2.",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          }
+        ],
+        "visualSupports": [
+          "Une carte de l’Ontario où l’on trace la route des voyageurs : rivière des Outaouais, lac Nipissing, rivière des Français, baie Georgienne, lac Huron et lac Supérieur.",
+          "Deux rubans ou deux cordes au sol, l’un de 11 mètres et l’autre de 7,5 mètres, pour faire sentir la longueur des deux canots.",
+          "Un morceau d’écorce de bouleau tombée au sol (ne jamais écorcer un arbre vivant) et une branche de cèdre.",
+          "Un sac à dos lesté d’environ 4 kilogrammes (le dixième d’un ballot) que les élèves peuvent soupeser."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Toutes les phrases du paragraphe 2 parlent du canot d’écorce : ses matériaux et ses avantages."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "Le travail des voyageurs était très dur.",
+            "acceptableAnswers": [
+              "Le travail des voyageurs était très dur",
+              "Le travail des voyageurs était dur",
+              "Le travail des voyageurs était très difficile",
+              "Le travail des voyageurs était difficile"
+            ],
+            "explanation": "Accepter toute phrase qui dit que le travail des voyageurs était dur ou difficile."
+          },
+          {
+            "questionId": "q3",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "m1",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "m2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "m3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "Paragraphes 3 et 4 : canot du maître, environ 11 mètres; canot du nord, environ 7,5 mètres; ballot, environ 40 kilogrammes. La description « environ 2 mètres » est de trop."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Vrai : le paragraphe 4 explique que le portage permet de contourner les rapides ou les chutes en marchant par un sentier."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "Ils pagayaient du matin au soir. Ils portaient deux ballots lourds.",
+            "acceptableAnswers": [],
+            "explanation": "Réponses possibles : pagayer du matin au soir; faire des portages; porter deux ballots de 40 kg."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Il était léger. On pouvait le porter et le réparer dans la forêt.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter : il était léger (facile à porter pendant les portages), ou on pouvait le réparer en route."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "intermediaire",
+      "content": {
+        "title": "",
+        "objective": "Je dégage l’idée principale d’un paragraphe informatif et les détails importants qui l’appuient.",
+        "teacherNote": "Version Intermédiaire : phrases simples ou composées, mots nouveaux expliqués dans le glossaire, mêmes questions que la version de base avec des indices pour les questions 2 et 6. Les quatre versions ont les mêmes cinq paragraphes et les mêmes idées principales.",
+        "text": "1. À la fin des années 1700 et au début des années 1800, beaucoup d’hommes travaillaient comme voyageurs. La plupart parlaient français. Des compagnies de fourrures de Montréal les engageaient pour transporter des marchandises en canot, très loin vers l’ouest. Les voyageurs partaient au printemps avec des couvertures, des chaudrons et des outils. Ils échangeaient ces objets contre des fourrures avec des Premières Nations. Leur route traversait l’Ontario, par la rivière des Outaouais, le lac Nipissing, la rivière des Français et les Grands Lacs.\n\n2. Le canot des voyageurs était fait d’écorce de bouleau. Les Premières Nations fabriquaient ces canots bien avant l’arrivée des Européens, et les voyageurs ont appris ce savoir-faire avec elles. La charpente était en cèdre, un bois léger et solide. On cousait les morceaux d’écorce avec des racines d’épinette. Ensuite, on bouchait les coutures avec de la gomme d’épinette pour que l’eau n’entre pas. Ce canot était léger, et on pouvait le réparer en route avec des matériaux de la forêt.\n\n3. Les voyageurs utilisaient deux sortes de canots. Le canot du maître mesurait environ 11 mètres. Il servait sur les grandes rivières et les Grands Lacs. Une dizaine d’hommes y prenaient place, avec une soixantaine de ballots. Plus à l’ouest, les rivières étaient plus étroites. Les voyageurs prenaient alors le canot du nord, qui mesurait environ 7,5 mètres. Il transportait cinq ou six hommes et environ la moitié de la charge d’un canot du maître.\n\n4. La vie de voyageur était très difficile. Les hommes pagayaient souvent du lever au coucher du soleil. Ils chantaient pour garder le même rythme. Quand des rapides bloquaient la route, ils faisaient un portage : ils sortaient tout du canot et marchaient sur un sentier jusqu’à l’eau calme. Un ballot pesait environ 40 kilogrammes, et un voyageur en portait souvent deux à la fois sur son dos. D’autres hommes portaient le canot sur leurs épaules.\n\n5. Aujourd’hui, on se souvient encore des voyageurs, surtout dans les communautés francophones de l’Ontario. On chante toujours leurs chansons, comme « À la claire fontaine » et « En roulant ma boule ». Des noms de lieux, comme la rivière des Français, rappellent aussi leur passage. Les voyageurs font partie de l’histoire franco-ontarienne.",
+        "glossary": [
+          {
+            "term": "l’écorce",
+            "definition": "L’enveloppe extérieure du tronc d’un arbre."
+          },
+          {
+            "term": "la charpente",
+            "definition": "Les pièces de bois qui donnent sa forme au canot."
+          },
+          {
+            "term": "un ballot",
+            "definition": "Un gros paquet de marchandises bien attaché."
+          },
+          {
+            "term": "pagayer",
+            "definition": "Faire avancer un canot avec un aviron."
+          },
+          {
+            "term": "des rapides",
+            "definition": "Un endroit où l’eau d’une rivière coule très vite."
+          },
+          {
+            "term": "un portage",
+            "definition": "Le transport à pied du canot et de la charge pour éviter un obstacle."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quelle phrase résume le mieux l’idée principale du paragraphe 2?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "b",
+                "text": "La charpente du canot était faite en cèdre."
+              },
+              {
+                "id": "c",
+                "text": "Les coutures étaient bouchées avec de la gomme d’épinette."
+              },
+              {
+                "id": "a",
+                "text": "Le canot d’écorce, fabriqué grâce au savoir des Premières Nations, était léger et facile à réparer."
+              },
+              {
+                "id": "d",
+                "text": "Les voyageurs fabriquaient leurs canots avec du bois d’érable."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Écris dans tes mots l’idée principale du paragraphe 4.",
+            "hint": "Demande-toi de quoi parlent toutes les phrases du paragraphe 4.",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "matching",
+            "prompt": "Associe chaque élément à la description qui lui correspond. Une description est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "m1",
+                "text": "Le canot du maître"
+              },
+              {
+                "id": "m2",
+                "text": "Le canot du nord"
+              },
+              {
+                "id": "m3",
+                "text": "Un ballot"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "Environ 40 kilogrammes de marchandises"
+              },
+              {
+                "id": "rb",
+                "text": "Environ 11 mètres et une dizaine d’hommes"
+              },
+              {
+                "id": "rc",
+                "text": "Environ 2 mètres et une seule personne"
+              },
+              {
+                "id": "rd",
+                "text": "Environ 7,5 mètres et cinq ou six hommes"
+              }
+            ]
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "Faire un portage, c’était transporter le canot et les marchandises à pied pour contourner un obstacle, comme des rapides.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Relève deux détails du texte qui montrent que le travail des voyageurs était difficile.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 3
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Pourquoi le canot d’écorce convenait-il bien à de longs voyages avec des portages? Appuie ta réponse sur deux détails du texte.",
+            "hint": "Relis la fin du paragraphe 2 et le passage du paragraphe 4 qui parle du portage.",
+            "points": null,
+            "category": "habiletes",
+            "lines": 4
+          }
+        ],
+        "visualSupports": [
+          "Une carte de l’Ontario où l’on trace la route des voyageurs : rivière des Outaouais, lac Nipissing, rivière des Français, baie Georgienne, lac Huron et lac Supérieur.",
+          "Deux rubans ou deux cordes au sol, l’un de 11 mètres et l’autre de 7,5 mètres, pour faire sentir la longueur des deux canots.",
+          "Un morceau d’écorce de bouleau tombée au sol (ne jamais écorcer un arbre vivant) et une branche de cèdre.",
+          "Un sac à dos lesté d’environ 4 kilogrammes (le dixième d’un ballot) que les élèves peuvent soupeser."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Le choix a résume tout le paragraphe. Les choix b et c sont des détails, et le choix d est faux."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "La vie des voyageurs était très dure : ils pagayaient toute la journée et portaient de lourdes charges pendant les portages.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter toute phrase qui dit que le travail ou la vie des voyageurs était difficile. Une réponse qui ne donne qu’un détail (le poids d’un ballot) est trop petite."
+          },
+          {
+            "questionId": "q3",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "m1",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "m2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "m3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "Paragraphes 3 et 4 : canot du maître, environ 11 mètres; canot du nord, environ 7,5 mètres; ballot, environ 40 kilogrammes. La description « environ 2 mètres » est de trop."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Vrai : le paragraphe 4 explique que le portage permet de contourner les rapides ou les chutes en marchant par un sentier."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "Ils pagayaient souvent du lever au coucher du soleil, et ils portaient souvent deux ballots d’environ 40 kilogrammes chacun.",
+            "acceptableAnswers": [],
+            "explanation": "Détails possibles : pagayer du lever au coucher du soleil; faire des portages; porter deux ballots d’environ 40 kg; porter le canot sur les épaules."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Il était léger, alors les voyageurs pouvaient le porter pendant les portages. De plus, on pouvait le réparer en route avec de l’écorce, des racines et de la gomme trouvées dans la forêt.",
+            "acceptableAnswers": [],
+            "explanation": "La réponse relie deux paragraphes : la légèreté et la réparation (paragraphe 2) et les portages (paragraphe 4)."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "avance",
+      "content": {
+        "title": "",
+        "objective": "Je dégage l’idée principale d’un paragraphe informatif et les détails importants qui l’appuient.",
+        "teacherNote": "Version Avancé : même texte que la version de base, écrit dans le français attendu en 5e année. Les quatre versions ont les mêmes cinq paragraphes et les mêmes idées principales.",
+        "text": "1. À la fin des années 1700 et au début des années 1800, de nombreux hommes, pour la plupart francophones, travaillaient comme voyageurs. Des compagnies de fourrures de Montréal les engageaient pour transporter des marchandises en canot jusqu’au cœur du continent. Chaque printemps, les voyageurs partaient avec des couvertures, des chaudrons et des outils. Ces objets étaient échangés contre des fourrures avec des Premières Nations. Les canots revenaient ensuite chargés de peaux de castor. La route des voyageurs traversait l’Ontario : la rivière des Outaouais, le lac Nipissing, la rivière des Français, puis les Grands Lacs.\n\n2. Le canot des voyageurs était fait d’écorce de bouleau. Les Premières Nations fabriquaient ce genre de canot bien avant l’arrivée des Européens, et c’est d’elles que les voyageurs ont appris ce savoir-faire. La charpente était en cèdre, un bois léger et solide. Les morceaux d’écorce étaient cousus avec des racines d’épinette, puis les coutures étaient bouchées avec de la gomme d’épinette pour empêcher l’eau d’entrer. Ce canot avait un grand avantage : il était léger, et on pouvait le réparer en route avec des matériaux trouvés dans la forêt.\n\n3. Les voyageurs utilisaient deux sortes de canots. Le canot du maître, long d’environ 11 mètres, servait sur les grandes rivières et les Grands Lacs. Une dizaine d’hommes y prenaient place, avec une soixantaine de ballots de marchandises. Plus à l’ouest, sur des rivières étroites et peu profondes, les voyageurs prenaient plutôt le canot du nord. Plus petit, il mesurait environ 7,5 mètres et transportait cinq ou six hommes et environ la moitié de la charge d’un canot du maître.\n\n4. La vie de voyageur était très exigeante. Les hommes pagayaient souvent du lever au coucher du soleil, en chantant pour garder le même rythme. Quand des rapides ou des chutes bloquaient la route, il fallait faire un portage : les voyageurs sortaient tout du canot et transportaient la charge à pied, par un sentier, jusqu’à l’eau calme. Chaque ballot pesait environ 40 kilogrammes, et un voyageur en portait souvent deux à la fois sur son dos, retenus par une courroie appuyée sur son front. D’autres hommes portaient le canot renversé sur leurs épaules.\n\n5. Aujourd’hui, on se souvient encore des voyageurs, surtout dans les communautés francophones de l’Ontario. Leurs chansons, comme « À la claire fontaine » et « En roulant ma boule », se chantent toujours. Des noms de lieux, comme la rivière des Français, rappellent aussi le passage des francophones sur les cours d’eau de la province. Les voyageurs font partie de l’histoire franco-ontarienne.",
+        "glossary": [
+          {
+            "term": "un voyageur",
+            "definition": "Un homme engagé pour transporter des marchandises en canot à l’époque de la traite des fourrures."
+          },
+          {
+            "term": "l’écorce",
+            "definition": "L’enveloppe extérieure du tronc d’un arbre."
+          },
+          {
+            "term": "la charpente",
+            "definition": "Les pièces de bois qui donnent sa forme et sa solidité au canot."
+          },
+          {
+            "term": "un ballot",
+            "definition": "Un gros paquet de marchandises bien attaché."
+          },
+          {
+            "term": "pagayer",
+            "definition": "Faire avancer un canot avec un aviron."
+          },
+          {
+            "term": "un portage",
+            "definition": "Le transport à pied du canot et de la charge pour contourner un obstacle sur l’eau."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quelle phrase résume le mieux l’idée principale du paragraphe 2?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "b",
+                "text": "La charpente du canot était faite en cèdre."
+              },
+              {
+                "id": "c",
+                "text": "Les coutures étaient bouchées avec de la gomme d’épinette."
+              },
+              {
+                "id": "a",
+                "text": "Le canot d’écorce, fabriqué grâce au savoir des Premières Nations, était léger et facile à réparer."
+              },
+              {
+                "id": "d",
+                "text": "Les voyageurs fabriquaient leurs canots avec du bois d’érable."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Écris dans tes mots l’idée principale du paragraphe 4.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "matching",
+            "prompt": "Associe chaque élément à la description qui lui correspond. Une description est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "m1",
+                "text": "Le canot du maître"
+              },
+              {
+                "id": "m2",
+                "text": "Le canot du nord"
+              },
+              {
+                "id": "m3",
+                "text": "Un ballot"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "Environ 40 kilogrammes de marchandises"
+              },
+              {
+                "id": "rb",
+                "text": "Environ 11 mètres et une dizaine d’hommes"
+              },
+              {
+                "id": "rc",
+                "text": "Environ 2 mètres et une seule personne"
+              },
+              {
+                "id": "rd",
+                "text": "Environ 7,5 mètres et cinq ou six hommes"
+              }
+            ]
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "Faire un portage, c’était transporter le canot et les marchandises à pied pour contourner un obstacle, comme des rapides.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Relève deux détails du texte qui montrent que le travail des voyageurs était difficile.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 3
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Pourquoi le canot d’écorce convenait-il bien à de longs voyages avec des portages? Appuie ta réponse sur deux détails du texte.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 4
+          }
+        ],
+        "visualSupports": [
+          "Une carte de l’Ontario où l’on trace la route des voyageurs : rivière des Outaouais, lac Nipissing, rivière des Français, baie Georgienne, lac Huron et lac Supérieur.",
+          "Deux rubans ou deux cordes au sol, l’un de 11 mètres et l’autre de 7,5 mètres, pour faire sentir la longueur des deux canots.",
+          "Un morceau d’écorce de bouleau tombée au sol (ne jamais écorcer un arbre vivant) et une branche de cèdre.",
+          "Un sac à dos lesté d’environ 4 kilogrammes (le dixième d’un ballot) que les élèves peuvent soupeser."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Le choix a résume tout le paragraphe. Les choix b et c sont des détails, et le choix d est faux."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "La vie des voyageurs était très dure : ils pagayaient toute la journée et portaient de lourdes charges pendant les portages.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter toute phrase qui dit que le travail ou la vie des voyageurs était difficile. Une réponse qui ne donne qu’un détail (le poids d’un ballot) est trop petite."
+          },
+          {
+            "questionId": "q3",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "m1",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "m2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "m3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "Paragraphes 3 et 4 : canot du maître, environ 11 mètres; canot du nord, environ 7,5 mètres; ballot, environ 40 kilogrammes. La description « environ 2 mètres » est de trop."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Vrai : le paragraphe 4 explique que le portage permet de contourner les rapides ou les chutes en marchant par un sentier."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "Ils pagayaient souvent du lever au coucher du soleil, et ils portaient souvent deux ballots d’environ 40 kilogrammes chacun.",
+            "acceptableAnswers": [],
+            "explanation": "Détails possibles : pagayer du lever au coucher du soleil; faire des portages; porter deux ballots d’environ 40 kg; porter le canot sur les épaules."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Il était léger, alors les voyageurs pouvaient le porter pendant les portages. De plus, on pouvait le réparer en route avec de l’écorce, des racines et de la gomme trouvées dans la forêt.",
+            "acceptableAnswers": [],
+            "explanation": "La réponse relie deux paragraphes : la légèreté et la réparation (paragraphe 2) et les portages (paragraphe 4)."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "enrichi",
+      "content": {
+        "title": "",
+        "objective": "Je dégage l’idée principale d’un paragraphe informatif et les détails importants qui l’appuient.",
+        "teacherNote": "Version Enrichi : vocabulaire plus riche et plus précis, phrases plus variées, et deux questions d’approfondissement (questions 7 et 8). Les quatre versions ont les mêmes cinq paragraphes et les mêmes idées principales.",
+        "text": "1. À la fin des années 1700 et au début des années 1800, la traite des fourrures était l’une des grandes activités économiques de l’Amérique du Nord. Des compagnies établies à Montréal, comme la Compagnie du Nord-Ouest, engageaient de nombreux hommes, en majorité des Canadiens français, pour acheminer leurs marchandises. On les appelait les voyageurs. Chaque printemps, ils quittaient les environs de Montréal avec des canots remplis de couvertures, de chaudrons, d’outils et d’autres biens, que des Premières Nations échangeaient contre des fourrures, surtout des peaux de castor. Leur itinéraire traversait l’Ontario : ils remontaient la rivière des Outaouais, franchissaient le lac Nipissing, descendaient la rivière des Français, puis longeaient les rives des Grands Lacs.\n\n2. Le canot des voyageurs était une embarcation d’écorce de bouleau. Les Premières Nations maîtrisaient cette technique bien avant l’arrivée des Européens, et c’est de leur savoir-faire que les voyageurs ont hérité. La charpente était faite de cèdre, un bois à la fois léger et résistant. Les pièces d’écorce étaient cousues avec de fines racines d’épinette, puis les coutures étaient enduites de gomme d’épinette chauffée afin de les rendre étanches. Cette construction présentait un avantage considérable : le canot restait léger et pouvait être réparé en cours de route avec des matériaux trouvés sur place.\n\n3. Les voyageurs se servaient de deux types de canots, selon les cours d’eau à parcourir. Le canot du maître, long d’environ 11 mètres, naviguait sur les grandes rivières et les Grands Lacs, où les vagues pouvaient être fortes. Une dizaine d’hommes y prenaient place, avec une soixantaine de ballots de marchandises. Plus à l’ouest, les rivières devenaient étroites et peu profondes; on utilisait alors le canot du nord, plus maniable. D’une longueur d’environ 7,5 mètres, il transportait cinq ou six hommes et environ la moitié de la charge d’un canot du maître.\n\n4. L’existence des voyageurs était particulièrement exigeante. Les équipes pagayaient fréquemment du lever au coucher du soleil, en chantant pour synchroniser leurs coups d’aviron. Lorsque des rapides ou des chutes barraient la route, elles devaient effectuer un portage : il fallait décharger entièrement le canot et transporter la cargaison à pied, par un sentier, jusqu’à la prochaine étendue d’eau calme. Chaque ballot pesait environ 40 kilogrammes, et un voyageur en portait souvent deux à la fois, retenus par une courroie appuyée sur son front. Pendant ce temps, d’autres hommes transportaient le canot renversé sur leurs épaules.\n\n5. Aujourd’hui encore, la mémoire des voyageurs demeure vivante, en particulier dans les communautés francophones de l’Ontario. Leurs chansons, comme « À la claire fontaine » et « En roulant ma boule », font toujours partie du répertoire. Des noms de lieux, comme la rivière des Français, témoignent également de la présence francophone sur les cours d’eau de la province. Les voyageurs occupent ainsi une place importante dans l’histoire franco-ontarienne.",
+        "glossary": [
+          {
+            "term": "la traite des fourrures",
+            "definition": "Le commerce qui consistait à échanger des marchandises contre des fourrures."
+          },
+          {
+            "term": "acheminer",
+            "definition": "Transporter vers un endroit précis."
+          },
+          {
+            "term": "étanche",
+            "definition": "Qui ne laisse pas passer l’eau."
+          },
+          {
+            "term": "maniable",
+            "definition": "Facile à diriger."
+          },
+          {
+            "term": "synchroniser",
+            "definition": "Faire en même temps, au même rythme."
+          },
+          {
+            "term": "le répertoire",
+            "definition": "L’ensemble des chansons qu’on connaît et qu’on chante."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quelle phrase résume le mieux l’idée principale du paragraphe 2?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "b",
+                "text": "La charpente du canot était faite en cèdre."
+              },
+              {
+                "id": "c",
+                "text": "Les coutures étaient bouchées avec de la gomme d’épinette."
+              },
+              {
+                "id": "a",
+                "text": "Le canot d’écorce, fabriqué grâce au savoir des Premières Nations, était léger et facile à réparer."
+              },
+              {
+                "id": "d",
+                "text": "Les voyageurs fabriquaient leurs canots avec du bois d’érable."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Écris dans tes mots l’idée principale du paragraphe 4.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "matching",
+            "prompt": "Associe chaque élément à la description qui lui correspond. Une description est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "m1",
+                "text": "Le canot du maître"
+              },
+              {
+                "id": "m2",
+                "text": "Le canot du nord"
+              },
+              {
+                "id": "m3",
+                "text": "Un ballot"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "Environ 40 kilogrammes de marchandises"
+              },
+              {
+                "id": "rb",
+                "text": "Environ 11 mètres et une dizaine d’hommes"
+              },
+              {
+                "id": "rc",
+                "text": "Environ 2 mètres et une seule personne"
+              },
+              {
+                "id": "rd",
+                "text": "Environ 7,5 mètres et cinq ou six hommes"
+              }
+            ]
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "Faire un portage, c’était transporter le canot et les marchandises à pied pour contourner un obstacle, comme des rapides.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Relève deux détails du texte qui montrent que le travail des voyageurs était difficile.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 3
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Pourquoi le canot d’écorce convenait-il bien à de longs voyages avec des portages? Appuie ta réponse sur deux détails du texte.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 4
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Explique pourquoi on peut dire que les voyageurs font partie de l’histoire franco-ontarienne. Utilise au moins deux informations du texte.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 4
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "D’après le texte, quelles autres personnes ont joué un rôle essentiel dans la vie des voyageurs? Explique pourquoi leur rôle était important.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 4
+          }
+        ],
+        "visualSupports": [
+          "Une carte de l’Ontario où l’on trace la route des voyageurs : rivière des Outaouais, lac Nipissing, rivière des Français, baie Georgienne, lac Huron et lac Supérieur.",
+          "Deux rubans ou deux cordes au sol, l’un de 11 mètres et l’autre de 7,5 mètres, pour faire sentir la longueur des deux canots.",
+          "Un morceau d’écorce de bouleau tombée au sol (ne jamais écorcer un arbre vivant) et une branche de cèdre.",
+          "Un sac à dos lesté d’environ 4 kilogrammes (le dixième d’un ballot) que les élèves peuvent soupeser."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Le choix a résume tout le paragraphe. Les choix b et c sont des détails, et le choix d est faux."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "La vie des voyageurs était très dure : ils pagayaient toute la journée et portaient de lourdes charges pendant les portages.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter toute phrase qui dit que le travail ou la vie des voyageurs était difficile. Une réponse qui ne donne qu’un détail (le poids d’un ballot) est trop petite."
+          },
+          {
+            "questionId": "q3",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "m1",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "m2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "m3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "Paragraphes 3 et 4 : canot du maître, environ 11 mètres; canot du nord, environ 7,5 mètres; ballot, environ 40 kilogrammes. La description « environ 2 mètres » est de trop."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Vrai : le paragraphe 4 explique que le portage permet de contourner les rapides ou les chutes en marchant par un sentier."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "Ils pagayaient souvent du lever au coucher du soleil, et ils portaient souvent deux ballots d’environ 40 kilogrammes chacun.",
+            "acceptableAnswers": [],
+            "explanation": "Détails possibles : pagayer du lever au coucher du soleil; faire des portages; porter deux ballots d’environ 40 kg; porter le canot sur les épaules."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Il était léger, alors les voyageurs pouvaient le porter pendant les portages. De plus, on pouvait le réparer en route avec de l’écorce, des racines et de la gomme trouvées dans la forêt.",
+            "acceptableAnswers": [],
+            "explanation": "La réponse relie deux paragraphes : la légèreté et la réparation (paragraphe 2) et les portages (paragraphe 4)."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "La plupart des voyageurs étaient francophones, et leur route traversait l’Ontario par des rivières comme la rivière des Outaouais et la rivière des Français. On chante encore leurs chansons, et des noms de lieux rappellent leur passage.",
+            "acceptableAnswers": [],
+            "explanation": "Question d’approfondissement : la réponse relie au moins deux informations (langue des voyageurs, itinéraire en Ontario, chansons, noms de lieux)."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "Les Premières Nations. Elles échangeaient les fourrures contre les marchandises des voyageurs, et c’est d’elles que les voyageurs ont appris à fabriquer les canots d’écorce.",
+            "acceptableAnswers": [],
+            "explanation": "Question d’approfondissement : attendre les Premières Nations, avec leurs deux rôles nommés dans le texte (partenaires d’échange et savoir-faire des canots)."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

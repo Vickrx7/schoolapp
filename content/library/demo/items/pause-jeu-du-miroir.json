@@ -1,0 +1,45 @@
+{
+  "slug": "pause-jeu-du-miroir",
+  "type": "brain_break",
+  "title": "Pause active : le jeu du miroir",
+  "summary": "Une pause active de 5 minutes, sans matériel : en dyades, une personne fait des gestes lents et l’autre les copie comme un miroir, puis les rôles changent. La classe termine par trois respirations calmes.",
+  "source": "board_created",
+  "status": "board_approved",
+  "shareScope": "board",
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "gradeCodes": ["2", "3", "4", "5"],
+  "subjectCode": "eps",
+  "durationMinutes": 5,
+  "materials": "Aucun matériel particulier.",
+  "keywords": "pause active, jeu du miroir, imitation, mouvement, concentration, dyade, respiration",
+  "tags": ["mouvement", "cooperation", "jeu"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je bouge pour me dégourdir, puis je retrouve mon calme en observant attentivement les gestes d’une ou d’un partenaire.",
+        "teacherNote": "Pause active de 3 à 5 minutes, sans matériel, à faire debout à côté des pupitres. Conçue pour une personne suppléante : les élèves forment des dyades avec leur voisin ou leur voisine de pupitre. S’il y a un nombre impair d’élèves, formez un groupe de trois : deux miroirs suivent la même personne guide. Avant de commencer, rappelez les règles : on bouge lentement, on reste sur place, on ne touche pas à son ou sa partenaire et on ne se moque pas des gestes. Si une personne doit rester en position assise, elle peut guider ou copier seulement des gestes du haut du corps.",
+        "space": "desk",
+        "steps": [
+          "Lève-toi et place-toi à côté de ton pupitre, face à ton ou ta partenaire. Garde un bras de distance entre vous.",
+          "Décidez qui sera la personne guide et qui sera le miroir.",
+          "La personne guide fait des gestes très lents : lever un bras, pencher la tête, faire une grimace drôle, se mettre sur la pointe des pieds.",
+          "Le miroir copie chaque geste en même temps, comme un reflet. Les deux partenaires restent silencieux.",
+          "Restez sur place et ne vous touchez pas.",
+          "Au signal de l’adulte, après environ une minute, échangez les rôles.",
+          "Dernier tour : l’adulte guide toute la classe, et tout le monde fait le miroir en même temps.",
+          "Termine par trois grandes respirations lentes, puis assieds-toi sans bruit."
+        ],
+        "calmVariant": "Tout le monde reste assis. La personne guide bouge seulement les mains, les épaules et le visage, très lentement. Après deux tours, terminez par trois respirations lentes, les yeux fermés ou le regard vers le bas."
+      },
+      "answerKey": null
+    }
+  ]
+}

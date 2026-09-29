@@ -1,0 +1,88 @@
+{
+  "slug": "projet-documentaire-animal",
+  "type": "project",
+  "title": "Projet : mon documentaire sur un animal de l’Ontario",
+  "summary": "Chaque élève devient spécialiste d’un animal de l’Ontario : recherche, organisation des idées, rédaction et révision d’un petit livret documentaire, puis présentation à des élèves plus jeunes.",
+  "source": "teacher_created",
+  "author": "isabelle.tremblay@demo.lynx.test",
+  "school": "saint-exemple",
+  "status": "teacher_reviewed",
+  "shareScope": "school",
+  "gradeCodes": ["3"],
+  "subjectCode": "fra",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "D1"
+    }
+  ],
+  "durationMinutes": 240,
+  "materials": "Livres documentaires sur les animaux de l’Ontario, feuilles blanches pliées pour les livrets, cartons pour la couverture, crayons de couleur, agrafeuse, organisateur « Ma fiche animale » (voir le centre « Atelier d’écriture : ma fiche animale »).",
+  "keywords": "livret documentaire, texte informatif, intertitres, légendes, présentation orale, recherche, révision",
+  "tags": ["ecriture", "lecture", "animaux", "ontario"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "subFriendly": false,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je planifie et j’écris un court texte informatif bien organisé pour présenter un animal de l’Ontario à un public.",
+        "teacherNote": "Comptez environ 8 séances de 30 minutes. Public suggéré : une classe de 1re année ou les familles, lors d’une exposition en classe. Le centre « Atelier d’écriture : ma fiche animale » sert à l’étape 2, et la « Grille d’évaluation : la fiche informative » peut servir à évaluer le livret. Avant la mise au propre, vérifiez avec chaque élève les faits trouvés dans des sources fiables. Les élèves qui apprennent le français peuvent présenter avec leurs mots-clés comme aide-mémoire.",
+        "drivingQuestion": "Comment présenter un animal de l’Ontario pour que des élèves plus jeunes apprennent des choses vraies et intéressantes?",
+        "overview": "Tu vas devenir spécialiste d’un animal de l’Ontario. Tu vas chercher de l’information dans des livres, l’organiser, puis écrire un petit livret documentaire de quatre pages, avec des intertitres, des dessins et des légendes. À la fin, tu présenteras ton documentaire à des élèves plus jeunes.",
+        "milestones": [
+          {
+            "title": "Choisir mon animal",
+            "description": "Je choisis un animal qui vit en Ontario. J’écris ce que je sais déjà et trois questions que je me pose sur lui.",
+            "sessions": 1
+          },
+          {
+            "title": "Chercher et organiser",
+            "description": "Je cherche des réponses dans des livres documentaires. J’écris des mots-clés dans les quatre cases de ma fiche animale : habitat, alimentation, apparence et fait étonnant.",
+            "sessions": 2
+          },
+          {
+            "title": "Écrire mon brouillon",
+            "description": "Pour chaque case, j’écris un paragraphe de deux ou trois phrases. La première phrase dit de quoi parle le paragraphe.",
+            "sessions": 1
+          },
+          {
+            "title": "Réviser et corriger",
+            "description": "Je relis mon texte avec une ou un camarade. Je remplace un mot vague par un mot précis. Je vérifie les majuscules, les points et les accords.",
+            "sessions": 1
+          },
+          {
+            "title": "Mettre au propre",
+            "description": "Je fabrique mon livret : une couverture avec un titre, puis quatre pages avec un intertitre, mon paragraphe, un dessin et une légende.",
+            "sessions": 2
+          },
+          {
+            "title": "Présenter",
+            "description": "Je présente mon documentaire à des élèves plus jeunes. Je lis une page à voix haute et je réponds à une question.",
+            "sessions": 1
+          }
+        ],
+        "deliverables": [
+          "Ma fiche animale remplie avec mes mots-clés",
+          "Mon brouillon révisé et corrigé",
+          "Mon livret documentaire : une couverture et quatre pages",
+          "Ma présentation orale d’environ deux minutes"
+        ],
+        "successCriteria": [
+          "Mon texte donne des informations vraies sur un animal de l’Ontario.",
+          "Chaque page a un intertitre qui annonce son sujet.",
+          "Chaque paragraphe contient deux ou trois phrases sur le même sujet.",
+          "J’utilise des mots précis, par exemple : herbivore, terrier, plumage.",
+          "Mes phrases commencent par une majuscule et se terminent par un point.",
+          "Chaque dessin a une légende qui explique ce qu’on voit."
+        ]
+      },
+      "answerKey": null
+    }
+  ]
+}
