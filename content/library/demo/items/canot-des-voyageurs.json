@@ -43,7 +43,7 @@
       "content": {
         "title": "",
         "objective": "Je dégage l’idée principale d’un paragraphe informatif et les détails importants qui l’appuient.",
-        "teacherNote": "Les quatre versions ont les mêmes cinq paragraphes et les mêmes idées principales. Faits à vérifier avant l’utilisation en classe : l’époque (environ 1780 à 1820 pour les grandes brigades de Montréal); la longueur des canots (environ 11 m pour le canot du maître, environ 7,5 m pour le canot du nord), leur équipage et leur charge; le poids d’un ballot (environ 90 livres, soit environ 40 kg); les matériaux (écorce de bouleau, cèdre, racines et gomme d’épinette); l’itinéraire par la rivière des Outaouais, le lac Nipissing et la rivière des Français; le lien entre ces chansons et les voyageurs. Le texte parle du savoir des Premières Nations de façon générale; si la classe approfondit ce volet, consulter des ressources produites par les Premières Nations elles-mêmes.",
+        "teacherNote": "Les quatre versions ont les mêmes cinq paragraphes et les mêmes idées principales. Faits à vérifier avant l’utilisation en classe : l’époque (environ 1780 à 1820 pour les grandes brigades de Montréal); la longueur des canots (environ 11 m pour le canot du maître, environ 7,5 m pour le canot du nord), leur équipage et leur charge; le poids d’un ballot (environ 90 livres, soit environ 40 kg); les matériaux (écorce de bouleau, cèdre, racines et gomme d’épinette); l’itinéraire par la rivière des Outaouais, le lac Nipissing et la rivière des Français; le lien entre ces chansons et les voyageurs. Le texte parle du savoir des Premières Nations de façon générale; si la classe approfondit ce volet, consulter des ressources produites par les Premières Nations elles-mêmes.",
         "text": "1. À la fin des années 1700 et au début des années 1800, de nombreux hommes, pour la plupart francophones, travaillaient comme voyageurs. Des compagnies de fourrures de Montréal les engageaient pour transporter des marchandises en canot jusqu’au cœur du continent. Chaque printemps, les voyageurs partaient avec des couvertures, des chaudrons et des outils. Ces objets étaient échangés contre des fourrures avec des Premières Nations. Les canots revenaient ensuite chargés de peaux de castor. La route des voyageurs traversait l’Ontario : la rivière des Outaouais, le lac Nipissing, la rivière des Français, puis les Grands Lacs.\n\n2. Le canot des voyageurs était fait d’écorce de bouleau. Les Premières Nations fabriquaient ce genre de canot bien avant l’arrivée des Européens, et c’est d’elles que les voyageurs ont appris ce savoir-faire. La charpente était en cèdre, un bois léger et solide. Les morceaux d’écorce étaient cousus avec des racines d’épinette, puis les coutures étaient bouchées avec de la gomme d’épinette pour empêcher l’eau d’entrer. Ce canot avait un grand avantage : il était léger, et on pouvait le réparer en route avec des matériaux trouvés dans la forêt.\n\n3. Les voyageurs utilisaient deux sortes de canots. Le canot du maître, long d’environ 11 mètres, servait sur les grandes rivières et les Grands Lacs. Une dizaine d’hommes y prenaient place, avec une soixantaine de ballots de marchandises. Plus à l’ouest, sur des rivières étroites et peu profondes, les voyageurs prenaient plutôt le canot du nord. Plus petit, il mesurait environ 7,5 mètres et transportait cinq ou six hommes et environ la moitié de la charge d’un canot du maître.\n\n4. La vie de voyageur était très exigeante. Les hommes pagayaient souvent du lever au coucher du soleil, en chantant pour garder le même rythme. Quand des rapides ou des chutes bloquaient la route, il fallait faire un portage : les voyageurs sortaient tout du canot et transportaient la charge à pied, par un sentier, jusqu’à l’eau calme. Chaque ballot pesait environ 40 kilogrammes, et un voyageur en portait souvent deux à la fois sur son dos, retenus par une courroie appuyée sur son front. D’autres hommes portaient le canot renversé sur leurs épaules.\n\n5. Aujourd’hui, on se souvient encore des voyageurs, surtout dans les communautés francophones de l’Ontario. Leurs chansons, comme « À la claire fontaine » et « En roulant ma boule », se chantent toujours. Des noms de lieux, comme la rivière des Français, rappellent aussi le passage des francophones sur les cours d’eau de la province. Les voyageurs font partie de l’histoire franco-ontarienne.",
         "glossary": [
           {
@@ -227,7 +227,7 @@
             "kind": "short_answer",
             "sampleAnswer": "Ils pagayaient souvent du lever au coucher du soleil, et ils portaient souvent deux ballots d’environ 40 kilogrammes chacun.",
             "acceptableAnswers": [],
-            "explanation": "Détails possibles : pagayer du lever au coucher du soleil; faire des portages; porter deux ballots d’environ 40 kg; porter le canot sur les épaules."
+            "explanation": "Détails possibles : pagayer du lever au coucher du soleil; faire des portages; porter deux ballots d’environ 40 kg; porter le canot sur les épaules."
           },
           {
             "questionId": "q6",
@@ -442,7 +442,7 @@
             "kind": "short_answer",
             "sampleAnswer": "Ils pagayaient du matin au soir. Ils portaient deux ballots lourds.",
             "acceptableAnswers": [],
-            "explanation": "Réponses possibles : pagayer du matin au soir; faire des portages; porter deux ballots de 40 kg."
+            "explanation": "Réponses possibles : pagayer du matin au soir; faire des portages; porter deux ballots de 40 kg."
           },
           {
             "questionId": "q6",
@@ -644,7 +644,7 @@
             "kind": "short_answer",
             "sampleAnswer": "Ils pagayaient souvent du lever au coucher du soleil, et ils portaient souvent deux ballots d’environ 40 kilogrammes chacun.",
             "acceptableAnswers": [],
-            "explanation": "Détails possibles : pagayer du lever au coucher du soleil; faire des portages; porter deux ballots d’environ 40 kg; porter le canot sur les épaules."
+            "explanation": "Détails possibles : pagayer du lever au coucher du soleil; faire des portages; porter deux ballots d’environ 40 kg; porter le canot sur les épaules."
           },
           {
             "questionId": "q6",
@@ -846,7 +846,7 @@
             "kind": "short_answer",
             "sampleAnswer": "Ils pagayaient souvent du lever au coucher du soleil, et ils portaient souvent deux ballots d’environ 40 kilogrammes chacun.",
             "acceptableAnswers": [],
-            "explanation": "Détails possibles : pagayer du lever au coucher du soleil; faire des portages; porter deux ballots d’environ 40 kg; porter le canot sur les épaules."
+            "explanation": "Détails possibles : pagayer du lever au coucher du soleil; faire des portages; porter deux ballots d’environ 40 kg; porter le canot sur les épaules."
           },
           {
             "questionId": "q6",
@@ -1066,7 +1066,7 @@
             "kind": "short_answer",
             "sampleAnswer": "Ils pagayaient souvent du lever au coucher du soleil, et ils portaient souvent deux ballots d’environ 40 kilogrammes chacun.",
             "acceptableAnswers": [],
-            "explanation": "Détails possibles : pagayer du lever au coucher du soleil; faire des portages; porter deux ballots d’environ 40 kg; porter le canot sur les épaules."
+            "explanation": "Détails possibles : pagayer du lever au coucher du soleil; faire des portages; porter deux ballots d’environ 40 kg; porter le canot sur les épaules."
           },
           {
             "questionId": "q6",

@@ -1,8 +1,9 @@
 /**
  * The content-pack format (DECISIONS P-11, P-21): `content/library/<pack>/pack.json` plus one
- * JSON file per item. It is the demo seed today and the export/import format later. References
- * to the database are by code (board and school slugs, user e-mails, subject, grade and attente
- * codes, level codes, Catholic reference titles, tag slugs), never by id.
+ * JSON file per item in `items/` (`seedItemFile`). It is the demo seed today and the
+ * export/import format later. References to the database are by code (board and school slugs,
+ * user e-mails, subject, grade and attente codes, level codes, Catholic reference titles, tag
+ * slugs), never by id.
  */
 import { z } from 'zod';
 import { validateAnswerKey } from './answer-key';
@@ -30,10 +31,18 @@ export const seedPackSchema = z.strictObject({
     .array(z.strictObject({ slug, labelFr: z.string().trim().min(1).max(60) }))
     .max(100)
     .default([]),
-  /** Item slugs, in load order; each has `<slug>.json` next to `pack.json`. */
+  /** Item slugs, in load order; each has its file at `seedItemFile(slug)`. */
   items: z.array(slug).min(1).max(500),
 });
 export type SeedPack = z.output<typeof seedPackSchema>;
+
+/** Folder of a pack's item files, next to its `pack.json`. */
+export const SEED_ITEMS_DIR = 'items';
+
+/** Path of an item file, relative to the pack folder (`items/<slug>.json`). */
+export function seedItemFile(slug: string): string {
+  return `${SEED_ITEMS_DIR}/${slug}.json`;
+}
 
 const versionSchema = z.strictObject({
   /** Null for the base version. */
