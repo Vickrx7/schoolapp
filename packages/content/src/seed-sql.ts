@@ -3,9 +3,12 @@
  * and raises on anything missing, then inserts the pack, its tags and its items with UUIDv5
  * ids. Pure and deterministic: the same pack gives the same text, so CI can check the
  * generated seed for drift. The columns follow the Phase 4 library migration (C1) and Phase 5's
- * `board_owned` (D-091): workflow state is written directly (the seed runs as the database
- * owner), and `requires_faith_review` is left to the items trigger.
+ * `board_owned` (D-091) and content packs (D-100): workflow state is written directly (the seed
+ * runs as the database owner), `requires_faith_review` is left to the items trigger, and each
+ * item records its pack slug, key and content hash (`packItemFromSeed`, the hash a v1 pack of
+ * the same folder carries) at revision 1, so a later version of the pack finds it again.
  */
+import { packItemFromSeed, type SeedPackOptions } from './pack-format';
 import { questionSchemas, type AnswerKey } from './questions';
 import { contentObject } from './schemas';
 import { conform } from './conform';
@@ -139,8 +142,20 @@ function canonical(item: SeedItem) {
   }));
 }
 
-function itemSql(pack: SeedPack, item: SeedItem, index: number, refs: Refs): string[] {
+/** What the pack columns need that the seed format does not say (see `SeedPackOptions`). */
+export type SeedHashOptions = Pick<SeedPackOptions, 'curriculumVersions' | 'referenceTypes'>;
+
+function itemSql(
+  pack: SeedPack,
+  item: SeedItem,
+  index: number,
+  refs: Refs,
+  options: SeedHashOptions,
+): string[] {
   const id = q(seedItemId(pack.slug, item.slug));
+  // The hash a v1 pack of this folder gives the item (`pnpm library:pack`), so importing that
+  // pack later finds the item unchanged (D-100).
+  const hash = packItemFromSeed(item, options).hash;
   const author = item.author ? refs.user(item.author) : 'null';
   const approver = item.approvedBy ? refs.user(item.approvedBy) : 'null';
   const school = item.school ? refs.school(item.school) : 'null';
@@ -156,7 +171,8 @@ function itemSql(pack: SeedPack, item: SeedItem, index: number, refs: Refs): str
     '    duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,',
     '    sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,',
     '    catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,',
-    '    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)',
+    '    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,',
+    '    pack_content_hash, pack_revision)',
     `  values (${id}, v_board, ${school}, ${q(item.type)}, ${dq(item.title)}, ${dqOrNull(item.summary)},`,
     `    ${q(item.status)}, ${q(item.shareScope)}, ${q(item.source)}, ${author}, ${boardOwned},`,
     `    ${dqOrNull(item.licence)}, v_pack, ${subject}, ${item.durationMinutes}, ${dq(item.materials)},`,
@@ -166,7 +182,9 @@ function itemSql(pack: SeedPack, item: SeedItem, index: number, refs: Refs): str
     `    ${dqOrNull(item.catholicConnection)}, ${reference}, ${dqOrNull(item.promptVersion)}, ${dqOrNull(item.model)},`,
     `    ${item.reviewRequested ? `now(), ${author}` : 'null, null'},`,
     `    ${approved ? `now(), ${approver}` : 'null, null'},`,
-    `    ${item.faithReviewed ? `now(), ${approver}` : 'null, null'});`,
+    `    ${item.faithReviewed ? `now(), ${approver}` : 'null, null'},`,
+    // Revision 1: a new item's `content_revision`.
+    `    ${q(pack.slug)}, ${q(item.slug)}, ${q(hash)}, 1);`,
     `  insert into public.library_item_grades (item_id, grade_code) values`,
     `    ${item.gradeCodes.map((g) => `(${id}, ${q(g)})`).join(', ')};`,
   ];
@@ -211,11 +229,17 @@ function itemSql(pack: SeedPack, item: SeedItem, index: number, refs: Refs): str
 }
 
 /**
- * The seed SQL of a pack. Throws when the pack or an item is invalid, when the pack's item
- * list and the items differ, when an item uses a tag the pack doesn't define, or when any text
+ * The seed SQL of a pack. `options` gives the curriculum version of each subject and the type of
+ * each Catholic reference the items use, for their content hashes. Throws when the pack or an
+ * item is invalid, when the pack's item list and the items differ, when an item uses a tag the
+ * pack doesn't define, when an option is missing for something an item uses, or when any text
  * contains a quote tag.
  */
-export function packToSql(packInput: unknown, itemInputs: readonly unknown[]): string {
+export function packToSql(
+  packInput: unknown,
+  itemInputs: readonly unknown[],
+  options: SeedHashOptions,
+): string {
   const pack = seedPackSchema.parse(packInput);
   const items = itemInputs.map((raw, i) => {
     const parsed = seedItemSchema.safeParse(raw);
@@ -252,7 +276,7 @@ export function packToSql(packInput: unknown, itemInputs: readonly unknown[]): s
   const refs = new Refs();
   const body: string[] = [];
   pack.items.forEach((slug, i) => {
-    body.push(...itemSql(pack, bySlug.get(slug)!, i, refs), '');
+    body.push(...itemSql(pack, bySlug.get(slug)!, i, refs, options), '');
   });
 
   const all = refs.all;
@@ -287,9 +311,10 @@ export function packToSql(packInput: unknown, itemInputs: readonly unknown[]): s
     '  end if;',
     ...otherLookups,
     '',
-    '  insert into public.content_packs (id, board_id, slug, version, title, publisher, manifest)',
+    '  insert into public.content_packs (id, board_id, slug, version, title, publisher, manifest,',
+    '    item_count)',
     `  values (v_pack, v_board, ${q(pack.slug)}, ${q(pack.version)}, ${dq(pack.title)}, ${dqOrNull(pack.publisher)},`,
-    `    ${json(manifest)});`,
+    `    ${json(manifest)}, ${items.length});`,
     ...(tagRows.length
       ? [
           '  insert into public.tags (id, board_id, slug, label_fr) values',

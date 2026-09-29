@@ -366,9 +366,10 @@ begin
   select id into r_ref_3 from public.catholic_references where title = $lynxpack$La persévérance$lynxpack$ and active and (board_id = v_board or board_id is null) order by board_id nulls last limit 1;
   if r_ref_3 is null then raise exception 'library seed: % not found: %', 'reference', 'La persévérance'; end if;
 
-  insert into public.content_packs (id, board_id, slug, version, title, publisher, manifest)
+  insert into public.content_packs (id, board_id, slug, version, title, publisher, manifest,
+    item_count)
   values (v_pack, v_board, 'demo', '2026.1', $lynxpack$Ressources de démonstration (à valider en classe)$lynxpack$, $lynxpack$IP Lynx$lynxpack$,
-    $lynxpack${"items":["idee-principale-paragraphe","parties-texte-informatif","fractions-equivalentes-bandes","arrondir-idees-fausses","huard-oiseau-des-lacs","canot-des-voyageurs","ordonner-nombres-1000","dixiemes-centiemes-argent","mots-animaux-ontario","billet-arrondir-dizaine","atelier-fiche-animale","eponges-elastiques","pont-de-papier","projet-documentaire-animal","chasse-aux-nombres","quiz-nombres-1000","evaluation-fractions-decimaux","diagnostic-fractions","grille-fiche-informative","bataille-des-nombres","pause-jeu-du-miroir","chanson-des-centaines","devinettes-qui-suis-je","defi-marche-des-fractions","prendre-soin-de-la-creation","drapeau-franco-ontarien","nombres-1000-a-la-maison","comparer-des-nombres-brouillon","billet-fractions-equivalentes","discuter-en-groupe","atelier-carte-postale","phrases-qui-grandissent-brouillon","premier-hiver-d-ines","premiere-cabane-a-sucre","ver-de-terre-jardinier","mots-de-l-hiver","charades-des-syllabes","ecrire-un-texte-d-opinion","atelier-arguments-en-or","moule-zebree-envahisseuse","sos-montfort","mots-pour-discuter","grille-texte-d-opinion","devinettes-prefixes-suffixes","valeur-manquante-collecte","dispositions-rectangulaires","suites-croissantes-brouillon","atelier-des-donnees","billet-partage-equitable","mesurer-dans-la-cour","quiz-monnaie-canadienne","robot-du-quadrillage","aire-parallelogramme-triangle","division-reste-minibus","code-arrosage-du-jardin","moyenne-mediane-mode","billet-equations-balance","quiz-angles-triangles","course-des-sommes-brouillon","tresors-plan-cartesien","defi-budget-journee-de-jeux","sols-et-eau","tige-qui-boit","tour-qui-resiste-au-vent","plantes-de-la-cour","plantes-et-sols-a-la-maison","coeur-apres-effort","physique-ou-chimique","defi-garde-glacon","detectives-energie-brouillon","matiere-dans-la-cuisine","en-francais-on-chante","francophonie-quatre-coins-ontario","pause-solide-liquide-gaz","pause-graine-qui-pousse","notre-place-hymne-franco-ontarien","avent-preparer-le-chemin","careme-quarante-jours"],"generator":"packToSql"}$lynxpack$::jsonb);
+    $lynxpack${"items":["idee-principale-paragraphe","parties-texte-informatif","fractions-equivalentes-bandes","arrondir-idees-fausses","huard-oiseau-des-lacs","canot-des-voyageurs","ordonner-nombres-1000","dixiemes-centiemes-argent","mots-animaux-ontario","billet-arrondir-dizaine","atelier-fiche-animale","eponges-elastiques","pont-de-papier","projet-documentaire-animal","chasse-aux-nombres","quiz-nombres-1000","evaluation-fractions-decimaux","diagnostic-fractions","grille-fiche-informative","bataille-des-nombres","pause-jeu-du-miroir","chanson-des-centaines","devinettes-qui-suis-je","defi-marche-des-fractions","prendre-soin-de-la-creation","drapeau-franco-ontarien","nombres-1000-a-la-maison","comparer-des-nombres-brouillon","billet-fractions-equivalentes","discuter-en-groupe","atelier-carte-postale","phrases-qui-grandissent-brouillon","premier-hiver-d-ines","premiere-cabane-a-sucre","ver-de-terre-jardinier","mots-de-l-hiver","charades-des-syllabes","ecrire-un-texte-d-opinion","atelier-arguments-en-or","moule-zebree-envahisseuse","sos-montfort","mots-pour-discuter","grille-texte-d-opinion","devinettes-prefixes-suffixes","valeur-manquante-collecte","dispositions-rectangulaires","suites-croissantes-brouillon","atelier-des-donnees","billet-partage-equitable","mesurer-dans-la-cour","quiz-monnaie-canadienne","robot-du-quadrillage","aire-parallelogramme-triangle","division-reste-minibus","code-arrosage-du-jardin","moyenne-mediane-mode","billet-equations-balance","quiz-angles-triangles","course-des-sommes-brouillon","tresors-plan-cartesien","defi-budget-journee-de-jeux","sols-et-eau","tige-qui-boit","tour-qui-resiste-au-vent","plantes-de-la-cour","plantes-et-sols-a-la-maison","coeur-apres-effort","physique-ou-chimique","defi-garde-glacon","detectives-energie-brouillon","matiere-dans-la-cuisine","en-francais-on-chante","francophonie-quatre-coins-ontario","pause-solide-liquide-gaz","pause-graine-qui-pousse","notre-place-hymne-franco-ontarien","avent-preparer-le-chemin","careme-quarante-jours"],"generator":"packToSql"}$lynxpack$::jsonb, 78);
   insert into public.tags (id, board_id, slug, label_fr) values
     ('f576d43a-c02f-5d72-a611-ad9c455c8b58', null, 'lecture', $lynxpack$Lecture$lynxpack$),
     ('513a7f9b-c8d6-5a20-af26-57e9326f4b47', null, 'ecriture', $lynxpack$Écriture$lynxpack$),
@@ -486,7 +487,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('af023724-1da1-5845-ab2f-9f462ed724c6', v_board, null, 'lesson_plan', $lynxpack$Trouver l’idée principale d’un paragraphe$lynxpack$, $lynxpack$Leçon de 50 minutes : les élèves apprennent à repérer l’idée principale d’un paragraphe informatif et les détails qui l’appuient, avec le texte « Le huard, oiseau des lacs ».$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_1, 50, $lynxpack$Texte « Le huard, oiseau des lacs » (une copie par élève, dans la version prévue pour son groupe); une feuille blanche par élève, pliée en quatre; surligneurs; crayons; tableau.$lynxpack$,
@@ -496,7 +498,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'idee-principale-paragraphe', 'af0c8c6616f0f98c56188390ddd289f59ae9670b8fe0f9415a37484224efc1f5', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('af023724-1da1-5845-ab2f-9f462ed724c6', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -513,7 +516,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('36c4583b-eae8-5a7f-ac72-929c71917419', v_board, null, 'anchor_chart', $lynxpack$Les parties d’un texte informatif$lynxpack$, $lynxpack$Référentiel à afficher en classe : les parties d’un texte informatif (titre, intertitres, photos, légendes, mots en caractères gras, glossaire, table des matières) et à quoi elles servent.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_1, 20, $lynxpack$Grande feuille et marqueurs de couleur, ou projection au tableau. Quelques documentaires de la bibliothèque de classe.$lynxpack$,
@@ -523,7 +527,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'parties-texte-informatif', 'b7e27834011fd64594ae17dc21dc0c63a2b4b25031a81caebe9aa0ec42e8e178', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('36c4583b-eae8-5a7f-ac72-929c71917419', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -540,7 +545,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('c67d1d2f-dd86-5b34-bfd6-800dcbe95749', v_board, null, 'worked_example', $lynxpack$Fractions équivalentes avec des bandes de papier$lynxpack$, $lynxpack$Exemple résolu pas à pas : prouver que 3/4 = 6/8 en pliant des bandes de papier, suivi de cinq questions de pratique.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_2, 30, $lynxpack$Bandes de papier de même longueur (au moins 4 par élève, environ 3 cm de large, coupées dans le sens de la longueur d’une feuille de format lettre), crayons de couleur, règle facultative.$lynxpack$,
@@ -550,7 +556,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'fractions-equivalentes-bandes', '9ba4529e7241e0f30776ac946192105ca788bafc57e578f3758a2eab1bbf39af', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('c67d1d2f-dd86-5b34-bfd6-800dcbe95749', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -569,7 +576,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('7d0b8770-8ec2-54f8-a019-6855564b274f', v_board, null, 'teacher_guide', $lynxpack$Arrondir : idées fausses fréquentes$lynxpack$, $lynxpack$Guide pour l’enseignement de l’arrondissement à la dizaine et à la centaine en 3e année : les idées fausses les plus fréquentes, comment y répondre et quoi observer.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_2, 15, $lynxpack$Aucun matériel particulier pour la lecture du guide. En classe : droite numérique, cartes-nombres.$lynxpack$,
@@ -579,7 +587,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'arrondir-idees-fausses', '0a0692f303e286e0f2b8b9126ecf9d23147b5f044e68974d82ef23fb725dbb57', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('7d0b8770-8ec2-54f8-a019-6855564b274f', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -596,7 +605,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('3daed963-c2a5-568d-b23e-b38865b2b551', v_board, null, 'reading_passage', $lynxpack$Le huard, oiseau des lacs$lynxpack$, $lynxpack$Texte informatif de quatre paragraphes sur le huard, avec des questions sur l’idée principale et les détails importants. Quatre versions selon le niveau de langue, avec les mêmes idées principales.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_1, 30, $lynxpack$Une copie du texte par élève, dans la version prévue pour son groupe; un crayon.$lynxpack$,
@@ -606,7 +616,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'huard-oiseau-des-lacs', '8254c27a170dfe82fd865f4283ff49d1e8a79f71b8d9f0d211272e3622010584', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('3daed963-c2a5-568d-b23e-b38865b2b551', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -633,7 +644,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('543a45e2-3325-5853-9a94-165eb1eaf2ff', v_board, null, 'reading_passage', $lynxpack$Le canot des voyageurs$lynxpack$, $lynxpack$Texte informatif de cinq paragraphes sur les voyageurs de la traite des fourrures et leurs canots d’écorce, avec des questions sur l’idée principale et les détails importants. Quatre versions selon le niveau de langue.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_1, 40, $lynxpack$Une copie du texte par élève, dans la version prévue pour son groupe; un crayon.$lynxpack$,
@@ -643,7 +655,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'canot-des-voyageurs', '7a58ac93e97dd27ef0bf61ea27dc73bde45acc4e0b09787b2b508ce78fe486a3', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('543a45e2-3325-5853-9a94-165eb1eaf2ff', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -670,7 +683,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('191569be-69c6-5fc4-beeb-b9fd92bb45c8', v_board, null, 'worksheet', $lynxpack$Ordonner des nombres jusqu’à 1 000$lynxpack$, $lynxpack$Fiche d’exercices pour comparer et ordonner des nombres naturels jusqu’à 1 000 : ordre croissant et décroissant, nombres compris entre deux nombres, cartes-chiffres et un problème de la vie courante.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_2, 30, $lynxpack$Une copie de la fiche par élève, dans la version prévue pour son groupe; un crayon; une gomme à effacer. Facultatif : des cartes-chiffres de 0 à 9.$lynxpack$,
@@ -680,7 +694,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'ordonner-nombres-1000', 'fc784555b5c6b49deb4f1259f0a7276d20636678c657694ae22a6e67845ac95e', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('191569be-69c6-5fc4-beeb-b9fd92bb45c8', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -707,7 +722,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('c0e35266-488b-5d44-8f5a-2437dd31e8e3', v_board, null, 'worksheet', $lynxpack$Dixièmes et centièmes avec l’argent$lynxpack$, $lynxpack$Fiche d’exercices qui relie les fractions et les nombres décimaux (dixièmes et centièmes) à l’aide de montants d’argent : fractions de dollar, écriture décimale, comparaison et erreurs fréquentes.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_2, 40, $lynxpack$Une copie de la fiche par élève, dans la version prévue pour son groupe; un crayon. Facultatif : de la monnaie de jeu (pièces de 10 ¢, de 25 ¢ et de 1 $).$lynxpack$,
@@ -717,7 +733,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'dixiemes-centiemes-argent', 'f6d415dd62dda3950ea98bb7a3585aa5deab1352ed1316ce7f333ca28fc4d734', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('c0e35266-488b-5d44-8f5a-2437dd31e8e3', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -744,7 +761,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('ba76a528-39d8-58a3-af85-02945aff7aaf', v_board, r_school_1, 'vocabulary_bank', $lynxpack$Banque de mots : les animaux de l’Ontario$lynxpack$, $lynxpack$Vingt-quatre mots pour lire et écrire des textes informatifs sur les animaux de l’Ontario : noms d’animaux, habitats et modes de vie, avec une définition et un exemple.$lynxpack$,
     'teacher_reviewed', 'school', 'teacher_created', r_user_2, false,
     null, v_pack, r_subject_1, 20, $lynxpack$Une copie par élève ou une projection au tableau.$lynxpack$,
@@ -754,7 +772,8 @@ begin
     null, null, null, null,
     null, null,
     null, null,
-    null, null);
+    null, null,
+    'demo', 'mots-animaux-ontario', '04a0e0e5b0e4dff8bca272a34fee730d3224f273c3164a018822875baf36d1a4', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('ba76a528-39d8-58a3-af85-02945aff7aaf', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -771,7 +790,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('9f10de3c-3b1e-5110-aebb-c0605e9d0991', v_board, null, 'exit_ticket', $lynxpack$Billet de sortie : arrondir à la dizaine$lynxpack$, $lynxpack$Billet de sortie de trois questions pour vérifier si les élèves arrondissent des nombres naturels à la dizaine près, y compris un nombre situé exactement au milieu.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_2, 5, $lynxpack$Une copie du billet par élève, dans la version prévue pour son groupe; un crayon.$lynxpack$,
@@ -781,7 +801,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'billet-arrondir-dizaine', '42e6b36c9564473024ecd5edfa2a9376fb22b534b2d8830de36b216f5db3dddc', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('9f10de3c-3b1e-5110-aebb-c0605e9d0991', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -808,7 +829,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('5eef2df6-c4f7-56f6-82cd-1a89d935afd9', v_board, r_school_1, 'learning_centre', $lynxpack$Atelier d’écriture : ma fiche animale$lynxpack$, $lynxpack$Un centre autonome où chaque élève planifie une fiche informative sur un animal de l’Ontario. Une feuille pliée en quatre cases sert d’organisateur graphique : habitat, alimentation, apparence et fait étonnant.$lynxpack$,
     'teacher_reviewed', 'school', 'teacher_created', r_user_2, false,
     null, v_pack, r_subject_1, 30, $lynxpack$Pour le centre : 6 à 8 livres documentaires sur des animaux de l’Ontario, des feuilles blanches, des crayons à mine, des crayons de couleur, une minuterie et un panier étiqueté « Mes plans d’écriture ».$lynxpack$,
@@ -818,7 +840,8 @@ begin
     null, null, null, null,
     null, null,
     null, null,
-    null, null);
+    null, null,
+    'demo', 'atelier-fiche-animale', '5d79eaa6278dfbbfaceae95282bcf0f098e8d3316343da0b23e9e8858a49daea', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('5eef2df6-c4f7-56f6-82cd-1a89d935afd9', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -835,7 +858,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('0b88457b-f048-5e6e-9563-de1f91788e16', v_board, null, 'experiment', $lynxpack$Éponges et élastiques : compression et tension$lynxpack$, $lynxpack$En équipes, les élèves écrasent, étirent, tordent et font glisser une éponge et un élastique sans latex pour observer les quatre forces internes : compression, tension, torsion et cisaillement.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_3, 50, $lynxpack$Par équipe de 3 : 1 éponge de cuisine neuve (sans savon), 1 élastique sans latex d’environ 8 cm, 2 crayons, 1 règle de 30 cm, 2 livres de la classe, 1 feuille d’observation. Pour la classe : quelques élastiques sans latex de rechange.$lynxpack$,
@@ -845,7 +869,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'eponges-elastiques', '7372ef025b28ad98e8dbdafe1c6a9041380a52f75e51cb8fe2ddfe25aed48a69', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('0b88457b-f048-5e6e-9563-de1f91788e16', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -864,7 +889,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('4d133e0c-0b2e-5a0c-b6ad-79e449747640', v_board, null, 'stem_challenge', $lynxpack$Défi STIM : le pont de papier$lynxpack$, $lynxpack$Les équipes suivent le processus de design pour construire, avec 10 feuilles et du ruban-cache, un pont qui franchit 20 cm et porte le plus de rondelles possible. Elles découvrent comment la forme aide une structure à résister à la compression et à la tension.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_3, 100, $lynxpack$Par équipe de 3 : 10 feuilles de papier format lettre, 1 m de ruban-cache, 1 paire de ciseaux à bouts ronds, 2 piles de livres de même hauteur (environ 15 cm), 1 gobelet de papier, environ 60 rondelles de métal identiques, 1 règle de 30 cm, 1 serviette ou 1 bac peu profond. Pour la classe : ruban-cache de rechange.$lynxpack$,
@@ -874,7 +900,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'pont-de-papier', '05c6fdc585d13cf6fd96a872799685341fdb7df101c573d8e0a41bdbedd1d2aa', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('4d133e0c-0b2e-5a0c-b6ad-79e449747640', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -893,7 +920,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('ec4d954b-6168-535a-8503-92a6c2926e2a', v_board, r_school_1, 'project', $lynxpack$Projet : mon documentaire sur un animal de l’Ontario$lynxpack$, $lynxpack$Chaque élève devient spécialiste d’un animal de l’Ontario : recherche, organisation des idées, rédaction et révision d’un petit livret documentaire, puis présentation à des élèves plus jeunes.$lynxpack$,
     'teacher_reviewed', 'school', 'teacher_created', r_user_2, false,
     null, v_pack, r_subject_1, 240, $lynxpack$Livres documentaires sur les animaux de l’Ontario, feuilles blanches pliées pour les livrets, cartons pour la couverture, crayons de couleur, agrafeuse, organisateur « Ma fiche animale » (voir le centre « Atelier d’écriture : ma fiche animale »).$lynxpack$,
@@ -903,7 +931,8 @@ begin
     null, null, null, null,
     null, null,
     null, null,
-    null, null);
+    null, null,
+    'demo', 'projet-documentaire-animal', '7eb7fc70f295cf2df5f4c592d1a0184addc9a13f5a75ff3c520c859dec2e4e82', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('ec4d954b-6168-535a-8503-92a6c2926e2a', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -920,7 +949,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('a6f65a32-207d-5d91-adf5-842f79267bf7', v_board, null, 'outdoor_activity', $lynxpack$Chasse aux nombres dans la cour$lynxpack$, $lynxpack$Dans la cour, des équipes de trois cherchent 12 cartes où un nombre jusqu’à 1 000 est représenté de différentes façons (en lettres, en centaines, dizaines et unités, en addition). Elles l’écrivent en chiffres, puis le représentent autrement.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_2, 40, $lynxpack$12 cartes de nombres préparées d’avance (voir la préparation), du ruban-cache ou des pinces à linge pour les fixer, un sifflet. Par équipe : une planchette à pince, une feuille de réponses et un crayon.$lynxpack$,
@@ -930,7 +960,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'chasse-aux-nombres', 'c8b3d6faa9cc2e69077a5e3a8b2373bf1a61c1cdf19aa32fda86ec616495e165', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('a6f65a32-207d-5d91-adf5-842f79267bf7', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -947,7 +978,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('7bdc7066-9b8a-5125-8351-bf234b0b11d3', v_board, null, 'quiz', $lynxpack$Quiz : les nombres jusqu’à 1 000$lynxpack$, $lynxpack$Un quiz de 9 questions sur les nombres jusqu’à 1 000 : lire, représenter, comparer, ordonner et arrondir. Il contient les cinq sortes de questions (choix multiple, vrai ou faux, associations, mise en ordre, réponse courte) et une version pour chaque niveau de langue.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_2, 20, $lynxpack$Une copie du quiz par élève (dans la version qui convient à son niveau de langue) et un crayon.$lynxpack$,
@@ -957,7 +989,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'quiz-nombres-1000', 'bad3e47117b10f4ec539733baa47cafe0bbd3374599c4db8c1a0cd3c0fa0e7f9', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('7bdc7066-9b8a-5125-8351-bf234b0b11d3', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -984,7 +1017,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('128795da-a09e-5dbb-8e17-09b03eb11a04', v_board, null, 'unit_test', $lynxpack$Évaluation : fractions et nombres décimaux$lynxpack$, $lynxpack$Une évaluation de fin d’unité en trois parties : fractions équivalentes, comparer et ordonner des fractions et des nombres décimaux, liens entre fractions et nombres décimaux. Chaque question est associée à une catégorie de la grille d’évaluation.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_2, 50, $lynxpack$Une copie par élève, un crayon et une gomme à effacer. Pas de calculatrice.$lynxpack$,
@@ -994,7 +1028,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'evaluation-fractions-decimaux', 'cb14d3fdfc214f913d9a084740d80d8bbb3a599b62f63b265af1068d4fa9d0c8', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('128795da-a09e-5dbb-8e17-09b03eb11a04', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1013,7 +1048,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('bbd5ee89-f2e0-5edd-bc1f-79317693d1ce', v_board, r_school_1, 'diagnostic', $lynxpack$Diagnostic : ce que je sais des fractions$lynxpack$, $lynxpack$Neuf questions courtes, avant l’unité, pour voir ce que les élèves savent des parts égales, du numérateur et du dénominateur, des fractions équivalentes simples et de la comparaison avec 1/2, avec des pistes d’intervention.$lynxpack$,
     'teacher_reviewed', 'board', 'teacher_created', r_user_3, false,
     null, v_pack, r_subject_2, 30, $lynxpack$Une copie par élève et un crayon. Facultatif : des bandes de papier à plier.$lynxpack$,
@@ -1023,7 +1059,8 @@ begin
     null, null, null, null,
     null, null,
     null, null,
-    null, null);
+    null, null,
+    'demo', 'diagnostic-fractions', '4a4d011247ab794154c7118a826dc51025ada31ca78e6fb77d42c6894656a5ef', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('bbd5ee89-f2e0-5edd-bc1f-79317693d1ce', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1042,7 +1079,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('c109b34b-6744-5a00-ad15-3031fae3381c', v_board, null, 'rubric', $lynxpack$Grille d’évaluation : la fiche informative$lynxpack$, $lynxpack$Une grille selon les quatre catégories de la grille d’évaluation du rendement (niveaux 1 à 4) pour évaluer une fiche informative de 3e année sur un animal de l’Ontario.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_1, 10, $lynxpack$Une copie de la grille par élève et le texte de l’élève.$lynxpack$,
@@ -1052,7 +1090,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'grille-fiche-informative', '50aa0d36502194054706bb9db2b12c13a6b43bfa785645a305db57a10b24fc57', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('c109b34b-6744-5a00-ad15-3031fae3381c', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1069,7 +1108,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('a0d4af3c-dad0-5e27-9b19-d28a7784bb09', v_board, null, 'game', $lynxpack$La bataille des nombres$lynxpack$, $lynxpack$Un jeu de cartes en équipes de deux : chaque personne forme le plus grand nombre possible avec trois cartes, le lit, puis le compare à celui de l’autre. Avec des variantes et une banque de questions pour le réchauffement.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_2, 25, $lynxpack$Par équipe : un jeu de cartes à jouer sans les figures (40 cartes; l’as vaut 1 et le 10 vaut 0) ou 40 cartes numérotées de 0 à 9 (quatre de chaque), une feuille et un crayon par personne.$lynxpack$,
@@ -1079,7 +1119,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'bataille-des-nombres', '6d34f1fac57facb1d862c92fc1d6bb51e1acec944d316b200f5d78ed1d5c321e', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('a0d4af3c-dad0-5e27-9b19-d28a7784bb09', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1098,7 +1139,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('c689581c-8f4a-5937-bc29-e2345545e52b', v_board, null, 'brain_break', $lynxpack$Pause active : le jeu du miroir$lynxpack$, $lynxpack$Une pause active de 5 minutes, sans matériel : en dyades, une personne fait des gestes lents et l’autre les copie comme un miroir, puis les rôles changent. La classe termine par trois respirations calmes.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_4, 5, $lynxpack$Aucun matériel particulier.$lynxpack$,
@@ -1108,7 +1150,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'pause-jeu-du-miroir', '5dd9d766473704adc72ecbb98facae05bcfb7c4dd82f5814b2d9c5f8dbbffa24', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('c689581c-8f4a-5937-bc29-e2345545e52b', '2'), ('c689581c-8f4a-5937-bc29-e2345545e52b', '3'), ('c689581c-8f4a-5937-bc29-e2345545e52b', '4'), ('c689581c-8f4a-5937-bc29-e2345545e52b', '5');
   insert into public.library_item_tags (item_id, tag_id) values
@@ -1123,7 +1166,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('fbe52ed4-003d-5411-978c-5d0cfb370636', v_board, null, 'song', $lynxpack$La chanson des centaines$lynxpack$, $lynxpack$Une chanson originale sur l’air de « Frère Jacques » pour lire et décomposer des nombres jusqu’à 1 000 en centaines, en dizaines et en unités, avec des gestes et un couplet sur le zéro qui garde la place.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_2, 10, $lynxpack$Aucun matériel particulier. Facultatif : les paroles écrites au tableau ou projetées.$lynxpack$,
@@ -1133,7 +1177,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'chanson-des-centaines', '8e56f0f2765760788d34075b81168d2111a6962cff7a03507fef5669900aca77', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('fbe52ed4-003d-5411-978c-5d0cfb370636', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1150,7 +1195,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('3edb911a-8869-563e-ac06-f5dd6f949a4c', v_board, null, 'riddle', $lynxpack$Devinettes : qui suis-je?$lynxpack$, $lynxpack$Huit devinettes « Qui suis-je? » sur des animaux de l’Ontario. Les élèves utilisent ce qu’ils savent déjà et les indices pour faire des prédictions, puis ils les vérifient.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_1, 15, $lynxpack$Une copie par élève ou les devinettes projetées, et un crayon.$lynxpack$,
@@ -1160,7 +1206,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'devinettes-qui-suis-je', '0963df2e2997865747f66a65a4117718b244662841f4d76a3b5adae8becf1d8b', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('3edb911a-8869-563e-ac06-f5dd6f949a4c', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1179,7 +1226,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('6c9a5f23-0d22-522e-a5a2-5a03163af941', v_board, r_school_1, 'weekly_challenge', $lynxpack$Défi de la semaine : le marché des fractions$lynxpack$, $lynxpack$Un défi en cinq jours au marché fermier : comparer et ordonner des fractions et des nombres décimaux jusqu’aux centièmes (tartes, bouteilles de sirop d’érable, prix, pichets de jus), avec des indices et la solution complète.$lynxpack$,
     'teacher_reviewed', 'school', 'teacher_created', r_user_3, false,
     null, v_pack, r_subject_2, 15, $lynxpack$Le défi affiché ou une copie par élève, un cahier de mathématiques et un crayon. Facultatif : des bandes de fractions.$lynxpack$,
@@ -1189,7 +1237,8 @@ begin
     null, null, null, null,
     null, null,
     null, null,
-    null, null);
+    null, null,
+    'demo', 'defi-marche-des-fractions', 'e068e46b30a151cd9f299b1c3915de22b2d300869d557e5257d3c68db3672395', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('6c9a5f23-0d22-522e-a5a2-5a03163af941', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1208,7 +1257,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('8b09ee33-e96a-5491-a3c8-70d50542cf74', v_board, null, 'catholic_reflection', $lynxpack$Prendre soin de la création$lynxpack$, $lynxpack$Une courte réflexion pour la 3e à la 5e année sur le soin de la création, avec des questions d’échange, une prière originale et un geste concret pour la semaine.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_5, 10, $lynxpack$Une silhouette d’arbre affichée au mur ou au babillard, des feuilles d’arbre découpées dans du papier de couleur (une par élève) et du ruban adhésif.$lynxpack$,
@@ -1218,7 +1268,8 @@ begin
     $lynxpack$La création est un cadeau de Dieu confié à nos soins (Genèse 2, 15) : chaque petit geste pour la nature et les animaux autour de nous est une façon de dire merci.$lynxpack$, r_ref_1, null, null,
     null, null,
     now(), r_user_1,
-    now(), r_user_1);
+    now(), r_user_1,
+    'demo', 'prendre-soin-de-la-creation', '308f9f2decb3afb676412d6870197c36842646e648e169e48f78601a691da9a4', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('8b09ee33-e96a-5491-a3c8-70d50542cf74', '3'), ('8b09ee33-e96a-5491-a3c8-70d50542cf74', '4'), ('8b09ee33-e96a-5491-a3c8-70d50542cf74', '5');
   insert into public.library_item_tags (item_id, tag_id) values
@@ -1233,7 +1284,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('bfd29209-94bb-5151-95fb-2e3d97f1af95', v_board, null, 'culture_hook', $lynxpack$Le drapeau franco-ontarien$lynxpack$, $lynxpack$Une amorce pour découvrir l’histoire et le sens du drapeau franco-ontarien (le lys, le trillium, le vert et le blanc), avec des questions sur l’identité et une activité de création de drapeau.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_1, 15, $lynxpack$Un drapeau franco-ontarien, si l’école en a un. Pour l’activité : une feuille blanche par dyade et des crayons de couleur.$lynxpack$,
@@ -1243,7 +1295,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'drapeau-franco-ontarien', 'b33fb23a12da51e1722b1f57f5bff37bbfcd1095d0e0dea16a261ec865162bd4', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('bfd29209-94bb-5151-95fb-2e3d97f1af95', '5');
   insert into public.library_item_tags (item_id, tag_id) values
@@ -1258,7 +1311,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('522c30fb-a76a-5636-8a04-336c9a4a4ad9', v_board, null, 'parent_guide', $lynxpack$Les nombres jusqu’à 1 000 à la maison / Numbers to 1,000 at home$lynxpack$, $lynxpack$Un guide bilingue (français et anglais) pour aider les familles à soutenir l’apprentissage des nombres jusqu’à 1 000 à la maison, avec des jeux simples et les mots utilisés en classe.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_2, 10, $lynxpack$Une copie par famille : la partie en français, puis la partie en anglais.$lynxpack$,
@@ -1268,7 +1322,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'nombres-1000-a-la-maison', '62f8ebbabe973d51905e206b45436a074913d180ee9c8643fc0246da660a72f2', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('522c30fb-a76a-5636-8a04-336c9a4a4ad9', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1285,7 +1340,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('190b8db9-6629-5561-9b47-9396b63a8560', v_board, r_school_1, 'worksheet', $lynxpack$Comparer des nombres (brouillon)$lynxpack$, $lynxpack$Une fiche de neuf questions pour comparer et ordonner des nombres jusqu’à 1 000 avec les symboles <, > et =, et pour raisonner sur la valeur de position.$lynxpack$,
     'draft', 'private', 'ai_generated', r_user_2, false,
     null, v_pack, r_subject_2, 30, $lynxpack$Une copie par élève et un crayon. Facultatif : des blocs de base dix et un tableau de valeur de position.$lynxpack$,
@@ -1295,7 +1351,8 @@ begin
     null, null, $lynxpack$v1$lynxpack$, $lynxpack$claude-opus-5-5$lynxpack$,
     null, null,
     null, null,
-    null, null);
+    null, null,
+    'demo', 'comparer-des-nombres-brouillon', 'e88ab2ba55fef547239997955e36cca8f8b0b67ad51444c8bafc5ca4ebd934f2', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('190b8db9-6629-5561-9b47-9396b63a8560', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1314,7 +1371,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('596a42e3-d90e-5b08-87ab-27761527b929', v_board, r_school_1, 'exit_ticket', $lynxpack$Billet de sortie : les fractions équivalentes$lynxpack$, $lynxpack$Trois questions de fin de leçon (choix multiple, vrai ou faux, réponse courte) pour vérifier si les élèves reconnaissent et représentent des fractions équivalentes, avec une version pour chaque niveau de langue.$lynxpack$,
     'teacher_reviewed', 'private', 'teacher_created', r_user_3, false,
     null, v_pack, r_subject_2, 5, $lynxpack$Une copie du billet par élève et un crayon.$lynxpack$,
@@ -1324,7 +1382,8 @@ begin
     null, null, null, null,
     now(), r_user_3,
     null, null,
-    null, null);
+    null, null,
+    'demo', 'billet-fractions-equivalentes', '5c583c8105ac10785fe52aa29162b7b3498dbc3f2a3d222b7453c306f3f7f9af', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('596a42e3-d90e-5b08-87ab-27761527b929', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1351,7 +1410,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('41f21925-c118-56fe-a026-17c88f4c3248', v_board, null, 'anchor_chart', $lynxpack$Quand on discute en groupe$lynxpack$, $lynxpack$Référentiel à afficher en classe pour la communication orale : écouter activement, attendre son tour, montrer qu’on a compris, donner son idée et réagir avec respect, avec des phrases modèles à dire.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_1, 20, $lynxpack$Grande feuille et marqueurs de couleur, ou projection au tableau. Un objet de parole (une balle douce ou un petit toutou) pour les discussions en cercle.$lynxpack$,
@@ -1361,7 +1421,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'discuter-en-groupe', '485a94c65d54caaedd46b599636c1a1723f463d855bdd748ac2c4cb2b7371d31', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('41f21925-c118-56fe-a026-17c88f4c3248', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1378,7 +1439,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('813fdf7c-6952-525d-acfe-496d1e60d4b2', v_board, r_school_1, 'learning_centre', $lynxpack$Atelier d’écriture : une carte postale de ma communauté$lynxpack$, $lynxpack$Un centre autonome où chaque élève écrit une carte postale à une ou un élève d’une autre communauté francophone du Canada pour présenter un lieu qu’elle ou il aime dans sa communauté : dessin, salutation, message, question et signature.$lynxpack$,
     'teacher_reviewed', 'school', 'teacher_created', r_user_2, false,
     null, v_pack, r_subject_1, 30, $lynxpack$Des cartes blanches de 10 cm sur 15 cm ou des fiches cartonnées, des crayons de couleur et des crayons à mine, une carte du Canada, un modèle de carte postale affiché et une boîte aux lettres de classe (par exemple, une boîte à chaussures décorée).$lynxpack$,
@@ -1388,7 +1450,8 @@ begin
     null, null, null, null,
     now(), r_user_2,
     null, null,
-    null, null);
+    null, null,
+    'demo', 'atelier-carte-postale', '445d369c115522764fb4329bda05011e7ddd825e0ea706a342119736d01c37b1', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('813fdf7c-6952-525d-acfe-496d1e60d4b2', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1405,7 +1468,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('6c2f6a2a-2b9c-5085-8b1f-b37d464badc1', v_board, r_school_1, 'learning_centre', $lynxpack$Des phrases qui grandissent (brouillon)$lynxpack$, $lynxpack$Un centre de jeu de cartes pour construire une phrase de base (qui? + fait quoi?), puis l’enrichir avec des groupes de mots qui disent où, quand et comment.$lynxpack$,
     'draft', 'private', 'ai_generated', r_user_2, false,
     null, v_pack, r_subject_1, 25, $lynxpack$Quatre paquets de cartes de couleurs différentes (Qui?, Fait quoi?, Où?, Quand?), des bandes de papier, des crayons et un bac étiqueté « Mes phrases ».$lynxpack$,
@@ -1415,7 +1479,8 @@ begin
     null, null, $lynxpack$v1$lynxpack$, $lynxpack$claude-opus-5-5$lynxpack$,
     null, null,
     null, null,
-    null, null);
+    null, null,
+    'demo', 'phrases-qui-grandissent-brouillon', '78a6582f1e7ba728c9aafdc5b2d65bcecf2c3d2a197838d0531b80c398e0b8c6', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('6c2f6a2a-2b9c-5085-8b1f-b37d464badc1', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1432,7 +1497,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('4780f22b-cce7-5aa0-b018-e05aa484ce5c', v_board, null, 'reading_passage', $lynxpack$Le premier hiver d’Inès$lynxpack$, $lynxpack$Récit de cinq paragraphes : arrivée à Timmins à la fin de l’été, Inès découvre la neige et des mots d’ici (tuque, banc de neige, mitaines), puis elle apprend à sa classe un mot de chez elle. Des questions pour trouver le sens d’un mot à l’aide du contexte. Quatre versions selon le niveau de langue.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_1, 30, $lynxpack$Une copie du texte par élève, dans la version prévue pour son groupe; un crayon; le carnet de mots de chaque élève (facultatif).$lynxpack$,
@@ -1442,7 +1508,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'premier-hiver-d-ines', '04dd0faf368b1bea10be7cfb5bb8e7b8e0a54139bc492d3c41762ef46647dda0', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('4780f22b-cce7-5aa0-b018-e05aa484ce5c', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1469,7 +1536,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('e7079a4b-eedf-5cee-8025-34e8174bc2bf', v_board, null, 'reading_passage', $lynxpack$Ma première cabane à sucre$lynxpack$, $lynxpack$Récit de cinq paragraphes : Laurier découvre l’érablière de sa grand-mère, dans l’Est ontarien, et une tradition de famille. Des questions pour faire des inférences sur ce que ressent le personnage. Quatre versions selon le niveau de langue, avec la même histoire.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_1, 30, $lynxpack$Une copie du texte par élève, dans la version prévue pour son groupe; un crayon.$lynxpack$,
@@ -1479,7 +1547,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'premiere-cabane-a-sucre', 'b41355ff77a41142630e7dbe2942c63606f3b76270f4086db706d6ea53b610fb', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('e7079a4b-eedf-5cee-8025-34e8174bc2bf', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1506,7 +1575,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('b34f9a11-9133-5e9a-a3ff-e62282adcbc7', v_board, null, 'reading_passage', $lynxpack$Le ver de terre, jardinier du sol$lynxpack$, $lynxpack$Texte informatif avec intertitres sur le ver de terre : son corps, sa respiration, son alimentation et son rôle dans le sol. Les questions font utiliser les intertitres et la partie « Le savais-tu? » pour trouver de l’information. Quatre versions selon le niveau de langue, avec les mêmes intertitres.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_1, 30, $lynxpack$Une copie du texte par élève, dans la version prévue pour son groupe; un crayon; des surligneurs de deux couleurs (facultatif).$lynxpack$,
@@ -1516,7 +1586,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'ver-de-terre-jardinier', '2801ecf8dd7c98b332f8847f76ef361f373318d7461542fd8221740a7c21d65c', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('b34f9a11-9133-5e9a-a3ff-e62282adcbc7', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1543,7 +1614,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('c8ddb257-1618-5ef4-9ae4-d8a0eda02c97', v_board, r_school_1, 'vocabulary_bank', $lynxpack$Banque de mots : l’hiver chez nous$lynxpack$, $lynxpack$Vingt-deux mots de l’hiver en français d’ici : vêtements (tuque, mitaines, habit de neige), météo (poudrerie, verglas), jeux et travaux d’hiver (patinoire, pelleter, déneiger), avec une définition et un exemple.$lynxpack$,
     'teacher_reviewed', 'school', 'teacher_created', r_user_2, false,
     null, v_pack, r_subject_1, 20, $lynxpack$Une copie par élève ou une projection au tableau. Facultatif : une tuque, une mitaine et un cache-cou à montrer.$lynxpack$,
@@ -1553,7 +1625,8 @@ begin
     null, null, null, null,
     null, null,
     null, null,
-    null, null);
+    null, null,
+    'demo', 'mots-de-l-hiver', 'ef79ba5414e9c41b6a5ecd1c720f44e9ffdf2521883ff58caeeea599a2731553', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('c8ddb257-1618-5ef4-9ae4-d8a0eda02c97', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1570,7 +1643,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('340833e7-d041-5721-aea7-553503029fc1', v_board, null, 'riddle', $lynxpack$Charades : mon premier, mon second, mon tout$lynxpack$, $lynxpack$Huit charades originales pour jouer avec les syllabes et les sons : on trouve deux petits mots, on les assemble pour former un mot nouveau, puis on compare la façon de l’écrire (chat + eau = château, pin + seau = pinceau).$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_1, 15, $lynxpack$Une copie par élève ou les charades projetées, un crayon et une ardoise blanche ou une feuille de brouillon.$lynxpack$,
@@ -1580,7 +1654,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'charades-des-syllabes', '3d4d736ab2dbf574238a5b46fc032519930431d2f66218362821512d8f43e134', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('340833e7-d041-5721-aea7-553503029fc1', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1599,7 +1674,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('ecd94e6f-14ea-5618-a95a-d7ab168d4a25', v_board, null, 'anchor_chart', $lynxpack$Pour convaincre : mon texte d’opinion$lynxpack$, $lynxpack$Référentiel à afficher en classe pour écrire un texte d’opinion en 5e année : l’introduction, les arguments appuyés, les marqueurs de relation, la conclusion, la différence entre un fait et une opinion, et le public, avec un exemple suivi.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_1, 20, $lynxpack$Grande feuille et marqueurs de quatre couleurs, ou projection au tableau.$lynxpack$,
@@ -1609,7 +1685,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'ecrire-un-texte-d-opinion', '44d159e645774aaf96386d8777e64f2f05a1cf1a2808897951eab219f952b2d3', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('ecd94e6f-14ea-5618-a95a-d7ab168d4a25', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1626,7 +1703,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('03128059-2f71-5d59-bcff-64d052d16afb', v_board, r_school_1, 'learning_centre', $lynxpack$Atelier : mes arguments en or$lynxpack$, $lynxpack$Un centre en dyades pour planifier un texte d’opinion : piger une question, prendre position, trouver trois arguments appuyés, les classer du moins fort au plus fort et présenter son plan à une ou un partenaire qui le reformule.$lynxpack$,
     'draft', 'private', 'teacher_created', r_user_3, false,
     null, v_pack, r_subject_1, 30, $lynxpack$Six cartes-questions, des feuilles blanches, des crayons, une minuterie, le référentiel « Pour convaincre : mon texte d’opinion » et un bac étiqueté « Mes plans ».$lynxpack$,
@@ -1636,7 +1714,8 @@ begin
     null, null, null, null,
     null, null,
     null, null,
-    null, null);
+    null, null,
+    'demo', 'atelier-arguments-en-or', 'feb7e1de349d1bcb99fae5227ccaa159b09bfd94eb389ed3e47ace80be41590e', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('03128059-2f71-5d59-bcff-64d052d16afb', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1653,7 +1732,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('bd6b33f5-c268-5cc0-918a-b8f7b4ea7680', v_board, null, 'reading_passage', $lynxpack$La moule zébrée, une petite envahisseuse$lynxpack$, $lynxpack$Texte informatif de six paragraphes sur la moule zébrée dans les Grands Lacs : son arrivée, sa reproduction rapide et ses effets en chaîne sur les lacs, les villes et les poissons. Des questions pour faire des inférences sur les liens de cause à effet. Quatre versions selon le niveau de langue.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_1, 40, $lynxpack$Une copie du texte par élève, dans la version prévue pour son groupe; un crayon.$lynxpack$,
@@ -1663,7 +1743,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'moule-zebree-envahisseuse', '17081511b318064640c839527c30b14e446a42c935f1b1f903d39a5c2be27c09', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('bd6b33f5-c268-5cc0-918a-b8f7b4ea7680', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1690,7 +1771,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('ca29520a-8921-5b73-8c67-5d3d0efe0f31', v_board, null, 'reading_passage', $lynxpack$SOS Montfort : une communauté se mobilise$lynxpack$, $lynxpack$Texte informatif de cinq paragraphes sur la lutte de la communauté franco-ontarienne pour garder ouvert l’Hôpital Montfort, à Ottawa (1997 à 2001), avec des questions qui font des liens entre le texte, l’expérience des élèves et les enjeux de leur communauté. Quatre versions selon le niveau de langue.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_1, 40, $lynxpack$Une copie du texte par élève, dans la version prévue pour son groupe; un crayon.$lynxpack$,
@@ -1700,7 +1782,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'sos-montfort', 'cd7df8abc4b786457148009eb1544bdbcf0336bbe2e81f152627970a3071b38b', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('ca29520a-8921-5b73-8c67-5d3d0efe0f31', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1727,7 +1810,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('66159ded-f33b-5c34-b51e-0801f2e1e340', v_board, r_school_1, 'vocabulary_bank', $lynxpack$Banque de mots : discuter avec respect$lynxpack$, $lynxpack$Vingt mots et expressions pour participer à une discussion ou à un débat en classe : donner son opinion, être d’accord ou non, reformuler, demander une précision, nuancer et conclure, avec un exemple pour chacun.$lynxpack$,
     'teacher_reviewed', 'board', 'teacher_created', r_user_3, false,
     null, v_pack, r_subject_1, 20, $lynxpack$Une copie par élève ou une projection au tableau. Facultatif : les expressions écrites sur des bandes de carton pour le coin de discussion.$lynxpack$,
@@ -1737,7 +1821,8 @@ begin
     null, null, null, null,
     null, null,
     null, null,
-    null, null);
+    null, null,
+    'demo', 'mots-pour-discuter', 'f72a45410cd35d2198ea77c9a2e3c0c5fbcb2f56fc91b7066d81b0bbe721219b', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('66159ded-f33b-5c34-b51e-0801f2e1e340', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1754,7 +1839,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('11c18795-672a-5ee2-bd7e-ebf6f6395dce', v_board, null, 'rubric', $lynxpack$Grille d’évaluation : le texte d’opinion$lynxpack$, $lynxpack$Une grille selon les quatre catégories de la grille d’évaluation du rendement (niveaux 1 à 4) pour évaluer un texte d’opinion de 5e année adressé à la direction de l’école : connaissance du sujet et du genre, planification, pensée critique, organisation, public, conventions, processus d’écriture et liens.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_1, 10, $lynxpack$Une copie de la grille par élève et le texte de l’élève.$lynxpack$,
@@ -1764,7 +1850,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'grille-texte-d-opinion', '500d19d1732c6f0f8e67d7884f352e2b659695e568d16d6cff806018c47c2620', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('11c18795-672a-5ee2-bd7e-ebf6f6395dce', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1781,7 +1868,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('6ea77e3f-8cd8-5cb0-bc36-1bc5ffc1295d', v_board, null, 'riddle', $lynxpack$Devinettes : les mots qui se construisent$lynxpack$, $lynxpack$Douze devinettes « Qui suis-je? » pour trouver des mots formés d’un préfixe ou d’un suffixe (impossible, ourson, revenir, lavable…), dont des mots de l’identité franco-ontarienne comme « francophone », « bilingue » et « Franco-Ontarienne ».$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_1, 15, $lynxpack$Une copie par élève ou les devinettes projetées, un crayon et des crayons de deux couleurs.$lynxpack$,
@@ -1791,7 +1879,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'devinettes-prefixes-suffixes', '4c17e61ed0a8d50ddac19f4396dd28122392f3f6c59ced9a158b39b117923fc9', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('6ea77e3f-8cd8-5cb0-bc36-1bc5ffc1295d', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1810,7 +1899,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('6d1416a7-fbdd-5cf3-a669-91240240108c', v_board, null, 'worked_example', $lynxpack$Trouver la valeur manquante dans une addition$lynxpack$, $lynxpack$Exemple résolu pas à pas : écrire une équation avec une lettre pour un problème de collecte de denrées (175 + b = 250), trouver la valeur manquante par bonds sur une droite numérique ouverte, vérifier la réponse, puis cinq questions de pratique.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_2, 30, $lynxpack$L’exemple affiché ou une copie par élève, un crayon et une bande de papier pour tracer une droite numérique ouverte.$lynxpack$,
@@ -1820,7 +1910,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'valeur-manquante-collecte', '84ff957442da966c8980fc2d76481471c67bc73332cc8dfed0e5746d635c0c12', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('6d1416a7-fbdd-5cf3-a669-91240240108c', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1839,7 +1930,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('3d1364e8-5be6-5d0e-ac12-3059fe617e06', v_board, null, 'worksheet', $lynxpack$Multiplier avec des dispositions rectangulaires$lynxpack$, $lynxpack$Fiche d’exercices pour représenter des multiplications jusqu’à 10 × 10 à l’aide de dispositions rectangulaires : rangées de chaises, de jetons et de plants, produits, disposition impossible et une erreur fréquente à expliquer.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_2, 30, $lynxpack$Une copie de la fiche par élève, dans la version prévue pour son groupe; un crayon; une gomme à effacer. Facultatif : une trentaine de jetons ou de cubes emboîtables par élève.$lynxpack$,
@@ -1849,7 +1941,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'dispositions-rectangulaires', '19796adf5cf7266de21f347858ac0faed6bddabc860963f3707a8e19dd9fad00', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('3d1364e8-5be6-5d0e-ac12-3059fe617e06', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1876,7 +1969,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('7c95c867-50c1-506e-9fdc-235023dba3ac', v_board, r_school_1, 'worksheet', $lynxpack$Les suites croissantes et décroissantes (brouillon)$lynxpack$, $lynxpack$Une fiche de sept questions pour reconnaître, prolonger et décrire des suites croissantes, décroissantes et à motif répété, et pour trouver des éléments manquants.$lynxpack$,
     'draft', 'private', 'ai_generated', r_user_2, false,
     null, v_pack, r_subject_2, 30, $lynxpack$Une copie par élève et un crayon. Facultatif : des cubes emboîtables pour construire les suites.$lynxpack$,
@@ -1886,7 +1980,8 @@ begin
     null, null, $lynxpack$v1$lynxpack$, $lynxpack$claude-opus-5-5$lynxpack$,
     null, null,
     null, null,
-    null, null);
+    null, null,
+    'demo', 'suites-croissantes-brouillon', 'f9bbcf524c6f8606deeba39b005117926be9d2039fc3fbd052a54b642691c35e', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('7c95c867-50c1-506e-9fdc-235023dba3ac', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1905,7 +2000,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('1ed7a46c-b5f7-5617-abcb-78a5c8955326', v_board, r_school_1, 'learning_centre', $lynxpack$Atelier des données : trier et représenter$lynxpack$, $lynxpack$Un centre autonome où une équipe trie une collection de petits objets selon deux attributs dans un diagramme de Carroll, compte les résultats dans un tableau des effectifs, construit un pictogramme avec une échelle de 2 et trouve le mode.$lynxpack$,
     'teacher_reviewed', 'school', 'teacher_created', r_user_2, false,
     null, v_pack, r_subject_2, 30, $lynxpack$Pour le centre : 4 sacs de 20 à 30 petits objets à trier (boutons, blocs logiques ou bouchons de bouteilles de couleurs et de formes variées), 4 napperons plastifiés pour le diagramme de Carroll, des étiquettes, du papier quadrillé, des crayons de couleur, deux cordes et une minuterie.$lynxpack$,
@@ -1915,7 +2011,8 @@ begin
     null, null, null, null,
     null, null,
     null, null,
-    null, null);
+    null, null,
+    'demo', 'atelier-des-donnees', 'ebb98366b5b8bcdbe1f2c0c121a64f9def6323e271c392375a4e2c7a483a2d83', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('1ed7a46c-b5f7-5617-abcb-78a5c8955326', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1932,7 +2029,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('671e127b-70c0-5132-9a7b-98dc2005c82c', v_board, null, 'exit_ticket', $lynxpack$Billet de sortie : le partage équitable$lynxpack$, $lynxpack$Billet de sortie de trois questions pour vérifier si les élèves résolvent un problème de partage équitable, y compris un partage dont le résultat est un nombre entier et une moitié, et s’ils savent que les parts d’une fraction doivent être égales.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_2, 5, $lynxpack$Une copie du billet par élève, dans la version prévue pour son groupe; un crayon.$lynxpack$,
@@ -1942,7 +2040,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'billet-partage-equitable', 'ebebfb480815ddfd71e61d0eb684706628ee7882c8b184c83bf8742b4b242d05', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('671e127b-70c0-5132-9a7b-98dc2005c82c', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1969,7 +2068,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('9e77ddcf-8d47-5963-a359-a2d478182164', v_board, null, 'outdoor_activity', $lynxpack$Estimer et mesurer dans la cour$lynxpack$, $lynxpack$Dans la cour, des équipes de trois vérifient leurs repères (1 cm et 1 m), estiment puis mesurent quatre longueurs en centimètres ou en mètres, tracent à la craie une ligne de 3 m et mesurent avec une règle qui ne commence pas à zéro.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_2, 45, $lynxpack$Par équipe : une règle d’un mètre, un ruban à mesurer d’au moins 3 m, une règle de 30 cm, une craie, une planchette à pince, une feuille d’enregistrement et un crayon. Pour le groupe : deux cônes, du ruban-cache et un sifflet.$lynxpack$,
@@ -1979,7 +2079,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'mesurer-dans-la-cour', '8398538b12742137b3c97d33f8cdcc7cae44fa869af47fe9c04af04bcb5d0ea2', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('9e77ddcf-8d47-5963-a359-a2d478182164', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -1996,7 +2097,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('aa3a2e01-d417-5198-80e8-54ec675bb8c1', v_board, null, 'quiz', $lynxpack$Quiz : la monnaie canadienne jusqu’à 100 $$lynxpack$, $lynxpack$Un quiz de 8 questions pour estimer, compter et représenter la valeur de collections de pièces et de billets canadiens d’au plus 100 $. Il contient les cinq sortes de questions (choix multiple, vrai ou faux, associations, mise en ordre, réponse courte) et une version pour chaque niveau de langue.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_2, 20, $lynxpack$Une copie du quiz par élève (dans la version qui convient à son niveau de langue) et un crayon. Facultatif : de la monnaie de jeu (pièces de 25 ¢, de 1 $ et de 2 $; billets de 5 $, de 10 $, de 20 $ et de 50 $).$lynxpack$,
@@ -2006,7 +2108,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'quiz-monnaie-canadienne', '52454a714684d4d1c0ef7a3d894ab35dee3ca17609c39916f96c94b77d0345eb', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('aa3a2e01-d417-5198-80e8-54ec675bb8c1', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -2033,7 +2136,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('f7c93e29-2d60-5c61-98bb-cc6a05ff948a', v_board, null, 'game', $lynxpack$Le robot du quadrillage$lynxpack$, $lynxpack$Un jeu de codage sans écran, en équipes de trois : une personne écrit un code avec des instructions en séquence et des répétitions, une autre joue le robot sur un quadrillage tracé au sol, la troisième vérifie. Avec une variante à deux robots (événements simultanés), une variante pour déboguer et une banque de questions.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_2, 30, $lynxpack$Du ruban-cache pour tracer au sol un quadrillage de 5 cases sur 5 (cases d’environ 40 cm de côté); de petits objets qui servent de trésors (gomme à effacer, cube, jeton); une feuille et un crayon par équipe. Sans espace libre au sol : un quadrillage de 5 × 5 cases sur une feuille et un pion par équipe.$lynxpack$,
@@ -2043,7 +2147,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'robot-du-quadrillage', '55daad24a27de53f41caed22c0d124c8d2343cdb294047613decf5dd62975625', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('f7c93e29-2d60-5c61-98bb-cc6a05ff948a', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -2062,7 +2167,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('5ab22db7-d85d-5227-a392-d8025cfd8083', v_board, null, 'worked_example', $lynxpack$Du rectangle au parallélogramme et au triangle : l’aire$lynxpack$, $lynxpack$Exemple résolu pas à pas : tracer un parallélogramme sur du papier quadrillé, le découper et le transformer en rectangle pour trouver son aire, puis le couper le long d’une diagonale pour trouver l’aire d’un triangle, suivi de six questions de pratique.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_2, 40, $lynxpack$Deux feuilles de papier quadrillé à centimètres par élève, une règle, des ciseaux, de la colle ou du ruban adhésif et des crayons de couleur.$lynxpack$,
@@ -2072,7 +2178,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'aire-parallelogramme-triangle', 'a948c60be855d587a0ebde10533ceee5e35067224d24c0388af62f28aadca2fd', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('5ab22db7-d85d-5227-a392-d8025cfd8083', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -2091,7 +2198,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('40103086-82ec-5b17-9bbd-325814c3e16d', v_board, null, 'worked_example', $lynxpack$Diviser et interpréter le reste : les minibus de la sortie$lynxpack$, $lynxpack$Exemple résolu pas à pas : diviser 158 par 24 en enlevant des groupes faciles à calculer, vérifier le calcul et décider quoi faire du reste (ici, réserver un minibus de plus), suivi de six questions de pratique sur les trois façons d’interpréter un reste.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_2, 30, $lynxpack$L’exemple affiché ou une copie par élève, un crayon et une feuille de calcul. Facultatif : des blocs de base dix (plaques, réglettes et petits cubes).$lynxpack$,
@@ -2101,7 +2209,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'division-reste-minibus', 'b65ce81c399d7c35482fa5357a070e5709c994a0eac187b28da30ed9a29b1053', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('40103086-82ec-5b17-9bbd-325814c3e16d', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -2120,7 +2229,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('2d052337-39b1-515a-80b6-f1a1247e523c', v_board, null, 'worksheet', $lynxpack$Coder avec des conditions : le robot arroseur$lynxpack$, $lynxpack$Fiche de codage sans ordinateur : lire et exécuter un code en mots qui arrose les bacs du jardin de l’école selon une condition (SI… ALORS… SINON) dans une répétition, prédire le résultat, modifier le code, remettre des lignes en ordre et déboguer une condition.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_2, 40, $lynxpack$Une copie de la fiche par élève, dans la version prévue pour son groupe; un crayon; une gomme à effacer. Pour la simulation : quatre chaises et quatre cartes-nombres.$lynxpack$,
@@ -2130,7 +2240,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'code-arrosage-du-jardin', '20568849216a789464053970510e8b1be6bc5b303e1e797c124e2b6b8d7413d8', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('2d052337-39b1-515a-80b6-f1a1247e523c', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -2157,7 +2268,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('61a7a7bc-a2e2-5abd-a700-3db3b79bd26e', v_board, null, 'worksheet', $lynxpack$La moyenne, la médiane et le mode$lynxpack$, $lynxpack$Fiche d’exercices pour déterminer la moyenne, la médiane et le mode de données (livres lus par un club de lecture, hauteur de plants de haricots), choisir la mesure qui convient à une situation et expliquer une idée fausse sur la moyenne.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_2, 40, $lynxpack$Une copie de la fiche par élève, dans la version prévue pour son groupe; un crayon; une gomme à effacer. Facultatif : une cinquantaine de cubes emboîtables par équipe.$lynxpack$,
@@ -2167,7 +2279,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'moyenne-mediane-mode', '12624b4ef44971da289046b572ad73e776d6089902850722e6ec16d42c5dae43', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('61a7a7bc-a2e2-5abd-a700-3db3b79bd26e', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -2194,7 +2307,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('afa54abb-94ae-5d52-bb32-207156abad95', v_board, null, 'exit_ticket', $lynxpack$Billet de sortie : résoudre et vérifier une équation$lynxpack$, $lynxpack$Billet de sortie de trois questions pour vérifier si les élèves trouvent la valeur d’une variable (multiplication, balance à plateaux décrite en mots) et s’ils vérifient une solution en remplaçant la variable par sa valeur.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_2, 10, $lynxpack$Une copie du billet par élève, dans la version prévue pour son groupe; un crayon. Facultatif : une balance à plateaux et des billes ou des cubes pour la démonstration.$lynxpack$,
@@ -2204,7 +2318,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'billet-equations-balance', 'c29fa451d90af368ba075c92341aac10f084a0fda1e3a09224576fa9e596f4af', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('afa54abb-94ae-5d52-bb32-207156abad95', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -2231,7 +2346,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('d91d5a99-ba73-5040-97fd-1d144d81cb15', v_board, null, 'quiz', $lynxpack$Quiz : les angles et les triangles$lynxpack$, $lynxpack$Un quiz de 8 questions pour classer des angles (aigu, droit, obtus, plat) et des triangles (selon les côtés et selon les angles), lire un rapporteur d’angle et construire un triangle à partir de mesures. Il contient les cinq sortes de questions et une version pour chaque niveau de langue.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_2, 25, $lynxpack$Une copie du quiz par élève (dans la version qui convient à son niveau de langue), un crayon, une gomme à effacer, une règle graduée en centimètres et un rapporteur d’angle.$lynxpack$,
@@ -2241,7 +2357,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'quiz-angles-triangles', '10d7a4b3ca09e66bdf4e6e36945e8ea9645c54a7ba66fa6fd25881306048f4ad', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('d91d5a99-ba73-5040-97fd-1d144d81cb15', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -2268,7 +2385,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('7ef7916c-b25b-5d81-b667-32ace8995b2e', v_board, r_school_1, 'game', $lynxpack$La course des sommes (brouillon)$lynxpack$, $lynxpack$Un jeu de probabilité en équipes : onze coureurs numérotés de 2 à 12 avancent selon la somme de deux dés. Les élèves prédisent le gagnant, notent les résultats et les comparent à la probabilité théorique de chaque somme.$lynxpack$,
     'draft', 'private', 'ai_generated', r_user_3, false,
     null, v_pack, r_subject_2, 30, $lynxpack$Par équipe : deux dés ordinaires (un rouge et un bleu, si possible), 11 jetons, une feuille pour la piste et un crayon.$lynxpack$,
@@ -2278,7 +2396,8 @@ begin
     null, null, $lynxpack$v1$lynxpack$, $lynxpack$claude-opus-5-5$lynxpack$,
     null, null,
     null, null,
-    null, null);
+    null, null,
+    'demo', 'course-des-sommes-brouillon', 'd2b66b52d6238ca2809c42246d3c5481069892e55224ab2f3c7a02879b3f9372', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('7ef7916c-b25b-5d81-b667-32ace8995b2e', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -2297,7 +2416,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('93fdcfce-c55f-57c2-8e2b-63dc6188431e', v_board, r_school_1, 'game', $lynxpack$Les trésors du plan cartésien$lynxpack$, $lynxpack$Un jeu en équipes de deux : chaque élève cache 3 trésors sur un plan cartésien gradué de 0 à 10, puis cherche ceux de l’autre en nommant des coordonnées et en décrivant des translations. Avec des variantes (autres échelles, trésor voyageur, dessin mystère) et une banque de questions.$lynxpack$,
     'teacher_reviewed', 'school', 'teacher_created', r_user_3, false,
     null, v_pack, r_subject_2, 30, $lynxpack$Par élève : deux feuilles quadrillées (carreaux d’environ 1 cm), un crayon et une règle. Par équipe : un cartable ou une chemise de carton pour cacher les feuilles.$lynxpack$,
@@ -2307,7 +2427,8 @@ begin
     null, null, null, null,
     null, null,
     null, null,
-    null, null);
+    null, null,
+    'demo', 'tresors-plan-cartesien', 'd56329c1e7829827d5bc905f69b21c9f0ba1fda7d1a3c9c25e59d5514ec00189', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('93fdcfce-c55f-57c2-8e2b-63dc6188431e', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -2326,7 +2447,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('af246f9a-07a6-51d4-96b7-1991d1d62c16', v_board, null, 'weekly_challenge', $lynxpack$Défi de la semaine : le budget de la journée de jeux$lynxpack$, $lynxpack$Un défi en cinq jours pour le comité d’achat d’une journée de jeux : calculer le coût de plusieurs articles en dollars et en cents, ajouter la taxe de vente, comparer deux magasins et préparer un budget qui garde une réserve pour les imprévus, avec des indices et la solution complète.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_2, 15, $lynxpack$Le défi affiché ou une copie par élève, un cahier de mathématiques et un crayon. Facultatif : de la monnaie de jeu et une calculatrice pour vérifier les calculs du vendredi.$lynxpack$,
@@ -2336,7 +2458,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'defi-budget-journee-de-jeux', 'c56026ede492a21fbe91220687767abcec952a6061c43e4fda1b75d604d8f306', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('af246f9a-07a6-51d4-96b7-1991d1d62c16', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -2355,7 +2478,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('d16e24c9-c30a-5097-884b-089a53148394', v_board, null, 'experiment', $lynxpack$Quel sol retient le plus d’eau?$lynxpack$, $lynxpack$Les équipes versent la même quantité d’eau sur du sable, de la terre argileuse et du terreau, mesurent l’eau qui s’écoule en 5 minutes et calculent l’eau retenue par chaque sol. Elles relient ensuite leurs résultats à la composition des sols et au jardinage.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_3, 50, $lynxpack$Par équipe de 3 : 3 petits contenants remplis chacun de 125 mL d’un sol légèrement humide (sable, terre argileuse, terreau), préparés et étiquetés par l’adulte; 3 entonnoirs de plastique (ou 3 bouteilles de 2 L coupées en deux d’avance par l’adulte, le haut retourné servant d’entonnoir); 3 bocaux ou grands gobelets transparents qui peuvent tenir un entonnoir; 3 filtres à café; 3 gobelets pour verser l’eau; 1 tasse à mesurer graduée en millilitres; 1 minuterie; 3 étiquettes; 1 feuille d’observation. Pour la classe : du papier journal pour couvrir les tables, des essuie-tout, des gants sans latex (nitrile) pour les élèves qui en ont besoin.$lynxpack$,
@@ -2365,7 +2489,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'sols-et-eau', '2a47e8552b6877884d161c4137b014999726dd017deb66f7e83b9c81457d657b', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('d16e24c9-c30a-5097-884b-089a53148394', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -2384,7 +2509,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('2ca2ccd4-8a8e-57ab-9938-5849b23661b0', v_board, null, 'experiment', $lynxpack$La tige, un chemin pour l’eau$lynxpack$, $lynxpack$En équipes, les élèves placent une fleur blanche ou une branche de céleri dans de l’eau colorée, et une autre dans de l’eau claire. Sur deux jours, la classe observe l’eau monter dans la tige jusqu’aux pétales ou aux feuilles, puis relie ses observations au rôle de chaque partie de la plante.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_3, 45, $lynxpack$Par équipe de 3 : 2 œillets blancs ou 2 branches de céleri avec leurs feuilles, 2 gobelets de plastique transparents, 1 bâtonnet de bois pour brasser, du colorant alimentaire bleu ou rouge, 1 étiquette, 1 loupe (facultatif), 1 feuille d’observation. Pour l’adulte : 1 paire de ciseaux pour couper le bas des tiges, 1 pichet d’eau, des essuie-tout.$lynxpack$,
@@ -2394,7 +2520,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'tige-qui-boit', 'ef727b11138abbd96b8379a77fe39b8d15252926440f310f7cdf999a81cbacd8', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('2ca2ccd4-8a8e-57ab-9938-5849b23661b0', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -2413,7 +2540,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('4c82253a-691a-5454-b732-c8beb65c7bbb', v_board, r_school_1, 'stem_challenge', $lynxpack$Défi STIM : la tour qui résiste au vent$lynxpack$, $lynxpack$En suivant le processus de design, les équipes construisent avec 20 fiches et du ruban-cache une tour d’au moins 30 cm qui porte une gomme à effacer et résiste au vent d’un éventail. Elles découvrent comment la forme des matériaux et la base rendent une structure solide et stable.$lynxpack$,
     'teacher_reviewed', 'school', 'teacher_created', r_user_2, false,
     null, v_pack, r_subject_3, 60, $lynxpack$Par équipe de 3 : 20 fiches blanches (7,6 cm sur 12,7 cm), 50 cm de ruban-cache, 1 paire de ciseaux à bouts ronds, 1 gomme à effacer en vinyle (sans latex), 1 règle de 30 cm, 1 feuille de planification. Pour la classe : 1 éventail fait d’un carton rigide d’environ 30 cm sur 40 cm, 1 ruban à mesurer, du ruban-cache de rechange.$lynxpack$,
@@ -2423,7 +2551,8 @@ begin
     null, null, null, null,
     null, null,
     null, null,
-    null, null);
+    null, null,
+    'demo', 'tour-qui-resiste-au-vent', 'df3c9cd38282e3ce5cd579ae39f41808ec1272deb05cb00651f933c3f6599507', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('4c82253a-691a-5454-b732-c8beb65c7bbb', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -2442,7 +2571,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('457bbca5-b6b2-538e-be7b-bf6f0e159df3', v_board, null, 'outdoor_activity', $lynxpack$Enquête sur les plantes de la cour$lynxpack$, $lynxpack$Dans la cour d’école, des équipes de trois réalisent cinq missions d’observation : trouver des plantes différentes, nommer leurs parties, repérer une plante qui pousse dans un endroit difficile, chercher des liens entre les plantes et les animaux, et proposer des façons de protéger les plantes.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_3, 45, $lynxpack$Par équipe de 3 : 1 planchette à pince, 1 feuille d’enquête (cinq cases, une par mission), 1 crayon, 1 loupe (facultatif). Pour l’adulte : un sifflet, des cônes pour délimiter la zone, la trousse de premiers soins et les auto-injecteurs d’épinéphrine des élèves qui en ont.$lynxpack$,
@@ -2452,7 +2582,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'plantes-de-la-cour', '1834c2dbd7d58bac62dad398c7aa7d646bdf88fb327463b077df396277416e5b', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('457bbca5-b6b2-538e-be7b-bf6f0e159df3', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -2469,7 +2600,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('750bd909-043f-5dcc-919a-4bde94bac1b3', v_board, null, 'parent_guide', $lynxpack$Les plantes et les sols à la maison / Plants and soil at home$lynxpack$, $lynxpack$Un guide bilingue (français et anglais) pour aider les familles à soutenir l’apprentissage des plantes et des sols en 3e année, avec des activités simples à faire à la maison ou en promenade, sans achat, et les mots utilisés en classe.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_3, 10, $lynxpack$Une copie par famille : la partie en français, puis la partie en anglais.$lynxpack$,
@@ -2479,7 +2611,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'plantes-et-sols-a-la-maison', '9219844d7ce58778dd6950d4a6dc3a1f6cb624b02be4a92be584a21e31a77977', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('750bd909-043f-5dcc-919a-4bde94bac1b3', '3');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -2496,7 +2629,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('21b82c13-50e7-542c-b309-29b415263f96', v_board, r_school_1, 'experiment', $lynxpack$Mon cœur et mes poumons après l’effort$lynxpack$, $lynxpack$En dyades, les élèves mesurent leur pouls et leur respiration au repos, après une minute d’exercice sur place, puis après deux minutes de repos. Chaque élève compare ses mesures et explique comment les systèmes respiratoire et circulatoire travaillent ensemble pendant l’effort.$lynxpack$,
     'teacher_reviewed', 'school', 'teacher_created', r_user_3, false,
     null, v_pack, r_subject_3, 50, $lynxpack$Par dyade : 1 minuterie ou 1 horloge avec une aiguille des secondes, 1 feuille d’observation et 1 crayon. Pour la classe : un espace dégagé (la classe, chaises rangées, ou le gymnase).$lynxpack$,
@@ -2506,7 +2640,8 @@ begin
     null, null, null, null,
     now(), r_user_3,
     null, null,
-    null, null);
+    null, null,
+    'demo', 'coeur-apres-effort', '943af305e6297ad13f0cc185d16cfa2392a5694a066cd4d9713766b77d417a44', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('21b82c13-50e7-542c-b309-29b415263f96', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -2525,7 +2660,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('1db3d5e8-9dc7-50b7-8e81-0ae5f5edd25f', v_board, null, 'experiment', $lynxpack$Changement physique ou changement chimique?$lynxpack$, $lynxpack$En rotation dans quatre stations (un glaçon qui fond, du sel dans l’eau, du bicarbonate de soude et du vinaigre, du jus de chou rouge), les élèves observent des changements de la matière et cherchent les indices qui distinguent un changement physique d’un changement chimique.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_3, 60, $lynxpack$Station 1 : des glaçons et 1 sac de plastique refermable par équipe. Station 2 : du sel de table, de l’eau tiède, 1 gobelet transparent, 1 cuillère à mesurer de 5 mL, 1 bâtonnet pour brasser, 1 compte-gouttes et 1 carré de papier de bricolage noir par équipe. Station 3 : du bicarbonate de soude, du vinaigre blanc, 1 grand gobelet transparent par équipe, 1 cuillère à mesurer de 5 mL, 1 tasse à mesurer graduée, 1 plateau ou 1 bac peu profond. Station 4 : du jus de chou rouge préparé d’avance, 1 petite bouteille de vinaigre avec compte-gouttes, 1 petite bouteille de solution de bicarbonate avec compte-gouttes, 2 gobelets transparents par équipe. Pour chaque élève : des lunettes de protection et 1 feuille d’observation. Pour la classe : des essuie-tout et 1 seau pour vider les liquides.$lynxpack$,
@@ -2535,7 +2671,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'physique-ou-chimique', '107007b55a849da281a8bdef381129e1904344c09f03859fc23879c053f38b2e', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('1db3d5e8-9dc7-50b7-8e81-0ae5f5edd25f', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -2554,7 +2691,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('ea890753-0fc4-58dd-89d0-b66a92e2bc19', v_board, null, 'stem_challenge', $lynxpack$Défi STIM : le garde-glaçon$lynxpack$, $lynxpack$Les équipes suivent le processus de design pour construire un contenant isolant qui ralentit la fonte d’un glaçon. Après 45 minutes, elles mesurent l’eau de fonte, la comparent à celle d’un glaçon témoin et relient leurs résultats aux isolants qui permettent d’économiser l’énergie à la maison.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_3, 90, $lynxpack$Par équipe de 3 : 1 petit sac de plastique refermable, 1 m de ruban-cache, 1 paire de ciseaux à bouts ronds, 1 règle de 30 cm, 1 feuille de planification. Table de matériaux pour la classe : papier journal, carton, papier d’aluminium, retailles de feutrine ou de tissu, papier bulle, ouate de polyester, gobelets de papier et de plastique. Pour les tests : des glaçons de même taille faits la veille dans le même bac, 1 sac témoin (un glaçon dans un sac refermable, posé dans un gobelet sans isolant), 1 éprouvette graduée de 50 mL ou 1 tasse à mesurer graduée, 1 minuterie, des essuie-tout.$lynxpack$,
@@ -2564,7 +2702,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'defi-garde-glacon', '5f1189651105111b743b49c008b31618f81c3d2722d97e9bf0a0c89e7cc845c6', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('ea890753-0fc4-58dd-89d0-b66a92e2bc19', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -2583,7 +2722,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('292ee8fe-1932-591f-876e-b2a633ffc1e9', v_board, r_school_1, 'outdoor_activity', $lynxpack$Les détectives de l’énergie (brouillon)$lynxpack$, $lynxpack$Une enquête dans la cour d’école : des équipes cherchent des exemples d’énergie (lumière, chaleur, mouvement, son), nomment les formes d’énergie et décrivent les transformations qu’elles observent.$lynxpack$,
     'draft', 'private', 'ai_generated', r_user_3, false,
     null, v_pack, r_subject_3, 45, $lynxpack$Par équipe de 3 : 1 planchette à pince, 1 feuille d’enquête avec un tableau de trois colonnes, 1 crayon. Pour l’adulte : un sifflet et des cônes pour délimiter la zone.$lynxpack$,
@@ -2593,7 +2733,8 @@ begin
     null, null, $lynxpack$v1$lynxpack$, $lynxpack$claude-opus-5-5$lynxpack$,
     null, null,
     null, null,
-    null, null);
+    null, null,
+    'demo', 'detectives-energie-brouillon', 'e4d4af28ab19194833d7207c6d43d9a2046380556aa81f38547d14101fc4e4db', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('292ee8fe-1932-591f-876e-b2a633ffc1e9', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -2610,7 +2751,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('f96a7a62-65cf-59f2-a1f2-b1ebf2f4d932', v_board, r_school_1, 'parent_guide', $lynxpack$La matière dans la cuisine / Matter in the kitchen$lynxpack$, $lynxpack$Un guide bilingue (français et anglais) pour aider les familles à explorer, dans la cuisine, les états de la matière et la différence entre un changement physique et un changement chimique en 5e année, avec des activités sécuritaires et les mots utilisés en classe.$lynxpack$,
     'draft', 'private', 'teacher_created', r_user_3, false,
     null, v_pack, r_subject_3, 10, $lynxpack$Une copie par famille : la partie en français, puis la partie en anglais.$lynxpack$,
@@ -2620,7 +2762,8 @@ begin
     null, null, null, null,
     null, null,
     null, null,
-    null, null);
+    null, null,
+    'demo', 'matiere-dans-la-cuisine', 'a828f0d6a3b58374f0b62382a77f3a30ba24e30f29bab16c4cdf8884a3e28cb9', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('f96a7a62-65cf-59f2-a1f2-b1ebf2f4d932', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -2637,7 +2780,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('d61cf6a7-1d24-541f-86a0-85073e463066', v_board, null, 'song', $lynxpack$En français, on chante$lynxpack$, $lynxpack$Une chanson originale sur l’air de « Au clair de la lune » qui célèbre la vie en français en Ontario : la cour d’école, la communauté, tous les accents qui s’y rencontrent et les couleurs du drapeau franco-ontarien, avec des gestes.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_1, 10, $lynxpack$Aucun matériel particulier. Facultatif : les paroles écrites au tableau ou projetées, et un drapeau franco-ontarien.$lynxpack$,
@@ -2647,7 +2791,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'en-francais-on-chante', 'c476e5858ba322f569546b17bc065af09f92f67cb9ff7d6cff76539601ca7f66', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('d61cf6a7-1d24-541f-86a0-85073e463066', '3'), ('d61cf6a7-1d24-541f-86a0-85073e463066', '5');
   insert into public.library_item_tags (item_id, tag_id) values
@@ -2662,7 +2807,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('09565f57-b6f9-5da8-948f-6e59a0ab2bdf', v_board, null, 'culture_hook', $lynxpack$Le 25 septembre : la francophonie aux quatre coins de l’Ontario$lynxpack$, $lynxpack$Une amorce pour le Jour des Franco-Ontariens et des Franco-Ontariennes : un voyage imaginaire à la découverte de communautés francophones de toutes les régions de l’Ontario, avec des questions sur la place du français dans sa communauté et une carte de la francophonie ontarienne à construire en classe.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_1, 15, $lynxpack$Une grande carte de l’Ontario affichée au tableau ou projetée. Pour l’activité : de petits drapeaux verts et blancs en papier, de la pâte adhésive, une feuille et un crayon par équipe.$lynxpack$,
@@ -2672,7 +2818,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'francophonie-quatre-coins-ontario', '52850b58e1145f76fa6eadc1253dbb2c931829958b3455b788be4d542bf5f637', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('09565f57-b6f9-5da8-948f-6e59a0ab2bdf', '3'), ('09565f57-b6f9-5da8-948f-6e59a0ab2bdf', '4');
   insert into public.library_item_tags (item_id, tag_id) values
@@ -2687,7 +2834,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('0454c8f1-7de7-5258-a308-722a0d0e45f5', v_board, null, 'brain_break', $lynxpack$Pause active : solide, liquide, gaz$lynxpack$, $lynxpack$Une pause active de 5 minutes, à côté des pupitres : les élèves deviennent des particules de matière et bougent comme dans un solide, un liquide ou un gaz, puis passent d’un état à l’autre au signal. La classe termine par trois respirations calmes.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_3, 5, $lynxpack$Aucun matériel particulier.$lynxpack$,
@@ -2697,7 +2845,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'pause-solide-liquide-gaz', '09ab2f7496c1c1f3994bbccc7b89d94bc5cf468131cb0a26d4b6516a7a072291', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('0454c8f1-7de7-5258-a308-722a0d0e45f5', '3'), ('0454c8f1-7de7-5258-a308-722a0d0e45f5', '4'), ('0454c8f1-7de7-5258-a308-722a0d0e45f5', '5');
   insert into public.library_item_expectations (item_id, expectation_id) values
@@ -2714,7 +2863,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('3c57ff07-30e4-5908-bcfc-454dd663514c', v_board, r_school_1, 'brain_break', $lynxpack$Pause active : la graine qui pousse$lynxpack$, $lynxpack$Une pause d’étirements de 5 minutes, à côté des pupitres : les élèves deviennent une graine qui germe, pousse vers la lumière, se balance au vent et fleurit, puis terminent par trois respirations calmes.$lynxpack$,
     'teacher_reviewed', 'school', 'teacher_created', r_user_4, false,
     null, v_pack, r_subject_4, 5, $lynxpack$Aucun matériel particulier.$lynxpack$,
@@ -2724,7 +2874,8 @@ begin
     null, null, null, null,
     null, null,
     null, null,
-    null, null);
+    null, null,
+    'demo', 'pause-graine-qui-pousse', 'c9c16d50f60a30f40db141f4dbd81f86979eb851b3fa698836a4414e8ce9968e', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('3c57ff07-30e4-5908-bcfc-454dd663514c', '1'), ('3c57ff07-30e4-5908-bcfc-454dd663514c', '2'), ('3c57ff07-30e4-5908-bcfc-454dd663514c', '3');
   insert into public.library_item_tags (item_id, tag_id) values
@@ -2739,7 +2890,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('3ec81f0c-656a-5b9d-8ad3-a3faa77d9066', v_board, null, 'culture_hook', $lynxpack$« Notre place », l’hymne franco-ontarien$lynxpack$, $lynxpack$Une amorce pour découvrir « Notre place », la chanson devenue l’hymne des Franco-Ontariens et des Franco-Ontariennes : son histoire, ses thèmes et ce qu’un hymne représente pour une communauté, avec une écoute guidée et l’écriture d’une strophe originale. Les paroles de la chanson ne sont pas reproduites.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_6, 20, $lynxpack$Un enregistrement autorisé de la chanson « Notre place » et de quoi le faire entendre. Pour l’activité : une feuille et un crayon par dyade.$lynxpack$,
@@ -2749,7 +2901,8 @@ begin
     null, null, null, null,
     null, null,
     now(), r_user_1,
-    null, null);
+    null, null,
+    'demo', 'notre-place-hymne-franco-ontarien', 'fccacfaffe476c4c9848f1f99ffe5dacf8fc8ca52e6506c55dc525d47c2edab6', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('3ec81f0c-656a-5b9d-8ad3-a3faa77d9066', '4'), ('3ec81f0c-656a-5b9d-8ad3-a3faa77d9066', '5'), ('3ec81f0c-656a-5b9d-8ad3-a3faa77d9066', '6');
   insert into public.library_item_tags (item_id, tag_id) values
@@ -2764,7 +2917,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('ef664ee6-1863-5995-85f7-7c642defc9ed', v_board, null, 'catholic_reflection', $lynxpack$Avent : préparer le chemin$lynxpack$, $lynxpack$Une courte réflexion pour le temps de l’Avent, de la 3e à la 5e année : attendre Noël en préparant son cœur par des gestes d’attention aux autres, avec des questions d’échange, une prière originale et une couronne de l’Avent qui se remplit de flammes de papier.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_5, 10, $lynxpack$Une couronne de l’Avent pour la classe, avec quatre bougies électriques ou en papier (jamais de flamme nue), des flammes découpées dans du papier jaune ou orange, du ruban adhésif.$lynxpack$,
@@ -2774,7 +2928,8 @@ begin
     $lynxpack$Pendant l’Avent, l’Église se prépare à célébrer la naissance de Jésus. Comme Jean le Baptiste invitait les gens à préparer le chemin du Seigneur (Luc 3, 4-6), nous préparons nos cœurs par des gestes d’attention et de partage.$lynxpack$, r_ref_2, null, null,
     null, null,
     now(), r_user_1,
-    now(), r_user_1);
+    now(), r_user_1,
+    'demo', 'avent-preparer-le-chemin', 'f8ce853f84c164d295e74aa24397de642a34ef368db85620bae2b702ed1ee05f', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('ef664ee6-1863-5995-85f7-7c642defc9ed', '3'), ('ef664ee6-1863-5995-85f7-7c642defc9ed', '4'), ('ef664ee6-1863-5995-85f7-7c642defc9ed', '5');
   insert into public.library_item_tags (item_id, tag_id) values
@@ -2789,7 +2944,8 @@ begin
     duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,
     sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,
     catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,
-    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)
+    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by, pack_slug, pack_item_key,
+    pack_content_hash, pack_revision)
   values ('f184b438-b01d-5164-8554-465b71cbd4f8', v_board, null, 'catholic_reflection', $lynxpack$Carême : quarante jours pour grandir$lynxpack$, $lynxpack$Une courte réflexion pour le temps du Carême, de la 3e à la 5e année : le Carême comme un entraînement du cœur, avec la prière, le partage et un petit effort à poursuivre avec persévérance, des questions d’échange, une prière originale et un carnet de Carême.$lynxpack$,
     'board_approved', 'board', 'board_created', null, true,
     null, v_pack, r_subject_5, 10, $lynxpack$Un petit carnet de Carême par élève (une feuille pliée en quatre, avec une case par jour de la semaine) et des crayons de couleur.$lynxpack$,
@@ -2799,7 +2955,8 @@ begin
     $lynxpack$Pendant le Carême, l’Église se prépare à célébrer Pâques. Jésus invite à prier, à partager et à faire des efforts sans chercher à se faire remarquer (Matthieu 6, 1-6.16-18) : persévérer dans un petit effort, jour après jour, fait grandir notre cœur.$lynxpack$, r_ref_3, null, null,
     null, null,
     now(), r_user_1,
-    now(), r_user_1);
+    now(), r_user_1,
+    'demo', 'careme-quarante-jours', '9836ca29be6b0af1aea1478d6a658d1e41aad4a109c53e9573a613f1e74568e9', 1);
   insert into public.library_item_grades (item_id, grade_code) values
     ('f184b438-b01d-5164-8554-465b71cbd4f8', '3'), ('f184b438-b01d-5164-8554-465b71cbd4f8', '4'), ('f184b438-b01d-5164-8554-465b71cbd4f8', '5');
   insert into public.library_item_tags (item_id, tag_id) values

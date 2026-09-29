@@ -16,7 +16,7 @@
  */
 import { z } from 'zod';
 import { validateAnswerKey } from './answer-key';
-import { LIBRARY_ITEM_TYPES, TYPE_INFO } from './catalog';
+import { isLibraryItemType, LIBRARY_ITEM_TYPES, TYPE_INFO } from './catalog';
 import { conform, isPlainObject } from './conform';
 import { questionSchemas } from './questions';
 import { questionsOf } from './questions-of';
@@ -30,6 +30,7 @@ import {
 } from './schemas';
 import { SLUG_PATTERN, seedItemSchema, seedPackSchema, type SeedItem } from './seed-pack';
 import { sha256Hex } from './sha256';
+import { frenchStrings, mapStrings, suggestsFaithContent } from './style';
 
 export const CONTENT_PACK_FORMAT = 'lynx-content-pack';
 export const CONTENT_PACK_FORMAT_VERSION = 1;
@@ -604,4 +605,216 @@ export function packFromSeedDirectory(
     items: packItems,
     checksum: packChecksum(packItems),
   };
+}
+
+// ---------------------------------------------------------------------------------------
+// From a board's export (`public.content_pack_export_items`; the admin CLI's `export-pack`)
+// ---------------------------------------------------------------------------------------
+
+const nullableText = z.string().nullable();
+
+/**
+ * One item as the database's export returns it: nulls where the item has nothing, tags with
+ * their label, Catholic references as (type, title). Only its shape is checked here: the pack
+ * item made from it is checked with `contentPackItemSchema`.
+ */
+export const packExportRowSchema = z.object({
+  key: z.string(),
+  type: z.string(),
+  title: z.string(),
+  summary: nullableText,
+  gradeCodes: z.array(z.string()),
+  subjectCode: z.string(),
+  expectations: z.array(
+    z.object({ curriculumVersion: z.string(), gradeCode: z.string(), code: z.string() }),
+  ),
+  durationMinutes: z.number().nullable(),
+  materials: nullableText,
+  keywords: nullableText,
+  formats: z.object({ printable: z.boolean(), projectable: z.boolean(), interactive: z.boolean() }),
+  safetyNotes: z.record(z.string(), z.unknown()).nullable(),
+  faith: z.object({
+    faithContent: z.boolean(),
+    catholicConnection: nullableText,
+    reference: z.object({ type: z.string(), title: z.string() }).nullable(),
+    onStudentSheet: z.boolean(),
+  }),
+  tags: z.array(z.object({ slug: z.string(), label: z.string() })),
+  licence: nullableText,
+  noDerivatives: z.boolean(),
+  provenance: z.object({ source: z.string(), promptVersion: nullableText, model: nullableText }),
+  versions: z.array(
+    z.object({
+      level: z.string().nullable(),
+      schemaVersion: z.number(),
+      content: z.record(z.string(), z.unknown()),
+      answerKey: z.record(z.string(), z.unknown()).nullable(),
+    }),
+  ),
+});
+export type PackExportRow = z.output<typeof packExportRowSchema>;
+
+/** One page of `public.content_pack_export_items`; the board's levels come with the first. */
+export const packExportPageSchema = z.object({
+  items: z.array(packExportRowSchema),
+  next: z.string().nullable(),
+  levels: z
+    .array(z.object({ code: z.string(), labelFr: z.string(), labelEn: z.string().nullable() }))
+    .optional(),
+});
+export type PackExportPage = z.output<typeof packExportPageSchema>;
+
+/**
+ * An exported item as a v1 pack item, with its hash: empty strings for the database's nulls,
+ * tag slugs (their labels go to the pack's `tags`, `packTagsFromExport`), and versions in the
+ * canonical shape the seed uses (`packItemFromSeed`), so the same content always hashes the
+ * same. `noDerivatives` adds the pack's « no derivatives » to the item's own. Not validated:
+ * check it with `contentPackItemSchema` (an item the schema refuses is left out of the pack).
+ */
+export function packItemFromExport(
+  row: PackExportRow,
+  options: { noDerivatives?: boolean } = {},
+): ContentPackItem {
+  const type = row.type;
+  const canonicalContent = (content: Record<string, unknown>) =>
+    isLibraryItemType(type)
+      ? (conform(contentObject(type, 'draft'), content) as Record<string, unknown>)
+      : content;
+  const withoutHash = {
+    key: row.key,
+    type,
+    title: row.title,
+    summary: row.summary ?? '',
+    gradeCodes: row.gradeCodes,
+    subjectCode: row.subjectCode,
+    expectations: row.expectations.map((e) => ({
+      curriculumVersion: e.curriculumVersion,
+      gradeCode: e.gradeCode,
+      code: e.code,
+    })),
+    durationMinutes: row.durationMinutes,
+    materials: row.materials ?? '',
+    keywords: row.keywords ?? '',
+    formats: { ...row.formats },
+    safetyNotes: row.safetyNotes,
+    faith: {
+      faithContent: row.faith.faithContent,
+      catholicConnection: row.faith.catholicConnection ?? '',
+      reference: row.faith.reference
+        ? { type: row.faith.reference.type, title: row.faith.reference.title }
+        : null,
+      onStudentSheet: row.faith.onStudentSheet,
+    },
+    tags: row.tags.map((t) => t.slug),
+    licence: row.licence ?? '',
+    noDerivatives: row.noDerivatives || Boolean(options.noDerivatives),
+    provenance: {
+      source: row.provenance.source,
+      promptVersion: row.provenance.promptVersion,
+      model: row.provenance.model,
+    },
+    versions: row.versions.map((v) => ({
+      level: v.level,
+      schemaVersion: v.schemaVersion,
+      content: canonicalContent(v.content),
+      answerKey: v.answerKey
+        ? (conform(questionSchemas('draft').answerKey, v.answerKey) as Record<string, unknown>)
+        : null,
+    })),
+  };
+  return { ...withoutHash, hash: itemHash(withoutHash) } as ContentPackItem;
+}
+
+/** The tags the exported items use, each once (by slug, in order of first use). */
+export function packTagsFromExport(rows: readonly PackExportRow[]): PackTag[] {
+  const tags = new Map<string, PackTag>();
+  for (const row of rows) {
+    for (const tag of row.tags) {
+      if (!tags.has(tag.slug)) tags.set(tag.slug, { slug: tag.slug, labelFr: tag.label });
+    }
+  }
+  return [...tags.values()];
+}
+
+/**
+ * A v1 pack from its header and items: only the levels and tags the items use are declared,
+ * and the Catholic references they name (each once, in order of first use), with the checksum.
+ */
+export function assemblePack(input: {
+  header: PackHeader;
+  levels: readonly PackLevel[];
+  tags: readonly PackTag[];
+  items: readonly ContentPackItem[];
+}): ContentPack {
+  const items = [...input.items];
+  const levelCodes = new Set(items.flatMap((i) => i.versions.flatMap((v) => v.level ?? [])));
+  const tagSlugs = new Set(items.flatMap((i) => i.tags));
+  /** The first of each key, in order. */
+  const once = <T>(list: readonly T[], keyOf: (v: T) => string): T[] => {
+    const first = new Map<string, T>();
+    for (const v of list) if (!first.has(keyOf(v))) first.set(keyOf(v), v);
+    return [...first.values()];
+  };
+  const references = new Map<string, PackReference>();
+  for (const item of items) {
+    const reference = item.faith.reference;
+    if (reference) references.set(`${reference.type} ${reference.title}`, { ...reference });
+  }
+  return {
+    format: CONTENT_PACK_FORMAT,
+    formatVersion: CONTENT_PACK_FORMAT_VERSION,
+    pack: { ...input.header },
+    levels: once(
+      input.levels.filter((l) => levelCodes.has(l.code)),
+      (l) => l.code,
+    ).map((l) => ({ ...l })),
+    tags: once(
+      input.tags.filter((t) => tagSlugs.has(t.slug)),
+      (t) => t.slug,
+    ).map((t) => ({ ...t })),
+    catholicReferences: [...references.values()],
+    items,
+    checksum: packChecksum(items),
+  };
+}
+
+// ---------------------------------------------------------------------------------------
+// Texts of an item, for the checks the CLI runs before export and import
+// ---------------------------------------------------------------------------------------
+
+/**
+ * Every text of an item a person could be named in: title, summary, materials, keywords, the
+ * faith link and reference, the licence, safety notes, and every prose string of each version's
+ * content and key (machine values such as ids and kinds are left out). The export's first-name
+ * check (D-099) reads these.
+ */
+export function packItemTexts(item: ContentPackItem): string[] {
+  const texts: string[] = [];
+  const collect = (value: unknown) =>
+    mapStrings(value, (s) => {
+      texts.push(s);
+      return s;
+    });
+  texts.push(item.title, item.summary, item.materials, item.keywords, item.licence);
+  texts.push(item.faith.catholicConnection);
+  if (item.faith.reference) texts.push(item.faith.reference.title);
+  collect(item.safetyNotes);
+  for (const version of item.versions) {
+    collect(version.content);
+    collect(version.answerKey);
+  }
+  return texts.filter((t) => t.trim() !== '');
+}
+
+/**
+ * Faith words (`suggestsFaithContent`) in the item's French text: its title, summary, faith link
+ * and every version's French strings. The import treats such an item as faith content (D-100),
+ * as the editor suggests it to an author.
+ */
+export function packItemSuggestsFaith(item: ContentPackItem): boolean {
+  const texts = [item.title, item.summary, item.faith.catholicConnection];
+  if (isLibraryItemType(item.type)) {
+    for (const version of item.versions) texts.push(...frenchStrings(item.type, version.content));
+  }
+  return texts.some((text) => suggestsFaithContent(text));
 }

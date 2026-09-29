@@ -155,6 +155,58 @@ does not have yet, from its base version.
    that gains versions becomes her private draft again: nobody else uses what the AI wrote before
    she has read it, marked it reviewed and shared it again (the first-name check runs again).
 
+## Banque de ressources: « Génération en lot » (bulk generation)
+
+The platform operator (IP Lynx, or a board's IT for an install the board hosts) can have the AI
+write many resources for one board at once: for example quizzes and worksheets for every attente
+of 3e année Mathématiques that the board has no resource for yet (D-095 to D-098). It is run from
+the admin tool (`pnpm admin bulk-plan`, then `bulk-start`), never from the app. The results are
+the board's own private drafts, which the board's designated reviewers read, edit and approve
+(« Brouillons du conseil ») before any teacher sees them.
+
+1. **Choices, not text.** The operator chooses the board, one or two grades, the subject, the
+   types, a cost cap, and optionally a domaine, attente codes and a short note (at most 1,000
+   characters, the only text typed). Faith reflections and Enseignement religieux are never
+   generated in bulk.
+2. **The requests are built by the database,** one per attente and type, exactly as for « Créer
+   avec l'IA »: the French labels, the attente's code and text, and the board's levels, read from
+   the tables. The note holds the operator's note and the **titles of the board's own or
+   board-wide resources** already written for that attente and type (« Ressources existantes à ne
+   pas reprendre : … »), so the AI does not write the same thing again. Titles of resources shared
+   with one school only are never sent. An attente and type that the board already covers is left
+   out.
+3. **De-identification with everyone of the board.** Before anything is sent, the worker
+   de-identifies each request with **every student of the board's schools and every person with a
+   role at the board or its schools**, refuses a request that holds a personal detail (an e-mail
+   address, a phone number…), and checks the final text one last time, with the same code as
+   every other AI request. A refused request is simply not sent.
+4. **The call: one batch.** The worker sends the requests as one batch through Anthropic's Message
+   Batches API, with the same system prompt (`prompts/library_item/v1.md`, the section for each
+   type) and the same content as « Créer avec l'IA »: the type, grade, subject, domaine, attente,
+   duration, the levels' names and descriptions, a list of fictional first names for characters
+   (leaving out every name the board knows), and the de-identified note. Each request carries a
+   random id (`custom_id`, a request uuid) and nothing else about the board.
+
+   It sends **no** ids of the board, schools, classes or people, no names of staff or students, no
+   alerts and no teacher's text.
+
+5. **At the provider.** A batch is processed within 24 hours (usually within the hour). The worker
+   reads the answers as soon as the batch has ended, then **deletes the batch and its results from
+   the provider**; a batch that is never read is kept there for at most 29 days. The
+   zero-data-retention request to Anthropic should ask whether batches are covered.
+6. **The answers come back** to the worker. Before using an answer, it prepares its request again:
+   if what it would send is no longer exactly what was sent (a person joined or left the board
+   since, so the markers differ), the answer is not used. Otherwise the answer is checked like any
+   other (normalized, validated: an answer with a marker is refused), the names are put back, and
+   the database stores it as the board's private draft with the prompt version, the model and the
+   batch id. An answer that contains a first name of a student of the board (a coincidence: the
+   characters take the allowed fictional names) is flagged « Prénom d'élève possible » for the
+   reviewer; only the flag is stored, never the name.
+7. **Cost.** A run has a hard cap: requests are sent only while the sum of their worst cases (the
+   counted input and the most the answer may be) stays within it, at batch prices (half). Costs are
+   recorded per board, outside every school's budget, and the operator sees them in `pnpm admin
+ai-usage`.
+
 ## How names are found
 
 - **The text is cleaned first.** Text pasted from web pages, PDFs or Word often carries invisible
@@ -208,6 +260,9 @@ of the text.
 | The teacher's text, the answer, and the exact de-identified text sent (`ai_jobs`)                   | Canadian database | 30 days, then deleted                                |
 | Saved differentiated texts (library drafts)                                                         | Canadian database | Until the teacher deletes them                       |
 | Resources written with the AI, and versions added by it (library items, private drafts)             | Canadian database | Until the teacher deletes them                       |
+| Bulk runs and their requests: the de-identified text sent (`library_bulk_requests.sent_text`)       | Canadian database | 30 days, then only its SHA-256 (runs: 1 year)        |
+| The board's drafts from bulk generation (library items, private until approved)                     | Canadian database | Until a reviewer deletes them                        |
+| A bulk batch and its answers                                                                        | The AI provider   | Deleted as soon as read (otherwise at most 29 days)  |
 | A substitute plan's AI layer (`sub_plans.ai`: the answer with names back, and block and lesson ids) | Canadian database | With the plan (1 year, D-059), or until removed      |
 | Usage records: date, feature, prompt version, model, token counts, cost, status (`ai_generations`)  | Canadian database | Kept (no text)                                       |
 | Request log for the hourly limit: job id, user id, time (`ai_request_log`)                          | Canadian database | 1 day (no text)                                      |

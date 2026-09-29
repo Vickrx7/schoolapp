@@ -1,7 +1,7 @@
 -- Schema-wide security invariants: RLS everywhere, nothing for anon, safe definer functions.
 begin;
 \ir _helpers.psql
-select plan(31);
+select plan(35);
 
 select is_empty(
   $$select c.relname from pg_class c join pg_namespace n on n.oid = c.relnamespace
@@ -279,6 +279,55 @@ select ok(
   and not has_any_column_privilege('authenticated', 'public.library_item_ratings', 'insert')
   and not has_any_column_privilege('authenticated', 'public.library_item_ratings', 'update'),
   'authenticated writes opinions only through rate_library_item'
+);
+
+-- Bulk generation (D-095): runs and requests are written only by the operator and the worker;
+-- the board's reviewers read them without their inputs or what was sent.
+select ok(
+  not has_any_column_privilege('authenticated', 'public.library_bulk_runs', 'insert')
+  and not has_any_column_privilege('authenticated', 'public.library_bulk_runs', 'update')
+  and not has_table_privilege('authenticated', 'public.library_bulk_runs', 'delete')
+  and not has_any_column_privilege('authenticated', 'public.library_bulk_requests', 'insert')
+  and not has_any_column_privilege('authenticated', 'public.library_bulk_requests', 'update')
+  and not has_table_privilege('authenticated', 'public.library_bulk_requests', 'delete')
+  and not has_column_privilege('authenticated', 'public.library_bulk_requests', 'input', 'select')
+  and not has_column_privilege('authenticated', 'public.library_bulk_requests', 'sent_text', 'select')
+  and not has_column_privilege('authenticated', 'public.library_bulk_runs', 'params', 'select'),
+  'bulk runs and requests are read-only for reviewers, without their inputs or what was sent'
+);
+
+select is_empty(
+  $$select f from unnest(array['public.library_bulk_plan(uuid,jsonb,numeric,text)',
+      'public.library_bulk_start(uuid)', 'public.library_bulk_cancel(uuid)',
+      'app.library_item_ai_input_for_board(uuid,uuid,jsonb)',
+      'app.library_bulk_mark_submitting(uuid,jsonb,jsonb)',
+      'app.library_item_from_bulk(uuid,jsonb,uuid)',
+      'app.library_bulk_record_result(uuid,jsonb,jsonb,text,text[])',
+      'app.library_bulk_finish(uuid,text,text)', 'app.library_maintenance()',
+      'app.library_decide_as(uuid,uuid,text,text,integer,text)',
+      'app.library_item_from_ai_result(uuid,uuid,uuid,boolean,jsonb,jsonb,uuid,uuid)',
+      'app.library_bulk_ai_allowed(uuid)']) f
+    where has_function_privilege('authenticated', f, 'execute')$$,
+  'bulk generation''s functions are the operator''s and the worker''s only'
+);
+
+-- Content packs (D-099, D-100): staged imports and every pack function are the operator's only.
+select is_empty(
+  $$select t.tbl || ' ' || p.priv
+    from unnest(array['public.content_pack_imports', 'public.content_pack_import_items']) t (tbl)
+    cross join unnest(array['select', 'insert', 'update', 'delete']) p (priv)
+    cross join unnest(array['anon', 'authenticated']) r (rolname)
+    where has_table_privilege(r.rolname, t.tbl, p.priv)
+      or (p.priv <> 'delete' and has_any_column_privilege(r.rolname, t.tbl, p.priv))$$,
+  'API roles cannot touch staged pack imports'
+);
+
+select is_empty(
+  $$select p.oid::regprocedure::text from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+    cross join unnest(array['anon', 'authenticated']) r (rolname)
+    where n.nspname in ('public', 'app') and p.proname like 'content\_pack\_%'
+      and has_function_privilege(r.rolname, p.oid, 'execute')$$,
+  'API roles cannot execute any content pack function'
 );
 
 select * from finish();

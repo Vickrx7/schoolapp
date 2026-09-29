@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto';
+import type { z } from 'zod';
 import { PrivacyViolation, Redactor, type KnownPerson } from './privacy';
 import { estimateCostUsd, type ModelPrice } from './pricing';
 import {
@@ -67,6 +69,118 @@ function addUsage(total: TokenUsage, more: TokenUsage) {
   total.cacheWriteTokens += more.cacheWriteTokens;
 }
 
+export interface PrepareOptions {
+  /** The system prompt for `feature.promptVersion` (see prompts.ts). */
+  systemPrompt: string;
+  /** Everyone whose name must not leave (see RunOptions.people). */
+  people: readonly KnownPerson[];
+  now?: Date;
+}
+
+/** A request ready to send: de-identified, checked, with its prompt, schema and limit. */
+export interface PreparedCall<I, O> {
+  ok: true;
+  /** The input as sent: de-identified. */
+  input: I;
+  /** Puts the request's people back into the answer (`checkOutput`). */
+  redactor: Redactor;
+  system: string;
+  user: string;
+  schema: z.ZodType<O>;
+  maxTokens: number;
+  /**
+   * SHA-256 (hex) of exactly what is sent: the system prompt and the message. The same input
+   * with the same people always gives the same hash, so a batch's answers are put back only
+   * against the markers they were written with (D-098).
+   */
+  sentSha256: string;
+  /** Fields left out because they held a personal detail: `dropped <path>` (logged). */
+  problems: string[];
+}
+
+export type PrepareResult<I, O> =
+  | PreparedCall<I, O>
+  | { ok: false; errorCode: 'invalidInput' | 'personalInfo'; problems: string[] };
+
+/** SHA-256 (hex) of what a call sends. */
+export function sentHash(system: string, user: string): string {
+  return createHash('sha256').update(system).update('\u0000').update(user).digest('hex');
+}
+
+/**
+ * Everything before a call (D-037, D-041, D-098): validate the input, de-identify it with the
+ * request's people, refuse it when a personal detail remains (`personalInfo`), build the
+ * message and system prompt, check that no known name leaves in either, and choose the output
+ * schema and `max_tokens`. The streamed path (`runFeature`) and the batch path (bulk generation)
+ * both go through here, so they refuse exactly the same requests.
+ */
+export function prepareCall<I, O>(
+  feature: FeatureDefinition<I, O>,
+  rawInput: unknown,
+  options: PrepareOptions,
+): PrepareResult<I, O> {
+  const parsed = feature.inputSchema.safeParse(rawInput);
+  if (!parsed.success) return { ok: false, errorCode: 'invalidInput', problems: [] };
+
+  const redactor = new Redactor(options.people, options.now);
+  const { input, blocked, dropped = [] } = feature.redactInput(parsed.data, redactor);
+  // Fields left out because they held a personal detail: their paths only (they are logged).
+  const problems = dropped.map((path) => `dropped ${path}`);
+  if (blocked.length) {
+    return {
+      ok: false,
+      errorCode: 'personalInfo',
+      problems: [...problems, ...blocked.map((b) => `blocked ${b.kind}`)],
+    };
+  }
+
+  const user = feature.buildUserMessage(input);
+  const system = feature.systemPrompt?.(options.systemPrompt, input) ?? options.systemPrompt;
+  const schema = feature.outputSchemaFor?.(input) ?? feature.outputSchema;
+  try {
+    redactor.assertSafeOutbound(`${system}\n${user}`);
+  } catch (error) {
+    if (error instanceof PrivacyViolation) {
+      return {
+        ok: false,
+        errorCode: 'personalInfo',
+        problems: [...problems, ...error.findings.map((f) => `outbound ${f.kind}`)],
+      };
+    }
+    throw error;
+  }
+  return {
+    ok: true,
+    input,
+    redactor,
+    system,
+    user,
+    schema,
+    maxTokens: feature.maxTokens,
+    sentSha256: sentHash(system, user),
+    problems,
+  };
+}
+
+export type CheckedOutput<O> = { ok: true; output: O } | { ok: false; problems: string[] };
+
+/**
+ * Everything after an answer that matched the schema: normalize it (D-080), validate it, then put
+ * the request's people back. Problems are paths and codes, never content.
+ */
+export function checkOutput<I, O>(
+  feature: FeatureDefinition<I, O>,
+  output: O,
+  input: I,
+  redactor: Redactor,
+): CheckedOutput<O> {
+  const normalized = feature.normalize ? normalizeSafely(feature.normalize, output, input) : output;
+  if (normalized === null) return { ok: false, problems: ['normalize failed'] };
+  const issues = feature.validate(normalized, input);
+  if (issues.length) return { ok: false, problems: issues };
+  return { ok: true, output: redactor.restore(normalized) };
+}
+
 /**
  * Runs one AI feature request end to end: validate, de-identify, check, call the provider
  * (retrying answers that fail validation), and put names back. A feature may choose its system
@@ -97,37 +211,20 @@ export async function runFeature<I, O>(options: RunOptions<I, O>): Promise<RunRe
     ...extra,
   });
 
-  const parsed = feature.inputSchema.safeParse(options.input);
-  if (!parsed.success) return result('failed', 'invalidInput');
-
-  const redactor = new Redactor(options.people, options.now);
-  const { input, blocked, dropped = [] } = feature.redactInput(parsed.data, redactor);
-  // Fields left out because they held a personal detail: their paths only (they are logged).
-  const droppedProblems = dropped.map((path) => `dropped ${path}`);
-  if (blocked.length) {
-    return result('failed', 'personalInfo', {
-      problems: [...droppedProblems, ...blocked.map((b) => `blocked ${b.kind}`)],
-    });
+  const prepared = prepareCall(feature, options.input, {
+    systemPrompt: options.systemPrompt,
+    people: options.people,
+    ...(options.now ? { now: options.now } : {}),
+  });
+  if (!prepared.ok) {
+    return result('failed', prepared.errorCode, { problems: prepared.problems });
   }
-
-  const user = feature.buildUserMessage(input);
-  const system = feature.systemPrompt?.(options.systemPrompt, input) ?? options.systemPrompt;
-  const schema = feature.outputSchemaFor?.(input) ?? feature.outputSchema;
-  try {
-    redactor.assertSafeOutbound(`${system}\n${user}`);
-  } catch (error) {
-    if (error instanceof PrivacyViolation) {
-      return result('failed', 'personalInfo', {
-        problems: [...droppedProblems, ...error.findings.map((f) => `outbound ${f.kind}`)],
-      });
-    }
-    throw error;
-  }
+  const { input, redactor, system, user, schema } = prepared;
 
   const maxAttempts = options.maxAttempts ?? 3;
   const signal =
     options.timeoutMs === undefined ? undefined : AbortSignal.timeout(options.timeoutMs);
-  const problems: string[] = [...droppedProblems];
+  const problems: string[] = [...prepared.problems];
   let model = provider.model;
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     if (signal?.aborted) {
@@ -144,7 +241,7 @@ export async function runFeature<I, O>(options: RunOptions<I, O>): Promise<RunRe
         system,
         user,
         schema,
-        maxTokens: feature.maxTokens,
+        maxTokens: prepared.maxTokens,
         fake: () => feature.fake(input),
         ...(signal ? { signal } : {}),
       });
@@ -180,20 +277,13 @@ export async function runFeature<I, O>(options: RunOptions<I, O>): Promise<RunRe
       problems.push(`attempt ${attempt}: ${response.stopReason}`);
       continue;
     }
-    const output = feature.normalize
-      ? normalizeSafely(feature.normalize, response.output, input)
-      : response.output;
-    if (output === null) {
-      problems.push(`attempt ${attempt}: normalize failed`);
-      continue;
-    }
-    const issues = feature.validate(output, input);
-    if (issues.length) {
-      problems.push(...issues.map((i) => `attempt ${attempt}: ${i}`));
+    const checked = checkOutput(feature, response.output, input, redactor);
+    if (!checked.ok) {
+      problems.push(...checked.problems.map((i) => `attempt ${attempt}: ${i}`));
       continue;
     }
     return result('succeeded', null, {
-      output: redactor.restore(output),
+      output: checked.output,
       sentText: user,
       attempts: attempt,
       model,

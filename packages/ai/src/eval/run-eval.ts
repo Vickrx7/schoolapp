@@ -10,10 +10,17 @@
  *
  *   pnpm ai:eval --feature library_item --provider fake    # « Créer avec l’IA »
  *   pnpm ai:eval --feature library_item --case quiz-5e --yes    # one case, under $1
+ *   pnpm ai:eval --feature library_item --batch --provider fake # the 10 cases as one batch
+ *   pnpm ai:eval --feature library_item --batch --case quiz-5e --yes   # worst case about $0.70
  *   pnpm ai:eval --feature library_levels --provider fake  # « Créer les versions manquantes »
  *
  * `--feature` is differentiate (the default), sub_plan, library_item or library_levels. Reads
  * ANTHROPIC_API_KEY, AI_MODEL and AI_EFFORT from the environment (or apps/web/.env.local).
+ *
+ * `--batch` (library_item only; bulk generation, DECISIONS D-096 to D-098) sends the cases as one
+ * Message Batches API batch, prepared and checked by the same code as the worker's bulk runs, and
+ * reports the batch id, the wait, each case's worst case and its actual cost at batch prices. A
+ * batch usually ends within the hour (at most 24 hours); the script waits and polls.
  */
 import {
   docToPlainText,
@@ -22,6 +29,7 @@ import {
   type AnswerKey,
   type LibraryItemType,
 } from '@lynx/content';
+import { randomUUID } from 'node:crypto';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
@@ -30,14 +38,20 @@ import {
   MAX_TEXT_TIMES_LEVELS,
   type DifferentiateInput,
 } from '../features/differentiate';
-import { libraryItemFeature } from '../features/library-item';
+import {
+  libraryItemFeature,
+  type LibraryItemAiOutput,
+  type LibraryItemInput,
+} from '../features/library-item';
 import { libraryLevelsFeature } from '../features/library-levels';
 import type { LibraryAiVersion } from '../features/library-shared';
 import { subPlanFeature } from '../features/sub-plan';
-import { priceFor } from '../pricing';
+import { countedInputTokens, fallbackInputTokens, schemaJsonText, worstCaseUsd } from '../batch';
+import { estimateCostUsd, priceFor } from '../pricing';
 import { loadPrompt } from '../prompts';
 import { createAnthropicProvider, createFakeProvider, type Effort } from '../providers';
-import { runFeature } from '../run';
+import { checkOutput, prepareCall, runFeature } from '../run';
+import type { BatchItem, BatchItemResult } from '../types';
 import {
   checkDifferentiation,
   checkLibraryItem,
@@ -59,6 +73,7 @@ const { values } = parseArgs({
     version: { type: 'string' },
     case: { type: 'string' },
     yes: { type: 'boolean', default: false },
+    batch: { type: 'boolean', default: false },
   },
 });
 
@@ -292,6 +307,175 @@ function versionMarkdown(
   return [`### ${heading}`, '', '```', guide, ...(key ? ['', key] : []), '```', ''];
 }
 
+/** A library resource as the teacher who reads the report sees it, then what was sent. */
+function libraryItemAnswer(
+  o: LibraryItemAiOutput,
+  input: Pick<LibraryItemInput, 'itemType' | 'levels'>,
+  sentText: string,
+): string[] {
+  const type = input.itemType;
+  const answer: string[] = [
+    `**${o.title}** (${o.durationMinutes} min) — ${o.summary}`,
+    '',
+    `Matériel : ${o.materials} · Mots-clés : ${o.keywords}`,
+    '',
+  ];
+  if (o.safetyNotes) answer.push(`Sécurité : ${JSON.stringify(o.safetyNotes)}`, '');
+  if (o.catholicConnection) answer.push(`**Lien avec la foi :** ${o.catholicConnection}`, '');
+  answer.push(...versionMarkdown(type, o.title, 'Version de base', o.base));
+  for (const l of o.levels) {
+    const label = input.levels.find((x) => x.key === l.level)?.label ?? l.level;
+    answer.push(...versionMarkdown(type, o.title, label, l));
+  }
+  answer.push(
+    '<details><summary>Texte envoyé</summary>',
+    '',
+    '```',
+    sentText,
+    '```',
+    '</details>',
+    '',
+  );
+  return answer;
+}
+
+/** Lines added under the report's heading (the batch mode's id, wait and worst case). */
+const extraHeader: string[] = [];
+
+/**
+ * « Créer avec l’IA » as bulk generation sends it (D-096 to D-098): every case prepared by
+ * `prepareCall`, counted and priced at its worst case, sent as one batch, waited for, read,
+ * checked by `checkOutput`, then deleted from the provider.
+ */
+async function libraryItemBatchRuns(version: string): Promise<CaseRun[]> {
+  const batch = provider.batch;
+  if (!batch) throw new Error(`the ${provider.name} provider has no batches`);
+  const cases = libraryItemCases.filter((c) => !values.case || c.id === values.case);
+  if (!cases.length) throw new Error(`no case named ${values.case}`);
+  const system = await loadPrompt(libraryItemFeature.name, version);
+  const prepared = cases.map((c) => ({
+    c,
+    customId: randomUUID(),
+    call: prepareCall(libraryItemFeature, c.input, {
+      systemPrompt: system,
+      people: c.people ?? [],
+    }),
+  }));
+  const items = new Map<string, BatchItem>();
+  const worst = new Map<string, number>();
+  for (const { customId, call } of prepared) {
+    if (!call.ok) continue;
+    const item: BatchItem = {
+      customId,
+      system: call.system,
+      user: call.user,
+      schema: call.schema,
+      maxTokens: call.maxTokens,
+      fake: () => libraryItemFeature.fake(call.input),
+    };
+    // Counting is free but reaches the provider: before --yes, the byte bound is enough.
+    let tokens = fallbackInputTokens(item.system, item.user, schemaJsonText(item.schema));
+    if (provider.name === 'fake' || values.yes) {
+      try {
+        tokens = countedInputTokens(await batch.countInputTokens(item));
+      } catch {
+        // Keep the byte bound.
+      }
+    }
+    items.set(customId, item);
+    worst.set(customId, worstCaseUsd(tokens, item.maxTokens, price));
+  }
+  const worstTotal = [...worst.values()].reduce((n, w) => n + w, 0);
+  if (provider.name !== 'fake' && !values.yes) {
+    console.log(
+      `This sends ${items.size} fictional resources to ${model} (effort ${effort}) as one batch.\n` +
+        `Worst case: $${worstTotal.toFixed(2)} USD; usually about a fifth of it. Re-run with --yes to go ahead.`,
+    );
+    process.exit(0);
+  }
+
+  const started = Date.now();
+  const results = new Map<string, BatchItemResult>();
+  let batchId = '(nothing sent)';
+  if (items.size) {
+    ({ batchId } = await batch.submit([...items.values()]));
+    console.log(`batch ${batchId} sent (${items.size} requests)`);
+    while ((await batch.status(batchId)).state !== 'ended') {
+      process.stdout.write('.');
+      await new Promise((r) => setTimeout(r, 30_000));
+    }
+    for await (const result of batch.results(batchId, items)) results.set(result.customId, result);
+    await batch.remove(batchId);
+  }
+  const waitSeconds = (Date.now() - started) / 1000;
+  extraHeader.push(
+    `- Batch: ${batchId} · waited ${waitSeconds.toFixed(0)} s`,
+    `- Worst case: $${worstTotal.toFixed(4)} USD (batch prices)`,
+  );
+
+  const runs: CaseRun[] = [];
+  for (const { c, customId, call } of prepared) {
+    const heading = `${c.id}: ${c.title}`;
+    if (!call.ok) {
+      runs.push({
+        id: c.id,
+        heading,
+        status: 'failed',
+        line: `Status: **failed** (${call.errorCode}) · not sent`,
+        problems: call.problems,
+        checks: null,
+        answer: [],
+        costUsd: 0,
+      });
+      console.log(`${c.id} … failed (${call.errorCode})`);
+      continue;
+    }
+    const result = results.get(customId);
+    const costUsd = result ? estimateCostUsd(result.usage, price, { batch: true }) : 0;
+    const usageLine = result
+      ? `${result.usage.inputTokens + result.usage.cacheWriteTokens} in / ${result.usage.outputTokens} out tokens`
+      : 'no answer';
+    const tail = ` · ${usageLine} · $${costUsd.toFixed(4)} (worst case $${(worst.get(customId) ?? 0).toFixed(4)})`;
+    const checked =
+      result?.output != null
+        ? checkOutput(
+            libraryItemFeature,
+            result.output as LibraryItemAiOutput,
+            call.input,
+            call.redactor,
+          )
+        : null;
+    if (!checked?.ok) {
+      const reason = !result ? 'batch_missing' : checked ? 'invalid_output' : result.stopReason;
+      runs.push({
+        id: c.id,
+        heading,
+        status: 'failed',
+        line: `Status: **failed** (${reason})${tail}`,
+        problems: checked && !checked.ok ? checked.problems : [],
+        checks: null,
+        answer: [],
+        costUsd,
+      });
+      console.log(`${c.id} … failed (${reason})`);
+      continue;
+    }
+    const checks = checkLibraryItem(checked.output, c.input, c.expect);
+    runs.push({
+      id: c.id,
+      heading,
+      status: 'succeeded',
+      line: `Status: **succeeded**${tail}`,
+      problems: [],
+      checks,
+      answer: libraryItemAnswer(checked.output, c.input, call.user),
+      costUsd,
+    });
+    console.log(`${c.id} … ${checks.filter((r) => r.passed).length}/${checks.length} checks`);
+  }
+  return runs;
+}
+
 async function libraryItemRuns(version: string): Promise<CaseRun[]> {
   const cases = libraryItemCases.filter((c) => !values.case || c.id === values.case);
   if (!cases.length) throw new Error(`no case named ${values.case}`);
@@ -314,33 +498,7 @@ async function libraryItemRuns(version: string): Promise<CaseRun[]> {
       people: c.people ?? [],
     });
     const checks = run.output ? checkLibraryItem(run.output, c.input, c.expect) : null;
-    const answer: string[] = [];
-    if (run.output) {
-      const o = run.output;
-      const type = c.input.itemType;
-      answer.push(
-        `**${o.title}** (${o.durationMinutes} min) — ${o.summary}`,
-        '',
-        `Matériel : ${o.materials} · Mots-clés : ${o.keywords}`,
-        '',
-      );
-      if (o.safetyNotes) answer.push(`Sécurité : ${JSON.stringify(o.safetyNotes)}`, '');
-      if (o.catholicConnection) answer.push(`**Lien avec la foi :** ${o.catholicConnection}`, '');
-      answer.push(...versionMarkdown(type, o.title, 'Version de base', o.base));
-      for (const l of o.levels) {
-        const label = c.input.levels.find((x) => x.key === l.level)?.label ?? l.level;
-        answer.push(...versionMarkdown(type, o.title, label, l));
-      }
-      answer.push(
-        '<details><summary>Texte envoyé</summary>',
-        '',
-        '```',
-        run.sentText ?? '',
-        '```',
-        '</details>',
-        '',
-      );
-    }
+    const answer = run.output ? libraryItemAnswer(run.output, c.input, run.sentText ?? '') : [];
     runs.push({
       id: c.id,
       heading: `${c.id}: ${c.title}`,
@@ -424,8 +582,11 @@ if (!chosen) {
     `unknown feature ${values.feature} (differentiate, sub_plan, library_item or library_levels)`,
   );
 }
+if (values.batch && values.feature !== 'library_item') {
+  throw new Error('--batch is for --feature library_item (bulk generation)');
+}
 const version = values.version ?? chosen.feature.promptVersion;
-const runs = await chosen.runs(version);
+const runs = values.batch ? await libraryItemBatchRuns(version) : await chosen.runs(version);
 
 const passedChecks = runs.reduce((n, r) => n + (r.checks?.filter((c) => c.passed).length ?? 0), 0);
 const totalChecks = runs.reduce((n, r) => n + (r.checks?.length ?? 0), 0);
@@ -437,7 +598,8 @@ const report: string[] = [
   `- Model: ${provider.model}${provider.name === 'fake' ? '' : ` (effort ${effort})`}`,
   `- Date: ${new Date().toISOString()}`,
   `- Checks passed: ${passedChecks}/${totalChecks}`,
-  `- Total cost: $${totalCost.toFixed(4)} USD`,
+  `- Total cost: $${totalCost.toFixed(4)} USD${values.batch ? ' (batch prices)' : ''}`,
+  ...extraHeader,
   '',
 ];
 for (const r of runs) {
@@ -457,7 +619,7 @@ for (const r of runs) {
 
 const dir = fileURLToPath(new URL('../../eval-results/', import.meta.url));
 await mkdir(dir, { recursive: true });
-const file = `${dir}${new Date().toISOString().replace(/[:.]/g, '-')}-${chosen.feature.name}-${provider.model}.md`;
+const file = `${dir}${new Date().toISOString().replace(/[:.]/g, '-')}-${chosen.feature.name}${values.batch ? '-batch' : ''}-${provider.model}.md`;
 await writeFile(file, `${report.join('\n')}\n`);
 const noAnswer = runs.filter((r) => !r.checks).length;
 console.log(

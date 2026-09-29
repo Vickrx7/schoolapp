@@ -2838,9 +2838,42 @@
     }
   },
   "libraryBulk": {
-    "tab": "Brouillons du conseil (IA) ({count})"
+    "tab": "Brouillons du conseil ({count})",
+    "intro": "Les ressources du conseil qui attendent d’être relues : celles créées par l’IA, lot par lot, puis les autres. Elles restent privées jusqu’à ce qu’une personne désignée les approuve.",
+    "empty": "Aucun brouillon du conseil pour l’instant.",
+    "runSummary": "Lot du {date} : {created, plural, one {# créée} other {# créées}} · {similar, plural, one {# titre semblable} other {# titres semblables}} · {failed, plural, one {# échec} other {# échecs}} · {spent} $ US sur {max} $ US",
+    "runPending": "Lot du {date} : en cours",
+    "runStatus": {
+      "cancelled": "Lot annulé",
+      "failed": "Lot interrompu"
+    },
+    "drafts": "{count, plural, =0 {Aucun brouillon à réviser dans ce lot.} one {# brouillon à réviser} other {# brouillons à réviser}}",
+    "requested": "Proposée au conseil",
+    "similarTitle": "Titre semblable à une ressource existante",
+    "studentName": "Prénom d’élève possible",
+    "others": {
+      "title": "Autres brouillons du conseil",
+      "hint": "Par exemple, les ressources d’un ensemble importé qui n’étaient pas prêtes : complétez ce qui manque, puis approuvez-les."
+    },
+    "panel": {
+      "title": "Brouillon du conseil",
+      "hint": "Relisez toute la ressource (texte, questions, corrigé et versions par niveau) et modifiez-la au besoin. Vous pouvez ensuite l’approuver pour tout le conseil en une étape.",
+      "similarTitle": "Une ressource du conseil porte un titre semblable : vérifiez qu’il ne s’agit pas d’un doublon.",
+      "studentName": "Cette ressource contient peut-être le prénom d’un ou d’une élève du conseil : vérifiez-la et modifiez-la au besoin avant de l’approuver.",
+      "notReady": "Complétez d’abord ce qui manque dans la liste ci-dessus."
+    },
+    "approveBoardDraft": "Approuver pour le conseil",
+    "approveIntro": "La ressource sera marquée comme révisée, proposée au conseil, puis approuvée : tout le personnel du conseil pourra l’utiliser.",
+    "approveFaith": "Elle contient du contenu de foi : elle sera proposée au conseil et attendra la révision de son contenu de foi.",
+    "approved": "Ressource approuvée pour le conseil.",
+    "faithFirst": "Ressource proposée au conseil : la révision du contenu de foi vient d’abord.",
+    "deleteDraft": "Supprimer le brouillon",
+    "deleteConfirm": "Supprimer ce brouillon et toutes ses versions? C’est définitif.",
+    "deleted": "Brouillon supprimé."
   },
   "libraryPacks": {
-    "badge": "Ensemble : {title} {version}"
+    "badge": "Ensemble : {title} {version}",
+    "provenance": "Éditeur déclaré : {publisher} · importé le {date} · empreinte {hash}",
+    "provenanceWithoutFingerprint": "Éditeur déclaré : {publisher} · importé le {date}"
   }
 }

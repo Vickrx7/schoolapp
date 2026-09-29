@@ -955,6 +955,79 @@ export type Database = {
           },
         ];
       };
+      content_pack_import_items: {
+        Row: {
+          import_id: string;
+          key: string;
+          item: Json;
+          faith_suggested: boolean;
+        };
+        Insert: {
+          import_id: string;
+          key: string;
+          item: Json;
+          faith_suggested?: boolean;
+        };
+        Update: {
+          import_id?: string;
+          key?: string;
+          item?: Json;
+          faith_suggested?: boolean;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'content_pack_import_items_import_id_fkey';
+            columns: ['import_id'];
+            isOneToOne: false;
+            referencedRelation: 'content_pack_imports';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      content_pack_imports: {
+        Row: {
+          id: string;
+          board_id: string;
+          slug: string;
+          version: string;
+          header: Json;
+          file_sha256: string;
+          status: string;
+          created_at: string;
+          applied_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          board_id: string;
+          slug: string;
+          version: string;
+          header: Json;
+          file_sha256: string;
+          status?: string;
+          created_at?: string;
+          applied_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          board_id?: string;
+          slug?: string;
+          version?: string;
+          header?: Json;
+          file_sha256?: string;
+          status?: string;
+          created_at?: string;
+          applied_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'content_pack_imports_board_id_fkey';
+            columns: ['board_id'];
+            isOneToOne: false;
+            referencedRelation: 'boards';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       content_packs: {
         Row: {
           id: string;
@@ -966,6 +1039,12 @@ export type Database = {
           manifest: Json;
           imported_at: string;
           imported_by: string | null;
+          format_version: number;
+          file_sha256: string | null;
+          licence: string | null;
+          item_count: number;
+          approved_by: string | null;
+          report: Json | null;
         };
         Insert: {
           id?: string;
@@ -977,6 +1056,12 @@ export type Database = {
           manifest?: Json;
           imported_at?: string;
           imported_by?: string | null;
+          format_version?: number;
+          file_sha256?: string | null;
+          licence?: string | null;
+          item_count?: number;
+          approved_by?: string | null;
+          report?: Json | null;
         };
         Update: {
           id?: string;
@@ -988,8 +1073,21 @@ export type Database = {
           manifest?: Json;
           imported_at?: string;
           imported_by?: string | null;
+          format_version?: number;
+          file_sha256?: string | null;
+          licence?: string | null;
+          item_count?: number;
+          approved_by?: string | null;
+          report?: Json | null;
         };
         Relationships: [
+          {
+            foreignKeyName: 'content_packs_approved_by_fkey';
+            columns: ['approved_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
           {
             foreignKeyName: 'content_packs_board_id_fkey';
             columns: ['board_id'];
@@ -1283,6 +1381,166 @@ export type Database = {
           },
         ];
       };
+      library_bulk_requests: {
+        Row: {
+          id: string;
+          run_id: string;
+          expectation_id: string | null;
+          item_type: Database['public']['Enums']['library_item_type'];
+          input: Json;
+          status: string;
+          reason: string | null;
+          worst_case_usd: number | null;
+          cost_usd: number;
+          sent_sha256: string | null;
+          sent_text: string | null;
+          problems: string[];
+          item_id: string | null;
+          ai_generation_id: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          run_id: string;
+          expectation_id?: string | null;
+          item_type: Database['public']['Enums']['library_item_type'];
+          input: Json;
+          status?: string;
+          reason?: string | null;
+          worst_case_usd?: number | null;
+          cost_usd?: number;
+          sent_sha256?: string | null;
+          sent_text?: string | null;
+          problems?: string[];
+          item_id?: string | null;
+          ai_generation_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          run_id?: string;
+          expectation_id?: string | null;
+          item_type?: Database['public']['Enums']['library_item_type'];
+          input?: Json;
+          status?: string;
+          reason?: string | null;
+          worst_case_usd?: number | null;
+          cost_usd?: number;
+          sent_sha256?: string | null;
+          sent_text?: string | null;
+          problems?: string[];
+          item_id?: string | null;
+          ai_generation_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'library_bulk_requests_ai_generation_id_fkey';
+            columns: ['ai_generation_id'];
+            isOneToOne: false;
+            referencedRelation: 'ai_generations';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'library_bulk_requests_expectation_id_fkey';
+            columns: ['expectation_id'];
+            isOneToOne: false;
+            referencedRelation: 'curriculum_expectations';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'library_bulk_requests_item_id_fkey';
+            columns: ['item_id'];
+            isOneToOne: false;
+            referencedRelation: 'library_items';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'library_bulk_requests_run_id_fkey';
+            columns: ['run_id'];
+            isOneToOne: false;
+            referencedRelation: 'library_bulk_runs';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      library_bulk_runs: {
+        Row: {
+          id: string;
+          board_id: string;
+          status: string;
+          params: Json;
+          note: string | null;
+          max_cost_usd: number;
+          worst_case_usd: number | null;
+          spent_usd: number;
+          request_count: number;
+          batch_id: string | null;
+          submit_started_at: string | null;
+          cancel_requested_at: string | null;
+          cancel_sent_at: string | null;
+          report: Json | null;
+          error_code: string | null;
+          created_at: string;
+          started_at: string | null;
+          finished_at: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          board_id: string;
+          status?: string;
+          params: Json;
+          note?: string | null;
+          max_cost_usd: number;
+          worst_case_usd?: number | null;
+          spent_usd?: number;
+          request_count?: number;
+          batch_id?: string | null;
+          submit_started_at?: string | null;
+          cancel_requested_at?: string | null;
+          cancel_sent_at?: string | null;
+          report?: Json | null;
+          error_code?: string | null;
+          created_at?: string;
+          started_at?: string | null;
+          finished_at?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          board_id?: string;
+          status?: string;
+          params?: Json;
+          note?: string | null;
+          max_cost_usd?: number;
+          worst_case_usd?: number | null;
+          spent_usd?: number;
+          request_count?: number;
+          batch_id?: string | null;
+          submit_started_at?: string | null;
+          cancel_requested_at?: string | null;
+          cancel_sent_at?: string | null;
+          report?: Json | null;
+          error_code?: string | null;
+          created_at?: string;
+          started_at?: string | null;
+          finished_at?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'library_bulk_runs_board_id_fkey';
+            columns: ['board_id'];
+            isOneToOne: false;
+            referencedRelation: 'boards';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       library_item_answer_keys: {
         Row: {
           version_id: string;
@@ -1534,6 +1792,11 @@ export type Database = {
           share_cap: Database['public']['Enums']['share_scope'] | null;
           share_cap_school_id: string | null;
           no_derivatives: boolean;
+          bulk_run_id: string | null;
+          pack_slug: string | null;
+          pack_item_key: string | null;
+          pack_content_hash: string | null;
+          pack_revision: number | null;
         };
         Insert: {
           id?: string;
@@ -1585,6 +1848,11 @@ export type Database = {
           share_cap?: Database['public']['Enums']['share_scope'] | null;
           share_cap_school_id?: string | null;
           no_derivatives?: boolean;
+          bulk_run_id?: string | null;
+          pack_slug?: string | null;
+          pack_item_key?: string | null;
+          pack_content_hash?: string | null;
+          pack_revision?: number | null;
         };
         Update: {
           id?: string;
@@ -1636,6 +1904,11 @@ export type Database = {
           share_cap?: Database['public']['Enums']['share_scope'] | null;
           share_cap_school_id?: string | null;
           no_derivatives?: boolean;
+          bulk_run_id?: string | null;
+          pack_slug?: string | null;
+          pack_item_key?: string | null;
+          pack_content_hash?: string | null;
+          pack_revision?: number | null;
         };
         Relationships: [
           {
@@ -1664,6 +1937,13 @@ export type Database = {
             columns: ['board_id'];
             isOneToOne: false;
             referencedRelation: 'boards';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'library_items_bulk_run_id_fkey';
+            columns: ['bulk_run_id'];
+            isOneToOne: false;
+            referencedRelation: 'library_bulk_runs';
             referencedColumns: ['id'];
           },
           {
@@ -3140,6 +3420,48 @@ export type Database = {
         Args: { p_report_id: string; p_decisions: Json; p_expected_updated_at?: string };
         Returns: undefined;
       };
+      content_pack_apply: {
+        Args: { p_import_id: string; p_options: Json };
+        Returns: Json;
+      };
+      content_pack_discard: {
+        Args: { p_import_id: string };
+        Returns: undefined;
+      };
+      content_pack_export_items: {
+        Args: { p_board_id: string; p_filters: Json; p_after: string; p_limit: number };
+        Returns: Json;
+      };
+      content_pack_list: {
+        Args: { p_board_id: string };
+        Returns: Json;
+      };
+      content_pack_people: {
+        Args: { p_board_id: string };
+        Returns: Json;
+      };
+      content_pack_preview: {
+        Args: { p_import_id: string; p_options: Json };
+        Returns: Json;
+      };
+      content_pack_record_export: {
+        Args: {
+          p_board_id: string;
+          p_slug: string;
+          p_version: string;
+          p_item_count: number;
+          p_file_sha256: string;
+        };
+        Returns: undefined;
+      };
+      content_pack_stage: {
+        Args: { p_board_id: string; p_header: Json; p_file_sha256: string };
+        Returns: string;
+      };
+      content_pack_stage_items: {
+        Args: { p_import_id: string; p_items: Json; p_faith_keys?: string[] };
+        Returns: number;
+      };
       create_class: {
         Args: {
           p_school_id: string;
@@ -3189,8 +3511,24 @@ export type Database = {
         Args: { p_plan_id: string; p_code_mac: string };
         Returns: { code_id: string; valid_from: string; expires_at: string }[];
       };
+      library_approve_board_draft: {
+        Args: { p_item_id: string; p_expected_revision: number; p_originality_confirmed: boolean };
+        Returns: string;
+      };
       library_archive: {
         Args: { p_item_id: string };
+        Returns: undefined;
+      };
+      library_bulk_cancel: {
+        Args: { p_run_id: string };
+        Returns: undefined;
+      };
+      library_bulk_plan: {
+        Args: { p_board_id: string; p_params: Json; p_max_cost_usd: number; p_note: string };
+        Returns: Json;
+      };
+      library_bulk_start: {
+        Args: { p_run_id: string };
         Returns: undefined;
       };
       library_cancel_request: {

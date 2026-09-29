@@ -25,6 +25,9 @@ function monthIn(timeZone: string, iso: string): string {
   return `${parts.find((p) => p.type === 'year')?.value}-${parts.find((p) => p.type === 'month')?.value}`;
 }
 
+/** Bulk generation's usage (D-095): the board's, outside school budgets. */
+export const BULK_USAGE_LABEL = 'Génération en lot (conseil) / bulk generation (board)';
+
 export const aiCommands: Record<string, Command> = {
   async 'set-ai-budget'(ctx) {
     const { school } = await schoolByPath(ctx, need(ctx, 'school'));
@@ -136,7 +139,19 @@ export const aiCommands: Record<string, Command> = {
         costUsd: mine.reduce((n, r) => n + Number(r.estimated_cost_usd), 0),
       };
     });
-    const total = lines.reduce((n, l) => n + l.costUsd, 0);
+    // Bulk generation (D-095) belongs to the board, not to a school: outside every school's
+    // budget, shown on its own line (in the board's first school's time zone).
+    const boardZone = schools?.[0]?.timezone ?? 'America/Toronto';
+    const bulk = rows.filter(
+      (r) => r.school_id === null && monthIn(boardZone, r.created_at) === month,
+    );
+    const bulkLine = {
+      requests: bulk.length,
+      inputTokens: bulk.reduce((n, r) => n + r.input_tokens, 0),
+      outputTokens: bulk.reduce((n, r) => n + r.output_tokens, 0),
+      costUsd: bulk.reduce((n, r) => n + Number(r.estimated_cost_usd), 0),
+    };
+    const total = lines.reduce((n, l) => n + l.costUsd, 0) + bulkLine.costUsd;
     if (ctx.values.csv) {
       return [
         'month,board,school,ai_enabled,requests,input_tokens,output_tokens,cost_usd',
@@ -154,6 +169,22 @@ export const aiCommands: Record<string, Command> = {
             .map(csvCell)
             .join(','),
         ),
+        ...(bulkLine.requests
+          ? [
+              [
+                month,
+                board.name,
+                BULK_USAGE_LABEL,
+                '',
+                bulkLine.requests,
+                bulkLine.inputTokens,
+                bulkLine.outputTokens,
+                bulkLine.costUsd.toFixed(4),
+              ]
+                .map(csvCell)
+                .join(','),
+            ]
+          : []),
       ].join('\n');
     }
     return [
@@ -162,6 +193,9 @@ export const aiCommands: Record<string, Command> = {
         (l) =>
           `  ${l.school}: ${l.requests} requests, ${money(l.costUsd)}${l.aiEnabled ? '' : ' (AI off)'}`,
       ),
+      ...(bulkLine.requests
+        ? [`  ${BULK_USAGE_LABEL}: ${bulkLine.requests} requests, ${money(bulkLine.costUsd)}`]
+        : []),
       `  Total: ${money(total)}`,
     ].join('\n');
   },

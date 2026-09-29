@@ -16,7 +16,17 @@ const PHASE_5 = [
 ];
 
 /** Phase 5 commands whose slice has landed (each tested in its own module). */
-const AVAILABLE = new Set(['coverage']);
+const AVAILABLE = new Set([
+  'coverage',
+  'bulk-plan',
+  'bulk-start',
+  'bulk-status',
+  'bulk-cancel',
+  'bulk-report',
+  'export-pack',
+  'import-pack',
+  'list-packs',
+]);
 
 describe('admin commands', () => {
   it('lists the Phase 1–4 commands and the Phase 5 ones', () => {

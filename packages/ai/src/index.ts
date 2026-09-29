@@ -3,6 +3,7 @@ export * from './privacy';
 export * from './pricing';
 export * from './providers';
 export * from './run';
+export * from './batch';
 export * from './prompts';
 export * from './features/differentiate';
 export * from './features/sub-plan';

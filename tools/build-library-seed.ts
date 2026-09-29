@@ -5,7 +5,8 @@
  *   `supabase/seeds/10_curriculum_demo.sql` (`curriculumToSql`);
  * - `content/library/demo` (pack.json plus items/<slug>.json) becomes
  *   `supabase/seeds/20_library_demo.sql`, one `DO` block that finds every reference by code and
- *   stops on anything missing (`packToSql`). Its items link to attentes of the curriculum sample.
+ *   stops on anything missing (`packToSql`). Its items link to attentes of the curriculum sample,
+ *   and record the hash a v1 pack of the folder gives them (`seed-pack-files.ts`, D-100).
  *
  * Both `supabase db reset` (config.toml `sql_paths`) and `tools/lite-stack/stack.sh reset` load
  * `supabase/seed.sql`, then `supabase/seeds/*.sql` in name order: the curriculum sample comes
@@ -23,8 +24,8 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { curriculumToSql } from '../packages/content/src/curriculum-sql.ts';
-import { SEED_ITEMS_DIR } from '../packages/content/src/seed-pack.ts';
 import { packToSql } from '../packages/content/src/seed-sql.ts';
+import { readSeedPackFolder, seedPackOptions } from './seed-pack-files.ts';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -67,15 +68,8 @@ function buildCurriculum(dir: string): string {
 
 /** The pack's SQL, from pack.json and every item file of the pack. */
 function buildPack(dir: string): string {
-  const packDir = path.join(root, dir);
-  const itemsDir = path.join(packDir, SEED_ITEMS_DIR);
-  const itemFiles = readdirSync(itemsDir)
-    .filter((file) => file.endsWith('.json'))
-    .sort();
-  return packToSql(
-    readJson(path.join(packDir, 'pack.json')),
-    itemFiles.map((file) => readJson(path.join(itemsDir, file))),
-  );
+  const { pack, items } = readSeedPackFolder(root, dir);
+  return packToSql(pack, items, seedPackOptions(root));
 }
 
 /** Where two texts first differ, for when `diff` is not available. */

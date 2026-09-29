@@ -113,6 +113,32 @@ export async function loadKnownPeople(
   return rows;
 }
 
+/**
+ * Everyone of a board (bulk generation, DECISIONS D-098): every student of its schools, and every
+ * person with a role at the board or at one of its schools. Bulk requests belong to no school, so
+ * their de-identification and last check use the whole board: a name that anyone of the board
+ * has never leaves, and is never put back from a marker it did not produce.
+ */
+export async function loadBoardPeople(db: Db, boardId: string): Promise<KnownPerson[]> {
+  const { rows } = await db.query<{ name: string; kind: 'student' | 'staff' }>(
+    `select s.first_name as name, 'student' as kind
+       from public.students s
+       join public.classes c on c.id = s.class_id
+       join public.schools sc on sc.id = c.school_id
+      where sc.board_id = $1
+     union
+     select u.display_name, 'staff'
+       from public.users u
+       join public.user_roles ur on ur.user_id = u.id
+      where ur.board_id = $1
+         or ur.school_id in (select sc.id from public.schools sc where sc.board_id = $1)
+     -- A stable order; students first, so a name that is both is marked as a student.
+     order by kind desc, name`,
+    [boardId],
+  );
+  return rows;
+}
+
 async function finishJob(
   pool: Db,
   jobId: string,

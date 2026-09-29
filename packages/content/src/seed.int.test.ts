@@ -23,6 +23,7 @@ import {
   seedPackSchema,
   type SeedItem,
 } from './seed-pack';
+import { packItemFromSeed, type CatholicReferenceType } from './pack-format';
 import { seedItemId, seedPackId } from './seed-sql';
 
 const connectionString = process.env.DATABASE_URL;
@@ -312,6 +313,61 @@ describe('the demo library seed (H3 2)', () => {
     );
     // The usage trigger counted the seed's link: one unit.
     expect(usage.rows[0]).toEqual({ usage_count: 1, units: 1 });
+  });
+
+  it('records each item’s pack slug, key, content hash and revision (D-100)', async () => {
+    // The facts a v1 pack needs, as the database has them: each subject's curriculum version
+    // (of the attentes the items link to) and each Catholic reference's type.
+    const versions = await pool.query<{ code: string; curriculum_version: string }>(
+      `select distinct su.code, ce.curriculum_version
+       from public.library_items i
+       join public.library_item_expectations le on le.item_id = i.id
+       join public.curriculum_expectations ce on ce.id = le.expectation_id
+       join public.subjects su on su.id = ce.subject_id
+       where i.content_pack_id = $1`,
+      [PACK_ID],
+    );
+    const curriculumVersions = Object.fromEntries(
+      versions.rows.map((r) => [r.code, r.curriculum_version]),
+    );
+    expect(Object.keys(curriculumVersions)).toHaveLength(versions.rows.length);
+    const references = await pool.query<{ title: string; type: CatholicReferenceType }>(
+      `select title, type::text as type from public.catholic_references
+       where board_id = $1 or board_id is null`,
+      [BOARD],
+    );
+    const referenceTypes = Object.fromEntries(references.rows.map((r) => [r.title, r.type]));
+
+    const { rows } = await pool.query<{
+      id: string;
+      pack_slug: string | null;
+      pack_item_key: string | null;
+      pack_content_hash: string | null;
+      pack_revision: number | null;
+      content_revision: number;
+    }>(
+      `select id, pack_slug, pack_item_key, pack_content_hash, pack_revision, content_revision
+       from public.library_items where content_pack_id = $1`,
+      [PACK_ID],
+    );
+    const byId = new Map(rows.map((r) => [r.id, r]));
+    expect(byId.size).toBe(items.length);
+    for (const item of items) {
+      const row = byId.get(idOf(item.slug));
+      expect(row, item.slug).toEqual({
+        id: idOf(item.slug),
+        pack_slug: pack.slug,
+        pack_item_key: item.slug,
+        // The hash `pnpm library:pack` gives the item: importing the pack finds it unchanged.
+        pack_content_hash: packItemFromSeed(item, { curriculumVersions, referenceTypes }).hash,
+        pack_revision: 1,
+        content_revision: 1,
+      });
+    }
+    const packRow = await pool.query('select item_count from public.content_packs where id = $1', [
+      PACK_ID,
+    ]);
+    expect(packRow.rows).toEqual([{ item_count: items.length }]);
   });
 
   it('designates Nathalie Roy as the board’s reviewer for content and faith', async () => {

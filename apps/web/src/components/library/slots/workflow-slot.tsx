@@ -3,8 +3,10 @@ import { getTranslations } from 'next-intl/server';
 import type { LibraryItemView } from '@/server/library/view-model';
 import { loadItemKeys } from '@/server/queries/library';
 import { loadBoardLevelIds } from '@/server/queries/library-authoring';
+import { loadBoardDraftFlags } from '@/server/queries/library-bulk';
 import { loadLineage } from '@/server/queries/library-growth';
 import { getSession, librarySchools } from '@/server/session';
+import { BoardDraftActions } from '../bulk/board-draft-actions';
 import { lineageText } from '../growth/lineage';
 import { ReadinessChecklist } from '../readiness-checklist';
 import { ReviewPanel } from '../review-panel';
@@ -25,7 +27,15 @@ export async function WorkflowSlot({ item }: { item: LibraryItemView }) {
   const reviewer = item.reviewerKinds.length > 0;
   if (!keeper && !reviewer) return null;
 
-  const [t, tGrowth, keys, boardLevelIds, lineage] = await Promise.all([
+  // The board's own draft, not yet proposed (bulk generation D-095, or a content pack's resource
+  // that was not ready, D-100): « Approuver pour le conseil » in one step and « Supprimer le
+  // brouillon », for its content reviewers.
+  const boardDraft =
+    item.boardOwn &&
+    (item.status === 'draft' ||
+      item.status === 'rejected' ||
+      (item.status === 'teacher_reviewed' && !item.requested));
+  const [t, tGrowth, keys, boardLevelIds, lineage, draftFlags] = await Promise.all([
     getTranslations('libraryEdit.workflow'),
     getTranslations('libraryGrowth'),
     loadItemKeys(
@@ -37,6 +47,7 @@ export async function WorkflowSlot({ item }: { item: LibraryItemView }) {
     item.mine && item.status === 'teacher_reviewed' && item.adaptation.isAdaptation
       ? loadLineage(item.id)
       : Promise.resolve(null),
+    boardDraft ? loadBoardDraftFlags(item.id) : Promise.resolve(null),
   ]);
   const input = {
     item: {
@@ -122,6 +133,24 @@ export async function WorkflowSlot({ item }: { item: LibraryItemView }) {
             readyForApproval: forApproval.ready,
           }}
           checklist={<ReadinessChecklist type={item.type} readiness={forApproval} forApproval />}
+          boardDraft={
+            boardDraft ? (
+              <BoardDraftActions
+                state={{
+                  itemId: item.id,
+                  revision: item.contentRevision,
+                  status: item.status as 'draft' | 'rejected' | 'teacher_reviewed',
+                  readyForApproval: forApproval.ready,
+                  faithPending: item.faith.requiresReview && !item.faith.reviewed,
+                  similarTitle: draftFlags?.similarTitle ?? false,
+                  studentName: draftFlags?.studentName ?? false,
+                }}
+                checklist={
+                  <ReadinessChecklist type={item.type} readiness={forApproval} forApproval />
+                }
+              />
+            ) : null
+          }
         />
       ) : null}
     </div>

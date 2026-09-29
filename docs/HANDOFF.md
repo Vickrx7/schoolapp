@@ -88,10 +88,11 @@ Ardoise). No availability or trademark check has been done yet.
 | `219d5bb` | Library expansion: 49 more demo resources (78) and the curriculum sample, « À vérifier » |
 | `a01e06d` | Phase 5 foundation: D-082 to D-101, settings, messages, empty hooks, admin, worker tasks |
 | `d76f084` | Phase 5: class-mode database, « Présenter à la classe », « Adapter », « Votre avis »     |
-| (latest)  | Phase 5: quizzes on class devices (`/jouer`) and « Couverture du curriculum »            |
+| `f7a0ce6` | Phase 5: quizzes on class devices (`/jouer`) and « Couverture du curriculum »            |
+| (latest)  | Phase 5: bulk generation of board drafts and content packs (admin CLI)                   |
 
-**Verified (locally, from an empty database, and in CI on each pushed commit):** 932 unit tests
-(none skipped), 1184 pgTAP tests, 61 integration tests, 89 Playwright tests (desktop, phone and
+**Verified (locally, from an empty database, and in CI on each pushed commit):** 999 unit tests
+(none skipped), 1322 pgTAP tests, 75 integration tests, 92 Playwright tests (desktop, phone and
 tablet, axe on every Phase 3 and Phase 4 page and the new Phase 5 pages), lint, typecheck, format, generated DB types up to date,
 the demo curriculum and library seeds up to date (`pnpm library:seed:check`), web build.
 
@@ -134,8 +135,8 @@ tests) and its foundation: decisions D-082 to D-101; the settings `CLASS_PORTAL_
 `CLASS_PORTAL_HMAC_KEY` and `BULK_MAX_RUN_USD`; the error messages and one anchor key per new
 message namespace; empty slots wired into the library pages (`components/library/slots/`); the
 admin CLI split into `apps/admin/src/commands/`, where the Phase 5 commands answer « pas encore
-disponible »; the worker tasks `class_mode_maintenance` (now filled), `library_bulk_tick` (also
-woken by the `library_bulk_kick` handler) and `library_maintenance` (both still empty); a `tablet`
+disponible »; the worker tasks `class_mode_maintenance`, `library_bulk_tick` (also woken by the
+`library_bulk_kick` handler) and `library_maintenance` (all filled since); a `tablet`
 Playwright project for class devices; and `findPersonalInfo` moved to `@lynx/ai/privacy`. Built
 since (waves 1 and 2):
 
@@ -162,8 +163,21 @@ since (waves 1 and 2):
   pgTAP 23, `pnpm admin coverage [--csv]`): per grade and subject, each attente with the board's
   approved resources, « en révision » for content reviewers, and an overview table.
 
-Still to build: bulk generation, content packs, then the Phase 5 hardening and
-`docs/phase-5.md`. Phase 4 left its hooks (D-081).
+- **Bulk generation** (`20261101090300_library_bulk.sql`, pgTAP 24, `pnpm admin bulk-plan`,
+  `bulk-start`, `bulk-status`, `bulk-cancel`, `bulk-report`): the operator plans a run for one
+  board (attentes × types, leaving out what the board already has) under a hard cost cap; the
+  worker sends it as one Message Batches API batch (fake provider only here) and turns each answer
+  into a private board draft. The board's content reviewers find them in « Brouillons du conseil »
+  (« Approbation des ressources »), grouped by run, with « Titre semblable » and « Prénom d'élève
+  possible » flags, and « Approuver pour le conseil » in one step. `pnpm ai:eval --batch`.
+- **Content packs** (`20261101090400_content_packs.sql`, pgTAP 25, `pnpm admin export-pack`,
+  `import-pack`, `list-packs`, `pnpm library:pack`; `docs/content-packs.md` for a board's IT): a
+  board's approved resources as one JSON file (never a name of the board's people), staged,
+  previewed (a real dry run) and applied in one transaction; imported resources wait for the
+  board's reviewers, those not ready under « Autres brouillons du conseil ». Local edits win over
+  later versions.
+
+Still to build: the Phase 5 hardening and `docs/phase-5.md`. Phase 4 left its hooks (D-081).
 
 **Other deliverables:**
 

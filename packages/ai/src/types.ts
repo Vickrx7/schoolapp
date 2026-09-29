@@ -40,6 +40,59 @@ export interface AiProvider {
   readonly name: string;
   readonly model: string;
   generate<T>(request: ProviderRequest<T>): Promise<ProviderResult<T>>;
+  /**
+   * The Message Batches API (bulk generation, DECISIONS D-098), when the provider has it. Its
+   * requests are prepared and their answers checked by the same code as `generate`'s
+   * (`prepareCall` and `checkOutput` in run.ts).
+   */
+  readonly batch?: AiBatchProvider;
+}
+
+/** One request of a batch, as `prepareCall` built it (already de-identified and checked). */
+export interface BatchItem {
+  /** The request's id (`library_bulk_requests.id`, a uuid): nothing else identifies it. */
+  customId: string;
+  system: string;
+  user: string;
+  schema: z.ZodType<unknown>;
+  maxTokens: number;
+  /** Deterministic answer for the fake provider (tests, demos, CI). */
+  fake: () => unknown;
+}
+
+/** A batch's processing state, as the provider reports it. */
+export interface BatchStatus {
+  state: 'in_progress' | 'canceling' | 'ended';
+}
+
+/**
+ * One answer of an ended batch. On failure `output` is null and `stopReason` says why: the
+ * reasons of a streamed call (`refusal`, `max_tokens`, `invalid_json`, `invalid_schema`…), or
+ * `batch_invalid_request`, `batch_server_error`, `batch_expired` and `batch_canceled`.
+ */
+export interface BatchItemResult extends ProviderResult<unknown> {
+  customId: string;
+}
+
+/**
+ * Bulk requests through the provider's batch API (D-095 to D-098): one batch per bulk run,
+ * submitted once and never retried, read when it has ended, then deleted from the provider.
+ */
+export interface AiBatchProvider {
+  /** Input tokens of one request exactly as `submit` would send it (free to ask). */
+  countInputTokens(item: BatchItem): Promise<number>;
+  /** Sends every item as one batch. Never retried: a failure may still have created it. */
+  submit(items: readonly BatchItem[]): Promise<{ batchId: string }>;
+  status(batchId: string): Promise<BatchStatus>;
+  /**
+   * The answers of an ended batch, for the requests in `pending` (by `customId`; other ids are
+   * ignored), each checked against its item's schema. In any order.
+   */
+  results(batchId: string, pending: ReadonlyMap<string, BatchItem>): AsyncIterable<BatchItemResult>;
+  /** Asks the provider to stop; requests already answered are still billed. A 404 is ignored. */
+  cancel(batchId: string): Promise<void>;
+  /** Deletes the batch and its results at the provider (only once it has ended). A 404 is ignored. */
+  remove(batchId: string): Promise<void>;
 }
 
 /** Error codes shown to staff; translated in the web app under `ai.errors`. */

@@ -7,9 +7,11 @@ import {
   boardDraftsQueue,
   ReviewBoardDraftsSlot,
 } from '@/components/library/slots/review-board-drafts-slot';
+import { PackBadge } from '@/components/library/packs/pack-badge';
 import { EmptyState, PageHeader } from '@/components/ui/page';
 import { cn } from '@/lib/utils';
 import { loadReviewQueues, type ReviewQueueRow } from '@/server/queries/library-authoring';
+import { loadPackLabels } from '@/server/queries/library-packs';
 import { loadLibrarySearchOptions } from '@/server/queries/library-search';
 import { requireSession } from '@/server/session';
 
@@ -24,9 +26,9 @@ type Queue = 'content' | 'faith' | 'drafts';
  * « Approbation des ressources » (DECISIONS D-064): for the board's designated reviewers, the
  * resources proposed to the board (« À approuver ») and, for faith reviewers, those whose faith
  * content waits for its review (« Contenu de foi »), oldest request first. Each row opens the
- * resource, where the « Décision » panel is. Board drafts from bulk generation have their own
- * tab, « Brouillons du conseil (IA) » (Phase 5, D-095; the board drafts slot). Not found for
- * everyone else.
+ * resource, where the « Décision » panel is. The board's own drafts (from bulk generation, or
+ * a content pack's resources that were not ready) have their own tab, « Brouillons du conseil »
+ * (Phase 5, D-095, D-100; the board drafts slot). Not found for everyone else.
  */
 export default async function ReviewQueuePage({
   searchParams,
@@ -55,6 +57,8 @@ export default async function ReviewQueuePage({
   const queue: Queue = available.find((q) => q === wanted) ?? available[0] ?? 'content';
   const rows: ReviewQueueRow[] =
     (queue === 'faith' ? queues.faith : queue === 'content' ? queues.content : null) ?? [];
+  // Resources from an imported content pack carry its name (Phase 5, D-100).
+  const packs = await loadPackLabels(rows.map((row) => row.itemId));
   const queueLabel = (q: Queue) =>
     q === 'drafts'
       ? tb('tab', { count: drafts?.count ?? 0 })
@@ -130,6 +134,7 @@ export default async function ReviewQueuePage({
                       </Badge>
                     ) : null}
                     {row.safety ? <Badge tone="warning">{t('safety')}</Badge> : null}
+                    <PackBadge pack={packs.get(row.itemId)} />
                   </p>
                   <h3 className="text-base font-semibold text-slate-900">
                     <Link

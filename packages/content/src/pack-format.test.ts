@@ -130,6 +130,20 @@ describe('content pack format', () => {
     ).toBe(pack.checksum);
   });
 
+  it('C5b. the demo seed records the hash `pnpm library:pack` gives each item (D-100)', () => {
+    // So importing the demo pack into a seeded board finds every item unchanged.
+    const seed = readText(new URL('supabase/seeds/20_library_demo.sql', repo));
+    const recorded = new Map(
+      [...seed.matchAll(/'demo', '([a-z0-9-]+)', '([0-9a-f]{64})', 1\);/g)].map((m) => [
+        m[1]!,
+        m[2]!,
+      ]),
+    );
+    const pack = demo();
+    expect(recorded.size).toBe(pack.items.length);
+    for (const item of pack.items) expect(recorded.get(item.key), item.key).toBe(item.hash);
+  });
+
   it('C4b. the board default levels are those every board gets', () => {
     const migration = readText(
       new URL('supabase/migrations/20260928160900_reference_data.sql', repo),

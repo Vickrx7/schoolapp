@@ -1250,7 +1250,7 @@ API (Assumption on who runs it).** Only the operator launches it (`pnpm admin bu
 `bulk-start`, `bulk-status`, `bulk-cancel`, `bulk-report`), for one board at a time and with at most
 one active (planned or running) run per board. Board admins get no screen: they hold no library
 role, and bulk spending is outside school budgets. Content reviewers see the drafts grouped by run
-in « Brouillons du conseil (IA) », with « Approuver pour le conseil » in one step. It uses the same
+in « Brouillons du conseil », with « Approuver pour le conseil » in one step. It uses the same
 feature `library_item`, prompt version, input schema, `normalize`, `validate` and `max_tokens`
 (64,000, D-045) as on-demand generation (D-072), with inputs built in SQL from ids; there is no
 teacher note: the note holds the operator's (at most 1,000 characters) and the titles of existing
@@ -1262,7 +1262,22 @@ submission). The results are board-owned drafts (`ai_generated`, `bulk_run_id`, 
 `ai_generations`) that reviewers review. Costs go to `ai_generations` with the batch id and the
 board, `school_id` and `user_id` null; `pnpm admin ai-usage` shows them as « Génération en lot
 (conseil) ». Each batch is deleted at the provider as soon as its results are read. Implements SPEC
-§9.3 (« Bulk ») and §10.
+§9.3 (« Bulk ») and §10. As built (slice S6, `20261101090300_library_bulk.sql`): `public.library_bulk_plan`,
+`library_bulk_start` and `library_bulk_cancel` are the service role's only (the CLI); the worker's
+steps are `app.library_bulk_mark_submitting`, `app.library_bulk_record_result` and
+`app.library_bulk_finish`. Each request is for its attente's own grade (`--grade` chooses which
+grades' attentes are targeted: one or two), and `--levels` defaults to `all`, since quizzes,
+worksheets, exit tickets and reading passages need every board level before approval. A plan with
+nothing to send is cancelled at once by the CLI. The CLI speaks English, like the rest of `pnpm
+admin`; `ai-usage` shows bulk costs on a line « Génération en lot (conseil) / bulk generation
+(board) ». « Approuver pour le conseil » is `public.library_approve_board_draft` (content reviewers,
+the board's own items not yet proposed): it runs Phase 4's `library_mark_reviewed`,
+`library_request_approval` and the decision (now `app.library_decide_as`, which `library_decide`
+calls; the audit says `via: board_draft`), and stops with `faith_review` for faith content. The item
+page shows it, with « Supprimer le brouillon », in the « Décision » panel of the board's drafts. The
+worker also flags an answer that holds a first name of a student of the board (`student_name`, a
+coincidence the reviewer checks before approving: characters take only names the request allowed);
+it is never text, only a code.
 
 **D-096 — A hard cost cap per run: one batch, sized to its worst case.** Each run has a required
 `max_cost_usd` (at most 1,000, checked in SQL); the worker refuses a run above `BULK_MAX_RUN_USD`
@@ -1278,7 +1293,12 @@ and no retries: running `bulk-plan` again plans only what is still missing. Real
 fifth of the worst case, so the CLI prints both (« pire cas » and « habituel »). _Why:_ SPEC §10 and
 §9.3 (per-run caps): a cap guaranteed by `max_tokens` and the price table, not an estimate, without
 a reservation engine. With Opus 5.5 batch prices a request's worst case is about $0.66, so a $25 cap
-sends about 37 requests.
+sends about 37 requests. As built (slice S6): `packages/ai/src/batch.ts` (`worstCaseUsd`, `countedInputTokens`,
+`fallbackInputTokens`, `fitWithinCap`, exact to the micro-dollar); tokens are counted only until the
+cap is reached (the rest are skipped anyway). `pnpm admin bulk-plan` prints an upper bound from the
+bytes of each request (the fallback), priced with the worker's settings (`AI_PROVIDER`, `AI_MODEL`,
+`AI_PRICE_*`, now also read by the CLI), and « usually » as 10 % to 30 % of the worst case that fits.
+A batch is created with the SDK's retries off, so a lost answer never creates a second one.
 
 **D-097 — Deduplication before and after generation.** At planning, an (attente, type) pair is
 `skipped/covered` when the board already has at least `--per-expectation` items (default 1, at
@@ -1288,7 +1308,11 @@ board, so two runs never claim the same pair. The prompt receives the titles of 
 board-visible items for that attente and type. After generation, a normalized title equal to that
 of a non-archived board-visible item of the same type keeps the draft (it was paid for) and flags
 it for the reviewer (« Titre semblable à une ressource existante »). Running the same `bulk-plan`
-later retries only what is still missing, because created drafts count as covered.
+later retries only what is still missing, because created drafts count as covered. As built
+(slice S6): the titles sent are those of the board's items of that type linked to the attente
+(approved first, then the most recent), cut to keep the note within 1,000 characters; « titre
+semblable » compares `app.library_norm_title` (lower case, no accents or punctuation) with the
+board's non-archived own or board-wide items of the same type, drafts of the same run included.
 
 **D-098 — The provider's batch extension shares the privacy checks (amends D-037 and D-041).**
 `AiProvider` gains an optional `batch` (`countInputTokens`, `submit`, `status`, `results`, `cancel`,
@@ -1306,7 +1330,13 @@ one; a mismatch (the people changed) fails that request (`redaction_changed`), s
 put back against different markers. Costs use the batch price (half). `ai_jobs_feature_check` and
 `request_ai_job` are unchanged: bulk requests live in `library_bulk_requests`, not `ai_jobs`, so
 school budgets and per-person limits do not apply (D-096 does). `library_bulk_requests.sent_text`
-keeps exactly what was sent for 30 days, then only its SHA-256.
+keeps exactly what was sent for 30 days, then only its SHA-256. As built (slice S6):
+`prepareCall` and `checkOutput` are in `packages/ai/src/run.ts`; `sentSha256` hashes the system
+prompt and the message; `sent_text` keeps the message (the system prompt is the versioned file).
+`loadBoardPeople` is in `apps/worker/src/ai.ts`. The fake provider's batches end at once, so a
+run completes in one tick in CI and demos; `pnpm ai:eval --feature library_item --batch --provider
+fake` runs the ten cases as one batch through the same code. An answer whose request cannot be
+prepared again (its input no longer valid) is also `redaction_changed`.
 
 **D-099 — Content pack format v1 and export scope (Assumption on the scope; uses the D-081 hook).**
 One UTF-8 JSON file (`@lynx/content` `pack-format.ts`): `{format: 'lynx-content-pack',
@@ -1327,7 +1357,21 @@ out and reported by key and word, and `--allow-names` lists words the operator c
 people (Marie, Joseph, Pierre…). Pack files contain answer keys, so they are confidential and never
 hosted publicly (`docs/content-packs.md`). Export and import are CLI-only: board-hosted installs
 have no Storage or upload screen yet, so the board's IT receives the file (download, USB key or
-e-mail) and runs the CLI. Implements SPEC §9.3 (« On-prem »).
+e-mail) and runs the CLI. Implements SPEC §9.3 (« On-prem »). As built (slice S7,
+`20261101090400_content_packs.sql`, `apps/admin/src/commands/packs.ts`): the database's
+`public.content_pack_export_items` (service role only, pages of 100) gives items by code; the CLI
+turns them into pack items (`packItemFromExport`, `assemblePack`), leaves out those the schema
+refuses (reported with their paths) and writes the file readable by its owner only. An item's key
+is its key in the pack when it is exported again under the same slug, otherwise its id, so two
+packs' keys never collide in one export. « Another publisher's pack » is decided by `--publisher`:
+items from the exporter's own packs (the demo board's seed pack for IP Lynx) are its own content.
+The name check (`findPeople`) reads every prose string of the item, its content and its keys, with
+the board's students and staff (staff names included, unlike the sharing check); a finding the
+operator lists in `--allow-names` is not one. `--grade` and `--subject` take lists. Each export is
+audited once written (`content_pack.exported`, with the file's SHA-256), as the operator's
+(`service`). `pnpm library:pack` builds the demo folder as a pack whose hashes are those
+`20_library_demo.sql` records (`tools/seed-pack-files.ts` gives both the curriculum versions and
+reference types). The screens say « Ensemble » for a pack, as Phase 4's item page did.
 
 **D-100 — Import is staged, previewed and applied in one transaction; it lands private in the
 board's approval queue, and local edits win (Assumption).** The CLI stages the file in chunks of 50
@@ -1352,7 +1396,23 @@ reported as `not_in_pack`. Importing a version already applied gives `LXP01`, a 
 The item shows « Éditeur déclaré : IP Lynx · importé le … · empreinte 3fa4c1d2e9b0 » (the first 12
 characters of the file's SHA-256). _Why:_ a checksum is not a signature and the publisher is
 self-declared, so nothing imported reaches teachers until a named reviewer approves it; signed packs
-come later.
+come later. As built (slice S7): the dry run is the import itself in a subtransaction that is rolled
+back (`content_pack_preview`), so its report is exact; the CLI discards the staged import after it.
+A created or updated item that is ready for approval (`app.library_assert_ready`) waits in the queue;
+one that is not (a level with no board level, an unknown attente…) stays a board draft, and the
+report says what is missing. Such drafts are listed under « Autres brouillons du conseil » in the
+reviewers' « Brouillons du conseil » tab (with the pack's badge), below the bulk runs' drafts
+(integration of round R4); the tab dropped « (IA) » from its name for that reason. An item a reviewer withdrew or sent back and nobody edited is replaced
+by the next version (it was not approved); archived items, approved items and the seed's teachers'
+items are never replaced (`changed_not_applied`). A pack item naming a Catholic reference is faith
+content too. The database recomputes the checksum over the staged items before applying (`LXP05`
+when staging was cut short). Approval uses `app.content_pack_approve_item`, the same checks, update,
+audit action and event as `library_decide`, audited as the operator's (`service`) with `via:
+'content_pack'`, the approver and the pack. The review queue shows « Ensemble : <titre> <version> »
+and « Détails » the declared publisher, the import date and the fingerprint (none for a seed pack).
+`list-packs` prints each pack's report (counts and the keys changed but not applied). Staged imports
+are deleted after a day by `content_pack_stage` and `app.content_pack_maintenance` (called by the
+daily `library_maintenance`).
 
 **D-101 — Events, audit and retention for Phase 5 (amends D-018 and D-079).** Events carry ids only:
 `library_bulk_run.started {runId}` and `library_bulk_run.cancel_requested {runId}` (the worker's
@@ -1373,7 +1433,13 @@ day; closed sessions without results 30 days; kept aggregates `classModeResultsR
 by default); bulk runs and requests a year (they hold no personal data), runs planned but never
 started a day, `sent_text` 30 days (its SHA-256 stays); provider batches deleted once read
 (otherwise at most 29 days at the provider); staged pack imports a day; opinions until the rater or
-the item is deleted.
+the item is deleted. As built (slice S6): bulk runs are also audited when planned
+(`library_bulk_run.planned {max_cost_usd, request_count, covered}`) and when they fail
+(`library_bulk_run.failed`, with the counts and `error_code`), as the operator (`service`) or the
+worker (`system`); `library_bulk_run.completed` is emitted however a run ends. The daily
+`app.library_maintenance()` also fails a run whose submission was never confirmed
+(`submitUnconfirmed`) and calls the packs' own clean-up (`app.content_pack_maintenance`) when it
+exists.
 
 ## Schema additions beyond SPEC section 8
 

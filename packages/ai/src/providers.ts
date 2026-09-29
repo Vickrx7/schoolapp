@@ -1,9 +1,14 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
+import type { z } from 'zod';
 import {
   AiProviderError,
+  emptyUsage,
+  type AiBatchProvider,
   type AiErrorCode,
   type AiProvider,
+  type BatchItem,
+  type BatchItemResult,
   type ProviderRequest,
   type ProviderResult,
   type TokenUsage,
@@ -96,25 +101,162 @@ export function createAnthropicProvider(options: AnthropicProviderOptions): AiPr
         requestId: stream.request_id ?? response.id,
         usage: toUsage(response.usage),
       };
-      const stopReason = response.stop_reason ?? 'unknown';
-      if (stopReason !== 'end_turn') return { ...base, output: null, stopReason };
+      return { ...base, ...parseMessage(response, request.schema) };
+    },
+    batch: createAnthropicBatch(client, options.model, supportsEffort ? options.effort : null),
+  };
+}
 
-      const text = response.content
-        .filter((b): b is Anthropic.TextBlock => b.type === 'text')
-        .map((b) => b.text)
-        .join('');
-      let json: unknown;
-      try {
-        json = JSON.parse(text);
-      } catch {
-        return { ...base, output: null, stopReason: 'invalid_json' };
+/**
+ * The answer of a finished message, checked against the schema: null with the reason when it was
+ * refused, cut off (`max_tokens`), not JSON (`invalid_json`) or not the schema's shape
+ * (`invalid_schema`). Shared by streamed calls and batch results.
+ */
+export function parseMessage<T>(
+  message: Anthropic.Message,
+  schema: z.ZodType<T>,
+): { output: T | null; stopReason: string } {
+  const stopReason = message.stop_reason ?? 'unknown';
+  if (stopReason !== 'end_turn') return { output: null, stopReason };
+  const text = message.content
+    .filter((b): b is Anthropic.TextBlock => b.type === 'text')
+    .map((b) => b.text)
+    .join('');
+  let json: unknown;
+  try {
+    json = JSON.parse(text);
+  } catch {
+    return { output: null, stopReason: 'invalid_json' };
+  }
+  const parsed = schema.safeParse(json);
+  return parsed.success
+    ? { output: parsed.data, stopReason }
+    : { output: null, stopReason: 'invalid_schema' };
+}
+
+/**
+ * The Message Batches API (DECISIONS D-095 to D-098): the same request as a streamed call (model,
+ * `max_tokens`, effort, the JSON schema of the output), with the system prompt marked for caching
+ * (best effort inside a batch: requests of one type share it). Every token costs half.
+ *
+ * A batch is created once: the SDK's automatic retries are off for `create`, since a retry after
+ * a lost answer would create (and bill) a second batch. Its other calls only read, cancel or
+ * delete, and are retried as usual.
+ */
+function createAnthropicBatch(
+  client: Anthropic,
+  model: string,
+  effort: Effort | null,
+): AiBatchProvider {
+  const params = (item: BatchItem): Anthropic.MessageCreateParamsNonStreaming => {
+    const { type, schema } = zodOutputFormat(item.schema);
+    return {
+      model,
+      max_tokens: item.maxTokens,
+      system: [{ type: 'text', text: item.system, cache_control: { type: 'ephemeral' } }],
+      messages: [{ role: 'user', content: item.user }],
+      output_config: { ...(effort ? { effort } : {}), format: { type, schema } },
+    };
+  };
+  const call = async <T>(run: () => Promise<T>): Promise<T> => {
+    try {
+      return await run();
+    } catch (error) {
+      throw toProviderError(error, { requestId: null, usage: null });
+    }
+  };
+  // Cancelling or deleting a batch that is already gone is not an error.
+  const unlessGone = async (run: () => Promise<unknown>): Promise<void> => {
+    try {
+      await run();
+    } catch (error) {
+      if (error instanceof Anthropic.NotFoundError) return;
+      throw toProviderError(error, { requestId: null, usage: null });
+    }
+  };
+
+  return {
+    async countInputTokens(item) {
+      const p = params(item);
+      const counted = await call(() =>
+        client.messages.countTokens({
+          model: p.model,
+          system: p.system,
+          messages: p.messages,
+          ...(p.output_config ? { output_config: p.output_config } : {}),
+        }),
+      );
+      return counted.input_tokens;
+    },
+    async submit(items) {
+      const batch = await call(() =>
+        client.messages.batches.create(
+          { requests: items.map((item) => ({ custom_id: item.customId, params: params(item) })) },
+          { maxRetries: 0 },
+        ),
+      );
+      return { batchId: batch.id };
+    },
+    async status(batchId) {
+      const batch = await call(() => client.messages.batches.retrieve(batchId));
+      return { state: batch.processing_status };
+    },
+    async *results(batchId, pending) {
+      const lines = await call(() => client.messages.batches.results(batchId));
+      for await (const line of lines) {
+        const item = pending.get(line.custom_id);
+        if (item) yield batchResult(line, item, model);
       }
-      const parsed = request.schema.safeParse(json);
-      return parsed.success
-        ? { ...base, output: parsed.data, stopReason }
-        : { ...base, output: null, stopReason: 'invalid_schema' };
+    },
+    async cancel(batchId) {
+      await unlessGone(() => client.messages.batches.cancel(batchId));
+    },
+    async remove(batchId) {
+      await unlessGone(() => client.messages.batches.delete(batchId));
     },
   };
+}
+
+/** One line of a batch's results, as the runner reads a streamed call's answer. */
+function batchResult(
+  line: Anthropic.Messages.MessageBatchIndividualResponse,
+  item: BatchItem,
+  model: string,
+): BatchItemResult {
+  const failed = (stopReason: string, requestId: string | null = null): BatchItemResult => ({
+    customId: line.custom_id,
+    output: null,
+    stopReason,
+    model,
+    requestId,
+    usage: emptyUsage(),
+  });
+  switch (line.result.type) {
+    case 'succeeded': {
+      const message = line.result.message;
+      return {
+        customId: line.custom_id,
+        ...parseMessage(message, item.schema),
+        model: message.model,
+        requestId: message.id,
+        usage: toUsage(message.usage),
+      };
+    }
+    case 'errored':
+      // A request the API refused (a bad schema, too long) is never worth sending again as is.
+      return failed(
+        line.result.error.error.type === 'invalid_request_error'
+          ? 'batch_invalid_request'
+          : 'batch_server_error',
+        line.result.error.request_id ?? null,
+      );
+    case 'expired':
+      return failed('batch_expired');
+    case 'canceled':
+      return failed('batch_canceled');
+    default:
+      return failed('batch_server_error');
+  }
 }
 
 function toUsage(usage: Anthropic.Usage): TokenUsage {
@@ -229,20 +371,71 @@ export function createFakeProvider(options: { delayMs?: number } = {}): AiProvid
         throw new AiProviderError('timeout', 'the AI provider took too long to answer');
       }
       const output = request.schema.parse(request.fake());
-      const outputText = JSON.stringify(output);
       return {
         output,
         stopReason: 'end_turn',
         model: 'fake',
         requestId: null,
-        // Roughly four characters per token, so usage and costs look realistic.
-        usage: {
-          inputTokens: Math.ceil((request.system.length + request.user.length) / 4),
-          outputTokens: Math.ceil(outputText.length / 4),
-          cacheReadTokens: 0,
-          cacheWriteTokens: 0,
-        },
+        usage: fakeUsage(request, output),
       };
     },
+    batch: fakeBatch,
   };
 }
+
+/** Roughly four characters per token, so usage and costs look realistic. */
+function fakeUsage(request: { system: string; user: string }, output: unknown): TokenUsage {
+  return {
+    inputTokens: Math.ceil((request.system.length + request.user.length) / 4),
+    outputTokens: Math.ceil(JSON.stringify(output).length / 4),
+    cacheReadTokens: 0,
+    cacheWriteTokens: 0,
+  };
+}
+
+/**
+ * The fake provider's batches: counted as one token per four bytes (never fewer than `generate`
+ * reports), ended as soon as they are sent, and answered with each item's `fake()`, with the same
+ * usage as `generate`. Nothing is kept: `results` answers the pending items it is given.
+ */
+const fakeBatch: AiBatchProvider = {
+  async countInputTokens(item) {
+    const bytes = new TextEncoder().encode(item.system + item.user).length;
+    return Math.ceil(bytes / 4);
+  },
+  async submit() {
+    return { batchId: `fake-batch-${globalThis.crypto.randomUUID()}` };
+  },
+  async status() {
+    return { state: 'ended' };
+  },
+  async *results(_batchId, pending) {
+    for (const item of pending.values()) {
+      let answer: unknown;
+      try {
+        answer = item.fake();
+      } catch {
+        yield {
+          customId: item.customId,
+          output: null,
+          stopReason: 'batch_server_error',
+          model: 'fake',
+          requestId: null,
+          usage: emptyUsage(),
+        };
+        continue;
+      }
+      const parsed = item.schema.safeParse(answer);
+      yield {
+        customId: item.customId,
+        output: parsed.success ? parsed.data : null,
+        stopReason: parsed.success ? 'end_turn' : 'invalid_schema',
+        model: 'fake',
+        requestId: null,
+        usage: fakeUsage(item, answer),
+      };
+    }
+  },
+  async cancel() {},
+  async remove() {},
+};

@@ -38,7 +38,16 @@ export interface ReviewState {
  * reviewers « Contenu de foi conforme ». Any reviewer may « Signaler du contenu de foi »; content
  * reviewers may « Retirer de la banque » a shared or approved resource.
  */
-export function ReviewPanel({ state, checklist }: { state: ReviewState; checklist: ReactNode }) {
+export function ReviewPanel({
+  state,
+  checklist,
+  boardDraft,
+}: {
+  state: ReviewState;
+  checklist: ReactNode;
+  /** The board's own draft (bulk generation, D-095): its one-step approval and deletion. */
+  boardDraft?: ReactNode;
+}) {
   const t = useTranslations('libraryReview.decision');
   const router = useRouter();
   const refresh = { onSuccess: () => router.refresh() };
@@ -62,7 +71,7 @@ export function ReviewPanel({ state, checklist }: { state: ReviewState; checklis
     (state.status === 'teacher_reviewed' || state.status === 'board_approved') &&
     state.shareScope !== 'private';
   const decides = awaiting && (content || (faith && faithPending));
-  if (!decides && !canFlag && !canRetract) return null;
+  if (!decides && !canFlag && !canRetract && !boardDraft) return null;
 
   const approveBlocked = state.mine
     ? t('ownItem')
@@ -80,6 +89,7 @@ export function ReviewPanel({ state, checklist }: { state: ReviewState; checklis
       <h2 id="review-panel" className="text-base font-semibold text-slate-900">
         {t('title')}
       </h2>
+      {boardDraft}
       {decides ? checklist : null}
 
       {awaiting && content ? (

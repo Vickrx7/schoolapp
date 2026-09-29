@@ -106,6 +106,14 @@ export const adminEnvSchema = z.object({
   NEXT_PUBLIC_SUPABASE_URL: z.url(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(20),
   BULK_MAX_RUN_USD: bulkMaxRunUsd,
+  /**
+   * The worker's AI settings, read by `pnpm admin bulk-plan` to price a run's worst case as the
+   * worker will (the fake provider's nominal price, or the model's, or the prices set here).
+   */
+  AI_PROVIDER: z.enum(['none', 'fake', 'anthropic']).default('none'),
+  AI_MODEL: z.string().min(1).default('claude-opus-5-5'),
+  AI_PRICE_INPUT_PER_MTOK: z.coerce.number().nonnegative().optional(),
+  AI_PRICE_OUTPUT_PER_MTOK: z.coerce.number().nonnegative().optional(),
 });
 
 export type AdminEnv = z.infer<typeof adminEnvSchema>;

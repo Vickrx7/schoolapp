@@ -28,6 +28,7 @@ import {
   seedPackSchema,
   type SeedItem,
 } from './seed-pack';
+import type { CatholicReferenceType } from './pack-format';
 import { packToSql, seedItemId, seedVersionId } from './seed-sql';
 import { frenchStrings, frenchStyleProblems, mapStrings, suggestsFaithContent } from './style';
 
@@ -95,6 +96,21 @@ const SEEDED_ROWS = (() => {
     parentCode: r.parentId ? (codeOf.get(r.parentId) ?? null) : null,
   }));
 })();
+
+/**
+ * What `packToSql` needs for the items' pack hashes (D-100): each subject's curriculum version
+ * and each Catholic reference's type, as `seed.sql` has them.
+ */
+const HASH_OPTIONS = {
+  curriculumVersions: Object.fromEntries(SEEDED_ROWS.map((r) => [r.subject, r.version])),
+  referenceTypes: Object.fromEntries(
+    [
+      ...seedSql.matchAll(
+        /\('[0-9a-f-]{36}', '(virtue|graduate_expectation|reflection|prayer|scripture)', '((?:[^']|'')*)'/g,
+      ),
+    ].map((m) => [m[2]!.replace(/''/g, "'"), m[1] as CatholicReferenceType]),
+  ),
+};
 
 /** Seeded attentes as `subject grade code`. */
 const SEEDED_EXPECTATIONS = new Set(SEEDED_ROWS.map((r) => `${r.subject} ${r.grade} ${r.code}`));
@@ -260,7 +276,7 @@ describe('seed pack (content/library/demo)', () => {
 
     // The whole pack converts to SQL (the pack and the files agree, no quote tag inside).
     const raws = loaded.map((l) => l.raw);
-    expect(() => packToSql(rawPack, raws)).not.toThrow();
+    expect(() => packToSql(rawPack, raws, HASH_OPTIONS)).not.toThrow();
   });
 
   it('51. every attente exists in the seeded curriculum or the curriculum files', () => {

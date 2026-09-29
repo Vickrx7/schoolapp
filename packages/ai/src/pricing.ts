@@ -44,12 +44,23 @@ export function priceFor(model: string, override?: Partial<ModelPrice>): ModelPr
   return base;
 }
 
-export function estimateCostUsd(usage: TokenUsage, price: ModelPrice): number {
+/**
+ * What the Message Batches API charges, as a share of the usual price: every token costs half,
+ * cache reads and writes included (DECISIONS D-096).
+ */
+export const BATCH_PRICE_FACTOR = 0.5;
+
+export function estimateCostUsd(
+  usage: TokenUsage,
+  price: ModelPrice,
+  options: { batch?: boolean } = {},
+): number {
   const cost =
-    (usage.inputTokens * price.input +
+    ((usage.inputTokens * price.input +
       usage.outputTokens * price.output +
       usage.cacheReadTokens * price.cacheRead +
       usage.cacheWriteTokens * price.cacheWrite) /
-    1_000_000;
+      1_000_000) *
+    (options.batch ? BATCH_PRICE_FACTOR : 1);
   return Math.round(cost * 1_000_000) / 1_000_000;
 }
