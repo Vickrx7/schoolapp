@@ -33,6 +33,14 @@ const KNOWN_ERRORS = new Set([
   'aiBusy',
   'personalInfo',
   'levelInUse',
+  'subPlanConflict',
+  'subPlanInUse',
+  'subCodeLimit',
+  'subDayOver',
+  'absencePast',
+  'absenceTooLong',
+  'absenceOverlap',
+  'halfDaySingleDay',
 ]);
 
 /** Translates an error key from a server action; unknown keys fall back to a generic message. */

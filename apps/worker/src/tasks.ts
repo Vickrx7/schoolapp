@@ -5,6 +5,13 @@ import { dispatchOutbox, loadEvent } from './outbox';
 
 const handleEventPayload = z.object({ eventId: z.uuid(), handler: z.string().min(1) });
 
+/** What app.sub_access_maintenance() removed (counts only). */
+interface SubAccessMaintenanceCounts {
+  codesDeleted: number;
+  attemptsDeleted: number;
+  reportsPurged: number;
+}
+
 export function buildTaskList(options: {
   subscriptions: readonly Subscription[];
   context: HandlerContext;
@@ -47,5 +54,22 @@ export function buildTaskList(options: {
     if (count > 0) options.context.logger.info('old AI jobs deleted', { count });
   };
 
-  return { dispatch_outbox: dispatch, handle_event: handleEvent, ai_maintenance: aiMaintenance };
+  // Substitute access retention (DECISIONS D-059): codes (and their sessions) 30 days after
+  // they expire, sign-in attempts after a day, and a report's free text and absent-student list
+  // 60 days after confirmation (or after the plan date if never confirmed).
+  const subAccessMaintenance: Task = async (_payload, helpers) => {
+    const { rows } = await helpers.withPgClient((client) =>
+      client.query<{ counts: SubAccessMaintenanceCounts }>(
+        'select app.sub_access_maintenance() as counts',
+      ),
+    );
+    options.context.logger.info('substitute access retention done', { ...rows[0]?.counts });
+  };
+
+  return {
+    dispatch_outbox: dispatch,
+    handle_event: handleEvent,
+    ai_maintenance: aiMaintenance,
+    sub_access_maintenance: subAccessMaintenance,
+  };
 }

@@ -3,8 +3,9 @@ import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
 import { AiSchoolCard, type AiUsage } from '@/components/school/ai-school-card';
 import { SchoolSettingsForm } from '@/components/school/school-settings-form';
+import { SubstituteSettingsCard } from '@/components/school/substitute-settings-card';
 import { PageHeader } from '@/components/ui/page';
-import { hasRole, requireSession } from '@/server/session';
+import { hasModule, hasRole, requireSession } from '@/server/session';
 import { createSupabaseServerClient } from '@/server/supabase';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -80,6 +81,12 @@ export default async function SchoolPage() {
             canEdit={hasRole(s, 'principal', 'vice_principal')}
             usage={usage.get(s.id) ?? null}
           />
+          {hasModule(s, 'teaching') ? (
+            <SubstituteSettingsCard
+              school={{ id: s.id, name: s.name, substitute: s.settings.substitute }}
+              canEdit={hasRole(s, 'principal', 'vice_principal')}
+            />
+          ) : null}
         </div>
       ))}
     </div>

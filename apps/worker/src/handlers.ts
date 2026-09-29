@@ -9,6 +9,7 @@ import type { Integrations } from '@lynx/integrations';
 import type { Pool } from 'pg';
 import { runAiJob, type AiRuntime } from './ai';
 import type { Logger } from './logger';
+import { refreshAbsencePlans } from './sub-plans/refresh';
 
 export interface OutboxEvent {
   eventId: string;
@@ -32,7 +33,10 @@ export interface HandlerContext {
 export type EventHandler = (event: OutboxEvent, ctx: HandlerContext) => Promise<void>;
 
 export interface Subscription {
-  /** Stable name: it is part of each job's key, so renaming it re-delivers events. */
+  /**
+   * Stable name, stored in each queued job and its key. Renaming one drops the jobs already
+   * queued under the old name, and events dispatched earlier are not delivered again.
+   */
   handler: string;
   /** Event types to receive; '*' means all. */
   events: readonly string[];
@@ -66,13 +70,27 @@ export function buildSubscriptions(options: { logEvents: boolean }): Subscriptio
     },
   });
 
-  // Example of an integration reacting to an event. absence.published arrives in Phase 3;
-  // then this issues the substitute a day-only door credential through VantageCore.
+  // Substitute plans follow what they were built from until they are fixed (DECISIONS D-047).
+  // The absence's mark makes a repeated run a no-op.
+  subs.push({
+    handler: 'sub_plan_refresh',
+    events: ['absence.sources_changed'],
+    run: async (event, { pool, logger }) => {
+      if (event.aggregateId) await refreshAbsencePlans(event.aggregateId, { pool, logger });
+    },
+  });
+
+  // Example of an integration reacting to an event: a day-only door credential for the
+  // substitute (VantageCore). Phase 3 makes no integration calls (DECISIONS D-060), so this only
+  // logs. The event carries ids, dates and the part of day; log the ids only.
   subs.push({
     handler: 'access_control_substitute_credential',
     events: ['absence.published'],
     run: async (event, { logger }) => {
-      logger.info('would issue a day-only door credential (Phase 3)', { eventId: event.eventId });
+      logger.info('would issue a day-only door credential', {
+        eventId: event.eventId,
+        aggregateId: event.aggregateId,
+      });
     },
   });
 

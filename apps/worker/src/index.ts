@@ -34,6 +34,8 @@ const runner = await run({
     // Safety net: sweep the outbox every minute in case a notification was missed.
     '* * * * * dispatch_outbox ?jobKey=dispatch_outbox&jobKeyMode=preserve_run_at',
     '17 * * * * ai_maintenance ?jobKey=ai_maintenance',
+    // Daily substitute access retention (old codes, sign-in attempts, report notes).
+    '43 3 * * * sub_access_maintenance ?jobKey=sub_access_maintenance',
   ].join('\n'),
 });
 

@@ -1,3 +1,4 @@
+import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page } from '@playwright/test';
 
 const MAILPIT = process.env.MAILPIT_URL ?? 'http://127.0.0.1:54324';
@@ -63,4 +64,60 @@ export function nextSchoolMonday(): string {
   d.setUTCDate(d.getUTCDate() + ((8 - (d.getUTCDay() || 7)) % 7 || 7));
   while (SEEDED_MONDAYS_OFF.has(d.toISOString().slice(0, 10))) d.setUTCDate(d.getUTCDate() + 7);
   return d.toISOString().slice(0, 10);
+}
+
+/** Fails on serious or critical WCAG 2 A/AA violations. */
+export async function expectAccessible(page: Page) {
+  const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
+  expect(
+    results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical'),
+  ).toEqual([]);
+}
+
+/** Seeded days without school (see supabase/seed.sql): PA days and holidays. */
+const SEEDED_DAYS_OFF = new Set([
+  '2026-10-09',
+  '2026-10-12',
+  '2026-11-20',
+  ...Array.from({ length: 12 }, (_, i) => {
+    const d = new Date(Date.UTC(2026, 11, 21 + i));
+    return d.toISOString().slice(0, 10);
+  }),
+]);
+
+const iso = (d: Date) => d.toISOString().slice(0, 10);
+
+/** Adds days to a YYYY-MM-DD date. */
+export function addDaysIso(date: string, days: number): string {
+  const d = new Date(`${date}T12:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + days);
+  return iso(d);
+}
+
+/**
+ * A school day at least `weeksAhead` weeks from today on the given ISO weekday (2 = Tuesday ...
+ * 5 = Friday), skipping the seeded days off. Mondays are left to teacher.spec.ts, which checks
+ * off lessons on them.
+ */
+export function schoolDay({ weeksAhead, isoWeekday }: { weeksAhead: number; isoWeekday: number }) {
+  if (isoWeekday < 2 || isoWeekday > 5) throw new Error('pick Tuesday to Friday');
+  const d = new Date();
+  d.setUTCDate(d.getUTCDate() + weeksAhead * 7);
+  while ((d.getUTCDay() || 7) !== isoWeekday || SEEDED_DAYS_OFF.has(iso(d))) {
+    d.setUTCDate(d.getUTCDate() + 1);
+  }
+  return iso(d);
+}
+
+/** Whether a date is a seeded school day (a weekday that is not a seeded day off). */
+export function isSeededSchoolDay(date: string): boolean {
+  const weekday = new Date(`${date}T12:00:00Z`).getUTCDay();
+  return weekday !== 0 && weekday !== 6 && !SEEDED_DAYS_OFF.has(date);
+}
+
+/** The coming Friday (today on a Friday), as the seed places its relative mass. */
+export function comingFriday(): string {
+  const d = new Date();
+  d.setUTCDate(d.getUTCDate() + ((5 - (d.getUTCDay() || 7) + 7) % 7));
+  return iso(d);
 }

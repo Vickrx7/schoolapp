@@ -23,6 +23,21 @@ export function errorKey(error: PgLikeError | null | undefined): string {
     case 'P0002':
     case 'PGRST116':
       return 'notFound';
+    // Substitute hand-off (supabase/migrations/20261001100200_substitute_plans.sql).
+    case 'LXS10':
+      return 'subPlanConflict';
+    case 'LXS12':
+      return 'subPlanInUse';
+    case 'LXS13':
+      return 'subCodeLimit';
+    case 'LXS14':
+      return 'subDayOver';
+    case 'LXS20':
+      return 'absencePast';
+    case 'LXS21':
+      return 'absenceTooLong';
+    case 'LXS22':
+      return 'absenceOverlap';
     default:
       return 'unexpected';
   }

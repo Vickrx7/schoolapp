@@ -11,6 +11,7 @@
   "dependencies": {
     "@lynx/ai": "workspace:*",
     "@lynx/config": "workspace:*",
+    "@lynx/domain": "workspace:*",
     "@lynx/integrations": "workspace:*",
     "graphile-worker": "^0.18.0",
     "pg": "^8.23.0",

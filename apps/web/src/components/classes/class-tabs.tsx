@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
-const TABS = ['students', 'timetable', 'planning', 'settings'] as const;
+const TABS = ['students', 'timetable', 'planning', 'substitute', 'settings'] as const;
 
 export function ClassTabs({ classId }: { classId: string }) {
   const t = useTranslations('classes.tabs');

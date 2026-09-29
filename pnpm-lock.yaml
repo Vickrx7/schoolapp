@@ -156,6 +156,9 @@ importers:
       '@lynx/config':
         specifier: workspace:*
         version: link:../../packages/config
+      '@lynx/domain':
+        specifier: workspace:*
+        version: link:../../packages/domain
       '@lynx/integrations':
         specifier: workspace:*
         version: link:../../packages/integrations

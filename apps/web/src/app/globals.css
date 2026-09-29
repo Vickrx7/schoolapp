@@ -26,3 +26,15 @@
     @apply outline-2 outline-offset-2 outline-brand-600;
   }
 }
+
+/*
+ * Toasts (sonner, richColors). Its default text colours fall below WCAG AA on their pale
+ * backgrounds (success is 3.9:1), so they are darkened to 4.5:1 or more (D-034). The extra
+ * `:root` outranks the rules sonner injects at runtime.
+ */
+:root [data-sonner-toaster][data-sonner-theme='light'] {
+  --success-text: #166534;
+  --info-text: #1e40af;
+  --warning-text: #92400e;
+  --error-text: #991b1b;
+}

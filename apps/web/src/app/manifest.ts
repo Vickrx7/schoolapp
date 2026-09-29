@@ -23,5 +23,14 @@ export default function manifest(): MetadataRoute.Manifest {
       },
       { src: '/icon.svg', sizes: 'any', type: 'image/svg+xml' },
     ],
+    // Long-press the app icon at 6 a.m.: straight to the absence form (two taps to send).
+    shortcuts: [
+      {
+        name: 'Signaler une absence',
+        short_name: 'Absence',
+        url: '/absences/new',
+        icons: [{ src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' }],
+      },
+    ],
   };
 }

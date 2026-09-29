@@ -6,17 +6,19 @@ import {
   localMinutesIn,
   timeToMinutes,
 } from '@lynx/domain';
-import { ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
+import { CalendarX, ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
 import type { Metadata } from 'next';
 import { getLocale, getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { AbsenceList } from '@/components/absences/absence-list';
 import { CheckOffButton } from '@/components/app/check-off-button';
 import { Button } from '@/components/ui/button';
-import { Badge, Card, Notice } from '@/components/ui/card';
+import { Badge, Card, CardBody, CardHeader, CardTitle, Notice } from '@/components/ui/card';
 import { EmptyState, PageHeader } from '@/components/ui/page';
 import { formatLocalDate, formatTime, formatTimeRange } from '@/lib/format';
 import { cn } from '@/lib/utils';
+import { loadMyAbsences } from '@/server/queries/absences';
 import { loadToday, type TodayBlock } from '@/server/queries/today';
 import { requireSession, teachingSchools } from '@/server/session';
 
@@ -42,12 +44,16 @@ export default async function TodayPage({
   if (schools.length === 0) redirect('/calendar');
 
   const t = await getTranslations('today');
+  const tAbsences = await getTranslations('absences');
   const locale = await getLocale();
   const timezone = schools[0]!.timezone;
   const today = localDateIn(timezone);
   const { date: requested } = await searchParams;
   const date = requested && isLocalDate(requested) ? requested : today;
-  const data = await loadToday(session, date, locale);
+  const [data, upcomingAbsences] = await Promise.all([
+    loadToday(session, date, locale),
+    loadMyAbsences(session, { from: today, limit: 5 }),
+  ]);
   const isToday = date === today;
   const nowMinutes = isToday ? localMinutesIn(timezone) : null;
   const multipleClasses = new Set(data.blocks.map((b) => b.classId)).size > 1;
@@ -73,7 +79,13 @@ export default async function TodayPage({
         title={isToday ? t('title') : formatLocalDate(date, locale)}
         subtitle={subtitle}
         actions={
-          <div className="flex items-center gap-1">
+          <div className="flex flex-wrap items-center gap-1">
+            <Button asChild variant="secondary" className="mr-1">
+              <Link href="/absences/new">
+                <CalendarX aria-hidden />
+                {tAbsences('quick')}
+              </Link>
+            </Button>
             <Button asChild variant="secondary" size="icon">
               <Link href={`/today?date=${stepWeekday(date, -1)}`} aria-label={t('previousDay')}>
                 <ChevronLeft />
@@ -92,6 +104,20 @@ export default async function TodayPage({
           </div>
         }
       />
+
+      {upcomingAbsences.length > 0 ? (
+        <Card className="mb-4">
+          <CardHeader>
+            <CardTitle>{tAbsences('upcoming')}</CardTitle>
+          </CardHeader>
+          <CardBody>
+            <AbsenceList
+              absences={upcomingAbsences}
+              timezones={Object.fromEntries(session.schools.map((s) => [s.id, s.timezone]))}
+            />
+          </CardBody>
+        </Card>
+      ) : null}
 
       {!data.hasClasses ? (
         <EmptyState
