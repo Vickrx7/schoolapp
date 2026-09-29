@@ -16,10 +16,6 @@
   "expectations": [
     {
       "grade": "3",
-      "code": "E2.1"
-    },
-    {
-      "grade": "3",
       "code": "E2.2"
     }
   ],

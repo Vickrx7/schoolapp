@@ -61,7 +61,7 @@
       "kind": "specific",
       "strandCode": "B",
       "parentCode": "B1",
-      "textFr": "Lire, représenter, composer et décomposer des nombres naturels jusqu’à 200 000, et décrire comment on les utilise dans la vie courante.",
+      "textFr": "Lire, représenter, composer et décomposer des nombres naturels jusqu’à 100 000, et décrire comment on les utilise dans la vie courante.",
       "textEn": null
     },
     {
@@ -70,7 +70,7 @@
       "kind": "specific",
       "strandCode": "B",
       "parentCode": "B1",
-      "textFr": "Comparer et ordonner des nombres naturels jusqu’à 200 000 dans divers contextes.",
+      "textFr": "Comparer et ordonner des nombres naturels jusqu’à 100 000 dans divers contextes.",
       "textEn": null
     },
     {
@@ -151,16 +151,7 @@
       "kind": "specific",
       "strandCode": "B",
       "parentCode": "B2",
-      "textFr": "Représenter et résoudre des problèmes d’addition et de soustraction de nombres naturels et de nombres décimaux jusqu’aux centièmes à l’aide d’outils, de stratégies et d’algorithmes appropriés.",
-      "textEn": null
-    },
-    {
-      "grade": "5",
-      "code": "B2.5",
-      "kind": "specific",
-      "strandCode": "B",
-      "parentCode": "B2",
-      "textFr": "Représenter et résoudre des problèmes de multiplication de nombres naturels à deux ou trois chiffres par des nombres à deux chiffres, notamment à l’aide du modèle d’aire et d’algorithmes.",
+      "textFr": "Représenter et résoudre des problèmes d’addition et de soustraction de nombres naturels dont la somme ne dépasse pas 100 000 et de nombres décimaux jusqu’aux centièmes, à l’aide d’outils, de stratégies et d’algorithmes appropriés.",
       "textEn": null
     },
     {
@@ -169,12 +160,21 @@
       "kind": "specific",
       "strandCode": "B",
       "parentCode": "B2",
-      "textFr": "Représenter et résoudre des problèmes de division de nombres naturels à trois chiffres par des nombres à deux chiffres, et interpréter le reste selon le contexte.",
+      "textFr": "Représenter et résoudre des problèmes de multiplication de nombres naturels à deux chiffres par des nombres à deux chiffres, à l’aide du modèle d’aire et d’algorithmes.",
       "textEn": null
     },
     {
       "grade": "5",
       "code": "B2.7",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B2",
+      "textFr": "Représenter et résoudre des problèmes de division de nombres naturels à trois chiffres par des nombres à deux chiffres, à l’aide du modèle d’aire et d’algorithmes, et interpréter le reste selon le contexte.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B2.8",
       "kind": "specific",
       "strandCode": "B",
       "parentCode": "B2",
@@ -403,7 +403,7 @@
       "kind": "specific",
       "strandCode": "E",
       "parentCode": "E2",
-      "textFr": "Utiliser un rapporteur d’angle pour mesurer et construire des angles jusqu’à 180°, et classer les angles (aigu, droit, obtus, plat).",
+      "textFr": "Expliquer comment fonctionne un rapporteur d’angle, s’en servir pour mesurer et construire des angles jusqu’à 180°, et estimer la mesure d’angles à l’aide d’angles repères.",
       "textEn": null
     },
     {

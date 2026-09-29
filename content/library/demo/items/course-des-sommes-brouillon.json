@@ -49,7 +49,7 @@
         "objective": "Je compare la probabilité théorique et la probabilité expérimentale des sommes obtenues en lançant deux dés.",
         "teacherNote": "Jeu d’environ 30 minutes. Faites d’abord prédire quel coureur gagnera. Après trois courses, construisez en groupe le tableau des 36 résultats possibles (dé rouge et dé bleu) pour trouver la probabilité théorique de chaque somme, puis comparez-la aux résultats des courses. Les questions du jeu servent au retour en groupe; la question 5 se corrige à la main.",
         "grouping": "En équipes de trois ou de quatre.",
-        "setup": "Préparez une piste par équipe : sur une feuille, tracez 11 colonnes numérotées de 2 à 12 et 8 rangées. La rangée du haut est la ligne d’arrivée. Chaque équipe reçoit deux dés (un rouge et un bleu, si possible) et 11 jetons, un par colonne, placés sous la première rangée.",
+        "setup": "Préparez une piste par équipe : sur une feuille, tracez 11 colonnes numérotées de 2 à 12 et 8 rangées. La rangée du haut est la ligne d’arrivée. Chaque équipe reçoit deux dés (un rouge et un bleu, si possible) et 11 jetons, un par colonne, placés sous la rangée du bas.",
         "rules": [
           "Chaque personne choisit un coureur : un nombre de 2 à 12. Écris ton choix et ta prédiction : quel coureur arrivera le premier?",
           "À tour de rôle, lance les deux dés et additionne les deux nombres obtenus.",

@@ -39,8 +39,8 @@ breadth »):
     reviewer's queue (`billet-fractions-equivalentes`, `atelier-carte-postale`,
     `coeur-apres-effort`).
 - Item `ordonner-nombres-1000` is linked to 3e MAT lesson 5 by the Phase 4 seed.
-- **Attentes:** the items link to attentes of the curriculum sample in `content/curriculum` (107
-  links). Most of those codes are not in `supabase/seed.sql`, so **the curriculum files must be
+- **Attentes:** the items link to attentes of the curriculum sample in `content/curriculum` (105
+  links to 88 codes). Most of those codes are not in `supabase/seed.sql`, so **the curriculum files must be
   imported before the pack's SQL runs**; otherwise its `DO` block stops on the first missing
   attente.
 

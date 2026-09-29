@@ -10,6 +10,12 @@ for the demo. Every file says `"official": false` and `"verified": false`, so ev
 correspond to in the Ontario curriculum, as far as we know. The uncertain ones are listed below
 under « À vérifier ».
 
+In the September 2026 review (branch `p4x/library-review`), the Mathématiques codes that demo
+items link to were compared with a public index of the English Mathematics (2020) expectations
+(curriculum-aligned resource pages that give each code with its topic). Several codes were
+renumbered or rewritten; they are listed under « À vérifier ». That index is not the official
+document: the files stay `"verified": false`, and no official text was copied (D-030).
+
 ```
 content/curriculum/
   README.md           this file: format, rules and the « À vérifier » list
@@ -62,8 +68,8 @@ Every overall attente (attente) of each subject and grade is there. Contenus d�
 - **Planned codes:** `seed-pack.test.ts` allows four planned 5e Français codes until they are
   seeded (plan C5): C1, C1.2, D1 and D1.1. They are here, with the same meanings as the 3e codes.
   5e C1.1 and C1.3 were added with the 3e meanings too.
-- **Demo pack links:** every attente that a demo pack item links to exists in these files (107
-  links to 90 codes). Most of those codes are not in `supabase/seed.sql`, so the demo pack's SQL
+- **Demo pack links:** every attente that a demo pack item links to exists in these files (105
+  links to 88 codes). Most of those codes are not in `supabase/seed.sql`, so the demo pack's SQL
   can only load once these files are imported.
 - **Strand label:** importing these files rewrites the seeded Français strand labels with a
   non-breaking space before `:` (« Compréhension : … »). The seed has an ordinary space there.
@@ -145,9 +151,29 @@ should check these first. The general points come first:
   attentes: knowledge about texts and comprehension strategies. It is kept as seeded, and the
   planned 5e codes mirror it. As a result, C2 (stratégies de compréhension) overlaps C1. Fixing
   it means renumbering the seed and the demo pack links together.
-- **Seeded Mathématiques 5e B1.6 and B1.7.** In the official list, B1.6 may be about reading and
-  representing decimal numbers, and the fraction–decimal links may be B1.9. The seeded meanings
-  are kept, so the codes that would clash (the decimals to hundredths, and B1.9) are left out.
+- **Seeded Mathématiques 5e B1.5, B1.6 and B1.7.** The index used in the review gives B1.4 for
+  equivalent fractions, B1.5 for comparing and ordering fractions, B1.6 for reading, comparing and
+  ordering decimal numbers to hundredths, and B1.7 for the links among fractions, decimal numbers
+  and whole-number percents. So the seeded B1.5 (equivalent fractions) may really be B1.4, the
+  seeded B1.6 (comparing fractions and decimal numbers) mixes B1.5 and B1.6, and the seeded B1.7
+  matches apart from the percents. The seeded meanings are kept: renumbering them means changing
+  the seed, the demo items (`fractions-equivalentes-bandes`, `billet-fractions-equivalentes`,
+  `diagnostic-fractions`, `defi-marche-des-fractions`, `dixiemes-centiemes-argent`) and any lesson
+  links together. B1.4 is left out so that it does not clash.
+- **Mathématiques codes changed in the review.** Where the index clearly gave another number or
+  another topic for a code that a demo item links to, the file was corrected and the item moved
+  with it:
+  - 3e: fair-share problems solved with drawings are B1.6, not B1.5 (`billet-partage-equitable`
+    now links B1.6), and equivalent fractions in fair-share problems were added as B1.7; C2.2 is
+    about equivalent expressions and C2.3 about equality relationships up to 1 000, so the
+    missing-value problems of `valeur-manquante-collecte` now link C2.3; E2.1 is perimeter and E2.2
+    the relationships between units of length, so `mesurer-dans-la-cour` now links E2.2 only;
+    telling time is E2.6, not E2.5; F1.1 is about the change to give in cash transactions, so
+    `quiz-monnaie-canadienne` (counting collections of coins and bills) now links F1 only;
+    counting is by 200s, not 250s (B1.4).
+  - 5e: whole numbers go up to 100 000, not 200 000 (B1.1, B1.2, B2.4); multiplication is B2.6,
+    division with remainders B2.7 (`division-reste-minibus` now links B2.7) and unit fractions
+    B2.8; E2.4 is about using a protractor and benchmark angles, not about classifying angles.
 - **Strand A label in Sciences et technologie.** « Habiletés en STIM et liens » is our
   translation of _STEM Skills and Connections_. Check the French document's title.
 - **Sciences et technologie topics.** We placed these topics in these strands:
@@ -162,8 +188,9 @@ should check these first. The general points come first:
 - **Codes left out on purpose.** The following codes exist in the numbering but are not in the
   files. We were not confident enough of their number or scope. Codes after the last one listed
   for an attente may exist too.
-  - `mat-2020-3e`: E2.4.
-  - `mat-2020-5e`: B1.4, B2.3, C2.2, D1.4, E1.2, E1.3, E2.1–E2.3, F1.1.
+  - `mat-2020-3e`: B1.5 (place value, according to the index), E2.3–E2.5 (capacity and mass),
+    E2.7–E2.9 (area).
+  - `mat-2020-5e`: B1.4, B2.3, B2.5, C2.2, D1.4, E1.2, E1.3, E2.1–E2.3, F1.1.
   - `fra-2023-3e` and `fra-2023-5e`: D2.2, D2.4, D2.5.
 - **Attentes without contenus.** Mathématiques A1 (apprentissage socioémotionnel) and C4
   (modélisation mathématique) have no contenus in these files. As far as we know, the curriculum
@@ -171,18 +198,26 @@ should check these first. The general points come first:
 
 ### `mat-2020-3e.json`
 
-- **B1.4**, **B1.5**, **E1.2**, **E2.3**, **E2.5**: Number uncertain.
-- **B1.6**: Number uncertain; scope or wording uncertain.
-- **B2.7**, **C2.2**, **D2.1**, **F1.1**: Scope or wording uncertain.
-- **D1.4**: Scope or wording uncertain (the official text may also name the median).
+- **B1.4**: Corrected in the review (bonds de 200, not 250); wording to confirm.
+- **B1.6**, **B1.7**: Renumbered or added in the review from the index; wording to confirm.
+- **C2.2**, **C2.3**: Rewritten or added in the review from the index; wording to confirm.
+- **E1.2**: Number uncertain.
+- **E2.1**, **E2.2**: Rewritten in the review from the index; scope to confirm (which units of length E2.2 names). Measuring from a point other than zero, which the old E2.2 had, looks like a 2e année contenu.
+- **E2.6**: Renumbered in the review (it was E2.5).
+- **B2.7**, **D2.1**: Scope or wording uncertain.
+- **D1.4**: Scope or wording uncertain (the index suggests the official text also names the mean).
+- **F1**, **F1.1**: Rewritten in the review from the index (the change to give in cash transactions); wording to confirm.
 
 ### `mat-2020-5e.json`
 
-- **B1.3**, **B2.5**, **B2.6**, **C2.1**, **C2.3**: Number uncertain; scope or wording uncertain.
-- **B1.6**: Seeded code, kept as is: the official number for this content may differ (possibly B1.6 is reading and representing decimal numbers, and comparing them is B1.7).
-- **B1.7**: Seeded code, kept as is: the official number for this content may differ (possibly B1.9).
-- **B1.8**, **B2.4**, **B2.7**, **D1.1**, **D1.5**, **D1.6**, **E1.4**, **E2.4**, **E2.5**, **F1.2**, **F1.3**: Number uncertain.
-- **B2.2**, **C1.1**, **D1.2**, **D1.3**, **D2.1**, **D2.2**, **E1.1**, **F1**: Scope or wording uncertain.
+- **B1.1**, **B1.2**, **B2.4**: Corrected in the review (up to 100 000, not 200 000); wording to confirm.
+- **B1.3**: Number uncertain; scope or wording uncertain.
+- **B1.5**, **B1.6**, **B1.7**: Seeded codes, kept as is: the official numbers for these contents may differ (see the general point on the seeded 5e B1 codes).
+- **B2.6**, **B2.7**, **B2.8**: Renumbered in the review from the index (multiplication, division, unit fractions); wording to confirm.
+- **E2.4**: Rewritten in the review from the index (protractor and benchmark angles); wording to confirm.
+- **B1.8**, **D1.1**, **D1.5**, **D1.6**, **E2.5**, **F1.2**, **F1.3**: Number uncertain (the index agrees for D1.5, E2.5, F1.2 and F1.3).
+- **C2.1**, **C2.3**, **E1.1**, **E1.4**: The index agrees with the number; wording to confirm.
+- **B2.2**, **C1.1**, **D1.2**, **D1.3**, **D2.1**, **D2.2**, **F1**: Scope or wording uncertain.
 
 ### `fra-2023-3e.json`
 

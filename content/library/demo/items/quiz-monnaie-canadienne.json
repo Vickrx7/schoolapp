@@ -17,10 +17,6 @@
     {
       "grade": "3",
       "code": "F1"
-    },
-    {
-      "grade": "3",
-      "code": "F1.1"
     }
   ],
   "durationMinutes": 20,
@@ -47,7 +43,7 @@
       "content": {
         "title": "",
         "objective": "J’estime, je compte et je représente la valeur de collections de pièces et de billets canadiens jusqu’à 100 $.",
-        "teacherNote": "Quiz de révision sur l’attente F1 et le contenu d’apprentissage F1.1 : il contient les cinq sortes de questions. Comptez environ 20 minutes. Les montants sont en dollars entiers, sauf à la question 3 (quatre pièces de 25 ¢) : le quiz évite la notation décimale (2,50 $). Pièces courantes au Canada : 5 ¢, 10 ¢, 25 ¢, 1 $ et 2 $; billets courants : 5 $, 10 $, 20 $, 50 $ et 100 $. Les versions par niveau de langue gardent les mêmes questions, les mêmes montants et les mêmes réponses : seule la formulation change. Les questions 7 et 8 se corrigent à la main.",
+        "teacherNote": "Quiz de révision sur l’attente F1 (la valeur de la monnaie canadienne) : il contient les cinq sortes de questions. Savoir compter et représenter un montant prépare au calcul de la monnaie à rendre (F1.1). Comptez environ 20 minutes. Les montants sont en dollars entiers, sauf à la question 3 (quatre pièces de 25 ¢) : le quiz évite la notation décimale (2,50 $). Pièces courantes au Canada : 5 ¢, 10 ¢, 25 ¢, 1 $ et 2 $; billets courants : 5 $, 10 $, 20 $, 50 $ et 100 $. Les versions par niveau de langue gardent les mêmes questions, les mêmes montants et les mêmes réponses : seule la formulation change. Les questions 7 et 8 se corrigent à la main.",
         "instructions": "Lis chaque question attentivement et réponds sur la feuille. Tu peux faire tes calculs dans la marge.",
         "questions": [
           {
@@ -269,19 +265,19 @@
             "questionId": "q6",
             "kind": "multiple_choice",
             "correctChoiceIds": ["c"],
-            "explanation": "Les billets valent 50 $ + 20 $ + 10 $ = 80 $. Les pièces ajoutent moins de 10 $ : Jules a donc entre 80 $ et 90 $."
+            "explanation": "Les billets valent 50 $ + 20 $ + 10 $ = 80 $. Les pièces ajoutent moins de 10 $ : Jules a donc entre 80 $ et 90 $."
           },
           {
             "questionId": "q7",
             "kind": "short_answer",
-            "sampleAnswer": "Un billet de 20 $, un billet de 10 $, un billet de 5 $, une pièce de 2 $ et une pièce de 1 $ : 5 billets et pièces en tout.",
+            "sampleAnswer": "Un billet de 20 $, un billet de 10 $, un billet de 5 $, une pièce de 2 $ et une pièce de 1 $ : 5 billets et pièces en tout.",
             "acceptableAnswers": [],
             "explanation": "Correction manuelle : 20 $ + 10 $ + 5 $ + 2 $ + 1 $ = 38 $. Une collection qui vaut 38 $ avec plus de billets et de pièces montre que l’élève sait représenter le montant, mais la réponse complète n’en utilise que 5."
           },
           {
             "questionId": "q8",
             "kind": "short_answer",
-            "sampleAnswer": "Non. Cela dépend de la valeur des pièces et des billets. Par exemple, 6 pièces de 1 $ font 6 $, mais 2 billets de 5 $ font 10 $ : Raphaëlle a alors plus d’argent que Yanis.",
+            "sampleAnswer": "Non. Cela dépend de la valeur des pièces et des billets. Par exemple, 6 pièces de 1 $ font 6 $, mais 2 billets de 5 $ font 10 $ : Raphaëlle a alors plus d’argent que Yanis.",
             "acceptableAnswers": [],
             "explanation": "Correction manuelle : la réponse doit dire non (ou « pas toujours ») et donner un exemple où les 2 billets valent plus que les 6 pièces."
           }
@@ -345,7 +341,7 @@
             "id": "q4",
             "kind": "matching",
             "prompt": "Relie chaque collection à sa valeur. Une valeur ne va avec rien.",
-            "hint": "3 billets de 20 $ : 20, 40, 60.",
+            "hint": "3 billets de 20 $ : 20, 40, 60.",
             "points": null,
             "category": "habiletes",
             "left": [
@@ -516,19 +512,19 @@
             "questionId": "q6",
             "kind": "multiple_choice",
             "correctChoiceIds": ["c"],
-            "explanation": "Les billets valent 50 $ + 20 $ + 10 $ = 80 $. Les pièces ajoutent moins de 10 $ : Jules a donc entre 80 $ et 90 $."
+            "explanation": "Les billets valent 50 $ + 20 $ + 10 $ = 80 $. Les pièces ajoutent moins de 10 $ : Jules a donc entre 80 $ et 90 $."
           },
           {
             "questionId": "q7",
             "kind": "short_answer",
-            "sampleAnswer": "Un billet de 20 $, un billet de 10 $, un billet de 5 $, une pièce de 2 $ et une pièce de 1 $ : 5 billets et pièces en tout.",
+            "sampleAnswer": "Un billet de 20 $, un billet de 10 $, un billet de 5 $, une pièce de 2 $ et une pièce de 1 $ : 5 billets et pièces en tout.",
             "acceptableAnswers": [],
             "explanation": "Correction manuelle : 20 $ + 10 $ + 5 $ + 2 $ + 1 $ = 38 $. Une collection qui vaut 38 $ avec plus de billets et de pièces montre que l’élève sait représenter le montant, mais la réponse complète n’en utilise que 5."
           },
           {
             "questionId": "q8",
             "kind": "short_answer",
-            "sampleAnswer": "Non. Cela dépend de la valeur des pièces et des billets. Par exemple, 6 pièces de 1 $ font 6 $, mais 2 billets de 5 $ font 10 $ : Raphaëlle a alors plus d’argent que Yanis.",
+            "sampleAnswer": "Non. Cela dépend de la valeur des pièces et des billets. Par exemple, 6 pièces de 1 $ font 6 $, mais 2 billets de 5 $ font 10 $ : Raphaëlle a alors plus d’argent que Yanis.",
             "acceptableAnswers": [],
             "explanation": "Correction manuelle : la réponse doit dire non (ou « pas toujours ») et donner un exemple où les 2 billets valent plus que les 6 pièces."
           }
@@ -763,19 +759,19 @@
             "questionId": "q6",
             "kind": "multiple_choice",
             "correctChoiceIds": ["c"],
-            "explanation": "Les billets valent 50 $ + 20 $ + 10 $ = 80 $. Les pièces ajoutent moins de 10 $ : Jules a donc entre 80 $ et 90 $."
+            "explanation": "Les billets valent 50 $ + 20 $ + 10 $ = 80 $. Les pièces ajoutent moins de 10 $ : Jules a donc entre 80 $ et 90 $."
           },
           {
             "questionId": "q7",
             "kind": "short_answer",
-            "sampleAnswer": "Un billet de 20 $, un billet de 10 $, un billet de 5 $, une pièce de 2 $ et une pièce de 1 $ : 5 billets et pièces en tout.",
+            "sampleAnswer": "Un billet de 20 $, un billet de 10 $, un billet de 5 $, une pièce de 2 $ et une pièce de 1 $ : 5 billets et pièces en tout.",
             "acceptableAnswers": [],
             "explanation": "Correction manuelle : 20 $ + 10 $ + 5 $ + 2 $ + 1 $ = 38 $. Une collection qui vaut 38 $ avec plus de billets et de pièces montre que l’élève sait représenter le montant, mais la réponse complète n’en utilise que 5."
           },
           {
             "questionId": "q8",
             "kind": "short_answer",
-            "sampleAnswer": "Non. Cela dépend de la valeur des pièces et des billets. Par exemple, 6 pièces de 1 $ font 6 $, mais 2 billets de 5 $ font 10 $ : Raphaëlle a alors plus d’argent que Yanis.",
+            "sampleAnswer": "Non. Cela dépend de la valeur des pièces et des billets. Par exemple, 6 pièces de 1 $ font 6 $, mais 2 billets de 5 $ font 10 $ : Raphaëlle a alors plus d’argent que Yanis.",
             "acceptableAnswers": [],
             "explanation": "Correction manuelle : la réponse doit dire non (ou « pas toujours ») et donner un exemple où les 2 billets valent plus que les 6 pièces."
           }
@@ -1010,19 +1006,19 @@
             "questionId": "q6",
             "kind": "multiple_choice",
             "correctChoiceIds": ["c"],
-            "explanation": "Les billets valent 50 $ + 20 $ + 10 $ = 80 $. Les pièces ajoutent moins de 10 $ : Jules a donc entre 80 $ et 90 $."
+            "explanation": "Les billets valent 50 $ + 20 $ + 10 $ = 80 $. Les pièces ajoutent moins de 10 $ : Jules a donc entre 80 $ et 90 $."
           },
           {
             "questionId": "q7",
             "kind": "short_answer",
-            "sampleAnswer": "Un billet de 20 $, un billet de 10 $, un billet de 5 $, une pièce de 2 $ et une pièce de 1 $ : 5 billets et pièces en tout.",
+            "sampleAnswer": "Un billet de 20 $, un billet de 10 $, un billet de 5 $, une pièce de 2 $ et une pièce de 1 $ : 5 billets et pièces en tout.",
             "acceptableAnswers": [],
             "explanation": "Correction manuelle : 20 $ + 10 $ + 5 $ + 2 $ + 1 $ = 38 $. Une collection qui vaut 38 $ avec plus de billets et de pièces montre que l’élève sait représenter le montant, mais la réponse complète n’en utilise que 5."
           },
           {
             "questionId": "q8",
             "kind": "short_answer",
-            "sampleAnswer": "Non. Cela dépend de la valeur des pièces et des billets. Par exemple, 6 pièces de 1 $ font 6 $, mais 2 billets de 5 $ font 10 $ : Raphaëlle a alors plus d’argent que Yanis.",
+            "sampleAnswer": "Non. Cela dépend de la valeur des pièces et des billets. Par exemple, 6 pièces de 1 $ font 6 $, mais 2 billets de 5 $ font 10 $ : Raphaëlle a alors plus d’argent que Yanis.",
             "acceptableAnswers": [],
             "explanation": "Correction manuelle : la réponse doit dire non (ou « pas toujours ») et donner un exemple où les 2 billets valent plus que les 6 pièces."
           }
@@ -1257,12 +1253,12 @@
             "questionId": "q6",
             "kind": "multiple_choice",
             "correctChoiceIds": ["c"],
-            "explanation": "Les billets valent 50 $ + 20 $ + 10 $ = 80 $. Les pièces ajoutent moins de 10 $ : Jules a donc entre 80 $ et 90 $."
+            "explanation": "Les billets valent 50 $ + 20 $ + 10 $ = 80 $. Les pièces ajoutent moins de 10 $ : Jules a donc entre 80 $ et 90 $."
           },
           {
             "questionId": "q7",
             "kind": "short_answer",
-            "sampleAnswer": "Un billet de 20 $, un billet de 10 $, un billet de 5 $, une pièce de 2 $ et une pièce de 1 $ : 5 billets et pièces en tout.",
+            "sampleAnswer": "Un billet de 20 $, un billet de 10 $, un billet de 5 $, une pièce de 2 $ et une pièce de 1 $ : 5 billets et pièces en tout.",
             "acceptableAnswers": [],
             "explanation": "Correction manuelle : 20 $ + 10 $ + 5 $ + 2 $ + 1 $ = 38 $. Une collection qui vaut 38 $ avec plus de billets et de pièces montre que l’élève sait représenter le montant, mais la réponse complète n’en utilise que 5."
           },

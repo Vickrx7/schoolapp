@@ -88,16 +88,7 @@
       "kind": "specific",
       "strandCode": "B",
       "parentCode": "B1",
-      "textFr": "Compter jusqu’à 1 000, notamment par bonds de 50, de 100 et de 250, à l’aide de divers outils et stratégies.",
-      "textEn": null
-    },
-    {
-      "grade": "3",
-      "code": "B1.5",
-      "kind": "specific",
-      "strandCode": "B",
-      "parentCode": "B1",
-      "textFr": "Résoudre, à l’aide de dessins, des problèmes de partage équitable entre 2, 3, 4, 5, 6, 8 ou 10 personnes, et nommer les parts obtenues à l’aide de fractions.",
+      "textFr": "Compter jusqu’à 1 000, notamment par bonds de 50, de 100 et de 200, à l’aide de divers outils et stratégies.",
       "textEn": null
     },
     {
@@ -106,7 +97,16 @@
       "kind": "specific",
       "strandCode": "B",
       "parentCode": "B1",
-      "textFr": "Représenter, comparer et ordonner, à l’aide de dessins et de modèles, les fractions obtenues dans différentes situations de partage équitable.",
+      "textFr": "Représenter, résoudre et comparer à l’aide de dessins des problèmes de partage équitable d’au plus 20 objets entre 2, 3, 4, 5, 6, 8 ou 10 personnes, dont le résultat peut être un nombre naturel, un nombre fractionnaire ou une fraction.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "B1.7",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B1",
+      "textFr": "Résoudre des problèmes de partage équitable en trouvant et en utilisant des fractions équivalentes, par exemple des demis, des quarts et des huitièmes, des tiers et des sixièmes, ou des cinquièmes et des dixièmes.",
       "textEn": null
     },
     {
@@ -250,7 +250,16 @@
       "kind": "specific",
       "strandCode": "C",
       "parentCode": "C2",
-      "textFr": "Déterminer la valeur manquante dans des équations d’addition et de soustraction de nombres naturels jusqu’à 1 000, à l’aide de divers outils et stratégies.",
+      "textFr": "Déterminer si des expressions d’addition, de soustraction, de multiplication et de division sont équivalentes ou non.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "C2.3",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C2",
+      "textFr": "Reconnaître et utiliser des relations d’égalité entre des nombres naturels jusqu’à 1 000 dans divers contextes.",
       "textEn": null
     },
     {
@@ -403,7 +412,7 @@
       "kind": "specific",
       "strandCode": "E",
       "parentCode": "E2",
-      "textFr": "Expliquer la relation entre le centimètre et le mètre, et utiliser des repères pour estimer des longueurs.",
+      "textFr": "Estimer, mesurer et comparer le périmètre de polygones et de figures à côtés courbes à l’aide d’unités de longueur appropriées, et construire des polygones d’un périmètre donné.",
       "textEn": null
     },
     {
@@ -412,21 +421,12 @@
       "kind": "specific",
       "strandCode": "E",
       "parentCode": "E2",
-      "textFr": "Mesurer et tracer des longueurs en centimètres et en mètres avec un instrument de mesure, en tenant compte de l’effet de commencer ailleurs qu’au zéro.",
+      "textFr": "Expliquer les relations entre le millimètre, le centimètre, le mètre et le kilomètre, et utiliser des repères pour estimer des longueurs.",
       "textEn": null
     },
     {
       "grade": "3",
-      "code": "E2.3",
-      "kind": "specific",
-      "strandCode": "E",
-      "parentCode": "E2",
-      "textFr": "Expliquer les relations entre le gramme et le kilogramme, et entre le millilitre et le litre, et utiliser des repères pour estimer des masses et des capacités.",
-      "textEn": null
-    },
-    {
-      "grade": "3",
-      "code": "E2.5",
+      "code": "E2.6",
       "kind": "specific",
       "strandCode": "E",
       "parentCode": "E2",
@@ -439,7 +439,7 @@
       "kind": "overall",
       "strandCode": "F",
       "parentCode": null,
-      "textFr": "Démontrer une compréhension de la valeur de la monnaie canadienne.",
+      "textFr": "Démontrer une compréhension de la valeur et de l’utilisation de la monnaie canadienne.",
       "textEn": null
     },
     {
@@ -448,7 +448,7 @@
       "kind": "specific",
       "strandCode": "F",
       "parentCode": "F1",
-      "textFr": "Estimer, compter et représenter, avec le symbole $, la valeur de diverses collections de pièces de monnaie et de billets d’au plus 100 $.",
+      "textFr": "Estimer et calculer la monnaie à rendre lors de transactions simples en argent comptant, avec des montants en dollars entiers ou de moins d’un dollar.",
       "textEn": null
     }
   ]

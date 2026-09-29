@@ -183,7 +183,7 @@
             "kind": "short_answer",
             "sampleAnswer": "Revenir (re- + venir).",
             "acceptableAnswers": ["revenir"],
-            "explanation": "D’autres mots avec re- : refaire, relire, reprendre."
+            "explanation": "D’autres mots avec re- : refaire, relire, reprendre."
           },
           {
             "questionId": "r5",
