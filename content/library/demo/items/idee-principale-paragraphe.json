@@ -75,7 +75,7 @@
           },
           {
             "minutes": 10,
-            "instruction": "Pratique guidée en équipes de deux avec les paragraphes 2 et 3. Pour chaque paragraphe, l’équipe nomme le sujet, écrit l’idée principale en une phrase dans la bonne case, puis souligne deux détails dans le texte. Circuler et poser des questions.",
+            "instruction": "Pratique guidée en équipes de deux avec les paragraphes 2 et 3. Pour chaque paragraphe, l’équipe nomme le sujet, écrit l’idée principale en une phrase dans la bonne case, puis surligne deux détails dans le texte. Circuler et poser des questions.",
             "say": "De quoi parlent toutes les phrases de ce paragraphe? Votre idée principale est-elle trop petite, trop grande ou juste bien?"
           },
           {

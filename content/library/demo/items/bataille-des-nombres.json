@@ -36,12 +36,12 @@
         "setup": "Retirez les figures (valets, dames, rois) de chaque jeu de cartes : il reste 40 cartes. L’as vaut 1 et le 10 vaut 0. Jouez une manche au tableau avec deux élèves avant de commencer. Rappelez que le chiffre placé à gauche indique les centaines.",
         "rules": [
           "Mélangez les cartes et placez-les face cachée en une pile au milieu.",
-          "Chaque personne pioche trois cartes.",
+          "Chaque personne pige trois cartes.",
           "Place tes trois cartes pour former le plus grand nombre possible. Attention : si tu mets le 0 à gauche, ton nombre n’a que deux chiffres.",
           "Lis ton nombre à voix haute.",
           "Comparez vos nombres avec une phrase complète, par exemple : « 853 est plus grand que 627. »",
           "La personne qui a le plus grand nombre gagne la manche et marque un point.",
-          "En cas d’égalité, c’est la bataille : chaque personne pioche trois nouvelles cartes, et le plus grand nombre gagne deux points.",
+          "En cas d’égalité, c’est la bataille : chaque personne pige trois nouvelles cartes, et le plus grand nombre gagne deux points.",
           "Chaque personne écrit la comparaison sur sa feuille avec le signe > ou <, par exemple : 853 > 627.",
           "Placez les cartes utilisées sous la pile, puis jouez une autre manche."
         ],
@@ -49,7 +49,7 @@
         "variations": [
           "Le plus petit : cette fois, c’est le plus petit nombre à trois chiffres qui gagne.",
           "Le plus près de 500 : le nombre le plus proche de 500 gagne la manche.",
-          "Quatre cartes : on pioche quatre cartes et on en garde trois.",
+          "Quatre cartes : on pige quatre cartes et on en garde trois.",
           "En ordre : à trois ou à quatre, placez tous vos nombres dans l’ordre croissant. La personne qui a le nombre le plus grand lit la suite à voix haute."
         ],
         "questions": [

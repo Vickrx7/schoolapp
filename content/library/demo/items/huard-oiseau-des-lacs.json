@@ -203,7 +203,7 @@
           },
           {
             "term": "la femelle",
-            "definition": "La maman, chez les animaux."
+            "definition": "L’oiseau qui pond les œufs. Ici, c’est la maman huard."
           },
           {
             "term": "couver",
@@ -218,7 +218,7 @@
           {
             "id": "q1",
             "kind": "multiple_choice",
-            "prompt": "Le paragraphe 3 parle surtout de quoi?",
+            "prompt": "De quoi parle surtout le paragraphe 3?",
             "hint": "",
             "points": null,
             "category": "habiletes",
@@ -657,7 +657,7 @@
       "content": {
         "title": "",
         "objective": "Je trouve l’idée principale d’un paragraphe et des détails importants qui l’appuient.",
-        "teacherNote": "Version Enrichi : vocabulaire plus riche et plus précis, phrases plus variées, et deux questions d’approfondissement (q6 et q7). Les quatre versions ont les mêmes quatre paragraphes et les mêmes idées principales, ce qui permet de faire la leçon « Trouver l’idée principale d’un paragraphe » avec toute la classe.",
+        "teacherNote": "Version Enrichi : vocabulaire plus riche et plus précis, phrases plus variées, et deux questions d’approfondissement (questions 6 et 7). Les quatre versions ont les mêmes quatre paragraphes et les mêmes idées principales, ce qui permet de faire la leçon « Trouver l’idée principale d’un paragraphe » avec toute la classe.",
         "text": "1. Le huard, qu’on appelle aussi plongeon huard, est un grand oiseau aquatique. Du printemps jusqu’à l’automne, il fréquente des milliers de lacs de l’Ontario, surtout ceux dont l’eau est claire et poissonneuse. Au crépuscule, son cri résonne sur l’eau : on dirait un long rire tremblant, parfois suivi d’une plainte qui donne des frissons. Cet oiseau fait partie du paysage et de l’identité de la province : il en est l’oiseau officiel, et il figure sur la pièce d’un dollar, que tout le monde surnomme d’ailleurs le « huard ».\n\n2. En été, son plumage le rend difficile à confondre avec un autre oiseau. Sa tête et son cou sont d’un noir aux reflets verts, et ses yeux sont d’un rouge vif. Un collier de fines rayures blanches entoure son cou. Son dos est parsemé de taches blanches disposées en rangées, comme les cases d’un damier. Enfin, son long bec noir et pointu lui permet de saisir facilement ses proies.\n\n3. Le huard est un plongeur remarquable, dont tout le corps est adapté à la vie sous l’eau. Il plonge pour poursuivre les poissons dont il se nourrit. Ses pattes palmées, placées très loin à l’arrière du corps, le propulsent comme des palmes de plongée. Contrairement à la plupart des oiseaux, dont les os sont creux et légers, le huard possède des os pleins et lourds qui l’aident à s’enfoncer dans l’eau. Cette adaptation a toutefois un prix : sur la terre ferme, il se déplace avec beaucoup de difficulté.\n\n4. Le huard installe son nid au bord de l’eau, souvent sur une petite île où les prédateurs ont du mal à l’atteindre. La femelle y pond généralement deux œufs, parfois un seul. Le mâle et la femelle se relaient pour les couver et les garder au chaud. Les poussins savent nager presque aussitôt après l’éclosion. Lorsqu’ils sont fatigués ou qu’un danger approche, ils grimpent sur le dos de l’un de leurs parents, où ils trouvent chaleur et protection.",
         "glossary": [
           {
@@ -812,16 +812,16 @@
           {
             "questionId": "q6",
             "kind": "short_answer",
-            "sampleAnswer": "On le trouve sur des milliers de lacs de la province, et son cri fait partie du paysage des soirs d’été. Il est aussi assez connu pour figurer sur la pièce d’un dollar.",
+            "sampleAnswer": "On le trouve sur des milliers de lacs de la province, et son cri fait partie du paysage des soirs d’été. Il est aussi très connu : on le voit même sur la pièce d’un dollar.",
             "acceptableAnswers": [],
             "explanation": "Question d’approfondissement : accepter toute réponse justifiée par des éléments du texte."
           },
           {
             "questionId": "q7",
             "kind": "short_answer",
-            "sampleAnswer": "Le huard, un plongeur bien adapté à nos lacs",
+            "sampleAnswer": "La vie du huard, l’oiseau de nos lacs",
             "acceptableAnswers": [],
-            "explanation": "Le titre doit couvrir tout le texte (l’oiseau, son apparence, ses adaptations et ses petits), pas un seul paragraphe."
+            "explanation": "Le titre doit porter sur le huard en général (qui il est, à quoi il ressemble, comment il vit et élève ses petits), pas sur un seul paragraphe."
           }
         ],
         "solution": ""

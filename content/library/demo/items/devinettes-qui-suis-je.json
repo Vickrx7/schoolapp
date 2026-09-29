@@ -22,7 +22,7 @@
   "formats": {
     "printable": true,
     "projectable": true,
-    "interactive": true
+    "interactive": false
   },
   "subFriendly": true,
   "versions": [

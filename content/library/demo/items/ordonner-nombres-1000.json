@@ -43,7 +43,7 @@
       "content": {
         "title": "",
         "objective": "Je compare et j’ordonne des nombres naturels jusqu’à 1 000.",
-        "teacherNote": "Fiche liée à la leçon 5 « Ordonner des nombres » de l’unité « Les nombres jusqu’à 1 000 ». Les nombres sont les mêmes dans toutes les versions : seule la langue change, et la version enrichie ajoute deux défis. La question q9 se corrige à la main.",
+        "teacherNote": "Fiche liée à la leçon 5 « Ordonner des nombres » de l’unité « Les nombres jusqu’à 1 000 ». Les nombres des questions sont les mêmes dans toutes les versions : seuls la langue et les appuis changent, et la version enrichie ajoute deux défis. La question 9 se corrige à la main.",
         "instructions": "Lis chaque question attentivement. Pour comparer des nombres, compare d’abord les centaines, puis les dizaines, puis les unités.",
         "text": "Rappel : en ordre croissant, on place les nombres du plus petit au plus grand. En ordre décroissant, on les place du plus grand au plus petit.",
         "glossary": [
@@ -583,9 +583,9 @@
       "content": {
         "title": "",
         "objective": "Je compare et j’ordonne des nombres naturels jusqu’à 1 000.",
-        "teacherNote": "Version Intermédiaire : consignes simples, indices pour les questions d’ordre et pour q7. Mêmes nombres que les autres versions.",
+        "teacherNote": "Version Intermédiaire : consignes simples, rappel avec des exemples, indices pour les questions d’ordre et pour la question 7. Mêmes nombres que les autres versions.",
         "instructions": "Lis chaque question. Pour comparer deux nombres, regarde d’abord les centaines, puis les dizaines, puis les unités.",
-        "text": "Rappel : en ordre croissant, on place les nombres du plus petit au plus grand. En ordre décroissant, on les place du plus grand au plus petit.",
+        "text": "Rappel : en ordre croissant, on place les nombres du plus petit au plus grand. Exemple : 305, 350, 503.\n\nEn ordre décroissant, on les place du plus grand au plus petit. Exemple : 503, 350, 305.",
         "glossary": [
           {
             "term": "croissant",
@@ -1115,7 +1115,7 @@
       "content": {
         "title": "",
         "objective": "Je compare et j’ordonne des nombres naturels jusqu’à 1 000.",
-        "teacherNote": "Version Enrichi : vocabulaire mathématique plus précis (inférieur, supérieur, compris entre) et deux défis (q10 et q11). Mêmes nombres que les autres versions pour les questions 1 à 9.",
+        "teacherNote": "Version Enrichi : vocabulaire mathématique plus précis (inférieur, supérieur, compris entre) et deux défis (questions 10 et 11). Mêmes nombres que les autres versions pour les questions 1 à 9.",
         "instructions": "Lis chaque question attentivement. Pour comparer des nombres, examine d’abord le chiffre des centaines, puis celui des dizaines, puis celui des unités. Les deux dernières questions sont des défis.",
         "text": "Rappel : en ordre croissant, on place les nombres du plus petit au plus grand (on peut utiliser le symbole <). En ordre décroissant, on les place du plus grand au plus petit (on peut utiliser le symbole >).",
         "glossary": [

@@ -31,17 +31,17 @@
       "content": {
         "title": "",
         "objective": "Je connais ce qu’on attend d’une bonne fiche informative et je m’en sers pour améliorer mon texte.",
-        "teacherNote": "Présentez la grille avant l’écriture, puis utilisez-la pour l’autoévaluation au brouillon et pour l’évaluation du texte final. Le niveau 3 correspond à la norme provinciale. Les qualificatifs (limitée, partielle, générale, approfondie; avec une efficacité limitée, avec une certaine efficacité, avec efficacité, avec beaucoup d’efficacité) suivent la grille d’évaluation du rendement du curriculum de l’Ontario : à vérifier contre le document officiel en vigueur. Convient au projet « Mon documentaire sur un animal de l’Ontario ».",
+        "teacherNote": "Présentez la grille avant l’écriture, puis utilisez-la pour l’autoévaluation au brouillon et pour l’évaluation du texte final. Le niveau 3 correspond à la norme provinciale. Chaque critère reprend un élément de sa catégorie dans la grille d’évaluation du rendement : connaissance du genre et compréhension de l’information; habiletés de planification et de traitement de l’information; organisation, communication pour un public et utilisation des conventions et du vocabulaire; application du processus d’écriture et établissement de liens. Les qualificatifs (limitée, partielle, générale, approfondie; avec une efficacité limitée, avec une certaine efficacité, avec efficacité, avec beaucoup d’efficacité) suivent la grille des programmes-cadres de l’Ontario (« Faire croître le succès », 2010) : à vérifier contre le document officiel en vigueur. Convient au projet « Mon documentaire sur un animal de l’Ontario ».",
         "task": "Écrire une fiche informative de quatre paragraphes sur un animal de l’Ontario pour des élèves plus jeunes : habitat, alimentation, apparence et fait étonnant.",
         "criteria": [
           {
             "category": "connaissance",
-            "criterion": "Les faits sur l’animal",
+            "criterion": "La compréhension de l’information sur l’animal",
             "levels": {
-              "level1": "Démontre une connaissance limitée de l’animal : peu de faits, parfois inexacts.",
-              "level2": "Démontre une connaissance partielle de l’animal : quelques faits exacts.",
-              "level3": "Démontre une connaissance générale de l’animal : plusieurs faits exacts dans chaque paragraphe.",
-              "level4": "Démontre une connaissance approfondie de l’animal : des faits exacts, précis et bien choisis."
+              "level1": "Démontre une compréhension limitée de l’information trouvée sur l’animal : peu de faits, parfois inexacts.",
+              "level2": "Démontre une compréhension partielle de l’information trouvée sur l’animal : quelques faits exacts.",
+              "level3": "Démontre une compréhension générale de l’information trouvée sur l’animal : plusieurs faits exacts dans chaque paragraphe.",
+              "level4": "Démontre une compréhension approfondie de l’information trouvée sur l’animal : des faits exacts, précis et bien choisis."
             }
           },
           {
@@ -86,32 +86,42 @@
           },
           {
             "category": "communication",
-            "criterion": "Les conventions : majuscules, points et accords simples",
+            "criterion": "Le public : communiquer clairement avec des élèves plus jeunes",
             "levels": {
-              "level1": "Respecte les conventions (majuscules, points, accords simples) avec une efficacité limitée : les erreurs gênent souvent la lecture.",
-              "level2": "Respecte les conventions (majuscules, points, accords simples) avec une certaine efficacité : plusieurs erreurs, mais le texte se lit.",
-              "level3": "Respecte les conventions (majuscules, points, accords simples) avec efficacité : quelques erreurs qui ne gênent pas la lecture.",
-              "level4": "Respecte les conventions (majuscules, points, accords simples) avec beaucoup d’efficacité : très peu d’erreurs."
+              "level1": "Communique l’information à un public plus jeune avec une efficacité limitée : plusieurs phrases sont difficiles à comprendre pour ce public.",
+              "level2": "Communique l’information à un public plus jeune avec une certaine efficacité : certaines phrases sont claires pour ce public.",
+              "level3": "Communique l’information à un public plus jeune avec efficacité : des phrases claires et des légendes utiles pour ce public.",
+              "level4": "Communique l’information à un public plus jeune avec beaucoup d’efficacité : des phrases claires, des légendes utiles et un ton qui capte l’intérêt de ce public."
+            }
+          },
+          {
+            "category": "communication",
+            "criterion": "Les conventions et le vocabulaire : majuscules, points, accords simples et mots précis appris en classe",
+            "levels": {
+              "level1": "Utilise les conventions et le vocabulaire à l’étude avec une efficacité limitée : les erreurs gênent souvent la lecture et les mots précis sont rares.",
+              "level2": "Utilise les conventions et le vocabulaire à l’étude avec une certaine efficacité : plusieurs erreurs, mais le texte se lit; quelques mots précis.",
+              "level3": "Utilise les conventions et le vocabulaire à l’étude avec efficacité : quelques erreurs qui ne gênent pas la lecture; plusieurs mots précis bien employés (habitat, herbivore, terrier…).",
+              "level4": "Utilise les conventions et le vocabulaire à l’étude avec beaucoup d’efficacité : très peu d’erreurs; de nombreux mots précis, bien employés et expliqués au besoin."
             }
           },
           {
             "category": "application",
-            "criterion": "Le public : un texte clair pour des élèves plus jeunes",
+            "criterion": "Le processus d’écriture : planifier, rédiger, réviser et corriger",
             "levels": {
-              "level1": "Adapte son texte à un public plus jeune avec une efficacité limitée : plusieurs phrases sont difficiles à comprendre pour ce public.",
-              "level2": "Adapte son texte à un public plus jeune avec une certaine efficacité : certaines phrases sont claires pour ce public.",
-              "level3": "Adapte son texte à un public plus jeune avec efficacité : des phrases claires et des légendes utiles pour ce public.",
-              "level4": "Adapte son texte à un public plus jeune avec beaucoup d’efficacité : des phrases claires, des exemples et des comparaisons qui captent l’intérêt de ce public."
+              "level1": "Applique le processus d’écriture avec une efficacité limitée : le brouillon est peu révisé et peu corrigé.",
+              "level2": "Applique le processus d’écriture avec une certaine efficacité : quelques corrections au brouillon, surtout en orthographe.",
+              "level3": "Applique le processus d’écriture avec efficacité : le brouillon est révisé et corrigé à l’aide de la grille.",
+              "level4": "Applique le processus d’écriture avec beaucoup d’efficacité : les révisions améliorent clairement le texte, et l’élève explique ses changements."
             }
           },
           {
             "category": "application",
-            "criterion": "Le vocabulaire : réutiliser les mots précis appris en classe",
+            "criterion": "Les liens : relier l’animal au quotidien des élèves plus jeunes",
             "levels": {
-              "level1": "Réutilise les mots précis appris en classe (habitat, herbivore, terrier…) avec une efficacité limitée : peu de mots précis, parfois mal employés.",
-              "level2": "Réutilise les mots précis appris en classe (habitat, herbivore, terrier…) avec une certaine efficacité : quelques mots précis.",
-              "level3": "Réutilise les mots précis appris en classe (habitat, herbivore, terrier…) avec efficacité : plusieurs mots précis, bien employés.",
-              "level4": "Réutilise les mots précis appris en classe (habitat, herbivore, terrier…) avec beaucoup d’efficacité : de nombreux mots précis, bien employés et expliqués au besoin."
+              "level1": "Établit des liens entre l’animal et le quotidien des élèves plus jeunes avec une efficacité limitée : aucune comparaison ni aucun exemple tiré de leur vie.",
+              "level2": "Établit des liens entre l’animal et le quotidien des élèves plus jeunes avec une certaine efficacité : une comparaison ou un exemple, peu développé.",
+              "level3": "Établit des liens entre l’animal et le quotidien des élèves plus jeunes avec efficacité : des comparaisons ou des exemples tirés de leur vie (la taille d’un chien, un lac près de chez eux).",
+              "level4": "Établit des liens entre l’animal et le quotidien des élèves plus jeunes avec beaucoup d’efficacité : des comparaisons et des exemples bien choisis, qui les aident à imaginer l’animal et à s’y intéresser."
             }
           }
         ]

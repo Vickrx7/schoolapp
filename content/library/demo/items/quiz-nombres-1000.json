@@ -43,7 +43,7 @@
       "content": {
         "title": "",
         "objective": "Je lis, je représente, je compare, j’ordonne et j’arrondis des nombres jusqu’à 1 000.",
-        "teacherNote": "Quiz de révision sur les attentes B1.1, B1.2 et B1.3 : il contient les cinq sortes de questions. Comptez environ 20 minutes. Les versions par niveau de langue gardent les mêmes questions, les mêmes nombres et les mêmes réponses : seule la formulation change. La question 9 se corrige à la main.",
+        "teacherNote": "Quiz de révision sur l’attente B1 et les contenus d’apprentissage B1.1, B1.2 et B1.3 : il contient les cinq sortes de questions. Comptez environ 20 minutes. Les versions par niveau de langue gardent les mêmes questions, les mêmes nombres et les mêmes réponses : seule la formulation change. La question 9 se corrige à la main.",
         "instructions": "Lis chaque question attentivement et réponds sur la feuille. Tu peux faire tes calculs dans la marge.",
         "questions": [
           {
@@ -364,7 +364,7 @@
           {
             "id": "q3",
             "kind": "matching",
-            "prompt": "Trouve le même nombre en chiffres.",
+            "prompt": "Relie chaque nombre en lettres au même nombre en chiffres. Un nombre en chiffres est de trop.",
             "hint": "quinze = 15; quarante = 40; soixante-dix = 70.",
             "points": null,
             "category": "connaissance",
@@ -644,7 +644,7 @@
           {
             "id": "q3",
             "kind": "matching",
-            "prompt": "Associe chaque nombre en lettres au même nombre en chiffres.",
+            "prompt": "Associe chaque nombre en lettres au même nombre en chiffres. Un nombre en chiffres est de trop.",
             "hint": "",
             "points": null,
             "category": "connaissance",

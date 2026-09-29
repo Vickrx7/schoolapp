@@ -43,7 +43,7 @@
       "content": {
         "title": "",
         "objective": "J’établis des liens entre les fractions et les nombres décimaux (dixièmes et centièmes) à l’aide de l’argent.",
-        "teacherNote": "Les montants sont les mêmes dans toutes les versions : seule la langue change, et la version enrichie ajoute deux défis. La pièce de 1 ¢ n’est plus produite au Canada depuis 2013, mais les prix et les paiements électroniques s’écrivent encore au cent près : le cent sert ici d’unité de mesure. Les questions q8 et q9 se corrigent à la main.",
+        "teacherNote": "Les montants des questions sont les mêmes dans toutes les versions : seuls la langue et les appuis changent, et la version enrichie ajoute deux défis. Au Canada, la pièce de 1 ¢ n’est plus fabriquée depuis 2012 ni distribuée depuis 2013, mais les prix et les paiements électroniques s’écrivent encore au cent près : le cent sert ici d’unité de mesure. Les questions 8 et 9 se corrigent à la main.",
         "instructions": "Dans cette fiche, un dollar représente un tout. Lis le rappel, puis réponds aux questions.",
         "text": "Rappel : il faut 10 pièces de 10 ¢ pour faire 1 $. Une pièce de 10 ¢ vaut donc un dixième de dollar : 1/10 de dollar = 0,10 $.\n\nIl faut 100 cents pour faire 1 $. Un cent vaut donc un centième de dollar : 1/100 de dollar = 0,01 $.\n\nDans 0,37 $, le 3 est à la position des dixièmes (3 dixièmes = 30 ¢) et le 7 est à la position des centièmes (7 centièmes = 7 ¢).",
         "glossary": [
@@ -579,7 +579,7 @@
       "content": {
         "title": "",
         "objective": "J’établis des liens entre les fractions et les nombres décimaux (dixièmes et centièmes) à l’aide de l’argent.",
-        "teacherNote": "Version Intermédiaire : phrases simples, indices pour les questions 1, 7 et 8. Mêmes montants que les autres versions.",
+        "teacherNote": "Version Intermédiaire : phrases simples, indices pour les questions 1, 3, 7, 8 et 9. Mêmes montants que les autres versions.",
         "instructions": "Dans cette fiche, un dollar représente un tout. Lis le rappel, puis réponds aux questions.",
         "text": "Rappel : il faut 10 pièces de 10 ¢ pour faire 1 $. Une pièce de 10 ¢ vaut donc 1/10 de dollar, soit 0,10 $.\n\nIl faut 100 cents pour faire 1 $. Un cent vaut donc 1/100 de dollar, soit 0,01 $.\n\nDans 0,37 $, le 3 est aux dixièmes (30 ¢) et le 7 est aux centièmes (7 ¢).",
         "glossary": [
@@ -658,7 +658,7 @@
             "id": "q3",
             "kind": "short_answer",
             "prompt": "Écris 45 centièmes de dollar sous forme de nombre décimal.",
-            "hint": "",
+            "hint": "Un exemple : 30 centièmes de dollar = 0,30 $.",
             "points": null,
             "category": "connaissance",
             "lines": 1
@@ -745,7 +745,7 @@
             "id": "q9",
             "kind": "short_answer",
             "prompt": "Bastien dit que 0,4 $, c’est 4 cents. Explique son erreur.",
-            "hint": "",
+            "hint": "Dans 0,4 $, à quelle position est le chiffre 4?",
             "points": null,
             "category": "communication",
             "lines": 3
@@ -1107,7 +1107,7 @@
       "content": {
         "title": "",
         "objective": "J’établis des liens entre les fractions et les nombres décimaux (dixièmes et centièmes) à l’aide de l’argent.",
-        "teacherNote": "Version Enrichi : vocabulaire mathématique plus précis (équivalent, supérieur, exprimer) et deux défis (q10 et q11). Mêmes montants que les autres versions pour les questions 1 à 9.",
+        "teacherNote": "Version Enrichi : vocabulaire mathématique plus précis (équivalent, supérieur, exprimer) et deux défis (questions 10 et 11). Mêmes montants que les autres versions pour les questions 1 à 9.",
         "instructions": "Dans cette fiche, un dollar représente un tout. Lis attentivement le rappel, puis réponds aux questions. Les deux dernières questions sont des défis.",
         "text": "Rappel : un dollar se partage en 10 dixièmes ou en 100 centièmes. Une pièce de 10 ¢ représente un dixième de dollar (1/10 = 0,10 $), et un cent représente un centième de dollar (1/100 = 0,01 $).\n\nDans 0,37 $, le chiffre 3 occupe la position des dixièmes (3 dixièmes = 30 ¢) et le chiffre 7, celle des centièmes (7 centièmes = 7 ¢). Ainsi, 0,37 $ = 37/100 de dollar.",
         "glossary": [

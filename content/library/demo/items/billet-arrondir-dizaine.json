@@ -43,7 +43,7 @@
       "content": {
         "title": "",
         "objective": "J’arrondis des nombres naturels à la dizaine près.",
-        "teacherNote": "Billet de sortie pour la fin de la leçon « Arrondir à la dizaine ». Les trois questions et les nombres sont les mêmes dans toutes les versions; seule la langue change. La question 2 vérifie la convention du nombre situé au milieu (365 devient 370). La question 3 se corrige à la main : noter les élèves qui répondent 90 ou qui ne justifient pas. Voir aussi le guide « Arrondir : idées fausses fréquentes ».",
+        "teacherNote": "Billet de sortie pour la fin de la leçon « Arrondir à la dizaine ». Les trois questions et les nombres sont les mêmes dans toutes les versions; seule la langue change. La question 2 vérifie la convention du nombre situé au milieu (365 devient 370). La question 3 se corrige à la main : repérer les élèves qui répondent 90 ou qui ne justifient pas. Voir aussi le guide « Arrondir : idées fausses fréquentes ».",
         "prompt": "Avant de partir, montre ce que tu sais sur l’arrondissement à la dizaine près.",
         "questions": [
           {
