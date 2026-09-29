@@ -13,6 +13,7 @@ import {
   decideDraft,
   draftStorage,
   serializeDraft,
+  type DraftStorageKind,
   type SentDraftPolicy,
 } from './draft-storage';
 
@@ -26,32 +27,38 @@ export interface DraftOptions {
   version?: string;
   /** What to do with a stored draft that was already sent as a request (see `markSent`). */
   sentPolicy?: SentDraftPolicy;
+  /**
+   * 'local' (default) keeps the draft on the device; 'session' keeps it for this tab only, for
+   * a form on a device that is not the writer's own (the substitute's report).
+   */
+  storage?: DraftStorageKind;
 }
 
-function write(storageKey: string, text: string) {
+function write(kind: DraftStorageKind, storageKey: string, text: string) {
   try {
-    draftStorage()?.setItem(storageKey, text);
+    draftStorage(kind)?.setItem(storageKey, text);
   } catch {
     // Ignore quota or private-mode errors.
   }
 }
 
-function remove(storageKey: string) {
+function remove(kind: DraftStorageKind, storageKey: string) {
   try {
-    draftStorage()?.removeItem(storageKey);
+    draftStorage(kind)?.removeItem(storageKey);
   } catch {
     // ignore
   }
 }
 
 /**
- * Form state that is also kept in localStorage once the teacher edits it, so a crash, a lost
+ * Form state that is also kept in the browser once the teacher edits it, so a crash, a lost
  * connection or a closed tab never loses their work (D-035). Opening a form stores nothing, and
  * a stored copy identical to `initial` is dropped. Call `clear()` after a successful save.
  * Include the user id in `key`: another account on the same browser must never get the draft.
  */
 export function useDraft<T extends object>(key: string, initial: T, options: DraftOptions = {}) {
   const storageKey = DRAFT_PREFIX + key;
+  const kind: DraftStorageKind = options.storage ?? 'local';
   const [value, setValueState] = useState<T>(initial);
   const [restored, setRestored] = useState(false);
   const [sentAs, setSentAs] = useState<string | null>(null);
@@ -68,7 +75,7 @@ export function useDraft<T extends object>(key: string, initial: T, options: Dra
   useEffect(() => {
     let raw: string | null = null;
     try {
-      raw = draftStorage()?.getItem(storageKey) ?? null;
+      raw = draftStorage(kind)?.getItem(storageKey) ?? null;
     } catch {
       // Storage unavailable (private mode): start fresh.
     }
@@ -76,7 +83,7 @@ export function useDraft<T extends object>(key: string, initial: T, options: Dra
       version: options.version,
       sentPolicy: options.sentPolicy,
     });
-    if (decision.kind === 'drop') remove(storageKey);
+    if (decision.kind === 'drop') remove(kind, storageKey);
     if (decision.kind === 'restore') {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- restoring from storage on mount
       setValueState(decision.value);
@@ -86,16 +93,16 @@ export function useDraft<T extends object>(key: string, initial: T, options: Dra
     if (decision.kind === 'offer') setOffered(decision.value);
     // Only on mount / key change.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [storageKey]);
+  }, [kind, storageKey]);
 
   useEffect(() => {
     if (!dirty.current) return;
     timer.current = window.setTimeout(() => {
       timer.current = undefined;
-      write(storageKey, serializeDraft(value, { version: version.current }));
+      write(kind, storageKey, serializeDraft(value, { version: version.current }));
     }, 400);
     return () => window.clearTimeout(timer.current);
-  }, [storageKey, value]);
+  }, [kind, storageKey, value]);
 
   const setValue: Dispatch<SetStateAction<T>> = useCallback((next) => {
     dirty.current = true;
@@ -110,11 +117,11 @@ export function useDraft<T extends object>(key: string, initial: T, options: Dra
   const clear = useCallback(() => {
     window.clearTimeout(timer.current);
     dirty.current = false;
-    remove(storageKey);
+    remove(kind, storageKey);
     setRestored(false);
     setSentAs(null);
     setOffered(null);
-  }, [storageKey]);
+  }, [kind, storageKey]);
 
   const discard = useCallback(() => {
     clear();
@@ -138,9 +145,9 @@ export function useDraft<T extends object>(key: string, initial: T, options: Dra
     (requestId: string, sent: T) => {
       window.clearTimeout(timer.current);
       dirty.current = false;
-      write(storageKey, serializeDraft(sent, { sentAs: requestId }));
+      write(kind, storageKey, serializeDraft(sent, { sentAs: requestId }));
     },
-    [storageKey],
+    [kind, storageKey],
   );
 
   return {

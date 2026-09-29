@@ -27,6 +27,13 @@ export interface TodayLesson {
   unitId: string;
   unitTitle: string;
   taught: boolean;
+  /**
+   * A substitute reported it done and the teacher has not confirmed it yet (D-054): it counts
+   * as done, is confirmed only through the report, never checked off here.
+   */
+  pendingConfirmation: boolean;
+  /** Where to confirm it (null when the report is not hers to read, e.g. a co-teacher's). */
+  pendingReport: { absenceId: string; planId: string } | null;
 }
 
 export interface TodayBlock {
@@ -111,7 +118,7 @@ export async function loadToday(
       .eq('status', 'active'),
     supabase
       .from('lesson_progress')
-      .select('lesson_id, status, taught_on')
+      .select('lesson_id, status, taught_on, sub_reports(sub_plan_id, sub_plans(absence_id))')
       .in('class_id', classIds),
     supabase.from('subjects').select('id, label_fr, label_en, color'),
     supabase.from('rooms').select('id, name').in('school_id', schoolIds),
@@ -142,6 +149,20 @@ export async function loadToday(
     (progressRes.data ?? []).map((p) => [p.lesson_id, p.status]),
   );
   const taughtOn = new Map((progressRes.data ?? []).map((p) => [p.lesson_id, p.taught_on]));
+  // Pending lessons and the report to confirm them in (sub_reports is the owner's only, RLS).
+  const pendingReports = new Map(
+    (progressRes.data ?? [])
+      .filter((p) => p.status === 'pending_confirmation')
+      .map((p) => {
+        const report = p.sub_reports;
+        return [
+          p.lesson_id,
+          report?.sub_plans
+            ? { absenceId: report.sub_plans.absence_id, planId: report.sub_plan_id }
+            : null,
+        ] as const;
+      }),
+  );
 
   type LessonWithUnit = TodayLesson;
   const activeUnits = new Map<string, { unitId: string; lessons: LessonWithUnit[] }>();
@@ -157,6 +178,8 @@ export async function loadToday(
         unitId: u.id,
         unitTitle: u.title,
         taught: false,
+        pendingConfirmation: false,
+        pendingReport: null,
       })),
     });
   }
@@ -242,7 +265,12 @@ export async function loadToday(
       affectedBy: b.affectedBy ? { title: b.affectedBy.title, type: b.affectedBy.eventType } : null,
       roomName: b.roomId ? (rooms.get(b.roomId) ?? null) : null,
       lesson: assignment?.lesson
-        ? { ...assignment.lesson, taught: assignment.reason === 'taught' }
+        ? {
+            ...assignment.lesson,
+            taught: assignment.reason === 'taught',
+            pendingConfirmation: pendingReports.has(assignment.lesson.id),
+            pendingReport: pendingReports.get(assignment.lesson.id) ?? null,
+          }
         : null,
       lessonState: assignment?.reason ?? null,
       gapTitle: assignment?.reason === 'assigned' && gaps[0] ? gaps[0].title : null,

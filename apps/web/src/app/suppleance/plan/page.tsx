@@ -99,6 +99,7 @@ export default async function PortalPlanPage() {
           emergencyInfo: context.emergencyInfo,
           contentVersion: context.contentVersion,
           alertsAvailable: context.alertsAvailable,
+          reportStatus: context.reportStatus,
         }}
         roster={day.roster}
         levels={day.levels}

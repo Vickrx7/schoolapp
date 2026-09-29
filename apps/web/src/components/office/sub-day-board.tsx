@@ -1,10 +1,11 @@
 import type { LocalDate } from '@lynx/domain';
-import { ClipboardList, LoaderCircle, Smartphone } from 'lucide-react';
+import { ClipboardCheck, ClipboardList, LoaderCircle, Smartphone } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { capitalize } from '@/components/absences/absence-summary';
 import { CodePanel } from '@/components/sub-codes/code-panel';
 import type { SubCodeContext } from '@/components/sub-codes/types';
+import { PdfLink } from '@/components/sub-plans/pdf-link';
 import { ReleaseButton } from '@/components/sub-plans/release-button';
 import { Button } from '@/components/ui/button';
 import { Badge, Card, CardBody } from '@/components/ui/card';
@@ -50,6 +51,7 @@ function BoardRow({
   today,
   configured,
   now,
+  canReadReports,
   heading: Heading,
 }: {
   row: SubDayRow;
@@ -57,6 +59,7 @@ function BoardRow({
   today: LocalDate;
   configured: boolean;
   now: string;
+  canReadReports: boolean;
   heading: 'h3' | 'h4';
 }) {
   const t = useTranslations();
@@ -141,6 +144,25 @@ function BoardRow({
               {tOffice('viewPlan')}
             </Link>
           </Button>
+          {row.released ? (
+            // Printing is audited too (sub_plan.printed); the PDF never has alerts (D-053).
+            <PdfLink
+              href={`/absences/${row.absenceId}/plans/${row.planId}/pdf`}
+              label={t('pdf.print')}
+            />
+          ) : null}
+          {canReadReports &&
+          (row.reportStatus === 'submitted' ||
+            row.reportStatus === 'confirmed' ||
+            (row.reportStatus === 'in_progress' && row.planDate < today)) ? (
+            <Button asChild variant="secondary">
+              {/* Not prefetched: every view of a report is audited (D-056). */}
+              <Link href={`/absences/${row.absenceId}/plans/${row.planId}/report`} prefetch={false}>
+                <ClipboardCheck aria-hidden />
+                {t('subReport.viewStaff')}
+              </Link>
+            </Button>
+          ) : null}
           {!row.released && upcoming ? (
             <ReleaseButton planId={row.planId} variant="secondary" />
           ) : null}
@@ -175,6 +197,7 @@ export function SubDayBoard({
   configured,
   now,
   showSchoolName,
+  canReadReports,
 }: {
   school: BoardSchool;
   days: SubBoardDay[];
@@ -182,6 +205,8 @@ export function SubDayBoard({
   configured: boolean;
   now: string;
   showSchoolName: boolean;
+  /** The direction reads reports (audited); office staff see only their status. */
+  canReadReports: boolean;
 }) {
   const t = useTranslations('office');
   const locale = useLocale();
@@ -212,6 +237,7 @@ export function SubDayBoard({
                     today={today}
                     configured={configured}
                     now={now}
+                    canReadReports={canReadReports}
                     heading={showSchoolName ? 'h4' : 'h3'}
                   />
                 </li>

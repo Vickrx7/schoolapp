@@ -20,6 +20,8 @@ export default defineConfig([
     'tools/lite-stack/.bin/**',
     '**/playwright-report/**',
     '**/test-results/**',
+    // Other branches checked out by Claude Code worktrees; they are linted in their own tree.
+    '.claude/worktrees/**',
   ]),
   js.configs.recommended,
   ...tseslint.configs.recommended,

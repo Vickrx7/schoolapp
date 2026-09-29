@@ -6,6 +6,7 @@ import {
   subPlanV1Schema,
   type SubPlanEdits,
   type SubPlanV1,
+  type SubReportContent,
 } from '@lynx/domain';
 import { z } from 'zod';
 import type { PlanLevel, RosterStudent } from '@/components/sub-plans/types';
@@ -176,6 +177,43 @@ export async function portalAlerts(token: string) {
     [token],
   );
   return z.array(alertRowSchema).parse(rows);
+}
+
+export const saveReportOutcomes = [
+  'expired',
+  'not_released',
+  'confirmed',
+  'locked_other_device',
+  'already_submitted',
+  'saved',
+  'submitted',
+] as const;
+export type SaveReportOutcome = (typeof saveReportOutcomes)[number];
+
+const saveReportRowSchema = z.object({
+  outcome: z.enum(saveReportOutcomes),
+  status: z.enum(['draft', 'submitted', 'confirmed']).nullable(),
+  updated_at: z.coerce.date().nullable(),
+});
+
+/**
+ * Saves the day's report (a draft) or sends it (`submit`), for a session token. The notes are
+ * already encrypted (server/sub-reports/notes.ts); null when there are none. A malformed report
+ * raises 22023 (the caller checked it with the same schema first).
+ */
+export async function saveReport(
+  token: string,
+  content: SubReportContent,
+  notes: { ciphertext: string; keyVersion: number } | null,
+  submit: boolean,
+): Promise<{ outcome: SaveReportOutcome; updatedAt: string | null }> {
+  const rows = await portalQuery(
+    `select outcome, status, updated_at
+       from sub_portal.save_report($1, $2::jsonb, $3, $4::smallint, $5)`,
+    [token, JSON.stringify(content), notes?.ciphertext ?? null, notes?.keyVersion ?? null, submit],
+  );
+  const row = saveReportRowSchema.parse(rows[0]);
+  return { outcome: row.outcome, updatedAt: row.updated_at?.toISOString() ?? null };
 }
 
 /** « Terminer ma journée »: ends this session (a no-op if it already ended). */

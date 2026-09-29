@@ -3,6 +3,7 @@ import {
   clearAllDrafts,
   decideDraft,
   DRAFT_PREFIX,
+  draftStorage,
   forgetSentDrafts,
   removeDrafts,
   serializeDraft,
@@ -108,5 +109,28 @@ describe('removing drafts', () => {
     removeDrafts((key) => key === 'differentiate:new', storage);
     expect(storage.getItem(`${DRAFT_PREFIX}differentiate:new`)).toBeNull();
     expect(storage.getItem(`${DRAFT_PREFIX}differentiate:new:u1`)).not.toBeNull();
+  });
+});
+
+describe('where drafts are kept', () => {
+  it('keeps drafts on the device, or for the tab only (the substitute’s report)', () => {
+    const local = memoryStorage();
+    const session = memoryStorage();
+    const g = globalThis as { window?: unknown };
+    g.window = { localStorage: local, sessionStorage: session };
+    try {
+      expect(draftStorage()).toBe(local);
+      expect(draftStorage('local')).toBe(local);
+      expect(draftStorage('session')).toBe(session);
+      // Clearing a tab's drafts leaves the device's alone, and the other way round.
+      local.setItem(`${DRAFT_PREFIX}lesson:1`, serializeDraft({ title: 'x' }));
+      session.setItem(`${DRAFT_PREFIX}sub-report:p1`, serializeDraft({ behaviour: 'x' }));
+      removeDrafts((key) => key.startsWith('sub-report:'), draftStorage('session'));
+      expect(session.length).toBe(0);
+      expect(local.length).toBe(1);
+    } finally {
+      delete g.window;
+    }
+    expect(draftStorage('session')).toBeNull();
   });
 });

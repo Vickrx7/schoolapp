@@ -3,8 +3,8 @@ import { cleanupAbsences, clearAttempts, closeDb, openCodeWindow, planIdOn } fro
 import { DEMO, expectAccessible, login, reportAbsence, schoolDay, torontoInstant } from './helpers';
 
 // « Plan de suppléance » on a phone (the `phone` project runs *mobile.spec.ts on a Pixel 7): the
-// teacher reports an absence and gives a code; the substitute signs in and finds « Maintenant ».
-// (The substitute's end-of-day report comes with its own round.)
+// teacher reports an absence and gives a code; the substitute signs in, finds « Maintenant » and
+// sends the end-of-day report.
 
 test.beforeAll(async () => {
   await cleanupAbsences(DEMO.teacher3);
@@ -118,6 +118,33 @@ test('a substitute signs in on a phone and finds what is happening now', async (
 
     await sub.getByRole('tab', { name: 'Fin de journée' }).click();
     await expect(sub.getByRole('link', { name: 'Terminer ma journée' })).toBeVisible();
+    await expectNoHorizontalScroll(sub);
+
+    // « Suivi de la journée » on the phone: chips to tap, nothing to scroll sideways, and the
+    // send button stays in reach.
+    await sub.getByRole('link', { name: 'Remplir le suivi de la journée' }).click();
+    await sub.waitForURL(/\/suppleance\/report$/);
+    const first = sub.getByTestId('report-lesson').first();
+    const done = first.locator('label').filter({ hasText: /^Terminé$/ });
+    await expect(async () => {
+      await done.click();
+      await expect(first.getByRole('radio', { name: 'Terminé' })).toBeChecked({ timeout: 1000 });
+    }).toPass();
+    await sub
+      .locator('label')
+      .filter({ hasText: /^Samuel$/ })
+      .click();
+    await sub.getByLabel('Notes pour l’enseignant·e').fill('Merci pour le plan clair!');
+    await expect(sub.getByTestId('report-save-state')).toContainText('Brouillon enregistré à', {
+      timeout: 15_000,
+    });
+    await expectNoHorizontalScroll(sub);
+    await expectAccessible(sub);
+    const send = sub.getByRole('button', { name: 'Envoyer le suivi' });
+    await expect(send).toBeInViewport();
+    await send.click();
+    await sub.waitForURL(/\/suppleance\/done$/);
+    await expect(sub.getByRole('heading', { name: 'Merci!' })).toBeVisible();
     await expectNoHorizontalScroll(sub);
   } finally {
     await context.close();

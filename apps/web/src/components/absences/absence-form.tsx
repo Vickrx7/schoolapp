@@ -4,9 +4,10 @@ import { ABSENCE_MAX_DAYS, addDays, type AbsencePart } from '@lynx/domain';
 import { CloudOff, Send } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Notice } from '@/components/ui/card';
+import { Chip } from '@/components/ui/chip';
 import { Field, Input, Label, Textarea } from '@/components/ui/field';
 import { useAction } from '@/hooks/use-action';
 import { useDraft } from '@/hooks/use-draft';
@@ -40,35 +41,6 @@ function newRequestId(): string {
 /** Remembers the faith switch on this device (no names or content in it). */
 function rememberFaith(on: boolean) {
   document.cookie = `${FAITH_COOKIE}=${on ? '1' : '0'}; path=/; max-age=31536000; samesite=lax`;
-}
-
-/** A tap target that behaves as a radio button or a checkbox. */
-function Chip({
-  type = 'radio',
-  name,
-  checked,
-  onChange,
-  children,
-}: {
-  type?: 'radio' | 'checkbox';
-  name: string;
-  checked: boolean;
-  onChange: () => void;
-  children: ReactNode;
-}) {
-  return (
-    <label
-      className={cn(
-        'inline-flex min-h-11 cursor-pointer items-center rounded-full border px-4 text-sm font-medium select-none has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand-500',
-        checked
-          ? 'border-brand-600 bg-brand-50 text-brand-800'
-          : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50',
-      )}
-    >
-      <input type={type} name={name} checked={checked} onChange={onChange} className="sr-only" />
-      {children}
-    </label>
-  );
 }
 
 /**

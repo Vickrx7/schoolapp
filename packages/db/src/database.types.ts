@@ -2797,6 +2797,10 @@ export type Database = {
         Args: { p_absence_id: string };
         Returns: undefined;
       };
+      confirm_sub_report: {
+        Args: { p_report_id: string; p_decisions: Json };
+        Returns: undefined;
+      };
       create_class: {
         Args: {
           p_school_id: string;
@@ -2828,6 +2832,10 @@ export type Database = {
       };
       get_sub_plan_sources: {
         Args: { p_school_id: string; p_from: string; p_to: string; p_absence_id?: string };
+        Returns: Json;
+      };
+      get_sub_report_for_staff: {
+        Args: { p_plan_id: string };
         Returns: Json;
       };
       issue_sub_access_code: {
@@ -2941,6 +2949,10 @@ export type Database = {
       set_active_unit: {
         Args: { p_unit_id: string };
         Returns: undefined;
+      };
+      sub_plan_access_ended: {
+        Args: { p_plan_id: string };
+        Returns: boolean;
       };
       unmark_lesson: {
         Args: { p_lesson_id: string };

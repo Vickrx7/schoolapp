@@ -6,7 +6,7 @@ import {
   localMinutesIn,
   timeToMinutes,
 } from '@lynx/domain';
-import { CalendarX, ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
+import { CalendarX, ChevronLeft, ChevronRight, ClipboardCheck, MapPin } from 'lucide-react';
 import type { Metadata } from 'next';
 import { getLocale, getTranslations } from 'next-intl/server';
 import Link from 'next/link';
@@ -19,6 +19,7 @@ import { EmptyState, PageHeader } from '@/components/ui/page';
 import { formatLocalDate, formatTime, formatTimeRange } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import { loadMyAbsences } from '@/server/queries/absences';
+import { loadPendingReports } from '@/server/queries/sub-reports';
 import { loadToday, type TodayBlock } from '@/server/queries/today';
 import { requireSession, teachingSchools } from '@/server/session';
 
@@ -50,10 +51,12 @@ export default async function TodayPage({
   const today = localDateIn(timezone);
   const { date: requested } = await searchParams;
   const date = requested && isLocalDate(requested) ? requested : today;
-  const [data, upcomingAbsences] = await Promise.all([
+  const [data, upcomingAbsences, pendingReports] = await Promise.all([
     loadToday(session, date, locale),
     loadMyAbsences(session, { from: today, limit: 5 }),
+    loadPendingReports(),
   ]);
+  const tReport = await getTranslations('subReport');
   const isToday = date === today;
   const nowMinutes = isToday ? localMinutesIn(timezone) : null;
   const multipleClasses = new Set(data.blocks.map((b) => b.classId)).size > 1;
@@ -104,6 +107,37 @@ export default async function TodayPage({
           </div>
         }
       />
+
+      {pendingReports.length > 0 ? (
+        <div className="mb-4 space-y-2">
+          {/* The substitute's report is back: confirm it (D-054). */}
+          {pendingReports.map((r) => (
+            <Notice
+              key={r.reportId}
+              tone={r.status === 'submitted' ? 'info' : 'warning'}
+              className="flex flex-wrap items-center justify-between gap-2"
+              data-testid="report-banner"
+            >
+              <span className="flex items-center gap-2">
+                <ClipboardCheck className="size-4 shrink-0" aria-hidden />
+                {tReport(r.status === 'submitted' ? 'banner' : 'bannerDraft', {
+                  date: formatLocalDate(r.planDate, locale, {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                  }),
+                })}
+              </span>
+              <Link
+                href={`/absences/${r.absenceId}/plans/${r.planId}/report`}
+                className="inline-flex min-h-11 items-center font-medium underline underline-offset-2"
+              >
+                {tReport('bannerAction')}
+              </Link>
+            </Notice>
+          ))}
+        </div>
+      ) : null}
 
       {upcomingAbsences.length > 0 ? (
         <Card className="mb-4">
@@ -303,7 +337,22 @@ async function BlockCard({
                   </p>
                 ) : null}
               </div>
-              {!inactive ? (
+              {block.lesson.pendingConfirmation ? (
+                // Confirmed only through the substitute's report, never checked off here.
+                block.lesson.pendingReport ? (
+                  <Link
+                    href={`/absences/${block.lesson.pendingReport.absenceId}/plans/${block.lesson.pendingReport.planId}/report`}
+                    className="inline-flex min-h-11 shrink-0 items-center rounded-full bg-amber-100 px-3 text-sm font-medium text-amber-900 underline-offset-2 hover:underline"
+                    data-testid="pending-chip"
+                  >
+                    {t('subReport.pendingChip')}
+                  </Link>
+                ) : (
+                  <Badge tone="warning" data-testid="pending-chip">
+                    {t('subReport.pendingChip')}
+                  </Badge>
+                )
+              ) : !inactive ? (
                 <CheckOffButton
                   lessonId={block.lesson.id}
                   lessonTitle={block.lesson.title}

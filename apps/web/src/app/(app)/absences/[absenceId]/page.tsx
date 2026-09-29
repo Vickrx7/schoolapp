@@ -6,7 +6,7 @@ import {
   noSchoolEventOn,
   type LocalDate,
 } from '@lynx/domain';
-import { ChevronLeft, ClipboardList } from 'lucide-react';
+import { ChevronLeft, ClipboardCheck, ClipboardList } from 'lucide-react';
 import type { Metadata } from 'next';
 import { useLocale, useTranslations } from 'next-intl';
 import { getLocale, getTranslations } from 'next-intl/server';
@@ -22,6 +22,7 @@ import { PlanStatusBadge } from '@/components/absences/plan-status-badge';
 import type { SubAccess } from '@/components/sub-codes/access-view';
 import { CodePanel } from '@/components/sub-codes/code-panel';
 import type { SubCodeContext } from '@/components/sub-codes/types';
+import { PdfLink } from '@/components/sub-plans/pdf-link';
 import { ReleaseButton } from '@/components/sub-plans/release-button';
 import { Button } from '@/components/ui/button';
 import { Card, CardBody, Notice } from '@/components/ui/card';
@@ -66,6 +67,8 @@ function PlanDayPanel({
   const t = useTranslations();
   const locale = useLocale();
   const dayText = useDaySummaryText();
+  // The report can only come from the day itself (or once one has arrived).
+  const showReport = plan.planDate <= today || plan.report !== null;
   return (
     <Card>
       <CardBody className="space-y-3 pt-4">
@@ -93,6 +96,12 @@ function PlanDayPanel({
               .join(' ')}
           </p>
         ) : null}
+        {showReport ? (
+          // From the day itself: the substitute's end-of-day report (D-054).
+          <p className="text-sm text-slate-700" data-testid="plan-report-status">
+            {t(`subReport.status.${plan.report?.status ?? 'none'}`)}
+          </p>
+        ) : null}
         <div className="flex flex-wrap gap-2">
           <Button asChild variant={plan.released ? 'secondary' : 'primary'}>
             <Link href={`/absences/${absenceId}/plans/${plan.id}`}>
@@ -100,6 +109,20 @@ function PlanDayPanel({
               {t('subPlan.review')}
             </Link>
           </Button>
+          {plan.summary ? (
+            <PdfLink href={`/absences/${absenceId}/plans/${plan.id}/pdf`} label={t('pdf.open')} />
+          ) : null}
+          {showReport ? (
+            <Button
+              asChild
+              variant={plan.report && plan.report.status !== 'confirmed' ? 'primary' : 'secondary'}
+            >
+              <Link href={`/absences/${absenceId}/plans/${plan.id}/report`}>
+                <ClipboardCheck aria-hidden />
+                {t('subReport.view')}
+              </Link>
+            </Button>
+          ) : null}
           {!plan.released && plan.planDate >= today ? (
             <ReleaseButton planId={plan.id} variant="secondary" />
           ) : null}

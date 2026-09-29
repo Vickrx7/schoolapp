@@ -74,5 +74,9 @@ describe('the substitute portal connection', () => {
     expect(rows).toEqual([{ outcome: 'invalid', session_token: null }]);
     const load = await portal.query<{ day: unknown }>("select sub_portal.load('x') as day");
     expect(load.rows[0]?.day).toEqual({ status: 'expired' });
+    const save = await portal.query<{ outcome: string }>(
+      `select outcome from sub_portal.save_report('x', '{"schemaVersion": 1}', null, null, true)`,
+    );
+    expect(save.rows).toEqual([{ outcome: 'expired' }]);
   });
 });

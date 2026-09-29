@@ -1,6 +1,12 @@
 import { randomBytes } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
-import { decryptAlert, encryptAlert, parseKeyRing } from './alerts-crypto';
+import {
+  decryptAlert,
+  decryptText,
+  encryptAlert,
+  encryptText,
+  parseKeyRing,
+} from './alerts-crypto';
 
 const k1 = randomBytes(32).toString('base64');
 const k2 = randomBytes(32).toString('base64');
@@ -41,5 +47,27 @@ describe('alert encryption', () => {
     expect(() => parseKeyRing('1:tooShort', 'SUB_CODE_HMAC_KEYS')).toThrow(
       /SUB_CODE_HMAC_KEYS key v1 must be 32 bytes/,
     );
+  });
+
+  it('encrypts any text bound to what it belongs to (a substitute report)', () => {
+    const ring = parseKeyRing(`1:${k1}`)!;
+    const notes = JSON.stringify({ behaviour: 'Liam était très agité après la récréation.' });
+    const { ciphertext, keyVersion } = encryptText(notes, 'sub-report:plan-1', ring);
+    expect(keyVersion).toBe(1);
+    expect(ciphertext).toMatch(/^v1\./);
+    expect(ciphertext).not.toContain('Liam');
+    expect(decryptText(ciphertext, 'sub-report:plan-1', ring)).toBe(notes);
+    // Moved to another plan's report (or read as an alert), it does not decrypt.
+    expect(() => decryptText(ciphertext, 'sub-report:plan-2', ring)).toThrow();
+    expect(() => decryptAlert(ciphertext, 'plan-1', ring)).toThrow();
+  });
+
+  it('keeps the alert format: an alert is text bound to its student', () => {
+    const ring = parseKeyRing(`1:${k1}`)!;
+    const alert = encryptAlert('Diabète', 'student-9', ring).ciphertext;
+    expect(decryptText(alert, 'student-9', ring)).toBe('Diabète');
+    expect(
+      decryptAlert(encryptText('Diabète', 'student-9', ring).ciphertext, 'student-9', ring),
+    ).toBe('Diabète');
   });
 });

@@ -30,5 +30,8 @@ blob-report/
 .DS_Store
 *.log
 
+# Claude Code worktrees of other branches (each is a separate checkout)
+.claude/worktrees/
+
 # AI evaluation reports (may be large; share the ones worth keeping)
 packages/ai/eval-results/

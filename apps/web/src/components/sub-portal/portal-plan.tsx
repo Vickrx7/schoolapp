@@ -1,12 +1,13 @@
 'use client';
 
 import type { ComposedSubPlan } from '@lynx/domain';
-import { ArrowRight, Phone } from 'lucide-react';
+import { ArrowRight, ClipboardCheck, Phone } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useState, type KeyboardEvent, type ReactNode } from 'react';
 import { BlockCard, TypedText } from '@/components/sub-plans/block-card';
 import { GroupsPanel } from '@/components/sub-plans/groups-panel';
+import { PdfLink } from '@/components/sub-plans/pdf-link';
 import { PlanSection } from '@/components/sub-plans/plan-view';
 import { Timeline } from '@/components/sub-plans/timeline';
 import type { PlanLevel, RosterStudent } from '@/components/sub-plans/types';
@@ -30,6 +31,8 @@ export interface PortalPlanContext {
   emergencyInfo: string | null;
   contentVersion: number;
   alertsAvailable: boolean;
+  /** The end-of-day report on the server (D-054). */
+  reportStatus: 'none' | 'draft' | 'submitted' | 'confirmed';
 }
 
 function Note({ label, text }: { label: string; text: string | null | undefined }) {
@@ -60,6 +63,8 @@ export function PortalPlan({
 }) {
   const t = useTranslations('subPortal');
   const tPlan = useTranslations('subPlan');
+  const tReport = useTranslations('subReport');
+  const tPdf = useTranslations('pdf');
   const tRoot = useTranslations();
   const locale = useLocale();
   const online = useOnline();
@@ -135,6 +140,12 @@ export function PortalPlan({
       {panel(
         'schedule',
         <>
+          {/* The plan on paper or on the phone (D-053): alerts stay on screen, behind a tap. */}
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <PdfLink href="/suppleance/pdf" label={tPdf('download')} download />
+            <p className="text-sm text-slate-600">{tPdf('noAlerts')}</p>
+          </div>
+
           {context.absenceNote || plan.overview ? (
             <PlanSection title={t('teacherNote')}>
               {context.absenceNote ? (
@@ -330,6 +341,22 @@ export function PortalPlan({
               />
             ))}
           </PlanSection>
+          <div className="space-y-2 rounded-xl border border-slate-200 bg-white p-4">
+            <h2 className="font-semibold text-slate-900">{tReport('title')}</h2>
+            <p className="text-sm text-slate-700">
+              {context.reportStatus === 'submitted' || context.reportStatus === 'confirmed'
+                ? tReport('sentHint')
+                : tReport('openHint')}
+            </p>
+            <Button asChild>
+              <Link href="/suppleance/report">
+                <ClipboardCheck aria-hidden />
+                {context.reportStatus === 'submitted' || context.reportStatus === 'confirmed'
+                  ? tReport('openSent')
+                  : tReport('open')}
+              </Link>
+            </Button>
+          </div>
           <div className="space-y-2 rounded-xl border border-slate-200 bg-white p-4">
             <p className="text-sm text-slate-700">{t('endDayHint')}</p>
             <Button asChild variant="secondary">

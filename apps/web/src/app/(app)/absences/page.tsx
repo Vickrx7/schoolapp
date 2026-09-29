@@ -13,6 +13,7 @@ import { EmptyState, PageHeader } from '@/components/ui/page';
 import { loadMyAbsences } from '@/server/queries/absences';
 import { loadSubBoard } from '@/server/queries/sub-office';
 import {
+  hasRole,
   requireSession,
   substituteBoardSchools,
   teachingSchools,
@@ -177,6 +178,7 @@ export default async function AbsencesPage({
           configured={configured}
           now={now}
           showSchoolName={boardSchools.length > 1}
+          canReadReports={hasRole(school, 'principal', 'vice_principal')}
         />
       ))}
       {teaching ? <MyAbsences session={session} withHeading /> : null}

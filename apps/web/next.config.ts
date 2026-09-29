@@ -24,8 +24,11 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   outputFileTracingRoot: new URL('../..', import.meta.url).pathname,
   transpilePackages: ['@lynx/domain', '@lynx/config', '@lynx/db', '@lynx/ai'],
-  // The portal's Postgres driver runs from node_modules, not bundled.
-  serverExternalPackages: ['pg'],
+  // Run from node_modules, not bundled: the portal's Postgres driver, and the PDF renderer
+  // (DECISIONS D-053), which has its own React reconciler and loads its layout engine at runtime.
+  serverExternalPackages: ['pg', '@react-pdf/renderer'],
+  // The PDF routes read the vendored fonts from disk: copy them into the standalone build.
+  outputFileTracingIncludes: { '/**/pdf': ['./assets/fonts/**'] },
   poweredByHeader: false,
   async headers() {
     return [

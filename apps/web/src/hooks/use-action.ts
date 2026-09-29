@@ -43,6 +43,9 @@ const KNOWN_ERRORS = new Set([
   'halfDaySingleDay',
   'subPortalNotConfigured',
   'subCodesKeyMissing',
+  'encryptionKeyMissing',
+  'subReportPending',
+  'subReportExists',
 ]);
 
 /** Translates an error key from a server action; unknown keys fall back to a generic message. */

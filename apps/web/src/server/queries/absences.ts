@@ -35,6 +35,11 @@ export interface AbsencePlanRow {
   /** The classes and rooms the plan covers, as shown in it (empty in lists). */
   classNames: string[];
   roomNames: string[];
+  /**
+   * The substitute's report as the owner can read it (a draft only once the day is over, D-054);
+   * null when there is none to read, or in lists.
+   */
+  report: { id: string; status: 'draft' | 'submitted' | 'confirmed' } | null;
 }
 
 export interface AbsenceRow {
@@ -62,6 +67,7 @@ type PlanFields = {
   released_at: string | null;
   content_version: number;
   plan?: unknown;
+  sub_reports?: { id: string; status: 'draft' | 'submitted' | 'confirmed' } | null;
 };
 
 function toPlanRow(p: PlanFields, now: Date): AbsencePlanRow {
@@ -79,6 +85,7 @@ function toPlanRow(p: PlanFields, now: Date): AbsencePlanRow {
     roomNames: parsed?.success
       ? [...new Set(parsed.data.classes.map((c) => c.roomName).filter((r): r is string => !!r))]
       : [],
+    report: p.sub_reports ? { id: p.sub_reports.id, status: p.sub_reports.status } : null,
   };
 }
 
@@ -157,7 +164,7 @@ export async function loadAbsence(
   const { data } = await supabase
     .from('absences')
     .select(
-      `${ABSENCE_FIELDS}, sub_plans(id, plan_date, status, review_deadline, released_at, content_version, plan)`,
+      `${ABSENCE_FIELDS}, sub_plans(id, plan_date, status, review_deadline, released_at, content_version, plan, sub_reports(id, status))`,
     )
     .eq('id', absenceId)
     .maybeSingle();

@@ -103,7 +103,8 @@ select set_eq(
     where n.nspname in ('public', 'app', 'sub_portal')
       and has_function_privilege('lynx_sub_portal', p.oid, 'execute')$$,
   $$values ('sub_portal.redeem(text[],text,text)'), ('sub_portal.load(text,integer,text)'),
-           ('sub_portal.alerts(text)'), ('sub_portal.end_session(text)')$$,
+           ('sub_portal.alerts(text)'), ('sub_portal.end_session(text)'),
+           ('sub_portal.save_report(text,jsonb,text,smallint,boolean)')$$,
   'lynx_sub_portal executes exactly the portal functions, and no public or app function'
 );
 

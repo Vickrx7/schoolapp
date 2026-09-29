@@ -120,6 +120,7 @@ export async function nextLesson(
   title: string;
   subNotes: string | null;
   sequenceNumber: number;
+  unitId: string;
   unitTitle: string;
 }> {
   const [row] = await query<{
@@ -127,9 +128,10 @@ export async function nextLesson(
     title: string;
     sub_notes: string | null;
     sequence_number: number;
+    unit_id: string;
     unit_title: string;
   }>(
-    `select l.id, l.title, l.sub_notes, l.sequence_number, u.title as unit_title
+    `select l.id, l.title, l.sub_notes, l.sequence_number, u.id as unit_id, u.title as unit_title
      from public.units u
      join public.subjects s on s.id = u.subject_id
      join public.unit_lessons l on l.unit_id = u.id
@@ -145,6 +147,7 @@ export async function nextLesson(
     title: row.title,
     subNotes: row.sub_notes,
     sequenceNumber: row.sequence_number,
+    unitId: row.unit_id,
     unitTitle: row.unit_title,
   };
 }
@@ -243,4 +246,43 @@ export async function planIdOn(absenceId: string, date: string): Promise<string>
   );
   if (!row) throw new Error(`no plan on ${date} for absence ${absenceId}`);
   return row.id;
+}
+
+/**
+ * A day of a demo teacher that is already over, with the plan of another of her days (the
+ * database never reads the plan's lessons; publishing refuses past dates, hence the direct
+ * insert). Removed by cleanupAbsences.
+ */
+export async function insertPastPlan(
+  email: string,
+  fromPlanId: string,
+  daysAgo: number,
+): Promise<{ absenceId: string; planId: string; date: string }> {
+  const [row] = await query<{ absence_id: string; plan_id: string; date: string }>(
+    `with a as (
+       insert into public.absences (teacher_id, school_id, starts_on, ends_on, status, published_at)
+       select u.id, $2, current_date - $3::integer, current_date - $3::integer, 'published', now()
+       from public.users u where u.email = $1
+       returning id, starts_on
+     ), p as (
+       insert into public.sub_plans (absence_id, plan_date, plan, status, released_at, review_deadline)
+       select a.id, a.starts_on, jsonb_set(src.plan, '{date}', to_jsonb(to_char(a.starts_on, 'YYYY-MM-DD'))),
+              'released', now() - make_interval(days => $3::integer),
+              now() - make_interval(days => $3::integer)
+       from a, public.sub_plans src where src.id = $4
+       returning id, absence_id, plan_date
+     )
+     select p.absence_id, p.id as plan_id, to_char(p.plan_date, 'YYYY-MM-DD') as date from p`,
+    [email, SEED.school, daysAgo, fromPlanId],
+  );
+  return { absenceId: row!.absence_id, planId: row!.plan_id, date: row!.date };
+}
+
+/** The lessons of a class that have progress (to remove what a test adds afterwards). */
+export async function lessonsWithProgress(classId: string): Promise<string[]> {
+  const rows = await query<{ lesson_id: string }>(
+    'select lesson_id from public.lesson_progress where class_id = $1',
+    [classId],
+  );
+  return rows.map((r) => r.lesson_id);
 }

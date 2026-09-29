@@ -13,8 +13,8 @@ import {
 } from '@lynx/domain';
 import { z } from 'zod';
 import type { PlanContext, PlanLevel, RosterStudent } from '@/components/sub-plans/types';
-import type { SessionContext } from '../session';
-import { findSchool } from '../session';
+import type { SchoolContext, SessionContext } from '../session';
+import { findSchool, hasModule, hasRole } from '../session';
 import { withClassManagementKey } from '../sub-plans/office-copy';
 import { createSupabaseServerClient } from '../supabase';
 
@@ -209,15 +209,45 @@ export type StaffPlan =
     };
 
 /**
- * A plan for direction or office (DECISIONS D-056): only once released, through
- * get_sub_plan_for_staff, which audits every view and leaves « Gestion de classe » out for the
- * office. Null when the caller is neither (or the plan does not exist).
+ * The school of an absence, for direction and office staff there (DECISIONS D-056): the absence
+ * must be visible to them (RLS) and the school must have the Teaching module (D-060). Null for
+ * anyone else.
  */
-export async function loadPlanForStaff(planId: string): Promise<StaffPlan | null> {
+export async function staffSchoolForAbsence(
+  session: SessionContext,
+  absenceId: string,
+): Promise<SchoolContext | null> {
+  const supabase = await createSupabaseServerClient();
+  const { data: absence } = await supabase
+    .from('absences')
+    .select('school_id')
+    .eq('id', absenceId)
+    .maybeSingle();
+  const school = absence ? findSchool(session, absence.school_id) : null;
+  if (
+    !school ||
+    !hasModule(school, 'teaching') ||
+    !hasRole(school, 'principal', 'vice_principal', 'office_admin')
+  ) {
+    return null;
+  }
+  return school;
+}
+
+/**
+ * A plan for direction or office (DECISIONS D-056): only once released, through
+ * get_sub_plan_for_staff, which audits every view ('view': sub_plan.viewed; 'pdf':
+ * sub_plan.printed) and leaves « Gestion de classe » out for the office. Null when the caller is
+ * neither (or the plan does not exist).
+ */
+export async function loadPlanForStaff(
+  planId: string,
+  purpose: 'view' | 'pdf' = 'view',
+): Promise<StaffPlan | null> {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.rpc('get_sub_plan_for_staff', {
     p_plan_id: planId,
-    p_purpose: 'view',
+    p_purpose: purpose,
   });
   if (error || !data) return null;
   const parsed = staffPlanSchema.safeParse(data);

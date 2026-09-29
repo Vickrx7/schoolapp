@@ -1,6 +1,7 @@
 /**
- * How drafts are kept in localStorage and when a stored one is brought back (D-035). Plain
- * functions, no React, so the rules can be unit-tested.
+ * How drafts are kept in the browser and when a stored one is brought back (D-035). Plain
+ * functions, no React, so the rules can be unit-tested. Drafts live in localStorage, or in
+ * sessionStorage for a form that must not outlive its tab (the substitute's report, D-054).
  */
 
 export const DRAFT_PREFIX = 'lynx-draft:';
@@ -67,10 +68,14 @@ export function serializeDraft<T>(
   return JSON.stringify(draft);
 }
 
-/** localStorage, or null where it is unavailable (server, private mode, blocked). */
-export function draftStorage(): Storage | null {
+/** Where a draft is kept: on the device (localStorage) or for this tab only (sessionStorage). */
+export type DraftStorageKind = 'local' | 'session';
+
+/** The storage for `kind`, or null where it is unavailable (server, private mode, blocked). */
+export function draftStorage(kind: DraftStorageKind = 'local'): Storage | null {
   try {
-    return typeof window === 'undefined' ? null : window.localStorage;
+    if (typeof window === 'undefined') return null;
+    return kind === 'session' ? window.sessionStorage : window.localStorage;
   } catch {
     return null;
   }

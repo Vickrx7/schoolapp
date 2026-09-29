@@ -1,7 +1,7 @@
 'use server';
 
 import type { AlertCategory } from '@lynx/db';
-import { normalizeAccessCode } from '@lynx/domain';
+import { normalizeAccessCode, subReportContentSchema, subReportNotesSchema } from '@lynx/domain';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
@@ -15,13 +15,21 @@ import { clientIp } from '../sub-portal/client-ip';
 import { codeMacs, deviceKey, ipKey } from '../sub-portal/crypto';
 import { subPortalConfigured } from '../sub-portal/db';
 import { subCodeKeys } from '../sub-portal/keys';
-import { endPortalSession, loadDay, portalAlerts, redeemCode } from '../sub-portal/portal';
+import {
+  endPortalSession,
+  loadDay,
+  portalAlerts,
+  redeemCode,
+  saveReport,
+} from '../sub-portal/portal';
 import {
   clearSubSessionCookie,
   readSubToken,
   setSubSessionCookie,
   subDeviceId,
 } from '../sub-portal/session';
+import { encryptReportNotes, hasReportNotes } from '../sub-reports/notes';
+import { parseInput } from './validation';
 
 // The substitute portal's actions (DECISIONS D-049 to D-051). Substitutes have no account: these
 // never read a staff session and reach the database only through the portal role. Outcomes a
@@ -173,6 +181,93 @@ export async function revealSubAlerts(
   } catch (e) {
     return fail(reportError('revealSubAlerts', e as { code?: string; message?: string }));
   }
+}
+
+const reportInputSchema = z.object({
+  content: subReportContentSchema,
+  notes: subReportNotesSchema,
+  /** The plan version the page shows: the server then does not reload the whole plan. */
+  knownVersion: z.number().int().min(0).nullable(),
+});
+
+export type SubReportInput = z.input<typeof reportInputSchema>;
+
+/**
+ * What saving the report answered. 'expired': the access ended (the cookie is forgotten);
+ * 'lockedOtherDevice': another device is writing the report; 'confirmed': the teacher already
+ * confirmed it; 'alreadySubmitted': a draft save after sending (send again to change it).
+ */
+export type SubReportSaveResult =
+  | { status: 'saved' | 'submitted'; updatedAt: string }
+  | {
+      status: 'expired' | 'notReleased' | 'confirmed' | 'lockedOtherDevice' | 'alreadySubmitted';
+    };
+
+/**
+ * Saves or sends the report of this device's session (DECISIONS D-054). The free text is
+ * encrypted here with the alerts key ring, bound to the session's plan; outcomes and absent
+ * students go in plain. The database checks every id against the plan's classes.
+ */
+async function writeSubReport(
+  context: string,
+  input: SubReportInput,
+  submit: boolean,
+): Promise<ActionResult<SubReportSaveResult>> {
+  const parsed = parseInput(reportInputSchema, input);
+  if (!parsed.ok) return parsed.result;
+  if (!subPortalConfigured()) return fail('subPortalNotConfigured');
+  const token = await readSubToken();
+  if (!token) return ok({ status: 'expired' });
+  const { content, notes, knownVersion } = parsed.data;
+  try {
+    const day = await loadDay(token, knownVersion, 'poll');
+    if (!day) {
+      await clearSubSessionCookie();
+      return ok({ status: 'expired' });
+    }
+    let sealed = null;
+    if (hasReportNotes(notes)) {
+      const ring = parseKeyRing(serverEnv().ALERTS_ENCRYPTION_KEYS);
+      if (!ring) return fail('encryptionKeyMissing');
+      sealed = encryptReportNotes(notes, day.context.planId, ring);
+    }
+    const result = await saveReport(token, content, sealed, submit);
+    switch (result.outcome) {
+      case 'saved':
+      case 'submitted':
+        return ok({ status: result.outcome, updatedAt: result.updatedAt! });
+      case 'expired':
+        await clearSubSessionCookie();
+        return ok({ status: 'expired' });
+      case 'not_released':
+        return ok({ status: 'notReleased' });
+      case 'locked_other_device':
+        return ok({ status: 'lockedOtherDevice' });
+      case 'already_submitted':
+        return ok({ status: 'alreadySubmitted' });
+      default:
+        return ok({ status: 'confirmed' });
+    }
+  } catch (e) {
+    return fail(reportError(context, e as { code?: string; message?: string }));
+  }
+}
+
+/** The report's autosave: a draft on the server, 3 s after the last change. */
+export async function saveSubReport(
+  input: SubReportInput,
+): Promise<ActionResult<SubReportSaveResult>> {
+  return writeSubReport('saveSubReport', input, false);
+}
+
+/**
+ * « Envoyer le suivi »: sends the report. Lessons marked « Terminé » count as done until the
+ * teacher confirms them; sending again replaces what was sent.
+ */
+export async function submitSubReport(
+  input: SubReportInput,
+): Promise<ActionResult<SubReportSaveResult>> {
+  return writeSubReport('submitSubReport', input, true);
 }
 
 /** « Terminer ma journée »: ends this device's session and forgets it. */

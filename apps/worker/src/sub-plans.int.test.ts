@@ -5,14 +5,16 @@
  * worker would refresh the test's absence itself.
  *
  * The tests run in order and share one absence of Isabelle Tremblay (3e année), from a Thursday
- * to the next Monday at least two weeks ahead, with a PA day the test adds on the Friday.
- * Everything they create is removed at the end.
+ * to the next Monday at least two weeks ahead, with a PA day the test adds on the Friday. A
+ * substitute signs in on the Thursday and sends her end-of-day report (D-054). Everything they
+ * create is removed at the end, including the progress the report wrote.
  */
-import { randomBytes, randomUUID } from 'node:crypto';
+import { createHash, randomBytes, randomUUID } from 'node:crypto';
 import {
   addDays,
   buildAbsencePlans,
   isoWeekday,
+  reportableLessons,
   subPlanSourcesSchema,
   subPlanV1Schema,
   type LocalDate,
@@ -116,6 +118,8 @@ let paDayId: string | null = null;
 let absenceId: string | null = null;
 let oldAbsenceId: string | null = null;
 let completedLessonId: string | null = null;
+/** Lessons the substitute's report wrote progress for. */
+let reportedLessonIds: string[] = [];
 const attemptDeviceKeys: string[] = [];
 /** The last outbox row before the tests: only later events are the tests' own. */
 let outboxStart = '0';
@@ -229,6 +233,17 @@ async function cleanUp() {
     'select id from public.sub_plans where absence_id = any($1::uuid[])',
     [absences],
   );
+  const reports = await pool.query<{ id: string }>(
+    `select r.id from public.sub_reports r join public.sub_plans p on p.id = r.sub_plan_id
+      where p.absence_id = any($1::uuid[])`,
+    [absences],
+  );
+  // The progress a report wrote does not go with its absence (the link is set to null).
+  await pool.query(
+    `delete from public.lesson_progress lp using public.sub_reports r, public.sub_plans p
+      where lp.sub_report_id = r.id and r.sub_plan_id = p.id and p.absence_id = any($1::uuid[])`,
+    [absences],
+  );
   // Plans, codes, sessions and reports go with their absence.
   await pool.query('delete from public.absences where id = any($1::uuid[])', [absences]);
   if (completedLessonId) {
@@ -243,7 +258,13 @@ async function cleanUp() {
     attemptDeviceKeys,
   ]);
   // The events the tests caused, so a worker started later has nothing of theirs to run.
-  const aggregates = [...absences, ...plans.rows.map((p) => p.id), completedLessonId];
+  const aggregates = [
+    ...absences,
+    ...plans.rows.map((p) => p.id),
+    ...reports.rows.map((r) => r.id),
+    ...reportedLessonIds,
+    completedLessonId,
+  ];
   await pool.query(
     'delete from public.event_outbox where id > $1 and aggregate_id = any($2::uuid[])',
     [outboxStart, aggregates.filter((id): id is string => id !== null)],
@@ -519,6 +540,91 @@ describe('substitute plans after publishing', () => {
     expect(frenchSequence(monAfter!.plan)[0]).toBe(frenchSequence(thuAfter!.plan).at(-1)! + 1);
     expect(await mark()).toBeNull();
   });
+
+  it('continues the later days from what the substitute reported', async () => {
+    const [thuPlan, monPlan] = await planRows();
+    // Thursday is released and its code's window moved around the real clock, and a device
+    // signs in with a token the test knows (as sub_portal.redeem would leave it).
+    const token = randomBytes(32).toString('base64url');
+    await pool.query(
+      `update public.sub_plans set status = 'released', released_at = now() where id = $1`,
+      [thuPlan!.id],
+    );
+    await pool.query(
+      `update public.sub_access_codes
+          set valid_from = now() - interval '1 hour', expires_at = now() + interval '2 hours'
+        where sub_plan_id = $1`,
+      [thuPlan!.id],
+    );
+    await pool.query(
+      `insert into public.sub_sessions
+         (access_code_id, sub_plan_id, session_token_hash, expires_at, device_key)
+       select c.id, c.sub_plan_id, $2, c.expires_at, $3
+         from public.sub_access_codes c where c.sub_plan_id = $1
+        limit 1`,
+      [thuPlan!.id, createHash('sha256').update(token).digest('hex'), hex()],
+    );
+
+    // Français was not done; everything else was.
+    const lessons = reportableLessons(thuPlan!.plan).map((l) => ({
+      blockKey: l.blockKey,
+      lessonId: l.lessonId,
+      outcome: frenchLessons.has(l.lessonId) ? 'not_done' : 'done',
+    }));
+    const done = lessons.filter((l) => l.outcome === 'done').map((l) => l.lessonId);
+    expect(done.length).toBeGreaterThan(0);
+    expect(lessons.length).toBeGreaterThan(done.length);
+    reportedLessonIds = done;
+
+    // Sent through the portal role, as the web server does.
+    const client = await pool.connect();
+    let outcome: string | undefined;
+    try {
+      await client.query('begin');
+      await client.query('set local role lynx_sub_portal');
+      const { rows } = await client.query<{ outcome: string }>(
+        'select outcome from sub_portal.save_report($1, $2::jsonb, null, null, true)',
+        [token, JSON.stringify({ schemaVersion: 1, lessons, absentStudentIds: [] })],
+      );
+      await client.query('commit');
+      outcome = rows[0]?.outcome;
+    } catch (error) {
+      await client.query('rollback').catch(() => undefined);
+      throw error;
+    } finally {
+      client.release();
+    }
+    expect(outcome).toBe('submitted');
+
+    // Done lessons are pending the teacher's confirmation; the absence is marked for a rebuild.
+    const { rows: pending } = await pool.query<{ lesson_id: string; taught_on: string }>(
+      `select lp.lesson_id, to_char(lp.taught_on, 'YYYY-MM-DD') as taught_on
+         from public.lesson_progress lp
+         join public.sub_reports r on r.id = lp.sub_report_id
+        where r.sub_plan_id = $1 and lp.status = 'pending_confirmation'
+          and lp.source = 'substitute_report'`,
+      [thuPlan!.id],
+    );
+    expect(pending.map((p) => p.lesson_id).sort()).toEqual([...done].sort());
+    expect(pending.every((p) => p.taught_on === thursday)).toBe(true);
+    expect(await mark()).not.toBeNull();
+
+    expect(await refreshAbsencePlans(absenceId!, { pool, logger: recordingLogger() })).toBe(
+      'refreshed',
+    );
+    const [thuAfter, monAfter] = await planRows();
+    // Thursday stays as the substitute saw it.
+    expect(thuAfter!.plan).toEqual(thuPlan!.plan);
+    // Monday starts Français again with Thursday's first lesson, which was not done...
+    expect(frenchSequence(monAfter!.plan)[0]).toBe(frenchSequence(thuPlan!.plan)[0]);
+    expect(frenchSequence(monAfter!.plan)[0]).toBeLessThan(frenchSequence(monPlan!.plan)[0]!);
+    // ...and does not repeat what was done (pending counts as done, D-010).
+    const mondayLessons = monAfter!.plan.blocks.flatMap((b) =>
+      b.lesson ? [b.lesson.lessonId] : [],
+    );
+    expect(mondayLessons.filter((id) => done.includes(id))).toEqual([]);
+    expect(await mark()).toBeNull();
+  });
 });
 
 describe('substitute access retention', () => {
@@ -675,6 +781,7 @@ describe('substitute access retention', () => {
   it('cleans up after itself', async () => {
     const ids = { absence: absenceId!, old: oldAbsenceId!, lesson: completedLessonId! };
     const pa = paDayId!;
+    const reported = reportedLessonIds;
     await cleanUp();
     const { rows } = await pool.query<{ left: number }>(
       `select (select count(*) from public.absences where id = any($1::uuid[]))
@@ -684,8 +791,12 @@ describe('substitute access retention', () => {
             + (select count(*) from public.sub_code_attempts where device_key = any($4))
             + (select count(*) from public.event_outbox
                 where id > $5 and aggregate_id = any($1::uuid[] || $2::uuid))
+            + (select count(*) from public.lesson_progress where lesson_id = any($6::uuid[]))
+            + (select count(*) from public.event_outbox
+                where id > $5 and event_type like 'sub_report.%'
+                  and payload ->> 'absenceId' = any($1::text[]))
          as left`,
-      [[ids.absence, ids.old], ids.lesson, pa, attemptDeviceKeys, outboxStart],
+      [[ids.absence, ids.old], ids.lesson, pa, attemptDeviceKeys, outboxStart, reported],
     );
     expect(Number(rows[0]!.left)).toBe(0);
   });

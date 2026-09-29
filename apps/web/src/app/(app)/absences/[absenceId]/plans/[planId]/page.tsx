@@ -9,20 +9,18 @@ import { capitalize } from '@/components/absences/absence-summary';
 import { PlanStatusBadge } from '@/components/absences/plan-status-badge';
 import { AlertsReveal } from '@/components/sub-plans/alerts-reveal';
 import { PlanEditor } from '@/components/sub-plans/plan-editor';
+import { PdfLink } from '@/components/sub-plans/pdf-link';
 import { PlanView } from '@/components/sub-plans/plan-view';
 import { ReleaseButton } from '@/components/sub-plans/release-button';
 import { Notice } from '@/components/ui/card';
 import { PageHeader } from '@/components/ui/page';
 import { formatInstantTime, formatLocalDate, instantInZone } from '@/lib/format';
-import { loadPlanForOwner, loadPlanForStaff } from '@/server/queries/sub-plans';
 import {
-  findSchool,
-  hasModule,
-  hasRole,
-  requireSession,
-  type SessionContext,
-} from '@/server/session';
-import { createSupabaseServerClient } from '@/server/supabase';
+  loadPlanForOwner,
+  loadPlanForStaff,
+  staffSchoolForAbsence,
+} from '@/server/queries/sub-plans';
+import { requireSession, type SessionContext } from '@/server/session';
 
 type Params = { params: Promise<{ absenceId: string; planId: string }> };
 
@@ -59,21 +57,8 @@ async function StaffPlanPage({
   planId: string;
 }) {
   // The absence (RLS: owner, direction and office) tells which school's licence applies.
-  const supabase = await createSupabaseServerClient();
-  const { data: absence } = await supabase
-    .from('absences')
-    .select('school_id')
-    .eq('id', absenceId)
-    .maybeSingle();
-  const school = absence ? findSchool(session, absence.school_id) : null;
-  if (
-    !absence ||
-    !school ||
-    !hasModule(school, 'teaching') ||
-    !hasRole(school, 'principal', 'vice_principal', 'office_admin')
-  ) {
-    notFound();
-  }
+  const school = await staffSchoolForAbsence(session, absenceId);
+  if (!school) notFound();
   const staff = await loadPlanForStaff(planId);
   if (!staff || (staff.released && staff.absenceId !== absenceId)) notFound();
   const t = await getTranslations();
@@ -111,6 +96,11 @@ async function StaffPlanPage({
           staff.context.teacherName,
           t(`absences.part.${staff.context.part}`),
         ].join(' · ')}
+        actions={
+          staff.plan ? (
+            <PdfLink href={`/absences/${absenceId}/plans/${planId}/pdf`} label={t('pdf.print')} />
+          ) : null
+        }
       />
       <Notice>{t('subPlanStaff.readOnly')}</Notice>
       {staff.plan ? (
@@ -182,6 +172,9 @@ export default async function PlanPage({ params }: Params) {
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <PlanStatusBadge plan={owned} timeZone={owned.context.timezone} />
+            {owned.plan && owned.absence.published ? (
+              <PdfLink href={`/absences/${absenceId}/plans/${planId}/pdf`} label={t('pdf.open')} />
+            ) : null}
             {!owned.released && owned.editable ? <ReleaseButton planId={owned.id} /> : null}
           </div>
         }
