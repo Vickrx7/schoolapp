@@ -27,6 +27,23 @@ export function groupLabels(
 }
 
 /**
+ * The first names of each group (« G1 » → Samuel, Adam, Aïcha), for the adult handing out each
+ * group's version of a library resource. Names come from the roster, never from the plan.
+ */
+export function groupFirstNames(
+  plan: Pick<ComposedSubPlan, 'groups'>,
+  roster: readonly RosterStudent[],
+): Record<string, string[]> {
+  const names = new Map(roster.map((s) => [s.id, s.firstName]));
+  return Object.fromEntries(
+    plan.groups.map((g) => [
+      g.key,
+      g.studentIds.map((id) => names.get(id)).filter((n): n is string => !!n),
+    ]),
+  );
+}
+
+/**
  * Groups by language level, with first names joined from the roster the database derived for
  * the plan (the plan JSON holds ids only). Level names are for adults: never read out to the
  * class.

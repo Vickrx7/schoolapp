@@ -12,6 +12,9 @@
  * app.write_absence_plans decides what may still change: a day a substitute has opened, or one
  * released on its own date, is kept as it is, and the later days continue after it.
  *
+ * Library resources for the open lessons (app.sub_plan_library_sources, D-077) are read next to
+ * the sources and merged in as `library`, as the web server does.
+ *
  * Logs hold ids, dates and counts only: never plan text or names.
  */
 import {
@@ -62,6 +65,13 @@ async function readAbsence(db: Db, absenceId: string): Promise<AbsenceRow | null
   return rows[0] ?? null;
 }
 
+/** The library loader's result merged into the sources (read leniently by the schema). */
+function withLibrary(sources: unknown, library: unknown): unknown {
+  return sources && typeof sources === 'object' && !Array.isArray(sources)
+    ? { ...sources, library }
+    : sources;
+}
+
 /** The loader's JSON, checked. A failure names paths only (no values reach the logs). */
 function parseSources(raw: unknown): SubPlanSources {
   const parsed = subPlanSourcesSchema.safeParse(raw);
@@ -99,7 +109,11 @@ export async function refreshAbsencePlans(
       'select app.sub_plan_sources($1, $2, $3::date, $4::date, $5) as sources',
       [absence.teacher_id, absence.school_id, absence.starts_on, absence.ends_on, absenceId],
     );
-    const sources = parseSources(loaded.rows[0]?.sources);
+    const library = await pool.query<{ library: unknown }>(
+      'select app.sub_plan_library_sources($1, $2) as library',
+      [absence.teacher_id, absence.school_id],
+    );
+    const sources = parseSources(withLibrary(loaded.rows[0]?.sources, library.rows[0]?.library));
     const { plans } = buildAbsencePlans(
       sources,
       {

@@ -5,6 +5,7 @@ import type { ReactNode } from 'react';
 import { Badge, Card } from '@/components/ui/card';
 import { formatTime, formatTimeRange } from '@/lib/format';
 import { cn } from '@/lib/utils';
+import { HiddenLibraryNotice, LibraryBlock } from './library-block';
 
 /**
  * The language of plan content: the plan is built in French, and teachers type in French,
@@ -36,22 +37,26 @@ const quoted = (block: ComposedBlock, text: string | null) =>
   !!text && block.steps.some((s) => s.text.includes(text.trim()));
 
 /**
- * One block of the day: when, what, where, with whom, the lesson and its steps. The same card
- * for every audience; the editor passes `edit` to replace the steps with its controls.
+ * One block of the day: when, what, where, with whom, the lesson, its steps and its library
+ * resource (D-077). The same card for every audience; the editor passes `edit` to replace the
+ * steps with its controls and to hide or bring back the resource.
  */
 export function BlockCard({
   block,
   audience,
   showClass,
   groupLabels = {},
+  groupNames = {},
   edit,
 }: {
   block: ComposedBlock;
   audience: SubPlanAudience;
   showClass: boolean;
-  /** « G1 · Débutant », for the AI layer's instructions by group (groups-panel.tsx). */
+  /** « G1 · Débutant », for the AI layer's instructions and the resource's versions by group. */
   groupLabels?: Readonly<Record<string, string>>;
-  edit?: { steps?: ReactNode; actions?: ReactNode };
+  /** First names per group (groups-panel.tsx), for whom gets which version of a resource. */
+  groupNames?: Readonly<Record<string, readonly string[]>>;
+  edit?: { steps?: ReactNode; actions?: ReactNode; library?: ReactNode };
 }) {
   const t = useTranslations('subPlan');
   const tAi = useTranslations('subPlanAi');
@@ -199,6 +204,18 @@ export function BlockCard({
           <Labelled label={t('block.teacherNote')}>
             <TypedText text={block.teacherNote} />
           </Labelled>
+        ) : null}
+
+        {block.library ? (
+          <LibraryBlock
+            library={block.library}
+            showItemLink={audience === 'owner'}
+            groupLabels={groupLabels}
+            groupNames={groupNames}
+            actions={edit?.library}
+          />
+        ) : block.hiddenLibrary && audience === 'owner' ? (
+          <HiddenLibraryNotice title={block.hiddenLibrary.title} actions={edit?.library} />
         ) : null}
 
         {block.ai?.differentiation.length ? (

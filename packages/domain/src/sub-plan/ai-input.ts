@@ -11,7 +11,11 @@
  * handover, report content. `ref` (timetable block and lesson ids) and the faith reference id
  * stay in Canada: the AI feature never puts them in the message, and the database uses them to
  * apply the answer to the right blocks only.
+ *
+ * A period with a library resource (D-077) already has its activity: the request only names the
+ * resource in the lesson's notes, and asks for no activity.
  */
+import { TYPE_INFO } from '@lynx/content';
 import { isoWeekday, timeToMinutes } from '../dates';
 import type { ComposedBlock, ComposedSubPlan } from './compose';
 import { clip, clipOrNull } from './text';
@@ -98,6 +102,19 @@ export function subPlanAiBlocks(composed: ComposedSubPlan): ComposedBlock[] {
     .slice(0, SUB_PLAN_AI_MAX_BLOCKS);
 }
 
+/** « Activité prévue : « Le huard, oiseau des lacs » (Texte de lecture). » */
+export function libraryActivityNote(library: { title: string; type: keyof typeof TYPE_INFO }) {
+  return `Activité prévue : « ${library.title} » (${TYPE_INFO[library.type].labelFr}).`;
+}
+
+/** The lesson's note for the substitute, then the resource it uses, within the request's limit. */
+function subNotesWith(subNotes: string | null, library: ComposedBlock['library']): string | null {
+  if (!library) return clipOrNull(subNotes, 1000);
+  const note = clip(libraryActivityNote(library), 1000);
+  const own = clipOrNull(subNotes, Math.max(1, 1000 - note.length - 1));
+  return own ? `${own}\n${note}` : note;
+}
+
 /**
  * The request for the plan as the teacher sees it now (composed for the 'owner' audience, with
  * her edits). Its `blocks` is empty when the day has no teaching period to script.
@@ -169,11 +186,11 @@ export function buildSubPlanAiInput(
               objectives: clipOrNull(lesson.objectives, 1000),
               materials: clipOrNull(lesson.materials, 1000),
               content: clipOrNull(lesson.content, 3000),
-              subNotes: clipOrNull(lesson.subNotes, 1000),
+              subNotes: subNotesWith(lesson.subNotes, b.library),
             }
           : null,
         fallback: lesson ? null : clipOrNull(fallbackOf.get(b.classId), 1000),
-        needsActivity: !lesson || b.warnings.includes('thin_lesson'),
+        needsActivity: !b.library && (!lesson || b.warnings.includes('thin_lesson')),
       };
     }),
   };

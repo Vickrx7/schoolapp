@@ -59,6 +59,18 @@ export function setBlockNote(edits: SubPlanEdits, block: Block, note: string): S
   return withBlock(edits, block.key, edit);
 }
 
+/**
+ * « Ne pas utiliser cette ressource » (true) and « Utiliser cette ressource » (false): the
+ * block's library resource is hidden for everyone, for the lesson the block has now (D-077).
+ */
+export function setHideLibrary(edits: SubPlanEdits, block: Block, hide: boolean): SubPlanEdits {
+  const edit: SubPlanBlockEdit = { ...currentEdit(edits, block) };
+  if (hide) edit.hideLibrary = true;
+  else delete edit.hideLibrary;
+  const empty = !edit.steps && edit.teacherNote === undefined && !edit.hideLibrary;
+  return withBlock(edits, block.key, empty ? null : edit);
+}
+
 /** « Revenir au plan préparé »: the block shows the generated steps again. */
 export function resetBlock(edits: SubPlanEdits, blockKey: string): SubPlanEdits {
   return withBlock(edits, blockKey, null);
@@ -121,7 +133,8 @@ export function toPayload(edits: SubPlanEdits): SubPlanEdits | null {
     }
     const note = edit.teacherNote?.trim();
     if (note) next.teacherNote = note;
-    if (next.steps || next.teacherNote) blocks[key] = next;
+    if (edit.hideLibrary) next.hideLibrary = true;
+    if (next.steps || next.teacherNote || next.hideLibrary) blocks[key] = next;
   }
   if (Object.keys(blocks).length > 0) out.blocks = blocks;
   return Object.keys(out).length > 0 ? out : null;

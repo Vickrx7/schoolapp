@@ -3,9 +3,11 @@
  * then the AI layer (3b), then the generated template, each applied only while the block
  * still has the lesson it was written for. Edits that no longer match are shown to the owner
  * as detached and hidden from everyone else. « Gestion de classe » never reaches the office
- * or a PDF.
+ * or a PDF. A library resource the owner chose not to use (`hideLibrary`, D-077) is taken out
+ * for every audience, with its step.
  */
 import type { CatholicReferenceType } from './catholic';
+import { detachLibrary } from './library';
 import {
   subPlanAiLayerSchema,
   type SubPlanBlock,
@@ -58,6 +60,8 @@ export interface ComposedBlock extends Omit<SubPlanBlock, 'steps'> {
   /** Whether a teacher edit applies to this block. */
   edited: boolean;
   ai: ComposedBlockAi | null;
+  /** The resource the owner took out (« Ne pas utiliser cette ressource »); owner only. */
+  hiddenLibrary: { itemId: string; title: string } | null;
 }
 
 export interface ComposedFaith {
@@ -161,7 +165,11 @@ export function composeSubPlan(
     const aiBlock = ai.blocks.get(block.key);
     const aiApplies = !!aiBlock && aiBlock.lessonId === lessonId;
 
-    let steps: ComposedStep[] = block.steps.map((s) => ({ ...s, say: null }));
+    // Without its resource, the block reads as it would have been built without it.
+    const hidden = editApplies && edit.hideLibrary === true && block.library !== null;
+    const generated = hidden ? detachLibrary(block) : block;
+
+    let steps: ComposedStep[] = generated.steps.map((s) => ({ ...s, say: null }));
     let stepsSource: ComposedBlock['stepsSource'] = 'template';
     if (editApplies && edit.steps) {
       steps = edit.steps.map((s) => ({ minutes: s.minutes, text: s.text, say: null }));
@@ -171,12 +179,16 @@ export function composeSubPlan(
       stepsSource = 'ai';
     }
     return {
-      ...block,
+      ...generated,
       steps,
       stepsSource,
       teacherNote: editApplies ? nonBlank(edit.teacherNote) : null,
       edited: editApplies,
       ai: aiApplies ? aiBlock.ai : null,
+      hiddenLibrary:
+        hidden && audience === 'owner' && block.library
+          ? { itemId: block.library.itemId, title: block.library.title }
+          : null,
     };
   });
 
@@ -187,6 +199,8 @@ export function composeSubPlan(
       const block = byKey.get(blockKey);
       const currentLessonId = block ? (block.lesson?.lessonId ?? null) : null;
       if (block && edit.forLessonId === currentLessonId) continue;
+      // Hiding a resource written for another lesson has nothing left to show or apply.
+      if (!edit.steps && !nonBlank(edit.teacherNote)) continue;
       detachedEdits.push({
         blockKey,
         reason: block ? 'lesson_changed' : 'block_removed',

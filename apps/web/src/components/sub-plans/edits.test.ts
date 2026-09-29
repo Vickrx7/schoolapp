@@ -64,6 +64,7 @@ function plan(lessonId: string): SubPlanV1 {
           { minutes: 40, text: 'Lecture en équipes.' },
         ],
         warnings: [],
+        library: null,
       },
     ],
     classNotes: [],

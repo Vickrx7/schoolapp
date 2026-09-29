@@ -2970,6 +2970,10 @@ export type Database = {
         Args: { p_plan_id: string; p_purpose?: string };
         Returns: Json;
       };
+      get_sub_plan_library_sources: {
+        Args: { p_school_id: string };
+        Returns: Json;
+      };
       get_sub_plan_sources: {
         Args: { p_school_id: string; p_from: string; p_to: string; p_absence_id?: string };
         Returns: Json;

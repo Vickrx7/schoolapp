@@ -730,7 +730,8 @@
       "half_day_split_guessed": "The end of the morning was taken from the bell schedule. The principal can set it on the School page.",
       "students_without_level": "Some students have no French level: they are in the “No level” group.",
       "no_classes": "No class to cover that day.",
-      "generation_failed": "Part of the plan couldn’t be prepared: check the schedule and add instructions if needed."
+      "generation_failed": "Part of the plan couldn’t be prepared: check the schedule and add instructions if needed.",
+      "library_trimmed": "The plan was too long: the library resources of the last periods were taken out."
     },
     "groups": {
       "noLevel": "No level",
@@ -2360,5 +2361,24 @@
       "open": "Open the resource"
     }
   },
-  "subPlanLibrary": {}
+  "subPlanLibrary": {
+    "heading": "Library resource: {title}",
+    "reviewed": "Reviewed by the teacher",
+    "guide": "Resource guide",
+    "guideHint": "For you: how it goes, notes and instructions. Do not hand it out.",
+    "studentMaterial": "Student materials",
+    "forGroups": "For {groups}",
+    "wholeClass": "For the whole class",
+    "keyStays": "The answer key stays with the teacher: collect the sheets.",
+    "collectSheets": "Collect the sheets at the end of the period.",
+    "printHint": "To print one copy per group: “Student activity sheets (PDF)”.",
+    "seeKey": "See the answer key",
+    "seeResource": "See the resource",
+    "hide": "Don’t use this resource",
+    "restore": "Use this resource",
+    "hidden": "Resource taken out of the plan: “{title}”. The substitute does not see it.",
+    "pdf": {
+      "material": "Student materials: “Student activity sheets (PDF)”, one copy per group."
+    }
+  }
 }

@@ -6,7 +6,7 @@ import {
   type SubPlanEdits,
   type SubPlanV1,
 } from '@lynx/domain';
-import { CloudOff, Pencil } from 'lucide-react';
+import { BookOpen, CloudOff, EyeOff, Pencil } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import {
@@ -38,6 +38,7 @@ import {
   setBlockSteps,
   setChecklist,
   setFaith,
+  setHideLibrary,
   setOverview,
   stepsForEditing,
   toPayload,
@@ -120,6 +121,7 @@ function PlanEditorBody({
   onTakeLatest: () => void;
 }) {
   const t = useTranslations('subPlan');
+  const tLibrary = useTranslations('subPlanLibrary');
   const tCommon = useTranslations('common');
   const errorText = useErrorText();
   const locale = useLocale();
@@ -248,8 +250,21 @@ function PlanEditorBody({
 
   const blockSlot = (b: ComposedBlock) => {
     if (!editable) return undefined;
+    // The library resource's switch (D-077): hidden for everyone until she brings it back.
+    const library = b.library ? (
+      <Button variant="ghost" onClick={() => change((e) => setHideLibrary(e, b, true))}>
+        <EyeOff aria-hidden />
+        {tLibrary('hide')}
+      </Button>
+    ) : b.hiddenLibrary ? (
+      <Button variant="secondary" onClick={() => change((e) => setHideLibrary(e, b, false))}>
+        <BookOpen aria-hidden />
+        {tLibrary('restore')}
+      </Button>
+    ) : undefined;
     if (!open.has(b.key)) {
       return {
+        library,
         actions: (
           <Button variant="secondary" onClick={() => toggle(b.key, true)}>
             <Pencil aria-hidden />
@@ -259,6 +274,7 @@ function PlanEditorBody({
       };
     }
     return {
+      library,
       steps: (
         <div className="space-y-3 rounded-lg bg-slate-50 p-3">
           <StepListEditor

@@ -31,8 +31,9 @@ const PREVIEW_REQUEST_ID = '00000000-0000-4000-8000-000000000000';
 export type AbsencePreviewInput = Omit<AbsenceFormInput, 'clientRequestId'>;
 
 /**
- * The live summary under « Signaler une absence »: builds the plans exactly as publishing
- * would, and returns counts and event titles per day. Writes nothing.
+ * The live summary under « Signaler une absence »: builds the plans as publishing would (without
+ * library resources, which change no count), and returns counts and event titles per day.
+ * Writes nothing.
  */
 export async function previewAbsence(
   input: AbsencePreviewInput,
@@ -45,7 +46,9 @@ export async function previewAbsence(
   if (!teachingSchools(session).some((s) => s.id === v.schoolId)) return fail('forbidden');
 
   const supabase = await createSupabaseServerClient();
-  const loaded = await loadSubPlanSources(supabase, v.schoolId, v.startsOn, v.endsOn);
+  const loaded = await loadSubPlanSources(supabase, v.schoolId, v.startsOn, v.endsOn, undefined, {
+    withLibrary: false,
+  });
   if (!loaded.ok) return fail(loaded.error);
   const result = buildForAbsence(loaded.sources, {
     startsOn: v.startsOn,

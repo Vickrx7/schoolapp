@@ -1,15 +1,18 @@
 /**
  * The plan PDF's layout (DECISIONS D-053): US Letter, Noto Sans, the header, the alerts notice,
  * then each section of the model (model.ts decides what is printed; this file only lays it out).
- * A footer on every page says the document is confidential and goes back to the office.
+ * A footer on every page says the document is confidential and goes back to the office. A
+ * period's library resource prints its guide with the library's own blocks (doc-blocks.tsx,
+ * D-075, D-077).
  *
  * Plain function components without hooks: React-PDF renders them with its own reconciler.
  * Not server-only, so the renderer can be unit tested; only route handlers import it.
  */
 import { Document, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 import { APP_NAME } from '../../lib/app-name';
+import { DocBlocks } from './doc-blocks';
 import { PDF_FONT_FAMILY } from './fonts';
-import type { PdfPart, PlanPdfBlock, PlanPdfModel, PlanPdfSection } from './model';
+import type { PdfPart, PlanPdfBlock, PlanPdfLibrary, PlanPdfModel, PlanPdfSection } from './model';
 
 // Tailwind's slate and amber, as on screen.
 const INK = '#0f172a';
@@ -111,6 +114,7 @@ const styles = StyleSheet.create({
   lessonTitle: { fontWeight: 700, marginBottom: 3 },
   gap: { color: '#92400e', marginBottom: 3 },
   stepMinutes: { width: 44, color: FAINT },
+  libraryEnd: { height: 6 },
   say: { color: MUTED },
   group: {
     fontSize: 10,
@@ -225,6 +229,8 @@ const partLines = (parts: PdfPart[]) =>
 
 /** A short block (a routine, an event, a handover) is never split between two pages. */
 function keptTogether(block: PlanPdfBlock): boolean {
+  // A resource's guide is a document of its own: it flows over as many pages as it takes.
+  if (block.library) return false;
   const total =
     3 +
     lines(block.event?.notes ?? null) +
@@ -232,6 +238,34 @@ function keptTogether(block: PlanPdfBlock): boolean {
     block.steps.reduce((n, s) => n + lines(s.text) + lines(s.say), 1) +
     partLines(block.extras);
   return total <= 16;
+}
+
+/** The body size of a resource's guide inside a period (the plan's own text is 10 pt). */
+const LIBRARY_GUIDE_SIZE = 9.5;
+
+/**
+ * A period's library resource: its heading, where the students' pages are, then its guide.
+ * Siblings of the block's other parts, so a label is never left alone at the bottom of a page.
+ */
+function LibraryParts({ library }: { library: PlanPdfLibrary }) {
+  return (
+    <>
+      <Text style={styles.label} minPresenceAhead={28} wrap={false}>
+        {library.heading}
+      </Text>
+      {library.notes.map((note, i) => (
+        <Text key={i} style={styles.partEnd}>
+          {note}
+        </Text>
+      ))}
+      <Text style={styles.label} minPresenceAhead={28} wrap={false}>
+        {library.guideLabel}
+      </Text>
+      <DocBlocks blocks={library.guide.blocks} size={LIBRARY_GUIDE_SIZE} />
+      {/* The guide's blocks space themselves with top margins only: room before what follows. */}
+      <View style={styles.libraryEnd} />
+    </>
+  );
 }
 
 function Block({ block, stepsLabel }: { block: PlanPdfBlock; stepsLabel: string }) {
@@ -280,6 +314,7 @@ function Block({ block, stepsLabel }: { block: PlanPdfBlock; stepsLabel: string 
           ))}
         </>
       ) : null}
+      {block.library ? <LibraryParts library={block.library} /> : null}
       <Parts parts={block.extras} />
     </View>
   );

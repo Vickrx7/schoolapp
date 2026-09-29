@@ -1,8 +1,8 @@
 /**
- * The deterministic plan builder (DECISIONS D-047, D-052, D-055). The web server runs it in the
- * absence request and the worker runs it again when a source changes; both pass the same
- * `app.sub_plan_sources` JSON, so both build the same plan. Pure: `now` is passed in and only
- * stamps `generatedAt`.
+ * The deterministic plan builder (DECISIONS D-047, D-052, D-055, D-077). The web server runs it
+ * in the absence request and the worker runs it again when a source changes; both pass the same
+ * `app.sub_plan_sources` JSON (with `app.sub_plan_library_sources` merged in as `library`), so
+ * both build the same plan. Pure: `now` is passed in and only stamps `generatedAt`.
  */
 import { timeToMinutes, type LocalDate, type LocalTime } from '../dates';
 import type { CalendarEventType } from '../calendar';
@@ -14,7 +14,15 @@ import {
   type CoverageBlock,
   type DayCoverage,
 } from './coverage';
-import { groupStudentsByLevel } from './groupings';
+import { plannedMinutes } from './ai-input';
+import { groupStudentsByLevel, type StudentGroup } from './groupings';
+import {
+  MAX_LIBRARY_PLAN_BYTES,
+  attachLibrary,
+  detachLibrary,
+  librarySnapshot,
+  rankLibraryCandidates,
+} from './library';
 import {
   SUB_PLAN_GENERATOR_VERSION,
   SUB_PLAN_SCHEMA_VERSION,
@@ -33,6 +41,7 @@ import {
   eventSteps,
   fallbackSteps,
   handoverSteps,
+  isThinLesson,
   lessonSteps,
   otherSteps,
   prepSteps,
@@ -40,9 +49,12 @@ import {
   routineSteps,
 } from './scripts';
 import { assignAbsenceLessons, slotKey, type AbsenceSlotAssignment } from './sequence';
-import type { SubPlanSourceLesson, SubPlanSourceProfile, SubPlanSources } from './sources';
+import type { SubPlanSourceProfile, SubPlanSources } from './sources';
 import { formalStaffName } from './compose';
 import { clip, clipOrNull, compareFr } from './text';
+
+// Moved to scripts.ts (the library's blocks need it too); still exported from here.
+export { isThinLesson } from './scripts';
 
 export interface AbsenceInput {
   startsOn: LocalDate;
@@ -69,17 +81,6 @@ export interface BuildOptions {
   now: Date;
   /** Called when a day falls back to the minimal plan (for logs: date and error only). */
   onError?: (date: LocalDate, error: unknown) => void;
-}
-
-/** A lesson with no objectives, no materials and almost no content. */
-export function isThinLesson(
-  lesson: Pick<SubPlanSourceLesson, 'objectives' | 'materials' | 'content'>,
-): boolean {
-  return (
-    !lesson.objectives?.trim() &&
-    !lesson.materials?.trim() &&
-    (lesson.content?.trim().length ?? 0) < 80
-  );
 }
 
 const DEFAULT_TITLES: Record<SubPlanBlock['kind'], string> = {
@@ -114,7 +115,11 @@ function contextOf(sources: SubPlanSources) {
   const classById = new Map(sources.classes.map((c) => [c.id, c]));
   const rooms = new Map(sources.rooms.map((r) => [r.id, r.name]));
   const profiles = new Map(sources.profiles.map((p) => [p.classId, p]));
-  return { classById, rooms, profiles };
+  const library = {
+    items: new Map(sources.library.items.map((i) => [i.id, i])),
+    candidates: new Map(sources.library.lessonCandidates.map((l) => [l.lessonId, l.candidates])),
+  };
+  return { classById, rooms, profiles, library };
 }
 type BuildContext = ReturnType<typeof contextOf>;
 
@@ -190,6 +195,31 @@ export const MAX_PLAN_BYTES = 240_000;
 
 function planBytes(plan: SubPlanV1): number {
   return new TextEncoder().encode(JSON.stringify(plan)).length;
+}
+
+/**
+ * Library snapshots come off the last blocks first until the plan is under
+ * MAX_LIBRARY_PLAN_BYTES, with the plan warning `library_trimmed` (D-077). The periods keep
+ * their lessons and steps.
+ */
+function fitLibrary(plan: SubPlanV1): SubPlanV1 {
+  if (planBytes(plan) <= MAX_LIBRARY_PLAN_BYTES) return plan;
+  const blocks = [...plan.blocks];
+  let trimmed = false;
+  for (let i = blocks.length - 1; i >= 0; i -= 1) {
+    if (!blocks[i]!.library) continue;
+    blocks[i] = detachLibrary(blocks[i]!);
+    trimmed = true;
+    if (planBytes({ ...plan, blocks }) <= MAX_LIBRARY_PLAN_BYTES) break;
+  }
+  if (!trimmed) return plan;
+  return {
+    ...plan,
+    blocks,
+    warnings: plan.warnings.some((w) => w.code === 'library_trimmed')
+      ? plan.warnings
+      : [...plan.warnings, { code: 'library_trimmed' as const, blockKey: null }].slice(0, 40),
+  };
 }
 
 /**
@@ -341,7 +371,41 @@ function buildBlock(
     lesson,
     steps: steps.slice(0, 12),
     warnings,
+    library: null,
   };
+}
+
+/**
+ * The library resource of each lesson period (D-077): the best candidate of the lesson whose
+ * snapshot can be made, each resource once per absence (`used` is shared by every day of the
+ * build, in date and time order). Only lessons the substitute teaches get one.
+ */
+function withLibrary(
+  blocks: readonly SubPlanBlock[],
+  groups: readonly StudentGroup[],
+  ctx: BuildContext,
+  used: Set<string>,
+): SubPlanBlock[] {
+  return blocks.map((b) => {
+    const lesson = b.lesson;
+    if (b.kind !== 'subject' || !lesson || lesson.assignment !== 'assigned') return b;
+    const candidates = ctx.library.candidates.get(lesson.lessonId);
+    if (!candidates?.length) return b;
+    const classGroups = groups.filter((g) => g.classId === b.classId);
+    const ranked = rankLibraryCandidates({
+      blockMinutes: plannedMinutes(b),
+      candidates,
+      items: ctx.library.items,
+      used,
+    });
+    for (const choice of ranked) {
+      const snapshot = librarySnapshot(choice.item, classGroups, { reason: choice.reason });
+      if (!snapshot) continue;
+      used.add(choice.item.id);
+      return attachLibrary(b, snapshot);
+    }
+    return b;
+  });
 }
 
 /** One day's plan from its coverage and the absence-wide lesson assignments. */
@@ -352,13 +416,18 @@ function buildDayPlan(
   assignments: ReadonlyMap<string, AbsenceSlotAssignment>,
   absence: AbsenceInput,
   now: Date,
+  usedLibraryItems: Set<string>,
 ): SubPlanV1 {
   const { date, classIds } = coverage;
-  const blocks = coverage.blocks
-    .slice(0, 40)
-    .map((b) => buildBlock(b, ctx, assignments.get(slotKey(date, b.id))));
-
   const { groups, withoutLevel } = groupStudentsByLevel(sources.students, sources.levels, classIds);
+  const blocks = withLibrary(
+    coverage.blocks
+      .slice(0, 40)
+      .map((b) => buildBlock(b, ctx, assignments.get(slotKey(date, b.id)))),
+    groups.slice(0, 40),
+    ctx,
+    usedLibraryItems,
+  );
 
   let faith: SubPlanV1['faith'] = null;
   if (absence.catholicConnection) {
@@ -415,7 +484,7 @@ function buildDayPlan(
     ]),
     generator: generator(now),
   };
-  return fitPlanSize(subPlanV1Schema.parse(plan));
+  return fitPlanSize(fitLibrary(subPlanV1Schema.parse(plan)));
 }
 
 /**
@@ -556,11 +625,20 @@ export function buildAbsencePlans(
   }
 
   const ctx = contextOf(sources);
+  const usedLibraryItems = new Set<string>();
   const plans = dates.map((date): BuiltPlan => {
     const coverage = coverages.get(date);
     if (coverage && !failed.has(date)) {
       try {
-        const plan = buildDayPlan(sources, ctx, coverage, assignments, absence, options.now);
+        const plan = buildDayPlan(
+          sources,
+          ctx,
+          coverage,
+          assignments,
+          absence,
+          options.now,
+          usedLibraryItems,
+        );
         return { date, classIds: plan.classes.map((c) => c.classId), plan };
       } catch (error) {
         fail(date, error);

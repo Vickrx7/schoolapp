@@ -32,6 +32,7 @@ function block(
     lesson: null,
     steps: [],
     warnings: [],
+    library: null,
     ...overrides,
   };
 }

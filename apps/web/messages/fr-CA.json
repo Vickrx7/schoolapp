@@ -730,7 +730,8 @@
       "half_day_split_guessed": "La fin de la matinée a été déduite de l’horaire. La direction peut la préciser dans la page École.",
       "students_without_level": "Certains élèves n’ont pas de niveau de français : ils sont dans le groupe « Sans niveau ».",
       "no_classes": "Aucune classe à couvrir ce jour-là.",
-      "generation_failed": "Une partie du plan n’a pas pu être préparée : vérifiez l’horaire et ajoutez des consignes au besoin."
+      "generation_failed": "Une partie du plan n’a pas pu être préparée : vérifiez l’horaire et ajoutez des consignes au besoin.",
+      "library_trimmed": "Le plan était trop long : les ressources de la banque des dernières périodes ont été retirées."
     },
     "groups": {
       "noLevel": "Sans niveau",
@@ -2360,5 +2361,24 @@
       "open": "Ouvrir la ressource"
     }
   },
-  "subPlanLibrary": {}
+  "subPlanLibrary": {
+    "heading": "Ressource de la banque : {title}",
+    "reviewed": "Révisée par l’enseignant·e",
+    "guide": "Guide de la ressource",
+    "guideHint": "Pour vous : le déroulement, les notes et les consignes. Ne le distribuez pas.",
+    "studentMaterial": "Matériel pour les élèves",
+    "forGroups": "Pour {groups}",
+    "wholeClass": "Pour toute la classe",
+    "keyStays": "Le corrigé reste avec l’enseignant·e : ramassez les feuilles.",
+    "collectSheets": "Ramassez les feuilles à la fin de la période.",
+    "printHint": "Pour imprimer une copie par groupe : « Activités pour les élèves (PDF) ».",
+    "seeKey": "Voir le corrigé",
+    "seeResource": "Voir la ressource",
+    "hide": "Ne pas utiliser cette ressource",
+    "restore": "Utiliser cette ressource",
+    "hidden": "Ressource retirée du plan : « {title} ». La personne suppléante ne la voit pas.",
+    "pdf": {
+      "material": "Matériel pour les élèves : « Activités pour les élèves (PDF) », une copie par groupe."
+    }
+  }
 }

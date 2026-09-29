@@ -374,8 +374,11 @@ export function DocView({
   className,
 }: {
   doc: RenderedDoc;
-  /** The heading level of the document's title; its sections go one level down. */
-  titleLevel?: 1 | 2 | 3;
+  /**
+   * The heading level of the document's title; its sections go one level down (4 inside a
+   * substitute plan's period, whose title is a level 3 heading).
+   */
+  titleLevel?: 1 | 2 | 3 | 4;
   /** `sheet`: a printed page (larger serif text, like the Phase 2 student copies). */
   variant?: 'screen' | 'sheet';
   /** The small version number (never a level name, D-042). */

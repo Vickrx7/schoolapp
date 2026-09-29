@@ -74,7 +74,10 @@ absence at 6 a.m.
    - per period: its times and minutes to plan, whether an event shortens or interrupts it (and
      the event's title), the subject, the unit title, the room (« Gymnase »), which groups are
      there, and the teacher's lesson (title, learning goal, materials, content, note for the
-     substitute), or the class's « Activités de rechange » when there is no lesson;
+     substitute), or the class's « Activités de rechange » when there is no lesson. When the
+     period uses a library resource (Phase 4, D-077), the note for the substitute also names it
+     (« Activité prévue : « Le huard, oiseau des lacs » (Texte de lecture). ») and no activity is
+     asked for; the resource's content itself is not sent;
    - the faith moment already chosen for the day (its title and text).
 
    It sends **no** student or staff names, no class or school names, no alerts, no « Gestion de

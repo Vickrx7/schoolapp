@@ -87,6 +87,17 @@ export function breakSteps(block: TimedBlock & { kind: BlockKind }): SubPlanStep
   ]);
 }
 
+/** A lesson with no objectives, no materials and almost no content. */
+export function isThinLesson(
+  lesson: Pick<SubPlanSourceLesson, 'objectives' | 'materials' | 'content'>,
+): boolean {
+  return (
+    !lesson.objectives?.trim() &&
+    !lesson.materials?.trim() &&
+    (lesson.content?.trim().length ?? 0) < 80
+  );
+}
+
 /**
  * A lesson from the teacher's planning, fitted to the minutes left in the block. Steps quote
  * the objective, the teacher's note for the substitute and the content as written.

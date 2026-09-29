@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatLocalDate, formatTime, formatTimeRange } from '@/lib/format';
 import { BlockCard, PLAN_CONTENT_LANG, TypedText } from './block-card';
-import { GroupsPanel, groupLabels } from './groups-panel';
+import { GroupsPanel, groupFirstNames, groupLabels } from './groups-panel';
 import type { PlanContext, PlanLevel, RosterStudent } from './types';
 import { WarningsList } from './warnings-list';
 
@@ -15,8 +15,10 @@ export interface PlanViewSlots {
   top?: ReactNode;
   /** Replaces the overview paragraph. */
   overview?: ReactNode;
-  /** Controls for a block: its steps editor and actions. */
-  block?: (block: ComposedBlock) => { steps?: ReactNode; actions?: ReactNode } | undefined;
+  /** Controls for a block: its steps editor, actions and library resource switch. */
+  block?: (
+    block: ComposedBlock,
+  ) => { steps?: ReactNode; actions?: ReactNode; library?: ReactNode } | undefined;
   /** Replaces the end-of-day checklist. */
   endOfDay?: ReactNode;
   /** Replaces the faith moment. */
@@ -77,6 +79,7 @@ export function PlanView({
   const team = plan.classNotes.flatMap((n) => n.team.map((m) => ({ ...m, classId: n.classId })));
   const className = (id: string) => plan.classes.find((c) => c.classId === id)?.name ?? '';
   const labels = groupLabels(plan, levels, locale, t('groups.noLevel'));
+  const names = groupFirstNames(plan, roster);
 
   return (
     <div className="space-y-4">
@@ -145,6 +148,7 @@ export function PlanView({
                 audience={plan.audience}
                 showClass={multipleClasses}
                 groupLabels={labels}
+                groupNames={names}
                 edit={slots.block?.(b)}
               />
             </li>

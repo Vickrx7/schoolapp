@@ -11,3 +11,4 @@ export * from './report';
 export * from './absence-form';
 export * from './access-code';
 export * from './ai-input';
+export * from './library';

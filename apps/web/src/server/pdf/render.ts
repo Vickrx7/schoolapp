@@ -7,7 +7,7 @@
  */
 import { renderToBuffer } from '@react-pdf/renderer';
 import { ActivitiesDocument } from './activities-document';
-import type { ActivitiesPdfModel } from './activities-model';
+import { hasPages, type ActivitiesPdfModel } from './activities-model';
 import { registerPdfFonts, warmPdfFonts } from './fonts';
 import { LibraryDocument } from './library-document';
 import type { LibraryPdfModel } from './library-model';
@@ -23,7 +23,7 @@ export async function renderPlanPdf(model: PlanPdfModel): Promise<Buffer> {
 
 /** At least one sheet: a document without pages is not a PDF (the routes answer 404 instead). */
 export async function renderActivitiesPdf(model: ActivitiesPdfModel): Promise<Buffer> {
-  if (model.sheets.length === 0) throw new Error('No activity sheet to render');
+  if (!hasPages(model)) throw new Error('No activity sheet to render');
   registerPdfFonts();
   await warmPdfFonts();
   return renderToBuffer(ActivitiesDocument({ model }));

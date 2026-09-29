@@ -3,13 +3,15 @@
  *
  * A plan has three layers keyed by timetable block: the generated layer (`sub_plans.plan`,
  * `subPlanV1Schema`), the teacher's overlay (`sub_plans.edits`, `subPlanEditsSchema`) and, in
- * 3b, the AI layer (`sub_plans.ai`). School name, office phone, teacher name and first names are
+ * 3b, the AI layer (`sub_plans.ai`). Since Phase 4 a lesson block may also carry a snapshot of a
+ * library resource, never its answer key (D-077). School name, office phone, teacher name and first names are
  * not in the plan: they are read from tables when the plan is displayed, so the plan JSON never
  * grants access to anything (the database derives covered classes, roster and lessons itself).
  */
 import { z } from 'zod';
 import { blockKinds, calendarEventTypes, localDateSchema } from '../forms';
 import { catholicReferenceTypes } from './catholic';
+import { subPlanLibrarySchema } from './library';
 
 export const SUB_PLAN_SCHEMA_VERSION = 1;
 export const SUB_PLAN_GENERATOR_VERSION = 'domain-1';
@@ -47,6 +49,8 @@ export const planWarningCodes = [
   'students_without_level',
   'no_classes',
   'generation_failed',
+  /** The plan was too large: library resources were taken out of its last periods (D-077). */
+  'library_trimmed',
 ] as const;
 export type PlanWarningCode = (typeof planWarningCodes)[number];
 
@@ -99,6 +103,11 @@ export const subPlanBlockSchema = z.object({
   lesson: subPlanLessonSchema.nullable(),
   steps: z.array(subPlanStepSchema).max(12),
   warnings: z.array(z.enum(blockWarningCodes)).max(5),
+  /**
+   * The library resource the lesson uses (D-077): a snapshot without its answer key. Optional
+   * for plans built before Phase 4.
+   */
+  library: subPlanLibrarySchema.nullable().default(null),
 });
 export type SubPlanBlock = z.infer<typeof subPlanBlockSchema>;
 export type SubPlanLesson = z.infer<typeof subPlanLessonSchema>;
@@ -209,6 +218,8 @@ export const subPlanBlockEditSchema = z.strictObject({
   forLessonId: uuid.nullable(),
   steps: z.array(subPlanStepEditSchema).max(12, 'tooMany').optional(),
   teacherNote: z.string().trim().max(1000, 'tooLong').optional(),
+  /** « Ne pas utiliser cette ressource »: the block's library resource is hidden (D-077). */
+  hideLibrary: z.boolean().optional(),
 });
 export type SubPlanBlockEdit = z.infer<typeof subPlanBlockEditSchema>;
 

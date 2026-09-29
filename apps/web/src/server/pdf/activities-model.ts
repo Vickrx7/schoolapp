@@ -17,8 +17,15 @@
  * A word taken out becomes « … ». Student copies are in French, the content's language, whatever
  * the reader's language (D-046): nothing on the pages comes from the message files.
  *
+ * A period's library resource (D-077) adds its students' pages: its student document in the
+ * version of each group (the plan's snapshot), one copy per group of the class with the group's
+ * key in the corner, like the activities. Those documents are library content, which never names
+ * a level on a student sheet and is written without students' names (the library's own printing
+ * prints them as they are, D-075), so they are printed as the library prints them.
+ *
  * Pure and not server-only, so it can be unit tested.
  */
+import type { RenderedDoc } from '@lynx/content';
 import { replaceLevelLabels } from '@lynx/ai/features/shared';
 import { Redactor, type KnownPerson } from '@lynx/ai/privacy';
 import { SUB_PLAN_AI_NO_LEVEL_LABEL, type ComposedSubPlan, type LocalDate } from '@lynx/domain';
@@ -42,6 +49,15 @@ export interface ActivitySheet {
   groupInstructions: string | null;
 }
 
+/** A group's copy of a library resource's student document (D-077). */
+export interface LibrarySheet {
+  /** The timetable block the resource is for (not printed). */
+  blockKey: string;
+  /** The group's key (« G1 »), printed small for the adult; null when the class has no groups. */
+  group: string | null;
+  doc: RenderedDoc;
+}
+
 export interface ActivitiesPdfModel {
   /** Document properties: the date only, in French. */
   info: { title: string; language: 'fr-CA' };
@@ -49,12 +65,22 @@ export interface ActivitiesPdfModel {
   fileName: string;
   /** « Ta tâche », above a group's own version. */
   taskLabel: string;
+  /** The AI layer's activities (3b). */
   sheets: ActivitySheet[];
+  /** The library resources' pages (D-077). */
+  librarySheets: LibrarySheet[];
+  /** The blocks of the day in order: pages are printed period by period. */
+  blockOrder: string[];
 }
 
-/** Whether the plan has an activity to print for students (the link is shown only then). */
+/** Whether the plan has pages to print for students (the link is shown only then). */
 export function hasActivitySheets(plan: ComposedSubPlan): boolean {
-  return plan.blocks.some((b) => !!b.ai?.activity);
+  return plan.blocks.some((b) => !!b.ai?.activity || (b.library?.studentDocs.length ?? 0) > 0);
+}
+
+/** Whether a model has any page to print. */
+export function hasPages(model: ActivitiesPdfModel): boolean {
+  return model.sheets.length + model.librarySheets.length > 0;
 }
 
 export function activitiesPdfFileName(date: LocalDate): string {
@@ -63,7 +89,7 @@ export function activitiesPdfFileName(date: LocalDate): string {
 
 /**
  * The students' sheets of one day's plan, composed for the 'pdf' audience (anything else is
- * refused, as for the plan PDF). Empty when no period has an activity.
+ * refused, as for the plan PDF). Empty when no period has an activity or a library resource.
  */
 export function buildActivitiesPdfModel(
   plan: ComposedSubPlan,
@@ -116,10 +142,29 @@ export function buildActivitiesPdfModel(
     }));
   });
 
+  // A resource's version per group: one copy for each group of the class that gets it.
+  const librarySheets = plan.blocks.flatMap((block): LibrarySheet[] => {
+    const library = block.library;
+    if (!library) return [];
+    const groups = new Set(
+      printedGroups.filter((g) => g.classId === block.classId).map((g) => g.key),
+    );
+    return library.studentDocs.flatMap(({ groupKeys, doc }): LibrarySheet[] => {
+      // Built for a class without groups: one copy for the class, so the resource is never lost.
+      if (groupKeys.length === 0) return [{ blockKey: block.key, group: null, doc }];
+      // A version whose groups have no student on the roster any more is not printed.
+      return groupKeys
+        .filter((k) => groups.has(k))
+        .map((group) => ({ blockKey: block.key, group, doc }));
+    });
+  });
+
   return {
     info: { title: `Activités pour les élèves — ${plan.date}`, language: 'fr-CA' },
     fileName: activitiesPdfFileName(plan.date),
     taskLabel: 'Ta tâche',
     sheets,
+    librarySheets,
+    blockOrder: plan.blocks.map((b) => b.key),
   };
 }

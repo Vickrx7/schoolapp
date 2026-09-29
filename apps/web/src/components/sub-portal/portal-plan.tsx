@@ -6,7 +6,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useState, type KeyboardEvent, type ReactNode } from 'react';
 import { BlockCard, PLAN_CONTENT_LANG, TypedText } from '@/components/sub-plans/block-card';
-import { GroupsPanel, groupLabels } from '@/components/sub-plans/groups-panel';
+import { GroupsPanel, groupFirstNames, groupLabels } from '@/components/sub-plans/groups-panel';
 import { PdfLink } from '@/components/sub-plans/pdf-link';
 import { PlanSection } from '@/components/sub-plans/plan-view';
 import { Timeline } from '@/components/sub-plans/timeline';
@@ -76,6 +76,7 @@ export function PortalPlan({
 
   const multipleClasses = plan.classes.length > 1;
   const labels = groupLabels(plan, levels, locale, tPlan('groups.noLevel'));
+  const names = groupFirstNames(plan, roster);
   const className = (id: string) => plan.classes.find((c) => c.classId === id)?.name ?? '';
   const withClass = (label: string, classId: string) =>
     multipleClasses ? `${label} · ${className(classId)}` : label;
@@ -233,6 +234,7 @@ export function PortalPlan({
                     audience="substitute"
                     showClass={multipleClasses}
                     groupLabels={labels}
+                    groupNames={names}
                   />
                 </li>
               ))}

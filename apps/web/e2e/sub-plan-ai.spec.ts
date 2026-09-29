@@ -53,6 +53,14 @@ function pageCount(pdf: Buffer): number {
   return pdf.toString('latin1').match(/\/Type\s*\/Page\b/g)?.length ?? 0;
 }
 
+/** The pages of the students' PDF at `href`, or 0 when there is nothing to print (404). */
+async function studentPageCount(page: Page, href: string): Promise<number> {
+  const response = await page.request.get(href);
+  if (response.status() === 404) return 0;
+  expect(response.headers()['content-type']).toBe('application/pdf');
+  return pageCount(await response.body());
+}
+
 /** The principal turns AI on for the school (it may already be on after another spec). */
 async function turnAiOn(page: Page) {
   await login(page, DEMO.principal);
@@ -86,6 +94,8 @@ test('a teacher adds detailed instructions to her plan after checking what is se
   await reportAbsence(page, { startsOn: schoolDay({ weeksAhead: 3, isoWeekday: 3 }) });
   await page.getByRole('link', { name: 'Réviser le plan' }).first().click();
   await page.waitForURL(/\/plans\/[0-9a-f-]{36}$/);
+  // The students' pages of the library resources the plan uses (D-077), before any activity.
+  const libraryPages = await studentPageCount(page, `${page.url()}/pdf?doc=activities`);
 
   // Nothing is sent before the preview: it shows groups as sizes, never the students.
   const panel = page.getByTestId('sub-plan-ai');
@@ -140,7 +150,7 @@ test('a teacher adds detailed instructions to her plan after checking what is se
     [planId],
   );
   expect(expected!.activities).toBeGreaterThan(0);
-  const sheetCount = expected!.groups * expected!.activities;
+  const sheetCount = expected!.groups * expected!.activities + libraryPages;
   expect(pageCount(pdf)).toBe(sheetCount);
 
   // Once released, the direction prints them too: the same route, audited like the plan (D-053).
@@ -221,7 +231,24 @@ test('a teacher adds detailed instructions to her plan after checking what is se
     await expect(panel.getByText('Consignes détaillées ajoutées')).toBeHidden();
     await expect(frenchBlock).not.toContainText('Préparé avec l’IA');
     await expect(frenchBlock).not.toContainText('Dites :');
-    // No activity any more: no sheets to print. The substitute's address leads back to the plan.
+    if (libraryPages > 0) {
+      // No activity any more: only the library resources' pages are left to print (D-077),
+      // until she takes the resources out of the plan too (« Ne pas utiliser cette ressource »).
+      await expect(sheets).toBeVisible();
+      expect(await studentPageCount(page, sheetsHref)).toBe(libraryPages);
+      const hide = page.getByRole('button', { name: 'Ne pas utiliser cette ressource' });
+      // One resource per tap; a tap before the page is interactive is lost, so retry.
+      await expect(async () => {
+        if ((await hide.count()) > 0) await hide.first().click();
+        await expect(hide).toHaveCount(0, { timeout: 1000 });
+      }).toPass();
+      await expect(page.getByTestId('plan-save-status')).toContainText('Enregistré à', {
+        timeout: 15_000,
+      });
+      await page.reload();
+      await expect(page.getByTestId('plan-library-hidden').first()).toBeVisible();
+    }
+    // Nothing left to print. The substitute's address leads back to the plan.
     await expect(sheets).toBeHidden();
     expect((await page.request.get(sheetsHref)).status()).toBe(404);
     const gone = await sub.request.get(subSheetsHref, { maxRedirects: 0 });

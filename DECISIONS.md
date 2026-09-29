@@ -848,7 +848,18 @@ and old plans still parse. The owner can hide the resource. A plan's JSON over 2
 snapshots from its last blocks first (`library_trimmed`). Sending an item back, withdrawing,
 archiving, returning it to draft, sharing it more narrowly or editing a reviewed item marks the
 upcoming absences whose plans name it or whose lessons link it out of date, as does any change to
-a lesson's attentes; a new approval does not (Assumption): the next rebuild picks it up.
+a lesson's attentes; a new approval does not (Assumption): the next rebuild picks it up. The
+loader returns no candidates for a school without the Library module (D-078), so the web server
+and the worker build the same plan; it also returns the attentes in common and the usage, and the
+builder ranks again against the minutes the substitute actually teaches (a shortened or
+interrupted period). `hasAnswerKey` is true only when a key holds an answer or a solution. A
+resource's step (« Distribuez « … » : voir « Matériel pour les élèves ». ») goes just before the
+lesson's main step. Hiding a resource takes its step out and brings back `thin_lesson` for a thin
+lesson, so « Consignes détaillées (IA) » asks for an activity again; « Revenir au plan préparé »
+brings the resource back. Its student pages are printed per group as the library prints them
+(D-075), without the blanking of names and level words applied to AI activities. Known limits: the
+sources fingerprint does not cover resources (one changed between reading and publishing shows at
+the next rebuild), and days that can no longer change do not count for « once per absence ».
 
 **D-078 — Licensing, roles and navigation (Assumption).** Library pages, navigation and actions
 need a school with the Library module where the user is a teacher, principal or vice-principal,

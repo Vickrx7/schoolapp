@@ -9,8 +9,13 @@
  * - « Gestion de classe »: the plan must be composed for the 'pdf' audience (which drops it), and
  *   this builder never reads it anyway (the labels have no heading for it).
  *
+ * A period with a library resource (D-077) prints the resource's guide (its teacher document,
+ * never a key: plans hold none) and says where the students' pages are: they are a separate
+ * document (« Activités pour les élèves », activities-model.ts), one copy per group.
+ *
  * Pure and not server-only, so it can be unit tested.
  */
+import type { RenderedDoc } from '@lynx/content';
 import type {
   AbsencePart,
   ComposedBlock,
@@ -65,6 +70,10 @@ export interface PlanPdfLabels {
   };
   /** The AI layer's parts of a block (3b, D-052). */
   ai: Record<'overview' | 'differentiation' | 'activity', string>;
+  /** A period's library resource (D-077). */
+  library: Record<'guide' | 'material' | 'keyStays' | 'collectSheets', string> & {
+    heading: (title: string) => string;
+  };
   /** No « Gestion de classe »: it is never printed. */
   classNotes: Record<'arrival' | 'routines' | 'dismissal' | 'fallbackActivities', string>;
   contacts: Record<'office' | 'neighbour' | 'arrival' | 'emergency', string>;
@@ -103,6 +112,18 @@ export interface PlanPdfBlock {
   steps: PlanPdfStep[];
   /** The teacher's note and the AI layer's extras, after the steps. */
   extras: PdfPart[];
+  /** The period's library resource: its guide, and where the students' pages are (D-077). */
+  library: PlanPdfLibrary | null;
+}
+
+export interface PlanPdfLibrary {
+  /** « Ressource de la banque : Le huard, oiseau des lacs » */
+  heading: string;
+  /** Where the students' pages are, and that the key stays with the teacher. */
+  notes: string[];
+  guideLabel: string;
+  /** The resource's teacher document (never a key). */
+  guide: RenderedDoc;
 }
 
 export interface PlanPdfSection {
@@ -209,6 +230,7 @@ function pdfBlock(
     ...textPart(labels.block.ifTime, block.ai?.ifTimeRemains),
   ];
 
+  const library = block.library;
   const eventTime = block.event?.start ? ` · ${formatTime(block.event.start, locale)}` : '';
   return {
     key: block.key,
@@ -244,6 +266,17 @@ function pdfBlock(
       })
       .filter((s) => s.text),
     extras,
+    library: library
+      ? {
+          heading: labels.library.heading(library.title),
+          notes: [
+            ...(library.studentDocs.length > 0 ? [labels.library.material] : []),
+            library.hasAnswerKey ? labels.library.keyStays : labels.library.collectSheets,
+          ],
+          guideLabel: labels.library.guide,
+          guide: library.teacherDoc,
+        }
+      : null,
   };
 }
 

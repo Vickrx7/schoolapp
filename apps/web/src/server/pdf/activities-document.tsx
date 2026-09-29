@@ -8,12 +8,17 @@
  * Print is as large as the text allows: a short activity is set big for young readers, a long
  * one smaller, so that a group's sheet stays on one page.
  *
+ * A library resource's page (D-077) is its student document drawn as the library draws it
+ * (doc-blocks.tsx), over as many pages as it takes, with the group's key in the corner of each.
+ * Pages follow the day: each period's activity pages, then its resource's pages.
+ *
  * Plain function components without hooks: React-PDF renders them with its own reconciler.
  * Not server-only, so the renderer can be unit tested; only route handlers import it.
  */
 import { Document, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 import { APP_NAME } from '../../lib/app-name';
-import type { ActivitiesPdfModel, ActivitySheet } from './activities-model';
+import type { ActivitiesPdfModel, ActivitySheet, LibrarySheet } from './activities-model';
+import { DocBody } from './doc-blocks';
 import { PDF_FONT_FAMILY } from './fonts';
 
 // Tailwind's slate, as on screen and in the plan PDF.
@@ -130,6 +135,38 @@ function Sheet({ sheet, taskLabel }: { sheet: ActivitySheet; taskLabel: string }
   );
 }
 
+/** A group's copy of a library resource: the document, its group's key on every page. */
+function LibraryPage({ sheet }: { sheet: LibrarySheet }) {
+  return (
+    <Page size="LETTER" style={styles.page}>
+      {sheet.group ? (
+        <Text style={styles.corner} fixed>
+          {sheet.group}
+        </Text>
+      ) : null}
+      <DocBody doc={sheet.doc} />
+    </Page>
+  );
+}
+
+type StudentPage =
+  { kind: 'activity'; sheet: ActivitySheet } | { kind: 'library'; sheet: LibrarySheet };
+
+/**
+ * Period by period, in the order of the day: a period's activity pages, then its resource's
+ * pages (each list keeps its own order). A block the order does not know comes last.
+ */
+export function studentPages(model: ActivitiesPdfModel): StudentPage[] {
+  const position = new Map(model.blockOrder.map((key, i) => [key, i]));
+  const at = (page: StudentPage) => position.get(page.sheet.blockKey) ?? model.blockOrder.length;
+  const pages: StudentPage[] = [
+    ...model.sheets.map((sheet) => ({ kind: 'activity' as const, sheet })),
+    ...model.librarySheets.map((sheet) => ({ kind: 'library' as const, sheet })),
+  ];
+  // Array.prototype.sort is stable: equal positions keep the order above.
+  return pages.sort((a, b) => at(a) - at(b));
+}
+
 export function ActivitiesDocument({ model }: { model: ActivitiesPdfModel }) {
   return (
     <Document
@@ -138,13 +175,17 @@ export function ActivitiesDocument({ model }: { model: ActivitiesPdfModel }) {
       creator={APP_NAME}
       producer={APP_NAME}
     >
-      {model.sheets.map((sheet) => (
-        <Sheet
-          key={`${sheet.blockKey}:${sheet.group ?? 'class'}`}
-          sheet={sheet}
-          taskLabel={model.taskLabel}
-        />
-      ))}
+      {studentPages(model).map((page, i) =>
+        page.kind === 'activity' ? (
+          <Sheet
+            key={`${page.sheet.blockKey}:${page.sheet.group ?? 'class'}`}
+            sheet={page.sheet}
+            taskLabel={model.taskLabel}
+          />
+        ) : (
+          <LibraryPage key={`library:${page.sheet.blockKey}:${i}`} sheet={page.sheet} />
+        ),
+      )}
     </Document>
   );
 }

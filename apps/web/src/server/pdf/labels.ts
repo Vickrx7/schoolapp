@@ -69,6 +69,13 @@ export function planPdfLabels(locale: AppLocale, catalog: typeof messages): Plan
       differentiation: t('subPlanAi.block.differentiation'),
       activity: t('subPlanAi.block.activity'),
     },
+    library: {
+      heading: (title) => t('subPlanLibrary.heading', { title }),
+      guide: t('subPlanLibrary.guide'),
+      material: t('subPlanLibrary.pdf.material'),
+      keyStays: t('subPlanLibrary.keyStays'),
+      collectSheets: t('subPlanLibrary.collectSheets'),
+    },
     classNotes: {
       arrival: t('subPlan.classNotes.arrival'),
       routines: t('subPlan.classNotes.routines'),

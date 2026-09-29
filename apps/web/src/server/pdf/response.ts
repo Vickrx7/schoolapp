@@ -4,7 +4,7 @@ import { getLocale, getMessages } from 'next-intl/server';
 import type { PlanContext, PlanLevel, RosterStudent } from '@/components/sub-plans/types';
 import { defaultLocale, isLocale } from '@/i18n/config';
 import { reportError } from '../errors';
-import { buildActivitiesPdfModel } from './activities-model';
+import { buildActivitiesPdfModel, hasPages } from './activities-model';
 import { planPdfLabels } from './labels';
 import { buildPlanPdfModel } from './model';
 import { renderActivitiesPdf, renderPlanPdf } from './render';
@@ -90,8 +90,9 @@ export function requestedPdfDoc(request: Request): PlanPdfDoc | null {
 }
 
 /**
- * The document asked for. Null only for the activity sheets of a plan with no activity (the AI's
- * instructions were never added, or were removed since): each route answers as it sees fit.
+ * The document asked for. Null only for the activity sheets of a plan with no activity and no
+ * library resource (the AI's instructions were never added, or were removed since; the resource
+ * was hidden): each route answers as it sees fit.
  */
 export async function planPdfResponse(input: {
   doc: PlanPdfDoc;
@@ -122,7 +123,7 @@ export async function planPdfResponse(input: {
   let fileName: string;
   if (input.doc === 'activities') {
     const model = buildActivitiesPdfModel(composed, input.roster, input.levels);
-    if (model.sheets.length === 0) return null;
+    if (!hasPages(model)) return null;
     render = () => renderActivitiesPdf(model);
     fileName = model.fileName;
   } else {

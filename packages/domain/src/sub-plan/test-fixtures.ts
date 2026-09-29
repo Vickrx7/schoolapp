@@ -1,8 +1,11 @@
 /**
  * Test data shaped like `supabase/seed.sql` (3e année of Mme Tremblay, 5e année of M. Gagnon,
- * M. Leblanc teaching EPS and Anglais), as `app.sub_plan_sources` returns it. Used by the
+ * M. Leblanc teaching EPS and Anglais), as `app.sub_plan_sources` returns it, and the demo
+ * library (`content/library/demo`) as `app.sub_plan_library_sources` returns it. Used by the
  * sub-plan unit tests only; not exported from the package.
  */
+import { readFileSync } from 'node:fs';
+import { seedItemId, seedItemSchema } from '@lynx/content';
 import { subPlanSourcesSchema, type SubPlanSources, type SubPlanSourcesInput } from './sources';
 
 type RawSources = Exclude<SubPlanSourcesInput, null | undefined>;
@@ -785,3 +788,95 @@ export function parse(raw: RawSources): SubPlanSources {
 }
 
 export const NOW = new Date('2026-10-19T10:00:00.000Z');
+
+// ---------------------------------------------------------------------------------------
+// The demo library (content/library/demo/items), as app.sub_plan_library_sources returns it.
+// ---------------------------------------------------------------------------------------
+
+const DEMO_ITEMS = new URL('../../../../content/library/demo/items/', import.meta.url);
+
+export interface RawLibraryItem {
+  id: string;
+  type: string;
+  title: string;
+  status: string;
+  subFriendly: boolean;
+  durationMinutes: number | null;
+  materials: string | null;
+  safetyNotes: unknown;
+  catholicConnection: string | null;
+  catholicReferenceTitle: string | null;
+  faithOnStudentSheet: boolean;
+  subjectCode: string | null;
+  usageCount: number;
+  hasAnswerKey: boolean;
+  versions: { levelId: string | null; schemaVersion: number; content: unknown }[];
+}
+
+/** The id of a demo resource (UUIDv5 of `demo/<slug>`, as the seed writes it). */
+export const demoItemId = (slug: string) => seedItemId('demo', slug);
+
+/**
+ * A demo resource from its seed file, with the versions for `levels` (level codes of the
+ * fixture's LEVEL; every level by default) and no answer key, as the loader sends it.
+ */
+export function demoLibraryItem(
+  slug: string,
+  options: { levels?: readonly (keyof typeof LEVEL)[] } = {},
+): RawLibraryItem {
+  const item = seedItemSchema.parse(
+    JSON.parse(readFileSync(new URL(`${slug}.json`, DEMO_ITEMS), 'utf8')),
+  );
+  const levels = new Set(options.levels ?? (Object.keys(LEVEL) as (keyof typeof LEVEL)[]));
+  return {
+    id: demoItemId(slug),
+    type: item.type,
+    title: item.title,
+    status: item.status,
+    subFriendly: item.subFriendly,
+    durationMinutes: item.durationMinutes,
+    materials: item.materials,
+    safetyNotes: item.safetyNotes,
+    catholicConnection: item.catholicConnection || null,
+    catholicReferenceTitle: item.catholicReference,
+    faithOnStudentSheet: item.faithOnStudentSheet,
+    subjectCode: item.subjectCode,
+    usageCount: 0,
+    hasAnswerKey: item.versions.some((v) => !!v.answerKey),
+    versions: item.versions
+      .filter((v) => !v.level || levels.has(v.level as keyof typeof LEVEL))
+      .map((v) => ({
+        levelId: v.level ? LEVEL[v.level as keyof typeof LEVEL] : null,
+        schemaVersion: 1,
+        content: v.content,
+      })),
+  };
+}
+
+/**
+ * Isabelle's library sources: « Le huard, oiseau des lacs » and the lesson plan « Trouver l'idée
+ * principale d'un paragraphe » for the Français lesson 4 (C1.2); her Mathématiques lesson 5
+ * links « Ordonner des nombres jusqu'à 1 000 ».
+ */
+export function isabelleLibrary() {
+  return {
+    lessonCandidates: [
+      {
+        lessonId: lesson('fra3', 4),
+        candidates: [
+          { itemId: demoItemId('huard-oiseau-des-lacs'), reason: 'expectation', overlap: 1 },
+          { itemId: demoItemId('idee-principale-paragraphe'), reason: 'expectation', overlap: 1 },
+        ],
+      },
+      {
+        lessonId: lesson('mat3', 5),
+        candidates: [{ itemId: demoItemId('ordonner-nombres-1000'), reason: 'linked', overlap: 1 }],
+      },
+    ],
+    items: [
+      demoLibraryItem('huard-oiseau-des-lacs'),
+      demoLibraryItem('idee-principale-paragraphe'),
+      demoLibraryItem('ordonner-nombres-1000'),
+    ],
+  };
+}
