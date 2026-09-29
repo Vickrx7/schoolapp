@@ -168,7 +168,7 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   local password again. `pnpm test:int` also needs `SUB_PORTAL_DATABASE_URL` (in `.env.example`).
 - **Migrations are applied once.** The lite stack does not re-apply an edited migration: after
   editing one that is not committed yet, `stack.sh reset`. Never edit a committed migration; add
-  a new one (the latest is `20261015090000_library_core.sql`, pgTAP file `16`).
+  a new one (the latest is `20261015090100_library_search.sql`, pgTAP file `17`).
 - **Seeds come in two parts.** `supabase/seed.sql`, then `supabase/seeds/*.sql` by name
   (`config.toml` `sql_paths` for the CLI, `cmd_seed` in `stack.sh`). `seeds/20_library_demo.sql`
   is generated from `content/library/demo`: after changing the pack, run `pnpm library:seed`
@@ -176,6 +176,10 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
 - **Phase 3 browser tests** need the worker (`AI_PROVIDER=fake`) for the refresh and AI
   scenarios, move code windows around the real clock (`e2e/db.ts` `openCodeWindow`) and clean up
   after themselves; `e2e/mobile.spec.ts` briefly gives Isabelle a vice-principal role.
+- **PDF fonts are warmed once per server process.** The PDF library keeps one glyph per letter
+  for the life of the process, so an accented capital in one PDF could drop the plain letter from
+  later ones, and a ligature could split words. Every render in `server/pdf/render.ts` calls
+  `warmPdfFonts()` first (`server/pdf/fonts.ts`); a new PDF must go through `render.ts` too.
 - **Deletes:** `rm -rf *` style commands are refused by a safety check. Use explicit paths.
 - **Next warning:** "next start does not work with output: standalone" is harmless in tests. The
   standalone server is at `apps/web/.next/standalone/apps/web/server.js` (monorepo tracing root);

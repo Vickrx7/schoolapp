@@ -2999,6 +2999,10 @@ export type Database = {
         };
         Returns: undefined;
       };
+      library_expectation_counts: {
+        Args: { p_grade_code: string; p_subject_id: string };
+        Returns: { expectation_id: string; item_count: number; approved_count: number }[];
+      };
       library_faith_decide: {
         Args: {
           p_item_id: string;
@@ -3172,6 +3176,10 @@ export type Database = {
       save_sub_plan_edits: {
         Args: { p_plan_id: string; p_edits: Json; p_expected_revision: number };
         Returns: number;
+      };
+      search_library: {
+        Args: { p_filters: Json; p_limit?: number; p_offset?: number };
+        Returns: Json;
       };
       set_active_unit: {
         Args: { p_unit_id: string };

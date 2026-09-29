@@ -1338,7 +1338,9 @@
     "pdf": {
       "download": "Download the PDF",
       "student": "Student sheet PDF",
-      "teacher": "Guide and answer key PDF"
+      "teacher": "Guide and answer key PDF",
+      "failed": "The PDF could not be created. The resource is still shown in the app: try again in a moment.",
+      "unreadable": "This resource has nothing to print: its content cannot be shown."
     }
   },
   "library": {
@@ -1346,7 +1348,88 @@
     "intro": "Resources for your classes: readings, worksheets, games, assessments and more, with versions for each French level.",
     "tools": "Tools",
     "differentiate": "Differentiated text",
-    "differentiateHint": "Paste a text, instructions or an activity: the AI prepares a version for each French level."
+    "differentiateHint": "Paste a text, instructions or an activity: the AI prepares a version for each French level.",
+    "search": {
+      "label": "Search for a resource",
+      "placeholder": "E.g. main idea, fractions, loon",
+      "submit": "Search",
+      "clear": "Clear the search"
+    },
+    "browseHeading": "Browse the bank",
+    "myGrades": "My grades",
+    "browseCurriculum": "Browse by expectation",
+    "categories": "Categories",
+    "bucketCount": "{count, plural, =0 {No resources} one {# resource} other {# resources}}",
+    "results": {
+      "heading": "Results",
+      "count": "{count, plural, =0 {No resources} one {# resource} other {# resources}}",
+      "order": "Board-approved resources first.",
+      "error": "The search could not be done. Try again in a moment."
+    },
+    "active": {
+      "label": "Search limited to",
+      "remove": "Remove: {label}",
+      "strand": "Strand {code}",
+      "expectation": "{kind} {code}",
+      "mine": "My resources"
+    },
+    "filters": {
+      "open": "Filters",
+      "openCount": "Filters ({count})",
+      "title": "Filters",
+      "close": "Close",
+      "show": "{count, plural, =0 {No resources} one {See # resource} other {See the # resources}}",
+      "clear": "Clear filters",
+      "grade": "Grade",
+      "anyGrade": "All grades",
+      "subject": "Subject",
+      "anySubject": "All subjects",
+      "type": "Type",
+      "bucket": "Category",
+      "duration": "Duration",
+      "anyDuration": "Any duration",
+      "format": "Format",
+      "more": "Other criteria",
+      "subFriendly": "For substitutes",
+      "approvedOnly": "Board-approved only",
+      "level": "Language level",
+      "anyLevel": "All levels",
+      "levelHint": "Resources that have a version for this level.",
+      "levelOption": "{label} ({count})",
+      "personalLevel": "{label} (personal level)",
+      "count": "{count, plural, =0 {no resources} one {# resource} other {# resources}}"
+    },
+    "card": {
+      "formats": "Formats"
+    },
+    "loadMore": "Show more",
+    "shown": "{shown} of {total}",
+    "refine": "Narrow your search to see the other resources.",
+    "empty": {
+      "title": "No resources match your search.",
+      "body": "Try other words, another grade, or remove some filters.",
+      "kindergarten": "There are no resources for Kindergarten yet: the pilot starts in Grade 1.",
+      "mine": "You have not created a resource yet.",
+      "hub": "The bank does not contain any resource you can use yet."
+    },
+    "attachMissing": "The lesson you were choosing a resource for is no longer available. You can still browse the bank.",
+    "curriculum": {
+      "title": "Browse the curriculum",
+      "intro": "Choose a grade and a subject, then an expectation to see its resources.",
+      "grades": "Grades",
+      "subjects": "Subjects",
+      "chooseGrade": "Choose a grade.",
+      "chooseSubject": "Choose a subject.",
+      "kindergarten": "Kindergarten follows its own program. The pilot has no resources for these years yet.",
+      "noExpectations": "The expectations of this subject are not loaded for this grade yet.",
+      "toVerifyHint": "Expectations marked “To be checked” are summaries: check them against the official Ontario curriculum.",
+      "strand": "Strand {code} — {label}",
+      "otherStrand": "Other expectations",
+      "seeStrand": "See the strand’s resources",
+      "none": "No resources",
+      "counts": "{count, plural, one {# resource} other {# resources}} · {approved, plural, =0 {none approved} one {# approved} other {# approved}}",
+      "createWithAi": "Create with AI for this expectation"
+    }
   },
   "libraryEdit": {},
   "libraryReview": {},

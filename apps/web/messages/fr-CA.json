@@ -1338,7 +1338,9 @@
     "pdf": {
       "download": "Télécharger le PDF",
       "student": "PDF de la feuille de l’élève",
-      "teacher": "PDF du guide et du corrigé"
+      "teacher": "PDF du guide et du corrigé",
+      "failed": "Le PDF n’a pas pu être créé. La ressource reste affichée dans l’application : réessayez dans un moment.",
+      "unreadable": "Cette ressource n’a rien à imprimer : son contenu ne peut pas être affiché."
     }
   },
   "library": {
@@ -1346,7 +1348,88 @@
     "intro": "Des ressources pour vos classes : lectures, fiches, jeux, évaluations et plus, avec des versions par niveau de français.",
     "tools": "Outils",
     "differentiate": "Texte différencié",
-    "differentiateHint": "Collez un texte, des consignes ou une activité : l’IA en prépare une version pour chaque niveau de français."
+    "differentiateHint": "Collez un texte, des consignes ou une activité : l’IA en prépare une version pour chaque niveau de français.",
+    "search": {
+      "label": "Rechercher une ressource",
+      "placeholder": "Ex. : idée principale, fractions, huard",
+      "submit": "Rechercher",
+      "clear": "Effacer la recherche"
+    },
+    "browseHeading": "Parcourir la banque",
+    "myGrades": "Mes années d’études",
+    "browseCurriculum": "Parcourir par attente",
+    "categories": "Catégories",
+    "bucketCount": "{count, plural, =0 {Aucune ressource} one {# ressource} other {# ressources}}",
+    "results": {
+      "heading": "Résultats",
+      "count": "{count, plural, =0 {Aucune ressource} one {# ressource} other {# ressources}}",
+      "order": "Les ressources approuvées par le conseil d’abord.",
+      "error": "La recherche n’a pas pu être faite. Réessayez dans un instant."
+    },
+    "active": {
+      "label": "Recherche limitée à",
+      "remove": "Retirer : {label}",
+      "strand": "Domaine {code}",
+      "expectation": "{kind} {code}",
+      "mine": "Mes ressources"
+    },
+    "filters": {
+      "open": "Filtres",
+      "openCount": "Filtres ({count})",
+      "title": "Filtres",
+      "close": "Fermer",
+      "show": "{count, plural, =0 {Aucune ressource} one {Voir # ressource} other {Voir les # ressources}}",
+      "clear": "Effacer les filtres",
+      "grade": "Année d’études",
+      "anyGrade": "Toutes les années",
+      "subject": "Matière",
+      "anySubject": "Toutes les matières",
+      "type": "Type",
+      "bucket": "Catégorie",
+      "duration": "Durée",
+      "anyDuration": "Toutes les durées",
+      "format": "Format",
+      "more": "Autres critères",
+      "subFriendly": "Pour la suppléance",
+      "approvedOnly": "Approuvées par le conseil seulement",
+      "level": "Niveau de langue",
+      "anyLevel": "Tous les niveaux",
+      "levelHint": "Les ressources qui ont une version pour ce niveau.",
+      "levelOption": "{label} ({count})",
+      "personalLevel": "{label} (niveau personnel)",
+      "count": "{count, plural, =0 {aucune ressource} one {# ressource} other {# ressources}}"
+    },
+    "card": {
+      "formats": "Formats"
+    },
+    "loadMore": "Afficher plus",
+    "shown": "{shown} sur {total}",
+    "refine": "Précisez votre recherche pour voir les autres ressources.",
+    "empty": {
+      "title": "Aucune ressource ne correspond à votre recherche.",
+      "body": "Essayez d’autres mots, une autre année d’études, ou retirez des filtres.",
+      "kindergarten": "Il n’y a pas encore de ressources pour la maternelle et le jardin d’enfants : le projet pilote commence en 1re année.",
+      "mine": "Vous n’avez pas encore créé de ressource.",
+      "hub": "La banque ne contient encore aucune ressource que vous pouvez utiliser."
+    },
+    "attachMissing": "La leçon pour laquelle vous choisissiez une ressource n’est plus disponible. Vous pouvez tout de même parcourir la banque.",
+    "curriculum": {
+      "title": "Parcourir le curriculum",
+      "intro": "Choisissez une année d’études et une matière, puis une attente pour voir ses ressources.",
+      "grades": "Années d’études",
+      "subjects": "Matières",
+      "chooseGrade": "Choisissez une année d’études.",
+      "chooseSubject": "Choisissez une matière.",
+      "kindergarten": "La maternelle et le jardin d’enfants suivent leur propre programme. Le projet pilote n’a pas encore de ressources pour ces années.",
+      "noExpectations": "Les attentes de cette matière ne sont pas encore chargées pour cette année d’études.",
+      "toVerifyHint": "Les attentes marquées « À vérifier » sont des résumés : vérifiez-les dans le curriculum officiel de l’Ontario.",
+      "strand": "Domaine {code} — {label}",
+      "otherStrand": "Autres attentes",
+      "seeStrand": "Voir les ressources du domaine",
+      "none": "Aucune ressource",
+      "counts": "{count, plural, one {# ressource} other {# ressources}} · {approved, plural, =0 {aucune approuvée} one {# approuvée} other {# approuvées}}",
+      "createWithAi": "Créer avec l’IA pour cette attente"
+    }
   },
   "libraryEdit": {},
   "libraryReview": {},

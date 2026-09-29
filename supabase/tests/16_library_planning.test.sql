@@ -190,6 +190,11 @@ select throws_ok(
 select tests.clear_authentication();
 
 -- Texts saved in Phase 2 are converted once (the migration calls the same function).
+-- A development database may hold more of them (« Texte différencié » saves the old format
+-- until its save path moves to library content), so the count is taken on top of those.
+create temporary table legacy_before on commit drop as
+  select count(*)::int as n from public.library_item_versions
+  where content ->> 'schema' = 'differentiated_text/v1';
 insert into public.library_items (id, board_id, school_id, type, title, source, author_id) values
   (tests.remember('legacy', gen_random_uuid()), tests.id('board_a'), tests.id('school_a1'),
    'worksheet', 'Ancienne fiche', 'ai_generated', tests.id('teacher_a'));
@@ -201,7 +206,8 @@ insert into public.library_item_versions (id, item_id, language_level_id, conten
    '{"schema": "differentiated_text/v1", "objective": "Lire", "title": "Fiche", "text": "Texte simple.",
      "glossary": [{"term": "castor", "definition": ""}], "visualSupports": ["Une image"],
      "questions": ["Où vit le castor?", "Que mange-t-il?"], "teacherNote": "Lire à deux."}');
-select is(app.library_convert_legacy_texts(), 2, 'both old versions are converted');
+select is(app.library_convert_legacy_texts(), (select n + 2 from legacy_before),
+  'both old versions are converted');
 select results_eq(
   $$select content, schema_version::int from public.library_item_versions where id = tests.id('legacy_level')$$,
   $$values ('{"title": "Fiche", "objective": "Lire", "teacherNote": "Lire à deux.", "text": "Texte simple.",

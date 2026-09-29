@@ -40,12 +40,14 @@ const escapeHtml = (text: string) =>
 
 /**
  * A rendering failure as a small page with a way back, not a text file: the link that asked for
- * the PDF may save whatever comes back.
+ * the PDF may save whatever comes back. `status` 422 when there is nothing to print (a library
+ * resource whose content cannot be read) rather than a failure.
  */
 export function pdfFailedPage(
   message: string,
   back: { href: string; label: string },
   lang: string,
+  status = 500,
 ): Response {
   const html = `<!doctype html>
 <html lang="${escapeHtml(lang)}">
@@ -56,8 +58,24 @@ export function pdfFailedPage(
 </body>
 </html>`;
   return new Response(html, {
-    status: 500,
+    status,
     headers: { ...NO_STORE, 'Content-Type': 'text/html; charset=utf-8' },
+  });
+}
+
+/** A rendered PDF, never cached: `inline` opens it, `attachment` saves it (`?download=1`). */
+export function pdfFileResponse(
+  pdf: Buffer,
+  fileName: string,
+  disposition: 'inline' | 'attachment' = 'inline',
+): Response {
+  return new Response(new Uint8Array(pdf), {
+    headers: {
+      ...NO_STORE,
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `${disposition}; filename="${fileName}"`,
+      'Content-Length': String(pdf.length),
+    },
   });
 }
 
@@ -114,15 +132,7 @@ export async function planPdfResponse(input: {
   }
 
   try {
-    const pdf = await render();
-    return new Response(new Uint8Array(pdf), {
-      headers: {
-        ...NO_STORE,
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': `${input.disposition ?? 'inline'}; filename="${fileName}"`,
-        'Content-Length': String(pdf.length),
-      },
-    });
+    return pdfFileResponse(await render(), fileName, input.disposition);
   } catch (error) {
     // The renderer's own message (a font or layout failure), cut short: never the plan's text.
     const message = error instanceof Error ? error.message : String(error);

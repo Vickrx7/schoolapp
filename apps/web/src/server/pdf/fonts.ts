@@ -37,3 +37,59 @@ export function registerPdfFonts(dir: string = pdfFontDir()): void {
   Font.registerHyphenationCallback((word) => [word]);
   registered = true;
 }
+
+/** What `warmPdfFonts` needs of a fontkit font (fontkit ships no types). */
+interface GlyphSource {
+  /** Every character the font maps to a glyph. */
+  characterSet: number[];
+  glyphForCodePoint(codePoint: number): unknown;
+  layout(text: string): unknown;
+}
+
+/**
+ * The ligatures (« ﬁ », « ﬀ »…): their glyphs are for several letters. Noto Sans also maps them
+ * as characters of their own (U+FB00 to U+FB06), which would give them one letter.
+ */
+export const PDF_LIGATURE_FORMS = /[\ufb00-\ufb4f]/u;
+const LIGATURES = 'ff fi fl ffi ffl';
+
+let warmed: Promise<void> | null = null;
+
+/**
+ * Creates the glyph of every character of both weights from that character, once per process,
+ * before anything is laid out. fontkit keeps one glyph object per glyph for the life of the font,
+ * with the characters it was first created for, and a document is laid out with the fonts of the
+ * documents before it; React-PDF finds where a line may break from those characters.
+ *
+ * - Embedding « É » creates the glyph of « E » as a part of « É », with no character of its own;
+ *   a later document that lays out « E » in that weight then gets that glyph, and React-PDF drops
+ *   it (a bold « Exemple » printed as « xemple »). The same goes for every accented letter
+ *   (À, Ç, Ô, é, î…) and its parts. No two characters of Noto Sans share a glyph, so each glyph
+ *   gets its own character.
+ * - A ligature must be created from its letters (« fi »), never from its own character
+ *   (« ﬁ »): with one letter instead of two, every later line with an « fi » breaks one letter
+ *   off (« planification : t | rier »). `pdfText` spells out the ligature characters.
+ *
+ * Call after `registerPdfFonts`.
+ */
+export function warmPdfFonts(): Promise<void> {
+  warmed ??= (async () => {
+    for (const fontWeight of [400, 700]) {
+      const source = Font.getFont({ fontFamily: PDF_FONT_FAMILY, fontWeight });
+      await source.load();
+      const font = source.data as unknown as GlyphSource | null;
+      if (!font) throw new Error(`The PDF font (weight ${fontWeight}) did not load`);
+      font.layout(LIGATURES);
+      for (const codePoint of font.characterSet) {
+        if (!PDF_LIGATURE_FORMS.test(String.fromCodePoint(codePoint))) {
+          font.glyphForCodePoint(codePoint);
+        }
+      }
+    }
+  })().catch((error: unknown) => {
+    // Tried again by the next render.
+    warmed = null;
+    throw error;
+  });
+  return warmed;
+}
