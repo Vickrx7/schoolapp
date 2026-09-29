@@ -1,0 +1,120 @@
+{
+  "slug": "nombres-1000-a-la-maison",
+  "type": "parent_guide",
+  "title": "Les nombres jusqu’à 1 000 à la maison / Numbers to 1,000 at home",
+  "summary": "Un guide bilingue (français et anglais) pour aider les familles à soutenir l’apprentissage des nombres jusqu’à 1 000 à la maison, avec des jeux simples et les mots utilisés en classe.",
+  "source": "board_created",
+  "status": "board_approved",
+  "shareScope": "board",
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "gradeCodes": ["3"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "B1"
+    }
+  ],
+  "durationMinutes": 10,
+  "materials": "Une copie par famille : la partie en français, puis la partie en anglais.",
+  "keywords": "guide pour les familles, parents, maison, nombres, valeur de position, bilingue, anglais, jeux de nombres",
+  "tags": ["famille", "nombres"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Lire, écrire, représenter, comparer et arrondir des nombres naturels jusqu’à 1 000.",
+        "teacherNote": "Guide à remettre aux familles au début de l’unité sur les nombres jusqu’à 1 000, dans l’agenda ou par courriel. La partie en anglais suit la partie en français point par point, pour les familles qui ne parlent pas encore français. Sa liste de mots explique en anglais les mots français utilisés en classe.",
+        "fr": {
+          "intro": "En 3e année, votre enfant apprend à lire, à écrire, à représenter et à comparer les nombres jusqu’à 1 000. Votre enfant découvre que la place d’un chiffre change sa valeur : dans 352, le 3 vaut 300, le 5 vaut 50 et le 2 vaut 2. Pas besoin d’être spécialiste des mathématiques pour aider! Quelques minutes par jour font une grande différence, en français ou dans la langue parlée à la maison.",
+          "learning": [
+            "lire et écrire les nombres jusqu’à 1 000, en chiffres et en lettres",
+            "décomposer un nombre en centaines, en dizaines et en unités (352 = 300 + 50 + 2)",
+            "comparer et ordonner des nombres (par exemple, 408 < 480)",
+            "arrondir un nombre à la dizaine ou à la centaine près",
+            "compter par intervalles de 10 et de 100 à partir de n’importe quel nombre"
+          ],
+          "atHome": [
+            "chercher des nombres autour de vous (adresses, prix, pages d’un livre) et demander à votre enfant de les lire à voix haute",
+            "jouer au « nombre mystère » : pensez à un nombre entre 1 et 1 000; votre enfant pose des questions comme « Est-il plus grand que 500? » pour le trouver",
+            "avec trois cartes à jouer de 1 à 9, former le plus grand et le plus petit nombre possible, puis les comparer",
+            "compter par 10 ou par 100 en marchant, en montant l’escalier ou en attendant l’autobus",
+            "arrondir des prix à l’épicerie : « Ce sac de pommes coûte 7 $ : c’est environ 10 $. »"
+          ],
+          "words": [
+            {
+              "term": "centaine",
+              "definition": "Groupe de 100, ou 10 dizaines."
+            },
+            {
+              "term": "dizaine",
+              "definition": "Groupe de 10 unités."
+            },
+            {
+              "term": "unité",
+              "definition": "Une seule chose (1). Dans 352, le 2 est le chiffre des unités."
+            },
+            {
+              "term": "valeur de position",
+              "definition": "Valeur d’un chiffre selon sa place dans le nombre. Dans 352, le 3 vaut 300."
+            },
+            {
+              "term": "arrondir",
+              "definition": "Remplacer un nombre par un nombre « rond » proche. 48 arrondi à la dizaine près donne 50."
+            }
+          ]
+        },
+        "en": {
+          "intro": "In Grade 3, your child is learning to read, write, represent and compare numbers up to 1,000. Your child is discovering that the place of a digit changes its value: in 352, the 3 is worth 300, the 5 is worth 50 and the 2 is worth 2. You don’t need to be a math expert to help! A few minutes a day make a big difference, in French or in the language you speak at home. Lessons at school are in French: the useful words below will help you talk about numbers with your child.",
+          "learning": [
+            "read and write numbers up to 1,000, in numerals and in words",
+            "break a number into hundreds, tens and ones (352 = 300 + 50 + 2)",
+            "compare and order numbers (for example, 408 < 480)",
+            "round a number to the nearest ten or hundred",
+            "count by 10s and by 100s, starting from any number"
+          ],
+          "atHome": [
+            "look for numbers around you (addresses, prices, page numbers) and ask your child to read them aloud",
+            "play “Mystery Number”: think of a number between 1 and 1,000; your child asks questions such as “Is it greater than 500?” to find it",
+            "use three playing cards from 1 to 9 to make the greatest possible number and the least possible number, then compare them",
+            "count by 10s or by 100s while walking, climbing stairs or waiting for the bus",
+            "round prices at the grocery store: “This bag of apples costs $7: that’s about $10.”"
+          ],
+          "words": [
+            {
+              "term": "centaine",
+              "definition": "a hundred (a group of 100, or 10 tens)"
+            },
+            {
+              "term": "dizaine",
+              "definition": "a ten (a group of 10 ones)"
+            },
+            {
+              "term": "unité",
+              "definition": "a one; in 352, the 2 is in the ones place"
+            },
+            {
+              "term": "valeur de position",
+              "definition": "place value; in 352, the 3 is worth 300"
+            },
+            {
+              "term": "arrondir",
+              "definition": "to round; 48 rounded to the nearest ten is 50"
+            },
+            {
+              "term": "plus grand que / plus petit que",
+              "definition": "greater than (>) / less than (<)"
+            }
+          ]
+        }
+      },
+      "answerKey": null
+    }
+  ]
+}
