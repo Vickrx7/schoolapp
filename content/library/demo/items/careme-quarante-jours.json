@@ -1,0 +1,48 @@
+{
+  "slug": "careme-quarante-jours",
+  "type": "catholic_reflection",
+  "title": "Carême : quarante jours pour grandir",
+  "summary": "Une courte réflexion pour le temps du Carême, de la 3e à la 5e année : le Carême comme un entraînement du cœur, avec la prière, le partage et un petit effort à poursuivre avec persévérance, des questions d’échange, une prière originale et un carnet de Carême.",
+  "source": "board_created",
+  "status": "board_approved",
+  "shareScope": "board",
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": true,
+  "gradeCodes": ["3", "4", "5"],
+  "subjectCode": "ere",
+  "durationMinutes": 10,
+  "materials": "Un petit carnet de Carême par élève (une feuille pliée en quatre, avec une case par jour de la semaine) et des crayons de couleur.",
+  "keywords": "Carême, mercredi des Cendres, Pâques, quarante jours, prière, partage, effort, persévérance, geste concret",
+  "tags": ["foi", "priere"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "faithContent": true,
+  "catholicConnection": "Pendant le Carême, l’Église se prépare à célébrer Pâques. Jésus invite à prier, à partager et à faire des efforts sans chercher à se faire remarquer (Matthieu 6, 1-6.16-18) : persévérer dans un petit effort, jour après jour, fait grandir notre cœur.",
+  "catholicReference": "La persévérance",
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je comprends que le Carême est un temps pour grandir par la prière, le partage et l’effort, et je choisis un effort à poursuivre avec persévérance.",
+        "teacherNote": "Réflexion de 10 minutes pour la 3e à la 5e année, pour la semaine du mercredi des Cendres, à reprendre au début de chaque semaine du Carême. Lisez la réflexion à voix haute, laissez un moment de silence, puis choisissez deux ou trois questions pour un échange en cercle. Terminez par la prière et présentez le carnet de Carême. L’effort proposé ne touche jamais l’alimentation des enfants : ne suggérez pas de sauter une collation ou un repas. Le partage peut être un don de temps ou d’aide, qui ne coûte rien. Accueillez les élèves de toutes les traditions : l’échange porte sur l’effort, le partage et la persévérance.",
+        "theme": "Le Carême, un chemin de prière, de partage et d’effort",
+        "scriptureReference": "Matthieu 6, 1-6.16-18",
+        "reflection": "Le Carême commence le mercredi des Cendres. C’est un temps d’environ quarante jours qui nous prépare à la grande fête de Pâques. Ces quarante jours rappellent le temps que Jésus a passé dans le désert avant de commencer sa mission.\n\nLe Carême ressemble à un entraînement. Pour devenir meilleur au soccer ou au piano, on s’exerce un peu chaque jour, même quand c’est difficile. Pendant le Carême, on s’exerce à aimer davantage, de trois façons : la prière, le partage et l’effort.\n\nPrier, c’est prendre un moment de silence pour parler à Dieu et pour l’écouter. Partager, c’est donner de son temps, de ses talents ou de son aide à ceux et celles qui en ont besoin. Faire un effort, c’est laisser de côté quelque chose qu’on aime, comme un peu de temps d’écran, pour faire de la place à ce qui compte vraiment.\n\nDans l’Évangile de Matthieu, Jésus demande de faire ces gestes sans chercher à être félicité. Ce qui compte, c’est l’amour qu’on y met. Et si on oublie son effort un jour, ce n’est pas grave : on recommence le lendemain. C’est ça, la persévérance!",
+        "questions": [
+          "Comment t’entraînes-tu quand tu veux devenir meilleur ou meilleure dans une activité que tu aimes?",
+          "Quel petit effort pourrais-tu faire pendant le Carême pour faire de la place aux autres ou à Dieu?",
+          "Avec qui pourrais-tu partager ton temps, ton aide ou tes talents cette semaine?",
+          "Pourquoi, selon toi, Jésus demande-t-il de faire ces gestes sans chercher à être félicité?",
+          "Que peux-tu faire si tu oublies ton effort pendant une journée?"
+        ],
+        "prayer": "Dieu notre Père,\npendant ces quarante jours,\naide-nous à marcher avec Jésus.\nDonne-nous le courage de faire de petits efforts,\nla joie de partager avec les autres\net la patience de recommencer\nquand c’est difficile.\nQue nos cœurs grandissent dans l’amour\njusqu’à la fête de Pâques.\nAmen.",
+        "action": "Choisis un effort de Carême pour la semaine : un geste de prière (un moment de silence le matin), un geste de partage (aider à la maison, jouer avec quelqu’un qui est seul) ou un geste d’effort (moins de temps d’écran). Écris-le sur la couverture de ton carnet de Carême. Chaque soir, colorie une case si tu l’as fait. Si tu l’as oublié, tu recommences le lendemain."
+      },
+      "answerKey": null
+    }
+  ]
+}
