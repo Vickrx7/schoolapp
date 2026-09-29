@@ -1,0 +1,119 @@
+{
+  "slug": "ecrire-un-texte-d-opinion",
+  "type": "anchor_chart",
+  "title": "Pour convaincre : mon texte d’opinion",
+  "summary": "Référentiel à afficher en classe pour écrire un texte d’opinion en 5e année : l’introduction, les arguments appuyés, les marqueurs de relation, la conclusion, la différence entre un fait et une opinion, et le public, avec un exemple suivi.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["5"],
+  "subjectCode": "fra",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "D2.1"
+    },
+    {
+      "grade": "5",
+      "code": "D2.3"
+    }
+  ],
+  "durationMinutes": 20,
+  "materials": "Grande feuille et marqueurs de quatre couleurs, ou projection au tableau.",
+  "keywords": "référentiel, texte d’opinion, argument, introduction, conclusion, marqueurs de relation, fait et opinion, convaincre, public",
+  "tags": ["ecriture"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": false,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je connais les parties d’un texte d’opinion et je choisis des arguments et des marqueurs de relation pour convaincre mon public.",
+        "teacherNote": "Référentiel à construire au début de l’unité sur le texte d’opinion, puis à garder affiché pendant la planification, la rédaction et la révision. Les exemples suivent un même sujet (une journée de plein air par mois) pour montrer comment un texte se construit du début à la fin; remplacez-le au besoin par un sujet choisi par la classe. Donnez une couleur à chaque partie (introduction, arguments, marqueurs, conclusion) et demandez aux élèves de surligner leur brouillon avec les mêmes couleurs. La grille « Le texte d’opinion » reprend ces éléments.",
+        "heading": "Pour convaincre : mon texte d’opinion",
+        "sections": [
+          {
+            "title": "1. L’introduction",
+            "points": [
+              "Je présente le sujet en une ou deux phrases.",
+              "Je donne clairement mon opinion.",
+              "Je peux commencer par une question ou un fait qui attire l’attention."
+            ],
+            "example": "Saviez-vous que les élèves passent presque toute la journée sur leur chaise? Notre école devrait organiser une journée de plein air chaque mois."
+          },
+          {
+            "title": "2. Les arguments",
+            "points": [
+              "Je donne au moins trois arguments, un par paragraphe.",
+              "J’appuie chaque argument par une explication, un exemple ou un fait.",
+              "Je garde mon argument le plus fort pour la fin."
+            ],
+            "example": "Premièrement, bouger dehors aide à se concentrer. Par exemple, après la récréation, notre classe est plus calme et plus attentive."
+          },
+          {
+            "title": "3. Les marqueurs de relation",
+            "points": [
+              "Pour énumérer : premièrement, deuxièmement, de plus, enfin.",
+              "Pour expliquer : parce que, car, en effet.",
+              "Pour donner un exemple : par exemple, ainsi.",
+              "Pour opposer : cependant, par contre, d’un autre côté.",
+              "Pour conclure : bref, en conclusion, c’est pourquoi."
+            ],
+            "example": ""
+          },
+          {
+            "title": "4. La conclusion",
+            "points": [
+              "Je rappelle mon opinion avec d’autres mots.",
+              "Je résume mes arguments en une phrase.",
+              "Je termine par une ouverture : une question, un souhait ou une invitation à agir."
+            ],
+            "example": "Bref, une journée de plein air par mois serait bonne pour notre santé, notre concentration et l’esprit d’équipe de l’école. Qui veut m’aider à préparer la première?"
+          },
+          {
+            "title": "Fait ou opinion?",
+            "points": [
+              "Un fait peut se vérifier.",
+              "Une opinion dit ce qu’une personne pense.",
+              "Des faits bien choisis rendent mes arguments plus convaincants."
+            ],
+            "example": "Fait : « Notre cour a un sentier dans le boisé. » Opinion : « Le sentier est l’endroit le plus agréable de l’école. »"
+          },
+          {
+            "title": "Je pense à mon public",
+            "points": [
+              "Je choisis des arguments qui comptent pour les personnes qui vont me lire (la direction, les élèves, les familles).",
+              "J’emploie un ton poli et respectueux, même quand je veux convaincre.",
+              "Je réponds d’avance à une objection possible."
+            ],
+            "example": "Certaines personnes pensent qu’on perdrait du temps d’apprentissage. Cependant, on peut apprendre dehors : mesurer des arbres, écrire un poème ou observer des oiseaux."
+          }
+        ],
+        "visualIdeas": [
+          "Une couleur par partie : l’introduction en bleu, les arguments en vert, les marqueurs en orange, la conclusion en rouge.",
+          "Un schéma en forme de hamburger décrit au tableau : le pain du haut (introduction), trois étages (arguments) et le pain du bas (conclusion).",
+          "Un espace libre où les élèves collent de bons exemples tirés de leurs propres textes au fil de l’unité."
+        ]
+      },
+      "answerKey": null
+    }
+  ]
+}
