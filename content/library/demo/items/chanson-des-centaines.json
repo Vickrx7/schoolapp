@@ -1,0 +1,101 @@
+{
+  "slug": "chanson-des-centaines",
+  "type": "song",
+  "title": "La chanson des centaines",
+  "summary": "Une chanson originale sur l’air de « Frère Jacques » pour lire et décomposer des nombres jusqu’à 1 000 en centaines, en dizaines et en unités, avec des gestes et un couplet sur le zéro qui garde la place.",
+  "source": "board_created",
+  "status": "board_approved",
+  "shareScope": "board",
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "gradeCodes": ["3"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "B1.1"
+    }
+  ],
+  "durationMinutes": 10,
+  "materials": "Aucun matériel particulier. Facultatif : les paroles écrites au tableau ou projetées.",
+  "keywords": "chanson, Frère Jacques, valeur de position, centaines, dizaines, unités, compter par centaines, zéro",
+  "tags": ["chanson", "nombres"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je lis et je décompose des nombres jusqu’à 1 000 en centaines, en dizaines et en unités.",
+        "teacherNote": "Paroles originales sur l’air de « Frère Jacques », une mélodie traditionnelle du domaine public. Chantez d’abord un couplet, puis faites-le répéter ligne par ligne. Écrivez au tableau le nombre des couplets 3 et 4 (234 et 608) et pointez chaque chiffre pendant qu’on le chante. Quand la classe connaît bien la chanson, chantez-la en canon, en deux groupes. Pour prolonger, inventez un couplet avec un autre nombre, par exemple le nombre de jours d’école, en gardant le rythme.",
+        "tune": "Frère Jacques",
+        "verses": [
+          {
+            "label": "Couplet 1",
+            "lines": [
+              "Les centaines,",
+              "Les dizaines,",
+              "Unités,",
+              "Unités,",
+              "Chacune à sa place,",
+              "Chacune à sa place,",
+              "Cent, dix, un!",
+              "Cent, dix, un!"
+            ]
+          },
+          {
+            "label": "Couplet 2",
+            "lines": [
+              "Cent, puis deux cents,",
+              "Trois, quatre cents,",
+              "Cinq, six cents,",
+              "Sept, huit cents,",
+              "Neuf cents, et puis mille,",
+              "Mille, dix centaines!",
+              "On y est!",
+              "On y est!"
+            ]
+          },
+          {
+            "label": "Couplet 3",
+            "lines": [
+              "Deux centaines,",
+              "Trois dizaines,",
+              "Et quatre",
+              "unités :",
+              "Deux cent trente-quatre,",
+              "Deux cent trente-quatre,",
+              "Bien joué!",
+              "Bien joué!"
+            ]
+          },
+          {
+            "label": "Couplet 4",
+            "lines": [
+              "Six centaines,",
+              "Huit unités,",
+              "Dizaines?",
+              "Aucune!",
+              "Un zéro au milieu,",
+              "Il garde la place :",
+              "Six cent huit!",
+              "Six cent huit!"
+            ]
+          }
+        ],
+        "gestures": [
+          "« Centaines » : les bras forment un grand cercle au-dessus de la tête.",
+          "« Dizaines » : on montre les dix doigts, mains ouvertes.",
+          "« Unités » : on lève un seul doigt.",
+          "« Cent, dix, un! » : on refait les trois gestes, du plus grand au plus petit.",
+          "Couplet 2 : on tape des mains une fois pour chaque centaine comptée.",
+          "« Aucune! » : on croise les bras en X devant soi."
+        ]
+      },
+      "answerKey": null
+    }
+  ]
+}

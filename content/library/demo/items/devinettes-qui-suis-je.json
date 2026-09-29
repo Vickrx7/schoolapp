@@ -1,0 +1,209 @@
+{
+  "slug": "devinettes-qui-suis-je",
+  "type": "riddle",
+  "title": "Devinettes : qui suis-je?",
+  "summary": "Huit devinettes « Qui suis-je? » sur des animaux de l’Ontario. Les élèves utilisent ce qu’ils savent déjà et les indices pour faire des prédictions, puis ils les vérifient.",
+  "source": "board_created",
+  "status": "board_approved",
+  "shareScope": "board",
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "gradeCodes": ["3"],
+  "subjectCode": "fra",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "C1.1"
+    }
+  ],
+  "durationMinutes": 15,
+  "materials": "Une copie par élève ou les devinettes projetées, et un crayon.",
+  "keywords": "devinettes, qui suis-je, indices, prédictions, connaissances antérieures, animaux de l’Ontario, huard, castor",
+  "tags": ["animaux", "ontario", "lecture", "jeu"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": true
+  },
+  "subFriendly": true,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "J’utilise ce que je sais déjà et les indices d’un texte pour faire des prédictions, puis je les vérifie.",
+        "teacherNote": "Huit devinettes sur des animaux de l’Ontario, à lire à voix haute ou à projeter. Pour travailler la prédiction, dévoilez un indice à la fois : après chaque indice, les élèves proposent un animal à leur voisin ou à leur voisine, disent quel indice les a aidés, puis confirment ou changent leur prédiction. L’indice placé sous chaque devinette sert de dernier coup de pouce. Conçue pour une personne suppléante : les élèves répondent en dyades sur la feuille; ramassez ensuite les feuilles, car le corrigé reste avec l’enseignante ou l’enseignant.",
+        "riddles": [
+          {
+            "id": "r1",
+            "kind": "short_answer",
+            "prompt": "Je suis un oiseau noir et blanc aux yeux rouges. Je vis sur les lacs et je plonge sous l’eau pour attraper des poissons. Le soir, mon cri ressemble à un long rire ou à une plainte. On me voit sur la pièce de 1 $. Qui suis-je?",
+            "hint": "Mon nom commence par la lettre H.",
+            "points": null,
+            "category": null,
+            "lines": 1
+          },
+          {
+            "id": "r2",
+            "kind": "short_answer",
+            "prompt": "Je suis un gros rongeur. Mes longues dents orange poussent toute ma vie. Avec des branches et de la boue, je construis des barrages et une hutte. Ma queue est plate comme une pagaie. On me voit sur la pièce de cinq cents. Qui suis-je?",
+            "hint": "Je suis un emblème du Canada.",
+            "points": null,
+            "category": null,
+            "lines": 1
+          },
+          {
+            "id": "r3",
+            "kind": "short_answer",
+            "prompt": "Autour de mes yeux, une tache noire ressemble à un masque. Ma queue touffue porte des anneaux. Mes pattes avant sont très habiles, comme de petites mains. La nuit, je fouille parfois dans les bacs à ordures pour trouver à manger. Qui suis-je?",
+            "hint": "On dit parfois que je lave ma nourriture.",
+            "points": null,
+            "category": null,
+            "lines": 1
+          },
+          {
+            "id": "r4",
+            "kind": "short_answer",
+            "prompt": "Je suis le plus grand membre de la famille des cerfs. Le mâle porte de grands bois larges et plats, qui tombent chaque hiver et repoussent au printemps. En été, j’entre dans les lacs pour manger des plantes aquatiques. Qui suis-je?",
+            "hint": "Mon nom commence par la lettre O.",
+            "points": null,
+            "category": null,
+            "lines": 1
+          },
+          {
+            "id": "r5",
+            "kind": "short_answer",
+            "prompt": "Je suis un insecte aux ailes orange et noires. Quand je suis une chenille, je mange seulement des feuilles d’asclépiade. À l’automne, je fais un très long voyage vers le sud, jusqu’au Mexique. Qui suis-je?",
+            "hint": "Je suis un papillon qui porte le nom d’un roi.",
+            "points": null,
+            "category": null,
+            "lines": 1
+          },
+          {
+            "id": "r6",
+            "kind": "short_answer",
+            "prompt": "Je suis un gros oiseau au long cou noir, avec une tache blanche sous le menton. Au printemps et à l’automne, je vole avec mon groupe en formant un grand V dans le ciel. On m’entend crier de très loin. Qui suis-je?",
+            "hint": "Mon nom se termine par les mots « du Canada ».",
+            "points": null,
+            "category": null,
+            "lines": 1
+          },
+          {
+            "id": "r7",
+            "kind": "short_answer",
+            "prompt": "Je suis un petit rongeur brun avec des rayures noires et blanches sur le dos. Je transporte des graines dans mes joues, comme dans des poches. Je les cache dans mon terrier pour l’hiver. Qui suis-je?",
+            "hint": "Je ressemble à un écureuil, mais en plus petit.",
+            "points": null,
+            "category": null,
+            "lines": 1
+          },
+          {
+            "id": "r8",
+            "kind": "short_answer",
+            "prompt": "Je suis un gros mammifère au pelage noir. Je grimpe très bien aux arbres. En été, je mange beaucoup de petits fruits, comme des bleuets. L’hiver, je dors dans ma tanière et je ne mange rien pendant des mois. Qui suis-je?",
+            "hint": "Mon nom a deux mots, et le deuxième est une couleur.",
+            "points": null,
+            "category": null,
+            "lines": 1
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "r1",
+            "kind": "short_answer",
+            "sampleAnswer": "Le huard (plongeon huard).",
+            "acceptableAnswers": [
+              "huard",
+              "le huard",
+              "un huard",
+              "plongeon huard",
+              "le plongeon huard"
+            ],
+            "explanation": "C’est pourquoi on appelle souvent la pièce de 1 $ un « huard »."
+          },
+          {
+            "questionId": "r2",
+            "kind": "short_answer",
+            "sampleAnswer": "Le castor.",
+            "acceptableAnswers": ["castor", "le castor", "un castor"],
+            "explanation": "Le castor est un emblème officiel du Canada."
+          },
+          {
+            "questionId": "r3",
+            "kind": "short_answer",
+            "sampleAnswer": "Le raton laveur.",
+            "acceptableAnswers": [
+              "raton laveur",
+              "le raton laveur",
+              "un raton laveur",
+              "raton-laveur",
+              "le raton-laveur"
+            ],
+            "explanation": ""
+          },
+          {
+            "questionId": "r4",
+            "kind": "short_answer",
+            "sampleAnswer": "L’orignal.",
+            "acceptableAnswers": ["orignal", "l’orignal", "un orignal"],
+            "explanation": "L’orignal est le plus grand cervidé du monde."
+          },
+          {
+            "questionId": "r5",
+            "kind": "short_answer",
+            "sampleAnswer": "Le monarque (papillon monarque).",
+            "acceptableAnswers": [
+              "monarque",
+              "le monarque",
+              "un monarque",
+              "papillon monarque",
+              "le papillon monarque"
+            ],
+            "explanation": "Les monarques de l’est du Canada passent l’hiver dans les forêts du centre du Mexique."
+          },
+          {
+            "questionId": "r6",
+            "kind": "short_answer",
+            "sampleAnswer": "La bernache du Canada (l’outarde).",
+            "acceptableAnswers": [
+              "bernache du Canada",
+              "la bernache du Canada",
+              "une bernache du Canada",
+              "bernache",
+              "la bernache",
+              "outarde",
+              "l’outarde",
+              "une outarde"
+            ],
+            "explanation": "Au Canada, on l’appelle souvent « outarde »."
+          },
+          {
+            "questionId": "r7",
+            "kind": "short_answer",
+            "sampleAnswer": "Le tamia rayé (le suisse).",
+            "acceptableAnswers": [
+              "tamia",
+              "le tamia",
+              "un tamia",
+              "tamia rayé",
+              "le tamia rayé",
+              "suisse",
+              "le suisse",
+              "un suisse"
+            ],
+            "explanation": "En français canadien, on l’appelle aussi « suisse »."
+          },
+          {
+            "questionId": "r8",
+            "kind": "short_answer",
+            "sampleAnswer": "L’ours noir.",
+            "acceptableAnswers": ["ours noir", "l’ours noir", "un ours noir"],
+            "explanation": ""
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

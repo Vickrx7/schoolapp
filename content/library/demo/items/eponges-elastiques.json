@@ -1,0 +1,240 @@
+{
+  "slug": "eponges-elastiques",
+  "type": "experiment",
+  "title": "Éponges et élastiques : compression et tension",
+  "summary": "En équipes, les élèves écrasent, étirent, tordent et font glisser une éponge et un élastique sans latex pour observer les quatre forces internes : compression, tension, torsion et cisaillement.",
+  "source": "board_created",
+  "status": "board_approved",
+  "shareScope": "board",
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "gradeCodes": ["5"],
+  "subjectCode": "sci",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "D2.1"
+    }
+  ],
+  "durationMinutes": 50,
+  "materials": "Par équipe de 3 : 1 éponge de cuisine neuve (sans savon), 1 élastique sans latex d’environ 8 cm, 2 crayons, 1 règle de 30 cm, 2 livres de la classe, 1 feuille d’observation. Pour la classe : quelques élastiques sans latex de rechange.",
+  "keywords": "forces internes, force externe, compression, tension, torsion, cisaillement, éponge, élastique, enquête",
+  "tags": ["sciences", "forces", "structures"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "safetyNotes": {
+    "ageSuitability": "Convient aux élèves de 5e année (10 et 11 ans), avec la supervision habituelle de la classe.",
+    "allergyAwareMaterials": "Utilisez seulement des élastiques sans latex (vérifiez l’emballage). Éponges neuves, sans savon ni produit nettoyant. Aucun aliment n’est utilisé : pas de noix, d’arachides ni de graines.",
+    "supervision": "standard",
+    "hazards": [
+      "Un élastique étiré peut glisser ou se rompre et frapper quelqu’un : on l’étire lentement, sans forcer, sous la hauteur des épaules et jamais vers le visage d’une personne.",
+      "Les livres posés sur l’éponge peuvent tomber : on les dépose doucement, à plat, au milieu de la table."
+    ],
+    "notes": "Remplacez tout élastique fendillé ou collant. Si l’école a des lunettes de protection, leur port est recommandé pendant l’étape de l’élastique."
+  },
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "J’observe et je décris comment la compression, la tension, la torsion et le cisaillement changent la forme d’un objet.",
+        "teacherNote": "Conçue pour une personne suppléante : le matériel est courant et les consignes sont complètes. Préparez une trousse par équipe dans un bac avant la leçon. Les mesures varient selon l’éponge et l’élastique : l’important est de comparer avant et pendant. Vocabulaire à afficher : compression (écraser), tension (étirer), torsion (tordre), cisaillement (faire glisser une partie d’un objet par rapport à l’autre). Suite possible : le défi STIM « Le pont de papier ».",
+        "researchQuestion": "Qu’arrive-t-il à la forme d’un objet quand on l’écrase, qu’on l’étire, qu’on le tord ou qu’on fait glisser une de ses parties?",
+        "hypothesisPrompt": "Selon toi, quel objet changera le plus de forme : l’éponge écrasée ou l’élastique étiré? Pourquoi?",
+        "steps": [
+          "Dans la première colonne du tableau, écris les quatre forces : compression, tension, torsion, cisaillement.",
+          "Compression : mesure l’épaisseur de l’éponge avec la règle. Note-la dans la colonne « Mesure avant ».",
+          "Pose doucement deux livres à plat sur l’éponge. Mesure de nouveau son épaisseur et note-la dans la colonne « Mesure pendant ». Enlève les livres et observe l’éponge.",
+          "Tension : pose l’élastique à plat le long de la règle, sans l’étirer, et mesure sa longueur. Note-la.",
+          "Passe un crayon dans chaque bout de l’élastique. Deux personnes tirent lentement les crayons en sens contraires, au-dessus de la table, sans forcer. La troisième personne mesure l’élastique étiré et observe son épaisseur. Relâchez doucement.",
+          "Torsion : tiens l’éponge par les deux bouts et tourne tes mains en sens contraires, comme pour essorer une débarbouillette. Observe les trous et les côtés de l’éponge.",
+          "Cisaillement : pose l’éponge à plat sur la table. Pose ta main à plat sur le dessus et fais-la glisser doucement vers l’avant, sans que le dessous de l’éponge bouge. Observe la forme des côtés.",
+          "Pour la torsion et le cisaillement, écris seulement tes observations. Pour chaque force, note aussi si l’objet a repris sa forme après.",
+          "Range le matériel dans le bac de ton équipe."
+        ],
+        "observationTable": {
+          "columns": ["Force", "Mesure avant (cm)", "Mesure pendant (cm)", "Ce que j’observe"],
+          "rows": 4
+        },
+        "conclusionQuestions": [
+          {
+            "id": "c1",
+            "kind": "short_answer",
+            "prompt": "Qu’est-il arrivé à l’épaisseur de l’éponge pendant la compression? Et après?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          },
+          {
+            "id": "c2",
+            "kind": "multiple_choice",
+            "prompt": "Pendant la tension, l’élastique est devenu…",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "plus court et plus épais."
+              },
+              {
+                "id": "b",
+                "text": "plus long et plus mince."
+              },
+              {
+                "id": "c",
+                "text": "plus long et plus épais."
+              },
+              {
+                "id": "d",
+                "text": "exactement pareil."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "c3",
+            "kind": "matching",
+            "prompt": "Associe chaque force interne à ce qu’elle fait à un objet.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "l1",
+                "text": "Compression"
+              },
+              {
+                "id": "l2",
+                "text": "Tension"
+              },
+              {
+                "id": "l3",
+                "text": "Torsion"
+              },
+              {
+                "id": "l4",
+                "text": "Cisaillement"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "Elle tord l’objet."
+              },
+              {
+                "id": "rb",
+                "text": "Elle fait glisser une partie de l’objet par rapport à l’autre."
+              },
+              {
+                "id": "rc",
+                "text": "Elle écrase l’objet."
+              },
+              {
+                "id": "rd",
+                "text": "Elle étire l’objet."
+              }
+            ]
+          },
+          {
+            "id": "c4",
+            "kind": "short_answer",
+            "prompt": "Les livres posés sur l’éponge exercent une force externe. Quelle force interne cette charge produit-elle dans l’éponge?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 1
+          },
+          {
+            "id": "c5",
+            "kind": "true_false",
+            "prompt": "Dans un pont suspendu, les grands câbles qui retiennent la route subissent surtout de la tension.",
+            "hint": "",
+            "points": null,
+            "category": "application"
+          },
+          {
+            "id": "c6",
+            "kind": "short_answer",
+            "prompt": "Nomme un objet de ta vie de tous les jours qui subit de la compression. Explique ce qui l’écrase.",
+            "hint": "",
+            "points": 2,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "communication": "Explique à une autre équipe ce que vous avez découvert sur une des quatre forces. Utilise le mot juste (compression, tension, torsion ou cisaillement) et donne une mesure ou une observation comme preuve."
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "c1",
+            "kind": "short_answer",
+            "sampleAnswer": "L’éponge est devenue plus mince pendant la compression. Quand on a enlevé les livres, elle a repris presque toute son épaisseur.",
+            "acceptableAnswers": [],
+            "explanation": ""
+          },
+          {
+            "questionId": "c2",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "En s’étirant, l’élastique s’allonge et devient plus mince."
+          },
+          {
+            "questionId": "c3",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "ra"
+              },
+              {
+                "leftId": "l4",
+                "rightId": "rb"
+              }
+            ],
+            "explanation": ""
+          },
+          {
+            "questionId": "c4",
+            "kind": "short_answer",
+            "sampleAnswer": "La compression.",
+            "acceptableAnswers": [
+              "compression",
+              "la compression",
+              "une compression",
+              "de la compression"
+            ],
+            "explanation": "Le poids des livres est une force externe; il écrase l’éponge, ce qui produit de la compression."
+          },
+          {
+            "questionId": "c5",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Les câbles sont tirés par le poids de la route : ils sont étirés, donc en tension. Les tours, elles, sont surtout en compression."
+          },
+          {
+            "questionId": "c6",
+            "kind": "short_answer",
+            "sampleAnswer": "Le coussin d’une chaise : quand je m’assois, mon poids l’écrase, donc il subit de la compression.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter tout objet écrasé par une charge (pattes d’une table, semelle de soulier, pile de livres…) avec une explication."
+          }
+        ],
+        "solution": "Compression : l’éponge devient nettement plus mince sous les livres, puis reprend presque toute son épaisseur quand on les enlève.\n\nTension : l’élastique s’allonge et devient plus mince, puis reprend sa longueur quand on le relâche.\n\nTorsion : l’éponge se tord en spirale et ses trous s’allongent en biais.\n\nCisaillement : les côtés de l’éponge penchent et le dessus se décale par rapport au dessous.\n\nLes mesures exactes varient selon l’éponge et l’élastique : on compare surtout avant et pendant."
+      }
+    }
+  ]
+}

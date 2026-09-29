@@ -1,0 +1,53 @@
+{
+  "slug": "atelier-fiche-animale",
+  "type": "learning_centre",
+  "title": "Atelier d’écriture : ma fiche animale",
+  "summary": "Un centre autonome où chaque élève planifie une fiche informative sur un animal de l’Ontario. Une feuille pliée en quatre cases sert d’organisateur graphique : habitat, alimentation, apparence et fait étonnant.",
+  "source": "teacher_created",
+  "author": "isabelle.tremblay@demo.lynx.test",
+  "school": "saint-exemple",
+  "status": "teacher_reviewed",
+  "shareScope": "school",
+  "gradeCodes": ["3"],
+  "subjectCode": "fra",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "D1.1"
+    }
+  ],
+  "durationMinutes": 30,
+  "materials": "Pour le centre : 6 à 8 livres documentaires sur des animaux de l’Ontario, des feuilles blanches, des crayons à mine, des crayons de couleur, une minuterie et un panier étiqueté « Mes plans d’écriture ».",
+  "keywords": "organisateur graphique, planifier, mots-clés, fiche informative, texte informatif",
+  "tags": ["ecriture", "animaux", "ontario"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "subFriendly": false,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "J’organise mes idées dans un organisateur graphique avant d’écrire une fiche informative sur un animal.",
+        "teacherNote": "Ce centre prépare le projet « Mon documentaire sur un animal de l’Ontario ». Choisissez à la bibliothèque des livres documentaires faciles à lire (castor, huard, orignal, tortue peinte, raton laveur, grand héron…). Les élèves qui apprennent le français peuvent dessiner dans les cases, puis écrire un ou deux mots-clés avec l’aide de la banque de mots « Les animaux de l’Ontario ». Avant la rédaction, vérifiez avec chaque élève que les faits notés viennent bien du livre.",
+        "setup": "Installez une table pour 4 élèves avec les livres, les feuilles, les crayons et une minuterie réglée à 25 minutes. Lors d’une première visite, montrez en groupe comment plier la feuille en quatre cases et écrire des mots-clés plutôt que des phrases complètes. Affichez au centre les quatre titres des cases : Habitat, Ce qu’il mange, Apparence, Fait étonnant.",
+        "groupSize": "4 élèves",
+        "studentSteps": [
+          "Choisis un livre du centre sur un animal de l’Ontario. Écris le nom de l’animal en haut de ta feuille.",
+          "Plie ta feuille en deux, puis encore en deux. Déplie-la : tu as maintenant 4 cases.",
+          "Écris un titre dans chaque case : Habitat, Ce qu’il mange, Apparence, Fait étonnant.",
+          "Cherche l’information dans le livre. Dans chaque case, écris 2 ou 3 mots-clés, pas des phrases complètes.",
+          "Ajoute un petit dessin dans chaque case pour t’aider à te souvenir de tes idées.",
+          "Relis tes cases avec la personne à côté de toi. Chaque mot-clé est-il dans la bonne case?",
+          "Au bas de ta feuille, écris le titre du livre où tu as trouvé l’information."
+        ],
+        "extension": "Choisis ta case la plus intéressante. Transforme tes mots-clés en deux phrases complètes. Commence chaque phrase par une majuscule et termine-la par un point.",
+        "cleanup": "Remets les livres dans le bac, range les crayons et dépose ta feuille dans le panier « Mes plans d’écriture »."
+      },
+      "answerKey": null
+    }
+  ]
+}

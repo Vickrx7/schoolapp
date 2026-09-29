@@ -1,0 +1,397 @@
+{
+  "slug": "evaluation-fractions-decimaux",
+  "type": "unit_test",
+  "title": "Évaluation : fractions et nombres décimaux",
+  "summary": "Une évaluation de fin d’unité en trois parties : fractions équivalentes, comparer et ordonner des fractions et des nombres décimaux, liens entre fractions et nombres décimaux. Chaque question est associée à une catégorie de la grille d’évaluation.",
+  "source": "board_created",
+  "status": "board_approved",
+  "shareScope": "board",
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "gradeCodes": ["5"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "B1"
+    }
+  ],
+  "durationMinutes": 50,
+  "materials": "Une copie par élève, un crayon et une gomme à effacer. Pas de calculatrice.",
+  "keywords": "évaluation sommative, fractions équivalentes, nombres décimaux, dixièmes, centièmes, comparer, ordonner, argent",
+  "tags": ["fractions", "decimaux", "evaluation"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "subFriendly": false,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je montre ce que je comprends des fractions équivalentes, de la comparaison de fractions et de nombres décimaux, et des liens entre les fractions et les nombres décimaux.",
+        "teacherNote": "La catégorie de la grille (connaissance et compréhension, habiletés de la pensée, communication, mise en application) de chaque question figure sur votre copie seulement. Les fractions sont écrites avec une barre oblique (3/4) : lisez-les à voix haute au besoin. Accommodements possibles : lecture des questions à voix haute, temps supplémentaire, réponses dictées pour les questions d’explication. Les questions 5, 12 et 13 se corrigent à la main (2 points chacune).",
+        "instructions": "Lis chaque question attentivement et écris tes réponses sur la feuille. Quand on te demande d’expliquer, utilise des mots, des nombres ou un dessin. Tu as 50 minutes.",
+        "sections": [
+          {
+            "title": "Partie A : les fractions équivalentes",
+            "questions": [
+              {
+                "id": "a1",
+                "kind": "multiple_choice",
+                "prompt": "Quelle fraction est équivalente à 2/3?",
+                "hint": "",
+                "points": null,
+                "category": "connaissance",
+                "choices": [
+                  {
+                    "id": "a",
+                    "text": "3/4"
+                  },
+                  {
+                    "id": "b",
+                    "text": "2/6"
+                  },
+                  {
+                    "id": "c",
+                    "text": "4/6"
+                  },
+                  {
+                    "id": "d",
+                    "text": "4/9"
+                  }
+                ],
+                "multipleAnswers": false
+              },
+              {
+                "id": "a2",
+                "kind": "true_false",
+                "prompt": "3/4 et 6/8 sont des fractions équivalentes.",
+                "hint": "",
+                "points": null,
+                "category": "connaissance"
+              },
+              {
+                "id": "a3",
+                "kind": "short_answer",
+                "prompt": "Trouve le numérateur qui manque : 1/2 = …/10",
+                "hint": "",
+                "points": null,
+                "category": "application",
+                "lines": 1
+              },
+              {
+                "id": "a4",
+                "kind": "multiple_choice",
+                "prompt": "Choisis toutes les fractions équivalentes à 1/4.",
+                "hint": "",
+                "points": null,
+                "category": "habiletes",
+                "choices": [
+                  {
+                    "id": "a",
+                    "text": "2/8"
+                  },
+                  {
+                    "id": "b",
+                    "text": "4/8"
+                  },
+                  {
+                    "id": "c",
+                    "text": "3/12"
+                  },
+                  {
+                    "id": "d",
+                    "text": "2/6"
+                  }
+                ],
+                "multipleAnswers": true
+              },
+              {
+                "id": "a5",
+                "kind": "short_answer",
+                "prompt": "Capucine a mangé 2/8 d’une pizza. Jules a mangé 1/4 d’une autre pizza de la même grandeur. Capucine dit : « J’en ai mangé plus, parce que 2 est plus grand que 1. » A-t-elle raison? Explique.",
+                "hint": "",
+                "points": 2,
+                "category": "communication",
+                "lines": 4
+              }
+            ]
+          },
+          {
+            "title": "Partie B : comparer et ordonner",
+            "questions": [
+              {
+                "id": "b1",
+                "kind": "ordering",
+                "prompt": "Place ces nombres décimaux dans l’ordre croissant, du plus petit au plus grand.",
+                "hint": "",
+                "points": null,
+                "category": "application",
+                "items": [
+                  {
+                    "id": "i1",
+                    "text": "0,7"
+                  },
+                  {
+                    "id": "i2",
+                    "text": "0,07"
+                  },
+                  {
+                    "id": "i3",
+                    "text": "0,75"
+                  },
+                  {
+                    "id": "i4",
+                    "text": "0,5"
+                  }
+                ]
+              },
+              {
+                "id": "b2",
+                "kind": "multiple_choice",
+                "prompt": "Quelle fraction est la plus grande?",
+                "hint": "",
+                "points": null,
+                "category": "habiletes",
+                "choices": [
+                  {
+                    "id": "a",
+                    "text": "2/3"
+                  },
+                  {
+                    "id": "b",
+                    "text": "3/4"
+                  },
+                  {
+                    "id": "c",
+                    "text": "1/2"
+                  },
+                  {
+                    "id": "d",
+                    "text": "5/12"
+                  }
+                ],
+                "multipleAnswers": false
+              },
+              {
+                "id": "b3",
+                "kind": "true_false",
+                "prompt": "0,4 est plus petit que 0,38.",
+                "hint": "",
+                "points": null,
+                "category": "connaissance"
+              },
+              {
+                "id": "b4",
+                "kind": "short_answer",
+                "prompt": "Écris un nombre décimal qui est entre 0,6 et 0,7.",
+                "hint": "",
+                "points": null,
+                "category": "habiletes",
+                "lines": 1
+              }
+            ]
+          },
+          {
+            "title": "Partie C : fractions et nombres décimaux",
+            "questions": [
+              {
+                "id": "c1",
+                "kind": "matching",
+                "prompt": "Associe chaque fraction au nombre décimal équivalent.",
+                "hint": "",
+                "points": null,
+                "category": "connaissance",
+                "left": [
+                  {
+                    "id": "l1",
+                    "text": "3/10"
+                  },
+                  {
+                    "id": "l2",
+                    "text": "45/100"
+                  },
+                  {
+                    "id": "l3",
+                    "text": "1/2"
+                  },
+                  {
+                    "id": "l4",
+                    "text": "7/100"
+                  }
+                ],
+                "right": [
+                  {
+                    "id": "ra",
+                    "text": "0,45"
+                  },
+                  {
+                    "id": "rb",
+                    "text": "0,07"
+                  },
+                  {
+                    "id": "rc",
+                    "text": "0,7"
+                  },
+                  {
+                    "id": "rd",
+                    "text": "0,3"
+                  },
+                  {
+                    "id": "re",
+                    "text": "0,5"
+                  }
+                ]
+              },
+              {
+                "id": "c2",
+                "kind": "short_answer",
+                "prompt": "Écris 0,9 sous forme de fraction.",
+                "hint": "",
+                "points": null,
+                "category": "connaissance",
+                "lines": 1
+              },
+              {
+                "id": "c3",
+                "kind": "short_answer",
+                "prompt": "Yanis a 2,35 $ dans sa poche. Il n’a que des pièces de 1 $, de 25 ¢ et de 10 ¢. Donne une façon de former ce montant et montre ton calcul.",
+                "hint": "",
+                "points": 2,
+                "category": "application",
+                "lines": 4
+              },
+              {
+                "id": "c4",
+                "kind": "short_answer",
+                "prompt": "Explique pourquoi 0,5 et 5/10 représentent la même quantité.",
+                "hint": "",
+                "points": 2,
+                "category": "communication",
+                "lines": 4
+              }
+            ]
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "a1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "2/3 = 4/6 : on multiplie le numérateur et le dénominateur par 2."
+          },
+          {
+            "questionId": "a2",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "3/4 = 6/8 : on multiplie le numérateur et le dénominateur par 2."
+          },
+          {
+            "questionId": "a3",
+            "kind": "short_answer",
+            "sampleAnswer": "5",
+            "acceptableAnswers": ["5"],
+            "explanation": "1/2 = 5/10 : le dénominateur est multiplié par 5, donc le numérateur aussi."
+          },
+          {
+            "questionId": "a4",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "c"],
+            "explanation": "2/8 = 1/4 (division par 2) et 3/12 = 1/4 (division par 3). 4/8 = 1/2 et 2/6 = 1/3."
+          },
+          {
+            "questionId": "a5",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. 2/8 et 1/4 sont équivalentes : si on regroupe les huitièmes deux par deux, 2/8 devient 1/4. Comme les pizzas ont la même grandeur, Capucine et Jules en ont mangé autant.",
+            "acceptableAnswers": [],
+            "explanation": "Un point pour la conclusion (même quantité), un point pour l’explication (fractions équivalentes)."
+          },
+          {
+            "questionId": "b1",
+            "kind": "ordering",
+            "orderedIds": ["i2", "i4", "i1", "i3"],
+            "explanation": "0,07 < 0,5 < 0,7 < 0,75."
+          },
+          {
+            "questionId": "b2",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "3/4 = 9/12, 2/3 = 8/12, 1/2 = 6/12 et 5/12 : 3/4 est la plus grande."
+          },
+          {
+            "questionId": "b3",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "0,4 = 0,40. 40 centièmes, c’est plus que 38 centièmes : 0,4 est plus grand que 0,38."
+          },
+          {
+            "questionId": "b4",
+            "kind": "short_answer",
+            "sampleAnswer": "0,65",
+            "acceptableAnswers": [
+              "0,61",
+              "0,62",
+              "0,63",
+              "0,64",
+              "0,65",
+              "0,66",
+              "0,67",
+              "0,68",
+              "0,69"
+            ],
+            "explanation": "Toute valeur strictement entre 0,6 et 0,7 est correcte. Les réponses en millièmes (0,605) sont à corriger à la main."
+          },
+          {
+            "questionId": "c1",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "ra"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "re"
+              },
+              {
+                "leftId": "l4",
+                "rightId": "rb"
+              }
+            ],
+            "explanation": "Le nombre 0,7 n’est pas utilisé (il vaut 7/10, pas 7/100)."
+          },
+          {
+            "questionId": "c2",
+            "kind": "short_answer",
+            "sampleAnswer": "9/10",
+            "acceptableAnswers": ["9/10", "90/100"],
+            "explanation": "0,9 se lit « neuf dixièmes »."
+          },
+          {
+            "questionId": "c3",
+            "kind": "short_answer",
+            "sampleAnswer": "2 pièces de 1 $, 1 pièce de 25 ¢ et 1 pièce de 10 ¢ : 2 $ + 0,25 $ + 0,10 $ = 2,35 $.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter toute combinaison exacte, par exemple 1 pièce de 1 $, 5 pièces de 25 ¢ et 1 pièce de 10 ¢ (1 $ + 1,25 $ + 0,10 $ = 2,35 $). Un point pour la combinaison, un point pour le calcul."
+          },
+          {
+            "questionId": "c4",
+            "kind": "short_answer",
+            "sampleAnswer": "0,5 se lit « cinq dixièmes ». 5/10, c’est aussi cinq dixièmes. Les deux représentent la moitié d’un tout.",
+            "acceptableAnswers": [],
+            "explanation": "Un point pour le lien avec les dixièmes, un point pour une explication claire (mots, nombres ou dessin)."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

@@ -1,0 +1,329 @@
+{
+  "slug": "diagnostic-fractions",
+  "type": "diagnostic",
+  "title": "Diagnostic : ce que je sais des fractions",
+  "summary": "Neuf questions courtes, avant l’unité, pour voir ce que les élèves savent des parts égales, du numérateur et du dénominateur, des fractions équivalentes simples et de la comparaison avec 1/2, avec des pistes d’intervention.",
+  "source": "teacher_created",
+  "author": "marc.gagnon@demo.lynx.test",
+  "school": "saint-exemple",
+  "status": "teacher_reviewed",
+  "shareScope": "board",
+  "gradeCodes": ["5"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "B1.5"
+    }
+  ],
+  "durationMinutes": 30,
+  "materials": "Une copie par élève et un crayon. Facultatif : des bandes de papier à plier.",
+  "keywords": "évaluation diagnostique, parts égales, numérateur, dénominateur, fractions équivalentes, fractions unitaires",
+  "tags": ["fractions", "evaluation"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "subFriendly": false,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je montre ce que je sais déjà sur les fractions.",
+        "teacherNote": "À faire passer avant l’unité sur les fractions. Rassurez les élèves : ce n’est pas noté, on veut savoir par où commencer. Lisez les questions à voix haute au besoin. Les fractions sont écrites avec une barre oblique (1/2).",
+        "purpose": "Repérer ce que les élèves savent déjà avant l’unité : les parts égales, le sens du numérateur et du dénominateur, les fractions équivalentes simples et la comparaison de fractions avec 1/2. Les réponses servent à former des groupes de besoin; elles ne sont pas notées.",
+        "questions": [
+          {
+            "id": "d1",
+            "kind": "multiple_choice",
+            "prompt": "Une tarte est coupée en 6 parts égales. Inès en mange une. Quelle fraction de la tarte a-t-elle mangée?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "6/1"
+              },
+              {
+                "id": "b",
+                "text": "1/6"
+              },
+              {
+                "id": "c",
+                "text": "1/5"
+              },
+              {
+                "id": "d",
+                "text": "5/6"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "d2",
+            "kind": "true_false",
+            "prompt": "Une feuille est déchirée en 4 morceaux de grandeurs différentes. Chaque morceau est 1/4 de la feuille.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "d3",
+            "kind": "short_answer",
+            "prompt": "Dans la fraction 3/8, que veut dire le 8?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 2
+          },
+          {
+            "id": "d4",
+            "kind": "short_answer",
+            "prompt": "Dans la fraction 3/8, que veut dire le 3?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 2
+          },
+          {
+            "id": "d5",
+            "kind": "multiple_choice",
+            "prompt": "Quelle fraction est plus grande que 1/2?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "2/5"
+              },
+              {
+                "id": "b",
+                "text": "3/8"
+              },
+              {
+                "id": "c",
+                "text": "4/6"
+              },
+              {
+                "id": "d",
+                "text": "1/3"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "d6",
+            "kind": "multiple_choice",
+            "prompt": "Quelle fraction est équivalente à 1/2?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "1/4"
+              },
+              {
+                "id": "b",
+                "text": "2/3"
+              },
+              {
+                "id": "c",
+                "text": "2/4"
+              },
+              {
+                "id": "d",
+                "text": "3/5"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "d7",
+            "kind": "ordering",
+            "prompt": "Place ces fractions de la plus petite à la plus grande.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "items": [
+              {
+                "id": "i1",
+                "text": "1/2"
+              },
+              {
+                "id": "i2",
+                "text": "1/8"
+              },
+              {
+                "id": "i3",
+                "text": "1/4"
+              }
+            ]
+          },
+          {
+            "id": "d8",
+            "kind": "matching",
+            "prompt": "Associe chaque fraction à la façon de la lire.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "l1",
+                "text": "1/2"
+              },
+              {
+                "id": "l2",
+                "text": "3/4"
+              },
+              {
+                "id": "l3",
+                "text": "2/3"
+              },
+              {
+                "id": "l4",
+                "text": "1/5"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "deux tiers"
+              },
+              {
+                "id": "rb",
+                "text": "un cinquième"
+              },
+              {
+                "id": "rc",
+                "text": "un demi"
+              },
+              {
+                "id": "rd",
+                "text": "trois quarts"
+              },
+              {
+                "id": "re",
+                "text": "un quart"
+              }
+            ]
+          },
+          {
+            "id": "d9",
+            "kind": "short_answer",
+            "prompt": "Jules dit que 1/3 est plus grand que 1/2, parce que 3 est plus grand que 2. Qu’en penses-tu? Explique.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 4
+          }
+        ],
+        "interpretation": [
+          {
+            "signal": "L’élève choisit 6/1 ou 1/5 à la question 1, ou ne peut pas expliquer le numérateur et le dénominateur (questions 3 et 4).",
+            "nextStep": "Plier des bandes de papier et nommer les parts à voix haute (« un sixième »). Le dénominateur dit en combien de parts égales on partage le tout; le numérateur dit combien de parts on prend."
+          },
+          {
+            "signal": "L’élève répond « vrai » à la question 2.",
+            "nextStep": "Faire partager une feuille en 4 parts égales et une autre en 4 parts inégales, puis comparer : une fraction exige des parts égales."
+          },
+          {
+            "signal": "L’élève pense qu’une fraction unitaire (1/2, 1/3, 1/8…) est plus grande quand son dénominateur est plus grand (questions 7 et 9).",
+            "nextStep": "Plier trois bandes de même longueur en 2, en 4 et en 8, puis comparer une part de chaque bande : plus il y a de parts, plus chaque part est petite."
+          },
+          {
+            "signal": "L’élève ne trouve pas de fraction équivalente à 1/2 (question 6) ou plus grande que 1/2 (question 5).",
+            "nextStep": "Superposer une bande pliée en 2 et une bande pliée en 4 pour voir que 2/4 couvre la même longueur que 1/2; utiliser 1/2 comme repère pour comparer."
+          },
+          {
+            "signal": "L’élève réussit presque toutes les questions.",
+            "nextStep": "Proposer des défis de fractions équivalentes avec des dénominateurs jusqu’à 12 et la comparaison de fractions qui n’ont pas le même dénominateur."
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "d1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "1 part sur 6 parts égales : 1/6. Le choix 1/5 compare la part mangée aux parts qui restent; 5/6 est ce qui reste."
+          },
+          {
+            "questionId": "d2",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Les morceaux doivent être égaux pour que chacun soit 1/4 de la feuille."
+          },
+          {
+            "questionId": "d3",
+            "kind": "short_answer",
+            "sampleAnswer": "Le tout est partagé en 8 parts égales.",
+            "acceptableAnswers": [],
+            "explanation": ""
+          },
+          {
+            "questionId": "d4",
+            "kind": "short_answer",
+            "sampleAnswer": "On prend (ou on compte) 3 de ces 8 parts.",
+            "acceptableAnswers": [],
+            "explanation": ""
+          },
+          {
+            "questionId": "d5",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "4/6 est plus que 3/6, qui est la moitié. 2/5, 3/8 et 1/3 sont moins que la moitié."
+          },
+          {
+            "questionId": "d6",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "2/4 = 1/2."
+          },
+          {
+            "questionId": "d7",
+            "kind": "ordering",
+            "orderedIds": ["i2", "i3", "i1"],
+            "explanation": "1/8 < 1/4 < 1/2."
+          },
+          {
+            "questionId": "d8",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "ra"
+              },
+              {
+                "leftId": "l4",
+                "rightId": "rb"
+              }
+            ],
+            "explanation": "« un quart » n’est pas utilisé."
+          },
+          {
+            "questionId": "d9",
+            "kind": "short_answer",
+            "sampleAnswer": "Jules se trompe. Si on partage le même tout en 3 parts égales, chaque part est plus petite que si on le partage en 2. Donc 1/3 est plus petit que 1/2.",
+            "acceptableAnswers": [],
+            "explanation": ""
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

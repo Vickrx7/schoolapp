@@ -1,0 +1,49 @@
+{
+  "slug": "drapeau-franco-ontarien",
+  "type": "culture_hook",
+  "title": "Le drapeau franco-ontarien",
+  "summary": "Une amorce pour découvrir l’histoire et le sens du drapeau franco-ontarien (le lys, le trillium, le vert et le blanc), avec des questions sur l’identité et une activité de création de drapeau.",
+  "source": "board_created",
+  "status": "board_approved",
+  "shareScope": "board",
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "gradeCodes": ["5"],
+  "subjectCode": "fra",
+  "durationMinutes": 15,
+  "materials": "Un drapeau franco-ontarien, si l’école en a un. Pour l’activité : une feuille blanche par dyade et des crayons de couleur.",
+  "keywords": "drapeau franco-ontarien, lys, trillium, 25 septembre, Jour des Franco-Ontariens et des Franco-Ontariennes, construction identitaire, francophonie, Sudbury",
+  "tags": ["francophonie", "identite", "ontario"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je découvre le sens du drapeau franco-ontarien et je réfléchis à ce que veut dire, pour moi, vivre en français en Ontario.",
+        "teacherNote": "Amorce de 15 minutes pour la 5e année, idéale autour du 25 septembre. Montrez un vrai drapeau franco-ontarien si l’école en a un, ou décrivez-le avant de lire le texte. Accueillez toutes les réponses à la question sur les langues de la famille : les élèves qui parlent d’autres langues à la maison font aussi partie de la francophonie ontarienne. L’activité prend environ 30 minutes de plus et peut mener à l’écriture d’un court texte explicatif. Vérifiez les faits de la liste avant de les présenter.",
+        "hook": "Regarde bien ce drapeau vert et blanc. À gauche, une fleur de lys blanche sur un fond vert. À droite, un trillium vert sur un fond blanc. On le voit flotter devant beaucoup d’écoles de langue française en Ontario. Que veut dire ce drapeau? Pourquoi deux fleurs et deux couleurs? Et pourquoi est-il si important pour les francophones de l’Ontario?",
+        "context": "Le drapeau franco-ontarien est le symbole de la communauté francophone de l’Ontario. Il a été créé en 1975, à Sudbury, par Gaétan Gervais, professeur d’histoire, et Michel Dupuis, étudiant à l’Université Laurentienne. Il a été hissé pour la première fois le 25 septembre 1975, devant cette université.\n\nChaque partie du drapeau a un sens. Le lys rappelle la francophonie, c’est-à-dire l’ensemble des personnes qui parlent français dans le monde. Le trillium blanc est l’emblème floral de l’Ontario. Le vert représente l’été et le blanc représente l’hiver, deux saisons bien marquées dans notre province. Le drapeau dit donc qu’on peut être à la fois francophone et ontarienne ou ontarien.\n\nEn 2001, le gouvernement de l’Ontario a reconnu officiellement ce drapeau comme l’emblème de la communauté franco-ontarienne. Depuis 2010, le 25 septembre est le Jour des Franco-Ontariens et des Franco-Ontariennes. Ce jour-là, dans les écoles de langue française, on lève le drapeau, on chante et on célèbre la fierté de vivre en français en Ontario.\n\nAujourd’hui, la francophonie ontarienne rassemble des personnes de partout : des familles installées ici depuis des générations et des familles venues de nombreux pays. Toutes font vivre le français en Ontario.",
+        "discussionQuestions": [
+          "D’après toi, pourquoi a-t-on choisi une fleur de lys et un trillium pour ce drapeau?",
+          "Où as-tu déjà vu le drapeau franco-ontarien? À quelle occasion?",
+          "Quelles langues parle-t-on dans ta famille? Comment le français fait-il partie de ta vie?",
+          "Que veut dire, pour toi, « vivre en français en Ontario »?",
+          "Si tu créais un drapeau pour notre classe, quelles couleurs et quels symboles choisirais-tu? Pourquoi?"
+        ],
+        "activity": "En dyades, créez le drapeau de votre classe. Choisissez deux ou trois couleurs et un ou deux symboles qui représentent votre groupe. Au verso, expliquez en trois ou quatre phrases le sens de chaque couleur et de chaque symbole, comme pour le drapeau franco-ontarien. Présentez ensuite votre drapeau à la classe.",
+        "factsToVerify": [
+          "Création du drapeau en 1975 à l’Université Laurentienne de Sudbury par Gaétan Gervais (professeur d’histoire) et Michel Dupuis (étudiant); premier lever le 25 septembre 1975.",
+          "Reconnaissance officielle du drapeau par le gouvernement de l’Ontario en 2001 (Loi de 2001 sur l’emblème franco-ontarien).",
+          "Le 25 septembre est le Jour des Franco-Ontariens et des Franco-Ontariennes depuis 2010.",
+          "Sens des symboles : lys (francophonie), trillium blanc (emblème floral de l’Ontario), vert (été) et blanc (hiver).",
+          "Disposition : lys blanc sur fond vert à gauche, trillium vert sur fond blanc à droite."
+        ]
+      },
+      "answerKey": null
+    }
+  ]
+}

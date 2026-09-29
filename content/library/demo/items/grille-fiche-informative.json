@@ -1,0 +1,122 @@
+{
+  "slug": "grille-fiche-informative",
+  "type": "rubric",
+  "title": "Grille d’évaluation : la fiche informative",
+  "summary": "Une grille selon les quatre catégories de la grille d’évaluation du rendement (niveaux 1 à 4) pour évaluer une fiche informative de 3e année sur un animal de l’Ontario.",
+  "source": "board_created",
+  "status": "board_approved",
+  "shareScope": "board",
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "gradeCodes": ["3"],
+  "subjectCode": "fra",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "D1"
+    }
+  ],
+  "durationMinutes": 10,
+  "materials": "Une copie de la grille par élève et le texte de l’élève.",
+  "keywords": "grille d’évaluation, grille du rendement, niveaux, autoévaluation, fiche informative, texte informatif",
+  "tags": ["ecriture", "evaluation", "animaux"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": false,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je connais ce qu’on attend d’une bonne fiche informative et je m’en sers pour améliorer mon texte.",
+        "teacherNote": "Présentez la grille avant l’écriture, puis utilisez-la pour l’autoévaluation au brouillon et pour l’évaluation du texte final. Le niveau 3 correspond à la norme provinciale. Les qualificatifs (limitée, partielle, générale, approfondie; avec une efficacité limitée, avec une certaine efficacité, avec efficacité, avec beaucoup d’efficacité) suivent la grille d’évaluation du rendement du curriculum de l’Ontario : à vérifier contre le document officiel en vigueur. Convient au projet « Mon documentaire sur un animal de l’Ontario ».",
+        "task": "Écrire une fiche informative de quatre paragraphes sur un animal de l’Ontario pour des élèves plus jeunes : habitat, alimentation, apparence et fait étonnant.",
+        "criteria": [
+          {
+            "category": "connaissance",
+            "criterion": "Les faits sur l’animal",
+            "levels": {
+              "level1": "Démontre une connaissance limitée de l’animal : peu de faits, parfois inexacts.",
+              "level2": "Démontre une connaissance partielle de l’animal : quelques faits exacts.",
+              "level3": "Démontre une connaissance générale de l’animal : plusieurs faits exacts dans chaque paragraphe.",
+              "level4": "Démontre une connaissance approfondie de l’animal : des faits exacts, précis et bien choisis."
+            }
+          },
+          {
+            "category": "connaissance",
+            "criterion": "Les caractéristiques du texte informatif : titre, intertitres, légendes",
+            "levels": {
+              "level1": "Démontre une connaissance limitée des caractéristiques du texte informatif : le titre ou les intertitres manquent souvent.",
+              "level2": "Démontre une connaissance partielle des caractéristiques du texte informatif : quelques intertitres ou légendes sont présents.",
+              "level3": "Démontre une connaissance générale des caractéristiques du texte informatif : un titre, des intertitres et des légendes dans la plupart des pages.",
+              "level4": "Démontre une connaissance approfondie des caractéristiques du texte informatif : le titre, les intertitres et les légendes guident la lecture."
+            }
+          },
+          {
+            "category": "habiletes",
+            "criterion": "La planification : trier ses idées dans l’organisateur graphique",
+            "levels": {
+              "level1": "Utilise l’organisateur graphique avec une efficacité limitée : peu de mots-clés, souvent dans la mauvaise case.",
+              "level2": "Utilise l’organisateur graphique avec une certaine efficacité : quelques mots-clés, parfois dans la mauvaise case.",
+              "level3": "Utilise l’organisateur graphique avec efficacité : des mots-clés dans chaque case, bien triés.",
+              "level4": "Utilise l’organisateur graphique avec beaucoup d’efficacité : des mots-clés précis et bien triés, qui guident toute l’écriture."
+            }
+          },
+          {
+            "category": "habiletes",
+            "criterion": "La recherche : choisir l’information utile dans des livres documentaires",
+            "levels": {
+              "level1": "Choisit l’information utile dans les livres avec une efficacité limitée : les notes sont souvent hors sujet ou recopiées mot à mot.",
+              "level2": "Choisit l’information utile dans les livres avec une certaine efficacité : quelques notes utiles, d’autres hors sujet.",
+              "level3": "Choisit l’information utile dans les livres avec efficacité : les notes répondent aux questions de départ.",
+              "level4": "Choisit l’information utile dans les livres avec beaucoup d’efficacité : les notes sont justes, écrites dans ses mots et répondent à toutes ses questions."
+            }
+          },
+          {
+            "category": "communication",
+            "criterion": "L’organisation : un paragraphe par sujet",
+            "levels": {
+              "level1": "Organise ses idées en paragraphes avec une efficacité limitée : les sujets se mélangent souvent.",
+              "level2": "Organise ses idées en paragraphes avec une certaine efficacité : certains paragraphes mélangent deux sujets.",
+              "level3": "Organise ses idées en paragraphes avec efficacité : chaque paragraphe porte sur un seul sujet.",
+              "level4": "Organise ses idées en paragraphes avec beaucoup d’efficacité : chaque paragraphe porte sur un seul sujet et commence par une phrase qui l’annonce."
+            }
+          },
+          {
+            "category": "communication",
+            "criterion": "Les conventions : majuscules, points et accords simples",
+            "levels": {
+              "level1": "Respecte les conventions (majuscules, points, accords simples) avec une efficacité limitée : les erreurs gênent souvent la lecture.",
+              "level2": "Respecte les conventions (majuscules, points, accords simples) avec une certaine efficacité : plusieurs erreurs, mais le texte se lit.",
+              "level3": "Respecte les conventions (majuscules, points, accords simples) avec efficacité : quelques erreurs qui ne gênent pas la lecture.",
+              "level4": "Respecte les conventions (majuscules, points, accords simples) avec beaucoup d’efficacité : très peu d’erreurs."
+            }
+          },
+          {
+            "category": "application",
+            "criterion": "Le public : un texte clair pour des élèves plus jeunes",
+            "levels": {
+              "level1": "Adapte son texte à un public plus jeune avec une efficacité limitée : plusieurs phrases sont difficiles à comprendre pour ce public.",
+              "level2": "Adapte son texte à un public plus jeune avec une certaine efficacité : certaines phrases sont claires pour ce public.",
+              "level3": "Adapte son texte à un public plus jeune avec efficacité : des phrases claires et des légendes utiles pour ce public.",
+              "level4": "Adapte son texte à un public plus jeune avec beaucoup d’efficacité : des phrases claires, des exemples et des comparaisons qui captent l’intérêt de ce public."
+            }
+          },
+          {
+            "category": "application",
+            "criterion": "Le vocabulaire : réutiliser les mots précis appris en classe",
+            "levels": {
+              "level1": "Réutilise les mots précis appris en classe (habitat, herbivore, terrier…) avec une efficacité limitée : peu de mots précis, parfois mal employés.",
+              "level2": "Réutilise les mots précis appris en classe (habitat, herbivore, terrier…) avec une certaine efficacité : quelques mots précis.",
+              "level3": "Réutilise les mots précis appris en classe (habitat, herbivore, terrier…) avec efficacité : plusieurs mots précis, bien employés.",
+              "level4": "Réutilise les mots précis appris en classe (habitat, herbivore, terrier…) avec beaucoup d’efficacité : de nombreux mots précis, bien employés et expliqués au besoin."
+            }
+          }
+        ]
+      },
+      "answerKey": null
+    }
+  ]
+}
