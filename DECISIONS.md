@@ -783,7 +783,8 @@ per type. When the worker records a success, a trigger turns the result into a p
 the requester, with its provenance (prompt version, model, usage row, `ai_generated`), and writes
 the item's id into the job's result; an unusable result fails the job (`invalidOutput`). Library
 content is reusable, so the output may contain no person marker (« Élève A »): characters take
-names from the prompt's fictional list. Never automatic, always previewed; the generic
+names from a fictional list sent in the request, less any name of a person the teacher can see
+(so the list never trips the privacy check). Never automatic, always previewed; the generic
 `request_ai_job` stays limited to « Texte différencié ».
 
 **D-073 — Versions per language level, and Phase 2 saved texts (amends D-042).** The AI feature

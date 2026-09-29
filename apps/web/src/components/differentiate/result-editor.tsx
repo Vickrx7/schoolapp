@@ -6,18 +6,13 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { toast } from 'sonner';
-import { ConfirmButton } from '@/components/app/confirm-button';
 import { Button } from '@/components/ui/button';
 import { Card, CardBody, CardHeader, CardTitle, Notice } from '@/components/ui/card';
 import { Field, Input, Textarea } from '@/components/ui/field';
 import { useAction, useErrorText } from '@/hooks/use-action';
 import { forgetSentDrafts, useDraft } from '@/hooks/use-draft';
 import { cn } from '@/lib/utils';
-import {
-  deleteSavedDifferentiation,
-  saveDifferentiation,
-  updateSavedDifferentiation,
-} from '@/server/actions/differentiate';
+import { saveDifferentiation } from '@/server/actions/differentiate';
 import {
   resolveFieldErrors,
   toEditable,
@@ -30,41 +25,38 @@ import { StudentCopies } from './student-copies';
 
 export type { EditorVersion } from './result-lines';
 
+/**
+ * A finished « Texte différencié » request, before it is saved: the versions side by side (one
+ * at a time on phones), editable, printable per level. « Enregistrer » makes it an ordinary
+ * library draft (D-073) and opens its page in the library, where it is edited from then on.
+ */
 export function ResultEditor({
-  mode,
   id,
   userId,
-  version,
   initial,
 }: {
-  mode: 'job' | 'saved';
+  /** The request (AI job). */
   id: string;
   userId: string;
-  /** Saved texts: the server version, so a draft never hides newer changes made elsewhere. */
-  version?: string;
   initial: { title: string; objective: string; versions: EditorVersion[] };
 }) {
   const t = useTranslations('differentiate');
   const tCommon = useTranslations('common');
   const errorText = useErrorText();
   const router = useRouter();
-  const draft = useDraft(
-    `differentiate:${mode}:${userId}:${id}`,
-    {
-      title: initial.title,
-      objective: initial.objective,
-      versions: initial.versions.map(toEditable),
-    },
-    { version },
-  );
+  const draft = useDraft(`differentiate:job:${userId}:${id}`, {
+    title: initial.title,
+    objective: initial.objective,
+    versions: initial.versions.map(toEditable),
+  });
   const v = draft.value;
   const [selected, setSelected] = useState(0);
   const [printing, setPrinting] = useState<number[]>([]);
 
   // The request succeeded: the new-request draft kept in case it failed can go.
   useEffect(() => {
-    if (mode === 'job') forgetSentDrafts(`differentiate:new:${userId}`, id);
-  }, [mode, userId, id]);
+    forgetSentDrafts(`differentiate:new:${userId}`, id);
+  }, [userId, id]);
 
   const build = () => {
     const versions = v.versions.map(versionPayload);
@@ -80,27 +72,16 @@ export function ResultEditor({
   // Line numbers of what was last sent, to point at the line a field error comes from.
   const [sentLines, setSentLines] = useState<LineNumbers[]>([]);
 
-  const saveNew = useAction(saveDifferentiation, {
+  const saver = useAction(saveDifferentiation, {
     onSuccess: ({ itemId, skippedLevels }) => {
       draft.clear();
       if (skippedLevels) toast.warning(t('savedWithoutLevels', { count: skippedLevels }));
       else toast.success(t('savedToLibrary'));
-      router.push(`/differentiate/saved/${itemId}`);
+      // An ordinary library draft from now on (D-073).
+      router.push(`/library/items/${itemId}`);
     },
   });
-  const saveChanges = useAction(updateSavedDifferentiation, {
-    successMessage: t('changesSaved'),
-    onSuccess: () => draft.clear(),
-  });
-  const remove = useAction(deleteSavedDifferentiation, {
-    successMessage: t('deleted'),
-    onSuccess: () => {
-      draft.clear();
-      router.push('/differentiate');
-    },
-  });
-  const saver = mode === 'job' ? saveNew : saveChanges;
-  const pending = saveNew.pending || saveChanges.pending;
+  const pending = saver.pending;
   const errors = resolveFieldErrors(saver.fieldErrors, sentLines);
   const fieldError = (key: string) => {
     const e = errors.fields[key];
@@ -112,7 +93,7 @@ export function ResultEditor({
   const save = async () => {
     const { payload, lines } = build();
     setSentLines(lines);
-    const result = await (mode === 'job' ? saveNew.run(id, payload) : saveChanges.run(id, payload));
+    const result = await saver.run(id, payload);
     if (result && !result.ok && result.fieldErrors) {
       // Say so even when the field is out of sight (phones show one level at a time).
       const resolved = resolveFieldErrors(result.fieldErrors, lines);
@@ -147,19 +128,6 @@ export function ResultEditor({
             </Button>
           </Notice>
         ) : null}
-        {draft.offered ? (
-          <Notice tone="warning" className="space-y-2">
-            <p>{t('draftOlder')}</p>
-            <div className="flex flex-wrap gap-2">
-              <Button variant="secondary" onClick={() => draft.recover()}>
-                {t('recoverDraft')}
-              </Button>
-              <Button variant="ghost" onClick={() => draft.discard()}>
-                {tCommon('discardDraft')}
-              </Button>
-            </div>
-          </Notice>
-        ) : null}
         <Notice tone="info" className="flex items-start gap-2">
           <Sparkles className="mt-0.5 size-4 shrink-0" aria-hidden />
           <span>{t('aiNotice')}</span>
@@ -190,26 +158,12 @@ export function ResultEditor({
             </Field>
             <div className="flex flex-wrap gap-2">
               <Button onClick={() => void save()} disabled={pending}>
-                {pending
-                  ? tCommon('saving')
-                  : mode === 'job'
-                    ? t('saveToLibrary')
-                    : t('saveChanges')}
+                {pending ? tCommon('saving') : t('saveToLibrary')}
               </Button>
               <Button variant="secondary" onClick={() => print(v.versions.map((_, i) => i))}>
                 <Printer aria-hidden />
                 {t('printAll')}
               </Button>
-              {mode === 'saved' ? (
-                <ConfirmButton
-                  label={t('deleteSaved')}
-                  message={t('deleteSavedConfirm')}
-                  confirmLabel={tCommon('delete')}
-                  variant="danger"
-                  size="md"
-                  onConfirm={() => remove.run(id)}
-                />
-              ) : null}
             </div>
           </CardBody>
         </Card>

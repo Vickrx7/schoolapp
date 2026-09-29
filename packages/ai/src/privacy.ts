@@ -843,6 +843,16 @@ export class Redactor {
   }
 
   /**
+   * Whether `text` names a known person, by the same test as the last check before sending
+   * (`assertSafeOutbound`), without changing anything. A library resource leaves out of its list
+   * of fictional first names every name that belongs to someone the request knows.
+   */
+  mentionsKnownPerson(text: string): boolean {
+    const normalized = normalizeForCheck(text);
+    return this.scan(normalized).length > 0 || this.findSquashedName(normalized) !== null;
+  }
+
+  /**
    * Last check before sending: no blocked detail and no known name may remain anywhere in
    * the outbound text. It normalizes its own copy (so it does not depend on what the caller
    * did) and also looks for names hidden by punctuation. Throws PrivacyViolation.
@@ -865,4 +875,34 @@ export class Redactor {
     if (name !== null) findings.push({ kind: 'name', match: name });
     if (findings.length) throw new PrivacyViolation(findings);
   }
+}
+
+/**
+ * De-identifies every string of a JSON value (a library resource's content and answer key, level
+ * descriptions...) with one redactor, keeping its shape. Object keys are machine names and stay
+ * as they are, and so do the values under `skipKeys` (ids and enumerated values, which a name
+ * must never change: « ra » is a choice, not a person). `blocked` collects the personal details
+ * found in any string: the caller refuses the whole request (D-038).
+ */
+export function redactStrings<T>(
+  value: T,
+  redactor: Redactor,
+  skipKeys: ReadonlySet<string> = new Set(),
+): { value: T; blocked: BlockedFinding[] } {
+  const blocked: BlockedFinding[] = [];
+  const walk = (v: unknown): unknown => {
+    if (typeof v === 'string') {
+      const r = redactor.redact(v);
+      blocked.push(...r.blocked);
+      return r.text;
+    }
+    if (Array.isArray(v)) return v.map(walk);
+    if (v !== null && typeof v === 'object') {
+      return Object.fromEntries(
+        Object.entries(v).map(([k, inner]) => [k, skipKeys.has(k) ? inner : walk(inner)]),
+      );
+    }
+    return v;
+  };
+  return { value: walk(value) as T, blocked };
 }

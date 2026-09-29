@@ -105,17 +105,17 @@ export default async function DifferentiatePage({
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle>{t('saved')}</CardTitle>
+              <CardTitle id="saved-texts">{t('saved')}</CardTitle>
             </CardHeader>
             <CardBody>
               {saved.length === 0 ? (
                 <p className="text-sm text-slate-600">{t('savedEmpty')}</p>
               ) : (
-                <ul className="divide-y divide-slate-100">
+                <ul aria-labelledby="saved-texts" className="divide-y divide-slate-100">
                   {saved.map((s) => (
                     <li key={s.id} className="py-2">
                       <Link
-                        href={`/differentiate/saved/${s.id}`}
+                        href={`/library/items/${s.id}`}
                         className="block truncate font-medium text-slate-900 hover:underline"
                       >
                         {s.title}

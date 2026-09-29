@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowDown, ArrowUp, Pencil, Plus, Trash2 } from 'lucide-react';
+import { ArrowDown, ArrowUp, Library, Pencil, Plus, Trash2, Unlink } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -13,7 +13,9 @@ import { EmptyState } from '@/components/ui/page';
 import { useAction } from '@/hooks/use-action';
 import { formatLocalDate } from '@/lib/format';
 import { cn } from '@/lib/utils';
+import { detachItemFromLesson } from '@/server/actions/library-planning';
 import { deleteLesson, moveLesson } from '@/server/actions/planning';
+import { AttachResourceLink } from './attach-resource-link';
 import { LessonForm, type ExpectationOption, type LessonDraft } from './lesson-form';
 
 export interface LessonItem extends LessonDraft {
@@ -23,6 +25,10 @@ export interface LessonItem extends LessonDraft {
   taughtOn: string | null;
   /** For a lesson a substitute reported: the report where it is confirmed. */
   pendingReport: { absenceId: string; planId: string } | null;
+  /** The library resource attached to the lesson (D-076), if the teacher can open it. */
+  resource: { id: string; title: string } | null;
+  /** A resource is attached that the teacher can no longer open (withdrawn, unshared). */
+  hasHiddenResource: boolean;
 }
 
 export function LessonList({
@@ -33,6 +39,7 @@ export function LessonList({
   nextLessonId,
   today,
   expectations,
+  library,
 }: {
   /** The signed-in user: drafts are kept per user. */
   userId: string;
@@ -42,14 +49,21 @@ export function LessonList({
   nextLessonId: string | null;
   today: string;
   expectations: ExpectationOption[];
+  /**
+   * « Joindre une ressource » (D-076): the class's grade and the unit's subject open the library
+   * on the right results; null when the teacher has no library screens (D-078).
+   */
+  library: { gradeCode: string | null; subjectId: string | null } | null;
 }) {
   const t = useTranslations('lessons');
   const tCommon = useTranslations('common');
   const tReport = useTranslations('subReport');
+  const tLibrary = useTranslations('libraryPlanning.lessonRow');
   const locale = useLocale();
   const [editing, setEditing] = useState<LessonItem | 'new' | null>(null);
   const move = useAction(moveLesson);
   const remove = useAction(deleteLesson, { successMessage: t('deleted') });
+  const detach = useAction(detachItemFromLesson, { successMessage: tLibrary('detached') });
 
   return (
     <div className="space-y-3">
@@ -108,6 +122,36 @@ export function LessonList({
                           </span>
                         ) : null}
                       </div>
+                      {l.resource || l.hasHiddenResource ? (
+                        <div className="mt-1 flex flex-wrap items-center gap-1">
+                          {l.resource ? (
+                            <Link
+                              href={`/library/items/${l.resource.id}`}
+                              className="inline-flex min-h-11 items-center gap-1 rounded-full bg-brand-50 px-3 text-sm font-medium text-brand-800 underline-offset-2 hover:underline"
+                              data-testid="lesson-resource-chip"
+                            >
+                              <Library className="size-4 shrink-0" aria-hidden />
+                              <span>
+                                {tLibrary('chip')}
+                                <span className="font-normal"> : {l.resource.title}</span>
+                              </span>
+                            </Link>
+                          ) : (
+                            <Badge data-testid="lesson-resource-chip">{tLibrary('hidden')}</Badge>
+                          )}
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="min-h-11"
+                            disabled={detach.pending}
+                            aria-label={tLibrary('detachNamed', { n: l.sequenceNumber })}
+                            onClick={() => void detach.run(l.id)}
+                          >
+                            <Unlink aria-hidden />
+                            {tLibrary('detach')}
+                          </Button>
+                        </div>
+                      ) : null}
                     </div>
                     <div className="flex flex-wrap items-center gap-1">
                       {pending ? (
@@ -133,6 +177,15 @@ export function LessonList({
                           size="sm"
                         />
                       )}
+                      {library ? (
+                        <AttachResourceLink
+                          lessonId={l.id}
+                          lessonNumber={l.sequenceNumber}
+                          gradeCode={library.gradeCode}
+                          subjectId={library.subjectId}
+                          expectationId={l.expectationIds[0] ?? null}
+                        />
+                      ) : null}
                       <Button
                         variant="ghost"
                         size="icon"

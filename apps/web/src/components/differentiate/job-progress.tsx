@@ -16,17 +16,25 @@ type Check = { kind: 'open'; status: Open } | { kind: 'done' } | { kind: 'error'
 /**
  * Waits for the worker to finish a request, then shows the result. Checks less often as time
  * passes, keeps trying after an error, pauses while the tab is hidden and stops after a limit.
+ * Every AI feature's job page uses it: its texts are generic (`differentiate` messages), except
+ * what is being prepared (`working`, `workingHint`), which a page may give in its own words.
  */
 export function JobProgress({
   jobId,
   status: initialStatus,
   createdAt,
   resumeHref,
+  working,
+  workingHint,
 }: {
   jobId: string;
   status: Open;
   createdAt: string;
   resumeHref: string;
+  /** « L’IA prépare … » (translated); the differentiated text's by default. */
+  working?: string;
+  /** What to do meanwhile (translated); the differentiated text's by default. */
+  workingHint?: string;
 }) {
   const t = useTranslations('differentiate');
   const router = useRouter();
@@ -145,8 +153,8 @@ export function JobProgress({
         <LoaderCircle className="mt-0.5 size-5 shrink-0 animate-spin text-brand-600" aria-hidden />
         <div className="space-y-1">
           <p className="font-medium text-slate-900">{t(`status.${status}`)}</p>
-          <p className="text-slate-700">{t('working')}</p>
-          <p className="text-sm text-slate-500">{t('workingHint')}</p>
+          <p className="text-slate-700">{working ?? t('working')}</p>
+          <p className="text-sm text-slate-500">{workingHint ?? t('workingHint')}</p>
           {failures >= 2 ? <p className="text-sm text-amber-700">{t('reconnecting')}</p> : null}
         </div>
       </CardBody>

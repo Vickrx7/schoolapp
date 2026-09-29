@@ -534,18 +534,12 @@
     "printLevel": "Print this level",
     "saveToLibrary": "Save",
     "savedToLibrary": "Text saved.",
-    "saveChanges": "Save changes",
-    "changesSaved": "Changes saved.",
-    "deleteSaved": "Delete this text",
-    "deleteSavedConfirm": "Delete this text and all its versions? This cannot be undone.",
-    "deleted": "Text deleted.",
     "discard": "Remove",
     "discardConfirm": "Remove this request from the list? Its result will be deleted.",
     "aiNotice": "Prepared with AI. Review and adjust it before using it in class.",
     "sentText": "See exactly what was sent",
     "view": "Open",
     "levelTabs": "Levels",
-    "draftLabel": "Draft",
     "aiBoardOffNotice": "Your school board has not allowed AI: your principal can’t turn it on.",
     "failedDraftRestored": "Your last request didn’t go through: its text was restored.",
     "resumed": "The text of your earlier request is filled in. Check it, then send it again.",
@@ -558,8 +552,6 @@
     "reconnecting": "Lost the connection to the server. Trying again…",
     "lineError": "Line {line}: {error}",
     "fixErrors": "Some of the information isn’t valid. Fix the fields shown in red, then save again.",
-    "draftOlder": "This text was changed elsewhere after your last changes on this device, which weren’t saved. The most recent version is shown.",
-    "recoverDraft": "Use my changes instead",
     "savedWithoutLevels": "Text saved. {count, plural, one {A level deleted in the meantime was left out.} other {# levels deleted in the meantime were left out.}}"
   },
   "levels": {
@@ -1431,9 +1423,942 @@
       "createWithAi": "Create with AI for this expectation"
     }
   },
-  "libraryEdit": {},
-  "libraryReview": {},
-  "libraryPlanning": {},
-  "libraryAi": {},
+  "libraryEdit": {
+    "new": {
+      "title": "New resource",
+      "intro": "Choose the type of resource to create. You can then review it and share it.",
+      "back": "Resource bank",
+      "otherType": "Choose another type",
+      "titleType": "New resource: {type}"
+    },
+    "editTitle": "Edit the resource",
+    "backToItem": "Back to the resource",
+    "sections": {
+      "about": "About",
+      "curriculum": "Curriculum",
+      "content": "Content",
+      "levels": "Versions by level",
+      "safety": "Safety",
+      "faith": "Faith"
+    },
+    "toFix": "To fix",
+    "teacherOnly": "Teacher only",
+    "keyOnly": "Answer key only",
+    "none": "None",
+    "include": "Include: {label}",
+    "contentIntro": "{type}. The base version is what students get when there is no version for their level.",
+    "solutionHint": "Stays in the answer key: never on the student sheet.",
+    "draftOlder": "This resource was saved elsewhere since your draft: you are seeing the saved version.",
+    "recoverDraft": "Recover my changes",
+    "reviewedNotice": "This resource is reviewed: it must stay complete to be saved. To save it incomplete, first return it to draft.",
+    "sharedNotice": "This resource is shared: students’ first names found in the text will be pointed out before saving.",
+    "save": {
+      "save": "Save",
+      "view": "View the resource",
+      "savedAt": "Saved at {time}",
+      "unsaved": "Unsaved changes (kept on this device)",
+      "upToDate": "No changes",
+      "notYet": "Not saved yet (kept on this device)",
+      "failed": "Saving did not work: your changes are kept on this device.",
+      "fix": "Some parts cannot be saved: check the fields marked.",
+      "notReady": "A reviewed resource must stay complete: complete the fields marked or return it to draft.",
+      "created": "Resource saved."
+    },
+    "fields": {
+      "title": "Title",
+      "summary": "Summary",
+      "summaryHint": "One or two sentences to recognize it in the bank.",
+      "school": "School",
+      "schoolHint": "The school you will be able to share it with.",
+      "duration": "Duration",
+      "minutes": "minutes",
+      "materials": "Materials",
+      "materialsHint": "What to prepare, and where to find it.",
+      "noMaterials": "No special materials",
+      "formats": "Formats",
+      "subFriendly": "Designed for a substitute",
+      "subFriendlyHint": "The instructions and materials are enough for someone who does not know the class.",
+      "subFriendlyNever": "This type of resource is never offered in a substitute plan.",
+      "subFriendlySupervision": "Only possible with “Usual supervision” in the safety notes.",
+      "licence": "Licence or terms of use",
+      "licenceHint": "Optional. Leave empty if you created the resource yourself.",
+      "tags": "Tags ({count} of {max})",
+      "keywords": "Keywords",
+      "keywordsHint": "Free words to find the resource again, separated by commas."
+    },
+    "curriculum": {
+      "grades": "Grades ({max} at most)",
+      "subject": "Subject",
+      "chooseSubject": "Choose a subject",
+      "expectations": "Expectations ({count} of {max})",
+      "expectationsHint": "Link at least one expectation before marking the resource as reviewed.",
+      "expectationsOptional": "Optional for this type of resource.",
+      "chooseFirst": "First choose a grade and a subject.",
+      "loading": "Loading the expectations…",
+      "loadFailed": "The expectations could not be loaded. Try again in a moment.",
+      "noExpectations": "The expectations of this subject are not loaded yet for these grades.",
+      "strand": "Strand {code} — {label}",
+      "otherStrand": "Other expectations"
+    },
+    "content": {
+      "title": "Title on the sheet",
+      "objective": "Learning goal",
+      "teacherNote": "Note for the teacher",
+      "successCriteria": {
+        "_label": "Success criteria",
+        "_item": "Criterion",
+        "_add": "Add a criterion"
+      },
+      "opening": {
+        "_label": "Start of the lesson",
+        "_item": "Step",
+        "_add": "Add a step",
+        "minutes": "Minutes (optional)",
+        "instruction": "Instruction",
+        "say": "To say to students (optional)"
+      },
+      "development": {
+        "_label": "Core of the lesson",
+        "_item": "Step",
+        "_add": "Add a step",
+        "minutes": "Minutes (optional)",
+        "instruction": "Instruction",
+        "say": "To say to students (optional)"
+      },
+      "closing": {
+        "_label": "End of the lesson",
+        "_item": "Step",
+        "_add": "Add a step",
+        "minutes": "Minutes (optional)",
+        "instruction": "Instruction",
+        "say": "To say to students (optional)"
+      },
+      "differentiation": "Differentiation",
+      "assessment": "Assessment",
+      "subNotes": "Notes for the substitute",
+      "heading": "Chart title",
+      "sections": {
+        "_label": "Sections",
+        "_item": "Section",
+        "_add": "Add a section",
+        "title": "Section title",
+        "points": {
+          "_label": "Key points",
+          "_item": "Point",
+          "_add": "Add a point"
+        },
+        "example": "Example (optional)",
+        "questions": {
+          "_label": "Questions"
+        }
+      },
+      "visualIdeas": {
+        "_label": "Ideas to illustrate the chart",
+        "_item": "Idea",
+        "_add": "Add an idea"
+      },
+      "problem": "Problem",
+      "steps": {
+        "_label": "Steps",
+        "_item": "Step",
+        "_add": "Add a step",
+        "explanation": "Explanation",
+        "work": "Work shown (optional)"
+      },
+      "answer": "Answer",
+      "practice": {
+        "_label": "Practice questions"
+      },
+      "bigIdea": "Big idea",
+      "background": "Background for the teacher",
+      "keyVocabulary": {
+        "_label": "Key vocabulary",
+        "_item": "Word",
+        "_add": "Add a word",
+        "term": "Word",
+        "definition": "Definition"
+      },
+      "misconceptions": {
+        "_label": "Common misconceptions",
+        "_item": "Misconception",
+        "_add": "Add a misconception",
+        "misconception": "Misconception",
+        "response": "How to respond"
+      },
+      "teachingTips": {
+        "_label": "Teaching tips",
+        "_item": "Tip",
+        "_add": "Add a tip"
+      },
+      "lookFors": {
+        "_label": "What to look for in students",
+        "_item": "Look-for",
+        "_add": "Add a look-for"
+      },
+      "instructions": "Instructions",
+      "text": "Text",
+      "glossary": {
+        "_label": "Glossary",
+        "_item": "Word",
+        "_add": "Add a word",
+        "term": "Word",
+        "definition": "Definition (optional)"
+      },
+      "questions": {
+        "_label": "Questions",
+        "_item": "Question",
+        "_add": "Add a question"
+      },
+      "visualSupports": {
+        "_label": "Suggested visual supports",
+        "_item": "Visual support",
+        "_add": "Add a visual support"
+      },
+      "setup": "Setup",
+      "groupSize": "Group size",
+      "studentSteps": {
+        "_label": "Steps for students",
+        "_item": "Step",
+        "_add": "Add a step"
+      },
+      "extension": "Going further",
+      "cleanup": "Clean-up",
+      "theme": "Theme",
+      "words": {
+        "_label": "Words",
+        "_item": "Word",
+        "_add": "Add a word",
+        "term": "Word",
+        "definition": "Definition",
+        "example": "Example (optional)",
+        "wordClass": "Word class",
+        "gender": "Gender"
+      },
+      "activityIdeas": {
+        "_label": "Activity ideas",
+        "_item": "Idea",
+        "_add": "Add an idea"
+      },
+      "prompt": "Prompt",
+      "researchQuestion": "Research question",
+      "hypothesisPrompt": "Hypothesis prompt",
+      "observationTable": {
+        "_label": "Observation table",
+        "columns": {
+          "_label": "Columns",
+          "_item": "Column",
+          "_add": "Add a column"
+        },
+        "rows": "Number of rows"
+      },
+      "conclusionQuestions": {
+        "_label": "Conclusion questions"
+      },
+      "communication": "Sharing the results",
+      "challenge": "Challenge",
+      "constraints": {
+        "_label": "Constraints",
+        "_item": "Constraint",
+        "_add": "Add a constraint"
+      },
+      "criteria": {
+        "_label": "Criteria",
+        "_item": "Criterion",
+        "_add": "Add a criterion",
+        "category": "Category",
+        "criterion": "Criterion",
+        "levels": {
+          "_label": "Levels",
+          "level1": "Level 1",
+          "level2": "Level 2",
+          "level3": "Level 3",
+          "level4": "Level 4"
+        }
+      },
+      "designStages": {
+        "_label": "Design process stages",
+        "_item": "Stage",
+        "_add": "Add a stage",
+        "stage": "Process stage",
+        "prompt": "Prompt"
+      },
+      "reflectionQuestions": {
+        "_label": "Reflection questions"
+      },
+      "drivingQuestion": "Driving question",
+      "overview": "Project overview",
+      "milestones": {
+        "_label": "Project milestones",
+        "_item": "Milestone",
+        "_add": "Add a milestone",
+        "title": "Title",
+        "description": "Description",
+        "sessions": "Number of sessions (optional)"
+      },
+      "deliverables": {
+        "_label": "What students hand in",
+        "_item": "Deliverable",
+        "_add": "Add a deliverable"
+      },
+      "location": "Location",
+      "safetyReminders": {
+        "_label": "Safety reminders",
+        "_item": "Reminder",
+        "_add": "Add a reminder"
+      },
+      "weatherAlternative": "In bad weather",
+      "purpose": "Purpose of the assessment",
+      "interpretation": {
+        "_label": "Interpreting the answers",
+        "_item": "Next step",
+        "_add": "Add a next step",
+        "signal": "What you observe",
+        "nextStep": "Next step"
+      },
+      "task": "Task assessed",
+      "grouping": "Grouping",
+      "rules": {
+        "_label": "Rules",
+        "_item": "Rule",
+        "_add": "Add a rule"
+      },
+      "howToWin": "How to win",
+      "variations": {
+        "_label": "Variations",
+        "_item": "Variation",
+        "_add": "Add a variation"
+      },
+      "space": "Space",
+      "calmVariant": "Calm variation",
+      "tune": "Tune",
+      "verses": {
+        "_label": "Verses",
+        "_item": "Verse",
+        "_add": "Add a verse",
+        "label": "Verse name (e.g. Chorus)",
+        "lines": {
+          "_label": "Lines",
+          "_item": "Line",
+          "_add": "Add a line"
+        }
+      },
+      "gestures": {
+        "_label": "Gestures",
+        "_item": "Gesture",
+        "_add": "Add a gesture"
+      },
+      "riddles": {
+        "_label": "Riddles"
+      },
+      "days": {
+        "_label": "Days",
+        "_item": "Day",
+        "_add": "Add a day",
+        "label": "Day name",
+        "task": "Task"
+      },
+      "hints": {
+        "_label": "Hints",
+        "_item": "Hint",
+        "_add": "Add a hint"
+      },
+      "scriptureReference": "Scripture reference",
+      "reflection": "Reflection",
+      "prayer": "Prayer",
+      "action": "Action to take",
+      "hook": "Hook",
+      "context": "Background",
+      "discussionQuestions": {
+        "_label": "Discussion questions",
+        "_item": "Question",
+        "_add": "Add a question"
+      },
+      "activity": "Activity",
+      "factsToVerify": {
+        "_label": "Facts to check",
+        "_item": "Fact",
+        "_add": "Add a fact"
+      },
+      "fr": {
+        "_label": "French part",
+        "intro": "Introduction",
+        "learning": {
+          "_label": "What the child is learning",
+          "_item": "Learning",
+          "_add": "Add a learning"
+        },
+        "atHome": {
+          "_label": "At home",
+          "_item": "Idea",
+          "_add": "Add an idea"
+        },
+        "words": {
+          "_label": "Useful words",
+          "_item": "Word",
+          "_add": "Add a word",
+          "term": "Word",
+          "definition": "Definition"
+        }
+      },
+      "en": {
+        "_label": "English part",
+        "intro": "Introduction",
+        "learning": {
+          "_label": "What the child is learning",
+          "_item": "Learning",
+          "_add": "Add a learning"
+        },
+        "atHome": {
+          "_label": "At home",
+          "_item": "Idea",
+          "_add": "Add an idea"
+        },
+        "words": {
+          "_label": "Useful words",
+          "_item": "Word",
+          "_add": "Add a word",
+          "term": "Word",
+          "definition": "Definition"
+        }
+      },
+      "solution": {
+        "default": "Solution",
+        "experiment": "Expected results",
+        "challenge": "Solution to the challenge"
+      }
+    },
+    "phases": {
+      "mat": {
+        "opening": "Warm-up (mise en train)",
+        "development": "Exploration",
+        "closing": "Consolidation (objectivation)"
+      },
+      "default": {
+        "opening": "Before",
+        "development": "During",
+        "closing": "After"
+      }
+    },
+    "hints": {
+      "title": "Optional. Empty: the resource’s title.",
+      "objective": "What students will learn. It stays the same in every version.",
+      "teacherNote": "Never on the student sheet.",
+      "visualSupports": "Ideas of pictures or gestures to show: the bank holds no images.",
+      "visualIdeas": "Ideas of pictures or diagrams to draw with the class.",
+      "tune": "A public-domain tune (e.g. “Frère Jacques”) or an original one.",
+      "scriptureReference": "A reference only (e.g. Genesis 2:15), never a quotation.",
+      "factsToVerify": "Facts to check before using the resource.",
+      "subNotes": "What someone who does not know the class needs to know.",
+      "text": "Up to 40,000 characters."
+    },
+    "options": {
+      "wordClasses": {
+        "nom": "noun",
+        "verbe": "verb",
+        "adjectif": "adjective",
+        "adverbe": "adverb",
+        "expression": "expression",
+        "autre": "other"
+      },
+      "genders": {
+        "m": "masculine",
+        "f": "feminine"
+      },
+      "designStages": {
+        "definir": "Define the problem",
+        "rechercher": "Research",
+        "planifier": "Plan",
+        "construire": "Build",
+        "tester": "Test",
+        "ameliorer": "Improve",
+        "communiquer": "Communicate"
+      },
+      "spaces": {
+        "desk": "At their desk",
+        "open": "In an open space"
+      }
+    },
+    "list": {
+      "item": "Item",
+      "numbered": "{label} {n}",
+      "addDefault": "Add an item",
+      "moveUp": "Move up: {name}",
+      "moveDown": "Move down: {name}",
+      "remove": "Remove: {name}",
+      "count": "{count} of {max}",
+      "needed": "At least {min} are needed ({count} so far)."
+    },
+    "questions": {
+      "empty": "No questions yet.",
+      "newKind": "Type of the next question",
+      "add": "Add a question",
+      "numbered": "Question {n}",
+      "kind": "{name}: question type",
+      "prompt": "Question",
+      "hint": "Hint (optional)",
+      "explanation": "Explanation (optional)",
+      "explanationHint": "In the answer key only.",
+      "more": "Points and category (optional)",
+      "points": "Points",
+      "pointsHint": "Empty: 1 point (1 per pair for matching).",
+      "category": "Achievement chart category",
+      "categoryHint": "On the teacher’s copy only.",
+      "noCategory": "None",
+      "choices": "Answer choices",
+      "choicesHintOne": "Tick the correct answer.",
+      "choicesHintMany": "Tick every correct answer.",
+      "choice": "Choice {letter}",
+      "correctChoice": "{name}: correct answer",
+      "removeChoice": "Remove: {name}",
+      "addChoice": "Add a choice",
+      "multipleAnswers": "Several correct answers",
+      "trueFalse": "Correct answer",
+      "true": "True",
+      "false": "False",
+      "pairs": "Pairs to match",
+      "pairsHint": "Write each item next to its match: the right-hand column will be mixed up for students.",
+      "left": "Item {n}",
+      "right": "Match for item {n}",
+      "removePair": "Remove pair {n}",
+      "addPair": "Add a pair",
+      "extraRightHint": "You can add right-hand items that match nothing, so the last answer cannot be guessed.",
+      "extraRight": "Extra right-hand item {n}",
+      "removeExtraRight": "Remove extra right-hand item {n}",
+      "addExtraRight": "Add an extra right-hand item",
+      "items": "Items to put in order",
+      "itemsHint": "Write the items in the correct order: they will be mixed up for students.",
+      "item": "Item {n}",
+      "addItem": "Add an item",
+      "shortAnswer": "Answer",
+      "sampleAnswer": "Expected answer (answer key)",
+      "acceptable": "Accepted answers (automatic marking)",
+      "acceptableHint": "Without an accepted answer, the question is marked by hand (“Manual marking”).",
+      "acceptableN": "Accepted answer {n}",
+      "removeAcceptable": "Remove accepted answer {n}",
+      "addAcceptable": "Add an accepted answer",
+      "lines": "Lines to answer on",
+      "linesHint": "On the student sheet, from 1 to 12."
+    },
+    "rubric": {
+      "caption": "one row per criterion, with what is expected at each level",
+      "category": "Category",
+      "criterion": "Criterion",
+      "level": "Level {n}",
+      "actions": "Actions",
+      "row": "Criterion {n}",
+      "categoryOf": "{name}: category",
+      "criterionOf": "{name}: criterion",
+      "levelOf": "{name}: level {n}",
+      "rowError": "Criterion {n}: {message}",
+      "hint": "Use the qualifiers of the achievement chart (limited, some, considerable, thorough…). Each category must appear at least once.",
+      "add": "Add a criterion"
+    },
+    "levels": {
+      "intro": "A version for a language level keeps the same learning goal (and the same questions for an assessment). It starts as a copy of the base version.",
+      "personalHint": "This resource has versions for your personal levels: it stays private while they are there.",
+      "chooser": "Versions by level",
+      "toFix": "to fix",
+      "none": "No versions by level yet: students get the base version.",
+      "level": "Level",
+      "add": "Add a version",
+      "otherLevel": "Other level",
+      "personal": "{label} (personal level)",
+      "basePreview": "Base version, as students get it",
+      "noPreview": "Preview not available.",
+      "editing": "Version: {label}",
+      "remove": "Remove this version",
+      "removeConfirm": "The “{label}” version will be removed when you save.",
+      "removeConfirmButton": "Remove"
+    },
+    "safety": {
+      "intro": "Required for an experiment or a STEM challenge: without them, the resource cannot be marked as reviewed.",
+      "ageSuitability": "Age and grade",
+      "ageSuitabilityHint": "E.g. ages 9 to 11 (Grade 5).",
+      "allergyAwareMaterials": "Materials and allergies",
+      "allergyAwareMaterialsHint": "Name nut-free and latex-free options (e.g. latex-free elastic bands).",
+      "supervision": "Supervision",
+      "supervisionHint": "“Usual supervision” only if an adult with no special training can run it safely.",
+      "hazards": "Hazards and precautions",
+      "hazard": "Precaution",
+      "addHazard": "Add a precaution",
+      "notes": "Other safety notes"
+    },
+    "faith": {
+      "content": "Contains faith content (prayer, religious text…)",
+      "flagged": "A reviewer flagged faith content: the box stays ticked.",
+      "reflection": "A Catholic reflection is always faith content.",
+      "suggested": "This resource seems to contain faith content (prayer, religious text…). Tick the box if it does.",
+      "tick": "Tick the box",
+      "reference": "Catholic reference",
+      "referenceHint": "A reference from your board: a virtue, a prayer, a Bible passage…",
+      "noReference": "No reference",
+      "referenceOption": "{title} ({type})",
+      "referenceTypes": {
+        "virtue": "virtue",
+        "graduate_expectation": "Catholic graduate expectation",
+        "reflection": "reflection",
+        "prayer": "prayer",
+        "scripture": "Scripture"
+      },
+      "connection": "Faith connection",
+      "connectionHint": "One or two sentences, respectful and suited to the age. A Bible reference rather than a quotation.",
+      "onStudentSheet": "Show the connection on the student sheet",
+      "reviewHint": "Faith content is reviewed by the person the board designates before it is shared with the whole board. Sharing with your school stays possible."
+    },
+    "names": {
+      "title": "Students’ first names to check",
+      "intro": "These are first names of students at your school: {names}. Remove them, or tick “Not a student’s name” (e.g. Saint Thomas, Samuel de Champlain).",
+      "notAStudent": "{name}: not a student’s name",
+      "blocked": "First remove this personal information from the resource: it is never shared.",
+      "hint": "Only the number of confirmed names is recorded in the log.",
+      "edit": "Go back"
+    },
+    "readiness": {
+      "title": "Before marking as reviewed",
+      "titleApproval": "Before proposing to the board",
+      "done": "Done",
+      "missing": "to complete",
+      "checks": {
+        "grades": "At least one grade",
+        "subject": "A subject",
+        "duration": "A duration",
+        "materials": "Materials (or “No special materials”)",
+        "tags": "A tag or a keyword",
+        "expectations": "At least one expectation",
+        "base": "A base version",
+        "content": "Every version is complete",
+        "key": "A complete answer key",
+        "safety": "The safety notes",
+        "levels": "A version for every board level"
+      },
+      "warnings": {
+        "sampleAnswer": "A short answer has no expected answer in the answer key.",
+        "subNotes": "A lesson plan for substitutes should have notes for the substitute.",
+        "baseOnly": "Base version only: no versions by level."
+      }
+    },
+    "workflow": {
+      "title": "Review and sharing",
+      "markReviewed": "I have reviewed this resource",
+      "markReviewedIntro": "You have read the whole resource (text, questions and answer key): it is ready for class.",
+      "originality": "I confirm that this content is original or that I have the right to share it (no copies of textbooks, TPT, Idéllo…).",
+      "markReviewedSubmit": "Mark as reviewed",
+      "reviewedDone": "Resource marked as reviewed.",
+      "notReadyHint": "First complete what is missing in the list above.",
+      "request": "Propose to the board",
+      "requestDone": "Resource proposed to the board.",
+      "approvalHint": "To propose it to the board, complete what is missing in the list above.",
+      "personalLevelsHint": "Remove the versions for your personal levels before sharing the resource or proposing it to the board.",
+      "cancelRequest": "Withdraw the request",
+      "cancelDone": "Request withdrawn.",
+      "toDraft": "Return to draft",
+      "toDraftConfirm": "The resource becomes a private draft again: it is no longer shared, and a pending approval request is withdrawn.",
+      "draftDone": "Resource returned to draft.",
+      "archive": "Archive",
+      "archiveConfirm": "The resource will no longer appear in the bank. You can restore it.",
+      "archiveApprovedConfirm": "The resource loses its approval and will no longer appear in the bank. You can restore it as a draft.",
+      "archiveDone": "Resource archived.",
+      "restore": "Restore",
+      "restoreDone": "Resource restored as a draft.",
+      "delete": "Delete",
+      "deleteConfirm": "Delete the resource and all its versions? Lessons it is attached to will lose it.",
+      "deleteDone": "Resource deleted.",
+      "faithBoardHint": "Faith content must be reviewed by the designated person before it is shared with the whole board: propose the resource to the board."
+    },
+    "share": {
+      "open": "Share",
+      "title": "Share the resource",
+      "intro": "Only reviewed resources are shared.",
+      "scope": "With whom",
+      "scopes": {
+        "private": "No one (private)",
+        "school": "With my school",
+        "board": "With the whole board"
+      },
+      "school": "School",
+      "faithBoardHint": "Faith content must be reviewed by the designated person before it is shared with the whole board: propose the resource to the board.",
+      "personalLevels": "This resource has versions for your personal levels. Remove them before sharing it.",
+      "guardHint": "Before sharing, students’ first names found in the resource will be pointed out.",
+      "submit": "Share",
+      "done": {
+        "private": "The resource is private again.",
+        "school": "Resource shared with your school.",
+        "board": "Resource shared with the whole board."
+      }
+    },
+    "hub": {
+      "title": "Create and share",
+      "create": "Create a resource",
+      "createHint": "A worksheet, a quiz, a game… with its answer key and versions by level.",
+      "mine": "My resources",
+      "drafts": "{count, plural, =0 {No drafts} one {# draft} other {# drafts}}",
+      "rework": "{count, plural, one {# to rework} other {# to rework}}",
+      "preparing": "{count, plural, one {# being prepared} other {# being prepared}}",
+      "review": "Resource approval",
+      "toApprove": "{count, plural, =0 {Nothing to approve} one {# to approve} other {# to approve}}",
+      "toFaith": "{count, plural, =0 {no faith content to review} one {# faith content to review} other {# faith contents to review}}"
+    },
+    "mine": {
+      "title": "My resources",
+      "intro": "The resources you created, by where they stand.",
+      "back": "Resource bank",
+      "create": "Create a resource",
+      "preparing": "Being prepared",
+      "jobItem": "New resource (AI)",
+      "jobLevels": "Versions by level (AI)",
+      "jobStatus": {
+        "queued": "Waiting",
+        "running": "Being prepared"
+      },
+      "tabsLabel": "Resource status",
+      "tab": "{label} ({count})",
+      "tabs": {
+        "drafts": "Drafts",
+        "reviewed": "Reviewed",
+        "shared": "Shared",
+        "approved": "Approved",
+        "rework": "To rework",
+        "archived": "Archived"
+      },
+      "empty": {
+        "drafts": "No drafts.",
+        "reviewed": "No reviewed resources kept private.",
+        "shared": "No shared resources.",
+        "approved": "No resources approved by the board.",
+        "rework": "No resources to rework.",
+        "archived": "No archived resources."
+      },
+      "note": "Note from the reviewer: {note}",
+      "updated": "Updated {date}"
+    },
+    "errors": {
+      "required": "This field is required.",
+      "tooLong": "This text is too long.",
+      "tooMany": "There are too many items.",
+      "tooFew": "Some items are missing.",
+      "tooSmall": "This number is too small.",
+      "tooLarge": "This number is too large.",
+      "invalid": "This value is not valid.",
+      "worksheetEmpty": "Add instructions, a text or questions.",
+      "missingCategory": "Each category of the chart must appear at least once.",
+      "baseVersion": "There must be exactly one base version.",
+      "duplicateLevel": "There are two versions for the same level.",
+      "subFriendlyNotAllowed": "This resource cannot be offered for substitutes.",
+      "duplicateQuestionId": "Two questions have the same id.",
+      "duplicateOptionId": "Two options of this question have the same id.",
+      "missingAnswer": "This question has no answer in the answer key.",
+      "unknownQuestion": "The answer key has an answer to a question that no longer exists.",
+      "duplicateAnswer": "The answer key has two answers for this question.",
+      "wrongKind": "The answer in the key does not match the question type.",
+      "noCorrectChoice": "Tick at least one correct answer.",
+      "unknownChoice": "The ticked correct answer is no longer one of the choices.",
+      "duplicateChoice": "The same correct answer is ticked twice.",
+      "tooManyCorrect": "Only one correct answer is allowed: tick “Several correct answers” or untick the others.",
+      "unknownLeft": "A pair in the key refers to an item that no longer exists.",
+      "unknownRight": "A pair in the key refers to a match that no longer exists.",
+      "duplicateLeft": "An item is matched twice.",
+      "duplicateRight": "A match is used twice.",
+      "unpairedLeft": "Every item needs its match.",
+      "notPermutation": "The order in the key does not match the items to put in order.",
+      "orderGivesAnswer": "The order shown to students would give the answer away."
+    }
+  },
+  "libraryReview": {
+    "title": "Resource approval",
+    "intro": "Resources proposed to the board, from the oldest request to the newest.",
+    "back": "Resource bank",
+    "queuesLabel": "Approval queues",
+    "queues": {
+      "content": "To approve ({count})",
+      "faith": "Faith content ({count})"
+    },
+    "empty": {
+      "content": "No resource is waiting for approval.",
+      "faith": "No faith content is waiting for review."
+    },
+    "faithReviewed": "Faith: reviewed",
+    "safety": "Safety",
+    "boardItem": "School board",
+    "requestedOn": "Requested {date}",
+    "note": "Note for the person who created the resource",
+    "noteHint": "Explain what needs to change. They will see your note with the resource.",
+    "decision": {
+      "title": "Decision",
+      "approve": "Approve for the board",
+      "approved": "Resource approved for the board.",
+      "reject": "Send back for revision",
+      "rejectIntro": "The resource becomes private again and “To rework”, with your note.",
+      "rejected": "Resource sent back for revision.",
+      "ownItem": "You cannot approve a resource you created.",
+      "faithPending": "Waiting for the faith content review",
+      "notReady": "The resource is not complete for approval (see the list).",
+      "faithTitle": "Faith content",
+      "faithDone": "The faith content has been reviewed.",
+      "faithApprove": "Faith content is suitable",
+      "faithApproved": "Faith content reviewed.",
+      "faithReject": "Send back for revision (faith content)",
+      "faithRejectIntro": "The resource becomes private again and “To rework”, with your note on the faith content.",
+      "flag": "Flag faith content",
+      "flagConfirm": "The resource will be treated as faith content: it must be reviewed by the designated person before it is shared with the whole board, and the person who created it cannot remove this flag.",
+      "flagged": "Faith content flagged.",
+      "retract": "Withdraw from the bank",
+      "retractIntro": "The resource is no longer shared or approved: it becomes “To rework” again, with your note.",
+      "retracted": "Resource withdrawn from the bank."
+    }
+  },
+  "libraryPlanning": {
+    "open": "Add to my planning",
+    "title": "Add to my planning",
+    "noClasses": "You have no class whose lessons you plan.",
+    "class": "Class",
+    "unit": "Unit",
+    "noUnits": "This class has no unit yet: create one in Planning.",
+    "unitOption": "{subject} — {title} ({status})",
+    "unitStatus": {
+      "active": "current",
+      "planned": "planned",
+      "completed": "completed",
+      "archived": "archived"
+    },
+    "mode": "How to add it",
+    "modes": {
+      "attach": "Attach to a lesson",
+      "new": "New lesson"
+    },
+    "lessonLabel": "Lesson",
+    "lesson": "Lesson {n}: {title}",
+    "lessonNext": "Lesson {n}: {title} (next lesson)",
+    "lessonDone": "Lesson {n}: {title} (done)",
+    "hasResource": "This lesson already has a resource: “{title}”.",
+    "position": "Where to put the new lesson",
+    "positions": {
+      "end": "At the end of the unit",
+      "next": "As the next lesson (before “Lesson {n}: {title}”)",
+      "after": "After lesson {n}: {title}"
+    },
+    "newHint": "The lesson takes the resource’s title, goal, materials, duration and outline, and keeps the link to it.",
+    "replaceTitle": "Replace the resource",
+    "replaceConfirm": "Replace “{title}”?",
+    "hiddenResource": "a resource you can no longer open",
+    "submitAttach": "Attach to lesson {n}",
+    "submitAttachNone": "Attach",
+    "submitNew": "Add the lesson",
+    "submitReplace": "Replace",
+    "attached": "Attached to lesson {n}.",
+    "added": "Added as lesson {n}.",
+    "seePlanning": "See the planning",
+    "attachThis": "Attach to this lesson",
+    "attachThisNamed": "Attach “{title}” to this lesson",
+    "banner": {
+      "choosing": "You are choosing a resource for lesson {n} “{title}”",
+      "back": "Back to the planning"
+    },
+    "lessonRow": {
+      "chip": "Resource",
+      "hidden": "Resource not available",
+      "detach": "Remove the resource",
+      "detachNamed": "Remove the resource from lesson {n}",
+      "detached": "Resource removed from the lesson.",
+      "attach": "Attach a resource",
+      "attachNamed": "Attach a resource to lesson {n}"
+    }
+  },
+  "libraryAi": {
+    "title": "Create with AI",
+    "intro": "Choose the type of resource, the grade, the subject and the expectations. The AI prepares a complete resource, with versions for each level if you want: a private draft to review before you use or share it.",
+    "aiOff": "AI is not turned on for this school. The principal can turn it on from the School page.",
+    "aiBoardOff": "Your school board does not allow AI at this time.",
+    "failedDraftRestored": "The previous request did not go through: your choices were recovered.",
+    "resumed": "Here is your previous request. Check it, then send it again.",
+    "fields": {
+      "school": "School",
+      "type": "Type of resource",
+      "grades": "Grade",
+      "gradesHint": "One grade, or two for a combined class.",
+      "subject": "Subject",
+      "subjectPlaceholder": "Choose a subject",
+      "expectations": "Expectations",
+      "expectationsHint": "One to {max} overall or specific expectations.",
+      "expectationsOptional": "Optional for this type of resource: up to five expectations.",
+      "expectationsChooseFirst": "Choose the grade and the subject first.",
+      "expectationsError": "The expectations could not be loaded. Try again in a moment.",
+      "expectationsEmpty": "The curriculum has no expectations for this grade and subject.",
+      "duration": "Planned duration",
+      "minutes": "{count, plural, one {# minute} other {# minutes}}",
+      "subFriendly": "Designed for a substitute",
+      "subFriendlyHint": "Complete instructions and common materials, for an adult who does not know the class.",
+      "subFriendlyStandard": "Only if an adult without special training can run it safely.",
+      "subFriendlyNever": "This type of resource is not used by substitutes.",
+      "levels": "Levels",
+      "withLevels": "Also create a version for each level",
+      "withLevelsHint": "Takes longer: the AI writes a version for each level chosen, with the same learning goal.",
+      "personalLevel": "mine",
+      "faithGroup": "Faith",
+      "faith": "Add a faith connection",
+      "faithForced": "A Catholic reflection always has a faith connection.",
+      "reference": "Reference",
+      "referenceHint": "The AI writes one or two sentences tied to this reference only. Faith content is reviewed before it is shared with the whole board.",
+      "referenceNone": "No reference fits this grade and this time of year. You can choose another one.",
+      "referencePick": "Choose a reference",
+      "referenceSuggested": "Suggestions",
+      "referenceOthers": "Other references",
+      "referenceOption": "{title} ({type})",
+      "note": "Details",
+      "noteHint": "For example the theme, the class context or the numbers to use. Do not include personal information: emails, numbers, addresses or birth dates."
+    },
+    "referenceTypes": {
+      "virtue": "virtue",
+      "graduate_expectation": "graduate expectation",
+      "reflection": "reflection",
+      "prayer": "prayer",
+      "scripture": "scripture"
+    },
+    "preview": "Check before sending",
+    "previewTitle": "What will be sent to the AI",
+    "previewIntro": "This is exactly what will be sent. Student and staff names are replaced with markers. The resource created will name no one, so it can be shared.",
+    "replacedCount": "{count, plural, =0 {No names replaced.} one {# name replaced.} other {# names replaced.}}",
+    "previewCheck": "Make sure no other personal information (a parent’s name, for example) remains in your details.",
+    "blockedTitle": "Personal information to remove",
+    "blockedIntro": "Remove these from your details, then check again:",
+    "existingTitle": "Board-approved resources already exist for this expectation:",
+    "existingHint": "Take a look before creating a new resource.",
+    "longer": "With versions for each level, it takes a few minutes.",
+    "send": "Send to the AI",
+    "sending": "Sending…",
+    "edit": "Edit the request",
+    "levels": {
+      "button": "Create the missing versions with AI",
+      "title": "Create the missing versions",
+      "intro": "From the base version, the AI writes a version for each level chosen, with the same learning goal. You can then review and edit it.",
+      "levels": "Levels without a version",
+      "hint": "The more levels, the longer it takes.",
+      "previewIntro": "This is exactly what will be sent: the base version and its answer key, without student or staff names."
+    },
+    "hub": {
+      "title": "Create with AI",
+      "hint": "A complete resource from an expectation, with versions for each level: a private draft to review.",
+      "preparing": "Being prepared",
+      "preparingItem": "{type}: being prepared",
+      "preparingLevels": "Versions by level: being prepared",
+      "preparingOther": "Resource: being prepared"
+    },
+    "job": {
+      "title": "Preparing the resource",
+      "levelsTitle": "Preparing the versions by level",
+      "backToLibrary": "Resource bank",
+      "backToItem": "Back to the resource",
+      "working": "The AI is preparing the resource (a few minutes).",
+      "workingHint": "You can leave this page: the resource will be waiting in “My resources”.",
+      "levelsWorking": "The AI is preparing the versions by level (a few minutes).",
+      "levelsWorkingHint": "You can leave this page: the versions will be added to the resource.",
+      "failed": "The resource could not be prepared.",
+      "levelsFailed": "The versions by level could not be prepared.",
+      "failedKept": "Your request is not lost: you can take it up again.",
+      "levelsFailedKept": "The resource has not changed. You can ask for the versions again from the resource.",
+      "resume": "Take up the request",
+      "ready": "The resource is ready.",
+      "open": "Open the resource"
+    }
+  },
   "subPlanLibrary": {}
 }

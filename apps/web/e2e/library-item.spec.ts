@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { SEED, closeDb, deleteLibraryItems, insertReadyItem, query, resetLanguage } from './db';
-import { DEMO, chip, expectAccessible, login } from './helpers';
+import { DEMO, chip, e2ePrefix, expectAccessible, login } from './helpers';
 
 /**
  * « Fiche de la ressource » and its print page (Phase 4, DECISIONS D-062, D-065, D-075, D-078),
@@ -9,7 +9,7 @@ import { DEMO, chip, expectAccessible, login } from './helpers';
  * colleague's private draft and one of the board's own items that is reviewed but not approved.
  */
 
-const PREFIX = `E2E-${Date.now()}`;
+const PREFIX = e2ePrefix();
 const QUIZ = `${PREFIX} Quiz des nombres`;
 const BOARD_ITEM = `${PREFIX} Jeu du conseil`;
 const NOT_FOUND = 'Cette page n’existe pas ou vous n’y avez pas accès.';

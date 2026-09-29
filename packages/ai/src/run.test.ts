@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { differentiateFeature, type DifferentiateInput } from './features/differentiate';
+import {
+  libraryItemFeature,
+  libraryItemInputSchema,
+  libraryItemOutputSchema,
+  type LibraryItemAiOutput,
+  type LibraryItemInput,
+} from './features/library-item';
 import { subPlanFeature, type SubPlanAiInput } from './features/sub-plan';
 import { priceFor, estimateCostUsd, UnknownModelPriceError } from './pricing';
 import { loadPrompt } from './prompts';
@@ -496,5 +503,90 @@ describe('runFeature: a substitute plan (sub_plan)', () => {
     });
     expect(result.status).toBe('succeeded');
     expect(result.problems).toEqual([]);
+  });
+});
+
+describe('runFeature: a library resource (library_item)', () => {
+  const request: LibraryItemInput = libraryItemInputSchema.parse({
+    itemType: 'quiz',
+    gradeCodes: ['3'],
+    gradeLabels: ['3e année'],
+    subjectId: 'ece67150-44d3-4e6e-b772-d9bde2165caf',
+    subjectLabel: 'Mathématiques',
+    strandLabel: 'Nombres',
+    expectations: [
+      {
+        key: 'E1',
+        expectationId: '20000000-0000-4000-8000-000000030b12',
+        code: 'B1.2',
+        text: 'Comparer et ordonner des nombres naturels jusqu’à 1 000.',
+      },
+    ],
+    levels: [],
+    catholic: null,
+    durationMinutes: 20,
+    subFriendly: false,
+    teacherNote: 'Pour Léa, des nombres simples.',
+  });
+
+  it('ai 9. sends the type’s schema and prompt section, and normalizes before it validates', async () => {
+    const { provider, requests } = spyProvider();
+    const prompt = await loadPrompt('library_item', 'v1');
+    const result = await runFeature({
+      ...base,
+      feature: libraryItemFeature,
+      provider,
+      input: request,
+      systemPrompt: prompt,
+    });
+    expect(result.status).toBe('succeeded');
+    expect(requests).toHaveLength(1);
+    const sent = requests[0]!;
+    expect(sent.schema).toBe(libraryItemOutputSchema('quiz'));
+    expect(sent.system).toContain('## Type : Quiz');
+    expect(sent.system).not.toContain('## Type : Chanson');
+    expect(sent.system).not.toContain('<!--');
+    expect(sent.user).toContain('<precisions>\nPour Élève A, des nombres simples.\n</precisions>');
+    expect(sent.maxTokens).toBe(64_000);
+    // The fake answer has flat questions; the result is canonical (normalized, then checked).
+    const questions = result.output!.base.content.questions as Record<string, unknown>[];
+    expect(questions.find((q) => q.kind === 'true_false')).not.toHaveProperty('choices');
+  });
+
+  it('retries an answer whose form normalizing cannot fix, and one whose normalize throws', async () => {
+    let calls = 0;
+    const feature = {
+      ...libraryItemFeature,
+      normalize: (output: LibraryItemAiOutput, input: LibraryItemInput) => {
+        calls += 1;
+        if (calls === 1) throw new Error('boom');
+        return libraryItemFeature.normalize!(output, input);
+      },
+    };
+    const { provider, requests } = spyProvider((req, n) => ({
+      output:
+        n === 2
+          ? {
+              ...(req.fake() as LibraryItemAiOutput),
+              levels: [{ level: 'L9', content: {}, answerKey: null }],
+            }
+          : req.fake(),
+      stopReason: 'end_turn',
+      model: 'fake',
+      requestId: `r${n}`,
+      usage: { inputTokens: 10, outputTokens: 10, cacheReadTokens: 0, cacheWriteTokens: 0 },
+    }));
+    const result = await runFeature({
+      ...base,
+      feature,
+      provider,
+      input: request,
+      systemPrompt: 'Système.',
+    });
+    expect(result.status).toBe('succeeded');
+    expect(requests).toHaveLength(3);
+    expect(result.problems).toEqual(
+      expect.arrayContaining(['attempt 1: normalize failed', 'attempt 2: unexpected level L9']),
+    );
   });
 });

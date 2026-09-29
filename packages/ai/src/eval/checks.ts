@@ -1,9 +1,30 @@
 /**
- * Automatic quality checks for AI answers (« Texte différencié », « Consignes détaillées »). They
- * catch regressions; a teacher still reads the report for what code cannot judge (natural
- * Canadian French, tone).
+ * Automatic quality checks for AI answers (« Texte différencié », « Consignes détaillées »,
+ * « Créer avec l’IA », « Créer les versions manquantes avec l’IA »). They catch regressions; a
+ * teacher still reads the report for what code cannot judge (natural Canadian French, tone).
  */
+import {
+  ACHIEVEMENT_CATEGORIES,
+  DESIGN_STAGES,
+  frenchStrings,
+  notCanadianWords,
+  questionsOf,
+  rubricWordingProblems,
+  studentContent,
+  TYPE_INFO,
+  validateAnswerKey,
+  type AnswerKey,
+  type LibraryItemType,
+} from '@lynx/content';
 import type { DifferentiateOutput } from '../features/differentiate';
+import type { LibraryItemAiOutput, LibraryItemInput } from '../features/library-item';
+import type { LibraryLevelsAiOutput, LibraryLevelsInput } from '../features/library-levels';
+import {
+  levelParityProblems,
+  markersIn,
+  proseStrings,
+  type LibraryAiVersion,
+} from '../features/library-shared';
 import { mentionsLevelLabel, NOT_CANADIAN } from '../features/shared';
 import type { SubPlanAiInput, SubPlanAiOutput } from '../features/sub-plan';
 
@@ -366,6 +387,411 @@ export function checkSubPlan(
     results.push({
       name: 'names restored in the answer',
       ...failing(expect.namesRestored.filter((n) => !all.includes(n))),
+    });
+  }
+  return results;
+}
+
+// ---------------------------------------------------------------------------------------
+// « Créer avec l’IA » (library_item) and « Créer les versions manquantes » (library_levels)
+// ---------------------------------------------------------------------------------------
+
+/** What one library evaluation case expects beyond the checks every answer gets. */
+export interface LibraryItemExpectations {
+  /**
+   * The most accessible level averages 12 words or fewer per sentence, and sentences do not get
+   * shorter from one level to the next.
+   */
+  mostAccessibleShort?: boolean;
+  /** The most accessible level's glossary has at least this many words. */
+  glossaryOnMostAccessible?: number;
+  /** No number above this anywhere students read (3e année: up to 1 000). */
+  maxNumber?: number;
+  /** Names that must never be in the resource (a student named in the teacher's note). */
+  absentNames?: string[];
+  /** Questions of at least this many kinds. */
+  minQuestionKinds?: number;
+  /** Every answer can be graded automatically, or has a sample answer. */
+  autoGradable?: boolean;
+  /** Complete safety notes; the allergy field names one of `allergyWords` (if any). */
+  safety?: { allergyWords: string[]; standard: boolean };
+  /** Design stages among the seven, and constraints and criteria present. */
+  designStages?: boolean;
+  /** Four categories, four levels per criterion, the chart's wording. */
+  rubric?: boolean;
+  maxSteps?: number;
+  maxDuration?: number;
+  /** A brain break needs no equipment. */
+  noEquipment?: boolean;
+  /** The faith link mentions one of these. */
+  faithMentions?: string[];
+  /** No quotation (« … ») longer than this many words. */
+  maxQuotationWords?: number;
+  /** A cultural hook lists facts to verify. */
+  factsToVerify?: boolean;
+  /** A family guide has both halves, the English one in English. */
+  bilingual?: boolean;
+}
+
+/** Student-facing prose of a version, as students would read it. */
+function studentText(type: LibraryItemType, content: unknown): string {
+  const c = content && typeof content === 'object' ? (content as Record<string, unknown>) : {};
+  if (typeof c.text === 'string' && c.text.trim()) return c.text;
+  return proseStrings(studentContent(type, content)).join('\n');
+}
+
+const EQUIPMENT =
+  /(?<![\p{L}])(ballons?|cerceaux?|cordes? à sauter|cônes?|foulards?|balles?|matelas|tapis|bâtons?|quilles?)(?![\p{L}])/iu;
+const ENGLISH_WORDS = /(?<![\p{L}])(the|your|child|and|to|at|home|is|with)(?![\p{L}])/giu;
+
+function levelChecks(
+  type: LibraryItemType,
+  base: LibraryAiVersion | null,
+  versions: { level: string; version: LibraryAiVersion }[],
+  levels: readonly { key: string; label: string; mostAccessible: boolean }[],
+): CheckResult[] {
+  const results: CheckResult[] = [];
+  const failing = (keys: string[]) => ({
+    passed: keys.length === 0,
+    detail: keys.join(', ') || undefined,
+  });
+  const got = versions.map((v) => v.level).sort();
+  results.push({
+    name: 'every level asked for, once',
+    passed: JSON.stringify(got) === JSON.stringify(levels.map((l) => l.key).sort()),
+  });
+  if (base) {
+    results.push({
+      name: 'objective and questions kept in every level',
+      ...failing(
+        versions.flatMap((v) =>
+          levelParityProblems(type, base.content, v.version.content, v.level),
+        ),
+      ),
+    });
+  }
+  const labels = levels.map((l) => l.label);
+  const all = [...(base ? [{ level: 'base', version: base }] : []), ...versions];
+  results.push({
+    name: 'no level name in what students receive',
+    ...failing(
+      all
+        .filter(({ version }) =>
+          proseStrings(studentContent(type, version.content)).some((t) =>
+            mentionsLevelLabel(t, labels),
+          ),
+        )
+        .map((v) => v.level),
+    ),
+  });
+  results.push({
+    name: 'every answer key matches its questions',
+    ...failing(
+      all
+        .filter(
+          ({ version }) =>
+            validateAnswerKey(
+              type,
+              version.content,
+              version.answerKey as unknown as AnswerKey | null,
+            ).length > 0,
+        )
+        .map((v) => v.level),
+    ),
+  });
+  const accessible = levels.find((l) => l.mostAccessible);
+  const first = accessible && versions.find((v) => v.level === accessible.key);
+  if (first) {
+    const length = averageSentenceLength(studentText(type, first.version.content));
+    results.push({
+      name: 'most accessible level has short sentences (≤ 12 words)',
+      passed: length <= 12,
+      detail: length.toFixed(1),
+    });
+  }
+  return results;
+}
+
+function wordingChecks(french: string[], all: string[]): CheckResult[] {
+  const folded = [...new Set(french.flatMap(notCanadianWords))];
+  return [
+    {
+      name: 'no European French or anglicisms',
+      passed: folded.length === 0,
+      detail: folded.join(', ') || undefined,
+    },
+    {
+      name: 'no France grade names (CP, CE1, CM2)',
+      passed: !french.some((t) => FRENCH_GRADES.test(t)),
+    },
+    { name: 'no person marker', passed: markersIn(all).size === 0 },
+  ];
+}
+
+export function checkLibraryItem(
+  output: LibraryItemAiOutput,
+  input: Omit<LibraryItemInput, 'characterNames'>,
+  expect: LibraryItemExpectations = {},
+): CheckResult[] {
+  const type = input.itemType;
+  const results: CheckResult[] = [];
+  const versions = output.levels.map((l) => ({ level: l.level, version: l }));
+  results.push(...levelChecks(type, output.base, versions, input.levels));
+
+  const contents = [output.base, ...output.levels];
+  const french = [
+    output.title,
+    output.summary,
+    output.materials,
+    output.catholicConnection,
+    ...contents.flatMap((v) => frenchStrings(type, v.content)),
+  ];
+  const all = [
+    ...french,
+    ...contents.flatMap((v) => [...proseStrings(v.content), ...proseStrings(v.answerKey)]),
+  ];
+  results.push(...wordingChecks(french, all));
+  results.push({
+    name: 'a faith link exactly when one was asked for',
+    passed: !!input.catholic === output.catholicConnection.trim().length > 0,
+  });
+
+  const base = output.base.content as Record<string, unknown>;
+  const questions = questionsOf(type, base);
+  const key = output.base.answerKey as unknown as AnswerKey | null;
+
+  if (expect.mostAccessibleShort) {
+    const ordered = input.levels
+      .map((l) => output.levels.find((v) => v.level === l.key))
+      .filter((v) => v !== undefined)
+      .map((v) => averageSentenceLength(studentText(type, v.content)));
+    results.push({
+      name: 'sentences do not get shorter from one level to the next',
+      passed: ordered.every((len, i) => i === 0 || len >= ordered[i - 1]! - 0.5),
+      detail: ordered.map((l) => l.toFixed(1)).join(' → '),
+    });
+  }
+  if (expect.glossaryOnMostAccessible !== undefined) {
+    const accessible = input.levels.find((l) => l.mostAccessible);
+    const version = output.levels.find((v) => v.level === accessible?.key);
+    const glossary = (version?.content as { glossary?: unknown[] } | undefined)?.glossary ?? [];
+    results.push({
+      name: `most accessible level has a glossary (≥ ${expect.glossaryOnMostAccessible})`,
+      passed: glossary.length >= expect.glossaryOnMostAccessible,
+      detail: String(glossary.length),
+    });
+  }
+  if (expect.maxNumber !== undefined) {
+    const max = expect.maxNumber;
+    const big = [
+      ...new Set(
+        contents
+          .flatMap((v) => proseStrings(studentContent(type, v.content)))
+          // \u00ab 1 000 \u00bb is one number: thousands grouped by a space.
+          .flatMap((t) => [...t.matchAll(/\d{1,3}(?:[ \u00a0\u202f]\d{3})+(?!\d)|\d+/g)])
+          .map((m) => Number(m[0].replace(/[ \u00a0\u202f]/g, '')))
+          .filter((x) => x > max),
+      ),
+    ];
+    results.push({
+      name: `numbers up to ${max}`,
+      passed: big.length === 0,
+      detail: big.join(', ') || undefined,
+    });
+  }
+  if (expect.absentNames?.length) {
+    const text = fold(all.join('\n'));
+    const found = expect.absentNames.filter((n) =>
+      new RegExp(`(^|[^\\p{L}])${fold(n)}([^\\p{L}]|$)`, 'u').test(text),
+    );
+    results.push({
+      name: 'the student named in the note is nowhere in the resource',
+      passed: found.length === 0,
+      detail: found.join(', ') || undefined,
+    });
+  }
+  if (expect.minQuestionKinds !== undefined) {
+    const kinds = new Set(questions.map((q) => q.question.kind));
+    results.push({
+      name: `at least ${expect.minQuestionKinds} kinds of questions`,
+      passed: kinds.size >= expect.minQuestionKinds,
+      detail: [...kinds].join(', '),
+    });
+  }
+  if (expect.autoGradable) {
+    const manual = questions.filter(({ question }) => {
+      const entry = key?.answers.find((a) => a.questionId === question.id);
+      return (
+        !entry ||
+        (entry.kind === 'short_answer' &&
+          entry.acceptableAnswers.length === 0 &&
+          !entry.sampleAnswer.trim())
+      );
+    });
+    results.push({
+      name: 'every answer grades automatically or has a sample answer',
+      passed: manual.length === 0,
+      detail: manual.map((q) => q.question.id).join(', ') || undefined,
+    });
+  }
+  if (expect.safety) {
+    const notes = output.safetyNotes;
+    const complete =
+      !!notes &&
+      !!notes.ageSuitability.trim() &&
+      !!notes.allergyAwareMaterials.trim() &&
+      ['standard', 'close', 'adult_only'].includes(notes.supervision);
+    results.push({ name: 'safety notes complete', passed: complete });
+    if (expect.safety.allergyWords.length) {
+      const allergy = fold(notes?.allergyAwareMaterials ?? '');
+      results.push({
+        name: 'allergy-aware materials name nut-free or latex-free options',
+        passed: expect.safety.allergyWords.some((w) => allergy.includes(fold(w))),
+      });
+    }
+    if (expect.safety.standard) {
+      results.push({
+        name: 'standard supervision (a substitute can run it)',
+        passed: notes?.supervision === 'standard',
+      });
+    }
+  }
+  if (expect.designStages) {
+    const c = base as {
+      constraints?: unknown[];
+      criteria?: unknown[];
+      designStages?: { stage?: string }[];
+    };
+    results.push({
+      name: 'constraints and criteria present',
+      passed: (c.constraints?.length ?? 0) > 0 && (c.criteria?.length ?? 0) > 0,
+    });
+    const stages = (c.designStages ?? []).map((s) => s.stage ?? '');
+    results.push({
+      name: 'design stages among the seven',
+      passed:
+        stages.length > 0 && stages.every((s) => (DESIGN_STAGES as readonly string[]).includes(s)),
+      detail: stages.join(', '),
+    });
+  }
+  if (expect.rubric) {
+    const criteria = (base.criteria ?? []) as {
+      category: string;
+      levels: { level1: string; level2: string; level3: string; level4: string };
+    }[];
+    results.push({
+      name: 'the four achievement-chart categories',
+      passed: ACHIEVEMENT_CATEGORIES.every((cat) => criteria.some((c) => c.category === cat)),
+    });
+    results.push({
+      name: 'four levels per criterion',
+      passed: criteria.every((c) =>
+        [c.levels.level1, c.levels.level2, c.levels.level3, c.levels.level4].every((l) =>
+          l?.trim(),
+        ),
+      ),
+    });
+    const wording = rubricWordingProblems({ criteria });
+    results.push({
+      name: 'achievement-chart wording per level',
+      passed: wording.length === 0,
+      detail: wording.length ? `${wording.length} problems` : undefined,
+    });
+  }
+  if (expect.maxSteps !== undefined) {
+    const steps = (base.steps as unknown[] | undefined)?.length ?? 0;
+    results.push({
+      name: `${expect.maxSteps} steps or fewer`,
+      passed: steps > 0 && steps <= expect.maxSteps,
+      detail: String(steps),
+    });
+  }
+  if (expect.maxDuration !== undefined) {
+    results.push({
+      name: `${expect.maxDuration} minutes or less`,
+      passed: output.durationMinutes <= expect.maxDuration,
+      detail: String(output.durationMinutes),
+    });
+  }
+  if (expect.noEquipment) {
+    const text = proseStrings(base).join('\n') + '\n' + output.materials;
+    const found = text.match(EQUIPMENT);
+    results.push({
+      name: 'no equipment needed',
+      passed: !found,
+      detail: found?.[0],
+    });
+  }
+  if (expect.faithMentions?.length) {
+    const text = fold(`${output.catholicConnection}\n${proseStrings(base).join('\n')}`);
+    results.push({
+      name: 'the faith link and the reflection speak of the reference',
+      passed:
+        !!output.catholicConnection.trim() &&
+        expect.faithMentions.some((w) => text.includes(fold(w))),
+    });
+  }
+  if (expect.maxQuotationWords !== undefined) {
+    const max = expect.maxQuotationWords;
+    const long = all.flatMap((t) =>
+      [...t.matchAll(/«([^»]*)»/g)]
+        .map((m) => m[1]!.match(/[\p{L}\p{N}’'-]+/gu)?.length ?? 0)
+        .filter((words) => words > max),
+    );
+    results.push({
+      name: `no quotation longer than ${max} words`,
+      passed: long.length === 0,
+      detail: long.join(', ') || undefined,
+    });
+  }
+  if (expect.factsToVerify) {
+    const facts = (base.factsToVerify as unknown[] | undefined) ?? [];
+    results.push({ name: 'facts to verify listed', passed: facts.length > 0 });
+  }
+  if (expect.bilingual) {
+    const fr = base.fr as { intro?: string } | undefined;
+    const en = base.en as { intro?: string } | undefined;
+    results.push({
+      name: 'French and English parts both written',
+      passed: !!fr?.intro?.trim() && !!en?.intro?.trim(),
+    });
+    const english = en?.intro?.match(ENGLISH_WORDS)?.length ?? 0;
+    results.push({
+      name: 'the English part is in English',
+      passed: english >= 2,
+      detail: String(english),
+    });
+  }
+  return results;
+}
+
+export function checkLibraryLevels(
+  output: LibraryLevelsAiOutput,
+  input: Omit<LibraryLevelsInput, 'characterNames'>,
+): CheckResult[] {
+  const type = input.itemType;
+  const base = input.base as LibraryAiVersion;
+  const results = levelChecks(
+    type,
+    base,
+    output.levels.map((l) => ({ level: l.level, version: l })),
+    input.levels,
+  );
+  const french = output.levels.flatMap((v) => frenchStrings(type, v.content));
+  const all = output.levels.flatMap((v) => [
+    ...proseStrings(v.content),
+    ...proseStrings(v.answerKey),
+  ]);
+  results.push(...wordingChecks(french, all));
+  results.push({
+    name: 'a key for every level when the base has one',
+    passed: !base.answerKey || output.levels.every((l) => l.answerKey !== null),
+  });
+  if (TYPE_INFO[type].mayHaveQuestions) {
+    const expected = questionsOf(type, base.content).length;
+    results.push({
+      name: 'as many questions as the base in every level',
+      passed: output.levels.every((l) => questionsOf(type, l.content).length === expected),
     });
   }
   return results;

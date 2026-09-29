@@ -48,6 +48,18 @@ export interface RunResult<O> {
   problems: string[];
 }
 
+/**
+ * `normalize` must never throw; if it does anyway, the answer counts as unusable (and is retried)
+ * rather than failing the whole request.
+ */
+function normalizeSafely<I, O>(normalize: (output: O, input: I) => O, output: O, input: I) {
+  try {
+    return normalize(output, input);
+  } catch {
+    return null;
+  }
+}
+
 function addUsage(total: TokenUsage, more: TokenUsage) {
   total.inputTokens += more.inputTokens;
   total.outputTokens += more.outputTokens;
@@ -57,7 +69,9 @@ function addUsage(total: TokenUsage, more: TokenUsage) {
 
 /**
  * Runs one AI feature request end to end: validate, de-identify, check, call the provider
- * (retrying answers that fail validation), and put names back.
+ * (retrying answers that fail validation), and put names back. A feature may choose its system
+ * prompt and output schema from the input, and normalize each answer before it is validated
+ * (D-080): what normalizing fixes never costs a retry.
  */
 export async function runFeature<I, O>(options: RunOptions<I, O>): Promise<RunResult<O>> {
   const { feature, provider } = options;
@@ -97,8 +111,10 @@ export async function runFeature<I, O>(options: RunOptions<I, O>): Promise<RunRe
   }
 
   const user = feature.buildUserMessage(input);
+  const system = feature.systemPrompt?.(options.systemPrompt, input) ?? options.systemPrompt;
+  const schema = feature.outputSchemaFor?.(input) ?? feature.outputSchema;
   try {
-    redactor.assertSafeOutbound(`${options.systemPrompt}\n${user}`);
+    redactor.assertSafeOutbound(`${system}\n${user}`);
   } catch (error) {
     if (error instanceof PrivacyViolation) {
       return result('failed', 'personalInfo', {
@@ -125,9 +141,9 @@ export async function runFeature<I, O>(options: RunOptions<I, O>): Promise<RunRe
     let response;
     try {
       response = await provider.generate({
-        system: options.systemPrompt,
+        system,
         user,
-        schema: feature.outputSchema,
+        schema,
         maxTokens: feature.maxTokens,
         fake: () => feature.fake(input),
         ...(signal ? { signal } : {}),
@@ -164,13 +180,20 @@ export async function runFeature<I, O>(options: RunOptions<I, O>): Promise<RunRe
       problems.push(`attempt ${attempt}: ${response.stopReason}`);
       continue;
     }
-    const issues = feature.validate(response.output, input);
+    const output = feature.normalize
+      ? normalizeSafely(feature.normalize, response.output, input)
+      : response.output;
+    if (output === null) {
+      problems.push(`attempt ${attempt}: normalize failed`);
+      continue;
+    }
+    const issues = feature.validate(output, input);
     if (issues.length) {
       problems.push(...issues.map((i) => `attempt ${attempt}: ${i}`));
       continue;
     }
     return result('succeeded', null, {
-      output: redactor.restore(response.output),
+      output: redactor.restore(output),
       sentText: user,
       attempts: attempt,
       model,

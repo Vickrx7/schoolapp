@@ -3016,6 +3016,14 @@ export type Database = {
         Args: { p_item_id: string };
         Returns: undefined;
       };
+      library_item_ai_preview: {
+        Args: { p_school_id: string; p_request: Json };
+        Returns: Json;
+      };
+      library_levels_ai_preview: {
+        Args: { p_item_id: string; p_school_id: string; p_level_ids: string[] };
+        Returns: Json;
+      };
       library_mark_reviewed: {
         Args: { p_item_id: string; p_originality_confirmed: boolean };
         Returns: undefined;
@@ -3130,6 +3138,14 @@ export type Database = {
       };
       request_ai_job: {
         Args: { p_school_id: string; p_feature: string; p_input: Json };
+        Returns: string;
+      };
+      request_library_item: {
+        Args: { p_school_id: string; p_request: Json };
+        Returns: string;
+      };
+      request_library_levels: {
+        Args: { p_item_id: string; p_school_id: string; p_level_ids: string[] };
         Returns: string;
       };
       request_sub_plan_ai: {

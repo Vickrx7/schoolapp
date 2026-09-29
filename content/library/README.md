@@ -152,12 +152,12 @@ notes, answer keys, materials and summaries.
 
 ### Characters
 
-- Fictional characters take their first names from the AI prompt's name pool (plan E3): Alix,
-  Bastien, Capucine, Désiré, Éloïse, Fabien, Gaëlle, Inès, Jules, Laurier, Noé, Océane,
-  Raphaëlle, Yanis.
-- **Never use a seed student's first name.** Hugo and Maëlle are in the prompt's pool, but they
-  are also seed students, so the pack does not use them. The test reads the current student names
-  from `supabase/seed.sql`.
+- Fictional characters take their first names from the AI's name pool (`CHARACTER_NAMES` in
+  `packages/ai/src/features/library-shared.ts`): Alix, Bastien, Capucine, Désiré, Éloïse, Fabien,
+  Gaëlle, Inès, Jules, Laurier, Noé, Océane, Raphaëlle, Yanis.
+- **Never use a seed student's first name.** The plan's list also had Hugo and Maëlle, but they
+  are seed students, so neither the pool nor the pack uses them. The test reads the current
+  student names from `supabase/seed.sql`.
 - Never use person markers such as « Élève A ». Library content is reusable, so it names no real
   student.
 - Real public figures appear only when the text is about them (for example, the creators of the

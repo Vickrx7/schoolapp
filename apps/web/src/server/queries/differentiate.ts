@@ -136,13 +136,19 @@ export interface SavedSummary {
   updatedAt: string;
 }
 
+/**
+ * « Mes textes différenciés »: the user's library items saved from « Texte différencié »
+ * (D-073), not the other AI resources (« Créer avec l'IA », whose generation's feature is
+ * `library_item`). They open in the library.
+ */
 export async function loadSavedTexts(session: SessionContext): Promise<SavedSummary[]> {
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase
     .from('library_items')
-    .select('id, school_id, title, updated_at')
+    .select('id, school_id, title, updated_at, ai_generations!inner(feature)')
     .eq('author_id', session.userId)
     .eq('source', 'ai_generated')
+    .eq('ai_generations.feature', 'differentiate')
     .in('type', ['reading_passage', 'worksheet'])
     .order('updated_at', { ascending: false })
     .limit(30);
@@ -183,77 +189,5 @@ export async function loadJob(jobId: string): Promise<JobDetail | null> {
     input: data.input as unknown as DifferentiateInput,
     result: (data.result as unknown as DifferentiateOutput | null) ?? null,
     sentText: data.sent_text,
-  };
-}
-
-/** Stored in library_item_versions.content for each language level. */
-export type VersionContent = {
-  schema: 'differentiated_text/v1';
-  objective: string;
-  title: string;
-  text: string;
-  glossary: { term: string; definition: string }[];
-  visualSupports: string[];
-  questions: string[];
-  teacherNote: string;
-};
-
-// Texts saved before Phase 4 were converted into reading passages and worksheets (D-073), whose
-// questions are objects with a prompt. Until the library editor replaces this one, it edits the
-// prompts as plain questions.
-function asVersionContent(content: unknown): VersionContent {
-  const c = content as Omit<VersionContent, 'questions'> & {
-    questions?: (string | { prompt?: unknown })[];
-  };
-  return {
-    ...c,
-    questions: (c.questions ?? []).map((q) =>
-      typeof q === 'string' ? q : typeof q?.prompt === 'string' ? q.prompt : '',
-    ),
-  };
-}
-
-export interface SavedDetail {
-  id: string;
-  title: string;
-  /** Changes whenever the text is saved (from any device): the latest updated_at. */
-  version: string;
-  objective: string;
-  versions: { languageLevelId: string; levelLabel: string; content: VersionContent }[];
-}
-
-export async function loadSavedText(itemId: string, locale: string): Promise<SavedDetail | null> {
-  const supabase = await createSupabaseServerClient();
-  const { data } = await supabase
-    .from('library_items')
-    .select(
-      'id, title, source, updated_at, library_item_versions(language_level_id, content, updated_at, language_levels(label_fr, label_en, sort_order, owner_user_id))',
-    )
-    .eq('id', itemId)
-    .eq('source', 'ai_generated')
-    .maybeSingle();
-  if (!data) return null;
-  const versions = data.library_item_versions
-    .filter((v) => v.language_level_id !== null && v.language_levels)
-    .sort(
-      (a, b) =>
-        Number(a.language_levels!.owner_user_id !== null) -
-          Number(b.language_levels!.owner_user_id !== null) ||
-        a.language_levels!.sort_order - b.language_levels!.sort_order,
-    )
-    .map((v) => ({
-      languageLevelId: v.language_level_id!,
-      levelLabel: localized(locale, v.language_levels!.label_fr, v.language_levels!.label_en),
-      content: asVersionContent(v.content),
-    }));
-  const version = data.library_item_versions
-    .map((v) => v.updated_at)
-    .reduce((latest, t) => (Date.parse(t) > Date.parse(latest) ? t : latest), data.updated_at);
-  return {
-    id: data.id,
-    title: data.title,
-    version,
-    objective: versions[0]?.content.objective ?? '',
-    versions,
   };
 }

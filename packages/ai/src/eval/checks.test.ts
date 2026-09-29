@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { MAX_TEXT_TIMES_LEVELS, type DifferentiateOutput } from '../features/differentiate';
+import { libraryItemFeature } from '../features/library-item';
+import { libraryLevelsFeature } from '../features/library-levels';
 import {
   SUB_PLAN_LIMITS,
   SUB_PLAN_MAX_BLOCKS,
@@ -11,8 +13,16 @@ import { priceFor } from '../pricing';
 import { loadPrompt } from '../prompts';
 import { createFakeProvider } from '../providers';
 import { runFeature } from '../run';
-import { averageSentenceLength, checkDifferentiation, checkSubPlan } from './checks';
+import {
+  averageSentenceLength,
+  checkDifferentiation,
+  checkLibraryItem,
+  checkLibraryLevels,
+  checkSubPlan,
+} from './checks';
 import { differentiateCases } from './differentiate-cases';
+import { libraryItemCases } from './library-item-cases';
+import { libraryLevelsCases } from './library-levels-cases';
 import { subPlanCases } from './sub-plan-cases';
 
 const good: DifferentiateOutput = {
@@ -193,5 +203,160 @@ describe('substitute plan evaluation (sub_plan)', () => {
       'personal details never sent',
       'names restored in the answer',
     ]);
+  });
+});
+
+describe('library evaluation (library_item, library_levels)', () => {
+  it('has ten cases each, with unique ids', () => {
+    expect(libraryItemCases).toHaveLength(10);
+    expect(new Set(libraryItemCases.map((c) => c.id)).size).toBe(10);
+    expect(libraryLevelsCases).toHaveLength(10);
+    expect(new Set(libraryLevelsCases.map((c) => c.id)).size).toBe(10);
+  });
+
+  it('ai 10. passes every check with the fake provider', async () => {
+    const provider = createFakeProvider();
+    const item = await loadPrompt('library_item', 'v1');
+    for (const c of libraryItemCases) {
+      const run = await runFeature({
+        feature: libraryItemFeature,
+        provider,
+        price: priceFor('fake'),
+        systemPrompt: item,
+        input: c.input,
+        people: c.people ?? [],
+      });
+      expect(run.status, c.id).toBe('succeeded');
+      const failed = checkLibraryItem(run.output!, c.input, c.expect).filter((r) => !r.passed);
+      expect(failed, c.id).toEqual([]);
+    }
+    const levels = await loadPrompt('library_levels', 'v1');
+    for (const c of libraryLevelsCases) {
+      const run = await runFeature({
+        feature: libraryLevelsFeature,
+        provider,
+        price: priceFor('fake'),
+        systemPrompt: levels,
+        input: c.input,
+        people: c.people ?? [],
+      });
+      expect(run.status, c.id).toBe('succeeded');
+      expect(
+        checkLibraryLevels(run.output!, c.input).filter((r) => !r.passed),
+        c.id,
+      ).toEqual([]);
+    }
+  });
+
+  it('catches missing levels, long sentences, names, numbers, safety, rubric wording and English', async () => {
+    const provider = createFakeProvider();
+    const run = async (id: string) => {
+      const c = libraryItemCases.find((x) => x.id === id)!;
+      const result = await runFeature({
+        feature: libraryItemFeature,
+        provider,
+        price: priceFor('fake'),
+        systemPrompt: 'Système.',
+        input: c.input,
+        people: c.people ?? [],
+      });
+      return { c, output: result.output! };
+    };
+    const failing = (results: { name: string; passed: boolean }[]) =>
+      results.filter((r) => !r.passed).map((r) => r.name);
+
+    const reading = await run('lecture-3e');
+    const broken = structuredClone(reading.output);
+    broken.levels = broken.levels.slice(1);
+    broken.levels[0]!.content.text =
+      'Le castor, qui est le plus grand rongeur que l’on trouve dans les rivières et les lacs du Canada, construit des barrages impressionnants avec des branches qu’il coupe lui-même.';
+    expect(failing(checkLibraryItem(broken, reading.c.input, reading.c.expect))).toEqual(
+      expect.arrayContaining(['every level asked for, once']),
+    );
+    const long = structuredClone(reading.output);
+    long.levels[0]!.content.text = broken.levels[0]!.content.text;
+    expect(failing(checkLibraryItem(long, reading.c.input, reading.c.expect))).toEqual([
+      'most accessible level has short sentences (≤ 12 words)',
+      'sentences do not get shorter from one level to the next',
+    ]);
+
+    const worksheet = await run('fiche-ordonner-3e');
+    const named = structuredClone(worksheet.output);
+    named.base.content.instructions = 'Liam, compare 1 250 et 980. Aide Élève A.';
+    expect(failing(checkLibraryItem(named, worksheet.c.input, worksheet.c.expect))).toEqual(
+      expect.arrayContaining([
+        'numbers up to 1000',
+        'the student named in the note is nowhere in the resource',
+        'no person marker',
+      ]),
+    );
+
+    const experiment = await run('experience-5e');
+    const unsafe = structuredClone(experiment.output);
+    unsafe.safetyNotes = {
+      ...unsafe.safetyNotes!,
+      allergyAwareMaterials: 'Des élastiques.',
+      supervision: 'close',
+    };
+    expect(failing(checkLibraryItem(unsafe, experiment.c.input, experiment.c.expect))).toEqual([
+      'allergy-aware materials name nut-free or latex-free options',
+      'standard supervision (a substitute can run it)',
+    ]);
+
+    const rubric = await run('grille-3e');
+    const wording = structuredClone(rubric.output);
+    const criteria = wording.base.content.criteria as { levels: Record<string, string> }[];
+    criteria[1]!.levels.level2 = 'Organise ses idées avec beaucoup d’efficacité.';
+    expect(failing(checkLibraryItem(wording, rubric.c.input, rubric.c.expect))).toEqual([
+      'achievement-chart wording per level',
+    ]);
+
+    const guide = await run('guide-familles-3e');
+    const french = structuredClone(guide.output);
+    (french.base.content.en as { intro: string }).intro = 'Ce mois-ci, votre enfant apprend.';
+    expect(failing(checkLibraryItem(french, guide.c.input, guide.c.expect))).toEqual([
+      'the English part is in English',
+    ]);
+
+    const pause = await run('pause-active-1re');
+    const ball = structuredClone(pause.output);
+    ball.base.content.steps = ['Lance le ballon à ton ami.'];
+    ball.durationMinutes = 10;
+    expect(failing(checkLibraryItem(ball, pause.c.input, pause.c.expect))).toEqual([
+      '5 minutes or less',
+      'no equipment needed',
+    ]);
+  });
+
+  it('checks the level set, the questions and the English words for library_levels', async () => {
+    const provider = createFakeProvider();
+    const c = libraryLevelsCases.find((x) => x.id === 'quiz-avance-enrichi')!;
+    expect(c.input.levels.map((l) => [l.key, l.label, l.mostAccessible])).toEqual([
+      ['L1', 'Avancé', false],
+      ['L2', 'Enrichi', false],
+    ]);
+    const result = await runFeature({
+      feature: libraryLevelsFeature,
+      provider,
+      price: priceFor('fake'),
+      systemPrompt: 'Système.',
+      input: c.input,
+      people: [],
+    });
+    const output = structuredClone(result.output!);
+    output.levels[0]!.content.questions = (output.levels[0]!.content.questions as unknown[]).slice(
+      1,
+    );
+    output.levels[1]!.content.instructions = 'Pour la fin de semaine… ou le week-end.';
+    const failed = checkLibraryLevels(output, c.input)
+      .filter((r) => !r.passed)
+      .map((r) => r.name);
+    expect(failed).toEqual(
+      expect.arrayContaining([
+        'objective and questions kept in every level',
+        'no European French or anglicisms',
+        'as many questions as the base in every level',
+      ]),
+    );
   });
 });

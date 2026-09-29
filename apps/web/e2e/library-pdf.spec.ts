@@ -1,6 +1,6 @@
 import { expect, test, type APIResponse, type Page } from '@playwright/test';
 import { closeDb, deleteLibraryItems, insertReadyItem, resetLanguage } from './db';
-import { DEMO, login } from './helpers';
+import { DEMO, e2ePrefix, login } from './helpers';
 
 /**
  * « Télécharger le PDF » of a library resource (Phase 4, DECISIONS D-075, D-053, D-062; plan
@@ -10,7 +10,7 @@ import { DEMO, login } from './helpers';
  * (`insertReadyItem`), not taken from the demo pack.
  */
 
-const PREFIX = `E2E-${Date.now()}`;
+const PREFIX = e2ePrefix();
 const QUIZ = `${PREFIX} Quiz PDF`;
 /** `pdfFileSlug(QUIZ)`: the title as a file name. */
 const QUIZ_FILE = QUIZ.toLowerCase().replace(/[^a-z0-9]+/g, '-');

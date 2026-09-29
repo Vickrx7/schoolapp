@@ -30,13 +30,7 @@ import {
   searchLibrary,
   type LibrarySearchOptions,
 } from '@/server/queries/library-search';
-import {
-  aiSchools,
-  librarySchools,
-  requireSession,
-  showLibrary,
-  type SessionContext,
-} from '@/server/session';
+import { aiSchools, requireSession, showLibrary, type SessionContext } from '@/server/session';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('library');
@@ -125,7 +119,8 @@ async function Hub({ session, locale }: { session: SessionContext; locale: strin
         <BucketTiles counts={hub.bucketCounts} />
       </section>
 
-      {librarySchools(session).length ? <HubCreateSlot session={session} /> : null}
+      {/* Creating for library schools, the review queues for designated reviewers (S6). */}
+      <HubCreateSlot session={session} />
       <HubAiSlot session={session} />
 
       {differentiate ? (

@@ -1,15 +1,17 @@
 import { expect, test, type Page } from '@playwright/test';
-import { closeDb } from './db';
+import { closeDb, query } from './db';
 import { DEMO, expectAccessible, login } from './helpers';
 
 /**
- * « Banque de ressources » on a phone (Phase 4, DECISIONS D-068, D-078): the bottom bar's
- * « Ressources », searching, the « Filtres » sheet and a resource's page, with no horizontal
- * scrolling. Read-only on the demo resources of the seed. (Adding to the planning from a phone
- * comes with the planning screens.)
+ * « Banque de ressources » on a phone (Phase 4, DECISIONS D-068, D-076, D-078): the bottom
+ * bar's « Ressources », searching, the « Filtres » sheet, a resource's page and « Ajouter à ma
+ * planification », with no horizontal scrolling. On the demo resources of the seed; the lesson
+ * link added here is removed afterwards.
  */
 
 const HUARD = 'Le huard, oiseau des lacs';
+/** 3e année, Français: « Lire pour s’informer : les animaux de l’Ontario » (supabase/seed.sql). */
+const UNIT_FRA_3 = '30000000-0000-4000-8000-000000000301';
 
 async function noHorizontalScroll(page: Page) {
   const overflow = await page.evaluate(
@@ -19,6 +21,11 @@ async function noHorizontalScroll(page: Page) {
 }
 
 test.afterAll(async () => {
+  await query(
+    `update public.unit_lessons set library_item_id = null
+     where unit_id = $1 and library_item_id = (select id from public.library_items where title = $2)`,
+    [UNIT_FRA_3, HUARD],
+  );
   await closeDb();
 });
 
@@ -77,4 +84,41 @@ test('browsing the curriculum on a phone', async ({ page }) => {
   await expect(strand.getByText('C1.2', { exact: true })).toBeVisible();
   await noHorizontalScroll(page);
   await expectAccessible(page);
+});
+
+test('adding a resource to the planning on a phone takes four taps or fewer', async ({ page }) => {
+  await login(page, DEMO.teacher3);
+  // Taps the teacher makes (a retry of a tap lost before the page is interactive is not one).
+  let taps = 0;
+  await page.goto('/library?q=huard');
+  const results = page.getByRole('region', { name: 'Résultats' });
+  taps++;
+  await results.getByRole('link', { name: HUARD }).click();
+  await page.waitForURL(/\/library\/items\/[0-9a-f-]{36}$/);
+
+  // Everything is chosen already: 3e année, Français, the next lesson that shares an attente.
+  const open = page.getByRole('button', { name: 'Ajouter à ma planification' });
+  const dialog = page.getByRole('dialog', { name: 'Ajouter à ma planification' });
+  taps++;
+  await expect(async () => {
+    if (!(await dialog.isVisible())) await open.click();
+    await expect(dialog).toBeVisible({ timeout: 1000 });
+  }).toPass();
+  const submit = dialog.getByRole('button', { name: 'Joindre à la leçon 4' });
+  await expect(submit).toBeEnabled();
+  await expect(dialog.getByLabel('Unité')).toContainText('Français');
+  await noHorizontalScroll(page);
+  await expectAccessible(page);
+  taps++;
+  await submit.click();
+  await expect(page.getByText('Jointe à la leçon 4.')).toBeVisible();
+  expect(taps).toBeLessThanOrEqual(4);
+
+  const linked = await query<{ sequence_number: number }>(
+    `select l.sequence_number from public.unit_lessons l
+     join public.library_items i on i.id = l.library_item_id
+     where l.unit_id = $1 and i.title = $2`,
+    [UNIT_FRA_3, HUARD],
+  );
+  expect(linked.map((l) => l.sequence_number)).toEqual([4]);
 });

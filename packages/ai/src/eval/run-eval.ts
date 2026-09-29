@@ -8,9 +8,20 @@
  *   pnpm ai:eval --feature sub_plan --provider fake     # « Consignes détaillées »
  *   pnpm ai:eval --feature sub_plan --yes               # about $2 on Claude
  *
- * `--feature` is differentiate (the default) or sub_plan. Reads ANTHROPIC_API_KEY, AI_MODEL and
- * AI_EFFORT from the environment (or apps/web/.env.local).
+ *   pnpm ai:eval --feature library_item --provider fake    # « Créer avec l’IA »
+ *   pnpm ai:eval --feature library_item --case quiz-5e --yes    # one case, under $1
+ *   pnpm ai:eval --feature library_levels --provider fake  # « Créer les versions manquantes »
+ *
+ * `--feature` is differentiate (the default), sub_plan, library_item or library_levels. Reads
+ * ANTHROPIC_API_KEY, AI_MODEL and AI_EFFORT from the environment (or apps/web/.env.local).
  */
+import {
+  docToPlainText,
+  renderAnswerKeyDoc,
+  renderTeacherDoc,
+  type AnswerKey,
+  type LibraryItemType,
+} from '@lynx/content';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
@@ -19,13 +30,24 @@ import {
   MAX_TEXT_TIMES_LEVELS,
   type DifferentiateInput,
 } from '../features/differentiate';
+import { libraryItemFeature } from '../features/library-item';
+import { libraryLevelsFeature } from '../features/library-levels';
+import type { LibraryAiVersion } from '../features/library-shared';
 import { subPlanFeature } from '../features/sub-plan';
 import { priceFor } from '../pricing';
 import { loadPrompt } from '../prompts';
 import { createAnthropicProvider, createFakeProvider, type Effort } from '../providers';
 import { runFeature } from '../run';
-import { checkDifferentiation, checkSubPlan, type CheckResult } from './checks';
+import {
+  checkDifferentiation,
+  checkLibraryItem,
+  checkLibraryLevels,
+  checkSubPlan,
+  type CheckResult,
+} from './checks';
 import { differentiateCases } from './differentiate-cases';
+import { libraryItemCases } from './library-item-cases';
+import { libraryLevelsCases } from './library-levels-cases';
 import { subPlanCases } from './sub-plan-cases';
 
 const { values } = parseArgs({
@@ -252,6 +274,136 @@ async function subPlanRuns(version: string): Promise<CaseRun[]> {
   return runs;
 }
 
+/** A version of a library resource as a teacher reads it: the guide, then the answer key. */
+function versionMarkdown(
+  type: LibraryItemType,
+  title: string,
+  heading: string,
+  version: LibraryAiVersion,
+): string[] {
+  const guide = docToPlainText(renderTeacherDoc({ itemTitle: title }, type, version.content));
+  const key = version.answerKey
+    ? docToPlainText(
+        renderAnswerKeyDoc(type, version.content, version.answerKey as unknown as AnswerKey, {
+          number: null,
+        }),
+      )
+    : '';
+  return [`### ${heading}`, '', '```', guide, ...(key ? ['', key] : []), '```', ''];
+}
+
+async function libraryItemRuns(version: string): Promise<CaseRun[]> {
+  const cases = libraryItemCases.filter((c) => !values.case || c.id === values.case);
+  if (!cases.length) throw new Error(`no case named ${values.case}`);
+  // About $0.10 for a resource, and about $0.08 more per level (Opus 5.5 at medium effort).
+  confirmCost(
+    cases.length,
+    'resources',
+    cases.reduce((sum, c) => sum + 0.1 + 0.08 * c.input.levels.length, 0),
+  );
+  const system = await loadPrompt(libraryItemFeature.name, version);
+  const runs: CaseRun[] = [];
+  for (const c of cases) {
+    process.stdout.write(`${c.id} … `);
+    const run = await runFeature({
+      feature: libraryItemFeature,
+      provider,
+      price,
+      systemPrompt: system,
+      input: c.input,
+      people: c.people ?? [],
+    });
+    const checks = run.output ? checkLibraryItem(run.output, c.input, c.expect) : null;
+    const answer: string[] = [];
+    if (run.output) {
+      const o = run.output;
+      const type = c.input.itemType;
+      answer.push(
+        `**${o.title}** (${o.durationMinutes} min) — ${o.summary}`,
+        '',
+        `Matériel : ${o.materials} · Mots-clés : ${o.keywords}`,
+        '',
+      );
+      if (o.safetyNotes) answer.push(`Sécurité : ${JSON.stringify(o.safetyNotes)}`, '');
+      if (o.catholicConnection) answer.push(`**Lien avec la foi :** ${o.catholicConnection}`, '');
+      answer.push(...versionMarkdown(type, o.title, 'Version de base', o.base));
+      for (const l of o.levels) {
+        const label = c.input.levels.find((x) => x.key === l.level)?.label ?? l.level;
+        answer.push(...versionMarkdown(type, o.title, label, l));
+      }
+      answer.push(
+        '<details><summary>Texte envoyé</summary>',
+        '',
+        '```',
+        run.sentText ?? '',
+        '```',
+        '</details>',
+        '',
+      );
+    }
+    runs.push({
+      id: c.id,
+      heading: `${c.id}: ${c.title}`,
+      status: run.status,
+      line: statusLine(run),
+      problems: run.problems,
+      checks,
+      answer,
+      costUsd: run.costUsd,
+    });
+    console.log(
+      checks ? `${checks.filter((r) => r.passed).length}/${checks.length} checks` : run.status,
+    );
+  }
+  return runs;
+}
+
+async function libraryLevelsRuns(version: string): Promise<CaseRun[]> {
+  const cases = libraryLevelsCases.filter((c) => !values.case || c.id === values.case);
+  if (!cases.length) throw new Error(`no case named ${values.case}`);
+  // About $0.05 plus $0.06 per level (Opus 5.5 at medium effort).
+  confirmCost(
+    cases.length,
+    'resources to adapt',
+    cases.reduce((sum, c) => sum + 0.05 + 0.06 * c.input.levels.length, 0),
+  );
+  const system = await loadPrompt(libraryLevelsFeature.name, version);
+  const runs: CaseRun[] = [];
+  for (const c of cases) {
+    process.stdout.write(`${c.id} … `);
+    const run = await runFeature({
+      feature: libraryLevelsFeature,
+      provider,
+      price,
+      systemPrompt: system,
+      input: c.input,
+      people: c.people ?? [],
+    });
+    const checks = run.output ? checkLibraryLevels(run.output, c.input) : null;
+    const answer: string[] = [];
+    if (run.output) {
+      for (const l of run.output.levels) {
+        const label = c.input.levels.find((x) => x.key === l.level)?.label ?? l.level;
+        answer.push(...versionMarkdown(c.input.itemType, c.title, label, l));
+      }
+    }
+    runs.push({
+      id: c.id,
+      heading: `${c.id}: ${c.title}`,
+      status: run.status,
+      line: statusLine(run),
+      problems: run.problems,
+      checks,
+      answer,
+      costUsd: run.costUsd,
+    });
+    console.log(
+      checks ? `${checks.filter((r) => r.passed).length}/${checks.length} checks` : run.status,
+    );
+  }
+  return runs;
+}
+
 const FEATURES = {
   differentiate: {
     title: 'Texte différencié',
@@ -259,9 +411,19 @@ const FEATURES = {
     runs: differentiateRuns,
   },
   sub_plan: { title: 'Consignes détaillées', feature: subPlanFeature, runs: subPlanRuns },
+  library_item: { title: 'Créer avec l’IA', feature: libraryItemFeature, runs: libraryItemRuns },
+  library_levels: {
+    title: 'Créer les versions manquantes avec l’IA',
+    feature: libraryLevelsFeature,
+    runs: libraryLevelsRuns,
+  },
 } as const;
 const chosen = FEATURES[values.feature as keyof typeof FEATURES];
-if (!chosen) throw new Error(`unknown feature ${values.feature} (differentiate or sub_plan)`);
+if (!chosen) {
+  throw new Error(
+    `unknown feature ${values.feature} (differentiate, sub_plan, library_item or library_levels)`,
+  );
+}
 const version = values.version ?? chosen.feature.promptVersion;
 const runs = await chosen.runs(version);
 

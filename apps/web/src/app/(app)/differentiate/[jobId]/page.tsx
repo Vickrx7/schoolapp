@@ -85,7 +85,6 @@ export default async function DifferentiateJobPage({
       {versions && job.result ? (
         <>
           <ResultEditor
-            mode="job"
             id={job.id}
             userId={session.userId}
             initial={{ title: job.input.title, objective: job.result.objective, versions }}

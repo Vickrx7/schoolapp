@@ -1,15 +1,9 @@
-import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Locator, type Page } from '@playwright/test';
-import { DEMO, login } from './helpers';
+import { DEMO, expectAccessible, login } from './helpers';
 
 // Needs the worker running with AI_PROVIDER=fake (as in CI): nothing leaves the machine.
-
-async function expectAccessible(page: Page) {
-  const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
-  expect(
-    results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical'),
-  ).toEqual([]);
-}
+// A saved result is an ordinary library draft (DECISIONS D-073): it opens, is edited and is
+// deleted in the library.
 
 const TEXT =
   'Zoé observe un castor près de la rivière. Le castor construit un barrage avec des branches. ' +
@@ -36,6 +30,15 @@ async function sendRequest(page: Page, title: string, { level }: { level?: strin
   await page.getByRole('button', { name: 'Vérifier avant d’envoyer' }).click();
   await page.getByRole('button', { name: 'Envoyer à l’IA' }).click();
   await page.waitForURL(/\/differentiate\/[0-9a-f-]{36}$/);
+}
+
+/** A saved text's page in the library. */
+const ITEM_URL = /\/library\/items\/[0-9a-f-]{36}$/;
+
+/** Deletes the library resource whose page is open (« Supprimer » is offered on drafts). */
+async function deleteItem(page: Page) {
+  await confirm(page, page.getByRole('button', { name: 'Supprimer', exact: true }), 'Supprimer');
+  await page.waitForURL(/\/library\/mine$/);
 }
 
 /** Removes a finished request from « Demandes récentes ». */
@@ -113,12 +116,20 @@ test('the principal turns AI on, then a teacher differentiates a text without na
   await expectAccessible(page);
 
   await page.getByRole('button', { name: 'Enregistrer', exact: true }).click();
-  await page.waitForURL(/\/differentiate\/saved\/[0-9a-f-]{36}$/);
-  await expect(page.getByText('Brouillon', { exact: true })).toBeVisible();
-  await expect(page.getByLabel('Titre', { exact: true }).first()).toHaveValue('Le castor');
+  await page.waitForURL(ITEM_URL);
+  await expect(page.getByRole('heading', { level: 1, name: 'Le castor' })).toBeVisible();
+  const badges = page.getByRole('list', { name: 'Caractéristiques de la ressource' });
+  await expect(badges).toContainText('Brouillon');
+  await expect(badges).toContainText('IA');
 
+  // « Mes textes différenciés » opens it in the library (the recent requests still link to the
+  // request itself).
   await page.goto('/differentiate');
-  await expect(page.getByRole('link', { name: 'Le castor' }).first()).toBeVisible();
+  const savedTexts = page.getByRole('list', { name: 'Mes textes différenciés' });
+  await expect(savedTexts.getByRole('link', { name: 'Le castor' }).first()).toHaveAttribute(
+    'href',
+    /^\/library\/items\/[0-9a-f-]{36}$/,
+  );
 });
 
 test('a teacher adds a language level of their own', async ({ page }) => {
@@ -225,20 +236,34 @@ test('saving a result says what to fix instead of doing nothing', async ({ page 
 
   await glossary.fill('castor : animal qui construit des barrages');
   await page.getByRole('button', { name: 'Enregistrer', exact: true }).click();
-  await page.waitForURL(/\/differentiate\/saved\/[0-9a-f-]{36}$/);
+  await page.waitForURL(ITEM_URL);
+  const itemUrl = page.url();
+  await expect(page.getByRole('heading', { level: 1, name: title })).toBeVisible();
 
-  // Changes to the saved text are kept: the title and a level's glossary, read back from the
-  // database (library content is written only through its save function, D-063).
-  await page.getByLabel('Titre', { exact: true }).first().fill(`${title} révisé`);
-  await glossary.fill('castor : rongeur qui construit des barrages');
-  await page.getByRole('button', { name: 'Enregistrer les changements' }).click();
-  await expect(page.getByText('Changements enregistrés.')).toBeVisible();
+  // Changes are made in the library's editor and kept: the title and a level's glossary, read
+  // back from the database.
+  await page.getByRole('link', { name: 'Modifier' }).click();
+  await page.waitForURL(/\/edit$/);
+  await page.getByLabel('Titre', { exact: true }).fill(`${title} révisé`);
+  const definition = page
+    .getByRole('region', { name: 'Version : Débutant' })
+    .getByRole('group', { name: 'Mot 1' })
+    .getByLabel('Définition (facultatif)');
+  await expect(async () => {
+    await page.getByRole('button', { name: 'Débutant', exact: true }).click();
+    await expect(definition).toHaveValue('animal qui construit des barrages', { timeout: 1000 });
+  }).toPass();
+  await definition.fill('rongeur qui construit des barrages');
+  const saveBar = page.getByTestId('library-save-bar');
+  await saveBar.getByRole('button', { name: 'Enregistrer', exact: true }).click();
+  await expect(saveBar.getByText(/^Enregistré à /)).toBeVisible();
   await page.reload();
-  await expect(page.getByRole('heading', { name: `${title} révisé` })).toBeVisible();
-  await expect(glossary).toHaveValue('castor : rongeur qui construit des barrages');
+  await page.getByRole('button', { name: 'Débutant', exact: true }).click();
+  await expect(definition).toHaveValue('rongeur qui construit des barrages');
+  await page.goto(itemUrl);
+  await expect(page.getByRole('heading', { level: 1, name: `${title} révisé` })).toBeVisible();
 
-  await confirm(page, page.getByRole('button', { name: 'Supprimer ce texte' }), 'Supprimer');
-  await page.waitForURL(/\/differentiate$/);
+  await deleteItem(page);
   await discardRequest(page, title);
 });
 
@@ -314,8 +339,10 @@ test('a level used by a request or a saved text is kept until nothing uses it', 
 
   await page.goto(result);
   await page.getByRole('button', { name: 'Enregistrer', exact: true }).click();
-  await page.waitForURL(/\/differentiate\/saved\/[0-9a-f-]{36}$/);
-  await expect(page.getByRole('heading', { name })).toBeVisible();
+  await page.waitForURL(ITEM_URL);
+  // The level's version, among the resource's versions.
+  const levelChip = page.getByRole('button', { name: `${name} (niveau personnel)`, exact: true });
+  await expect(levelChip).toBeVisible();
   const saved = page.url();
 
   // Without the request, the saved text still holds it: deleting it would drop that version.
@@ -324,11 +351,10 @@ test('a level used by a request or a saved text is kept until nothing uses it', 
   await confirm(page, row.getByRole('button', { name: 'Supprimer' }), 'Supprimer');
   await expect(inUse).toBeVisible();
   await page.goto(saved);
-  await expect(page.getByRole('heading', { name })).toBeVisible();
+  await expect(levelChip).toBeVisible();
 
   // Once nothing uses it, it can go.
-  await confirm(page, page.getByRole('button', { name: 'Supprimer ce texte' }), 'Supprimer');
-  await page.waitForURL(/\/differentiate$/);
+  await deleteItem(page);
   await page.goto('/differentiate/levels');
   await confirm(page, row.getByRole('button', { name: 'Supprimer' }), 'Supprimer');
   await expect(page.getByText('Niveau supprimé.')).toBeVisible();

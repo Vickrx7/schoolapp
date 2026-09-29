@@ -1,0 +1,357 @@
+'use client';
+
+import { TYPE_INFO } from '@lynx/content';
+import type { LibraryItemStatus } from '@lynx/db';
+import { ChevronDown } from 'lucide-react';
+import { useLocale, useTranslations } from 'next-intl';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { Badge, Notice } from '@/components/ui/card';
+import { useAction } from '@/hooks/use-action';
+import { useDraft } from '@/hooks/use-draft';
+import { formatInstantTime } from '@/lib/format';
+import { saveLibraryItem } from '@/server/actions/library';
+import type { EditorContext } from '@/server/library/editor-context';
+import type { LibraryEditorForm } from '@/server/library/editor-form';
+import { NamesDialog, type NamesCheckState } from '../names-dialog';
+import { EditorErrorsProvider } from './editor-errors';
+import { CurriculumFields } from './expectation-picker';
+import { FaithFields } from './faith-fields';
+import { MetaFields } from './meta-fields';
+import { SafetyNotesFields } from './safety-notes-fields';
+import { VersionContent } from './version-content';
+import { VersionsEditor } from './versions-editor';
+
+export interface ItemEditorProps {
+  mode: 'new' | 'edit';
+  /** The item being edited; null for a new one (the browser picks its id). */
+  itemId: string | null;
+  /** The revision `initial` was read at (null for a new item). */
+  contentRevision: number | null;
+  initial: LibraryEditorForm;
+  context: EditorContext;
+  status: LibraryItemStatus;
+  /** Shared with the school or the board: a save goes through the first-name guard. */
+  shared: boolean;
+  /** A reviewer flagged faith content: the author cannot clear it. */
+  faithFlagged: boolean;
+}
+
+/**
+ * « Nouvelle ressource » and « Modifier la ressource » (DECISIONS D-061 to D-067): sections
+ * « À propos », « Curriculum », « Contenu », « Versions par niveau », « Sécurité » and « Foi »,
+ * and a save bar that stays in view. The form is a device draft (D-035, user-scoped D-044): a
+ * crash or a lost connection never loses work. When someone else saved the item meanwhile
+ * (`LXL07`), the page reloads the newer version and the hook offers « Récupérer mes changements ».
+ */
+export function ItemEditor(props: ItemEditorProps) {
+  const router = useRouter();
+  // Remounted with the server's newer version after a conflict, so the draft is offered.
+  const [generation, setGeneration] = useState(0);
+  const conflictAt = useRef<number | null>(null);
+  useEffect(() => {
+    if (conflictAt.current !== null && props.contentRevision !== conflictAt.current) {
+      conflictAt.current = null;
+      setGeneration((g) => g + 1);
+    }
+  }, [props.contentRevision]);
+  return (
+    <EditorBody
+      key={generation}
+      {...props}
+      onConflict={(revision) => {
+        conflictAt.current = revision;
+        router.refresh();
+      }}
+    />
+  );
+}
+
+interface DraftValue {
+  itemId: string;
+  form: LibraryEditorForm;
+}
+
+function EditorBody({
+  mode,
+  itemId,
+  contentRevision,
+  initial,
+  context,
+  status,
+  shared,
+  faithFlagged,
+  onConflict,
+}: ItemEditorProps & { onConflict: (revision: number) => void }) {
+  const t = useTranslations('libraryEdit');
+  const tc = useTranslations('libraryCommon');
+  const tCommon = useTranslations('common');
+  const locale = useLocale();
+  const router = useRouter();
+  const start = useMemo<DraftValue>(
+    () => ({ itemId: itemId ?? crypto.randomUUID(), form: initial }),
+    // Once per mount: a new item keeps the id it was given (and its draft keeps it too).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+  const draftKey =
+    mode === 'new'
+      ? `library-item:${context.userId}:new:${initial.type}`
+      : `library-item:${context.userId}:${itemId}`;
+  const [revision, setRevision] = useState<number | null>(contentRevision);
+  const draft = useDraft<DraftValue>(draftKey, start, {
+    version: revision === null ? undefined : String(revision),
+  });
+  const { form } = draft.value;
+  const [savedAt, setSavedAt] = useState<string | null>(null);
+  const [lastSaved, setLastSaved] = useState(() => JSON.stringify(start.form));
+  const [names, setNames] = useState<NamesCheckState | null>(null);
+  const latest = useRef(draft.value);
+  useEffect(() => {
+    latest.current = draft.value;
+  }, [draft.value]);
+
+  const save = useAction(saveLibraryItem);
+  const fieldErrors = save.fieldErrors;
+  const dirty = JSON.stringify(form) !== lastSaved;
+
+  const patch = (changes: Partial<LibraryEditorForm>) =>
+    draft.setValue((prev) => ({ ...prev, form: { ...prev.form, ...changes } }));
+
+  const subjectCode = context.subjects.find((s) => s.id === form.subjectId)?.code ?? null;
+  const info = TYPE_INFO[form.type];
+  const baseIndex = Math.max(
+    0,
+    form.versions.findIndex((v) => v.languageLevelId === null),
+  );
+
+  const run = async (confirmedNames: string[] = []) => {
+    const sent = draft.value;
+    const result = await save.run(sent.itemId, revision, sent.form, confirmedNames);
+    if (!result) return; // network: the draft is kept and the error shown
+    if (!result.ok) {
+      if (result.error === 'libraryConflict' && revision !== null) onConflict(revision);
+      if (result.fieldErrors) {
+        toast.error(result.error === 'libraryNotReady' ? t('save.notReady') : t('save.fix'));
+      }
+      return;
+    }
+    if (result.data.status === 'names') {
+      setNames({ names: result.data.names, blocked: result.data.blocked });
+      return;
+    }
+    setNames(null);
+    const { itemId: savedId, contentRevision: newRevision } = result.data;
+    if (mode === 'new') {
+      draft.clear();
+      toast.success(t('save.created'));
+      router.replace(`/library/items/${savedId}/edit`);
+      return;
+    }
+    setRevision(newRevision);
+    setSavedAt(result.data.savedAt);
+    setLastSaved(JSON.stringify(sent.form));
+    // What was typed while saving stays a draft.
+    if (JSON.stringify(latest.current) === JSON.stringify(sent)) draft.clear();
+  };
+
+  const status_ = save.pending
+    ? tCommon('saving')
+    : save.error && !save.fieldErrors
+      ? t('save.failed')
+      : dirty
+        ? t('save.unsaved')
+        : savedAt
+          ? t('save.savedAt', { time: formatInstantTime(savedAt, 'America/Toronto', locale) })
+          : mode === 'new'
+            ? t('save.notYet')
+            : t('save.upToDate');
+
+  const within = (...prefixes: string[]) =>
+    Object.keys(fieldErrors).some((k) => prefixes.some((p) => k === p || k.startsWith(`${p}.`)));
+  const baseFlag = within(`versions.${baseIndex}`);
+  const levelsFlag = form.versions.some(
+    (v, i) => v.languageLevelId !== null && within(`versions.${i}`),
+  );
+
+  return (
+    <EditorErrorsProvider errors={fieldErrors}>
+      <form
+        className="space-y-4"
+        noValidate
+        onSubmit={(e) => {
+          e.preventDefault();
+          void run();
+        }}
+      >
+        {draft.restored ? (
+          <Notice className="flex flex-wrap items-center justify-between gap-2">
+            <span>{tCommon('draftRestored')}</span>
+            <Button variant="ghost" onClick={() => draft.discard()}>
+              {tCommon('discardDraft')}
+            </Button>
+          </Notice>
+        ) : null}
+        {draft.offered ? (
+          <Notice tone="warning" className="space-y-2">
+            <p>{t('draftOlder')}</p>
+            <div className="flex flex-wrap gap-2">
+              <Button variant="secondary" onClick={() => draft.recover()}>
+                {t('recoverDraft')}
+              </Button>
+              <Button variant="ghost" onClick={() => draft.discard()}>
+                {tCommon('discardDraft')}
+              </Button>
+            </div>
+          </Notice>
+        ) : null}
+        {status === 'teacher_reviewed' ? <Notice>{t('reviewedNotice')}</Notice> : null}
+        {shared ? <Notice>{t('sharedNotice')}</Notice> : null}
+
+        <Section
+          title={t('sections.about')}
+          flagged={within(
+            'title',
+            'summary',
+            'durationMinutes',
+            'materials',
+            'licence',
+            'keywords',
+            'tagIds',
+            'subFriendly',
+            'readiness.duration',
+            'readiness.materials',
+            'readiness.tags',
+          )}
+        >
+          <MetaFields form={form} patch={patch} context={context} isNew={mode === 'new'} />
+        </Section>
+
+        <Section
+          title={t('sections.curriculum')}
+          flagged={within(
+            'gradeCodes',
+            'subjectId',
+            'expectationIds',
+            'readiness.grades',
+            'readiness.subject',
+            'readiness.expectations',
+          )}
+        >
+          <CurriculumFields form={form} patch={patch} context={context} />
+        </Section>
+
+        <Section
+          title={t('sections.content')}
+          flagged={baseFlag || within('readiness.content', 'readiness.key', 'readiness.base')}
+        >
+          <p className="mb-4 text-sm text-slate-600">
+            {t('contentIntro', { type: tc(`types.${form.type}`) })}
+          </p>
+          <VersionContent
+            form={form}
+            index={baseIndex}
+            subjectCode={subjectCode}
+            onChange={(version) =>
+              patch({ versions: form.versions.map((v, i) => (i === baseIndex ? version : v)) })
+            }
+          />
+        </Section>
+
+        {info.levelable ? (
+          <Section title={t('sections.levels')} flagged={levelsFlag || within('versions')}>
+            <VersionsEditor form={form} patch={patch} context={context} subjectCode={subjectCode} />
+          </Section>
+        ) : null}
+
+        {info.needsSafety ? (
+          <Section title={t('sections.safety')} flagged={within('safetyNotes', 'readiness.safety')}>
+            <SafetyNotesFields
+              notes={form.safetyNotes}
+              onChange={(safetyNotes) => patch({ safetyNotes })}
+            />
+          </Section>
+        ) : null}
+
+        <Section
+          title={t('sections.faith')}
+          flagged={within('catholicConnection', 'catholicReferenceId')}
+        >
+          <FaithFields
+            form={form}
+            patch={patch}
+            context={context}
+            flaggedByReviewer={faithFlagged}
+          />
+        </Section>
+
+        <div
+          className="sticky bottom-[calc(3.5rem+env(safe-area-inset-bottom))] z-20 -mx-4 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 bg-white/95 px-4 py-3 backdrop-blur md:bottom-4 md:mx-0 md:rounded-xl md:border"
+          data-testid="library-save-bar"
+        >
+          <p className="text-sm text-slate-700" role="status" aria-live="polite">
+            {status_}
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {mode === 'edit' && itemId ? (
+              <Button asChild variant="secondary">
+                <Link href={`/library/items/${itemId}`}>{t('save.view')}</Link>
+              </Button>
+            ) : null}
+            <Button type="submit" disabled={save.pending}>
+              {save.pending ? tCommon('saving') : t('save.save')}
+            </Button>
+          </div>
+        </div>
+      </form>
+
+      <NamesDialog
+        state={names}
+        pending={save.pending}
+        onClose={() => setNames(null)}
+        onConfirm={(confirmed) => void run(confirmed)}
+        confirmLabel={t('save.save')}
+      />
+    </EditorErrorsProvider>
+  );
+}
+
+/** One section of the editor: a disclosure, open by default and again when it holds an error. */
+function Section({
+  title,
+  flagged,
+  children,
+}: {
+  title: string;
+  flagged: boolean;
+  children: ReactNode;
+}) {
+  const t = useTranslations('libraryEdit');
+  const [open, setOpen] = useState(true);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- an error must be in view
+    if (flagged) setOpen(true);
+  }, [flagged]);
+  return (
+    <details
+      open={open}
+      onToggle={(e) => setOpen(e.currentTarget.open)}
+      className="group rounded-xl border border-slate-200 bg-white shadow-sm"
+    >
+      <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 [&::-webkit-details-marker]:hidden">
+        <h2 className="text-base font-semibold text-slate-900">{title}</h2>
+        <span className="flex items-center gap-2">
+          {flagged ? <Badge tone="danger">{t('toFix')}</Badge> : null}
+          <ChevronDown
+            className="size-5 text-slate-500 transition-transform group-open:rotate-180"
+            aria-hidden
+          />
+        </span>
+      </summary>
+      <div className="border-t border-slate-100 px-4 py-4">{children}</div>
+    </details>
+  );
+}

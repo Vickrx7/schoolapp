@@ -2,7 +2,7 @@
 
 This page describes exactly what goes to the AI provider, written to help answer a school board's
 privacy questionnaire. It will become part of `PRIVACY.md` in Phase 6. Decisions: DECISIONS.md,
-D-037 to D-046, and D-052 for the substitute plan.
+D-037 to D-046, D-052 for the substitute plan, and D-072 to D-074 for the resource bank.
 
 ## The rule
 
@@ -96,6 +96,60 @@ only the group's number in a corner. Before printing, any student's first name o
 in the activity text is replaced by « … », since the answer came back with real names and a level
 may have been renamed after the answer was checked.
 
+## Banque de ressources: « Créer avec l'IA »
+
+A teacher (or a principal or vice-principal) at a school with the Library module can ask the AI to
+write a new resource for the bank: a worksheet, a reading passage, a quiz, an experiment and 21
+other types, with a version for each language level if she wants, and a link with the faith if
+she wants. The result is her private draft, which she reviews before using or sharing it. It is
+never automatic.
+
+1. **Choices, not text.** The form sends ids and choices only: the type, one or two grades, the
+   subject, up to five attentes, the levels, a Catholic reference, the duration, whether it is for
+   a substitute, and an optional note (« Précisions »), the only text she types.
+2. **The request is built by the database.** From those ids, the database reads the French labels
+   itself: the grades (« 3e année »), the subject, the domaine, the attentes' codes and texts, the
+   levels' names and descriptions, and the reference's title and text. A browser cannot put other
+   text in them. It also checks that each id belongs to her board and fits the others.
+3. **Preview, in the browser.** « Vérifier avant d'envoyer » shows exactly the text that would be
+   sent, with the names it replaced highlighted, and the board-approved resources that already fit
+   the attente, before anything is spent. A personal detail in the note (below) blocks the request
+   until she removes it.
+4. **Queue, then de-identification again on the server,** as for every AI request: the same school
+   switch, budget and limits per person, and the worker replaces every student and staff member of
+   every school where she works with a marker, then checks the final text one last time.
+5. **The call.** The worker sends the system prompt (`prompts/library_item/v1.md`, only its common
+   part and the section for the chosen type) and the request: the type, grades, subject, domaine,
+   attentes, duration, whether it is for a substitute, the levels' names and descriptions, the
+   reference, a list of fictional first names for characters, and the de-identified note.
+
+   It sends **no** ids, no school, board, class or staff names, no students, no alerts and no other
+   resources. The list of fictional first names leaves out any name that belongs to someone the
+   request knows (a student named Jules removes « Jules »).
+
+6. **The answer comes back** to the worker. A resource is reusable, so the answer may name no one:
+   an answer that contains a marker (« Élève A ») is refused and asked again, and so no student's
+   name can come back into it. The database then stores it as her private draft, with the prompt
+   version and model it came from. Sharing it later runs the check for students' first names
+   (D-066).
+
+## Banque de ressources: « Créer les versions manquantes avec l'IA »
+
+On a resource she may edit, a teacher can ask the AI for the versions of the language levels it
+does not have yet, from its base version.
+
+1. **Preview.** She chooses the levels and « Vérifier avant d'envoyer » shows exactly what would be
+   sent, names highlighted. A personal detail anywhere in the resource blocks the request.
+2. **The request is built by the database** from the resource she may edit: its type, grades and
+   subject, the levels' names and descriptions, and its base version and answer key. A resource
+   whose base version would make the answer too long is refused.
+3. **De-identification and the call,** as above, with `prompts/library_levels/v1.md`. Every string
+   of the base version and its key is de-identified; ids of questions and choices stay as they are,
+   and so do the resource's and levels' ids, which never leave Canada.
+4. **The answer comes back** to the worker, which puts the names back (the answer may only repeat
+   the markers the base version had). The database adds the versions only if the resource has not
+   changed since the request; otherwise nothing is added and she asks again.
+
 ## How names are found
 
 - **The text is cleaned first.** Text pasted from web pages, PDFs or Word often carries invisible
@@ -148,6 +202,7 @@ of the text.
 | --------------------------------------------------------------------------------------------------- | ----------------- | ---------------------------------------------------- |
 | The teacher's text, the answer, and the exact de-identified text sent (`ai_jobs`)                   | Canadian database | 30 days, then deleted                                |
 | Saved differentiated texts (library drafts)                                                         | Canadian database | Until the teacher deletes them                       |
+| Resources written with the AI, and versions added by it (library items, private drafts)             | Canadian database | Until the teacher deletes them                       |
 | A substitute plan's AI layer (`sub_plans.ai`: the answer with names back, and block and lesson ids) | Canadian database | With the plan (1 year, D-059), or until removed      |
 | Usage records: date, feature, prompt version, model, token counts, cost, status (`ai_generations`)  | Canadian database | Kept (no text)                                       |
 | Request log for the hourly limit: job id, user id, time (`ai_request_log`)                          | Canadian database | 1 day (no text)                                      |
@@ -175,6 +230,10 @@ can require its own approved cloud account or a model hosted in Canada instead (
 - A name the app doesn't know (a parent, a sibling, a student from a school where the teacher
   doesn't work) can only be caught by the teacher at the preview step. The preview reminds them to
   check.
+- A resource written from scratch names no one, but a character's fictional first name can still
+  be the name of a student elsewhere in the board. Before a resource is shared, the app checks it
+  for the first names of the students of the author's schools (D-066); the author confirms each
+  name that is not a student's.
 - A historical figure who shares a student's first name (« Samuel de Champlain » when a student is
   named Samuel) is also replaced, then restored in the answer.
 - A name that is also an everyday word and is typed in lowercase (« pierre » for a student named

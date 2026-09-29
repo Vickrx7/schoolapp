@@ -1,7 +1,8 @@
 /**
  * Pieces the AI features share: teacher text put in a prompt, the words that are not Canadian
- * French, and spotting (or taking out) a language level's name in text given to students. No
- * dependencies: the web server imports it too (`@lynx/ai/features/shared`).
+ * French, and spotting (or taking out) a language level's name in text given to students. Pure
+ * (it depends only on @lynx/content, itself pure): the web server imports it too
+ * (`@lynx/ai/features/shared`).
  */
 
 /** Wraps teacher text in a tag that the text itself cannot close. */
@@ -10,18 +11,11 @@ export function tagged(tag: string, content: string): string {
   return `<${tag}>\n${safe}\n</${tag}>`;
 }
 
-/** Words that are European French or anglicisms in Ontario French schools (lowercase). */
-export const NOT_CANADIAN = [
-  'septante',
-  'nonante',
-  'week-end',
-  'weekend',
-  'e-mail',
-  'email',
-  'parking',
-  'shopping',
-  'petit-dej',
-];
+/**
+ * Words that are European French or anglicisms in Ontario French schools (lowercase). One list
+ * for the AI checks and the library's style rules (D-080).
+ */
+export { NOT_CANADIAN } from '@lynx/content';
 
 const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 

@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { findBlockedDetails, PrivacyViolation, Redactor, type KnownPerson } from './privacy';
+import {
+  findBlockedDetails,
+  PrivacyViolation,
+  redactStrings,
+  Redactor,
+  type KnownPerson,
+} from './privacy';
 import { loadPrompt } from './prompts';
 
 const NOW = new Date('2026-09-28T12:00:00Z');
@@ -481,5 +487,38 @@ describe('findBlockedDetails', () => {
       'En 1534, Jacques Cartier place une croix à Gaspé.',
     ].join('\n');
     expect(kinds(text)).toEqual([]);
+  });
+});
+
+describe('redactStrings', () => {
+  it('de-identifies every string of a value, keeps its shape, ids and enumerated values', () => {
+    const r = new Redactor(roster, NOW);
+    const value = {
+      text: 'Léa lit avec Aïcha.',
+      questions: [{ id: 'lea', kind: 'short_answer', prompt: 'Que fait Léa?', lines: 3 }],
+      glossary: [{ term: 'castor', definition: 'Un animal, dit Isabelle Tremblay.' }],
+      nothing: null,
+    };
+    const { value: clean, blocked } = redactStrings(value, r, new Set(['id', 'kind']));
+    expect(blocked).toEqual([]);
+    expect(clean).toEqual({
+      text: 'Élève A lit avec Élève B.',
+      questions: [{ id: 'lea', kind: 'short_answer', prompt: 'Que fait Élève A?', lines: 3 }],
+      glossary: [{ term: 'castor', definition: 'Un animal, dit Adulte A.' }],
+      nothing: null,
+    });
+    expect(
+      redactStrings({ note: ['Mon courriel : lea@exemple.ca'] }, r).blocked.map((b) => b.kind),
+    ).toEqual(['email']);
+  });
+
+  it('tells whether a text names a known person, without changing the redactor', () => {
+    const r = new Redactor(roster, NOW);
+    expect(r.mentionsKnownPerson('Aïcha')).toBe(true);
+    expect(r.mentionsKnownPerson('Mme Tremblay')).toBe(true);
+    expect(r.mentionsKnownPerson('Capucine')).toBe(false);
+    // Checking left no replacement behind: the next text starts at « Élève A ».
+    expect(r.replacements()).toEqual([]);
+    expect(r.redact('Aïcha').text).toBe('Élève A');
   });
 });

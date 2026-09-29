@@ -8,7 +8,7 @@ import { LessonList } from '@/components/planning/lesson-list';
 import { EditUnitButton, UnitStatusButton } from '@/components/planning/unit-actions';
 import { Badge } from '@/components/ui/card';
 import { loadClass } from '@/server/queries/classes';
-import { findSchool, requireSession } from '@/server/session';
+import { findSchool, librarySchools, requireSession } from '@/server/session';
 import { createSupabaseServerClient } from '@/server/supabase';
 
 /**
@@ -46,7 +46,7 @@ export default async function UnitPage({
   const { data: unit } = await supabase
     .from('units')
     .select(
-      'id, title, description, status, subject_id, subjects(label_fr, label_en, color), unit_lessons(id, sequence_number, title, objectives, materials, content, sub_notes, duration_minutes, unit_lesson_expectations(expectation_id))',
+      'id, title, description, status, subject_id, subjects(label_fr, label_en, color), unit_lessons(id, sequence_number, title, objectives, materials, content, sub_notes, duration_minutes, library_item_id, library_items(id, title), unit_lesson_expectations(expectation_id))',
     )
     .eq('id', unitId)
     .eq('class_id', classId)
@@ -95,7 +95,14 @@ export default async function UnitPage({
       status: progress.get(l.id)?.status ?? null,
       taughtOn: progress.get(l.id)?.taught_on ?? null,
       pendingReport: pendingReportOf(progress.get(l.id)),
+      // The attached library resource, when the teacher can still open it (D-076).
+      resource: l.library_items ? { id: l.library_items.id, title: l.library_items.title } : null,
+      hasHiddenResource: l.library_item_id !== null && !l.library_items,
     }));
+  // « Joindre une ressource »: at a school with the Library module (D-078).
+  const library = librarySchools(session).some((s) => s.id === cls.schoolId)
+    ? { gradeCode: cls.gradeCodes[0] ?? null, subjectId: unit.subject_id }
+    : null;
   const next = nextLessons(
     lessons,
     new Map(lessons.filter((l) => l.status).map((l) => [l.id, l.status as ProgressStatus])),
@@ -152,6 +159,7 @@ export default async function UnitPage({
         lessons={lessons}
         nextLessonId={next?.id ?? null}
         today={localDateIn(school.timezone)}
+        library={library}
         expectations={(expectationsRes.data ?? []).map((e) => ({
           id: e.id,
           code: e.code,

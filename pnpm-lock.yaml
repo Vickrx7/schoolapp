@@ -196,6 +196,9 @@ importers:
       '@anthropic-ai/sdk':
         specifier: ^0.129.0
         version: 0.129.0(zod@4.6.5)
+      '@lynx/content':
+        specifier: workspace:*
+        version: link:../content
       zod:
         specifier: ^4.6.5
         version: 4.6.5

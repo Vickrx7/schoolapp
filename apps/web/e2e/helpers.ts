@@ -13,6 +13,14 @@ export const DEMO = {
   boardAdmin: 'nathalie.roy@demo.lynx.test',
 };
 
+/**
+ * A title prefix unique to this run, for the « E2E-… » resources a spec makes and then deletes.
+ * The time is written in base 36: nine digits in a row read as an identification number to the
+ * privacy guard (`findBlockedDetails`), which would then refuse to share the resource or to send
+ * it to the AI.
+ */
+export const e2ePrefix = (tag = '') => `E2E-${tag}${Date.now().toString(36)}`;
+
 async function latestCode(email: string, after: number): Promise<string> {
   for (let i = 0; i < 40; i++) {
     const res = await fetch(

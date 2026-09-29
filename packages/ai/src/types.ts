@@ -94,4 +94,20 @@ export interface FeatureDefinition<I, O> {
   validate(output: O, input: I): string[];
   /** A plausible answer without calling a model, built from the de-identified input. */
   fake(input: I): O;
+  /**
+   * The output schema for this input (D-080), when it depends on it: a library resource's
+   * schema is its type's. Defaults to `outputSchema`, which then only types the answer.
+   */
+  outputSchemaFor?(input: I): z.ZodType<O>;
+  /**
+   * Fixes the form of an answer for free before it is validated (D-080): canonical shapes,
+   * typography, ordering left in answer order. Pure, and must never throw; what it cannot fix is
+   * left for `validate`, which reports it (and the answer is retried).
+   */
+  normalize?(output: O, input: I): O;
+  /**
+   * The system prompt for this input: e.g. the prompt file's common part plus only the section
+   * for the requested type (`selectPromptSections`). Defaults to the whole file.
+   */
+  systemPrompt?(prompt: string, input: I): string;
 }

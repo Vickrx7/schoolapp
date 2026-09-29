@@ -534,18 +534,12 @@
     "printLevel": "Imprimer ce niveau",
     "saveToLibrary": "Enregistrer",
     "savedToLibrary": "Texte enregistré.",
-    "saveChanges": "Enregistrer les changements",
-    "changesSaved": "Changements enregistrés.",
-    "deleteSaved": "Supprimer ce texte",
-    "deleteSavedConfirm": "Supprimer ce texte et toutes ses versions ? Cette action est définitive.",
-    "deleted": "Texte supprimé.",
     "discard": "Retirer",
     "discardConfirm": "Retirer cette demande de la liste ? Le résultat sera supprimé.",
     "aiNotice": "Préparé avec l’IA. Relisez et ajustez avant de l’utiliser en classe.",
     "sentText": "Voir exactement ce qui a été envoyé",
     "view": "Ouvrir",
     "levelTabs": "Niveaux",
-    "draftLabel": "Brouillon",
     "aiBoardOffNotice": "Votre conseil scolaire n’a pas autorisé l’IA : la direction de l’école ne peut pas l’activer.",
     "failedDraftRestored": "Votre dernière demande n’a pas abouti : son texte a été récupéré.",
     "resumed": "Le texte de votre demande précédente est rempli. Vérifiez-le, puis envoyez-le de nouveau.",
@@ -558,8 +552,6 @@
     "reconnecting": "Connexion au serveur interrompue. Nouvelle tentative en cours…",
     "lineError": "Ligne {line} : {error}",
     "fixErrors": "Certaines informations ne sont pas valides. Corrigez les champs indiqués en rouge, puis enregistrez de nouveau.",
-    "draftOlder": "Ce texte a été modifié ailleurs après vos derniers changements sur cet appareil, qui n’ont pas été enregistrés. La version la plus récente est affichée.",
-    "recoverDraft": "Reprendre mes changements",
     "savedWithoutLevels": "Texte enregistré. {count, plural, one {Un niveau supprimé entre-temps n’a pas été gardé.} other {# niveaux supprimés entre-temps n’ont pas été gardés.}}"
   },
   "levels": {
@@ -1431,9 +1423,942 @@
       "createWithAi": "Créer avec l’IA pour cette attente"
     }
   },
-  "libraryEdit": {},
-  "libraryReview": {},
-  "libraryPlanning": {},
-  "libraryAi": {},
+  "libraryEdit": {
+    "new": {
+      "title": "Nouvelle ressource",
+      "intro": "Choisissez le type de ressource à créer. Vous pourrez ensuite la réviser, puis la partager.",
+      "back": "Banque de ressources",
+      "otherType": "Choisir un autre type",
+      "titleType": "Nouvelle ressource : {type}"
+    },
+    "editTitle": "Modifier la ressource",
+    "backToItem": "Retour à la ressource",
+    "sections": {
+      "about": "À propos",
+      "curriculum": "Curriculum",
+      "content": "Contenu",
+      "levels": "Versions par niveau",
+      "safety": "Sécurité",
+      "faith": "Foi"
+    },
+    "toFix": "À corriger",
+    "teacherOnly": "Enseignant·e seulement",
+    "keyOnly": "Corrigé seulement",
+    "none": "Aucun",
+    "include": "Inclure : {label}",
+    "contentIntro": "{type}. La version de base est celle que reçoivent les élèves qui n’ont pas de version pour leur niveau.",
+    "solutionHint": "Reste dans le corrigé : jamais sur la feuille de l’élève.",
+    "draftOlder": "Cette ressource a été enregistrée ailleurs depuis votre brouillon : vous voyez la version enregistrée.",
+    "recoverDraft": "Récupérer mes changements",
+    "reviewedNotice": "Cette ressource est révisée : elle doit rester complète pour être enregistrée. Pour l’enregistrer incomplète, remettez-la d’abord en brouillon.",
+    "sharedNotice": "Cette ressource est partagée : les prénoms d’élèves trouvés dans le texte vous seront signalés avant l’enregistrement.",
+    "save": {
+      "save": "Enregistrer",
+      "view": "Voir la ressource",
+      "savedAt": "Enregistré à {time}",
+      "unsaved": "Modifications non enregistrées (gardées sur cet appareil)",
+      "upToDate": "Aucune modification",
+      "notYet": "Pas encore enregistrée (gardée sur cet appareil)",
+      "failed": "L’enregistrement n’a pas fonctionné : vos changements sont gardés sur cet appareil.",
+      "fix": "Certaines parties ne peuvent pas être enregistrées : vérifiez les champs signalés.",
+      "notReady": "Une ressource révisée doit rester complète : complétez les champs signalés ou remettez-la en brouillon.",
+      "created": "Ressource enregistrée."
+    },
+    "fields": {
+      "title": "Titre",
+      "summary": "Résumé",
+      "summaryHint": "Une ou deux phrases pour la reconnaître dans la banque.",
+      "school": "École",
+      "schoolHint": "L’école avec laquelle vous pourrez la partager.",
+      "duration": "Durée",
+      "minutes": "minutes",
+      "materials": "Matériel",
+      "materialsHint": "Ce qu’il faut préparer, et où le trouver.",
+      "noMaterials": "Aucun matériel particulier",
+      "formats": "Formats",
+      "subFriendly": "Conçue pour une personne suppléante",
+      "subFriendlyHint": "Les consignes et le matériel suffisent à une personne qui ne connaît pas la classe.",
+      "subFriendlyNever": "Ce type de ressource n’est jamais proposé dans un plan de suppléance.",
+      "subFriendlySupervision": "Possible seulement avec une « Supervision habituelle » dans les notes de sécurité.",
+      "licence": "Licence ou conditions d’utilisation",
+      "licenceHint": "Facultatif. Laissez vide si vous avez créé la ressource vous-même.",
+      "tags": "Étiquettes ({count} sur {max})",
+      "keywords": "Mots-clés",
+      "keywordsHint": "Des mots libres pour retrouver la ressource, séparés par des virgules."
+    },
+    "curriculum": {
+      "grades": "Années d’études ({max} au maximum)",
+      "subject": "Matière",
+      "chooseSubject": "Choisissez une matière",
+      "expectations": "Attentes et contenus d’apprentissage ({count} sur {max})",
+      "expectationsHint": "Liez au moins une attente avant de marquer la ressource comme révisée.",
+      "expectationsOptional": "Facultatif pour ce type de ressource.",
+      "chooseFirst": "Choisissez d’abord une année d’études et une matière.",
+      "loading": "Chargement des attentes…",
+      "loadFailed": "Les attentes n’ont pas pu être chargées. Réessayez dans un instant.",
+      "noExpectations": "Les attentes de cette matière ne sont pas encore chargées pour ces années.",
+      "strand": "Domaine {code} — {label}",
+      "otherStrand": "Autres attentes"
+    },
+    "content": {
+      "title": "Titre sur la feuille",
+      "objective": "Intention d’apprentissage",
+      "teacherNote": "Note pour l’enseignant·e",
+      "successCriteria": {
+        "_label": "Critères de réussite",
+        "_item": "Critère",
+        "_add": "Ajouter un critère"
+      },
+      "opening": {
+        "_label": "Début de la leçon",
+        "_item": "Étape",
+        "_add": "Ajouter une étape",
+        "minutes": "Minutes (facultatif)",
+        "instruction": "Consigne",
+        "say": "À dire aux élèves (facultatif)"
+      },
+      "development": {
+        "_label": "Cœur de la leçon",
+        "_item": "Étape",
+        "_add": "Ajouter une étape",
+        "minutes": "Minutes (facultatif)",
+        "instruction": "Consigne",
+        "say": "À dire aux élèves (facultatif)"
+      },
+      "closing": {
+        "_label": "Fin de la leçon",
+        "_item": "Étape",
+        "_add": "Ajouter une étape",
+        "minutes": "Minutes (facultatif)",
+        "instruction": "Consigne",
+        "say": "À dire aux élèves (facultatif)"
+      },
+      "differentiation": "Différenciation",
+      "assessment": "Évaluation",
+      "subNotes": "Notes pour la personne suppléante",
+      "heading": "Titre de l’affiche",
+      "sections": {
+        "_label": "Sections",
+        "_item": "Section",
+        "_add": "Ajouter une section",
+        "title": "Titre de la section",
+        "points": {
+          "_label": "Points clés",
+          "_item": "Point",
+          "_add": "Ajouter un point"
+        },
+        "example": "Exemple (facultatif)",
+        "questions": {
+          "_label": "Questions"
+        }
+      },
+      "visualIdeas": {
+        "_label": "Idées pour illustrer l’affiche",
+        "_item": "Idée",
+        "_add": "Ajouter une idée"
+      },
+      "problem": "Problème",
+      "steps": {
+        "_label": "Étapes",
+        "_item": "Étape",
+        "_add": "Ajouter une étape",
+        "explanation": "Explication",
+        "work": "Démarche (facultatif)"
+      },
+      "answer": "Réponse",
+      "practice": {
+        "_label": "Questions pour s’exercer"
+      },
+      "bigIdea": "Idée maîtresse",
+      "background": "Contexte pour l’enseignant·e",
+      "keyVocabulary": {
+        "_label": "Vocabulaire clé",
+        "_item": "Mot",
+        "_add": "Ajouter un mot",
+        "term": "Mot",
+        "definition": "Définition"
+      },
+      "misconceptions": {
+        "_label": "Idées fausses fréquentes",
+        "_item": "Idée fausse",
+        "_add": "Ajouter une idée fausse",
+        "misconception": "Idée fausse",
+        "response": "Comment y répondre"
+      },
+      "teachingTips": {
+        "_label": "Conseils d’enseignement",
+        "_item": "Conseil",
+        "_add": "Ajouter un conseil"
+      },
+      "lookFors": {
+        "_label": "Ce qu’on observe chez les élèves",
+        "_item": "Observation",
+        "_add": "Ajouter une observation"
+      },
+      "instructions": "Consignes",
+      "text": "Texte",
+      "glossary": {
+        "_label": "Glossaire",
+        "_item": "Mot",
+        "_add": "Ajouter un mot",
+        "term": "Mot",
+        "definition": "Définition (facultatif)"
+      },
+      "questions": {
+        "_label": "Questions",
+        "_item": "Question",
+        "_add": "Ajouter une question"
+      },
+      "visualSupports": {
+        "_label": "Appuis visuels suggérés",
+        "_item": "Appui visuel",
+        "_add": "Ajouter un appui visuel"
+      },
+      "setup": "Préparation",
+      "groupSize": "Taille des équipes",
+      "studentSteps": {
+        "_label": "Étapes pour les élèves",
+        "_item": "Étape",
+        "_add": "Ajouter une étape"
+      },
+      "extension": "Pour aller plus loin",
+      "cleanup": "Rangement",
+      "theme": "Thème",
+      "words": {
+        "_label": "Mots",
+        "_item": "Mot",
+        "_add": "Ajouter un mot",
+        "term": "Mot",
+        "definition": "Définition",
+        "example": "Exemple (facultatif)",
+        "wordClass": "Classe de mot",
+        "gender": "Genre"
+      },
+      "activityIdeas": {
+        "_label": "Idées d’activités",
+        "_item": "Idée",
+        "_add": "Ajouter une idée"
+      },
+      "prompt": "Consigne",
+      "researchQuestion": "Question de recherche",
+      "hypothesisPrompt": "Consigne pour l’hypothèse",
+      "observationTable": {
+        "_label": "Tableau d’observation",
+        "columns": {
+          "_label": "Colonnes",
+          "_item": "Colonne",
+          "_add": "Ajouter une colonne"
+        },
+        "rows": "Nombre de lignes"
+      },
+      "conclusionQuestions": {
+        "_label": "Questions de conclusion"
+      },
+      "communication": "Communication des résultats",
+      "challenge": "Défi",
+      "constraints": {
+        "_label": "Contraintes",
+        "_item": "Contrainte",
+        "_add": "Ajouter une contrainte"
+      },
+      "criteria": {
+        "_label": "Critères",
+        "_item": "Critère",
+        "_add": "Ajouter un critère",
+        "category": "Catégorie",
+        "criterion": "Critère",
+        "levels": {
+          "_label": "Niveaux",
+          "level1": "Niveau 1",
+          "level2": "Niveau 2",
+          "level3": "Niveau 3",
+          "level4": "Niveau 4"
+        }
+      },
+      "designStages": {
+        "_label": "Étapes du processus de design",
+        "_item": "Étape",
+        "_add": "Ajouter une étape",
+        "stage": "Étape du processus",
+        "prompt": "Consigne"
+      },
+      "reflectionQuestions": {
+        "_label": "Questions de réflexion"
+      },
+      "drivingQuestion": "Question directrice",
+      "overview": "Aperçu du projet",
+      "milestones": {
+        "_label": "Étapes du projet",
+        "_item": "Étape",
+        "_add": "Ajouter une étape",
+        "title": "Titre",
+        "description": "Description",
+        "sessions": "Nombre de séances (facultatif)"
+      },
+      "deliverables": {
+        "_label": "Ce que les élèves remettent",
+        "_item": "Production",
+        "_add": "Ajouter une production"
+      },
+      "location": "Lieu",
+      "safetyReminders": {
+        "_label": "Rappels de sécurité",
+        "_item": "Rappel",
+        "_add": "Ajouter un rappel"
+      },
+      "weatherAlternative": "En cas de mauvais temps",
+      "purpose": "But de l’évaluation",
+      "interpretation": {
+        "_label": "Interprétation des réponses",
+        "_item": "Piste",
+        "_add": "Ajouter une piste",
+        "signal": "Ce qu’on observe",
+        "nextStep": "Prochaine étape"
+      },
+      "task": "Tâche évaluée",
+      "grouping": "Regroupement",
+      "rules": {
+        "_label": "Règles",
+        "_item": "Règle",
+        "_add": "Ajouter une règle"
+      },
+      "howToWin": "Pour gagner",
+      "variations": {
+        "_label": "Variantes",
+        "_item": "Variante",
+        "_add": "Ajouter une variante"
+      },
+      "space": "Espace",
+      "calmVariant": "Variante calme",
+      "tune": "Air",
+      "verses": {
+        "_label": "Couplets",
+        "_item": "Couplet",
+        "_add": "Ajouter un couplet",
+        "label": "Nom du couplet (ex. : Refrain)",
+        "lines": {
+          "_label": "Vers",
+          "_item": "Vers",
+          "_add": "Ajouter un vers"
+        }
+      },
+      "gestures": {
+        "_label": "Gestes",
+        "_item": "Geste",
+        "_add": "Ajouter un geste"
+      },
+      "riddles": {
+        "_label": "Devinettes"
+      },
+      "days": {
+        "_label": "Jours",
+        "_item": "Jour",
+        "_add": "Ajouter un jour",
+        "label": "Nom du jour",
+        "task": "Tâche"
+      },
+      "hints": {
+        "_label": "Indices",
+        "_item": "Indice",
+        "_add": "Ajouter un indice"
+      },
+      "scriptureReference": "Référence biblique",
+      "reflection": "Réflexion",
+      "prayer": "Prière",
+      "action": "Geste à poser",
+      "hook": "Amorce",
+      "context": "Contexte",
+      "discussionQuestions": {
+        "_label": "Questions pour la discussion",
+        "_item": "Question",
+        "_add": "Ajouter une question"
+      },
+      "activity": "Activité",
+      "factsToVerify": {
+        "_label": "Faits à vérifier",
+        "_item": "Fait",
+        "_add": "Ajouter un fait"
+      },
+      "fr": {
+        "_label": "Partie en français",
+        "intro": "Introduction",
+        "learning": {
+          "_label": "Ce que l’enfant apprend",
+          "_item": "Apprentissage",
+          "_add": "Ajouter un apprentissage"
+        },
+        "atHome": {
+          "_label": "À la maison",
+          "_item": "Idée",
+          "_add": "Ajouter une idée"
+        },
+        "words": {
+          "_label": "Mots utiles",
+          "_item": "Mot",
+          "_add": "Ajouter un mot",
+          "term": "Mot",
+          "definition": "Définition"
+        }
+      },
+      "en": {
+        "_label": "Partie en anglais",
+        "intro": "Introduction",
+        "learning": {
+          "_label": "Ce que l’enfant apprend",
+          "_item": "Apprentissage",
+          "_add": "Ajouter un apprentissage"
+        },
+        "atHome": {
+          "_label": "À la maison",
+          "_item": "Idée",
+          "_add": "Ajouter une idée"
+        },
+        "words": {
+          "_label": "Mots utiles",
+          "_item": "Mot",
+          "_add": "Ajouter un mot",
+          "term": "Mot",
+          "definition": "Définition"
+        }
+      },
+      "solution": {
+        "default": "Solution",
+        "experiment": "Résultats attendus",
+        "challenge": "Solution du défi"
+      }
+    },
+    "phases": {
+      "mat": {
+        "opening": "Mise en train",
+        "development": "Exploration",
+        "closing": "Objectivation"
+      },
+      "default": {
+        "opening": "Avant",
+        "development": "Pendant",
+        "closing": "Après"
+      }
+    },
+    "hints": {
+      "title": "Facultatif. Vide : le titre de la ressource.",
+      "objective": "Ce que les élèves vont apprendre. Il reste le même dans toutes les versions.",
+      "teacherNote": "Jamais sur la feuille de l’élève.",
+      "visualSupports": "Des idées d’images ou de gestes à montrer : la banque ne contient pas d’images.",
+      "visualIdeas": "Des idées d’images ou de schémas à dessiner avec la classe.",
+      "tune": "Un air du domaine public (ex. : « Frère Jacques ») ou original.",
+      "scriptureReference": "Une référence seulement (ex. : Genèse 2, 15), jamais une citation.",
+      "factsToVerify": "Les faits à vérifier avant d’utiliser la ressource.",
+      "subNotes": "Ce qu’une personne qui ne connaît pas la classe doit savoir.",
+      "text": "Jusqu’à 40 000 caractères."
+    },
+    "options": {
+      "wordClasses": {
+        "nom": "nom",
+        "verbe": "verbe",
+        "adjectif": "adjectif",
+        "adverbe": "adverbe",
+        "expression": "expression",
+        "autre": "autre"
+      },
+      "genders": {
+        "m": "masculin",
+        "f": "féminin"
+      },
+      "designStages": {
+        "definir": "Définir le problème",
+        "rechercher": "Rechercher",
+        "planifier": "Planifier",
+        "construire": "Construire",
+        "tester": "Tester",
+        "ameliorer": "Améliorer",
+        "communiquer": "Communiquer"
+      },
+      "spaces": {
+        "desk": "À son pupitre",
+        "open": "Dans un espace dégagé"
+      }
+    },
+    "list": {
+      "item": "Élément",
+      "numbered": "{label} {n}",
+      "addDefault": "Ajouter un élément",
+      "moveUp": "Monter : {name}",
+      "moveDown": "Descendre : {name}",
+      "remove": "Retirer : {name}",
+      "count": "{count} sur {max}",
+      "needed": "Il en faut au moins {min} ({count} pour l’instant)."
+    },
+    "questions": {
+      "empty": "Aucune question pour l’instant.",
+      "newKind": "Type de la prochaine question",
+      "add": "Ajouter une question",
+      "numbered": "Question {n}",
+      "kind": "{name} : type de question",
+      "prompt": "Énoncé",
+      "hint": "Indice (facultatif)",
+      "explanation": "Explication (facultatif)",
+      "explanationHint": "Dans le corrigé seulement.",
+      "more": "Points et catégorie (facultatif)",
+      "points": "Points",
+      "pointsHint": "Vide : 1 point (1 par paire pour les associations).",
+      "category": "Catégorie de la grille d’évaluation",
+      "categoryHint": "Sur la copie de l’enseignant·e seulement.",
+      "noCategory": "Aucune",
+      "choices": "Choix de réponse",
+      "choicesHintOne": "Cochez la bonne réponse.",
+      "choicesHintMany": "Cochez toutes les bonnes réponses.",
+      "choice": "Choix {letter}",
+      "correctChoice": "{name} : bonne réponse",
+      "removeChoice": "Retirer : {name}",
+      "addChoice": "Ajouter un choix",
+      "multipleAnswers": "Plusieurs bonnes réponses",
+      "trueFalse": "Bonne réponse",
+      "true": "Vrai",
+      "false": "Faux",
+      "pairs": "Paires à associer",
+      "pairsHint": "Écrivez chaque élément à côté de sa correspondance : la colonne de droite sera mélangée pour les élèves.",
+      "left": "Élément {n}",
+      "right": "Correspondance de l’élément {n}",
+      "removePair": "Retirer la paire {n}",
+      "addPair": "Ajouter une paire",
+      "extraRightHint": "Vous pouvez ajouter à droite des éléments qui ne correspondent à rien, pour que la dernière réponse ne se devine pas.",
+      "extraRight": "Élément de droite en trop {n}",
+      "removeExtraRight": "Retirer l’élément de droite en trop {n}",
+      "addExtraRight": "Ajouter un élément de droite en trop",
+      "items": "Éléments à mettre en ordre",
+      "itemsHint": "Écrivez les éléments dans le bon ordre : ils seront mélangés pour les élèves.",
+      "item": "Élément {n}",
+      "addItem": "Ajouter un élément",
+      "shortAnswer": "Réponse",
+      "sampleAnswer": "Réponse attendue (corrigé)",
+      "acceptable": "Réponses acceptées (correction automatique)",
+      "acceptableHint": "Sans réponse acceptée, la question se corrige à la main (« Correction manuelle »).",
+      "acceptableN": "Réponse acceptée {n}",
+      "removeAcceptable": "Retirer la réponse acceptée {n}",
+      "addAcceptable": "Ajouter une réponse acceptée",
+      "lines": "Lignes pour répondre",
+      "linesHint": "Sur la feuille de l’élève, de 1 à 12."
+    },
+    "rubric": {
+      "caption": "une ligne par critère, avec ce qui est attendu à chaque niveau",
+      "category": "Catégorie",
+      "criterion": "Critère",
+      "level": "Niveau {n}",
+      "actions": "Actions",
+      "row": "Critère {n}",
+      "categoryOf": "{name} : catégorie",
+      "criterionOf": "{name} : critère",
+      "levelOf": "{name} : niveau {n}",
+      "rowError": "Critère {n} : {message}",
+      "hint": "Utilisez les qualificatifs de la grille d’évaluation du rendement (limitée, partielle, générale, approfondie…). Chaque catégorie doit apparaître au moins une fois.",
+      "add": "Ajouter un critère"
+    },
+    "levels": {
+      "intro": "Une version pour un niveau de langue garde la même intention d’apprentissage (et les mêmes questions pour une évaluation). Elle commence comme une copie de la version de base.",
+      "personalHint": "Cette ressource a des versions pour vos niveaux personnels : elle reste privée tant qu’elles y sont.",
+      "chooser": "Versions par niveau",
+      "toFix": "à corriger",
+      "none": "Aucune version par niveau pour l’instant : les élèves reçoivent la version de base.",
+      "level": "Niveau",
+      "add": "Ajouter une version",
+      "otherLevel": "Autre niveau",
+      "personal": "{label} (niveau personnel)",
+      "basePreview": "Version de base, telle que les élèves la reçoivent",
+      "noPreview": "Aperçu non disponible.",
+      "editing": "Version : {label}",
+      "remove": "Retirer cette version",
+      "removeConfirm": "La version « {label} » sera retirée à l’enregistrement.",
+      "removeConfirmButton": "Retirer"
+    },
+    "safety": {
+      "intro": "Obligatoires pour une expérience ou un défi STIM : sans elles, la ressource ne peut pas être marquée comme révisée.",
+      "ageSuitability": "Âge et année d’études",
+      "ageSuitabilityHint": "Ex. : de 9 à 11 ans (5e année).",
+      "allergyAwareMaterials": "Matériel et allergies",
+      "allergyAwareMaterialsHint": "Nommez des solutions sans noix et sans latex (ex. : élastiques sans latex).",
+      "supervision": "Supervision",
+      "supervisionHint": "« Supervision habituelle » seulement si un adulte sans formation particulière peut la mener en sécurité.",
+      "hazards": "Dangers et précautions",
+      "hazard": "Précaution",
+      "addHazard": "Ajouter une précaution",
+      "notes": "Autres notes de sécurité"
+    },
+    "faith": {
+      "content": "Contient du contenu de foi (prière, texte religieux…)",
+      "flagged": "Une personne responsable de la révision a signalé du contenu de foi : la case reste cochée.",
+      "reflection": "Une réflexion catholique est toujours du contenu de foi.",
+      "suggested": "Cette ressource semble contenir du contenu de foi (prière, texte religieux…). Cochez la case si c’est le cas.",
+      "tick": "Cocher la case",
+      "reference": "Référence catholique",
+      "referenceHint": "Une référence de votre conseil : une vertu, une prière, un passage biblique…",
+      "noReference": "Aucune référence",
+      "referenceOption": "{title} ({type})",
+      "referenceTypes": {
+        "virtue": "vertu",
+        "graduate_expectation": "attente de l’élève diplômé·e",
+        "reflection": "réflexion",
+        "prayer": "prière",
+        "scripture": "Écriture sainte"
+      },
+      "connection": "Lien avec la foi",
+      "connectionHint": "Une ou deux phrases, respectueuses et adaptées à l’âge. Une référence biblique plutôt qu’une citation.",
+      "onStudentSheet": "Afficher le lien sur la feuille de l’élève",
+      "reviewHint": "Le contenu de foi est révisé par la personne désignée par le conseil avant d’être partagé avec tout le conseil. Le partage avec votre école reste possible."
+    },
+    "names": {
+      "title": "Prénoms d’élèves à vérifier",
+      "intro": "Ces prénoms sont ceux d’élèves de votre école : {names}. Retirez-les, ou cochez « Ce n’est pas un nom d’élève » (ex. saint Thomas, Samuel de Champlain).",
+      "notAStudent": "{name} : ce n’est pas un nom d’élève",
+      "blocked": "Retirez d’abord ces renseignements personnels de la ressource : ils ne sont jamais partagés.",
+      "hint": "Seul le nombre de prénoms confirmés est noté dans le journal.",
+      "edit": "Revenir"
+    },
+    "readiness": {
+      "title": "Avant de marquer comme révisée",
+      "titleApproval": "Avant de proposer au conseil",
+      "done": "Fait",
+      "missing": "à compléter",
+      "checks": {
+        "grades": "Au moins une année d’études",
+        "subject": "Une matière",
+        "duration": "Une durée",
+        "materials": "Le matériel (ou « Aucun matériel particulier »)",
+        "tags": "Une étiquette ou un mot-clé",
+        "expectations": "Au moins une attente",
+        "base": "Une version de base",
+        "content": "Chaque version est complète",
+        "key": "Un corrigé complet",
+        "safety": "Les notes de sécurité",
+        "levels": "Une version pour chaque niveau du conseil"
+      },
+      "warnings": {
+        "sampleAnswer": "Une réponse courte n’a pas de réponse attendue dans le corrigé.",
+        "subNotes": "Un plan de leçon pour la suppléance devrait avoir des notes pour la personne suppléante.",
+        "baseOnly": "Version de base seulement : aucune version par niveau."
+      }
+    },
+    "workflow": {
+      "title": "Révision et partage",
+      "markReviewed": "J’ai révisé cette ressource",
+      "markReviewedIntro": "Vous avez relu toute la ressource (texte, questions et corrigé) : elle est prête pour la classe.",
+      "originality": "Je confirme que ce contenu est original ou que j’ai le droit de le partager (pas de copie de manuels, de TPT, d’Idéllo…).",
+      "markReviewedSubmit": "Marquer comme révisée",
+      "reviewedDone": "Ressource marquée comme révisée.",
+      "notReadyHint": "Complétez d’abord ce qui manque dans la liste ci-dessus.",
+      "request": "Proposer au conseil",
+      "requestDone": "Ressource proposée au conseil.",
+      "approvalHint": "Pour la proposer au conseil, complétez ce qui manque dans la liste ci-dessus.",
+      "personalLevelsHint": "Retirez les versions pour vos niveaux personnels avant de partager la ressource ou de la proposer au conseil.",
+      "cancelRequest": "Retirer la demande",
+      "cancelDone": "Demande retirée.",
+      "toDraft": "Remettre en brouillon",
+      "toDraftConfirm": "La ressource redevient un brouillon privé : elle n’est plus partagée, et une demande d’approbation en cours est retirée.",
+      "draftDone": "Ressource remise en brouillon.",
+      "archive": "Archiver",
+      "archiveConfirm": "La ressource n’apparaîtra plus dans la banque. Vous pourrez la restaurer.",
+      "archiveApprovedConfirm": "La ressource perd son approbation et n’apparaîtra plus dans la banque. Vous pourrez la restaurer comme brouillon.",
+      "archiveDone": "Ressource archivée.",
+      "restore": "Restaurer",
+      "restoreDone": "Ressource restaurée comme brouillon.",
+      "delete": "Supprimer",
+      "deleteConfirm": "Supprimer la ressource et toutes ses versions? Les leçons qui y sont jointes la perdront.",
+      "deleteDone": "Ressource supprimée.",
+      "faithBoardHint": "Le contenu de foi doit être révisé par la personne désignée avant d’être partagé avec tout le conseil : proposez la ressource au conseil."
+    },
+    "share": {
+      "open": "Partager",
+      "title": "Partager la ressource",
+      "intro": "Seules les ressources révisées sont partagées.",
+      "scope": "Avec qui",
+      "scopes": {
+        "private": "Personne (privée)",
+        "school": "Avec mon école",
+        "board": "Avec tout le conseil"
+      },
+      "school": "École",
+      "faithBoardHint": "Le contenu de foi doit être révisé par la personne désignée avant d’être partagé avec tout le conseil : proposez la ressource au conseil.",
+      "personalLevels": "Cette ressource a des versions pour vos niveaux personnels. Retirez-les avant de la partager.",
+      "guardHint": "Avant le partage, les prénoms d’élèves trouvés dans la ressource vous seront signalés.",
+      "submit": "Partager",
+      "done": {
+        "private": "La ressource est de nouveau privée.",
+        "school": "Ressource partagée avec votre école.",
+        "board": "Ressource partagée avec tout le conseil."
+      }
+    },
+    "hub": {
+      "title": "Créer et partager",
+      "create": "Créer une ressource",
+      "createHint": "Une fiche, un quiz, un jeu… avec son corrigé et des versions par niveau.",
+      "mine": "Mes ressources",
+      "drafts": "{count, plural, =0 {Aucun brouillon} one {# brouillon} other {# brouillons}}",
+      "rework": "{count, plural, one {# à retravailler} other {# à retravailler}}",
+      "preparing": "{count, plural, one {# en préparation} other {# en préparation}}",
+      "review": "Approbation des ressources",
+      "toApprove": "{count, plural, =0 {Rien à approuver} one {# à approuver} other {# à approuver}}",
+      "toFaith": "{count, plural, =0 {aucun contenu de foi à réviser} one {# contenu de foi à réviser} other {# contenus de foi à réviser}}"
+    },
+    "mine": {
+      "title": "Mes ressources",
+      "intro": "Les ressources que vous avez créées, selon où elles en sont.",
+      "back": "Banque de ressources",
+      "create": "Créer une ressource",
+      "preparing": "En préparation",
+      "jobItem": "Nouvelle ressource (IA)",
+      "jobLevels": "Versions par niveau (IA)",
+      "jobStatus": {
+        "queued": "En attente",
+        "running": "En préparation"
+      },
+      "tabsLabel": "État des ressources",
+      "tab": "{label} ({count})",
+      "tabs": {
+        "drafts": "Brouillons",
+        "reviewed": "Révisées",
+        "shared": "Partagées",
+        "approved": "Approuvées",
+        "rework": "À retravailler",
+        "archived": "Archivées"
+      },
+      "empty": {
+        "drafts": "Aucun brouillon.",
+        "reviewed": "Aucune ressource révisée gardée privée.",
+        "shared": "Aucune ressource partagée.",
+        "approved": "Aucune ressource approuvée par le conseil.",
+        "rework": "Aucune ressource à retravailler.",
+        "archived": "Aucune ressource archivée."
+      },
+      "note": "Note de la personne responsable de la révision : {note}",
+      "updated": "Modifiée le {date}"
+    },
+    "errors": {
+      "required": "Ce champ est obligatoire.",
+      "tooLong": "Ce texte est trop long.",
+      "tooMany": "Il y a trop d’éléments.",
+      "tooFew": "Il manque des éléments.",
+      "tooSmall": "Ce nombre est trop petit.",
+      "tooLarge": "Ce nombre est trop grand.",
+      "invalid": "Cette valeur n’est pas valide.",
+      "worksheetEmpty": "Ajoutez des consignes, un texte ou des questions.",
+      "missingCategory": "Chaque catégorie de la grille doit apparaître au moins une fois.",
+      "baseVersion": "Il faut exactement une version de base.",
+      "duplicateLevel": "Il y a deux versions pour le même niveau.",
+      "subFriendlyNotAllowed": "Cette ressource ne peut pas être proposée pour la suppléance.",
+      "duplicateQuestionId": "Deux questions ont le même identifiant.",
+      "duplicateOptionId": "Deux choix de cette question ont le même identifiant.",
+      "missingAnswer": "Cette question n’a pas de réponse dans le corrigé.",
+      "unknownQuestion": "Le corrigé contient une réponse à une question qui n’existe plus.",
+      "duplicateAnswer": "Le corrigé contient deux réponses pour cette question.",
+      "wrongKind": "La réponse du corrigé ne correspond pas au type de question.",
+      "noCorrectChoice": "Cochez au moins une bonne réponse.",
+      "unknownChoice": "La bonne réponse cochée n’est plus un des choix.",
+      "duplicateChoice": "La même bonne réponse est cochée deux fois.",
+      "tooManyCorrect": "Une seule bonne réponse est possible : cochez « Plusieurs bonnes réponses » ou décochez les autres.",
+      "unknownLeft": "Une paire du corrigé renvoie à un élément qui n’existe plus.",
+      "unknownRight": "Une paire du corrigé renvoie à une correspondance qui n’existe plus.",
+      "duplicateLeft": "Un élément est associé deux fois.",
+      "duplicateRight": "Une correspondance est utilisée deux fois.",
+      "unpairedLeft": "Chaque élément doit avoir sa correspondance.",
+      "notPermutation": "L’ordre du corrigé ne correspond pas aux éléments à mettre en ordre.",
+      "orderGivesAnswer": "L’ordre affiché aux élèves donnerait la réponse."
+    }
+  },
+  "libraryReview": {
+    "title": "Approbation des ressources",
+    "intro": "Les ressources proposées au conseil, de la demande la plus ancienne à la plus récente.",
+    "back": "Banque de ressources",
+    "queuesLabel": "Files d’approbation",
+    "queues": {
+      "content": "À approuver ({count})",
+      "faith": "Contenu de foi ({count})"
+    },
+    "empty": {
+      "content": "Aucune ressource n’attend d’approbation.",
+      "faith": "Aucun contenu de foi n’attend de révision."
+    },
+    "faithReviewed": "Foi : révisée",
+    "safety": "Sécurité",
+    "boardItem": "Conseil scolaire",
+    "requestedOn": "Demandé le {date}",
+    "note": "Note pour la personne qui a créé la ressource",
+    "noteHint": "Expliquez ce qu’il faut changer. Elle verra votre note avec la ressource.",
+    "decision": {
+      "title": "Décision",
+      "approve": "Approuver pour le conseil",
+      "approved": "Ressource approuvée pour le conseil.",
+      "reject": "Renvoyer pour révision",
+      "rejectIntro": "La ressource redevient privée et « À retravailler », avec votre note.",
+      "rejected": "Ressource renvoyée pour révision.",
+      "ownItem": "Vous ne pouvez pas approuver une ressource que vous avez créée.",
+      "faithPending": "En attente de la révision du contenu de foi",
+      "notReady": "La ressource n’est pas complète pour l’approbation (voir la liste).",
+      "faithTitle": "Contenu de foi",
+      "faithDone": "Le contenu de foi a été révisé.",
+      "faithApprove": "Contenu de foi conforme",
+      "faithApproved": "Contenu de foi révisé.",
+      "faithReject": "Renvoyer pour révision (contenu de foi)",
+      "faithRejectIntro": "La ressource redevient privée et « À retravailler », avec votre note sur le contenu de foi.",
+      "flag": "Signaler du contenu de foi",
+      "flagConfirm": "La ressource sera traitée comme du contenu de foi : elle devra être révisée par la personne désignée avant d’être partagée avec tout le conseil, et la personne qui l’a créée ne pourra pas retirer ce signalement.",
+      "flagged": "Contenu de foi signalé.",
+      "retract": "Retirer de la banque",
+      "retractIntro": "La ressource n’est plus partagée ni approuvée : elle redevient « À retravailler », avec votre note.",
+      "retracted": "Ressource retirée de la banque."
+    }
+  },
+  "libraryPlanning": {
+    "open": "Ajouter à ma planification",
+    "title": "Ajouter à ma planification",
+    "noClasses": "Vous n’avez pas de classe dont vous planifiez les leçons.",
+    "class": "Classe",
+    "unit": "Unité",
+    "noUnits": "Cette classe n’a pas encore d’unité : créez-en une dans Planification.",
+    "unitOption": "{subject} — {title} ({status})",
+    "unitStatus": {
+      "active": "en cours",
+      "planned": "prévue",
+      "completed": "terminée",
+      "archived": "archivée"
+    },
+    "mode": "Comment l’ajouter",
+    "modes": {
+      "attach": "Joindre à une leçon",
+      "new": "Nouvelle leçon"
+    },
+    "lessonLabel": "Leçon",
+    "lesson": "Leçon {n} : {title}",
+    "lessonNext": "Leçon {n} : {title} (prochaine leçon)",
+    "lessonDone": "Leçon {n} : {title} (faite)",
+    "hasResource": "Cette leçon a déjà une ressource : « {title} ».",
+    "position": "Où placer la nouvelle leçon",
+    "positions": {
+      "end": "À la fin de l’unité",
+      "next": "Comme prochaine leçon (avant « Leçon {n} : {title} »)",
+      "after": "Après la leçon {n} : {title}"
+    },
+    "newHint": "La leçon reprend le titre, l’intention, le matériel, la durée et le déroulement de la ressource, et garde le lien vers elle.",
+    "replaceTitle": "Remplacer la ressource",
+    "replaceConfirm": "Remplacer « {title} »?",
+    "hiddenResource": "une ressource que vous ne pouvez plus ouvrir",
+    "submitAttach": "Joindre à la leçon {n}",
+    "submitAttachNone": "Joindre",
+    "submitNew": "Ajouter la leçon",
+    "submitReplace": "Remplacer",
+    "attached": "Jointe à la leçon {n}.",
+    "added": "Ajoutée comme leçon {n}.",
+    "seePlanning": "Voir la planification",
+    "attachThis": "Joindre à cette leçon",
+    "attachThisNamed": "Joindre « {title} » à cette leçon",
+    "banner": {
+      "choosing": "Vous choisissez une ressource pour la leçon {n} « {title} »",
+      "back": "Retour à la planification"
+    },
+    "lessonRow": {
+      "chip": "Ressource",
+      "hidden": "Ressource non disponible",
+      "detach": "Retirer la ressource",
+      "detachNamed": "Retirer la ressource de la leçon {n}",
+      "detached": "Ressource retirée de la leçon.",
+      "attach": "Joindre une ressource",
+      "attachNamed": "Joindre une ressource à la leçon {n}"
+    }
+  },
+  "libraryAi": {
+    "title": "Créer avec l’IA",
+    "intro": "Choisissez le type de ressource, l’année, la matière et les attentes. L’IA prépare une ressource complète, avec ses versions par niveau si vous le voulez : un brouillon privé, à relire avant de l’utiliser ou de le partager.",
+    "aiOff": "L’IA n’est pas activée pour cette école. La direction peut l’activer dans la page École.",
+    "aiBoardOff": "Votre conseil scolaire n’autorise pas l’IA pour le moment.",
+    "failedDraftRestored": "La demande précédente n’a pas abouti : vos choix ont été récupérés.",
+    "resumed": "Voici votre demande précédente. Vérifiez-la, puis envoyez-la de nouveau.",
+    "fields": {
+      "school": "École",
+      "type": "Type de ressource",
+      "grades": "Année d’études",
+      "gradesHint": "Une année, ou deux pour une classe combinée.",
+      "subject": "Matière",
+      "subjectPlaceholder": "Choisissez une matière",
+      "expectations": "Attentes visées",
+      "expectationsHint": "De une à {max} attentes ou contenus d’apprentissage.",
+      "expectationsOptional": "Facultatif pour ce type de ressource : jusqu’à cinq attentes.",
+      "expectationsChooseFirst": "Choisissez d’abord l’année et la matière.",
+      "expectationsError": "Les attentes n’ont pas pu être chargées. Réessayez dans un instant.",
+      "expectationsEmpty": "Le curriculum n’a pas d’attentes pour cette année et cette matière.",
+      "duration": "Durée visée",
+      "minutes": "{count, plural, one {# minute} other {# minutes}}",
+      "subFriendly": "Conçue pour une personne suppléante",
+      "subFriendlyHint": "Des consignes complètes et du matériel courant, pour un adulte qui ne connaît pas la classe.",
+      "subFriendlyStandard": "Seulement si un adulte sans formation particulière peut la mener en toute sécurité.",
+      "subFriendlyNever": "Ce type de ressource ne sert pas à la suppléance.",
+      "levels": "Niveaux",
+      "withLevels": "Créer aussi une version par niveau",
+      "withLevelsHint": "Plus long à préparer : l’IA écrit une version pour chaque niveau choisi, avec la même intention d’apprentissage.",
+      "personalLevel": "à moi",
+      "faithGroup": "Foi",
+      "faith": "Ajouter un lien avec la foi",
+      "faithForced": "Une réflexion catholique a toujours un lien avec la foi.",
+      "reference": "Référence",
+      "referenceHint": "L’IA écrit une ou deux phrases liées à cette référence seulement. Le contenu de foi est révisé avant d’être partagé avec tout le conseil.",
+      "referenceNone": "Aucune référence ne convient à cette année et à ce temps de l’année. Vous pouvez en choisir une autre.",
+      "referencePick": "Choisissez une référence",
+      "referenceSuggested": "Suggestions",
+      "referenceOthers": "Autres références",
+      "referenceOption": "{title} ({type})",
+      "note": "Précisions",
+      "noteHint": "Par exemple le thème, le contexte de la classe ou les nombres à utiliser. Ne mettez pas de renseignements personnels : courriels, numéros, adresses ou dates de naissance."
+    },
+    "referenceTypes": {
+      "virtue": "vertu",
+      "graduate_expectation": "attente du diplômé",
+      "reflection": "réflexion",
+      "prayer": "prière",
+      "scripture": "Écriture sainte"
+    },
+    "preview": "Vérifier avant d’envoyer",
+    "previewTitle": "Ce qui sera envoyé à l’IA",
+    "previewIntro": "Voici exactement ce qui sera envoyé. Les noms des élèves et du personnel sont remplacés par des marqueurs. La ressource créée ne nommera personne : elle pourra être partagée.",
+    "replacedCount": "{count, plural, =0 {Aucun nom remplacé.} one {# nom remplacé.} other {# noms remplacés.}}",
+    "previewCheck": "Vérifiez qu’aucun autre renseignement personnel (par exemple le nom d’un parent) ne reste dans vos précisions.",
+    "blockedTitle": "Renseignements personnels à retirer",
+    "blockedIntro": "Retirez ces éléments de vos précisions, puis vérifiez de nouveau :",
+    "existingTitle": "Des ressources approuvées existent déjà pour cette attente :",
+    "existingHint": "Jetez-y un coup d’œil avant de créer une nouvelle ressource.",
+    "longer": "Avec des versions par niveau, la préparation prend quelques minutes.",
+    "send": "Envoyer à l’IA",
+    "sending": "Envoi…",
+    "edit": "Modifier la demande",
+    "levels": {
+      "button": "Créer les versions manquantes avec l’IA",
+      "title": "Créer les versions manquantes",
+      "intro": "À partir de la version de base, l’IA écrit une version pour chaque niveau choisi, avec la même intention d’apprentissage. Vous pourrez ensuite la relire et la modifier.",
+      "levels": "Niveaux sans version",
+      "hint": "Plus il y a de niveaux, plus la préparation est longue.",
+      "previewIntro": "Voici exactement ce qui sera envoyé : la version de base et son corrigé, sans les noms des élèves et du personnel."
+    },
+    "hub": {
+      "title": "Créer avec l’IA",
+      "hint": "Une ressource complète à partir d’une attente, avec ses versions par niveau : un brouillon privé, à relire.",
+      "preparing": "En préparation",
+      "preparingItem": "{type} : en préparation",
+      "preparingLevels": "Versions par niveau : en préparation",
+      "preparingOther": "Ressource : en préparation"
+    },
+    "job": {
+      "title": "Préparation de la ressource",
+      "levelsTitle": "Préparation des versions par niveau",
+      "backToLibrary": "Banque de ressources",
+      "backToItem": "Retour à la ressource",
+      "working": "L’IA prépare la ressource (quelques minutes).",
+      "workingHint": "Vous pouvez quitter cette page : la ressource vous attendra dans « Mes ressources ».",
+      "levelsWorking": "L’IA prépare les versions par niveau (quelques minutes).",
+      "levelsWorkingHint": "Vous pouvez quitter cette page : les versions s’ajouteront à la ressource.",
+      "failed": "La ressource n’a pas pu être préparée.",
+      "levelsFailed": "Les versions par niveau n’ont pas pu être préparées.",
+      "failedKept": "Votre demande n’est pas perdue : vous pouvez la reprendre.",
+      "levelsFailedKept": "La ressource n’a pas changé. Vous pouvez demander les versions de nouveau à partir de la ressource.",
+      "resume": "Reprendre la demande",
+      "ready": "La ressource est prête.",
+      "open": "Ouvrir la ressource"
+    }
+  },
   "subPlanLibrary": {}
 }

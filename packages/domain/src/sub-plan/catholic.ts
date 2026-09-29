@@ -2,6 +2,8 @@
  * The « Moment de foi » of a substitute plan (DECISIONS D-058, SPEC 9.5): one reference from
  * the board-editable `catholic_references`, picked deterministically so the same sources give
  * the same plan. The teacher can edit or remove it; she is the authority on faith content.
+ * The library's « Ajouter un lien avec la foi » suggests references with the same ranking
+ * (D-074).
  */
 import { addDays, daysBetween, isoWeekday, type LocalDate } from '../dates';
 import { compareFr, matchWords } from './text';
@@ -92,25 +94,33 @@ function tagOverlap(tags: readonly string[], words: ReadonlySet<string>): number
   }).length;
 }
 
+export interface CatholicRankContext {
+  /** The grades the reference is for (a plan's classes, a resource's grades). */
+  gradeOrdinals: readonly number[];
+  date: LocalDate;
+  /**
+   * Words to match against the references' tags: a plan day's lesson titles and subject labels,
+   * or a resource's subject, attentes and the teacher's note (D-074).
+   */
+  keywords: readonly string[];
+  boardId: string;
+}
+
 /**
- * Picks the reference for a plan day:
- * - its grade range must include every grade of the covered classes;
- * - its season must match the date's, or be empty;
- * - the most tags found in the day's lesson titles and subject labels wins (accents ignored),
- *   then the board's own references over shared ones;
- * - remaining ties rotate by date, so a week of absence doesn't repeat the same prayer.
- * Returns null when nothing fits. Callers pass active references only.
+ * The references that fit, best first (D-058, D-074), shared by substitute plans and the
+ * library's « Ajouter un lien avec la foi »:
+ * - a reference fits when its grade range includes every grade given and its season is the
+ *   date's, or empty;
+ * - the most tags found in the keywords comes first (accents ignored), then the board's own
+ *   references before shared ones;
+ * - references that tie are in French title order, rotated by date, so a week of absence (or of
+ *   new resources) doesn't repeat the same prayer.
+ * References that do not fit are left out. Callers pass active references only.
  */
-export function pickCatholicReference<R extends CatholicReference>(
+export function rankCatholicReferences<R extends CatholicReference>(
   refs: readonly R[],
-  context: {
-    gradeOrdinals: readonly number[];
-    date: LocalDate;
-    /** Lesson titles and subject labels of the day. */
-    keywords: readonly string[];
-    boardId: string;
-  },
-): R | null {
+  context: CatholicRankContext,
+): R[] {
   const season = liturgicalSeasonOn(context.date);
   const minGrade = context.gradeOrdinals.length > 0 ? Math.min(...context.gradeOrdinals) : null;
   const maxGrade = context.gradeOrdinals.length > 0 ? Math.max(...context.gradeOrdinals) : null;
@@ -128,17 +138,30 @@ export function pickCatholicReference<R extends CatholicReference>(
       overlap: tagOverlap(r.tags, words),
       own: r.boardId === context.boardId ? 1 : 0,
     }));
-  if (candidates.length === 0) return null;
 
-  const best = candidates.reduce(
-    (top, c) =>
-      c.overlap > top.overlap || (c.overlap === top.overlap && c.own > top.own) ? c : top,
-    candidates[0]!,
-  );
-  const tied = candidates
-    .filter((c) => c.overlap === best.overlap && c.own === best.own)
-    .map((c) => c.ref)
-    .sort((a, b) => compareFr(a.title, b.title) || (a.id < b.id ? -1 : 1));
-  const turn = Math.abs(daysBetween('2000-01-01', context.date)) % tied.length;
-  return tied[turn]!;
+  // Groups of references that tie, best first; each group rotates by date.
+  const groups = new Map<string, R[]>();
+  for (const c of [...candidates].sort((a, b) => b.overlap - a.overlap || b.own - a.own)) {
+    const key = `${c.overlap}:${c.own}`;
+    groups.set(key, [...(groups.get(key) ?? []), c.ref]);
+  }
+  const days = Math.abs(daysBetween('2000-01-01', context.date));
+  return [...groups.values()].flatMap((group) => {
+    const tied = group.sort((a, b) => compareFr(a.title, b.title) || (a.id < b.id ? -1 : 1));
+    const turn = days % tied.length;
+    return [...tied.slice(turn), ...tied.slice(0, turn)];
+  });
+}
+
+/**
+ * Picks the reference for a plan day: the first of `rankCatholicReferences` (the grade range
+ * includes every grade of the covered classes, the season fits, the most tags found in the day's
+ * lesson titles and subject labels, the board's own first, ties rotating by date). Returns null
+ * when nothing fits.
+ */
+export function pickCatholicReference<R extends CatholicReference>(
+  refs: readonly R[],
+  context: CatholicRankContext,
+): R | null {
+  return rankCatholicReferences(refs, context)[0] ?? null;
 }

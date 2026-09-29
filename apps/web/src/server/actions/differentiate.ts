@@ -7,12 +7,13 @@ import {
   type DifferentiateInput,
 } from '@lynx/ai/features/differentiate';
 import { Redactor, type BlockedKind, type Segment } from '@lynx/ai/privacy';
+import { fromDifferentiation } from '@lynx/content';
+import type { Json } from '@lynx/db';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { fail, ok, okVoid, type ActionResult } from '@/lib/action-result';
 import { visiblePeople } from '../ai-people';
 import { reportError } from '../errors';
-import type { VersionContent } from '../queries/differentiate';
 import { aiSchools, requireSession } from '../session';
 import { createSupabaseServerClient } from '../supabase';
 import { parseInput } from './validation';
@@ -188,7 +189,7 @@ export async function discardAiJob(jobId: string): Promise<ActionResult> {
 }
 
 // ---------------------------------------------------------------------------------------
-// Saving and editing results
+// Saving a result to the library (DECISIONS D-042, D-073)
 // ---------------------------------------------------------------------------------------
 
 // Messages are error keys: the editor shows them on the field, with the line they come from.
@@ -211,22 +212,13 @@ const resultSchema = z.object({
 });
 export type DifferentiationResult = z.input<typeof resultSchema>;
 
-function toContent(objective: string, v: z.infer<typeof versionSchema>): VersionContent {
-  return {
-    schema: 'differentiated_text/v1',
-    objective,
-    title: v.title,
-    text: v.text,
-    glossary: v.glossary,
-    visualSupports: v.visualSupports,
-    questions: v.questions,
-    teacherNote: v.teacherNote,
-  };
-}
-
 /**
- * Saves a finished request as a private draft in the library. A level deleted since the
- * request is left out (`skippedLevels`) rather than making the whole text unsaveable.
+ * Saves a finished request as a private draft in the library: an ordinary reading passage or
+ * worksheet (D-073), the teacher's original text as the base version and one version per level,
+ * whose questions become short answers with a key waiting for sample answers
+ * (`fromDifferentiation`). It is edited, shared and deleted in the library from then on. A level
+ * deleted since the request is left out (`skippedLevels`) rather than making the whole text
+ * unsaveable.
  */
 export async function saveDifferentiation(
   jobId: string,
@@ -252,110 +244,26 @@ export async function saveDifferentiation(
   if (levelsError) return fail(reportError('saveDifferentiation', levelsError));
 
   const known = new Set((levels ?? []).map((l) => l.id));
-  const objective = parsed.data.objective;
-  const versions = parsed.data.versions.filter((v) => known.has(v.languageLevelId));
-  if (!versions.length) return fail('notFound');
+  const kept = parsed.data.versions.filter((v) => known.has(v.languageLevelId));
+  if (!kept.length) return fail('notFound');
+  const { versions } = fromDifferentiation(
+    { title: input.data.title, text: input.data.text, itemType: input.data.itemType },
+    { title: parsed.data.title, objective: parsed.data.objective, versions: kept },
+  );
   const { data, error } = await supabase.rpc('save_ai_job_to_library', {
     p_job_id: jobId,
     p_type: input.data.itemType,
     p_title: parsed.data.title,
-    p_versions: [
-      // The teacher's original text, kept as the base version.
-      {
-        language_level_id: null,
-        content: {
-          schema: 'differentiated_text/v1',
-          original: true,
-          objective,
-          title: input.data.title,
-          text: input.data.text,
-        },
-      },
-      ...versions.map((v) => ({
-        language_level_id: v.languageLevelId,
-        content: toContent(objective, v),
-      })),
-    ],
+    p_versions: versions.map((v) => ({
+      language_level_id: v.languageLevelId,
+      content: v.content,
+      answer_key: v.answerKey,
+    })) as unknown as Json,
     p_grade_code: input.data.gradeCode,
     ...(input.data.subjectId ? { p_subject_id: input.data.subjectId } : {}),
   });
   if (error) return fail(reportError('saveDifferentiation', error));
   revalidatePath('/differentiate');
-  return ok({ itemId: data, skippedLevels: parsed.data.versions.length - versions.length });
-}
-
-export async function updateSavedDifferentiation(
-  itemId: string,
-  raw: DifferentiationResult,
-): Promise<ActionResult> {
-  await requireSession();
-  const parsed = parseInput(resultSchema, raw);
-  if (!parsed.ok) return parsed.result;
-  if (!z.uuid().safeParse(itemId).success) return fail('notFound');
-  const supabase = await createSupabaseServerClient();
-  // Library content is written only through save_library_item (D-063), which replaces the whole
-  // item: what this editor does not show (other versions, keys, links, flags) is sent back as it is.
-  const { data: item, error: readError } = await supabase
-    .from('library_items')
-    .select(
-      'board_id, school_id, type, summary, licence, subject_id, duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive, sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection, catholic_reference_id, content_revision, library_item_grades(grade_code), library_item_expectations(expectation_id), library_item_tags(tag_id), library_item_versions(language_level_id, content, library_item_answer_keys(answer_key))',
-    )
-    .eq('id', itemId)
-    .eq('source', 'ai_generated')
-    .maybeSingle();
-  if (readError) return fail(reportError('updateSavedDifferentiation', readError));
-  if (!item) return fail('forbidden');
-  const edited = new Map(parsed.data.versions.map((v) => [v.languageLevelId, v]));
-  const { error } = await supabase.rpc('save_library_item', {
-    p_item_id: itemId,
-    p_expected_revision: item.content_revision,
-    p_item: {
-      boardId: item.board_id,
-      schoolId: item.school_id,
-      type: item.type,
-      title: parsed.data.title,
-      summary: item.summary,
-      licence: item.licence,
-      subjectId: item.subject_id,
-      durationMinutes: item.duration_minutes,
-      materials: item.materials,
-      keywords: item.keywords,
-      isPrintable: item.is_printable,
-      isProjectable: item.is_projectable,
-      isInteractive: item.is_interactive,
-      subFriendly: item.sub_friendly,
-      safetyNotes: item.safety_notes,
-      faithContent: item.faith_content,
-      faithOnStudentSheet: item.faith_on_student_sheet,
-      catholicConnection: item.catholic_connection,
-      catholicReferenceId: item.catholic_reference_id,
-      gradeCodes: item.library_item_grades.map((g) => g.grade_code),
-      expectationIds: item.library_item_expectations.map((e) => e.expectation_id),
-      tagIds: item.library_item_tags.map((t) => t.tag_id),
-      versions: item.library_item_versions.map((v) => {
-        const change = v.language_level_id ? edited.get(v.language_level_id) : undefined;
-        return {
-          languageLevelId: v.language_level_id,
-          content: change ? toContent(parsed.data.objective, change) : v.content,
-          answerKey: v.library_item_answer_keys?.answer_key ?? null,
-        };
-      }),
-    },
-  });
-  if (error) return fail(reportError('updateSavedDifferentiation', error));
-  revalidatePath(`/differentiate/saved/${itemId}`);
-  return okVoid();
-}
-
-export async function deleteSavedDifferentiation(itemId: string): Promise<ActionResult> {
-  const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from('library_items')
-    .delete()
-    .eq('id', itemId)
-    .select('id');
-  if (error) return fail(reportError('deleteSavedDifferentiation', error));
-  if (!data?.length) return fail('forbidden');
-  revalidatePath('/differentiate');
-  return okVoid();
+  revalidatePath('/library/mine');
+  return ok({ itemId: data, skippedLevels: parsed.data.versions.length - kept.length });
 }

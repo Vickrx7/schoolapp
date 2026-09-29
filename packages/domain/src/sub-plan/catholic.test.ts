@@ -3,6 +3,7 @@ import {
   easterSunday,
   liturgicalSeasonOn,
   pickCatholicReference,
+  rankCatholicReferences,
   type CatholicReference,
 } from './catholic';
 import { BOARD, isabelleSources, parse } from './test-fixtures';
@@ -115,5 +116,69 @@ describe('pickCatholicReference', () => {
     expect(pick(refs, { date: '2026-10-22' })?.id).toBe(week[0]);
     expect(pick([...refs].reverse(), { date: '2026-10-19' })?.id).toBe(week[0]);
     expect(pick([])).toBeNull();
+  });
+});
+
+describe('rankCatholicReferences', () => {
+  const rank = (
+    refs: readonly CatholicReference[],
+    context: Partial<Parameters<typeof rankCatholicReferences>[1]> = {},
+  ) =>
+    rankCatholicReferences(refs, {
+      gradeOrdinals: [3],
+      date: '2026-10-19',
+      keywords: [],
+      boardId: BOARD,
+      ...context,
+    }).map((r) => r.id);
+
+  it('domain 1. follows grade range, then season, then keyword overlap, then the board’s own, rotating ties by date', () => {
+    const refs = [
+      ref('older', { gradeMin: 4, gradeMax: 8, tags: ['nombres'] }),
+      ref('advent', { liturgicalSeason: 'avent', tags: ['nombres'] }),
+      ref('numbers', { boardId: null, tags: ['nombres', 'calcul'] }),
+      ref('numbers-own', { tags: ['nombres'] }),
+      ref('numbers-shared', { boardId: null, tags: ['nombres'] }),
+      ref('plain-a'),
+      ref('plain-b'),
+      ref('plain-shared', { boardId: null }),
+    ];
+    const keywords = ['Mathématiques', 'Comparer des nombres et faire du calcul mental'];
+    const day1 = rank(refs, { keywords });
+    // Grade range and season decide what fits; then the most tags; then the board's own.
+    expect(day1).not.toContain('older');
+    expect(day1).not.toContain('advent');
+    expect(day1.slice(0, 3)).toEqual(['numbers', 'numbers-own', 'numbers-shared']);
+    expect(new Set(day1.slice(3, 5))).toEqual(new Set(['plain-a', 'plain-b']));
+    expect(day1[5]).toBe('plain-shared');
+    // The season comes in when the date is in it; ties rotate from one day to the next.
+    expect(rank(refs, { keywords, date: '2026-12-01' })).toContain('advent');
+    const day2 = rank(refs, { keywords, date: '2026-10-20' });
+    expect(day2.slice(3, 5)).toEqual([...day1.slice(3, 5)].reverse());
+    // The first of the ranking is what a substitute plan picks.
+    for (const date of ['2026-10-19', '2026-10-20', '2026-12-01']) {
+      expect(pick(refs, { keywords, date })?.id).toBe(rank(refs, { keywords, date })[0]);
+    }
+    expect(rank([ref('only', { gradeMin: 4 })])).toEqual([]);
+  });
+
+  it('domain 2. puts « Prendre soin de la création » first for a science attente about forces and structures', () => {
+    const keywords = [
+      'Sciences et technologie',
+      'Décrire les effets des forces de compression, de tension et de torsion sur des structures.',
+      'Une activité avec des éponges et des élastiques.',
+    ];
+    for (const date of ['2026-10-19', '2026-10-20', '2026-10-21', '2026-12-01']) {
+      const ranked = rankCatholicReferences(seedRefs, {
+        gradeOrdinals: [5],
+        date,
+        keywords,
+        boardId: BOARD,
+      });
+      expect(ranked[0]?.title).toBe('Prendre soin de la création');
+      // Every other reference that fits 5e année and the date still follows, for the picker.
+      expect(ranked.map((r) => r.title)).toContain('Prière avant le travail');
+      expect(ranked.map((r) => r.title).includes('Prière de l’Avent')).toBe(date === '2026-12-01');
+    }
   });
 });
