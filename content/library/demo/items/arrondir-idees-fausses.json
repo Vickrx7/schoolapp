@@ -1,0 +1,124 @@
+{
+  "slug": "arrondir-idees-fausses",
+  "type": "teacher_guide",
+  "title": "Arrondir : idées fausses fréquentes",
+  "summary": "Guide pour l’enseignement de l’arrondissement à la dizaine et à la centaine en 3e année : les idées fausses les plus fréquentes, comment y répondre et quoi observer.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["3"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "B1.3"
+    }
+  ],
+  "durationMinutes": 15,
+  "materials": "Aucun matériel particulier pour la lecture du guide. En classe : droite numérique, cartes-nombres.",
+  "keywords": "arrondir, arrondissement, dizaine près, centaine près, estimation, droite numérique, idées fausses",
+  "tags": ["nombres"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "subFriendly": false,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Comprendre les idées fausses fréquentes des élèves de 3e année sur l’arrondissement et savoir comment y répondre en classe.",
+        "teacherNote": "Ce guide accompagne le « Billet de sortie : arrondir à la dizaine » de la banque de ressources. La convention d’arrondir vers le haut un nombre situé exactement au milieu (65 devient 70) est celle qu’on utilise à l’école élémentaire. Le résumé de l’attente B1.3 est à vérifier dans le programme-cadre.",
+        "bigIdea": "Arrondir, c’est remplacer un nombre par un nombre « rond » qui en est proche et qui est plus facile à utiliser. On cherche la dizaine (ou la centaine) la plus proche, et on arrondit quand une valeur approximative suffit.",
+        "background": "En 3e année, les élèves arrondissent des nombres naturels jusqu’à 1 000 à la dizaine près ou à la centaine près. L’arrondissement repose sur deux compréhensions : la valeur de position (savoir entre quelles dizaines ou centaines se trouve un nombre) et la droite numérique (savoir laquelle est la plus proche).\n\nQuand un nombre est exactement au milieu, comme 65 entre 60 et 70, la distance ne permet pas de choisir. Par convention, on arrondit alors vers le haut. C’est une entente commune, et les élèves doivent savoir qu’il s’agit d’une entente et non d’une question de distance.\n\nLa règle « 5 ou plus, on monte » est efficace, mais les élèves qui l’apprennent trop tôt l’appliquent souvent au mauvais chiffre. Il vaut mieux construire d’abord le sens avec la droite numérique, puis présenter la règle comme un raccourci.\n\nArrondir sert à estimer : vérifier si une réponse est vraisemblable, parler d’une quantité approximative (« environ 300 personnes »), calculer mentalement un total approximatif. Les élèves doivent aussi reconnaître les situations où une valeur exacte est nécessaire.",
+        "keyVocabulary": [
+          {
+            "term": "arrondir",
+            "definition": "Remplacer un nombre par un nombre rond proche de lui."
+          },
+          {
+            "term": "à la dizaine près",
+            "definition": "Au multiple de 10 le plus proche (par exemple, 68 devient 70)."
+          },
+          {
+            "term": "à la centaine près",
+            "definition": "Au multiple de 100 le plus proche (par exemple, 268 devient 300)."
+          },
+          {
+            "term": "environ",
+            "definition": "Mot qui indique une valeur approximative, pas exacte."
+          },
+          {
+            "term": "estimation",
+            "definition": "Valeur approximative trouvée rapidement, souvent en arrondissant."
+          },
+          {
+            "term": "droite numérique",
+            "definition": "Ligne sur laquelle les nombres sont placés dans l’ordre, à intervalles réguliers."
+          }
+        ],
+        "misconceptions": [
+          {
+            "misconception": "Arrondir, c’est enlever le dernier chiffre : 347 devient 34.",
+            "response": "Rappeler que le nombre arrondi doit rester proche du nombre de départ : 347 est proche de 350, pas de 34. Faire placer 347 sur une droite de 340 à 350 et demander « Quel nombre rond est le plus proche? ». Faire vérifier chaque réponse : « Mon nombre arrondi a-t-il à peu près la même grandeur que le nombre de départ? »"
+          },
+          {
+            "misconception": "On arrondit toujours vers le bas, en remplaçant le dernier chiffre par 0 : 68 devient 60.",
+            "response": "Placer 68 sur une droite de 60 à 70 et compter les bonds : 68 est à 2 bonds de 70 et à 8 bonds de 60. Faire dire « 68 est plus proche de 70 ». Proposer ensuite des nombres des deux côtés du milieu (62, 67, 64, 69)."
+          },
+          {
+            "misconception": "Pour arrondir à la centaine près, on regarde le chiffre des unités : 451 devient 400 parce que 1 est plus petit que 5.",
+            "response": "Faire souligner le chiffre de la position visée (les centaines), puis regarder seulement le chiffre juste à sa droite (les dizaines). 451 est entre 400 et 500; le milieu est 450, et 451 dépasse le milieu : 451 devient 500."
+          },
+          {
+            "misconception": "Arrondir en cascade : 348 devient 350, puis 400 à la centaine près.",
+            "response": "Insister pour toujours arrondir à partir du nombre de départ. 348 est entre 300 et 400, et le milieu est 350 : 348 est avant le milieu, donc il devient 300. Montrer sur une droite de 300 à 400 que 348 est plus proche de 300."
+          },
+          {
+            "misconception": "Quand le nombre est exactement au milieu, on arrondit vers le bas, ou on ne sait pas quoi faire : 65 devient 60.",
+            "response": "Montrer que 65 est à la même distance de 60 et de 70. Expliquer qu’on a convenu d’arrondir vers le haut dans ce cas : 65 devient 70, et 250 devient 300 à la centaine près."
+          },
+          {
+            "misconception": "Quand arrondir change plusieurs chiffres, les élèves hésitent : ils arrondissent 97 à 90, ou 996 à 990, à la dizaine près.",
+            "response": "Utiliser une droite de 90 à 100 : 97 est plus proche de 100. Même raisonnement pour 996, entre 990 et 1 000 : 996 devient 1 000. Rassurer les élèves : le résultat peut avoir un chiffre de plus que le nombre de départ."
+          },
+          {
+            "misconception": "On peut toujours arrondir, même quand il faut une réponse exacte.",
+            "response": "Faire trier des situations en « il faut le nombre exact » et « environ suffit » : le nombre de berlingots de lait à commander pour la classe, le nombre de personnes attendues au spectacle de fin d’année, la monnaie à rendre à la vente de livres. Discuter des raisons de chaque choix."
+          }
+        ],
+        "teachingTips": [
+          "Commencer par la droite numérique : placer les deux dizaines (ou centaines) qui encadrent le nombre, marquer le milieu, puis situer le nombre.",
+          "Poser toujours deux questions dans l’ordre : « Entre quels nombres ronds se trouve ce nombre? », puis « Lequel est le plus proche? ».",
+          "Présenter la règle du 5 seulement quand les élèves ont compris l’idée de proximité, comme un raccourci pour aller plus vite.",
+          "Utiliser des contextes : prix, distances, nombre de personnes à une activité. Demander souvent « Environ combien? ».",
+          "Tendre une corde à linge au tableau et y accrocher des cartes-nombres avec des pinces pour placer les nombres devant la classe.",
+          "Relier l’arrondissement à l’estimation : estimer 198 + 305 en arrondissant à la centaine près (200 + 300 = 500), puis comparer au résultat exact (503)."
+        ],
+        "lookFors": [
+          "L’élève nomme les deux dizaines (ou centaines) qui encadrent le nombre.",
+          "L’élève regarde le bon chiffre : celui juste à droite de la position visée.",
+          "L’élève justifie avec la distance (« 68 est à 2 de 70 et à 8 de 60 »).",
+          "L’élève vérifie que le nombre arrondi reste proche du nombre de départ.",
+          "L’élève reconnaît quand une valeur exacte est nécessaire."
+        ]
+      },
+      "answerKey": null
+    }
+  ]
+}

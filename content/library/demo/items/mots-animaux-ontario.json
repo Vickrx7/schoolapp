@@ -1,0 +1,229 @@
+{
+  "slug": "mots-animaux-ontario",
+  "type": "vocabulary_bank",
+  "title": "Banque de mots : les animaux de l’Ontario",
+  "summary": "Vingt-quatre mots pour lire et écrire des textes informatifs sur les animaux de l’Ontario : noms d’animaux, habitats et modes de vie, avec une définition et un exemple.",
+  "source": "teacher_created",
+  "author": "isabelle.tremblay@demo.lynx.test",
+  "school": "saint-exemple",
+  "status": "teacher_reviewed",
+  "shareScope": "school",
+  "reviewRequested": false,
+  "approvedBy": null,
+  "faithReviewed": false,
+  "gradeCodes": ["3"],
+  "subjectCode": "fra",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "C1"
+    }
+  ],
+  "durationMinutes": 20,
+  "materials": "Une copie par élève ou une projection au tableau.",
+  "keywords": "vocabulaire, animaux, Ontario, habitat, mots de lecture, fiche animale",
+  "tags": ["vocabulaire", "animaux", "ontario"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": false,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "J’apprends des mots précis pour mieux comprendre et écrire des textes sur les animaux de l’Ontario.",
+        "teacherNote": "Banque préparée pour l’unité « Lire pour s’informer : les animaux de l’Ontario ». « Suisse » (tamia rayé) et « outarde » (bernache du Canada) sont des mots courants au Canada; on les présente à côté du nom usuel. Faits à vérifier avant l’utilisation : l’orignal comme plus grand cervidé du Canada; l’hiver de l’ours noir (un long sommeil, qu’on ne classe pas toujours comme une vraie hibernation); la migration du monarque jusqu’au Mexique; la marmotte comme animal qui hiberne.",
+        "theme": "Les animaux de l’Ontario",
+        "words": [
+          {
+            "term": "le huard",
+            "definition": "Oiseau aquatique noir et blanc aux yeux rouges, qui plonge pour attraper des poissons.",
+            "example": "Le soir, on entend le cri du huard sur le lac.",
+            "wordClass": "nom",
+            "gender": "m"
+          },
+          {
+            "term": "le castor",
+            "definition": "Gros rongeur qui construit des barrages et des huttes avec des branches et de la boue.",
+            "example": "Le castor ronge le tronc d’un peuplier.",
+            "wordClass": "nom",
+            "gender": "m"
+          },
+          {
+            "term": "l’orignal",
+            "definition": "Le plus grand cervidé du Canada. Le mâle porte de grands bois plats.",
+            "example": "L’orignal mange des plantes au bord du lac.",
+            "wordClass": "nom",
+            "gender": "m"
+          },
+          {
+            "term": "l’ours noir",
+            "definition": "Grand mammifère au pelage noir qui passe une grande partie de l’hiver endormi dans sa tanière.",
+            "example": "L’ours noir cherche des petits fruits dans la forêt.",
+            "wordClass": "nom",
+            "gender": "m"
+          },
+          {
+            "term": "la tortue peinte",
+            "definition": "Petite tortue d’eau douce dont la carapace est bordée de rouge et la tête, rayée de jaune.",
+            "example": "La tortue peinte se réchauffe au soleil sur une roche.",
+            "wordClass": "nom",
+            "gender": "f"
+          },
+          {
+            "term": "le raton laveur",
+            "definition": "Mammifère au masque noir autour des yeux, avec une queue rayée d’anneaux.",
+            "example": "Le raton laveur fouille dans le bac à compost.",
+            "wordClass": "nom",
+            "gender": "m"
+          },
+          {
+            "term": "la mouffette",
+            "definition": "Mammifère noir rayé de blanc qui projette un liquide à l’odeur très forte pour se défendre.",
+            "example": "Nous avons reculé doucement en voyant la mouffette.",
+            "wordClass": "nom",
+            "gender": "f"
+          },
+          {
+            "term": "le tamia rayé",
+            "definition": "Petit rongeur roux avec des rayures sur le dos, qui fait des réserves de graines. On l’appelle aussi « suisse ».",
+            "example": "Le tamia rayé remplit ses joues de graines.",
+            "wordClass": "nom",
+            "gender": "m"
+          },
+          {
+            "term": "la bernache du Canada",
+            "definition": "Grande oie sauvage au cou noir et aux joues blanches. On l’appelle souvent « outarde ».",
+            "example": "À l’automne, les bernaches volent en forme de V.",
+            "wordClass": "nom",
+            "gender": "f"
+          },
+          {
+            "term": "le grand héron",
+            "definition": "Grand oiseau aux longues pattes qui pêche immobile dans l’eau peu profonde.",
+            "example": "Le grand héron attrape une grenouille avec son bec.",
+            "wordClass": "nom",
+            "gender": "m"
+          },
+          {
+            "term": "le monarque",
+            "definition": "Papillon orange et noir qui migre jusqu’au Mexique à l’automne.",
+            "example": "La chenille du monarque mange des feuilles d’asclépiade.",
+            "wordClass": "nom",
+            "gender": "m"
+          },
+          {
+            "term": "le lynx du Canada",
+            "definition": "Félin sauvage aux grandes pattes poilues et aux oreilles terminées par des touffes de poils noirs.",
+            "example": "Le lynx du Canada chasse le lièvre dans la forêt boréale.",
+            "wordClass": "nom",
+            "gender": "m"
+          },
+          {
+            "term": "l’habitat",
+            "definition": "Le milieu naturel où vit un animal et où il trouve sa nourriture et un abri.",
+            "example": "Le marais est l’habitat de la tortue peinte.",
+            "wordClass": "nom",
+            "gender": "m"
+          },
+          {
+            "term": "la tanière",
+            "definition": "Un abri où un animal se cache, dort ou élève ses petits.",
+            "example": "L’ours noir passe l’hiver dans sa tanière.",
+            "wordClass": "nom",
+            "gender": "f"
+          },
+          {
+            "term": "le pelage",
+            "definition": "L’ensemble des poils d’un animal.",
+            "example": "En hiver, le pelage du lièvre devient blanc.",
+            "wordClass": "nom",
+            "gender": "m"
+          },
+          {
+            "term": "le plumage",
+            "definition": "L’ensemble des plumes d’un oiseau.",
+            "example": "Le plumage du huard est noir et blanc.",
+            "wordClass": "nom",
+            "gender": "m"
+          },
+          {
+            "term": "la proie",
+            "definition": "Un animal chassé par un autre animal pour être mangé.",
+            "example": "Le lièvre est la proie préférée du lynx.",
+            "wordClass": "nom",
+            "gender": "f"
+          },
+          {
+            "term": "le prédateur",
+            "definition": "Un animal qui chasse d’autres animaux pour se nourrir.",
+            "example": "Le renard est un prédateur rusé.",
+            "wordClass": "nom",
+            "gender": "m"
+          },
+          {
+            "term": "hiberner",
+            "definition": "Passer l’hiver dans un sommeil profond, le corps au ralenti.",
+            "example": "La marmotte hiberne jusqu’au printemps.",
+            "wordClass": "verbe",
+            "gender": null
+          },
+          {
+            "term": "migrer",
+            "definition": "Partir vers une autre région pour y passer une saison.",
+            "example": "Les bernaches migrent vers le sud à l’automne.",
+            "wordClass": "verbe",
+            "gender": null
+          },
+          {
+            "term": "se camoufler",
+            "definition": "Se cacher en ayant la même couleur que ce qui nous entoure.",
+            "example": "En hiver, le lièvre se camoufle dans la neige.",
+            "wordClass": "verbe",
+            "gender": null
+          },
+          {
+            "term": "nocturne",
+            "definition": "Qui est actif surtout la nuit.",
+            "example": "Le raton laveur est un animal nocturne.",
+            "wordClass": "adjectif",
+            "gender": null
+          },
+          {
+            "term": "omnivore",
+            "definition": "Qui mange à la fois des plantes et des animaux.",
+            "example": "L’ours noir est omnivore.",
+            "wordClass": "adjectif",
+            "gender": null
+          },
+          {
+            "term": "herbivore",
+            "definition": "Qui mange seulement des plantes.",
+            "example": "L’orignal est herbivore.",
+            "wordClass": "adjectif",
+            "gender": null
+          }
+        ],
+        "activityIdeas": [
+          "Mimer un animal ou une action (hiberner, migrer, se camoufler) et faire deviner le mot.",
+          "Trier les mots en trois groupes : des animaux, des milieux de vie, des façons de vivre.",
+          "Jeu « Qui suis-je? » : lire une définition à voix haute; la classe trouve le mot.",
+          "Classer les animaux de la banque selon ce qu’ils font en hiver : ils hibernent, ils migrent ou ils restent actifs.",
+          "Pour la fiche animale, chaque élève choisit au moins trois mots de la banque et les utilise dans ses phrases."
+        ]
+      },
+      "answerKey": null
+    }
+  ]
+}

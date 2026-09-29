@@ -1,0 +1,110 @@
+{
+  "slug": "parties-texte-informatif",
+  "type": "anchor_chart",
+  "title": "Les parties d’un texte informatif",
+  "summary": "Référentiel à afficher en classe : les parties d’un texte informatif (titre, intertitres, photos, légendes, mots en caractères gras, glossaire, table des matières) et à quoi elles servent.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["3"],
+  "subjectCode": "fra",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "C1.3"
+    }
+  ],
+  "durationMinutes": 20,
+  "materials": "Grande feuille et marqueurs de couleur, ou projection au tableau. Quelques documentaires de la bibliothèque de classe.",
+  "keywords": "référentiel, caractéristiques du texte informatif, titre, intertitre, légende, glossaire, table des matières, documentaire",
+  "tags": ["lecture"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": false,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je reconnais les parties d’un texte informatif et je m’en sers pour trouver de l’information.",
+        "teacherNote": "Référentiel à construire avec les élèves : afficher d’abord les titres des sections, puis ajouter les points au fil des lectures. Certains documentaires jeunesse disent « sous-titre » plutôt qu’« intertitre »; on peut présenter les deux mots. Les exemples sur la tortue peinte servent seulement à illustrer chaque partie. Revenir au référentiel chaque fois que les élèves cherchent une information dans un texte.",
+        "heading": "Les parties qui m’aident à trouver l’information",
+        "sections": [
+          {
+            "title": "Le titre",
+            "points": [
+              "Il annonce le sujet du texte.",
+              "Il est placé au début, en gros caractères."
+            ],
+            "example": "Avec le titre « La tortue peinte », je sais que le texte parle de cet animal."
+          },
+          {
+            "title": "Les intertitres",
+            "points": [
+              "Ils séparent le texte en parties.",
+              "Chaque intertitre annonce ce que dit la partie qui le suit.",
+              "Je les lis pour trouver vite l’information que je cherche."
+            ],
+            "example": "« Son habitat », « Son alimentation », « Ses petits »"
+          },
+          {
+            "title": "Les photos et les illustrations",
+            "points": [
+              "Elles montrent à quoi ressemble ce dont parle le texte.",
+              "Je les observe avant de lire pour prédire ce que je vais apprendre."
+            ],
+            "example": ""
+          },
+          {
+            "title": "Les légendes",
+            "points": [
+              "Une légende est une courte phrase placée près d’une photo ou d’une illustration.",
+              "Elle explique ce que l’image montre."
+            ],
+            "example": "Une tortue peinte se réchauffe au soleil sur un tronc d’arbre."
+          },
+          {
+            "title": "Les mots en caractères gras et le glossaire",
+            "points": [
+              "Les mots importants sont parfois écrits en caractères gras.",
+              "Le glossaire, à la fin du texte, explique le sens de ces mots.",
+              "Quand je ne comprends pas un mot en caractères gras, je le cherche dans le glossaire."
+            ],
+            "example": "Le mot « carapace » est en caractères gras; le glossaire explique que c’est la partie dure qui protège le corps de la tortue."
+          },
+          {
+            "title": "La table des matières",
+            "points": [
+              "Elle se trouve au début du livre.",
+              "Elle donne la liste des parties du livre avec leur numéro de page.",
+              "Elle m’aide à aller directement à la bonne page."
+            ],
+            "example": ""
+          }
+        ],
+        "visualIdeas": [
+          "Coller près de chaque section un exemple découpé dans une vieille revue ou photocopié d’un documentaire, avec la partie encerclée.",
+          "Donner une couleur à chaque partie (par exemple, le titre en rouge et les intertitres en bleu), puis utiliser les mêmes couleurs quand les élèves surlignent un texte.",
+          "Laisser de l’espace pour que les élèves ajoutent des exemples trouvés dans leurs lectures."
+        ]
+      },
+      "answerKey": null
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+{
+  "slug": "idee-principale-paragraphe",
+  "type": "lesson_plan",
+  "title": "Trouver l’idée principale d’un paragraphe",
+  "summary": "Leçon de 50 minutes : les élèves apprennent à repérer l’idée principale d’un paragraphe informatif et les détails qui l’appuient, avec le texte « Le huard, oiseau des lacs ».",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["3"],
+  "subjectCode": "fra",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "C1.2"
+    }
+  ],
+  "durationMinutes": 50,
+  "materials": "Texte « Le huard, oiseau des lacs » (une copie par élève, dans la version prévue pour son groupe); une feuille blanche par élève, pliée en quatre; surligneurs; crayons; tableau.",
+  "keywords": "idée principale, détails importants, paragraphe, texte informatif, stratégie de lecture, huard",
+  "tags": ["lecture", "animaux"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Repérer l’idée principale d’un paragraphe informatif et nommer des détails importants qui l’appuient.",
+        "teacherNote": "Cette leçon utilise le texte « Le huard, oiseau des lacs » de la banque de ressources. Ses quatre versions gardent les mêmes quatre paragraphes et les mêmes idées principales : chaque élève lit la version qui lui convient et participe à la même discussion. La feuille pliée en quatre sert d’organisateur graphique, avec une case par paragraphe.\n\nIdées principales attendues (d’autres formulations sont acceptables) : paragraphe 1, le huard est un oiseau des lacs bien connu en Ontario; paragraphe 2, on reconnaît facilement le huard à son plumage; paragraphe 3, le corps du huard est fait pour plonger; paragraphe 4, le huard élève ses petits près de l’eau et en prend soin.",
+        "successCriteria": [
+          "Je dis de quoi parle le paragraphe : c’est le sujet.",
+          "J’écris en une phrase ce que le paragraphe dit de plus important sur ce sujet : c’est l’idée principale.",
+          "Je nomme deux détails qui expliquent ou prouvent l’idée principale.",
+          "J’explique mon choix avec des mots du texte."
+        ],
+        "opening": [
+          {
+            "minutes": 4,
+            "instruction": "Écrire au tableau quatre mots : « tuque », « mitaines », « foulard », « bottes ». Demander aux élèves de proposer une étiquette pour une boîte qui contiendrait ces quatre objets.",
+            "say": "Si ces quatre objets étaient rangés dans une boîte, quelle étiquette pourrait-on écrire sur la boîte?"
+          },
+          {
+            "minutes": 4,
+            "instruction": "Écrire trois étiquettes : « Des mitaines », « Des choses », « Des vêtements d’hiver ». Faire voter la classe : laquelle est trop petite, laquelle est trop grande, laquelle est juste bien? Faire le lien avec l’idée principale d’un paragraphe.",
+            "say": "Si j’écris seulement « mitaines », c’est trop petit : ça parle d’un seul objet. Si j’écris « choses », c’est trop grand : ça pourrait parler de n’importe quoi. « Vêtements d’hiver », c’est juste bien. L’idée principale d’un paragraphe, c’est l’étiquette juste bien."
+          },
+          {
+            "minutes": 2,
+            "instruction": "Présenter l’intention d’apprentissage et les critères de réussite, écrits au tableau. Distribuer le texte et la feuille pliée en quatre.",
+            "say": "Aujourd’hui, nous apprenons à trouver l’idée principale d’un paragraphe et les détails qui l’appuient."
+          }
+        ],
+        "development": [
+          {
+            "minutes": 10,
+            "instruction": "Modelage avec le paragraphe 1. Lire le paragraphe à voix haute pendant que les élèves suivent. Penser à voix haute : nommer le sujet, chercher ce que toutes les phrases disent du huard, puis formuler l’idée principale en une phrase. Surligner deux détails. Remplir la première case de la feuille au tableau pendant que les élèves la remplissent aussi.",
+            "say": "Toutes les phrases parlent du huard et de la place qu’il occupe chez nous. Mon étiquette juste bien, c’est que le huard est un oiseau des lacs bien connu en Ontario. Deux détails le prouvent : il vit sur des milliers de lacs de l’Ontario, et c’est l’oiseau officiel de la province."
+          },
+          {
+            "minutes": 10,
+            "instruction": "Pratique guidée en équipes de deux avec les paragraphes 2 et 3. Pour chaque paragraphe, l’équipe nomme le sujet, écrit l’idée principale en une phrase dans la bonne case, puis souligne deux détails dans le texte. Circuler et poser des questions.",
+            "say": "De quoi parlent toutes les phrases de ce paragraphe? Votre idée principale est-elle trop petite, trop grande ou juste bien?"
+          },
+          {
+            "minutes": 3,
+            "instruction": "Mise en commun rapide : deux équipes lisent leur idée principale du paragraphe 3. La classe dit si l’étiquette est trop petite, trop grande ou juste bien, et pourquoi.",
+            "say": ""
+          },
+          {
+            "minutes": 8,
+            "instruction": "Pratique autonome : chaque élève trouve l’idée principale du paragraphe 4 et deux détails, et les écrit dans la dernière case de sa feuille.",
+            "say": "Maintenant, chaque élève travaille de son côté. Lisez le paragraphe 4, puis remplissez la dernière case de votre feuille."
+          }
+        ],
+        "closing": [
+          {
+            "minutes": 5,
+            "instruction": "Retour en grand groupe : trois élèves lisent leur idée principale du paragraphe 4. Comparer les formulations : des phrases différentes peuvent toutes être justes si elles disent l’essentiel.",
+            "say": "Vos phrases ne sont pas toutes pareilles, et c’est correct. Ce qui compte, c’est qu’elles disent l’essentiel du paragraphe."
+          },
+          {
+            "minutes": 4,
+            "instruction": "Autoévaluation : relire chaque critère de réussite. Les élèves montrent un pouce levé, à l’horizontale ou baissé. Ramasser les feuilles.",
+            "say": ""
+          }
+        ],
+        "differentiation": "Chaque élève lit la version du texte prévue pour son groupe; les idées principales sont les mêmes dans toutes les versions. Pour les élèves qui apprennent le français : lire le paragraphe en petit groupe, montrer le glossaire et accepter une idée principale formée de quelques mots-clés ou d’un dessin avec une légende. Pour les élèves qui ont besoin d’un défi : trouver l’idée principale du texte entier et proposer un nouveau titre.",
+        "assessment": "Évaluation au service de l’apprentissage, sans note. Pendant la pratique guidée, observer si les équipes nomment le sujet, formulent une idée principale juste bien et choisissent des détails pertinents. La case du paragraphe 4 montre quels élèves ont besoin d’un nouveau modelage en petit groupe. Donner une rétroaction orale ou écrite sur la feuille.",
+        "subNotes": "Leçon prête pour une personne suppléante, sans matériel spécial. Avant l’arrivée des élèves, écrivez au tableau les quatre mots de l’amorce ainsi que l’intention d’apprentissage et les critères de réussite. Lisez les passages « À dire » tels quels. Chaque élève reçoit la version du texte prévue pour son groupe. Les idées principales attendues sont dans les notes pédagogiques. À la fin, ramassez les feuilles pliées et laissez-les sur le bureau pour la personne titulaire de la classe."
+      },
+      "answerKey": null
+    }
+  ]
+}

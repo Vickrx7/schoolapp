@@ -1,0 +1,447 @@
+{
+  "slug": "billet-arrondir-dizaine",
+  "type": "exit_ticket",
+  "title": "Billet de sortie : arrondir à la dizaine",
+  "summary": "Billet de sortie de trois questions pour vérifier si les élèves arrondissent des nombres naturels à la dizaine près, y compris un nombre situé exactement au milieu.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["3"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "B1.3"
+    }
+  ],
+  "durationMinutes": 5,
+  "materials": "Une copie du billet par élève, dans la version prévue pour son groupe; un crayon.",
+  "keywords": "arrondir, dizaine près, billet de sortie, estimation, vérification des apprentissages",
+  "tags": ["nombres", "evaluation"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "J’arrondis des nombres naturels à la dizaine près.",
+        "teacherNote": "Billet de sortie pour la fin de la leçon « Arrondir à la dizaine ». Les trois questions et les nombres sont les mêmes dans toutes les versions; seule la langue change. La question 2 vérifie la convention du nombre situé au milieu (365 devient 370). La question 3 se corrige à la main : noter les élèves qui répondent 90 ou qui ne justifient pas. Voir aussi le guide « Arrondir : idées fausses fréquentes ».",
+        "prompt": "Avant de partir, montre ce que tu sais sur l’arrondissement à la dizaine près.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Arrondis 47 à la dizaine près.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "40"
+              },
+              {
+                "id": "b",
+                "text": "45"
+              },
+              {
+                "id": "c",
+                "text": "50"
+              },
+              {
+                "id": "d",
+                "text": "100"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Arrondis 365 à la dizaine près.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Il y a 83 livres dans le bac de lecture. Environ combien de livres y a-t-il, à la dizaine près? Explique comment tu le sais.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "47 est entre 40 et 50. Il est à 3 de 50 et à 7 de 40 : il est plus proche de 50."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "370",
+            "acceptableAnswers": ["370"],
+            "explanation": "365 est exactement au milieu entre 360 et 370. Par convention, on arrondit vers le haut : 370."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "Environ 80 livres. 83 est entre 80 et 90 : il est à 3 de 80 et à 7 de 90, donc il est plus proche de 80.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : attendre 80 et une justification (distance, droite numérique ou chiffre des unités plus petit que 5)."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "debutant",
+      "content": {
+        "title": "",
+        "objective": "J’arrondis des nombres naturels à la dizaine près.",
+        "teacherNote": "Version Débutant : consignes très courtes et un indice par question. Mêmes questions et mêmes nombres que les autres versions.",
+        "prompt": "Avant de partir, réponds aux trois questions.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Arrondis 47 à la dizaine près.",
+            "hint": "47 est entre 40 et 50. Lequel est le plus proche?",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "40"
+              },
+              {
+                "id": "b",
+                "text": "45"
+              },
+              {
+                "id": "c",
+                "text": "50"
+              },
+              {
+                "id": "d",
+                "text": "100"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Arrondis 365 à la dizaine près.",
+            "hint": "365 est entre 360 et 370.",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Il y a 83 livres dans le bac. Arrondis 83 à la dizaine près. Dis pourquoi.",
+            "hint": "83 est entre 80 et 90.",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "47 est entre 40 et 50. Il est à 3 de 50 et à 7 de 40 : il est plus proche de 50."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "370",
+            "acceptableAnswers": ["370"],
+            "explanation": "365 est exactement au milieu entre 360 et 370. Par convention, on arrondit vers le haut : 370."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "Environ 80 livres. 83 est entre 80 et 90 : il est à 3 de 80 et à 7 de 90, donc il est plus proche de 80.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : attendre 80 et une justification (distance, droite numérique ou chiffre des unités plus petit que 5)."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "intermediaire",
+      "content": {
+        "title": "",
+        "objective": "J’arrondis des nombres naturels à la dizaine près.",
+        "teacherNote": "Version Intermédiaire : consignes simples et indices pour les questions 1 et 2. Mêmes questions et mêmes nombres que les autres versions.",
+        "prompt": "Avant de partir, réponds aux trois questions sur l’arrondissement.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Arrondis 47 à la dizaine près.",
+            "hint": "47 est entre 40 et 50. Lequel est le plus proche?",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "40"
+              },
+              {
+                "id": "b",
+                "text": "45"
+              },
+              {
+                "id": "c",
+                "text": "50"
+              },
+              {
+                "id": "d",
+                "text": "100"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Arrondis 365 à la dizaine près.",
+            "hint": "Entre quelles dizaines se trouve 365?",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Il y a 83 livres dans le bac de lecture. Environ combien de livres y a-t-il, à la dizaine près? Explique comment tu le sais.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "47 est entre 40 et 50. Il est à 3 de 50 et à 7 de 40 : il est plus proche de 50."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "370",
+            "acceptableAnswers": ["370"],
+            "explanation": "365 est exactement au milieu entre 360 et 370. Par convention, on arrondit vers le haut : 370."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "Environ 80 livres. 83 est entre 80 et 90 : il est à 3 de 80 et à 7 de 90, donc il est plus proche de 80.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : attendre 80 et une justification (distance, droite numérique ou chiffre des unités plus petit que 5)."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "avance",
+      "content": {
+        "title": "",
+        "objective": "J’arrondis des nombres naturels à la dizaine près.",
+        "teacherNote": "Version Avancé : même billet que la version de base, écrit dans le français attendu en 3e année.",
+        "prompt": "Avant de partir, montre ce que tu sais sur l’arrondissement à la dizaine près.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Arrondis 47 à la dizaine près.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "40"
+              },
+              {
+                "id": "b",
+                "text": "45"
+              },
+              {
+                "id": "c",
+                "text": "50"
+              },
+              {
+                "id": "d",
+                "text": "100"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Arrondis 365 à la dizaine près.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Il y a 83 livres dans le bac de lecture. Environ combien de livres y a-t-il, à la dizaine près? Explique comment tu le sais.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "47 est entre 40 et 50. Il est à 3 de 50 et à 7 de 40 : il est plus proche de 50."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "370",
+            "acceptableAnswers": ["370"],
+            "explanation": "365 est exactement au milieu entre 360 et 370. Par convention, on arrondit vers le haut : 370."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "Environ 80 livres. 83 est entre 80 et 90 : il est à 3 de 80 et à 7 de 90, donc il est plus proche de 80.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : attendre 80 et une justification (distance, droite numérique ou chiffre des unités plus petit que 5)."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "enrichi",
+      "content": {
+        "title": "",
+        "objective": "J’arrondis des nombres naturels à la dizaine près.",
+        "teacherNote": "Version Enrichi : consignes plus précises et justification plus exigeante à la question 3. Mêmes questions et mêmes nombres que les autres versions.",
+        "prompt": "Avant de quitter la classe, montre ce que tu as compris de l’arrondissement à la dizaine près.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Arrondis 47 à la dizaine près.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "40"
+              },
+              {
+                "id": "b",
+                "text": "45"
+              },
+              {
+                "id": "c",
+                "text": "50"
+              },
+              {
+                "id": "d",
+                "text": "100"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Arrondis 365 à la dizaine près.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Le bac de lecture contient 83 livres. Environ combien de livres contient-il, à la dizaine près? Justifie ta réponse en comparant les distances.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "47 est entre 40 et 50. Il est à 3 de 50 et à 7 de 40 : il est plus proche de 50."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "370",
+            "acceptableAnswers": ["370"],
+            "explanation": "365 est exactement au milieu entre 360 et 370. Par convention, on arrondit vers le haut : 370."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "Environ 80 livres. 83 est entre 80 et 90 : il est à 3 de 80 et à 7 de 90, donc il est plus proche de 80.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : attendre 80 et une justification (distance, droite numérique ou chiffre des unités plus petit que 5)."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}
