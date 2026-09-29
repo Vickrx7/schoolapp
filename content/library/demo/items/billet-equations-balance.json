@@ -1,0 +1,451 @@
+{
+  "slug": "billet-equations-balance",
+  "type": "exit_ticket",
+  "title": "Billet de sortie : résoudre et vérifier une équation",
+  "summary": "Billet de sortie de trois questions pour vérifier si les élèves trouvent la valeur d’une variable (multiplication, balance à plateaux décrite en mots) et s’ils vérifient une solution en remplaçant la variable par sa valeur.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["5"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "C2.3"
+    },
+    {
+      "grade": "5",
+      "code": "C2.1"
+    }
+  ],
+  "durationMinutes": 10,
+  "materials": "Une copie du billet par élève, dans la version prévue pour son groupe; un crayon. Facultatif : une balance à plateaux et des billes ou des cubes pour la démonstration.",
+  "keywords": "équation, variable, valeur manquante, balance, équilibre, vérifier, substitution, billet de sortie",
+  "tags": ["nombres", "evaluation"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je résous des équations qui contiennent une variable et je vérifie ma solution en remplaçant la variable par sa valeur.",
+        "teacherNote": "Billet de sortie pour la fin d’une leçon sur les équations. Les trois questions et les nombres sont les mêmes dans toutes les versions; seule la langue change. Si vous avez une balance à plateaux et des billes (ou des cubes), montrez la situation de la question 2 avant le billet : enlever 15 billes de chaque plateau garde l’équilibre. La question 3 se corrige à la main : on attend une vérification par substitution.",
+        "prompt": "Avant de partir, résous chaque équation et vérifie ta solution.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quelle valeur de n rend l’équation 4 × n = 36 vraie?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "9"
+              },
+              {
+                "id": "b",
+                "text": "32"
+              },
+              {
+                "id": "c",
+                "text": "40"
+              },
+              {
+                "id": "d",
+                "text": "144"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Sur une balance à plateaux, le plateau de gauche contient un sac fermé rempli de billes et 15 billes à côté. Le plateau de droite contient 42 billes. La balance est en équilibre, et le sac vide ne pèse presque rien. Écris une équation avec la lettre s pour le nombre de billes dans le sac, puis trouve la valeur de s.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 3
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Alix résout l’équation 72 ÷ n = 8. Elle trouve n = 64. Vérifie sa solution. A-t-elle raison? Explique.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "4 × 9 = 36. Le choix 32 vient d’une soustraction (36 − 4), le choix 40 d’une addition (36 + 4) et le choix 144 d’une multiplication (36 × 4)."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "s + 15 = 42 (ou 15 + s = 42). s = 27 : le sac contient 27 billes, car 27 + 15 = 42.",
+            "acceptableAnswers": ["27", "27 billes", "s = 27", "s=27"],
+            "explanation": "Accepter toute lettre pour la variable. Pour garder l’équilibre, on peut enlever 15 billes de chaque plateau : il reste le sac d’un côté et 27 billes de l’autre. Erreur fréquente : additionner 42 et 15 (57)."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. Si je remplace n par 64, 72 ÷ 64 ne donne pas 8 (cela donne un peu plus que 1). La solution est n = 9, car 72 ÷ 9 = 8 (ou 8 × 9 = 72).",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit remplacer n par 64 pour vérifier, dire que la solution est fausse et, si possible, trouver n = 9. Alix a soustrait 8 de 72 au lieu de chercher le diviseur."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "debutant",
+      "content": {
+        "title": "",
+        "objective": "Je résous des équations qui contiennent une variable et je vérifie ma solution en remplaçant la variable par sa valeur.",
+        "teacherNote": "Version Débutant : phrases courtes et un indice par question. Mêmes questions et mêmes nombres que les autres versions. Lisez les questions à voix haute au besoin et montrez une vraie balance si possible.",
+        "prompt": "Réponds aux 3 questions. Vérifie chaque réponse.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "4 × n = 36. Quelle est la valeur de n?",
+            "hint": "Quel nombre, multiplié par 4, donne 36?",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "9"
+              },
+              {
+                "id": "b",
+                "text": "32"
+              },
+              {
+                "id": "c",
+                "text": "40"
+              },
+              {
+                "id": "d",
+                "text": "144"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Une balance a deux plateaux. À gauche : un sac fermé avec des billes et 15 billes à côté. À droite : 42 billes. La balance est en équilibre : les deux côtés ont le même nombre de billes. Le sac vide ne pèse presque rien. Écris une équation avec la lettre s. La lettre s est le nombre de billes dans le sac. Ensuite, trouve s.",
+            "hint": "À gauche, il y a s + 15 billes. À droite, il y a 42 billes.",
+            "points": null,
+            "category": "application",
+            "lines": 3
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Alix résout 72 ÷ n = 8. Elle trouve n = 64. Vérifie : remplace n par 64. A-t-elle raison? Écris oui ou non. Explique.",
+            "hint": "Calcule 72 ÷ 64. Est-ce que cela donne 8?",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "4 × 9 = 36. Le choix 32 vient d’une soustraction (36 − 4), le choix 40 d’une addition (36 + 4) et le choix 144 d’une multiplication (36 × 4)."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "s + 15 = 42 (ou 15 + s = 42). s = 27 : le sac contient 27 billes, car 27 + 15 = 42.",
+            "acceptableAnswers": ["27", "27 billes", "s = 27", "s=27"],
+            "explanation": "Accepter toute lettre pour la variable. Pour garder l’équilibre, on peut enlever 15 billes de chaque plateau : il reste le sac d’un côté et 27 billes de l’autre. Erreur fréquente : additionner 42 et 15 (57)."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. Si je remplace n par 64, 72 ÷ 64 ne donne pas 8 (cela donne un peu plus que 1). La solution est n = 9, car 72 ÷ 9 = 8 (ou 8 × 9 = 72).",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit remplacer n par 64 pour vérifier, dire que la solution est fausse et, si possible, trouver n = 9. Alix a soustrait 8 de 72 au lieu de chercher le diviseur."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "intermediaire",
+      "content": {
+        "title": "",
+        "objective": "Je résous des équations qui contiennent une variable et je vérifie ma solution en remplaçant la variable par sa valeur.",
+        "teacherNote": "Version Intermédiaire : phrases simples, une précision sur l’équilibre et une consigne de vérification guidée à la question 3. Mêmes questions et mêmes nombres que les autres versions.",
+        "prompt": "Avant de partir, résous les équations. Vérifie chaque solution.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quelle valeur de n rend l’équation 4 × n = 36 vraie?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "9"
+              },
+              {
+                "id": "b",
+                "text": "32"
+              },
+              {
+                "id": "c",
+                "text": "40"
+              },
+              {
+                "id": "d",
+                "text": "144"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Sur une balance à plateaux, le plateau de gauche contient un sac fermé rempli de billes et 15 billes à côté. Le plateau de droite contient 42 billes. La balance est en équilibre : les deux plateaux ont le même nombre de billes. Le sac vide ne pèse presque rien. Écris une équation avec la lettre s pour le nombre de billes dans le sac, puis trouve la valeur de s.",
+            "hint": "Ce qui est à gauche est égal à ce qui est à droite.",
+            "points": null,
+            "category": "application",
+            "lines": 3
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Alix résout l’équation 72 ÷ n = 8. Elle trouve n = 64. Vérifie sa solution en remplaçant n par 64. A-t-elle raison? Explique.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "4 × 9 = 36. Le choix 32 vient d’une soustraction (36 − 4), le choix 40 d’une addition (36 + 4) et le choix 144 d’une multiplication (36 × 4)."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "s + 15 = 42 (ou 15 + s = 42). s = 27 : le sac contient 27 billes, car 27 + 15 = 42.",
+            "acceptableAnswers": ["27", "27 billes", "s = 27", "s=27"],
+            "explanation": "Accepter toute lettre pour la variable. Pour garder l’équilibre, on peut enlever 15 billes de chaque plateau : il reste le sac d’un côté et 27 billes de l’autre. Erreur fréquente : additionner 42 et 15 (57)."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. Si je remplace n par 64, 72 ÷ 64 ne donne pas 8 (cela donne un peu plus que 1). La solution est n = 9, car 72 ÷ 9 = 8 (ou 8 × 9 = 72).",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit remplacer n par 64 pour vérifier, dire que la solution est fausse et, si possible, trouver n = 9. Alix a soustrait 8 de 72 au lieu de chercher le diviseur."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "avance",
+      "content": {
+        "title": "",
+        "objective": "Je résous des équations qui contiennent une variable et je vérifie ma solution en remplaçant la variable par sa valeur.",
+        "teacherNote": "Version Avancé : même billet que la version de base, écrit dans le français attendu en 5e année.",
+        "prompt": "Avant de partir, résous chaque équation et vérifie ta solution.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quelle valeur de n rend l’équation 4 × n = 36 vraie?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "9"
+              },
+              {
+                "id": "b",
+                "text": "32"
+              },
+              {
+                "id": "c",
+                "text": "40"
+              },
+              {
+                "id": "d",
+                "text": "144"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Sur une balance à plateaux, le plateau de gauche contient un sac fermé rempli de billes et 15 billes à côté. Le plateau de droite contient 42 billes. La balance est en équilibre, et le sac vide ne pèse presque rien. Écris une équation avec la lettre s pour le nombre de billes dans le sac, puis trouve la valeur de s.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 3
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Alix résout l’équation 72 ÷ n = 8. Elle trouve n = 64. Vérifie sa solution. A-t-elle raison? Explique.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "4 × 9 = 36. Le choix 32 vient d’une soustraction (36 − 4), le choix 40 d’une addition (36 + 4) et le choix 144 d’une multiplication (36 × 4)."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "s + 15 = 42 (ou 15 + s = 42). s = 27 : le sac contient 27 billes, car 27 + 15 = 42.",
+            "acceptableAnswers": ["27", "27 billes", "s = 27", "s=27"],
+            "explanation": "Accepter toute lettre pour la variable. Pour garder l’équilibre, on peut enlever 15 billes de chaque plateau : il reste le sac d’un côté et 27 billes de l’autre. Erreur fréquente : additionner 42 et 15 (57)."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. Si je remplace n par 64, 72 ÷ 64 ne donne pas 8 (cela donne un peu plus que 1). La solution est n = 9, car 72 ÷ 9 = 8 (ou 8 × 9 = 72).",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit remplacer n par 64 pour vérifier, dire que la solution est fausse et, si possible, trouver n = 9. Alix a soustrait 8 de 72 au lieu de chercher le diviseur."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "enrichi",
+      "content": {
+        "title": "",
+        "objective": "Je résous des équations qui contiennent une variable et je vérifie ma solution en remplaçant la variable par sa valeur.",
+        "teacherNote": "Version Enrichi : vocabulaire plus précis (masse négligeable, traduire, substitution) et justification plus exigeante à la question 3. Mêmes questions et mêmes nombres que les autres versions.",
+        "prompt": "Avant de quitter la classe, résous chaque équation et démontre que ta solution est juste.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Détermine la valeur de n qui rend l’équation 4 × n = 36 vraie.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "9"
+              },
+              {
+                "id": "b",
+                "text": "32"
+              },
+              {
+                "id": "c",
+                "text": "40"
+              },
+              {
+                "id": "d",
+                "text": "144"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Une balance à plateaux est en équilibre. Sur le plateau de gauche : un sac fermé contenant un nombre inconnu de billes, et 15 billes. Sur le plateau de droite : 42 billes. On considère que le sac vide a une masse négligeable. Traduis la situation par une équation où s représente le nombre de billes du sac, puis résous-la.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 3
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Alix résout l’équation 72 ÷ n = 8 et obtient n = 64. Vérifie sa solution par substitution. Est-elle juste? Justifie ta réponse et, au besoin, corrige-la.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "4 × 9 = 36. Le choix 32 vient d’une soustraction (36 − 4), le choix 40 d’une addition (36 + 4) et le choix 144 d’une multiplication (36 × 4)."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "s + 15 = 42 (ou 15 + s = 42). s = 27 : le sac contient 27 billes, car 27 + 15 = 42.",
+            "acceptableAnswers": ["27", "27 billes", "s = 27", "s=27"],
+            "explanation": "Accepter toute lettre pour la variable. Pour garder l’équilibre, on peut enlever 15 billes de chaque plateau : il reste le sac d’un côté et 27 billes de l’autre. Erreur fréquente : additionner 42 et 15 (57)."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. Si je remplace n par 64, 72 ÷ 64 ne donne pas 8 (cela donne un peu plus que 1). La solution est n = 9, car 72 ÷ 9 = 8 (ou 8 × 9 = 72).",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit remplacer n par 64 pour vérifier, dire que la solution est fausse et, si possible, trouver n = 9. Alix a soustrait 8 de 72 au lieu de chercher le diviseur."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

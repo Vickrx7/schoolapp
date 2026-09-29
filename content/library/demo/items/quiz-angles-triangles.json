@@ -1,0 +1,1221 @@
+{
+  "slug": "quiz-angles-triangles",
+  "type": "quiz",
+  "title": "Quiz : les angles et les triangles",
+  "summary": "Un quiz de 8 questions pour classer des angles (aigu, droit, obtus, plat) et des triangles (selon les côtés et selon les angles), lire un rapporteur d’angle et construire un triangle à partir de mesures. Il contient les cinq sortes de questions et une version pour chaque niveau de langue.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["5"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "E1.1"
+    },
+    {
+      "grade": "5",
+      "code": "E2.4"
+    }
+  ],
+  "durationMinutes": 25,
+  "materials": "Une copie du quiz par élève (dans la version qui convient à son niveau de langue), un crayon, une gomme à effacer, une règle graduée en centimètres et un rapporteur d’angle.",
+  "keywords": "quiz, angles, angle aigu, angle droit, angle obtus, angle plat, triangles, équilatéral, isocèle, scalène, acutangle, rectangle, obtusangle, rapporteur d’angle, construction",
+  "tags": ["evaluation"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je classe des angles et des triangles selon leurs propriétés, je mesure des angles avec un rapporteur d’angle et je construis un triangle à partir de mesures.",
+        "teacherNote": "Quiz de révision sur les angles et les triangles : il contient les cinq sortes de questions. Comptez environ 25 minutes. Les versions par niveau de langue gardent les mêmes questions, les mêmes mesures et les mêmes réponses : seule la formulation change. Le quiz ne contient aucune figure : chaque élève trace la construction de la question 7 sous la question (prévoir de l’espace ou une feuille blanche). Les questions 7 et 8 se corrigent à la main.",
+        "instructions": "Lis chaque question attentivement. Pour la question 7, utilise ta règle et ton rapporteur d’angle. Tu peux faire des croquis dans la marge.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Un angle mesure 125°. De quelle sorte d’angle s’agit-il?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "un angle aigu"
+              },
+              {
+                "id": "b",
+                "text": "un angle droit"
+              },
+              {
+                "id": "c",
+                "text": "un angle obtus"
+              },
+              {
+                "id": "d",
+                "text": "un angle plat"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "matching",
+            "prompt": "Associe chaque triangle à son nom selon la longueur de ses côtés. Un des noms est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "l1",
+                "text": "un triangle dont les côtés mesurent 5 cm, 5 cm et 5 cm"
+              },
+              {
+                "id": "l2",
+                "text": "un triangle dont les côtés mesurent 4 cm, 7 cm et 4 cm"
+              },
+              {
+                "id": "l3",
+                "text": "un triangle dont les côtés mesurent 3 cm, 4 cm et 6 cm"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "triangle scalène"
+              },
+              {
+                "id": "rb",
+                "text": "triangle rectangle"
+              },
+              {
+                "id": "rc",
+                "text": "triangle équilatéral"
+              },
+              {
+                "id": "rd",
+                "text": "triangle isocèle"
+              }
+            ]
+          },
+          {
+            "id": "q3",
+            "kind": "true_false",
+            "prompt": "Un triangle rectangle a un angle qui mesure 90°.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q4",
+            "kind": "ordering",
+            "prompt": "Place ces angles du plus petit au plus grand.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "items": [
+              {
+                "id": "a",
+                "text": "un angle droit"
+              },
+              {
+                "id": "b",
+                "text": "un angle de 135°"
+              },
+              {
+                "id": "c",
+                "text": "un angle plat"
+              },
+              {
+                "id": "d",
+                "text": "un angle de 45°"
+              }
+            ]
+          },
+          {
+            "id": "q5",
+            "kind": "multiple_choice",
+            "prompt": "Les angles d’un triangle mesurent 50°, 60° et 70°. Comment appelle-t-on ce triangle selon ses angles?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "un triangle acutangle"
+              },
+              {
+                "id": "b",
+                "text": "un triangle rectangle"
+              },
+              {
+                "id": "c",
+                "text": "un triangle obtusangle"
+              },
+              {
+                "id": "d",
+                "text": "un triangle équilatéral"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Océane mesure un angle avec un rapporteur d’angle. Elle place le centre du rapporteur sur le sommet de l’angle et un des côtés de l’angle sur la ligne du zéro. L’autre côté passe vis-à-vis des nombres 70 et 110. L’angle est plus petit qu’un angle droit. Quelle est la mesure de l’angle?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Construis un triangle sous la question. Trace d’abord un segment de 6 cm. À chaque extrémité du segment, trace un angle de 60°, du même côté du segment. Prolonge les deux nouveaux côtés jusqu’à ce qu’ils se rencontrent, puis mesure-les. Selon ses côtés, quelle sorte de triangle as-tu construit?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 6
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Bastien dit : « Un triangle ne peut pas avoir deux angles droits. » A-t-il raison? Explique ta réponse. Tu peux faire un croquis.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 4
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "Un angle obtus mesure plus de 90° et moins de 180°. 125° est entre les deux."
+          },
+          {
+            "questionId": "q2",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "Trois côtés égaux : équilatéral. Deux côtés égaux : isocèle. Aucun côté égal : scalène. « Triangle rectangle » décrit un angle, pas les côtés : il est de trop."
+          },
+          {
+            "questionId": "q3",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Un triangle rectangle a un angle droit, et un angle droit mesure 90°."
+          },
+          {
+            "questionId": "q4",
+            "kind": "ordering",
+            "orderedIds": ["d", "a", "b", "c"],
+            "explanation": "45° < 90° (angle droit) < 135° < 180° (angle plat)."
+          },
+          {
+            "questionId": "q5",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Les trois angles mesurent moins de 90° : ce sont des angles aigus. Le triangle est donc acutangle."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "70°. L’angle est plus petit qu’un angle droit, donc c’est un angle aigu : on lit le nombre plus petit que 90, sur l’échelle qui commence à zéro sur le côté de l’angle.",
+            "acceptableAnswers": ["70°", "70", "70 degrés"],
+            "explanation": "Erreur fréquente : lire 110 sur la mauvaise échelle du rapporteur. Une estimation (plus petit ou plus grand qu’un angle droit) permet de choisir le bon nombre."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "Les deux nouveaux côtés mesurent 6 cm. Les trois côtés sont égaux : c’est un triangle équilatéral.",
+            "acceptableAnswers": ["équilatéral", "un triangle équilatéral", "triangle équilatéral"],
+            "explanation": "Correction manuelle de la construction : accepter des côtés de 5,8 cm à 6,2 cm, selon la précision du tracé. Le troisième angle mesure lui aussi 60°."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "Oui. Si on trace deux angles droits aux deux extrémités d’un segment, les deux autres côtés partent tout droit dans la même direction, comme les montants d’une échelle. Ils ne se rencontrent jamais, alors le triangle ne peut pas se fermer.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire oui et expliquer, avec des mots ou un croquis, que les deux côtés ne se rejoignent pas. Accepter aussi une explication qui utilise la somme des angles d’un triangle (180°) si l’élève la connaît."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "debutant",
+      "content": {
+        "title": "",
+        "objective": "Je classe des angles et des triangles selon leurs propriétés, je mesure des angles avec un rapporteur d’angle et je construis un triangle à partir de mesures.",
+        "teacherNote": "Version Débutant : phrases courtes, mots utiles dans les consignes et un indice par question. Mêmes questions, mêmes mesures et mêmes réponses que les autres versions. Lisez les questions à voix haute au besoin : on évalue la géométrie, pas la lecture.",
+        "instructions": "Lis chaque question. Utilise ta règle et ton rapporteur d’angle.\n\nMots utiles : angle aigu = moins de 90°; angle droit = 90°; angle obtus = entre 90° et 180°; angle plat = 180°. Triangle équilatéral = 3 côtés égaux; isocèle = 2 côtés égaux; scalène = aucun côté égal. Triangle acutangle = 3 angles aigus; rectangle = 1 angle droit; obtusangle = 1 angle obtus.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Un angle mesure 125°. Quelle sorte d’angle est-ce?",
+            "hint": "125° est plus grand que 90° et plus petit que 180°.",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "un angle aigu"
+              },
+              {
+                "id": "b",
+                "text": "un angle droit"
+              },
+              {
+                "id": "c",
+                "text": "un angle obtus"
+              },
+              {
+                "id": "d",
+                "text": "un angle plat"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "matching",
+            "prompt": "Relie chaque triangle à son nom. Regarde la longueur des côtés. Un nom ne va avec rien.",
+            "hint": "Compte les côtés qui ont la même longueur.",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "l1",
+                "text": "un triangle dont les côtés mesurent 5 cm, 5 cm et 5 cm"
+              },
+              {
+                "id": "l2",
+                "text": "un triangle dont les côtés mesurent 4 cm, 7 cm et 4 cm"
+              },
+              {
+                "id": "l3",
+                "text": "un triangle dont les côtés mesurent 3 cm, 4 cm et 6 cm"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "triangle scalène"
+              },
+              {
+                "id": "rb",
+                "text": "triangle rectangle"
+              },
+              {
+                "id": "rc",
+                "text": "triangle équilatéral"
+              },
+              {
+                "id": "rd",
+                "text": "triangle isocèle"
+              }
+            ]
+          },
+          {
+            "id": "q3",
+            "kind": "true_false",
+            "prompt": "Un triangle rectangle a un angle de 90°.",
+            "hint": "Un angle droit mesure 90°.",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q4",
+            "kind": "ordering",
+            "prompt": "Place les angles dans l’ordre. Commence par le plus petit.",
+            "hint": "Angle droit : 90°. Angle plat : 180°.",
+            "points": null,
+            "category": "habiletes",
+            "items": [
+              {
+                "id": "a",
+                "text": "un angle droit"
+              },
+              {
+                "id": "b",
+                "text": "un angle de 135°"
+              },
+              {
+                "id": "c",
+                "text": "un angle plat"
+              },
+              {
+                "id": "d",
+                "text": "un angle de 45°"
+              }
+            ]
+          },
+          {
+            "id": "q5",
+            "kind": "multiple_choice",
+            "prompt": "Un triangle a trois angles : 50°, 60° et 70°. Quel est son nom, selon ses angles?",
+            "hint": "Les trois angles sont-ils plus petits que 90°?",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "un triangle acutangle"
+              },
+              {
+                "id": "b",
+                "text": "un triangle rectangle"
+              },
+              {
+                "id": "c",
+                "text": "un triangle obtusangle"
+              },
+              {
+                "id": "d",
+                "text": "un triangle équilatéral"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Océane mesure un angle avec un rapporteur d’angle. Elle place le centre du rapporteur sur le sommet de l’angle. Un côté de l’angle est sur la ligne du zéro. L’autre côté passe sur deux nombres : 70 et 110. L’angle est plus petit qu’un angle droit. Quelle est la mesure de l’angle?",
+            "hint": "Un angle plus petit qu’un angle droit mesure moins de 90°.",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Construis un triangle sous la question. 1) Trace un segment de 6 cm. 2) À chaque bout du segment, trace un angle de 60°, du même côté. 3) Prolonge les deux côtés jusqu’à ce qu’ils se touchent. 4) Mesure les deux nouveaux côtés. Quel est le nom de ton triangle?",
+            "hint": "Compare la longueur des trois côtés.",
+            "points": null,
+            "category": "application",
+            "lines": 6
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Bastien dit : « Un triangle ne peut pas avoir deux angles droits. » A-t-il raison? Écris oui ou non. Explique. Tu peux faire un dessin.",
+            "hint": "Trace un segment. À chaque bout, trace un angle droit. Les deux côtés se touchent-ils?",
+            "points": null,
+            "category": "communication",
+            "lines": 4
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "Un angle obtus mesure plus de 90° et moins de 180°. 125° est entre les deux."
+          },
+          {
+            "questionId": "q2",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "Trois côtés égaux : équilatéral. Deux côtés égaux : isocèle. Aucun côté égal : scalène. « Triangle rectangle » décrit un angle, pas les côtés : il est de trop."
+          },
+          {
+            "questionId": "q3",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Un triangle rectangle a un angle droit, et un angle droit mesure 90°."
+          },
+          {
+            "questionId": "q4",
+            "kind": "ordering",
+            "orderedIds": ["d", "a", "b", "c"],
+            "explanation": "45° < 90° (angle droit) < 135° < 180° (angle plat)."
+          },
+          {
+            "questionId": "q5",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Les trois angles mesurent moins de 90° : ce sont des angles aigus. Le triangle est donc acutangle."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "70°. L’angle est plus petit qu’un angle droit, donc c’est un angle aigu : on lit le nombre plus petit que 90, sur l’échelle qui commence à zéro sur le côté de l’angle.",
+            "acceptableAnswers": ["70°", "70", "70 degrés"],
+            "explanation": "Erreur fréquente : lire 110 sur la mauvaise échelle du rapporteur. Une estimation (plus petit ou plus grand qu’un angle droit) permet de choisir le bon nombre."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "Les deux nouveaux côtés mesurent 6 cm. Les trois côtés sont égaux : c’est un triangle équilatéral.",
+            "acceptableAnswers": ["équilatéral", "un triangle équilatéral", "triangle équilatéral"],
+            "explanation": "Correction manuelle de la construction : accepter des côtés de 5,8 cm à 6,2 cm, selon la précision du tracé. Le troisième angle mesure lui aussi 60°."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "Oui. Si on trace deux angles droits aux deux extrémités d’un segment, les deux autres côtés partent tout droit dans la même direction, comme les montants d’une échelle. Ils ne se rencontrent jamais, alors le triangle ne peut pas se fermer.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire oui et expliquer, avec des mots ou un croquis, que les deux côtés ne se rejoignent pas. Accepter aussi une explication qui utilise la somme des angles d’un triangle (180°) si l’élève la connaît."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "intermediaire",
+      "content": {
+        "title": "",
+        "objective": "Je classe des angles et des triangles selon leurs propriétés, je mesure des angles avec un rapporteur d’angle et je construis un triangle à partir de mesures.",
+        "teacherNote": "Version Intermédiaire : consignes simples, court lexique et indices pour les questions 1, 2, 4, 6 et 8. Mêmes questions, mêmes mesures et mêmes réponses que les autres versions.",
+        "instructions": "Lis chaque question et réponds sur la feuille. Pour la question 7, utilise ta règle et ton rapporteur d’angle.\n\nMots utiles : aigu (moins de 90°), droit (90°), obtus (entre 90° et 180°), plat (180°); équilatéral, isocèle, scalène (selon les côtés); acutangle, rectangle, obtusangle (selon les angles).",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Un angle mesure 125°. De quelle sorte d’angle s’agit-il?",
+            "hint": "Compare 125° avec 90° et avec 180°.",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "un angle aigu"
+              },
+              {
+                "id": "b",
+                "text": "un angle droit"
+              },
+              {
+                "id": "c",
+                "text": "un angle obtus"
+              },
+              {
+                "id": "d",
+                "text": "un angle plat"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "matching",
+            "prompt": "Associe chaque triangle à son nom selon la longueur de ses côtés. Un des noms est de trop.",
+            "hint": "Compte les côtés qui ont la même longueur.",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "l1",
+                "text": "un triangle dont les côtés mesurent 5 cm, 5 cm et 5 cm"
+              },
+              {
+                "id": "l2",
+                "text": "un triangle dont les côtés mesurent 4 cm, 7 cm et 4 cm"
+              },
+              {
+                "id": "l3",
+                "text": "un triangle dont les côtés mesurent 3 cm, 4 cm et 6 cm"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "triangle scalène"
+              },
+              {
+                "id": "rb",
+                "text": "triangle rectangle"
+              },
+              {
+                "id": "rc",
+                "text": "triangle équilatéral"
+              },
+              {
+                "id": "rd",
+                "text": "triangle isocèle"
+              }
+            ]
+          },
+          {
+            "id": "q3",
+            "kind": "true_false",
+            "prompt": "Un triangle rectangle a un angle qui mesure 90°.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q4",
+            "kind": "ordering",
+            "prompt": "Place ces angles du plus petit au plus grand.",
+            "hint": "Un angle droit mesure 90° et un angle plat mesure 180°.",
+            "points": null,
+            "category": "habiletes",
+            "items": [
+              {
+                "id": "a",
+                "text": "un angle droit"
+              },
+              {
+                "id": "b",
+                "text": "un angle de 135°"
+              },
+              {
+                "id": "c",
+                "text": "un angle plat"
+              },
+              {
+                "id": "d",
+                "text": "un angle de 45°"
+              }
+            ]
+          },
+          {
+            "id": "q5",
+            "kind": "multiple_choice",
+            "prompt": "Les angles d’un triangle mesurent 50°, 60° et 70°. Comment appelle-t-on ce triangle selon ses angles?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "un triangle acutangle"
+              },
+              {
+                "id": "b",
+                "text": "un triangle rectangle"
+              },
+              {
+                "id": "c",
+                "text": "un triangle obtusangle"
+              },
+              {
+                "id": "d",
+                "text": "un triangle équilatéral"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Océane mesure un angle avec un rapporteur d’angle. Elle place le centre du rapporteur sur le sommet de l’angle et un des côtés de l’angle sur la ligne du zéro. L’autre côté passe vis-à-vis des nombres 70 et 110. L’angle est plus petit qu’un angle droit. Quelle est la mesure de l’angle?",
+            "hint": "Un angle plus petit qu’un angle droit mesure moins de 90°.",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Construis un triangle sous la question. Trace d’abord un segment de 6 cm. À chaque extrémité du segment, trace un angle de 60°, du même côté du segment. Prolonge les deux nouveaux côtés jusqu’à ce qu’ils se rencontrent, puis mesure-les. Selon ses côtés, quelle sorte de triangle as-tu construit?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 6
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Bastien dit : « Un triangle ne peut pas avoir deux angles droits. » A-t-il raison? Explique ta réponse. Tu peux faire un croquis.",
+            "hint": "Essaie de tracer un segment avec un angle droit à chaque bout.",
+            "points": null,
+            "category": "communication",
+            "lines": 4
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "Un angle obtus mesure plus de 90° et moins de 180°. 125° est entre les deux."
+          },
+          {
+            "questionId": "q2",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "Trois côtés égaux : équilatéral. Deux côtés égaux : isocèle. Aucun côté égal : scalène. « Triangle rectangle » décrit un angle, pas les côtés : il est de trop."
+          },
+          {
+            "questionId": "q3",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Un triangle rectangle a un angle droit, et un angle droit mesure 90°."
+          },
+          {
+            "questionId": "q4",
+            "kind": "ordering",
+            "orderedIds": ["d", "a", "b", "c"],
+            "explanation": "45° < 90° (angle droit) < 135° < 180° (angle plat)."
+          },
+          {
+            "questionId": "q5",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Les trois angles mesurent moins de 90° : ce sont des angles aigus. Le triangle est donc acutangle."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "70°. L’angle est plus petit qu’un angle droit, donc c’est un angle aigu : on lit le nombre plus petit que 90, sur l’échelle qui commence à zéro sur le côté de l’angle.",
+            "acceptableAnswers": ["70°", "70", "70 degrés"],
+            "explanation": "Erreur fréquente : lire 110 sur la mauvaise échelle du rapporteur. Une estimation (plus petit ou plus grand qu’un angle droit) permet de choisir le bon nombre."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "Les deux nouveaux côtés mesurent 6 cm. Les trois côtés sont égaux : c’est un triangle équilatéral.",
+            "acceptableAnswers": ["équilatéral", "un triangle équilatéral", "triangle équilatéral"],
+            "explanation": "Correction manuelle de la construction : accepter des côtés de 5,8 cm à 6,2 cm, selon la précision du tracé. Le troisième angle mesure lui aussi 60°."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "Oui. Si on trace deux angles droits aux deux extrémités d’un segment, les deux autres côtés partent tout droit dans la même direction, comme les montants d’une échelle. Ils ne se rencontrent jamais, alors le triangle ne peut pas se fermer.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire oui et expliquer, avec des mots ou un croquis, que les deux côtés ne se rejoignent pas. Accepter aussi une explication qui utilise la somme des angles d’un triangle (180°) si l’élève la connaît."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "avance",
+      "content": {
+        "title": "",
+        "objective": "Je classe des angles et des triangles selon leurs propriétés, je mesure des angles avec un rapporteur d’angle et je construis un triangle à partir de mesures.",
+        "teacherNote": "Version Avancé : même quiz que la version de base, écrit dans le français attendu en 5e année, sans lexique ni indices.",
+        "instructions": "Lis chaque question attentivement. Pour la question 7, utilise ta règle et ton rapporteur d’angle. Tu peux faire des croquis dans la marge.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Un angle mesure 125°. De quelle sorte d’angle s’agit-il?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "un angle aigu"
+              },
+              {
+                "id": "b",
+                "text": "un angle droit"
+              },
+              {
+                "id": "c",
+                "text": "un angle obtus"
+              },
+              {
+                "id": "d",
+                "text": "un angle plat"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "matching",
+            "prompt": "Associe chaque triangle à son nom selon la longueur de ses côtés. Un des noms est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "l1",
+                "text": "un triangle dont les côtés mesurent 5 cm, 5 cm et 5 cm"
+              },
+              {
+                "id": "l2",
+                "text": "un triangle dont les côtés mesurent 4 cm, 7 cm et 4 cm"
+              },
+              {
+                "id": "l3",
+                "text": "un triangle dont les côtés mesurent 3 cm, 4 cm et 6 cm"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "triangle scalène"
+              },
+              {
+                "id": "rb",
+                "text": "triangle rectangle"
+              },
+              {
+                "id": "rc",
+                "text": "triangle équilatéral"
+              },
+              {
+                "id": "rd",
+                "text": "triangle isocèle"
+              }
+            ]
+          },
+          {
+            "id": "q3",
+            "kind": "true_false",
+            "prompt": "Un triangle rectangle a un angle qui mesure 90°.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q4",
+            "kind": "ordering",
+            "prompt": "Place ces angles du plus petit au plus grand.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "items": [
+              {
+                "id": "a",
+                "text": "un angle droit"
+              },
+              {
+                "id": "b",
+                "text": "un angle de 135°"
+              },
+              {
+                "id": "c",
+                "text": "un angle plat"
+              },
+              {
+                "id": "d",
+                "text": "un angle de 45°"
+              }
+            ]
+          },
+          {
+            "id": "q5",
+            "kind": "multiple_choice",
+            "prompt": "Les angles d’un triangle mesurent 50°, 60° et 70°. Comment appelle-t-on ce triangle selon ses angles?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "un triangle acutangle"
+              },
+              {
+                "id": "b",
+                "text": "un triangle rectangle"
+              },
+              {
+                "id": "c",
+                "text": "un triangle obtusangle"
+              },
+              {
+                "id": "d",
+                "text": "un triangle équilatéral"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Océane mesure un angle avec un rapporteur d’angle. Elle place le centre du rapporteur sur le sommet de l’angle et un des côtés de l’angle sur la ligne du zéro. L’autre côté passe vis-à-vis des nombres 70 et 110. L’angle est plus petit qu’un angle droit. Quelle est la mesure de l’angle?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Construis un triangle sous la question. Trace d’abord un segment de 6 cm. À chaque extrémité du segment, trace un angle de 60°, du même côté du segment. Prolonge les deux nouveaux côtés jusqu’à ce qu’ils se rencontrent, puis mesure-les. Selon ses côtés, quelle sorte de triangle as-tu construit?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 6
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Bastien dit : « Un triangle ne peut pas avoir deux angles droits. » A-t-il raison? Explique ta réponse. Tu peux faire un croquis.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 4
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "Un angle obtus mesure plus de 90° et moins de 180°. 125° est entre les deux."
+          },
+          {
+            "questionId": "q2",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "Trois côtés égaux : équilatéral. Deux côtés égaux : isocèle. Aucun côté égal : scalène. « Triangle rectangle » décrit un angle, pas les côtés : il est de trop."
+          },
+          {
+            "questionId": "q3",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Un triangle rectangle a un angle droit, et un angle droit mesure 90°."
+          },
+          {
+            "questionId": "q4",
+            "kind": "ordering",
+            "orderedIds": ["d", "a", "b", "c"],
+            "explanation": "45° < 90° (angle droit) < 135° < 180° (angle plat)."
+          },
+          {
+            "questionId": "q5",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Les trois angles mesurent moins de 90° : ce sont des angles aigus. Le triangle est donc acutangle."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "70°. L’angle est plus petit qu’un angle droit, donc c’est un angle aigu : on lit le nombre plus petit que 90, sur l’échelle qui commence à zéro sur le côté de l’angle.",
+            "acceptableAnswers": ["70°", "70", "70 degrés"],
+            "explanation": "Erreur fréquente : lire 110 sur la mauvaise échelle du rapporteur. Une estimation (plus petit ou plus grand qu’un angle droit) permet de choisir le bon nombre."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "Les deux nouveaux côtés mesurent 6 cm. Les trois côtés sont égaux : c’est un triangle équilatéral.",
+            "acceptableAnswers": ["équilatéral", "un triangle équilatéral", "triangle équilatéral"],
+            "explanation": "Correction manuelle de la construction : accepter des côtés de 5,8 cm à 6,2 cm, selon la précision du tracé. Le troisième angle mesure lui aussi 60°."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "Oui. Si on trace deux angles droits aux deux extrémités d’un segment, les deux autres côtés partent tout droit dans la même direction, comme les montants d’une échelle. Ils ne se rencontrent jamais, alors le triangle ne peut pas se fermer.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire oui et expliquer, avec des mots ou un croquis, que les deux côtés ne se rejoignent pas. Accepter aussi une explication qui utilise la somme des angles d’un triangle (180°) si l’élève la connaît."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "enrichi",
+      "content": {
+        "title": "",
+        "objective": "Je classe des angles et des triangles selon leurs propriétés, je mesure des angles avec un rapporteur d’angle et je construis un triangle à partir de mesures.",
+        "teacherNote": "Version Enrichi : vocabulaire plus précis (classer, angles intérieurs, extrémités) et justification plus exigeante à la question 8. Mêmes questions, mêmes mesures et mêmes réponses que les autres versions.",
+        "instructions": "Lis attentivement chaque question. Pour la construction, travaille avec précision : place bien le centre du rapporteur sur le sommet. Quand on te demande de justifier, appuie ta réponse sur les propriétés des angles et des triangles.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Un angle mesure 125°. Classe cet angle.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "un angle aigu"
+              },
+              {
+                "id": "b",
+                "text": "un angle droit"
+              },
+              {
+                "id": "c",
+                "text": "un angle obtus"
+              },
+              {
+                "id": "d",
+                "text": "un angle plat"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "matching",
+            "prompt": "Associe chaque triangle à sa classification selon la longueur de ses côtés. Un des termes est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "l1",
+                "text": "un triangle dont les côtés mesurent 5 cm, 5 cm et 5 cm"
+              },
+              {
+                "id": "l2",
+                "text": "un triangle dont les côtés mesurent 4 cm, 7 cm et 4 cm"
+              },
+              {
+                "id": "l3",
+                "text": "un triangle dont les côtés mesurent 3 cm, 4 cm et 6 cm"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "triangle scalène"
+              },
+              {
+                "id": "rb",
+                "text": "triangle rectangle"
+              },
+              {
+                "id": "rc",
+                "text": "triangle équilatéral"
+              },
+              {
+                "id": "rd",
+                "text": "triangle isocèle"
+              }
+            ]
+          },
+          {
+            "id": "q3",
+            "kind": "true_false",
+            "prompt": "Un triangle rectangle a un angle qui mesure 90°.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q4",
+            "kind": "ordering",
+            "prompt": "Place ces angles du plus petit au plus grand.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "items": [
+              {
+                "id": "a",
+                "text": "un angle droit"
+              },
+              {
+                "id": "b",
+                "text": "un angle de 135°"
+              },
+              {
+                "id": "c",
+                "text": "un angle plat"
+              },
+              {
+                "id": "d",
+                "text": "un angle de 45°"
+              }
+            ]
+          },
+          {
+            "id": "q5",
+            "kind": "multiple_choice",
+            "prompt": "Les angles intérieurs d’un triangle mesurent 50°, 60° et 70°. Comment classe-t-on ce triangle selon ses angles?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "un triangle acutangle"
+              },
+              {
+                "id": "b",
+                "text": "un triangle rectangle"
+              },
+              {
+                "id": "c",
+                "text": "un triangle obtusangle"
+              },
+              {
+                "id": "d",
+                "text": "un triangle équilatéral"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Océane mesure un angle avec un rapporteur d’angle. Elle place le centre du rapporteur sur le sommet de l’angle et un des côtés de l’angle sur la ligne du zéro. L’autre côté passe vis-à-vis des nombres 70 et 110. L’angle est plus petit qu’un angle droit. Quelle est la mesure de l’angle?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "À l’aide d’une règle et d’un rapporteur d’angle, construis un triangle sous la question : trace un segment de 6 cm, puis, à chacune de ses extrémités et du même côté, un angle de 60°. Prolonge les côtés jusqu’à leur point de rencontre et mesure-les. Classe le triangle obtenu selon ses côtés.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 6
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Bastien affirme : « Un triangle ne peut pas avoir deux angles droits. » Son affirmation est-elle juste? Justifie ta réponse à l’aide d’un raisonnement ou d’un croquis.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 4
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "Un angle obtus mesure plus de 90° et moins de 180°. 125° est entre les deux."
+          },
+          {
+            "questionId": "q2",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "Trois côtés égaux : équilatéral. Deux côtés égaux : isocèle. Aucun côté égal : scalène. « Triangle rectangle » décrit un angle, pas les côtés : il est de trop."
+          },
+          {
+            "questionId": "q3",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Un triangle rectangle a un angle droit, et un angle droit mesure 90°."
+          },
+          {
+            "questionId": "q4",
+            "kind": "ordering",
+            "orderedIds": ["d", "a", "b", "c"],
+            "explanation": "45° < 90° (angle droit) < 135° < 180° (angle plat)."
+          },
+          {
+            "questionId": "q5",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Les trois angles mesurent moins de 90° : ce sont des angles aigus. Le triangle est donc acutangle."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "70°. L’angle est plus petit qu’un angle droit, donc c’est un angle aigu : on lit le nombre plus petit que 90, sur l’échelle qui commence à zéro sur le côté de l’angle.",
+            "acceptableAnswers": ["70°", "70", "70 degrés"],
+            "explanation": "Erreur fréquente : lire 110 sur la mauvaise échelle du rapporteur. Une estimation (plus petit ou plus grand qu’un angle droit) permet de choisir le bon nombre."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "Les deux nouveaux côtés mesurent 6 cm. Les trois côtés sont égaux : c’est un triangle équilatéral.",
+            "acceptableAnswers": ["équilatéral", "un triangle équilatéral", "triangle équilatéral"],
+            "explanation": "Correction manuelle de la construction : accepter des côtés de 5,8 cm à 6,2 cm, selon la précision du tracé. Le troisième angle mesure lui aussi 60°."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "Oui. Si on trace deux angles droits aux deux extrémités d’un segment, les deux autres côtés partent tout droit dans la même direction, comme les montants d’une échelle. Ils ne se rencontrent jamais, alors le triangle ne peut pas se fermer.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire oui et expliquer, avec des mots ou un croquis, que les deux côtés ne se rejoignent pas. Accepter aussi une explication qui utilise la somme des angles d’un triangle (180°) si l’élève la connaît."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

@@ -1,0 +1,1336 @@
+{
+  "slug": "code-arrosage-du-jardin",
+  "type": "worksheet",
+  "title": "Coder avec des conditions : le robot arroseur",
+  "summary": "Fiche de codage sans ordinateur : lire et exécuter un code en mots qui arrose les bacs du jardin de l’école selon une condition (SI… ALORS… SINON) dans une répétition, prédire le résultat, modifier le code, remettre des lignes en ordre et déboguer une condition.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["5"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "C3.1"
+    },
+    {
+      "grade": "5",
+      "code": "C3.2"
+    }
+  ],
+  "durationMinutes": 40,
+  "materials": "Une copie de la fiche par élève, dans la version prévue pour son groupe; un crayon; une gomme à effacer. Pour la simulation : quatre chaises et quatre cartes-nombres.",
+  "keywords": "codage, code, pseudocode, condition, SI ALORS SINON, instruction conditionnelle, répétition, boucle, déboguer, variable, jardin",
+  "tags": ["stim"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je lis, j’exécute et je modifie un code qui contient des conditions (SI… ALORS… SINON) et une répétition, et j’explique l’effet de mes changements.",
+        "teacherNote": "Codage sans ordinateur : le code est écrit en mots, en français, comme un pseudocode. Les nombres et les questions sont les mêmes dans toutes les versions : seuls la langue et les appuis changent, et la version enrichie ajoute deux défis. Avant la fiche, faites une simulation debout avec quatre chaises (voir les appuis visuels). Si vos élèves utilisent un logiciel de codage par blocs, vous pouvez leur faire programmer le même code ensuite. Les questions 6 et 8 se corrigent à la main.",
+        "instructions": "Lis le code du robot arroseur. Pour chaque question, suis le code ligne par ligne, comme le robot. Tu peux écrire la valeur de H dans la marge à chaque tour de la répétition.",
+        "text": "Le jardin de l’école a 4 bacs de légumes. Dans chaque bac, un capteur mesure l’humidité de la terre et donne un nombre de 0 (terre très sèche) à 10 (terre très mouillée). Voici le code du robot arroseur.\n\nLigne 1 — RÉPÈTE 4 fois (une fois pour chaque bac) :\n\nLigne 2 — lis le nombre du capteur du bac et appelle-le H.\n\nLigne 3 — SI H est plus petit que 4 ALORS arrose le bac pendant 3 minutes.\n\nLigne 4 — SINON n’arrose pas le bac.\n\nLigne 5 — passe au bac suivant.\n\nLes lignes 2 à 5 sont à l’intérieur de la répétition : le robot les exécute une fois pour chaque bac.",
+        "glossary": [
+          {
+            "term": "un code",
+            "definition": "Une suite d’instructions qu’un robot ou un ordinateur exécute dans l’ordre."
+          },
+          {
+            "term": "une condition",
+            "definition": "Une phrase qui est vraie ou fausse, par exemple « H est plus petit que 4 »."
+          },
+          {
+            "term": "SI… ALORS… SINON",
+            "definition": "Si la condition est vraie, le robot fait la partie ALORS; si elle est fausse, il fait la partie SINON."
+          },
+          {
+            "term": "une répétition",
+            "definition": "Des instructions que le code fait plusieurs fois. On dit aussi une boucle."
+          },
+          {
+            "term": "un bogue",
+            "definition": "Une erreur dans un code."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Le capteur d’un bac indique H = 2. Que fait le robot pour ce bac?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "Il arrose le bac pendant 3 minutes."
+              },
+              {
+                "id": "b",
+                "text": "Il n’arrose pas le bac."
+              },
+              {
+                "id": "c",
+                "text": "Il arrose le bac pendant 2 minutes."
+              },
+              {
+                "id": "d",
+                "text": "Il arrête le code."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "true_false",
+            "prompt": "Si le capteur d’un bac indique H = 4, le robot arrose ce bac.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes"
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Les capteurs des 4 bacs indiquent, dans l’ordre, 5, 1, 3 et 8. Pendant combien de minutes le robot arrose-t-il en tout? Explique ta réponse.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "q4",
+            "kind": "matching",
+            "prompt": "Associe chaque modification du code à son effet. Un des effets est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "left": [
+              {
+                "id": "l1",
+                "text": "À la ligne 3, on remplace « plus petit que 4 » par « plus petit que 6 »."
+              },
+              {
+                "id": "l2",
+                "text": "À la ligne 3, on remplace « 3 minutes » par « 5 minutes »."
+              },
+              {
+                "id": "l3",
+                "text": "À la ligne 1, on remplace « RÉPÈTE 4 fois » par « RÉPÈTE 6 fois »."
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "Le robot peut s’occuper de 6 bacs."
+              },
+              {
+                "id": "rb",
+                "text": "Le robot n’arrose plus aucun bac."
+              },
+              {
+                "id": "rc",
+                "text": "Le robot arrose aussi les bacs dont le nombre est 4 ou 5."
+              },
+              {
+                "id": "rd",
+                "text": "Chaque bac arrosé reçoit de l’eau plus longtemps."
+              }
+            ]
+          },
+          {
+            "id": "q5",
+            "kind": "ordering",
+            "prompt": "Les lignes d’un autre code sont mélangées. Place-les dans le bon ordre pour que le code affiche « pair » ou « impair » selon le nombre N.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "items": [
+              {
+                "id": "a",
+                "text": "SINON"
+              },
+              {
+                "id": "b",
+                "text": "Lis un nombre N."
+              },
+              {
+                "id": "c",
+                "text": "Affiche « impair »."
+              },
+              {
+                "id": "d",
+                "text": "SI le chiffre des unités de N est 0, 2, 4, 6 ou 8 ALORS"
+              },
+              {
+                "id": "e",
+                "text": "Affiche « pair »."
+              }
+            ]
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Laurier veut que le robot arrose les bacs dont le nombre est 3 ou moins. Il écrit à la ligne 3 : « SI H est plus petit que 3 ALORS arrose le bac pendant 3 minutes. » Que fait son code quand H = 3? Corrige la ligne 3.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Océane remplace les lignes 3 et 4 par ces lignes : « SI H est plus petit que 2 ALORS arrose le bac pendant 5 minutes. SINON, SI H est plus petit que 4 ALORS arrose le bac pendant 3 minutes. SINON n’arrose pas le bac. » Les capteurs des 4 bacs indiquent 1, 3, 6 et 0. Pendant combien de minutes le robot arrose-t-il en tout?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 3
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Pourquoi le code utilise-t-il RÉPÈTE au lieu d’écrire quatre fois les mêmes lignes? Donne deux raisons.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Les cinq lignes du code écrites sur de grandes cartes, affichées au tableau dans l’ordre, avec les lignes 2 à 5 décalées vers la droite pour montrer qu’elles sont dans la répétition.",
+          "Une simulation debout : quatre chaises représentent les bacs, chacune avec une carte-nombre (la valeur de H), et une ou un élève joue le robot en suivant le code lu à voix haute.",
+          "Des cartes de code découpées pour la question 5, que les élèves peuvent déplacer avant d’écrire leur réponse."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "2 est plus petit que 4 : la condition est vraie, alors le robot exécute la partie ALORS de la ligne 3."
+          },
+          {
+            "questionId": "q2",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "4 n’est pas plus petit que 4 : la condition est fausse, alors le robot exécute la ligne 4 (SINON) et n’arrose pas. Erreur fréquente : croire que « plus petit que 4 » inclut 4."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "6 minutes. Seuls les bacs 2 (H = 1) et 3 (H = 3) ont un nombre plus petit que 4 : 3 + 3 = 6 minutes.",
+            "acceptableAnswers": ["6", "6 minutes", "six minutes"],
+            "explanation": "Les bacs 1 (H = 5) et 4 (H = 8) ne sont pas arrosés."
+          },
+          {
+            "questionId": "q4",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "Changer la condition change les bacs arrosés; changer la durée change la quantité d’eau; changer le nombre de répétitions change le nombre de bacs. Aucune de ces modifications n’empêche d’arroser les bacs secs."
+          },
+          {
+            "questionId": "q5",
+            "kind": "ordering",
+            "orderedIds": ["b", "d", "e", "a", "c"],
+            "explanation": "Lis un nombre N. SI le chiffre des unités de N est 0, 2, 4, 6 ou 8 ALORS affiche « pair ». SINON affiche « impair »."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Quand H = 3, son code n’arrose pas le bac, car 3 n’est pas plus petit que 3 : c’est un bogue. Correction : « SI H est plus petit que 4 ALORS arrose le bac pendant 3 minutes. »",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire que le bac n’est pas arrosé quand H = 3 et proposer une correction, par exemple « plus petit que 4 » ou « plus petit que 3 ou égal à 3 »."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "13 minutes : H = 1, 5 minutes; H = 3, 3 minutes; H = 6, 0 minute; H = 0, 5 minutes. 5 + 3 + 0 + 5 = 13.",
+            "acceptableAnswers": ["13", "13 minutes", "treize minutes"],
+            "explanation": "Le robot vérifie d’abord la première condition (H plus petit que 2), puis la deuxième seulement si la première est fausse."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "Le code est plus court et plus facile à lire. Il y a moins de risques d’erreur, et pour ajouter des bacs, il suffit de changer un seul nombre (4).",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : accepter deux raisons parmi celles-ci ou d’autres raisons justes (code plus court, moins d’erreurs de copie, plus facile à modifier ou à déboguer)."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "debutant",
+      "content": {
+        "title": "",
+        "objective": "Je lis, j’exécute et je modifie un code qui contient des conditions (SI… ALORS… SINON) et une répétition, et j’explique l’effet de mes changements.",
+        "teacherNote": "Version Débutant : phrases courtes, glossaire plus long et un indice pour la plupart des questions. Mêmes nombres et mêmes questions que les autres versions. Faites la simulation avec les chaises avant la fiche et lisez le code à voix haute avec les élèves.",
+        "instructions": "Lis le code du robot. Pour chaque question, fais comme le robot : lis une ligne à la fois.",
+        "text": "Le jardin de l’école a 4 bacs. Dans chaque bac, il y a un capteur. Le capteur donne un nombre de 0 à 10. 0 veut dire : la terre est très sèche. 10 veut dire : la terre est très mouillée. Voici le code du robot.\n\nLigne 1 — RÉPÈTE 4 fois (une fois pour chaque bac) :\n\nLigne 2 — lis le nombre du capteur du bac et appelle-le H.\n\nLigne 3 — SI H est plus petit que 4 ALORS arrose le bac pendant 3 minutes.\n\nLigne 4 — SINON n’arrose pas le bac.\n\nLigne 5 — passe au bac suivant.\n\nLe robot fait les lignes 2 à 5 pour chaque bac.",
+        "glossary": [
+          {
+            "term": "un code",
+            "definition": "Des instructions qu’un robot suit dans l’ordre."
+          },
+          {
+            "term": "un capteur",
+            "definition": "Un petit appareil qui mesure quelque chose."
+          },
+          {
+            "term": "arroser",
+            "definition": "Donner de l’eau aux plantes."
+          },
+          {
+            "term": "plus petit que",
+            "definition": "Moins grand que. Exemple : 2 est plus petit que 5."
+          },
+          {
+            "term": "SI… ALORS… SINON",
+            "definition": "Si c’est vrai, le robot fait ce qui suit ALORS. Si c’est faux, il fait ce qui suit SINON."
+          },
+          {
+            "term": "RÉPÈTE",
+            "definition": "Faire la même chose plusieurs fois."
+          },
+          {
+            "term": "un bogue",
+            "definition": "Une erreur dans un code."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Pour un bac, H = 2. Que fait le robot?",
+            "hint": "Est-ce que 2 est plus petit que 4?",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "Il arrose le bac pendant 3 minutes."
+              },
+              {
+                "id": "b",
+                "text": "Il n’arrose pas le bac."
+              },
+              {
+                "id": "c",
+                "text": "Il arrose le bac pendant 2 minutes."
+              },
+              {
+                "id": "d",
+                "text": "Il arrête le code."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "true_false",
+            "prompt": "Pour un bac, H = 4. Le robot arrose ce bac.",
+            "hint": "Est-ce que 4 est plus petit que 4?",
+            "points": null,
+            "category": "habiletes"
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Voici les nombres des 4 bacs : 5, 1, 3 et 8. Le robot arrose pendant combien de minutes en tout? Explique.",
+            "hint": "Trouve les bacs arrosés. Chaque bac arrosé reçoit 3 minutes.",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "q4",
+            "kind": "matching",
+            "prompt": "Relie chaque changement à ce qui se passe. Un effet ne va avec rien.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "left": [
+              {
+                "id": "l1",
+                "text": "À la ligne 3, on remplace « plus petit que 4 » par « plus petit que 6 »."
+              },
+              {
+                "id": "l2",
+                "text": "À la ligne 3, on remplace « 3 minutes » par « 5 minutes »."
+              },
+              {
+                "id": "l3",
+                "text": "À la ligne 1, on remplace « RÉPÈTE 4 fois » par « RÉPÈTE 6 fois »."
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "Le robot peut s’occuper de 6 bacs."
+              },
+              {
+                "id": "rb",
+                "text": "Le robot n’arrose plus aucun bac."
+              },
+              {
+                "id": "rc",
+                "text": "Le robot arrose aussi les bacs dont le nombre est 4 ou 5."
+              },
+              {
+                "id": "rd",
+                "text": "Chaque bac arrosé reçoit de l’eau plus longtemps."
+              }
+            ]
+          },
+          {
+            "id": "q5",
+            "kind": "ordering",
+            "prompt": "Place les lignes dans le bon ordre. Le code doit écrire « pair » ou « impair ».",
+            "hint": "Le code commence par lire le nombre.",
+            "points": null,
+            "category": "application",
+            "items": [
+              {
+                "id": "a",
+                "text": "SINON"
+              },
+              {
+                "id": "b",
+                "text": "Lis un nombre N."
+              },
+              {
+                "id": "c",
+                "text": "Affiche « impair »."
+              },
+              {
+                "id": "d",
+                "text": "SI le chiffre des unités de N est 0, 2, 4, 6 ou 8 ALORS"
+              },
+              {
+                "id": "e",
+                "text": "Affiche « pair »."
+              }
+            ]
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Laurier veut arroser les bacs quand H est 3 ou moins. Il écrit : « SI H est plus petit que 3 ALORS arrose le bac pendant 3 minutes. » Que fait son code quand H = 3? Corrige la ligne.",
+            "hint": "Est-ce que 3 est plus petit que 3?",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Océane change les lignes 3 et 4 : « SI H est plus petit que 2 ALORS arrose le bac pendant 5 minutes. SINON, SI H est plus petit que 4 ALORS arrose le bac pendant 3 minutes. SINON n’arrose pas le bac. » Les nombres des 4 bacs sont 1, 3, 6 et 0. Le robot arrose pendant combien de minutes en tout?",
+            "hint": "Trouve les minutes pour chaque bac. Ensuite, additionne.",
+            "points": null,
+            "category": "application",
+            "lines": 3
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Pourquoi le code utilise-t-il RÉPÈTE? Donne deux raisons.",
+            "hint": "Imagine le code sans RÉPÈTE : combien de lignes aurait-il?",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Les cinq lignes du code écrites sur de grandes cartes, affichées au tableau dans l’ordre, avec les lignes 2 à 5 décalées vers la droite pour montrer qu’elles sont dans la répétition.",
+          "Une simulation debout : quatre chaises représentent les bacs, chacune avec une carte-nombre (la valeur de H), et une ou un élève joue le robot en suivant le code lu à voix haute.",
+          "Des cartes de code découpées pour la question 5, que les élèves peuvent déplacer avant d’écrire leur réponse."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "2 est plus petit que 4 : la condition est vraie, alors le robot exécute la partie ALORS de la ligne 3."
+          },
+          {
+            "questionId": "q2",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "4 n’est pas plus petit que 4 : la condition est fausse, alors le robot exécute la ligne 4 (SINON) et n’arrose pas. Erreur fréquente : croire que « plus petit que 4 » inclut 4."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "6 minutes. Seuls les bacs 2 (H = 1) et 3 (H = 3) ont un nombre plus petit que 4 : 3 + 3 = 6 minutes.",
+            "acceptableAnswers": ["6", "6 minutes", "six minutes"],
+            "explanation": "Les bacs 1 (H = 5) et 4 (H = 8) ne sont pas arrosés."
+          },
+          {
+            "questionId": "q4",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "Changer la condition change les bacs arrosés; changer la durée change la quantité d’eau; changer le nombre de répétitions change le nombre de bacs. Aucune de ces modifications n’empêche d’arroser les bacs secs."
+          },
+          {
+            "questionId": "q5",
+            "kind": "ordering",
+            "orderedIds": ["b", "d", "e", "a", "c"],
+            "explanation": "Lis un nombre N. SI le chiffre des unités de N est 0, 2, 4, 6 ou 8 ALORS affiche « pair ». SINON affiche « impair »."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Quand H = 3, son code n’arrose pas le bac, car 3 n’est pas plus petit que 3 : c’est un bogue. Correction : « SI H est plus petit que 4 ALORS arrose le bac pendant 3 minutes. »",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire que le bac n’est pas arrosé quand H = 3 et proposer une correction, par exemple « plus petit que 4 » ou « plus petit que 3 ou égal à 3 »."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "13 minutes : H = 1, 5 minutes; H = 3, 3 minutes; H = 6, 0 minute; H = 0, 5 minutes. 5 + 3 + 0 + 5 = 13.",
+            "acceptableAnswers": ["13", "13 minutes", "treize minutes"],
+            "explanation": "Le robot vérifie d’abord la première condition (H plus petit que 2), puis la deuxième seulement si la première est fausse."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "Le code est plus court et plus facile à lire. Il y a moins de risques d’erreur, et pour ajouter des bacs, il suffit de changer un seul nombre (4).",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : accepter deux raisons parmi celles-ci ou d’autres raisons justes (code plus court, moins d’erreurs de copie, plus facile à modifier ou à déboguer)."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "intermediaire",
+      "content": {
+        "title": "",
+        "objective": "Je lis, j’exécute et je modifie un code qui contient des conditions (SI… ALORS… SINON) et une répétition, et j’explique l’effet de mes changements.",
+        "teacherNote": "Version Intermédiaire : consignes simples, glossaire et indices pour les questions 2, 3, 6 et 7. Mêmes nombres et mêmes questions que les autres versions.",
+        "instructions": "Lis le code du robot arroseur. Pour chaque question, suis le code ligne par ligne, comme le robot.",
+        "text": "Le jardin de l’école a 4 bacs de légumes. Dans chaque bac, un capteur mesure l’humidité de la terre. Il donne un nombre de 0 (terre très sèche) à 10 (terre très mouillée). Voici le code du robot arroseur.\n\nLigne 1 — RÉPÈTE 4 fois (une fois pour chaque bac) :\n\nLigne 2 — lis le nombre du capteur du bac et appelle-le H.\n\nLigne 3 — SI H est plus petit que 4 ALORS arrose le bac pendant 3 minutes.\n\nLigne 4 — SINON n’arrose pas le bac.\n\nLigne 5 — passe au bac suivant.\n\nLe robot exécute les lignes 2 à 5 une fois pour chaque bac.",
+        "glossary": [
+          {
+            "term": "un code",
+            "definition": "Une suite d’instructions qu’un robot ou un ordinateur exécute dans l’ordre."
+          },
+          {
+            "term": "une condition",
+            "definition": "Une phrase qui est vraie ou fausse, par exemple « H est plus petit que 4 »."
+          },
+          {
+            "term": "SI… ALORS… SINON",
+            "definition": "Si la condition est vraie, le robot fait la partie ALORS; si elle est fausse, il fait la partie SINON."
+          },
+          {
+            "term": "une répétition",
+            "definition": "Des instructions que le code fait plusieurs fois. On dit aussi une boucle."
+          },
+          {
+            "term": "un bogue",
+            "definition": "Une erreur dans un code."
+          },
+          {
+            "term": "un capteur",
+            "definition": "Un appareil qui mesure quelque chose, par exemple l’humidité de la terre."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Le capteur d’un bac indique H = 2. Que fait le robot pour ce bac?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "Il arrose le bac pendant 3 minutes."
+              },
+              {
+                "id": "b",
+                "text": "Il n’arrose pas le bac."
+              },
+              {
+                "id": "c",
+                "text": "Il arrose le bac pendant 2 minutes."
+              },
+              {
+                "id": "d",
+                "text": "Il arrête le code."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "true_false",
+            "prompt": "Si le capteur d’un bac indique H = 4, le robot arrose ce bac.",
+            "hint": "Est-ce que 4 est plus petit que 4?",
+            "points": null,
+            "category": "habiletes"
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Les capteurs des 4 bacs indiquent, dans l’ordre, 5, 1, 3 et 8. Pendant combien de minutes le robot arrose-t-il en tout? Explique ta réponse.",
+            "hint": "Trouve d’abord les bacs dont le nombre est plus petit que 4.",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "q4",
+            "kind": "matching",
+            "prompt": "Associe chaque modification du code à son effet. Un des effets est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "left": [
+              {
+                "id": "l1",
+                "text": "À la ligne 3, on remplace « plus petit que 4 » par « plus petit que 6 »."
+              },
+              {
+                "id": "l2",
+                "text": "À la ligne 3, on remplace « 3 minutes » par « 5 minutes »."
+              },
+              {
+                "id": "l3",
+                "text": "À la ligne 1, on remplace « RÉPÈTE 4 fois » par « RÉPÈTE 6 fois »."
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "Le robot peut s’occuper de 6 bacs."
+              },
+              {
+                "id": "rb",
+                "text": "Le robot n’arrose plus aucun bac."
+              },
+              {
+                "id": "rc",
+                "text": "Le robot arrose aussi les bacs dont le nombre est 4 ou 5."
+              },
+              {
+                "id": "rd",
+                "text": "Chaque bac arrosé reçoit de l’eau plus longtemps."
+              }
+            ]
+          },
+          {
+            "id": "q5",
+            "kind": "ordering",
+            "prompt": "Les lignes d’un autre code sont mélangées. Place-les dans le bon ordre pour que le code affiche « pair » ou « impair » selon le nombre N.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "items": [
+              {
+                "id": "a",
+                "text": "SINON"
+              },
+              {
+                "id": "b",
+                "text": "Lis un nombre N."
+              },
+              {
+                "id": "c",
+                "text": "Affiche « impair »."
+              },
+              {
+                "id": "d",
+                "text": "SI le chiffre des unités de N est 0, 2, 4, 6 ou 8 ALORS"
+              },
+              {
+                "id": "e",
+                "text": "Affiche « pair »."
+              }
+            ]
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Laurier veut que le robot arrose les bacs dont le nombre est 3 ou moins. Il écrit à la ligne 3 : « SI H est plus petit que 3 ALORS arrose le bac pendant 3 minutes. » Que fait son code quand H = 3? Corrige la ligne 3.",
+            "hint": "Est-ce que 3 est plus petit que 3?",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Océane remplace les lignes 3 et 4 par ces lignes : « SI H est plus petit que 2 ALORS arrose le bac pendant 5 minutes. SINON, SI H est plus petit que 4 ALORS arrose le bac pendant 3 minutes. SINON n’arrose pas le bac. » Les capteurs des 4 bacs indiquent 1, 3, 6 et 0. Pendant combien de minutes le robot arrose-t-il en tout?",
+            "hint": "Écris le nombre de minutes pour chaque bac, puis additionne.",
+            "points": null,
+            "category": "application",
+            "lines": 3
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Pourquoi le code utilise-t-il RÉPÈTE au lieu d’écrire quatre fois les mêmes lignes? Donne deux raisons.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Les cinq lignes du code écrites sur de grandes cartes, affichées au tableau dans l’ordre, avec les lignes 2 à 5 décalées vers la droite pour montrer qu’elles sont dans la répétition.",
+          "Une simulation debout : quatre chaises représentent les bacs, chacune avec une carte-nombre (la valeur de H), et une ou un élève joue le robot en suivant le code lu à voix haute.",
+          "Des cartes de code découpées pour la question 5, que les élèves peuvent déplacer avant d’écrire leur réponse."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "2 est plus petit que 4 : la condition est vraie, alors le robot exécute la partie ALORS de la ligne 3."
+          },
+          {
+            "questionId": "q2",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "4 n’est pas plus petit que 4 : la condition est fausse, alors le robot exécute la ligne 4 (SINON) et n’arrose pas. Erreur fréquente : croire que « plus petit que 4 » inclut 4."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "6 minutes. Seuls les bacs 2 (H = 1) et 3 (H = 3) ont un nombre plus petit que 4 : 3 + 3 = 6 minutes.",
+            "acceptableAnswers": ["6", "6 minutes", "six minutes"],
+            "explanation": "Les bacs 1 (H = 5) et 4 (H = 8) ne sont pas arrosés."
+          },
+          {
+            "questionId": "q4",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "Changer la condition change les bacs arrosés; changer la durée change la quantité d’eau; changer le nombre de répétitions change le nombre de bacs. Aucune de ces modifications n’empêche d’arroser les bacs secs."
+          },
+          {
+            "questionId": "q5",
+            "kind": "ordering",
+            "orderedIds": ["b", "d", "e", "a", "c"],
+            "explanation": "Lis un nombre N. SI le chiffre des unités de N est 0, 2, 4, 6 ou 8 ALORS affiche « pair ». SINON affiche « impair »."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Quand H = 3, son code n’arrose pas le bac, car 3 n’est pas plus petit que 3 : c’est un bogue. Correction : « SI H est plus petit que 4 ALORS arrose le bac pendant 3 minutes. »",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire que le bac n’est pas arrosé quand H = 3 et proposer une correction, par exemple « plus petit que 4 » ou « plus petit que 3 ou égal à 3 »."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "13 minutes : H = 1, 5 minutes; H = 3, 3 minutes; H = 6, 0 minute; H = 0, 5 minutes. 5 + 3 + 0 + 5 = 13.",
+            "acceptableAnswers": ["13", "13 minutes", "treize minutes"],
+            "explanation": "Le robot vérifie d’abord la première condition (H plus petit que 2), puis la deuxième seulement si la première est fausse."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "Le code est plus court et plus facile à lire. Il y a moins de risques d’erreur, et pour ajouter des bacs, il suffit de changer un seul nombre (4).",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : accepter deux raisons parmi celles-ci ou d’autres raisons justes (code plus court, moins d’erreurs de copie, plus facile à modifier ou à déboguer)."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "avance",
+      "content": {
+        "title": "",
+        "objective": "Je lis, j’exécute et je modifie un code qui contient des conditions (SI… ALORS… SINON) et une répétition, et j’explique l’effet de mes changements.",
+        "teacherNote": "Version Avancé : même fiche que la version de base, écrite dans le français attendu en 5e année.",
+        "instructions": "Lis le code du robot arroseur. Pour chaque question, suis le code ligne par ligne, comme le robot. Tu peux écrire la valeur de H dans la marge à chaque tour de la répétition.",
+        "text": "Le jardin de l’école a 4 bacs de légumes. Dans chaque bac, un capteur mesure l’humidité de la terre et donne un nombre de 0 (terre très sèche) à 10 (terre très mouillée). Voici le code du robot arroseur.\n\nLigne 1 — RÉPÈTE 4 fois (une fois pour chaque bac) :\n\nLigne 2 — lis le nombre du capteur du bac et appelle-le H.\n\nLigne 3 — SI H est plus petit que 4 ALORS arrose le bac pendant 3 minutes.\n\nLigne 4 — SINON n’arrose pas le bac.\n\nLigne 5 — passe au bac suivant.\n\nLes lignes 2 à 5 sont à l’intérieur de la répétition : le robot les exécute une fois pour chaque bac.",
+        "glossary": [
+          {
+            "term": "un code",
+            "definition": "Une suite d’instructions qu’un robot ou un ordinateur exécute dans l’ordre."
+          },
+          {
+            "term": "une condition",
+            "definition": "Une phrase qui est vraie ou fausse, par exemple « H est plus petit que 4 »."
+          },
+          {
+            "term": "SI… ALORS… SINON",
+            "definition": "Si la condition est vraie, le robot fait la partie ALORS; si elle est fausse, il fait la partie SINON."
+          },
+          {
+            "term": "une répétition",
+            "definition": "Des instructions que le code fait plusieurs fois. On dit aussi une boucle."
+          },
+          {
+            "term": "un bogue",
+            "definition": "Une erreur dans un code."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Le capteur d’un bac indique H = 2. Que fait le robot pour ce bac?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "Il arrose le bac pendant 3 minutes."
+              },
+              {
+                "id": "b",
+                "text": "Il n’arrose pas le bac."
+              },
+              {
+                "id": "c",
+                "text": "Il arrose le bac pendant 2 minutes."
+              },
+              {
+                "id": "d",
+                "text": "Il arrête le code."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "true_false",
+            "prompt": "Si le capteur d’un bac indique H = 4, le robot arrose ce bac.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes"
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Les capteurs des 4 bacs indiquent, dans l’ordre, 5, 1, 3 et 8. Pendant combien de minutes le robot arrose-t-il en tout? Explique ta réponse.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "q4",
+            "kind": "matching",
+            "prompt": "Associe chaque modification du code à son effet. Un des effets est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "left": [
+              {
+                "id": "l1",
+                "text": "À la ligne 3, on remplace « plus petit que 4 » par « plus petit que 6 »."
+              },
+              {
+                "id": "l2",
+                "text": "À la ligne 3, on remplace « 3 minutes » par « 5 minutes »."
+              },
+              {
+                "id": "l3",
+                "text": "À la ligne 1, on remplace « RÉPÈTE 4 fois » par « RÉPÈTE 6 fois »."
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "Le robot peut s’occuper de 6 bacs."
+              },
+              {
+                "id": "rb",
+                "text": "Le robot n’arrose plus aucun bac."
+              },
+              {
+                "id": "rc",
+                "text": "Le robot arrose aussi les bacs dont le nombre est 4 ou 5."
+              },
+              {
+                "id": "rd",
+                "text": "Chaque bac arrosé reçoit de l’eau plus longtemps."
+              }
+            ]
+          },
+          {
+            "id": "q5",
+            "kind": "ordering",
+            "prompt": "Les lignes d’un autre code sont mélangées. Place-les dans le bon ordre pour que le code affiche « pair » ou « impair » selon le nombre N.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "items": [
+              {
+                "id": "a",
+                "text": "SINON"
+              },
+              {
+                "id": "b",
+                "text": "Lis un nombre N."
+              },
+              {
+                "id": "c",
+                "text": "Affiche « impair »."
+              },
+              {
+                "id": "d",
+                "text": "SI le chiffre des unités de N est 0, 2, 4, 6 ou 8 ALORS"
+              },
+              {
+                "id": "e",
+                "text": "Affiche « pair »."
+              }
+            ]
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Laurier veut que le robot arrose les bacs dont le nombre est 3 ou moins. Il écrit à la ligne 3 : « SI H est plus petit que 3 ALORS arrose le bac pendant 3 minutes. » Que fait son code quand H = 3? Corrige la ligne 3.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Océane remplace les lignes 3 et 4 par ces lignes : « SI H est plus petit que 2 ALORS arrose le bac pendant 5 minutes. SINON, SI H est plus petit que 4 ALORS arrose le bac pendant 3 minutes. SINON n’arrose pas le bac. » Les capteurs des 4 bacs indiquent 1, 3, 6 et 0. Pendant combien de minutes le robot arrose-t-il en tout?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 3
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Pourquoi le code utilise-t-il RÉPÈTE au lieu d’écrire quatre fois les mêmes lignes? Donne deux raisons.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Les cinq lignes du code écrites sur de grandes cartes, affichées au tableau dans l’ordre, avec les lignes 2 à 5 décalées vers la droite pour montrer qu’elles sont dans la répétition.",
+          "Une simulation debout : quatre chaises représentent les bacs, chacune avec une carte-nombre (la valeur de H), et une ou un élève joue le robot en suivant le code lu à voix haute.",
+          "Des cartes de code découpées pour la question 5, que les élèves peuvent déplacer avant d’écrire leur réponse."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "2 est plus petit que 4 : la condition est vraie, alors le robot exécute la partie ALORS de la ligne 3."
+          },
+          {
+            "questionId": "q2",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "4 n’est pas plus petit que 4 : la condition est fausse, alors le robot exécute la ligne 4 (SINON) et n’arrose pas. Erreur fréquente : croire que « plus petit que 4 » inclut 4."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "6 minutes. Seuls les bacs 2 (H = 1) et 3 (H = 3) ont un nombre plus petit que 4 : 3 + 3 = 6 minutes.",
+            "acceptableAnswers": ["6", "6 minutes", "six minutes"],
+            "explanation": "Les bacs 1 (H = 5) et 4 (H = 8) ne sont pas arrosés."
+          },
+          {
+            "questionId": "q4",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "Changer la condition change les bacs arrosés; changer la durée change la quantité d’eau; changer le nombre de répétitions change le nombre de bacs. Aucune de ces modifications n’empêche d’arroser les bacs secs."
+          },
+          {
+            "questionId": "q5",
+            "kind": "ordering",
+            "orderedIds": ["b", "d", "e", "a", "c"],
+            "explanation": "Lis un nombre N. SI le chiffre des unités de N est 0, 2, 4, 6 ou 8 ALORS affiche « pair ». SINON affiche « impair »."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Quand H = 3, son code n’arrose pas le bac, car 3 n’est pas plus petit que 3 : c’est un bogue. Correction : « SI H est plus petit que 4 ALORS arrose le bac pendant 3 minutes. »",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire que le bac n’est pas arrosé quand H = 3 et proposer une correction, par exemple « plus petit que 4 » ou « plus petit que 3 ou égal à 3 »."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "13 minutes : H = 1, 5 minutes; H = 3, 3 minutes; H = 6, 0 minute; H = 0, 5 minutes. 5 + 3 + 0 + 5 = 13.",
+            "acceptableAnswers": ["13", "13 minutes", "treize minutes"],
+            "explanation": "Le robot vérifie d’abord la première condition (H plus petit que 2), puis la deuxième seulement si la première est fausse."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "Le code est plus court et plus facile à lire. Il y a moins de risques d’erreur, et pour ajouter des bacs, il suffit de changer un seul nombre (4).",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : accepter deux raisons parmi celles-ci ou d’autres raisons justes (code plus court, moins d’erreurs de copie, plus facile à modifier ou à déboguer)."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "enrichi",
+      "content": {
+        "title": "",
+        "objective": "Je lis, j’exécute et je modifie un code qui contient des conditions (SI… ALORS… SINON) et une répétition, et j’explique l’effet de mes changements.",
+        "teacherNote": "Version Enrichi : vocabulaire de la programmation plus précis (instruction conditionnelle, boucle, variable) et deux défis (questions 9 et 10). Mêmes nombres que les autres versions pour les questions 1 à 8. Le défi 10 se corrige à la main.",
+        "instructions": "Analyse le code du robot arroseur. Pour chaque question, exécute le code ligne par ligne et note la valeur de la variable H à chaque passage dans la boucle. Les deux dernières questions sont des défis.",
+        "text": "Le jardin de l’école compte 4 bacs de légumes. Dans chacun, un capteur mesure l’humidité de la terre et la traduit en un nombre de 0 (terre très sèche) à 10 (terre très mouillée). Voici le code du robot arroseur.\n\nLigne 1 — RÉPÈTE 4 fois (une fois pour chaque bac) :\n\nLigne 2 — lis le nombre du capteur du bac et appelle-le H.\n\nLigne 3 — SI H est plus petit que 4 ALORS arrose le bac pendant 3 minutes.\n\nLigne 4 — SINON n’arrose pas le bac.\n\nLigne 5 — passe au bac suivant.\n\nLes lignes 2 à 5 forment le corps de la boucle : le robot les exécute une fois par bac. La ligne 3 et la ligne 4 forment une instruction conditionnelle.",
+        "glossary": [
+          {
+            "term": "une variable",
+            "definition": "Un nom, comme H, qui représente une valeur qui peut changer pendant l’exécution du code."
+          },
+          {
+            "term": "une instruction conditionnelle",
+            "definition": "Une instruction SI… ALORS… SINON : le code choisit quoi faire selon qu’une condition est vraie ou fausse."
+          },
+          {
+            "term": "une boucle",
+            "definition": "Une partie du code qui se répète, comme RÉPÈTE 4 fois."
+          },
+          {
+            "term": "déboguer",
+            "definition": "Trouver et corriger une erreur dans un code."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "La variable H vaut 2 pour un bac. Que fait le robot pour ce bac?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "Il arrose le bac pendant 3 minutes."
+              },
+              {
+                "id": "b",
+                "text": "Il n’arrose pas le bac."
+              },
+              {
+                "id": "c",
+                "text": "Il arrose le bac pendant 2 minutes."
+              },
+              {
+                "id": "d",
+                "text": "Il arrête le code."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "true_false",
+            "prompt": "Si la variable H vaut 4, la condition de la ligne 3 est vraie et le robot arrose le bac.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes"
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Les capteurs des 4 bacs indiquent, dans l’ordre, 5, 1, 3 et 8. Pendant combien de minutes le robot arrose-t-il en tout? Explique ta réponse.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "q4",
+            "kind": "matching",
+            "prompt": "Associe chaque modification du code à son effet. Un des effets est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "left": [
+              {
+                "id": "l1",
+                "text": "À la ligne 3, on remplace « plus petit que 4 » par « plus petit que 6 »."
+              },
+              {
+                "id": "l2",
+                "text": "À la ligne 3, on remplace « 3 minutes » par « 5 minutes »."
+              },
+              {
+                "id": "l3",
+                "text": "À la ligne 1, on remplace « RÉPÈTE 4 fois » par « RÉPÈTE 6 fois »."
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "Le robot peut s’occuper de 6 bacs."
+              },
+              {
+                "id": "rb",
+                "text": "Le robot n’arrose plus aucun bac."
+              },
+              {
+                "id": "rc",
+                "text": "Le robot arrose aussi les bacs dont le nombre est 4 ou 5."
+              },
+              {
+                "id": "rd",
+                "text": "Chaque bac arrosé reçoit de l’eau plus longtemps."
+              }
+            ]
+          },
+          {
+            "id": "q5",
+            "kind": "ordering",
+            "prompt": "Les lignes d’un autre code sont mélangées. Place-les dans le bon ordre pour que le code affiche « pair » ou « impair » selon le nombre N.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "items": [
+              {
+                "id": "a",
+                "text": "SINON"
+              },
+              {
+                "id": "b",
+                "text": "Lis un nombre N."
+              },
+              {
+                "id": "c",
+                "text": "Affiche « impair »."
+              },
+              {
+                "id": "d",
+                "text": "SI le chiffre des unités de N est 0, 2, 4, 6 ou 8 ALORS"
+              },
+              {
+                "id": "e",
+                "text": "Affiche « pair »."
+              }
+            ]
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Laurier veut que le robot arrose les bacs dont le nombre est inférieur ou égal à 3. Il écrit à la ligne 3 : « SI H est plus petit que 3 ALORS arrose le bac pendant 3 minutes. » Que fait son code quand H = 3? Débogue la ligne 3.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Océane remplace les lignes 3 et 4 par ces lignes : « SI H est plus petit que 2 ALORS arrose le bac pendant 5 minutes. SINON, SI H est plus petit que 4 ALORS arrose le bac pendant 3 minutes. SINON n’arrose pas le bac. » Les capteurs des 4 bacs indiquent 1, 3, 6 et 0. Pendant combien de minutes le robot arrose-t-il en tout?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 3
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Explique pourquoi le code utilise une boucle plutôt que de répéter quatre fois les mêmes instructions. Donne deux avantages.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          },
+          {
+            "id": "q9",
+            "kind": "short_answer",
+            "prompt": "Défi : avec le code d’Océane (question 7), trouve toutes les valeurs de H, de 0 à 10, pour lesquelles le robot arrose un bac pendant exactement 3 minutes. Justifie ta réponse.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q10",
+            "kind": "short_answer",
+            "prompt": "Défi : dans la serre de l’école, une fenêtre peut s’ouvrir toute seule. Écris un code qui vérifie la température T de la serre 6 fois par jour. Si T est plus grande que 25 °C, la fenêtre s’ouvre; sinon, elle se ferme. Utilise RÉPÈTE, SI, ALORS et SINON.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 6
+          }
+        ],
+        "visualSupports": [
+          "Les cinq lignes du code écrites sur de grandes cartes, affichées au tableau dans l’ordre, avec les lignes 2 à 5 décalées vers la droite pour montrer qu’elles sont dans la répétition.",
+          "Une simulation debout : quatre chaises représentent les bacs, chacune avec une carte-nombre (la valeur de H), et une ou un élève joue le robot en suivant le code lu à voix haute.",
+          "Des cartes de code découpées pour la question 5, que les élèves peuvent déplacer avant d’écrire leur réponse."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "2 est plus petit que 4 : la condition est vraie, alors le robot exécute la partie ALORS de la ligne 3."
+          },
+          {
+            "questionId": "q2",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "4 n’est pas plus petit que 4 : la condition est fausse, alors le robot exécute la ligne 4 (SINON) et n’arrose pas. Erreur fréquente : croire que « plus petit que 4 » inclut 4."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "6 minutes. Seuls les bacs 2 (H = 1) et 3 (H = 3) ont un nombre plus petit que 4 : 3 + 3 = 6 minutes.",
+            "acceptableAnswers": ["6", "6 minutes", "six minutes"],
+            "explanation": "Les bacs 1 (H = 5) et 4 (H = 8) ne sont pas arrosés."
+          },
+          {
+            "questionId": "q4",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "Changer la condition change les bacs arrosés; changer la durée change la quantité d’eau; changer le nombre de répétitions change le nombre de bacs. Aucune de ces modifications n’empêche d’arroser les bacs secs."
+          },
+          {
+            "questionId": "q5",
+            "kind": "ordering",
+            "orderedIds": ["b", "d", "e", "a", "c"],
+            "explanation": "Lis un nombre N. SI le chiffre des unités de N est 0, 2, 4, 6 ou 8 ALORS affiche « pair ». SINON affiche « impair »."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Quand H = 3, son code n’arrose pas le bac, car 3 n’est pas plus petit que 3 : c’est un bogue. Correction : « SI H est plus petit que 4 ALORS arrose le bac pendant 3 minutes. »",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire que le bac n’est pas arrosé quand H = 3 et proposer une correction, par exemple « plus petit que 4 » ou « plus petit que 3 ou égal à 3 »."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "13 minutes : H = 1, 5 minutes; H = 3, 3 minutes; H = 6, 0 minute; H = 0, 5 minutes. 5 + 3 + 0 + 5 = 13.",
+            "acceptableAnswers": ["13", "13 minutes", "treize minutes"],
+            "explanation": "Le robot vérifie d’abord la première condition (H plus petit que 2), puis la deuxième seulement si la première est fausse."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "Le code est plus court et plus facile à lire. Il y a moins de risques d’erreur, et pour ajouter des bacs, il suffit de changer un seul nombre (4).",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : accepter deux raisons parmi celles-ci ou d’autres raisons justes (code plus court, moins d’erreurs de copie, plus facile à modifier ou à déboguer)."
+          },
+          {
+            "questionId": "q9",
+            "kind": "short_answer",
+            "sampleAnswer": "H = 2 et H = 3. Ces valeurs ne sont pas plus petites que 2, mais elles sont plus petites que 4.",
+            "acceptableAnswers": ["2 et 3", "2, 3", "H = 2 et H = 3"],
+            "explanation": "Pour H = 0 ou 1, le robot arrose 5 minutes; à partir de H = 4, il n’arrose pas."
+          },
+          {
+            "questionId": "q10",
+            "kind": "short_answer",
+            "sampleAnswer": "RÉPÈTE 6 fois : lis la température T. SI T est plus grande que 25 ALORS ouvre la fenêtre. SINON ferme la fenêtre. Attends jusqu’à la prochaine vérification.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : le code doit contenir une répétition de 6 fois, la lecture de T dans la répétition, une condition sur 25 °C et les deux actions (ouvrir, fermer) dans les bonnes parties SI et SINON."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

@@ -276,7 +276,7 @@
             "kind": "short_answer",
             "sampleAnswer": "Un billet de 20 $, un billet de 10 $, un billet de 5 $, une pièce de 2 $ et une pièce de 1 $ : 5 billets et pièces en tout.",
             "acceptableAnswers": [],
-            "explanation": "Correction manuelle : 20 $ + 10 $ + 5 $ + 2 $ + 1 $ = 38 $. Acceptez toute collection qui vaut 38 $; la réponse complète n’utilise que 5 billets et pièces."
+            "explanation": "Correction manuelle : 20 $ + 10 $ + 5 $ + 2 $ + 1 $ = 38 $. Une collection qui vaut 38 $ avec plus de billets et de pièces montre que l’élève sait représenter le montant, mais la réponse complète n’en utilise que 5."
           },
           {
             "questionId": "q8",
@@ -523,7 +523,7 @@
             "kind": "short_answer",
             "sampleAnswer": "Un billet de 20 $, un billet de 10 $, un billet de 5 $, une pièce de 2 $ et une pièce de 1 $ : 5 billets et pièces en tout.",
             "acceptableAnswers": [],
-            "explanation": "Correction manuelle : 20 $ + 10 $ + 5 $ + 2 $ + 1 $ = 38 $. Acceptez toute collection qui vaut 38 $; la réponse complète n’utilise que 5 billets et pièces."
+            "explanation": "Correction manuelle : 20 $ + 10 $ + 5 $ + 2 $ + 1 $ = 38 $. Une collection qui vaut 38 $ avec plus de billets et de pièces montre que l’élève sait représenter le montant, mais la réponse complète n’en utilise que 5."
           },
           {
             "questionId": "q8",
@@ -770,7 +770,7 @@
             "kind": "short_answer",
             "sampleAnswer": "Un billet de 20 $, un billet de 10 $, un billet de 5 $, une pièce de 2 $ et une pièce de 1 $ : 5 billets et pièces en tout.",
             "acceptableAnswers": [],
-            "explanation": "Correction manuelle : 20 $ + 10 $ + 5 $ + 2 $ + 1 $ = 38 $. Acceptez toute collection qui vaut 38 $; la réponse complète n’utilise que 5 billets et pièces."
+            "explanation": "Correction manuelle : 20 $ + 10 $ + 5 $ + 2 $ + 1 $ = 38 $. Une collection qui vaut 38 $ avec plus de billets et de pièces montre que l’élève sait représenter le montant, mais la réponse complète n’en utilise que 5."
           },
           {
             "questionId": "q8",
@@ -1017,7 +1017,7 @@
             "kind": "short_answer",
             "sampleAnswer": "Un billet de 20 $, un billet de 10 $, un billet de 5 $, une pièce de 2 $ et une pièce de 1 $ : 5 billets et pièces en tout.",
             "acceptableAnswers": [],
-            "explanation": "Correction manuelle : 20 $ + 10 $ + 5 $ + 2 $ + 1 $ = 38 $. Acceptez toute collection qui vaut 38 $; la réponse complète n’utilise que 5 billets et pièces."
+            "explanation": "Correction manuelle : 20 $ + 10 $ + 5 $ + 2 $ + 1 $ = 38 $. Une collection qui vaut 38 $ avec plus de billets et de pièces montre que l’élève sait représenter le montant, mais la réponse complète n’en utilise que 5."
           },
           {
             "questionId": "q8",
@@ -1264,7 +1264,7 @@
             "kind": "short_answer",
             "sampleAnswer": "Un billet de 20 $, un billet de 10 $, un billet de 5 $, une pièce de 2 $ et une pièce de 1 $ : 5 billets et pièces en tout.",
             "acceptableAnswers": [],
-            "explanation": "Correction manuelle : 20 $ + 10 $ + 5 $ + 2 $ + 1 $ = 38 $. Acceptez toute collection qui vaut 38 $; la réponse complète n’utilise que 5 billets et pièces."
+            "explanation": "Correction manuelle : 20 $ + 10 $ + 5 $ + 2 $ + 1 $ = 38 $. Une collection qui vaut 38 $ avec plus de billets et de pièces montre que l’élève sait représenter le montant, mais la réponse complète n’en utilise que 5."
           },
           {
             "questionId": "q8",

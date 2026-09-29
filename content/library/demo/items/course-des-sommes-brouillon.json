@@ -1,0 +1,221 @@
+{
+  "slug": "course-des-sommes-brouillon",
+  "type": "game",
+  "title": "La course des sommes (brouillon)",
+  "summary": "Un jeu de probabilité en équipes : onze coureurs numérotés de 2 à 12 avancent selon la somme de deux dés. Les élèves prédisent le gagnant, notent les résultats et les comparent à la probabilité théorique de chaque somme.",
+  "source": "ai_generated",
+  "author": "marc.gagnon@demo.lynx.test",
+  "school": "saint-exemple",
+  "status": "draft",
+  "shareScope": "private",
+  "reviewRequested": false,
+  "approvedBy": null,
+  "faithReviewed": false,
+  "gradeCodes": ["5"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "D2.1"
+    },
+    {
+      "grade": "5",
+      "code": "D2.2"
+    }
+  ],
+  "durationMinutes": 30,
+  "materials": "Par équipe : deux dés ordinaires (un rouge et un bleu, si possible), 11 jetons, une feuille pour la piste et un crayon.",
+  "keywords": "probabilité, probabilité théorique, probabilité expérimentale, dés, somme, hasard, prédiction, tableau des effectifs, jeu",
+  "tags": ["jeu"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": false,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": "v1",
+  "model": "claude-opus-5-5",
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "La course des sommes",
+        "objective": "Je compare la probabilité théorique et la probabilité expérimentale des sommes obtenues en lançant deux dés.",
+        "teacherNote": "Jeu d’environ 30 minutes. Faites d’abord prédire quel coureur gagnera. Après trois courses, construisez en groupe le tableau des 36 résultats possibles (dé rouge et dé bleu) pour trouver la probabilité théorique de chaque somme, puis comparez-la aux résultats des courses. Les questions du jeu servent au retour en groupe; la question 5 se corrige à la main.",
+        "grouping": "En équipes de trois ou de quatre.",
+        "setup": "Préparez une piste par équipe : sur une feuille, tracez 11 colonnes numérotées de 2 à 12 et 8 rangées. La rangée du haut est la ligne d’arrivée. Chaque équipe reçoit deux dés (un rouge et un bleu, si possible) et 11 jetons, un par colonne, placés sous la première rangée.",
+        "rules": [
+          "Chaque personne choisit un coureur : un nombre de 2 à 12. Écris ton choix et ta prédiction : quel coureur arrivera le premier?",
+          "À tour de rôle, lance les deux dés et additionne les deux nombres obtenus.",
+          "Avance d’une case le jeton du coureur qui porte cette somme.",
+          "Note chaque somme dans un tableau des effectifs, avec des traits de dénombrement.",
+          "La course se termine quand un coureur atteint la ligne d’arrivée.",
+          "Jouez trois courses. Après chaque course, comparez le coureur gagnant avec vos prédictions."
+        ],
+        "howToWin": "La personne dont le coureur atteint la ligne d’arrivée en premier gagne la course. Après trois courses, l’équipe se demande si le même coureur a toujours gagné, et pourquoi.",
+        "variations": [
+          "La course des différences : on soustrait le plus petit nombre du plus grand. Les coureurs portent les nombres de 0 à 5.",
+          "La grande expérience : réunissez les tableaux des effectifs de toutes les équipes et comparez les résultats de la classe avec la probabilité théorique.",
+          "Un seul dé : les coureurs portent les nombres de 1 à 6. Chaque coureur a la même probabilité d’avancer, 1/6."
+        ],
+        "questions": [
+          {
+            "id": "g1",
+            "kind": "multiple_choice",
+            "prompt": "Avec deux dés ordinaires, quelle somme a le plus de chances de sortir?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "2"
+              },
+              {
+                "id": "b",
+                "text": "6"
+              },
+              {
+                "id": "c",
+                "text": "7"
+              },
+              {
+                "id": "d",
+                "text": "12"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "g2",
+            "kind": "true_false",
+            "prompt": "Avec deux dés ordinaires, il est impossible d’obtenir une somme de 1.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "g3",
+            "kind": "short_answer",
+            "prompt": "Avec un dé rouge et un dé bleu, de combien de façons peut-on obtenir une somme de 4? Écris-les.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "g4",
+            "kind": "multiple_choice",
+            "prompt": "Quelle est la probabilité théorique d’obtenir une somme de 7 avec deux dés?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "1/6"
+              },
+              {
+                "id": "b",
+                "text": "1/12"
+              },
+              {
+                "id": "c",
+                "text": "7/12"
+              },
+              {
+                "id": "d",
+                "text": "1/11"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "g5",
+            "kind": "short_answer",
+            "prompt": "Après une course, le coureur 8 a gagné. Désiré conclut : « 8 est la somme la plus probable. » Qu’en penses-tu? Explique ta réponse.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          },
+          {
+            "id": "g6",
+            "kind": "ordering",
+            "prompt": "Place ces sommes de la moins probable à la plus probable.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "items": [
+              {
+                "id": "a",
+                "text": "une somme de 5"
+              },
+              {
+                "id": "b",
+                "text": "une somme de 2"
+              },
+              {
+                "id": "c",
+                "text": "une somme de 10"
+              },
+              {
+                "id": "d",
+                "text": "une somme de 7"
+              }
+            ]
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "g1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "La somme 7 peut s’obtenir de 6 façons (1 et 6, 2 et 5, 3 et 4, 4 et 3, 5 et 2, 6 et 1), plus que toute autre somme."
+          },
+          {
+            "questionId": "g2",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Le plus petit résultat de chaque dé est 1 : la plus petite somme possible est 1 + 1 = 2."
+          },
+          {
+            "questionId": "g3",
+            "kind": "short_answer",
+            "sampleAnswer": "3 façons : rouge 1 et bleu 3; rouge 2 et bleu 2; rouge 3 et bleu 1.",
+            "acceptableAnswers": ["3", "3 façons", "trois"],
+            "explanation": "Les deux dés sont différents : rouge 1 et bleu 3 n’est pas le même résultat que rouge 3 et bleu 1."
+          },
+          {
+            "questionId": "g4",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Il y a 36 résultats possibles (6 × 6) et 6 d’entre eux donnent 7 : 6/36 = 1/6."
+          },
+          {
+            "questionId": "g5",
+            "kind": "short_answer",
+            "sampleAnswer": "Je ne suis pas d’accord. Une seule course, c’est peu de lancers : le hasard peut faire gagner le 8. En théorie, la somme 7 est plus probable (6 façons sur 36) que la somme 8 (5 façons sur 36). Plus on fait de lancers, plus les résultats se rapprochent de la probabilité théorique.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit distinguer le résultat d’une expérience (probabilité expérimentale) de la probabilité théorique, ou parler du petit nombre de lancers."
+          },
+          {
+            "questionId": "g6",
+            "kind": "ordering",
+            "orderedIds": ["b", "c", "a", "d"],
+            "explanation": "Somme de 2 : 1 façon; somme de 10 : 3 façons; somme de 5 : 4 façons; somme de 7 : 6 façons (sur 36)."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

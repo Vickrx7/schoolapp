@@ -1,0 +1,243 @@
+{
+  "slug": "aire-parallelogramme-triangle",
+  "type": "worked_example",
+  "title": "Du rectangle au parallélogramme et au triangle : l’aire",
+  "summary": "Exemple résolu pas à pas : tracer un parallélogramme sur du papier quadrillé, le découper et le transformer en rectangle pour trouver son aire, puis le couper le long d’une diagonale pour trouver l’aire d’un triangle, suivi de six questions de pratique.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["5"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "E2.5"
+    }
+  ],
+  "durationMinutes": 40,
+  "materials": "Deux feuilles de papier quadrillé à centimètres par élève, une règle, des ciseaux, de la colle ou du ruban adhésif et des crayons de couleur.",
+  "keywords": "aire, parallélogramme, triangle, rectangle, base, hauteur, formule, découpage, papier quadrillé, centimètres carrés",
+  "tags": [],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": false,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "J’utilise l’aire du rectangle pour trouver l’aire d’un parallélogramme et d’un triangle, et j’explique d’où viennent leurs formules.",
+        "teacherNote": "Aucune figure n’est fournie : chaque élève trace le parallélogramme sur du papier quadrillé à centimètres en suivant les directives de l’étape 1, puis découpe les pièces. Préparez deux feuilles par élève (un parallélogramme par feuille). Insistez sur la différence entre la hauteur (mesurée à angle droit avec la base) et le côté oblique : c’est l’erreur la plus fréquente. Ne donnez les formules qu’après le découpage. La question de pratique 5 se corrige à la main.",
+        "problem": "Gaëlle trace un parallélogramme sur du papier quadrillé à centimètres. Sa base mesure 8 cm et sa hauteur mesure 5 cm. Quelle est l’aire de ce parallélogramme? Si on le coupe en deux le long d’une diagonale, quelle est l’aire de chacun des deux triangles obtenus?",
+        "steps": [
+          {
+            "explanation": "Trace le parallélogramme. Place le point A sur un croisement de lignes du quadrillage, dans le bas de la feuille. Compte 8 carreaux vers la droite et place le point B. À partir du point A, monte de 5 carreaux et avance de 2 carreaux vers la droite : place le point D. Fais le même déplacement à partir de B pour placer le point C. Relie A, B, C et D.",
+            "work": "Base AB = 8 cm; hauteur = 5 cm"
+          },
+          {
+            "explanation": "Repère la hauteur. C’est la distance entre la base AB et le côté opposé DC, mesurée à angle droit, le long d’une ligne verticale du quadrillage. Ce n’est pas le côté oblique AD, qui est un peu plus long.",
+            "work": "Hauteur = 5 cm; côté oblique AD : environ 5,4 cm"
+          },
+          {
+            "explanation": "Découpe le parallélogramme. Ensuite, à partir du point D, trace un segment qui descend tout droit jusqu’à la base, le long d’une ligne du quadrillage. Coupe le long de ce segment : tu obtiens un petit triangle et un trapèze.",
+            "work": "Le petit triangle a des côtés de 2 cm et de 5 cm qui forment un angle droit."
+          },
+          {
+            "explanation": "Fais glisser le petit triangle vers la droite, sans le tourner, jusqu’à ce que son côté oblique touche le côté BC. Les deux pièces forment un rectangle.",
+            "work": "Nouveau rectangle : 8 cm sur 5 cm"
+          },
+          {
+            "explanation": "Calcule l’aire du rectangle, ou compte les carreaux. Le parallélogramme a la même aire que ce rectangle : on n’a rien ajouté ni rien enlevé, on a seulement déplacé une pièce.",
+            "work": "Aire du parallélogramme = base × hauteur = 8 × 5 = 40 cm²"
+          },
+          {
+            "explanation": "Trace un deuxième parallélogramme identique et découpe-le. Coupe-le ensuite le long de la diagonale qui va de A à C. Pose un des triangles sur l’autre en le faisant tourner : ils se superposent exactement.",
+            "work": "Le parallélogramme = 2 triangles identiques"
+          },
+          {
+            "explanation": "Chaque triangle est donc la moitié du parallélogramme. Il a la même base (8 cm) et la même hauteur (5 cm) que le parallélogramme.",
+            "work": "Aire du triangle = (base × hauteur) ÷ 2 = (8 × 5) ÷ 2 = 20 cm²"
+          }
+        ],
+        "answer": "Le parallélogramme a une aire de 40 cm², et chaque triangle a une aire de 20 cm². Aire du parallélogramme = base × hauteur; aire du triangle = (base × hauteur) ÷ 2.",
+        "practice": [
+          {
+            "id": "p1",
+            "kind": "multiple_choice",
+            "prompt": "Un parallélogramme a une base de 6 cm et une hauteur de 4 cm. Quelle est son aire?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "10 cm²"
+              },
+              {
+                "id": "b",
+                "text": "12 cm²"
+              },
+              {
+                "id": "c",
+                "text": "20 cm²"
+              },
+              {
+                "id": "d",
+                "text": "24 cm²"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "p2",
+            "kind": "true_false",
+            "prompt": "Un triangle qui a une base de 10 cm et une hauteur de 6 cm a une aire de 30 cm².",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "p3",
+            "kind": "matching",
+            "prompt": "Associe chaque figure à son aire. Une des aires est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "left": [
+              {
+                "id": "l1",
+                "text": "un rectangle de 9 cm sur 4 cm"
+              },
+              {
+                "id": "l2",
+                "text": "un parallélogramme de base 5 cm et de hauteur 6 cm"
+              },
+              {
+                "id": "l3",
+                "text": "un triangle de base 8 cm et de hauteur 7 cm"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "56 cm²"
+              },
+              {
+                "id": "rb",
+                "text": "30 cm²"
+              },
+              {
+                "id": "rc",
+                "text": "28 cm²"
+              },
+              {
+                "id": "rd",
+                "text": "36 cm²"
+              }
+            ]
+          },
+          {
+            "id": "p4",
+            "kind": "short_answer",
+            "prompt": "Un triangle a une aire de 24 cm². Sa base mesure 8 cm. Quelle est sa hauteur? Explique comment tu l’as trouvée.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 3
+          },
+          {
+            "id": "p5",
+            "kind": "short_answer",
+            "prompt": "Désiré calcule l’aire du parallélogramme de Gaëlle ainsi : 8 × 5,4 = 43,2 cm². Explique son erreur.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          },
+          {
+            "id": "p6",
+            "kind": "short_answer",
+            "prompt": "Deux parallélogrammes ont chacun une base de 6 cm et une hauteur de 4 cm. L’un est très penché, l’autre l’est très peu. Lequel a la plus grande aire? Explique.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "p1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["d"],
+            "explanation": "6 × 4 = 24 cm². 10 vient d’une addition (6 + 4), 12 de la formule du triangle et 20 du périmètre d’un rectangle de 6 cm sur 4 cm."
+          },
+          {
+            "questionId": "p2",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "(10 × 6) ÷ 2 = 60 ÷ 2 = 30 cm²."
+          },
+          {
+            "questionId": "p3",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "rc"
+              }
+            ],
+            "explanation": "Rectangle : 9 × 4 = 36 cm². Parallélogramme : 5 × 6 = 30 cm². Triangle : (8 × 7) ÷ 2 = 28 cm². 56 cm² est l’erreur de qui oublie de diviser par 2."
+          },
+          {
+            "questionId": "p4",
+            "kind": "short_answer",
+            "sampleAnswer": "6 cm. Le triangle est la moitié d’un parallélogramme de 48 cm² (24 × 2). Comme 8 × 6 = 48, la hauteur est 6 cm.",
+            "acceptableAnswers": ["6 cm", "6", "6 centimètres"],
+            "explanation": "On peut aussi chercher le nombre qui rend l’égalité (8 × h) ÷ 2 = 24 vraie : h = 6."
+          },
+          {
+            "questionId": "p5",
+            "kind": "short_answer",
+            "sampleAnswer": "Désiré a multiplié la base par le côté oblique (environ 5,4 cm) au lieu de la hauteur (5 cm). Le côté oblique est plus long que la hauteur. La bonne aire est 8 × 5 = 40 cm².",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit nommer la confusion entre le côté oblique et la hauteur, et donner 40 cm²."
+          },
+          {
+            "questionId": "p6",
+            "kind": "short_answer",
+            "sampleAnswer": "Ils ont la même aire : 6 × 4 = 24 cm² chacun. En les découpant comme dans l’exemple, les deux deviennent un rectangle de 6 cm sur 4 cm. Le fait d’être penché ne change pas l’aire si la base et la hauteur restent les mêmes.",
+            "acceptableAnswers": ["la même aire", "même aire", "24 cm²"],
+            "explanation": "Le périmètre, lui, change : le parallélogramme très penché a des côtés obliques plus longs."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

@@ -1,0 +1,247 @@
+{
+  "slug": "division-reste-minibus",
+  "type": "worked_example",
+  "title": "Diviser et interpréter le reste : les minibus de la sortie",
+  "summary": "Exemple résolu pas à pas : diviser 158 par 24 en enlevant des groupes faciles à calculer, vérifier le calcul et décider quoi faire du reste (ici, réserver un minibus de plus), suivi de six questions de pratique sur les trois façons d’interpréter un reste.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["5"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "B2.6"
+    }
+  ],
+  "durationMinutes": 30,
+  "materials": "L’exemple affiché ou une copie par élève, un crayon et une feuille de calcul. Facultatif : des blocs de base dix (plaques, réglettes et petits cubes).",
+  "keywords": "division, reste, quotient, diviseur, interpréter le reste, quotients partiels, estimation, vérifier, sortie scolaire, cabane à sucre",
+  "tags": ["nombres"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": false,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je divise un nombre à trois chiffres par un nombre à deux chiffres et je décide quoi faire du reste selon la situation.",
+        "teacherNote": "Faites d’abord estimer la réponse sans calculer. La méthode présentée enlève des groupes faciles à calculer (des quotients partiels); d’autres méthodes sont acceptées. Pour modéliser 158 avec des blocs de base dix (1 plaque, 5 réglettes et 8 petits cubes), il faut échanger la plaque contre 10 réglettes avant de former des groupes de 24 (2 réglettes et 4 petits cubes). Insistez sur la dernière étape : le même calcul peut mener à trois réponses différentes selon la question posée. La question de pratique 5 se corrige à la main.",
+        "problem": "Pour la sortie à la cabane à sucre, 158 personnes (élèves et adultes) doivent se déplacer en minibus. Chaque minibus peut transporter 24 personnes. Combien de minibus faut-il réserver pour que tout le monde ait une place?",
+        "steps": [
+          {
+            "explanation": "Repère ce que tu sais et ce que tu cherches. On forme des groupes de 24 personnes à partir de 158 personnes : c’est une division.",
+            "work": "Nombre de minibus : 158 ÷ 24"
+          },
+          {
+            "explanation": "Estime d’abord. 24, c’est presque 25, et 6 groupes de 25 font 150. Il faudra donc environ 6 ou 7 minibus.",
+            "work": "25 × 6 = 150, donc la réponse est proche de 6."
+          },
+          {
+            "explanation": "Enlève un groupe facile à calculer. 5 minibus transportent 5 × 24 = 120 personnes. Il reste 38 personnes.",
+            "work": "5 × 24 = 120; 158 − 120 = 38"
+          },
+          {
+            "explanation": "Un minibus de plus transporte 24 des 38 personnes qui restent. Il reste 14 personnes. On ne peut plus former un groupe de 24, car 14 est plus petit que 24.",
+            "work": "1 × 24 = 24; 38 − 24 = 14"
+          },
+          {
+            "explanation": "Additionne les groupes enlevés : c’est le quotient. Ce qui reste est le reste.",
+            "work": "5 + 1 = 6, donc 158 ÷ 24 = 6 reste 14"
+          },
+          {
+            "explanation": "Vérifie : multiplie le quotient par 24, puis ajoute le reste. Tu dois retrouver 158.",
+            "work": "6 × 24 = 144; 144 + 14 = 158"
+          },
+          {
+            "explanation": "Interprète le reste. 6 minibus transportent 144 personnes, mais 14 personnes n’ont pas encore de place. Il faut un minibus de plus, même s’il ne sera pas plein.",
+            "work": "6 + 1 = 7 minibus"
+          },
+          {
+            "explanation": "Retiens : selon la question, on ajoute 1 au quotient (comme ici), on ne tient pas compte du reste, ou le reste est la réponse. Relis toujours la question avant de répondre.",
+            "work": ""
+          }
+        ],
+        "answer": "Il faut réserver 7 minibus. 158 ÷ 24 = 6 reste 14 : 6 minibus ne suffisent pas, car 14 personnes n’auraient pas de place.",
+        "practice": [
+          {
+            "id": "p1",
+            "kind": "multiple_choice",
+            "prompt": "On range 158 œufs dans des boîtes de 12. Combien de boîtes pleines obtient-on?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "2"
+              },
+              {
+                "id": "b",
+                "text": "12"
+              },
+              {
+                "id": "c",
+                "text": "13"
+              },
+              {
+                "id": "d",
+                "text": "14"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "p2",
+            "kind": "true_false",
+            "prompt": "Quand on divise un nombre naturel par 24, le reste est toujours plus petit que 24.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "p3",
+            "kind": "matching",
+            "prompt": "Associe chaque question à ce qu’on fait avec le reste. Un des choix est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "left": [
+              {
+                "id": "l1",
+                "text": "Combien d’autobus faut-il pour transporter tout le monde?"
+              },
+              {
+                "id": "l2",
+                "text": "Combien de boîtes pleines peut-on remplir?"
+              },
+              {
+                "id": "l3",
+                "text": "Combien de cartes restera-t-il après le partage?"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "On ne tient pas compte du reste."
+              },
+              {
+                "id": "rb",
+                "text": "Le reste est la réponse."
+              },
+              {
+                "id": "rc",
+                "text": "On soustrait le reste du quotient."
+              },
+              {
+                "id": "rd",
+                "text": "On ajoute 1 au quotient."
+              }
+            ]
+          },
+          {
+            "id": "p4",
+            "kind": "short_answer",
+            "prompt": "Noé aide à ranger 245 livres à la bibliothèque. Chaque tablette peut contenir 18 livres. Combien de tablettes lui faut-il pour ranger tous les livres? Montre ton calcul.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 3
+          },
+          {
+            "id": "p5",
+            "kind": "short_answer",
+            "prompt": "Jules calcule 196 ÷ 15 et trouve 12 reste 16. Explique pourquoi sa réponse ne peut pas être juste, puis corrige-la.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          },
+          {
+            "id": "p6",
+            "kind": "short_answer",
+            "prompt": "Raphaëlle range ses 175 cartes de hockey dans des étuis de 16 cartes. Elle remplit le plus d’étuis possible. Combien de cartes restent en dehors des étuis?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "p1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "158 ÷ 12 = 13 reste 2 (12 × 13 = 156). On ne compte que les boîtes pleines : 13. La boîte qui contiendrait 2 œufs n’est pas pleine."
+          },
+          {
+            "questionId": "p2",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Si le reste était 24 ou plus, on pourrait encore former un groupe de 24."
+          },
+          {
+            "questionId": "p3",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "ra"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "rb"
+              }
+            ],
+            "explanation": "Tout le monde doit avoir une place : on ajoute un autobus. Une boîte incomplète n’est pas pleine : on ne tient pas compte du reste. Les cartes qui restent sont le reste. « On soustrait le reste du quotient » est de trop."
+          },
+          {
+            "questionId": "p4",
+            "kind": "short_answer",
+            "sampleAnswer": "14 tablettes. 18 × 13 = 234 et 245 − 234 = 11 : 245 ÷ 18 = 13 reste 11. Les 11 derniers livres ont besoin d’une 14e tablette.",
+            "acceptableAnswers": ["14", "14 tablettes", "quatorze"],
+            "explanation": "Calcul possible : 18 × 10 = 180, reste 65; 18 × 3 = 54, reste 11; 10 + 3 = 13 reste 11. Erreur fréquente : répondre 13 en oubliant les 11 livres qui restent."
+          },
+          {
+            "questionId": "p5",
+            "kind": "short_answer",
+            "sampleAnswer": "Le reste (16) est plus grand que le diviseur (15) : on peut encore former un groupe de 15. La bonne réponse est 13 reste 1, car 15 × 13 = 195 et 196 − 195 = 1.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit expliquer que le reste doit être plus petit que 15 et donner 13 reste 1."
+          },
+          {
+            "questionId": "p6",
+            "kind": "short_answer",
+            "sampleAnswer": "15 cartes. 16 × 10 = 160 et 175 − 160 = 15 : Raphaëlle remplit 10 étuis et il reste 15 cartes.",
+            "acceptableAnswers": ["15", "15 cartes", "quinze"],
+            "explanation": "Ici, la question porte sur ce qui reste : le reste est la réponse. 15 cartes ne suffisent pas pour remplir un 11e étui."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}
