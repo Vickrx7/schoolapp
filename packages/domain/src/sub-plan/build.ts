@@ -22,6 +22,7 @@ import {
   detachLibrary,
   librarySnapshot,
   rankLibraryCandidates,
+  reservedLibraryItems,
 } from './library';
 import {
   SUB_PLAN_GENERATOR_VERSION,
@@ -375,16 +376,25 @@ function buildBlock(
   };
 }
 
+/** Resources shared by every day of one build (D-077). */
+interface LibraryUse {
+  /** Resources already in a period: each is used once per absence. */
+  used: Set<string>;
+  /** Resources the absence's lessons link themselves, kept for those lessons. */
+  reserved: ReadonlySet<string>;
+}
+
 /**
  * The library resource of each lesson period (D-077): the best candidate of the lesson whose
- * snapshot can be made, each resource once per absence (`used` is shared by every day of the
- * build, in date and time order). Only lessons the substitute teaches get one.
+ * snapshot can be made, each resource once per absence (`use.used` is shared by every day of
+ * the build, in date and time order), a lesson's own resource kept for it. Only lessons the
+ * substitute teaches get one.
  */
 function withLibrary(
   blocks: readonly SubPlanBlock[],
   groups: readonly StudentGroup[],
   ctx: BuildContext,
-  used: Set<string>,
+  use: LibraryUse,
 ): SubPlanBlock[] {
   return blocks.map((b) => {
     const lesson = b.lesson;
@@ -396,12 +406,13 @@ function withLibrary(
       blockMinutes: plannedMinutes(b),
       candidates,
       items: ctx.library.items,
-      used,
+      used: use.used,
+      reserved: use.reserved,
     });
     for (const choice of ranked) {
       const snapshot = librarySnapshot(choice.item, classGroups, { reason: choice.reason });
       if (!snapshot) continue;
-      used.add(choice.item.id);
+      use.used.add(choice.item.id);
       return attachLibrary(b, snapshot);
     }
     return b;
@@ -416,7 +427,7 @@ function buildDayPlan(
   assignments: ReadonlyMap<string, AbsenceSlotAssignment>,
   absence: AbsenceInput,
   now: Date,
-  usedLibraryItems: Set<string>,
+  libraryUse: LibraryUse,
 ): SubPlanV1 {
   const { date, classIds } = coverage;
   const { groups, withoutLevel } = groupStudentsByLevel(sources.students, sources.levels, classIds);
@@ -426,7 +437,7 @@ function buildDayPlan(
       .map((b) => buildBlock(b, ctx, assignments.get(slotKey(date, b.id)))),
     groups.slice(0, 40),
     ctx,
-    usedLibraryItems,
+    libraryUse,
   );
 
   let faith: SubPlanV1['faith'] = null;
@@ -625,7 +636,16 @@ export function buildAbsencePlans(
   }
 
   const ctx = contextOf(sources);
-  const usedLibraryItems = new Set<string>();
+  const libraryUse: LibraryUse = {
+    used: new Set<string>(),
+    reserved: reservedLibraryItems(
+      [...assignments.values()].flatMap((a) =>
+        a.lesson && a.reason === 'assigned' ? [a.lesson.id] : [],
+      ),
+      ctx.library.candidates,
+      ctx.library.items,
+    ),
+  };
   const plans = dates.map((date): BuiltPlan => {
     const coverage = coverages.get(date);
     if (coverage && !failed.has(date)) {
@@ -637,7 +657,7 @@ export function buildAbsencePlans(
           assignments,
           absence,
           options.now,
-          usedLibraryItems,
+          libraryUse,
         );
         return { date, classIds: plan.classes.map((c) => c.classId), plan };
       } catch (error) {

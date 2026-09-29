@@ -2,7 +2,7 @@
 -- (supabase/migrations/20261015090000_library_core.sql; DECISIONS D-063 to D-067, D-079).
 begin;
 \ir _helpers.psql
-select plan(109);
+select plan(119);
 select tests.build_fixture();
 select tests.build_library_fixture();
 
@@ -761,6 +761,93 @@ select results_eq(
   $$values ('draft', 'private', 1)$$,
   'a draft again, private, and audited'
 );
+
+-- ---------------------------------------------------------------------------------------
+-- 14. Review fixes (20261015090400_library_review_fixes.sql): an edit that needs a faith
+--     review takes an item off the whole board (D-064); authors who left the board no longer
+--     edit it, propose it or widen its sharing (D-065)
+-- ---------------------------------------------------------------------------------------
+
+-- An item shared with the whole board gains faith content when its author saves it.
+select tests.library_item('board_game', 'teacher_a', 'game', 'teacher_reviewed', 'board', 'school_a1');
+select tests.authenticate_as('teacher_a');
+select results_eq(
+  $$select content_revision from public.save_library_item(tests.id('board_game'), 1,
+    tests.library_payload('game', 'Ressource board_game')
+    || '{"faithContent": true, "catholicConnection": "Jouer ensemble dans le respect."}')$$,
+  $$values (2)$$,
+  'the author adds faith content to an item shared with the whole board'
+);
+select tests.clear_authentication();
+select results_eq(
+  $$select status::text, share_scope::text, requires_faith_review, faith_reviewed_at is null,
+      (select count(*)::int from public.audit_log a
+       where a.action = 'library_item.scope_reduced' and a.entity_id = i.id
+         and a.details = '{"scope": "school", "reason": "faith_review"}'::jsonb)
+    from public.library_items i where i.id = tests.id('board_game')$$,
+  $$values ('teacher_reviewed', 'school', true, true, 1)$$,
+  'it goes back to its school until its faith review, and that is audited'
+);
+
+-- A faith-reviewed item shared with the whole board (no school): any edit ends the faith review.
+select tests.library_item('board_faith', 'teacher_a', 'game', 'teacher_reviewed', 'board');
+update public.library_items
+set faith_content = true, faith_reviewed_at = now(), faith_reviewed_by = tests.id('faith_reviewer_a')
+where id = tests.id('board_faith');
+select tests.authenticate_as('teacher_a');
+select lives_ok(
+  $$select public.save_library_item(tests.id('board_faith'), 1,
+    tests.library_payload('game', 'Ressource board_faith modifiée') || '{"faithContent": true}')$$,
+  'the author edits a faith-reviewed item shared with the whole board'
+);
+select tests.clear_authentication();
+select results_eq(
+  $$select share_scope::text, faith_reviewed_at is null
+    from public.library_items where id = tests.id('board_faith')$$,
+  $$values ('private', true)$$,
+  'the earlier faith review no longer counts: without a school, it becomes private'
+);
+
+-- Without faith content, an edit keeps the whole board.
+select tests.library_item('board_plain', 'teacher_a', 'game', 'teacher_reviewed', 'board', 'school_a1');
+select tests.authenticate_as('teacher_a');
+select public.save_library_item(tests.id('board_plain'), 1,
+  tests.library_payload('game', 'Ressource board_plain modifiée'));
+select tests.clear_authentication();
+select is(
+  (select share_scope::text from public.library_items where id = tests.id('board_plain')), 'board',
+  'an edit without faith content keeps its sharing'
+);
+
+-- An author who lost every role in the board (her account still active).
+select tests.create_user('leaver');
+insert into public.user_roles (user_id, role, board_id, school_id)
+values (tests.id('leaver'), 'teacher', tests.id('board_a'), tests.id('school_a1'));
+select tests.library_item('left_item', 'leaver', 'game', 'teacher_reviewed', 'school', 'school_a1');
+delete from public.user_roles where user_id = tests.id('leaver');
+select tests.authenticate_as('leaver');
+select throws_ok(
+  $$select public.save_library_item(tests.id('left_item'), 1,
+    tests.library_payload('game', 'Modifiée après son départ'))$$,
+  '42501', null, 'an author who left the board no longer edits her item'
+);
+select throws_ok(
+  $$select public.library_share(tests.id('left_item'), 'board')$$,
+  '42501', null, 'nor shares it more widely'
+);
+select throws_ok(
+  $$select public.library_request_approval(tests.id('left_item'))$$,
+  '42501', null, 'nor proposes it to the board'
+);
+select lives_ok(
+  $$select public.library_share(tests.id('left_item'), 'private')$$,
+  'she can still make it private'
+);
+select is(
+  (select count(*)::int from public.library_items where id = tests.id('left_item')), 1,
+  'and still reads it'
+);
+select tests.clear_authentication();
 
 -- Audit details and event payloads never hold notes, titles or names.
 select is_empty(

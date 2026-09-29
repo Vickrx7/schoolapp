@@ -132,8 +132,10 @@ export function LessonList({
                             >
                               <Library className="size-4 shrink-0" aria-hidden />
                               <span>
-                                {tLibrary('chip')}
-                                <span className="font-normal"> : {l.resource.title}</span>
+                                {tLibrary.rich('chipTitle', {
+                                  title: l.resource.title,
+                                  name: (chunks) => <span className="font-normal">{chunks}</span>,
+                                })}
                               </span>
                             </Link>
                           ) : (

@@ -3,6 +3,7 @@
 import { TYPE_INFO } from '@lynx/content';
 import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState, useTransition } from 'react';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/card';
 import { Chip } from '@/components/ui/chip';
 import { Field, Select } from '@/components/ui/field';
@@ -20,13 +21,16 @@ import type { FormPatch } from './meta-fields';
 
 const MAX_GRADES = 4;
 const MAX_EXPECTATIONS = 12;
+/** Grades and subject are often changed a few taps at a time: load once they settle. */
+const LOAD_DELAY_MS = 300;
 
 /**
  * « Curriculum »: grades (up to 4), the subject (those taught in the chosen grades, Anglais from
  * the board's start grade), then the attentes of those grades in that subject, by domaine,
  * overall attentes before their contenus d'apprentissage, each unverified one marked
- * « À vérifier » (D-030). Changing grades or subject reloads the attentes and drops the ones
- * that no longer apply (the database would refuse them).
+ * « À vérifier » (D-030). Changing grades or subject reloads the attentes (once the choice
+ * settles) and drops the ones that no longer apply (the database would refuse them); a load
+ * overtaken by another choice changes nothing. A failed load offers « Réessayer ».
  */
 export function CurriculumFields({
   form,
@@ -39,36 +43,53 @@ export function CurriculumFields({
 }) {
   const t = useTranslations('libraryEdit.curriculum');
   const tc = useTranslations('libraryCommon');
+  const tCommon = useTranslations('common');
   const errors = useEditorErrors();
   const [options, setOptions] = useState<EditorExpectation[]>(context.expectations);
   const [loading, startLoading] = useTransition();
   const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+  // The grades and subject of the attentes on screen (a successful load, or the page's).
   const loadedFor = useRef(`${[...form.gradeCodes].sort().join(',')}|${form.subjectId ?? ''}`);
   const subjects = subjectsForGrades(context, form.gradeCodes);
   const gradeOrder = context.grades.map((g) => g.code);
   const optional = TYPE_INFO[form.type].expectationsOptional;
 
-  // Reload the attentes when the grades or the subject change (not on the first render).
+  // Reload the attentes when the grades or the subject change (not on the first render), or on
+  // « Réessayer ».
   const wanted = `${[...form.gradeCodes].sort().join(',')}|${form.subjectId ?? ''}`;
-  const { gradeCodes, subjectId, expectationIds } = form;
+  const { gradeCodes, subjectId } = form;
+  const latest = useRef({ wanted, expectationIds: form.expectationIds });
   useEffect(() => {
-    if (wanted === loadedFor.current) return;
-    loadedFor.current = wanted;
-    startLoading(async () => {
-      const result = await listExpectations(gradeCodes, subjectId).catch(() => null);
-      if (!result || !result.ok) {
-        setFailed(true);
-        return;
-      }
+    latest.current = { wanted, expectationIds: form.expectationIds };
+  });
+  useEffect(() => {
+    if (wanted === loadedFor.current) {
       setFailed(false);
-      setOptions(result.data);
-      const available = new Set(result.data.map((e) => e.id));
-      const kept = expectationIds.filter((id) => available.has(id));
-      if (kept.length !== expectationIds.length) patch({ expectationIds: kept });
-    });
-    // Only when what is asked for changes.
+      return;
+    }
+    const timer = window.setTimeout(() => {
+      startLoading(async () => {
+        const result = await listExpectations(gradeCodes, subjectId).catch(() => null);
+        // Overtaken by another choice: that one's load decides.
+        if (latest.current.wanted !== wanted) return;
+        if (!result || !result.ok) {
+          setFailed(true);
+          return;
+        }
+        loadedFor.current = wanted;
+        setFailed(false);
+        setOptions(result.data);
+        const available = new Set(result.data.map((e) => e.id));
+        const ids = latest.current.expectationIds;
+        const kept = ids.filter((id) => available.has(id));
+        if (kept.length !== ids.length) patch({ expectationIds: kept });
+      });
+    }, LOAD_DELAY_MS);
+    return () => window.clearTimeout(timer);
+    // Only when what is asked for changes, or on « Réessayer ».
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wanted]);
+  }, [wanted, attempt]);
 
   const chosen = new Set(form.expectationIds);
   const toggle = (id: string) =>
@@ -152,9 +173,14 @@ export function CurriculumFields({
             {t('loading')}
           </p>
         ) : failed ? (
-          <p className="text-sm text-red-600" role="alert">
-            {t('loadFailed')}
-          </p>
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="text-sm text-red-600" role="alert">
+              {t('loadFailed')}
+            </p>
+            <Button variant="secondary" onClick={() => setAttempt((a) => a + 1)}>
+              {tCommon('retry')}
+            </Button>
+          </div>
         ) : options.length === 0 ? (
           <p className="text-sm text-slate-600">{t('noExpectations')}</p>
         ) : (

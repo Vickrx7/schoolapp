@@ -2,7 +2,7 @@ import { TYPE_INFO } from '@lynx/content';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 import { reportError } from '@/server/errors';
-import { selectVersions } from '@/server/library/view-model';
+import { isSavedDifferentiation, selectVersions } from '@/server/library/view-model';
 import {
   buildStudentPdfModel,
   buildTeacherPdfModel,
@@ -17,7 +17,7 @@ import {
   requestedPdfDisposition,
 } from '@/server/pdf/response';
 import { loadItemForStudentSheet, loadItemKeys, loadLibraryItem } from '@/server/queries/library';
-import { requireSession, showLibrary } from '@/server/session';
+import { aiSchools, requireSession, showLibrary } from '@/server/session';
 
 // React-PDF and the fonts on disk need Node; every download is rendered for the caller.
 export const runtime = 'nodejs';
@@ -28,7 +28,7 @@ export const dynamic = 'force-dynamic';
  * D-075, D-053, D-062): the same documents as the print page, rendered on demand and never
  * stored, opened through a plain link so nothing is prefetched. Whoever can open the item page
  * can download it (row level security; 404 otherwise, and for anyone without library screens,
- * D-078).
+ * D-078, except a teacher's own texts saved from « Texte différencié », D-073).
  *
  * The student sheet is built from `loadItemForStudentSheet` alone, which never reads the answer
  * keys; « Guide et corrigé » adds each chosen version's key. A resource without a student sheet
@@ -41,13 +41,19 @@ export async function GET(
   const session = await requireSession();
   const { itemId } = await params;
   const wanted = libraryPdfRequest(new URL(request.url));
-  if (!showLibrary(session) || !wanted || !z.uuid().safeParse(itemId).success) {
+  const library = showLibrary(session);
+  if (
+    (!library && aiSchools(session).length === 0) ||
+    !wanted ||
+    !z.uuid().safeParse(itemId).success
+  ) {
     return pdfNotFound();
   }
 
   const locale = await getLocale();
   const item = await loadLibraryItem(itemId, session, locale);
-  if (!item) return pdfNotFound();
+  // Outside the library, only the teacher's own saved texts (D-073, D-078).
+  if (!item || (!library && !isSavedDifferentiation(item))) return pdfNotFound();
   const chosen = selectVersions(item.versions, wanted.versionIds);
   // Every item has a base version: none readable means nothing to print.
   if (!chosen.length) return pdfNotFound();

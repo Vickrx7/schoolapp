@@ -6,7 +6,7 @@
 -- apps/worker/src/ai.ts writes them.
 begin;
 \ir _helpers.psql
-select plan(53);
+select plan(54);
 select tests.build_fixture();
 select tests.build_library_fixture();
 
@@ -451,6 +451,30 @@ select is(
   (select count(*)::int from public.library_item_versions
    where item_id = tests.id('passage') and language_level_id = tests.id('level_personal_a')),
   0, 'and adds nothing'
+);
+
+-- A reviewed resource shared with the whole board, faith-reviewed: nobody else uses what the AI
+-- wrote before its author has read it (20261015090400_library_review_fixes.sql).
+select tests.library_item('shared_levels', 'teacher_a', 'game', 'teacher_reviewed', 'board', 'school_a1');
+update public.library_items
+set faith_content = true, faith_reviewed_at = now(), faith_reviewed_by = tests.id('faith_reviewer_a')
+where id = tests.id('shared_levels');
+select tests.authenticate_as('teacher_a');
+select tests.remember('job_shared', public.request_library_levels(tests.id('shared_levels'),
+  tests.id('school_a1'), array[tests.id('ll_debutant')]));
+select tests.clear_authentication();
+select tests.finish_job(tests.id('job_shared'), jsonb_build_object('levels', jsonb_build_array(
+  tests.ai_version('Version plus simple.') || jsonb_build_object('level', 'L1'))));
+select results_eq(
+  $$select j.status::text, j.result ->> 'levelsAdded', i.status::text, i.share_scope::text,
+      i.faith_reviewed_at is null,
+      (select count(*)::int from public.audit_log a
+       where a.action = 'library_item.returned_to_draft' and a.entity_id = i.id
+         and a.details = '{"scope": "board", "reason": "ai_levels"}'::jsonb)
+    from public.ai_jobs j join public.library_items i on i.id = tests.id('shared_levels')
+    where j.id = tests.id('job_shared')$$,
+  $$values ('succeeded', '1', 'draft', 'private', true, 1)$$,
+  'versions from the AI make a shared, reviewed resource a private draft for its author to read (audited)'
 );
 
 select * from finish();

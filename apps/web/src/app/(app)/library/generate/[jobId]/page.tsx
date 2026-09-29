@@ -66,6 +66,8 @@ export default async function LibraryJobPage({ params }: { params: Promise<{ job
           resumeHref={resumeHref}
           working={levels ? t('levelsWorking') : t('working')}
           workingHint={levels ? t('levelsWorkingHint') : t('workingHint')}
+          tooLongHint={levels ? t('levelsTooLongHint') : t('tooLongHint')}
+          resumeLabel={levels ? t('backToItem') : t('resume')}
         />
       ) : null}
       {job.status === 'succeeded' && job.itemId ? (

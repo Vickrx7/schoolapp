@@ -25,7 +25,7 @@ import {
   subFriendlyAllowed,
 } from '@lynx/content';
 import { z } from 'zod';
-import type { SubPlanBlock, SubPlanStep } from './schema';
+import type { SubPlanBlock } from './schema';
 import { isThinLesson } from './scripts';
 import {
   libraryReasons,
@@ -82,6 +82,11 @@ export interface LibraryChoiceInput {
   items: ReadonlyMap<string, SubPlanSourceLibraryItem> | readonly SubPlanSourceLibraryItem[];
   /** Resources already in another period of the absence: each is used once. */
   used: ReadonlySet<string>;
+  /**
+   * Resources that are the own resource of a lesson the absence assigns
+   * (`reservedLibraryItems`): kept for that lesson, never offered to another one for an attente.
+   */
+  reserved?: ReadonlySet<string>;
 }
 
 function itemMap(
@@ -109,16 +114,46 @@ function eligible(item: SubPlanSourceLibraryItem, reason: LibraryReason): boolea
 }
 
 /**
+ * The resources the lessons of an absence link themselves (their « linked » candidates that a
+ * plan may use). The builder keeps each for its own lesson (D-077: the lesson's own resource
+ * first): periods run in date and time order, and an earlier lesson that shares an attente
+ * would otherwise take it as its best « expectation » candidate, leaving the lesson that links
+ * it without.
+ */
+export function reservedLibraryItems(
+  lessonIds: Iterable<string>,
+  candidates: ReadonlyMap<string, readonly SubPlanSourceLibraryCandidate[]>,
+  items: LibraryChoiceInput['items'],
+): Set<string> {
+  const byId = itemMap(items);
+  const reserved = new Set<string>();
+  for (const lessonId of lessonIds) {
+    for (const c of candidates.get(lessonId) ?? []) {
+      const item = byId.get(c.itemId);
+      if (c.reason === 'linked' && item && eligible(item, c.reason)) reserved.add(item.id);
+    }
+  }
+  return reserved;
+}
+
+/**
  * A lesson's candidates, best first: its own resource, then the others by D-077's order: a
  * student sheet, more attentes in common, fitting the period (at most 10 minutes over), the
- * closest duration, the most used, then the id. Resources already used are left out.
+ * closest duration, the most used, then the id. Resources already used are left out, and so
+ * are, for an attente, resources another lesson of the absence links.
  */
 export function rankLibraryCandidates(input: LibraryChoiceInput): LibraryChoice[] {
   const items = itemMap(input.items);
   const seen = new Set<string>();
   const options = input.candidates.flatMap((c) => {
     const item = items.get(c.itemId);
-    if (!item || seen.has(item.id) || input.used.has(item.id) || !eligible(item, c.reason)) {
+    if (
+      !item ||
+      seen.has(item.id) ||
+      input.used.has(item.id) ||
+      (c.reason === 'expectation' && input.reserved?.has(item.id)) ||
+      !eligible(item, c.reason)
+    ) {
       return [];
     }
     seen.add(item.id);
@@ -240,9 +275,13 @@ export function libraryStepText(library: Pick<SubPlanLibrary, 'title' | 'student
 
 /**
  * Where the resource's step goes: before the lesson's main step (the longest one, the first of
- * them on a tie), so the sheets are handed out once the lesson is introduced.
+ * them on a tie), so the sheets are handed out once the lesson is introduced. Also used for the
+ * teacher's own steps when she brings a hidden resource back.
  */
-function insertBeforeMain(steps: readonly SubPlanStep[], added: SubPlanStep): SubPlanStep[] {
+export function insertLibraryStep<S extends { minutes: number | null }>(
+  steps: readonly S[],
+  added: S,
+): S[] {
   let main = -1;
   steps.forEach((s, i) => {
     if (s.minutes !== null && (main < 0 || s.minutes > (steps[main]!.minutes ?? 0))) main = i;
@@ -259,7 +298,7 @@ export function attachLibrary(block: SubPlanBlock, library: SubPlanLibrary): Sub
   return {
     ...block,
     library,
-    steps: insertBeforeMain(block.steps, { minutes: null, text: libraryStepText(library) }),
+    steps: insertLibraryStep(block.steps, { minutes: null, text: libraryStepText(library) }),
     warnings: block.warnings.filter((w) => w !== 'thin_lesson'),
   };
 }

@@ -304,7 +304,11 @@ export function DifferentiateForm({
                 <ul className="list-disc space-y-1 pl-5">
                   {preview.blocked.map((b, i) => (
                     <li key={i}>
-                      {t(`blocked.${b.kind}`)} : <span className="font-mono">{b.match}</span>
+                      {t.rich('blockedItem', {
+                        kind: t(`blocked.${b.kind}`),
+                        match: b.match,
+                        code: (chunks) => <span className="font-mono">{chunks}</span>,
+                      })}
                     </li>
                   ))}
                 </ul>

@@ -502,6 +502,7 @@
       "address": "Address",
       "birthDate": "Birth date"
     },
+    "blockedItem": "{kind}: <code>{match}</code>",
     "send": "Send to the AI",
     "sending": "Sending…",
     "editText": "Edit the text",
@@ -1251,6 +1252,8 @@
   "libraryItem": {
     "title": "Resource",
     "back": "Resource bank",
+    "backToResults": "Back to the results",
+    "backToDifferentiate": "Differentiated text",
     "tabs": {
       "label": "Resource content",
       "student": "For students",
@@ -1371,8 +1374,9 @@
       "openCount": "Filters ({count})",
       "title": "Filters",
       "close": "Close",
-      "show": "{count, plural, =0 {No resources} one {See # resource} other {See the # resources}}",
+      "show": "{count, plural, =0 {See results (none)} one {See # resource} other {See the # resources}}",
       "clear": "Clear filters",
+      "leftResults": "Filters cleared: back to the resource bank.",
       "grade": "Grade",
       "anyGrade": "All grades",
       "subject": "Subject",
@@ -1453,6 +1457,9 @@
     "recoverDraft": "Recover my changes",
     "reviewedNotice": "This resource is reviewed: it must stay complete to be saved. To save it incomplete, first return it to draft.",
     "sharedNotice": "This resource is shared: students’ first names found in the text will be pointed out before saving.",
+    "requestedNotice": "This resource is awaiting approval: saving it withdraws the request. You can propose it to the board again.",
+    "faithReviewedNotice": "The faith content of this resource was reviewed: after a change, it must be reviewed again.",
+    "boardFaithNotice": "This resource is shared with the whole board and has faith content: after a change, it is shared with your school only (or becomes private) until its faith content is reviewed.",
     "save": {
       "save": "Save",
       "view": "View the resource",
@@ -1894,6 +1901,8 @@
       "newKind": "Type of the next question",
       "add": "Add a question",
       "numbered": "Question {n}",
+      "kindChanged": "{name}: question type changed.",
+      "removed": "{name} removed.",
       "kind": "{name}: question type",
       "prompt": "Question",
       "hint": "Hint (optional)",
@@ -1933,7 +1942,7 @@
       "shortAnswer": "Answer",
       "sampleAnswer": "Expected answer (answer key)",
       "acceptable": "Accepted answers (automatic marking)",
-      "acceptableHint": "Without an accepted answer, the question is marked by hand (“Manual marking”).",
+      "acceptableHint": "Without an accepted answer, the question is graded by hand (“Graded by hand”).",
       "acceptableN": "Accepted answer {n}",
       "removeAcceptable": "Remove accepted answer {n}",
       "addAcceptable": "Add an accepted answer",
@@ -2162,6 +2171,10 @@
       "unpairedLeft": "Every item needs its match.",
       "notPermutation": "The order in the key does not match the items to put in order.",
       "orderGivesAnswer": "The order shown to students would give the answer away."
+    },
+    "confirmSave": {
+      "title": "Save the changes?",
+      "confirm": "Save anyway"
     }
   },
   "libraryReview": {
@@ -2191,6 +2204,7 @@
       "rejectIntro": "The resource becomes private again and “To rework”, with your note.",
       "rejected": "Resource sent back for revision.",
       "ownItem": "You cannot approve a resource you created.",
+      "ownItemHint": "You created this resource: another designated person will approve it or send it back. To change it, first use “Withdraw the request”.",
       "faithPending": "Waiting for the faith content review",
       "notReady": "The resource is not complete for approval (see the list).",
       "faithTitle": "Faith content",
@@ -2255,7 +2269,7 @@
       "back": "Back to the planning"
     },
     "lessonRow": {
-      "chip": "Resource",
+      "chipTitle": "Resource: <name>{title}</name>",
       "hidden": "Resource not available",
       "detach": "Remove the resource",
       "detachNamed": "Remove the resource from lesson {n}",
@@ -2293,7 +2307,7 @@
       "levels": "Levels",
       "withLevels": "Also create a version for each level",
       "withLevelsHint": "Takes longer: the AI writes a version for each level chosen, with the same learning goal.",
-      "personalLevel": "mine",
+      "personalLevel": "personal level",
       "faithGroup": "Faith",
       "faith": "Add a faith connection",
       "faithForced": "A Catholic reflection always has a faith connection.",
@@ -2305,14 +2319,14 @@
       "referenceOthers": "Other references",
       "referenceOption": "{title} ({type})",
       "note": "Details",
-      "noteHint": "For example the theme, the class context or the numbers to use. Do not include personal information: emails, numbers, addresses or birth dates."
+      "noteHint": "For example the theme, the class context or the numbers to use. Do not include personal information: emails, phone numbers, addresses or birth dates."
     },
     "referenceTypes": {
       "virtue": "virtue",
-      "graduate_expectation": "graduate expectation",
+      "graduate_expectation": "Catholic graduate expectation",
       "reflection": "reflection",
       "prayer": "prayer",
-      "scripture": "scripture"
+      "scripture": "Scripture"
     },
     "preview": "Check before sending",
     "previewTitle": "What will be sent to the AI",
@@ -2331,6 +2345,7 @@
       "button": "Create the missing versions with AI",
       "title": "Create the missing versions",
       "intro": "From the base version, the AI writes a version for each level chosen, with the same learning goal. You can then review and edit it.",
+      "backToDraft": "This resource is reviewed: when the versions arrive, it becomes a private draft again, so you read them before anyone else uses them. Then mark it reviewed and share it again.",
       "levels": "Levels without a version",
       "hint": "The more levels, the longer it takes.",
       "previewIntro": "This is exactly what will be sent: the base version and its answer key, without student or staff names."
@@ -2352,6 +2367,8 @@
       "workingHint": "You can leave this page: the resource will be waiting in “My resources”.",
       "levelsWorking": "The AI is preparing the versions by level (a few minutes).",
       "levelsWorkingHint": "You can leave this page: the versions will be added to the resource.",
+      "tooLongHint": "The AI service may be busy or stopped. Your request isn’t lost: check again later or take it up again.",
+      "levelsTooLongHint": "The AI service may be busy or stopped. The resource has not changed: check again later or ask for the versions again from the resource.",
       "failed": "The resource could not be prepared.",
       "levelsFailed": "The versions by level could not be prepared.",
       "failedKept": "Your request is not lost: you can take it up again.",

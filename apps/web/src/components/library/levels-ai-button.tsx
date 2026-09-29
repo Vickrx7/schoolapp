@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Notice } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { useAction } from '@/hooks/use-action';
 import {
@@ -18,16 +19,21 @@ import { BlockedDetails, SentText } from './generate-preview';
  * « Créer les versions manquantes avec l’IA » (SPEC 9.2, DECISIONS D-073): the levels the resource
  * has no version for (all ticked), then « Vérifier avant d’envoyer » (exactly what is sent, names
  * replaced), then « Envoyer ». The job page follows the request and comes back to the resource.
+ * A reviewed resource becomes a private draft again when the versions arrive (the author reads
+ * them before anyone else uses them, SPEC 9.3): the dialog says so before anything is sent.
  */
 export function LevelsAiButton({
   itemId,
   schoolId,
   missing,
+  reviewed,
 }: {
   itemId: string;
   schoolId: string;
   /** Board levels without a version, in their order. */
   missing: { id: string; label: string }[];
+  /** « Révisée » (and perhaps shared): it goes back to a private draft with the new versions. */
+  reviewed: boolean;
 }) {
   const t = useTranslations('libraryAi.levels');
   const tAi = useTranslations('libraryAi');
@@ -60,7 +66,7 @@ export function LevelsAiButton({
       }}
     >
       <DialogTrigger asChild>
-        <Button variant="secondary" size="sm">
+        <Button variant="secondary">
           <Sparkles aria-hidden />
           {t('button')}
         </Button>
@@ -72,6 +78,7 @@ export function LevelsAiButton({
         className="sm:max-w-2xl"
       >
         <div className="space-y-4">
+          {reviewed ? <Notice tone="warning">{t('backToDraft')}</Notice> : null}
           <fieldset className="space-y-2">
             <legend className="text-sm font-medium text-slate-700">{t('levels')}</legend>
             <div className="flex flex-wrap gap-2">

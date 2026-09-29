@@ -3,7 +3,8 @@
 import { LIBRARY_BUCKETS, LIBRARY_ITEM_TYPES } from '@lynx/content';
 import { SlidersHorizontal } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useId, useOptimistic, useState, type ReactNode } from 'react';
+import { useId, useOptimistic, useRef, useState, type ReactNode } from 'react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Select } from '@/components/ui/field';
@@ -14,6 +15,7 @@ import {
   facetFilterCount,
   hasFilters,
   libraryHref,
+  showsResults,
   subjectsForGrade,
   withChanges,
   type LibrarySearch,
@@ -33,6 +35,11 @@ interface PanelProps {
   search: LibrarySearch;
   facets: LibraryFacets;
   options: FacetOptions;
+  /**
+   * A change leaves nothing to show results for (no words, no filter left): the page goes back
+   * to the hub, and the phone's sheet closes first so the focus is not lost with it.
+   */
+  onLeaveResults?: () => void;
 }
 
 /** A checkbox or radio button on a 44 px row, with the number of resources it would show. */
@@ -99,7 +106,7 @@ const toggle = <T,>(list: readonly T[], value: T): T[] =>
  * changes and the server renders the results again. Drawn in the desktop side panel and in the
  * phone's « Filtres » sheet.
  */
-export function FacetPanel({ search: current, facets, options }: PanelProps) {
+export function FacetPanel({ search: current, facets, options, onLeaveResults }: PanelProps) {
   const t = useTranslations('library.filters');
   const tc = useTranslations('libraryCommon');
   const { navigate } = useSearchNavigation();
@@ -107,7 +114,10 @@ export function FacetPanel({ search: current, facets, options }: PanelProps) {
   // Choices show at once, while the server renders their results; quick successive choices add
   // up rather than replace each other.
   const [search, setSearch] = useOptimistic(current);
-  const apply = (next: LibrarySearch) => navigate(libraryHref(next), () => setSearch(next));
+  const apply = (next: LibrarySearch) => {
+    if (!showsResults(next)) onLeaveResults?.();
+    navigate(libraryHref(next), () => setSearch(next));
+  };
   const go = (changes: Partial<LibrarySearch>) => apply(withChanges(search, changes));
 
   const grade = options.grades.find((g) => g.code === search.grade) ?? null;
@@ -285,12 +295,15 @@ export function FacetPanel({ search: current, facets, options }: PanelProps) {
 /**
  * « Filtres » on phones: a button (with the number of choices made) that opens the filters in a
  * bottom sheet. Results change behind it as choices are made; « Voir les N ressources » closes
- * it.
+ * it. Clearing the last filter with no words typed goes back to the hub, where this button does
+ * not exist: the sheet closes first, the focus goes to the search field and the change is
+ * announced.
  */
 export function FacetSheet({ search, facets, options, total }: PanelProps & { total: number }) {
   const t = useTranslations('library.filters');
   const { pending } = useSearchNavigation();
   const [open, setOpen] = useState(false);
+  const leaving = useRef(false);
   const chosen = facetFilterCount(search);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -300,8 +313,26 @@ export function FacetSheet({ search, facets, options, total }: PanelProps & { to
           {chosen ? t('openCount', { count: chosen }) : t('open')}
         </Button>
       </DialogTrigger>
-      <DialogContent title={t('title')} closeLabel={t('close')}>
-        <FacetPanel search={search} facets={facets} options={options} />
+      <DialogContent
+        title={t('title')}
+        closeLabel={t('close')}
+        onCloseAutoFocus={(event) => {
+          if (!leaving.current) return;
+          leaving.current = false;
+          event.preventDefault();
+          document.querySelector<HTMLInputElement>('form[role="search"] input[name="q"]')?.focus();
+        }}
+      >
+        <FacetPanel
+          search={search}
+          facets={facets}
+          options={options}
+          onLeaveResults={() => {
+            leaving.current = true;
+            setOpen(false);
+            toast(t('leftResults'));
+          }}
+        />
         <div className="sticky -bottom-5 -mx-5 mt-4 border-t border-slate-200 bg-white px-5 pt-3 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
           <Button className="w-full" onClick={() => setOpen(false)} aria-busy={pending}>
             {t('show', { count: total })}

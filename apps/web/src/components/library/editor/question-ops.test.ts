@@ -21,7 +21,9 @@ import {
   canAddPair,
   changeKind,
   clampInt,
+  insertAt,
   kindsFor,
+  parseWhole,
   move,
   moveItem,
   questionIdsOf,
@@ -35,7 +37,9 @@ import {
   setMultipleAnswers,
   setPair,
   toggleCorrect,
+  withKind,
 } from './question-ops';
+import { fitRowKeys, questionKeys } from './row-keys';
 
 type Of<K extends AuthoringQuestion['kind']> = Extract<AuthoringQuestion, { kind: K }>;
 const q = <K extends AuthoringQuestion['kind']>(kind: K) => newAuthoringQuestion(kind, []) as Of<K>;
@@ -188,6 +192,43 @@ describe('the question editor', () => {
     const short = changeKind(back, 'short_answer') as Of<'short_answer'>;
     expect(short).toMatchObject({ id: 'q7', lines: 3, sampleAnswer: '', acceptableAnswers: [] });
     for (const kind of QUESTION_KINDS) expect(changeKind(short, kind).kind).toBe(kind);
+  });
+
+  it('brings a question’s answers back when it returns to a type it had', () => {
+    const mc = toggleCorrect(
+      setChoiceText(setChoiceText({ ...q('multiple_choice'), id: 'q4' }, 0, 'Vrai'), 1, 'Faux'),
+      1,
+    );
+    const tf = { ...changeKind(mc, 'true_false'), prompt: 'Le huard vole?' };
+    const back = withKind(tf, mc) as Of<'multiple_choice'>;
+    expect(back).toMatchObject({ id: 'q4', kind: 'multiple_choice', prompt: 'Le huard vole?' });
+    expect(back.choices.map((c) => [c.text, c.correct])).toEqual([
+      ['Vrai', false],
+      ['Faux', true],
+    ]);
+  });
+
+  it('puts a removed element back where it was, never past the limit', () => {
+    expect(insertAt(['a', 'c'], 1, 'b', 5)).toEqual(['a', 'b', 'c']);
+    expect(insertAt(['a'], 4, 'b', 5)).toEqual(['a', 'b']);
+    expect(insertAt(['a', 'b'], 0, 'x', 2)).toEqual(['a', 'b']);
+  });
+
+  it('keys rows so they follow their element (stable keys for moves)', () => {
+    expect(questionKeys([{ id: 'q1' }, { id: 'q2' }, { id: 'q1' }])).toEqual(['q1', 'q2', 'q1#2']);
+    const three = fitRowKeys({ keys: [], next: 0 }, 3);
+    expect(three).toEqual({ keys: [0, 1, 2], next: 3 });
+    expect(fitRowKeys(three, 3)).toBe(three);
+    expect(fitRowKeys({ keys: [2, 0], next: 3 }, 3)).toEqual({ keys: [2, 0, 3], next: 4 });
+    expect(fitRowKeys(three, 1)).toEqual({ keys: [0], next: 3 });
+  });
+
+  it('reads a number field as typed: empty is no number yet', () => {
+    expect(parseWhole('')).toBeNull();
+    expect(parseWhole('  ')).toBeNull();
+    expect(parseWhole('2')).toBe(2);
+    expect(parseWhole('2.6')).toBe(3);
+    expect(parseWhole('abc')).toBeNull();
   });
 
   it('numbers questions across a unit test’s sections', () => {

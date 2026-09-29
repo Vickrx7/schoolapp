@@ -176,8 +176,13 @@ test('a result opens its page, its versions and its key; printing keeps them apa
   await login(page, DEMO.teacher3);
   await page.goto('/library?q=huard');
   await results(page).getByRole('link', { name: HUARD }).click();
-  await page.waitForURL(/\/library\/items\/[0-9a-f-]{36}$/);
+  // The page keeps the search it was opened from, for « Retour aux résultats ».
+  await page.waitForURL(/\/library\/items\/[0-9a-f-]{36}\?q=huard$/);
   await expect(page.getByRole('heading', { level: 1, name: HUARD })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Retour aux résultats' })).toHaveAttribute(
+    'href',
+    '/library?q=huard',
+  );
   await expectAccessible(page);
 
   // The version chips change the text on screen.

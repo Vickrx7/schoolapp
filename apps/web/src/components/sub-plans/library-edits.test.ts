@@ -2,9 +2,9 @@
  * « Ne pas utiliser cette ressource » in the teacher's overlay (DECISIONS D-077, D-048): the
  * switch is an edit of the block for its current lesson, saved like her other edits.
  */
-import { subPlanEditsSchema, type SubPlanEdits } from '@lynx/domain';
+import { libraryStepText, subPlanEditsSchema, type SubPlanEdits } from '@lynx/domain';
 import { describe, expect, it } from 'vitest';
-import { resetBlock, setBlockNote, setHideLibrary, toPayload } from './edits';
+import { resetBlock, setBlockNote, setBlockSteps, setHideLibrary, toPayload } from './edits';
 
 const BLOCK = '20000000-0000-4000-8000-000000000001';
 const L4 = '30000000-0000-4000-8000-000000000004';
@@ -26,6 +26,18 @@ const block = (lessonId: string) => ({
   },
   steps: [],
   teacherNote: null,
+  library: null,
+  hiddenLibrary: null,
+});
+
+/** The block with its resource (only what the step's text needs), shown or hidden. */
+const RESOURCE = { title: 'Le huard, oiseau des lacs', studentDocs: [{}] };
+const STEP = 'Distribuez « Le huard, oiseau des lacs » : voir « Matériel pour les élèves ».';
+const shown = (lessonId: string) =>
+  ({ ...block(lessonId), library: RESOURCE }) as unknown as Parameters<typeof setHideLibrary>[1];
+const hiddenBlock = (lessonId: string) => ({
+  ...block(lessonId),
+  hiddenLibrary: { itemId: BLOCK, title: RESOURCE.title, stepText: STEP },
 });
 
 describe('setHideLibrary', () => {
@@ -70,5 +82,46 @@ describe('setHideLibrary', () => {
 
   it('is undone with « Revenir au plan préparé » like her other edits', () => {
     expect(resetBlock(setHideLibrary({}, block(L4), true), BLOCK).blocks).toBeUndefined();
+  });
+});
+
+describe('setHideLibrary and the teacher’s own steps', () => {
+  it('uses the same step text as the plan', () => {
+    expect(libraryStepText(RESOURCE as never)).toBe(STEP);
+  });
+
+  it('takes the resource’s step out of steps she edited before hiding it', () => {
+    let edits = setBlockSteps({}, block(L4), [
+      { minutes: 5, text: 'Rappel.' },
+      { minutes: null, text: STEP },
+      { minutes: 30, text: 'Lecture en équipes.' },
+    ]);
+    edits = setHideLibrary(edits, shown(L4), true);
+    expect(edits.blocks?.[BLOCK]?.steps?.map((s) => s.text)).toEqual([
+      'Rappel.',
+      'Lecture en équipes.',
+    ]);
+  });
+
+  it('puts it back before her main step when she brings the resource back', () => {
+    let edits = setHideLibrary({}, shown(L4), true);
+    edits = setBlockSteps(edits, block(L4), [
+      { minutes: 5, text: 'Rappel.' },
+      { minutes: 30, text: 'Lecture en équipes.' },
+    ]);
+    edits = setHideLibrary(edits, hiddenBlock(L4), false);
+    expect(edits.blocks?.[BLOCK]?.steps?.map((s) => s.text)).toEqual([
+      'Rappel.',
+      STEP,
+      'Lecture en équipes.',
+    ]);
+    // Never twice, and never past the limit of steps.
+    expect(setHideLibrary(edits, hiddenBlock(L4), false)).toEqual(edits);
+    const full = setBlockSteps(
+      {},
+      block(L4),
+      Array.from({ length: 12 }, (_, i) => ({ minutes: 5, text: `Étape ${i + 1}` })),
+    );
+    expect(setHideLibrary(full, hiddenBlock(L4), false).blocks?.[BLOCK]?.steps).toHaveLength(12);
   });
 });

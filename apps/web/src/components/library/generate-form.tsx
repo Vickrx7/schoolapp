@@ -84,6 +84,8 @@ export function GenerateForm({
   const [preview, setPreview] = useState<GenerationPreview | null>(null);
   // The attentes of the chosen grades and subject, from the curriculum, by request.
   const [loaded, setLoaded] = useState<{ key: string; result: Expectations } | null>(null);
+  // « Réessayer » after a failed load asks again for the same grades and subject.
+  const [attempt, setAttempt] = useState(0);
 
   const subjects = subjectsForGrades(context, v.gradeCodes);
   const subject = subjects.find((s) => s.id === v.subjectId) ?? null;
@@ -109,7 +111,7 @@ export function GenerateForm({
     return () => {
       current = false;
     };
-  }, [expectationsKey]);
+  }, [expectationsKey, attempt]);
   const expectations: Expectations = !expectationsKey
     ? { state: 'idle' }
     : loaded?.key === expectationsKey
@@ -295,7 +297,21 @@ export function GenerateForm({
                   {tCommon('loading')}
                 </p>
               ) : expectations.state === 'error' ? (
-                <Notice tone="warning">{t('fields.expectationsError')}</Notice>
+                <Notice
+                  tone="warning"
+                  className="flex flex-wrap items-center justify-between gap-2"
+                >
+                  <span>{t('fields.expectationsError')}</span>
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      setLoaded(null);
+                      setAttempt((a) => a + 1);
+                    }}
+                  >
+                    {tCommon('retry')}
+                  </Button>
+                </Notice>
               ) : expectations.groups.length === 0 ? (
                 <p className="text-sm text-slate-600">{t('fields.expectationsEmpty')}</p>
               ) : (

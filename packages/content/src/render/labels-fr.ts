@@ -12,6 +12,9 @@ export const labelled = (label: string, text: string) => `${label}${NBSP}: ${tex
 
 export const DOC_LABELS_FR = {
   objective: 'Intention d’apprentissage',
+  /** The name line of a sheet students fill in: never a level (D-042). */
+  name: 'Nom',
+  date: 'Date',
   teacherNote: 'Notes pédagogiques',
   successCriteria: 'Critères de réussite',
   differentiation: 'Différenciation',

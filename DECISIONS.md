@@ -625,8 +625,11 @@ item; later saves send the revision they were edited from and are refused when i
 (`LXL07`); every version the item keeps is sent with its key; links (subject, grades, attentes,
 tags, Catholic reference, levels) must be in the item's board, attentes of its subject and grades.
 Every content change goes through `app.library_content_changed`: the revision goes up, a pending
-approval request is cancelled, an earlier faith review no longer counts, the search document is
-rebuilt, and the upcoming absences whose plans may use a reviewed item are marked out of date.
+approval request is cancelled, an earlier faith review no longer counts, a reviewed item shared
+with the whole board that now needs a faith review goes back to its school (or private, D-064),
+the search document is rebuilt, and the upcoming absences whose plans may use a reviewed item are
+marked out of date. The editor says so before such a save (« En attente d'approbation », a faith
+review, board-wide faith content), asks once, and never sends a form without changes.
 Status changes:
 
 | From                                 | Function                                                            | To                                                  | Who                                       |
@@ -642,8 +645,11 @@ Status changes:
 | any but archived                     | `library_archive(item)`                                             | archived, private, approval cleared                 | keeper²                                   |
 | archived                             | `library_restore(item)`                                             | draft                                               | keeper²                                   |
 
-¹ The author; for the board's own items (`board_created`, no author), a content reviewer of the
-board, while the item is a draft, reviewed or sent back. ² The same people whatever the status.
+¹ The author while she holds a role other than parent in the item's board; for the board's own
+items (`board_created`, no author), a content reviewer of the board, while the item is a draft,
+reviewed or sent back. Sharing beyond herself also needs that role; an author who left the board
+keeps reading her items and can make them private, nothing more. ² The same people whatever the
+status.
 
 Approved items are read-only for everyone (`LXL06` for their author): to change one, a reviewer
 withdraws it or its keeper archives it (remix comes in Phase 5). « rejected » is shown as
@@ -664,7 +670,9 @@ Faith review applies (`requires_faith_review`, computed by the items trigger) to
 by a list of faith words), to an item with a faith link (text or Catholic reference) and to any
 Enseignement religieux item. A reviewer can flag faith content the author did not tick
 (`library_flag_faith`); the author cannot clear that flag, and an item already shared with the
-whole board goes back to its school (or private) until its faith review. The faith review is
+whole board goes back to its school (or private) until its faith review. The same happens when
+its author edits an item shared with the whole board that needs a faith review, since any edit
+ends the earlier faith review (D-063; audited as `library_item.scope_reduced`). The faith review is
 required for board approval and for sharing with the whole board; sharing with the school and
 using it in one's own class stay under the teacher's authority (SPEC §9.5). Nobody approves their
 own item; the board's own items have no author and are kept by its content reviewers, the audit
@@ -681,7 +689,8 @@ the user (service role only) and a form for the current user:
   links): usable, or a content reviewer of the board for requested, shared or approved items and
   the board's own items, or a faith reviewer of the board for requested items that need a faith
   review;
-- _editable_ (`app.library_item_editable_by`): the author, or a content reviewer for the board's
+- _editable_ (`app.library_item_editable_by`): the author while she holds a role other than
+  parent in the item's board (`app.library_board_staff`), or a content reviewer for the board's
   own items, while the item is a draft, reviewed or sent back.
 
 | Item                                 | Author        | Staff of its school | Other staff of the board | Content reviewer              | Faith reviewer                 |
@@ -736,9 +745,12 @@ accents before stemming (the stemmer alone turns « idée » and « idee » into
 calls: A the title; B the summary, keywords, tag labels and French names of the type (« billet
 de sortie »); C the attentes' codes (as written and split into words) and texts; D the materials
 and the strings of the base version without machine keys (ids, kinds, enumerated values). Answer
-keys are never indexed. A GIN index covers it. The query keeps letters and digits only (so
-« défi-STIM », quotes and operators split into words), requires up to 8 words and matches the
-last one as a prefix. `public.search_library` is one definer function that computes the usable
+keys are never indexed. A GIN index covers it. Digit groups written with a space, a no-break space
+or a narrow no-break space (« 1 000 ») are one number in documents and queries, so « 1000 » finds
+« 1 000 ». The query keeps letters and digits only (so « défi-STIM », quotes and operators split
+into words), except a curriculum code typed as written (« B1.2 »), which matches that code only
+(never « B1.1 » or « B1.20 »); it requires up to 8 words and matches the last one as a prefix
+unless it is a code. `public.search_library` is one definer function that computes the usable
 set once, pinned to `app.library_item_usable_by` by a test, and returns the items and facet
 counts, each facet ignoring its own filter. Order: approved first, then rank, then the title in
 French order (`fr-CA-x-icu`), then id. Items waiting for review never appear in search.
@@ -791,7 +803,11 @@ names from a fictional list sent in the request, less any name of a person the t
 `library_levels` writes 1 to 6 missing level versions from an item's base version, with the same
 objective and, for assessments, the same questions and kinds. The request stores the item's
 revision; a result that arrives after the item changed fails the job (`libraryChanged`); asking
-for a level the item already has gives `LXL09`, an input too large `LXL08`. Texts saved from
+for a level the item already has gives `LXL09`, an input too large `LXL08`. What the AI writes is
+a draft its author reads (SPEC §9.3): a reviewed item that gains versions becomes a private draft
+again, its request cancelled (audited as `returned_to_draft`, reason `ai_levels`), and its
+author marks it reviewed and shares it again, which runs the first-name guard and the faith
+review again; the dialog says so before anything is sent. Texts saved from
 « Texte différencié » are ordinary library items: the page sends canonical reading passages or
 worksheets (`fromDifferentiation`) with short-answer keys, `save_ai_job_to_library` (for
 « Texte différencié » results only) writes the keys, the schema version and the search document,
@@ -817,8 +833,9 @@ lines, callout, rubric, answer, poem and `section {lang}`) are built by `renderS
 `renderTeacherDoc` and `renderAnswerKeyDoc` and drawn by `DocView` (HTML, also for printing) and by
 the PDF renderer; PDFs are rendered on demand, never stored (D-053). The student sheet and the
 teacher copy (« Guide et corrigé ») are separate documents. Printouts put one version per page
-with a small number and never a level name (D-042). Content carries `lang="fr-CA"`; the English
-half of a family guide carries `lang="en-CA"` (D-033).
+with a small number and never a level name (D-042). A student sheet with questions or writing
+lines starts with « Nom : ____ Date : ____ », so collected sheets can be told apart. Content
+carries `lang="fr-CA"`; the English half of a family guide carries `lang="en-CA"` (D-033).
 
 **D-076 — Planning: attach a resource to a lesson, or add it as a new lesson (Assumption on the
 defaults).** Material types are attached to an existing lesson (`unit_lessons.library_item_id`,
@@ -841,7 +858,9 @@ then approved, sub-friendly items of the board and subject that share a grade wi
 an attente with the lesson. Assessments, rubrics, guides, projects and family guides are never
 sub-friendly (a constraint); experiments and STEM challenges only under standard supervision.
 Ties: a student sheet, then attente overlap, then fitting the block (at most 10 minutes over),
-then the closest duration, then usage, then id; each item is used once per absence. The plan
+then the closest duration, then usage, then id; each item is used once per absence, and an item
+that a lesson of the absence links itself is kept for that lesson (an earlier lesson that shares
+its attente takes its next candidate). The plan
 stores a snapshot in the block: the teacher document (no key) and one student document per set
 of groups (the version of the group's level, else the base version); these fields are optional
 and old plans still parse. The owner can hide the resource. A plan's JSON over 200 KB loses
@@ -854,18 +873,23 @@ and the worker build the same plan; it also returns the attentes in common and t
 builder ranks again against the minutes the substitute actually teaches (a shortened or
 interrupted period). `hasAnswerKey` is true only when a key holds an answer or a solution. A
 resource's step (« Distribuez « … » : voir « Matériel pour les élèves ». ») goes just before the
-lesson's main step. Hiding a resource takes its step out and brings back `thin_lesson` for a thin
-lesson, so « Consignes détaillées (IA) » asks for an activity again; « Revenir au plan préparé »
-brings the resource back. Its student pages are printed per group as the library prints them
-(D-075), without the blanking of names and level words applied to AI activities. Known limits: the
-sources fingerprint does not cover resources (one changed between reading and publishing shows at
-the next rebuild), and days that can no longer change do not count for « once per absence ».
+lesson's main step. Hiding a resource takes its step out (from the teacher's own edited steps and
+the AI's steps too) and brings back `thin_lesson` for a thin lesson, so « Consignes détaillées
+(IA) » asks for an activity again; « Utiliser cette ressource » and « Revenir au plan préparé »
+bring the resource back, with its step put back before her main step when she wrote her own.
+Its student pages are printed per group as the library prints them (D-075), without the blanking
+of names and level words applied to AI activities. Known limits: the sources fingerprint does not
+cover resources (one changed between reading and publishing shows at the next rebuild), and days
+that can no longer change do not count for « once per absence ».
 
 **D-078 — Licensing, roles and navigation (Assumption).** Library pages, navigation and actions
 need a school with the Library module where the user is a teacher, principal or vice-principal,
 or a reviewer designation. `request_library_item` and `request_library_levels` also check the
 module in the database, because they spend money; everything else is checked in the app
-(D-026). Office staff have no library screens. « Ressources » replaces « Différencier » as a
+(D-026). Office staff have no library screens. A teacher whose school has AI but not the Library
+module keeps « Différencier »: her saved texts open, print, download and delete on their item
+page (from « Mes textes différenciés »), with nothing else of the library (no editor, workflow or
+planning). « Ressources » replaces « Différencier » as a
 top-level item when it is shown: the hub links to « Texte différencié », and « Ressources » stays
 highlighted on `/differentiate/*`. The phone's bottom bar keeps Phase 3's limit of six places
 (`PHONE_BAR_MAX`); with more items, it shows the first five and « Plus », a sheet with the rest.
@@ -876,7 +900,9 @@ nothing else: `library_item.review_requested`, `.approved` (SPEC §7), `.rejecte
 `library_item.reviewed` (originality confirmed, revision), `.returned_to_draft`, `.shared`
 (scope, names confirmed), `.review_requested`, `.review_cancelled`, `.approved` (type, revision,
 whether faith review applied), `.rejected`, `.faith_approved`, `.faith_rejected`,
-`.faith_flagged`, `.retracted`, `.archived` and `.restored`; for AI `.generated` (job, author) and
+`.faith_flagged`, `.scope_reduced` (scope, reason: an edit that needs a faith review took it off
+the whole board), `.retracted`, `.archived` and `.restored` (`.returned_to_draft` also gives a
+reason when AI versions caused it); for AI `.generated` (job, author) and
 `.levels_generated` (job, count); for designations `library_reviewer.designated`, `.changed` and
 `.removed` (both flags). Notes, titles and names are never audited.
 

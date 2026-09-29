@@ -507,6 +507,34 @@ function Leaf({ s, block }: { s: Sized; block: LeafBlock }) {
       );
     case 'lines':
       return <WritingLines s={s} count={block.count} marginTop={s.gap} />;
+    case 'nameLine':
+      return (
+        <View style={{ flexDirection: 'row', marginTop: s.gap }} wrap={false}>
+          {block.labels.map((label, i) => (
+            <View
+              key={i}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'flex-end',
+                flexGrow: i === 0 ? 2 : 1,
+                flexBasis: 0,
+                marginLeft: i === 0 ? 0 : s.size * 1.5,
+              }}
+            >
+              <Text style={{ fontSize: s.size }}>{pdfText(`${label}\u00a0:`)}</Text>
+              <View
+                style={{
+                  flexGrow: 1,
+                  marginLeft: s.size * 0.4,
+                  height: s.size * 1.4,
+                  borderBottomWidth: 0.75,
+                  borderBottomColor: WRITING_LINE,
+                }}
+              />
+            </View>
+          ))}
+        </View>
+      );
     case 'callout': {
       const tone = TONES[block.tone] ?? TONES.info;
       const height =

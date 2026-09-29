@@ -5,6 +5,7 @@ import {
   clearFilters,
   facetFilterCount,
   hasFilters,
+  itemHref,
   libraryHref,
   parseLibrarySearch,
   showsResults,
@@ -153,6 +154,18 @@ describe('changing the search', () => {
     expect(showsResults({ ...EMPTY_SEARCH, exp: EXP })).toBe(true);
     expect(showsResults({ ...EMPTY_SEARCH, mine: true })).toBe(true);
     expect(hasFilters({ ...EMPTY_SEARCH, q: 'huard', attachTo: LESSON })).toBe(false);
+  });
+
+  it('carries the search to a result’s page, and back to the results from there', () => {
+    const ITEM = '00000000-0000-4000-8000-0000000000ee';
+    expect(itemHref(ITEM, null)).toBe(`/library/items/${ITEM}`);
+    expect(itemHref(ITEM, EMPTY_SEARCH)).toBe(`/library/items/${ITEM}`);
+    const search = { ...EMPTY_SEARCH, q: 'huard', grade: '3', attachTo: LESSON };
+    const href = itemHref(ITEM, search);
+    expect(href).toBe(`/library/items/${ITEM}?q=huard&grade=3&attachTo=${LESSON}`);
+    // The item page reads the same search back, for « Retour aux résultats ».
+    const back = parseLibrarySearch(new URL(href, 'http://x').searchParams);
+    expect(libraryHref(back)).toBe(libraryHref(search));
   });
 });
 

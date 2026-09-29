@@ -129,6 +129,7 @@ export const loadLibraryItem = cache(
       source: row.source,
       requested: row.review_requested_at !== null,
       mine: access.mine,
+      boardOwn: row.source === 'board_created' && row.author_id === null,
       authorName: author ? formalStaffName(author.display_name, author.honorific) : null,
       subject: row.subjects
         ? {

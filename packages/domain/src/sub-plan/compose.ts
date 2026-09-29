@@ -7,7 +7,7 @@
  * for every audience, with its step.
  */
 import type { CatholicReferenceType } from './catholic';
-import { detachLibrary } from './library';
+import { detachLibrary, libraryStepText } from './library';
 import {
   subPlanAiLayerSchema,
   type SubPlanBlock,
@@ -60,8 +60,12 @@ export interface ComposedBlock extends Omit<SubPlanBlock, 'steps'> {
   /** Whether a teacher edit applies to this block. */
   edited: boolean;
   ai: ComposedBlockAi | null;
-  /** The resource the owner took out (« Ne pas utiliser cette ressource »); owner only. */
-  hiddenLibrary: { itemId: string; title: string } | null;
+  /**
+   * The resource the owner took out (« Ne pas utiliser cette ressource »), with the text of its
+   * step (« Distribuez … »), which « Utiliser cette ressource » puts back into her own steps;
+   * owner only.
+   */
+  hiddenLibrary: { itemId: string; title: string; stepText: string } | null;
 }
 
 export interface ComposedFaith {
@@ -165,17 +169,22 @@ export function composeSubPlan(
     const aiBlock = ai.blocks.get(block.key);
     const aiApplies = !!aiBlock && aiBlock.lessonId === lessonId;
 
-    // Without its resource, the block reads as it would have been built without it.
+    // Without its resource, the block reads as it would have been built without it: its step
+    // (« Distribuez … ») goes too, from the teacher's own steps and the AI's as well.
     const hidden = editApplies && edit.hideLibrary === true && block.library !== null;
     const generated = hidden ? detachLibrary(block) : block;
+    const hiddenStep = hidden && block.library ? libraryStepText(block.library) : null;
+    const shown = (s: { text: string }) => s.text !== hiddenStep;
 
     let steps: ComposedStep[] = generated.steps.map((s) => ({ ...s, say: null }));
     let stepsSource: ComposedBlock['stepsSource'] = 'template';
     if (editApplies && edit.steps) {
-      steps = edit.steps.map((s) => ({ minutes: s.minutes, text: s.text, say: null }));
+      steps = edit.steps
+        .filter(shown)
+        .map((s) => ({ minutes: s.minutes, text: s.text, say: null }));
       stepsSource = 'teacher';
     } else if (aiApplies && aiBlock.steps.length > 0) {
-      steps = aiBlock.steps;
+      steps = aiBlock.steps.filter(shown);
       stepsSource = 'ai';
     }
     return {
@@ -187,7 +196,11 @@ export function composeSubPlan(
       ai: aiApplies ? aiBlock.ai : null,
       hiddenLibrary:
         hidden && audience === 'owner' && block.library
-          ? { itemId: block.library.itemId, title: block.library.title }
+          ? {
+              itemId: block.library.itemId,
+              title: block.library.title,
+              stepText: libraryStepText(block.library),
+            }
           : null,
     };
   });

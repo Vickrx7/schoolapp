@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { fieldId, useEditorErrors } from './editor-errors';
 import { AddButton, ItemControls } from './list-controls';
 import { move, removeAt } from './question-ops';
+import { useRowKeys } from './row-keys';
 
 export interface RubricCriterion {
   category: AchievementCategory;
@@ -19,7 +20,8 @@ const LEVELS = ['level1', 'level2', 'level3', 'level4'] as const;
 /**
  * « Grille d'évaluation » (SPEC 9.3): one row per criterion, with its category of the
  * achievement chart and what each level 1 to 4 looks like. A table that scrolls on its own on a
- * phone, with a caption, so the page itself never scrolls sideways (D-034).
+ * phone, with a caption, so the page itself never scrolls sideways (D-034). Rows keep their
+ * fields and focus when moved; what is typed is French content (`lang="fr-CA"` on the fields).
  */
 export function RubricEditor({
   label,
@@ -42,6 +44,7 @@ export function RubricEditor({
   const listError = errors.at(path);
   const change = (i: number, next: RubricCriterion) =>
     onChange(criteria.map((c, j) => (j === i ? next : c)));
+  const rows = useRowKeys(criteria.length);
 
   return (
     <div className="space-y-3">
@@ -51,7 +54,7 @@ export function RubricEditor({
         role="region"
         aria-label={label}
       >
-        <table className="w-full min-w-[56rem] border-collapse text-sm" lang="fr-CA">
+        <table className="w-full min-w-[56rem] border-collapse text-sm">
           <caption className="px-3 py-2 text-left font-medium text-slate-700">
             {label} — {t('caption')}
           </caption>
@@ -79,7 +82,7 @@ export function RubricEditor({
               const name = t('row', { n: i + 1 });
               return (
                 <tr
-                  key={i}
+                  key={rows.keys[i] ?? i}
                   className={cn(
                     'border-t border-slate-200 align-top',
                     errors.within(rowPath) && 'bg-red-50',
@@ -104,6 +107,7 @@ export function RubricEditor({
                   <td className="px-2 py-2">
                     <Input
                       id={fieldId(`${rowPath}.criterion`)}
+                      lang="fr-CA"
                       aria-label={t('criterionOf', { name })}
                       aria-invalid={errors.at(`${rowPath}.criterion`) ? true : undefined}
                       value={c.criterion}
@@ -115,6 +119,7 @@ export function RubricEditor({
                     <td key={level} className="px-2 py-2">
                       <Textarea
                         id={fieldId(`${rowPath}.levels.${level}`)}
+                        lang="fr-CA"
                         aria-label={t('levelOf', { name, n: l + 1 })}
                         aria-invalid={errors.at(`${rowPath}.levels.${level}`) ? true : undefined}
                         value={c.levels[level]}
@@ -131,8 +136,14 @@ export function RubricEditor({
                       name={name}
                       index={i}
                       count={criteria.length}
-                      onMove={(direction) => onChange(move(criteria, i, direction))}
-                      onRemove={() => onChange(removeAt(criteria, i))}
+                      onMove={(direction) => {
+                        rows.move(i, direction);
+                        onChange(move(criteria, i, direction));
+                      }}
+                      onRemove={() => {
+                        rows.remove(i);
+                        onChange(removeAt(criteria, i));
+                      }}
                       canRemove={criteria.length > min}
                     />
                   </td>

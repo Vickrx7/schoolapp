@@ -12,7 +12,17 @@ import { ItemBadges } from './item-badges';
  * status, and « Modifier » for the people who may edit it (the workflow buttons are the
  * workflow slot's).
  */
-export function ItemHeader({ item }: { item: LibraryItemView }) {
+export function ItemHeader({
+  item,
+  back,
+  editable = item.canEdit,
+}: {
+  item: LibraryItemView;
+  /** Where « Retour » goes: the library (default), the results it was opened from… */
+  back?: { href: string; label: string };
+  /** « Modifier » (the library editor): not for a saved text outside the library. */
+  editable?: boolean;
+}) {
   const t = useTranslations('libraryItem');
   const tc = useTranslations('libraryCommon');
   const origin =
@@ -25,11 +35,11 @@ export function ItemHeader({ item }: { item: LibraryItemView }) {
       <PageHeader
         back={
           <Link
-            href="/library"
+            href={back?.href ?? '/library'}
             className="inline-flex min-h-11 items-center gap-1 text-sm text-slate-600 hover:text-slate-900"
           >
             <ChevronLeft className="size-4" aria-hidden />
-            {t('back')}
+            {back?.label ?? t('back')}
           </Link>
         }
         title={item.title}
@@ -42,7 +52,7 @@ export function ItemHeader({ item }: { item: LibraryItemView }) {
           </span>
         }
         actions={
-          item.canEdit ? (
+          editable ? (
             <Button asChild variant="secondary">
               <Link href={`/library/items/${item.id}/edit`}>
                 <Pencil aria-hidden />

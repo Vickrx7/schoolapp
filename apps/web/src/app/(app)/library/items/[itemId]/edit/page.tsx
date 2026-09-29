@@ -68,6 +68,9 @@ export default async function EditLibraryItemPage({ params }: Props) {
         context={context}
         status={item.status}
         shared={item.shareScope !== 'private'}
+        boardWide={item.shareScope === 'board'}
+        requested={item.requested}
+        faithReviewed={item.faith.reviewed}
         faithFlagged={item.review?.faithFlagged ?? false}
       />
     </div>

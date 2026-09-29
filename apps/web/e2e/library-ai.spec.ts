@@ -204,3 +204,44 @@ test('« Créer avec l’IA » from an attente starts with its grade, subject an
   await expect(page.getByRole('checkbox', { name: '3e année', exact: true })).toBeChecked();
   await expect(page.getByRole('checkbox', { name: /^B1\.2 / })).toBeChecked();
 });
+
+test('a library request that waits too long, or fails, speaks of the resource', async ({
+  page,
+}) => {
+  const [huard] = await query<{ id: string }>(
+    `select id from public.library_items where title = 'Le huard, oiseau des lacs'`,
+  );
+  const job = async (feature: string, status: string, input: object) =>
+    (
+      await query<{ id: string }>(
+        `insert into public.ai_jobs (board_id, school_id, user_id, feature, input, status,
+           error_code, created_at)
+         select $1, $2, u.id, $4, $5::jsonb, $6::public.ai_job_status,
+           case when $6 = 'failed' then 'aiError' end, now() - interval '20 minutes'
+         from public.users u where u.email = $3
+         returning id`,
+        [SEED.board, SEED.school, DEMO.teacher3, feature, JSON.stringify(input), status],
+      )
+    )[0]!.id;
+  // Queued without an event, so the worker never takes it: it only waits.
+  const waiting = await job('library_levels', 'queued', { itemId: huard!.id, baseRevision: 1 });
+  const failed = await job('library_item', 'failed', {});
+
+  await login(page, DEMO.teacher3);
+  await page.goto(`/library/generate/${waiting}`);
+  await expect(page.getByText('C’est plus long que prévu.')).toBeVisible();
+  await expect(
+    page.getByText('La ressource n’a pas changé : revenez plus tard', { exact: false }),
+  ).toBeVisible();
+  await expect(page.getByText('Votre texte n’est pas perdu', { exact: false })).toHaveCount(0);
+  await expect(page.getByRole('link', { name: 'Retour à la ressource' }).last()).toHaveAttribute(
+    'href',
+    `/library/items/${huard!.id}`,
+  );
+  await expectAccessible(page);
+
+  await page.goto(`/library/generate/${failed}`);
+  await expect(page.getByText('La ressource n’a pas pu être préparée.')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Reprendre la demande' })).toBeVisible();
+  await expectAccessible(page);
+});

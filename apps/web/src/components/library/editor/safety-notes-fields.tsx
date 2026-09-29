@@ -28,7 +28,7 @@ export function SafetyNotesFields({
   const missing = errors.at('readiness.safety');
 
   return (
-    <div className="space-y-4" lang="fr-CA">
+    <div className="space-y-4">
       <p className="text-sm text-slate-600">{t('intro')}</p>
       {missing ? (
         <p className="text-sm text-red-600" role="alert">
@@ -43,6 +43,7 @@ export function SafetyNotesFields({
       >
         <Input
           id={fieldId('safetyNotes.ageSuitability')}
+          lang="fr-CA"
           value={value.ageSuitability}
           maxLength={300}
           onChange={(e) => set({ ageSuitability: e.target.value })}
@@ -56,6 +57,7 @@ export function SafetyNotesFields({
       >
         <Textarea
           id={fieldId('safetyNotes.allergyAwareMaterials')}
+          lang="fr-CA"
           value={value.allergyAwareMaterials}
           maxLength={600}
           className="min-h-16"
@@ -99,6 +101,7 @@ export function SafetyNotesFields({
       <Field label={t('notes')} htmlFor={fieldId('safetyNotes.notes')} error={err('notes')}>
         <Textarea
           id={fieldId('safetyNotes.notes')}
+          lang="fr-CA"
           value={value.notes}
           maxLength={1000}
           className="min-h-16"

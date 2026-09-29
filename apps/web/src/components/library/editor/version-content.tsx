@@ -32,7 +32,7 @@ export function VersionContent({
   const solutionKey = solutionLabelKey(form.type);
   const solutionPath = `versions.${index}.solution`;
   return (
-    <div className="space-y-4" lang="fr-CA">
+    <div className="space-y-4">
       <ContentFields
         type={form.type}
         specs={EDITOR_SPEC[form.type]}
@@ -62,6 +62,7 @@ export function VersionContent({
         >
           <Textarea
             id={fieldId(solutionPath)}
+            lang="fr-CA"
             value={version.solution}
             maxLength={8000}
             className="min-h-24"

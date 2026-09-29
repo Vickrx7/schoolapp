@@ -166,6 +166,16 @@ export function libraryHref(search: Partial<LibrarySearch>): string {
 }
 
 /**
+ * A result's page, carrying the search it was found with (the words, the filters and the lesson
+ * a resource is chosen for), so the item page can go back to the results and still offer
+ * « Joindre à cette leçon ». The item page's own `v` and `tab` are not search keys.
+ */
+export function itemHref(itemId: string, search: LibrarySearch | null): string {
+  const query = search && showsResults(search) ? toSearchParams(search).toString() : '';
+  return `/library/items/${itemId}${query ? `?${query}` : ''}`;
+}
+
+/**
  * The same search with some filters changed, back on the first page (a new search never keeps
  * « Afficher plus »).
  */

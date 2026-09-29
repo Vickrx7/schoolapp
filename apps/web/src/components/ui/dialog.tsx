@@ -15,17 +15,21 @@ export function DialogContent({
   children,
   className,
   closeLabel,
+  onCloseAutoFocus,
 }: {
   title: ReactNode;
   description?: ReactNode;
   children: ReactNode;
   className?: string;
   closeLabel: string;
+  /** Where the focus goes on close (default: back to the trigger); `preventDefault` to choose. */
+  onCloseAutoFocus?: (event: Event) => void;
 }) {
   return (
     <D.Portal>
       <D.Overlay className="fixed inset-0 z-40 bg-slate-900/40" />
       <D.Content
+        onCloseAutoFocus={onCloseAutoFocus}
         className={cn(
           // Full-width sheet on phones, centered dialog on larger screens.
           'fixed inset-x-0 bottom-0 z-50 max-h-[92dvh] overflow-y-auto rounded-t-2xl bg-white p-5 shadow-xl sm:inset-auto sm:top-1/2 sm:left-1/2 sm:w-full sm:max-w-lg sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-2xl',

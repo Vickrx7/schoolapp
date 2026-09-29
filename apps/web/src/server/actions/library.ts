@@ -23,7 +23,13 @@ import {
   type GuardVerdict,
 } from '../library/share-guard';
 import { loadBoardLevelIds, loadExpectations } from '../queries/library-authoring';
-import { librarySchools, requireSession, showLibrary, type SessionContext } from '../session';
+import {
+  aiSchools,
+  librarySchools,
+  requireSession,
+  showLibrary,
+  type SessionContext,
+} from '../session';
 import { createSupabaseServerClient, type ServerSupabase } from '../supabase';
 import { parseInput } from './validation';
 
@@ -246,11 +252,36 @@ export async function listExpectations(
   return ok(await loadExpectations(input.data.gradeCodes, input.data.subjectId, await getLocale()));
 }
 
-/** « Supprimer »: the author's drafts, sent-back and archived resources (row level security). */
+/**
+ * Whether the item is the user's own text saved from « Texte différencié »: outside the library
+ * (a school without the Library module), she can still delete those (D-073, D-078).
+ */
+async function isOwnSavedText(supabase: ServerSupabase, itemId: string, userId: string) {
+  const { data } = await supabase
+    .from('library_items')
+    .select('id, ai_generations!inner(feature)')
+    .eq('id', itemId)
+    .eq('author_id', userId)
+    .eq('source', 'ai_generated')
+    .eq('ai_generations.feature', 'differentiate')
+    .maybeSingle();
+  return data !== null;
+}
+
+/**
+ * « Supprimer »: the author's drafts, sent-back and archived resources (row level security).
+ * Without library screens, only her own texts saved from « Texte différencié ».
+ */
 export async function deleteLibraryItem(itemId: string): Promise<ActionResult> {
-  const session = await librarySession();
-  if (!session || !uuid.safeParse(itemId).success) return fail('forbidden');
+  const session = await requireSession();
+  if (!uuid.safeParse(itemId).success) return fail('forbidden');
   const supabase = await createSupabaseServerClient();
+  if (
+    !showLibrary(session) &&
+    !(aiSchools(session).length > 0 && (await isOwnSavedText(supabase, itemId, session.userId)))
+  ) {
+    return fail('forbidden');
+  }
   const { data, error } = await supabase
     .from('library_items')
     .delete()

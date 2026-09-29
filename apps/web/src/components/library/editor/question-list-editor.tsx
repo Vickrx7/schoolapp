@@ -9,12 +9,14 @@ import {
 } from '@lynx/content';
 import { Trash2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Field, Input, Select, Textarea } from '@/components/ui/field';
 import { cn } from '@/lib/utils';
 import { fieldId, useEditorErrors } from './editor-errors';
 import { AddButton, ItemControls } from './list-controls';
+import { NumberInput } from './number-input';
 import {
   QUESTION_LIMITS,
   addAcceptable,
@@ -26,7 +28,7 @@ import {
   canAddExtraRight,
   canAddPair,
   changeKind,
-  clampInt,
+  insertAt,
   kindsFor,
   move,
   moveItem,
@@ -43,7 +45,9 @@ import {
   setMultipleAnswers,
   setPair,
   toggleCorrect,
+  withKind,
 } from './question-ops';
+import { questionKeys } from './row-keys';
 
 type Of<K extends QuestionKind> = Extract<AuthoringQuestion, { kind: K }>;
 
@@ -54,7 +58,10 @@ type Of<K extends QuestionKind> = Extract<AuthoringQuestion, { kind: K }>;
  * go to the answer key when saved, never into the student sheet; ordering items and matching
  * right columns are scrambled for the students (« Écrivez les éléments dans le bon ordre : ils
  * seront mélangés pour les élèves. »). Each question is a labelled group, so screen readers hear
- * « Question 3 » before its fields.
+ * « Question 3 » before its fields. Removing a question, or changing its type (which starts its
+ * answers again), can be undone from the message that follows; switching back to a type the
+ * question had brings its answers back. Text typed here is French content (`lang="fr-CA"` on the
+ * fields); labels and buttons are in the interface's language.
  */
 export function QuestionListEditor({
   label,
@@ -79,18 +86,60 @@ export function QuestionListEditor({
 }) {
   const t = useTranslations('libraryEdit.questions');
   const tc = useTranslations('libraryCommon');
+  const tCommon = useTranslations('common');
   const errors = useEditorErrors();
   const kinds = kindsFor(shortAnswerOnly);
   const [newKind, setNewKind] = useState<QuestionKind>(kinds[0]!);
   const listError = errors.at(path);
+  const keys = questionKeys(questions);
+  // « Annuler » acts on the list as it is then (later edits kept), through the latest onChange.
+  const latest = useRef({ questions, onChange });
+  useEffect(() => {
+    latest.current = { questions, onChange };
+  });
+  // What each question was under the types it had, so switching back brings its answers back.
+  const earlier = useRef(new Map<string, Map<QuestionKind, AuthoringQuestion>>());
+
+  const replace = (id: string, next: AuthoringQuestion) => {
+    const { questions: now, onChange: change } = latest.current;
+    change(now.map((x) => (x.id === id ? next : x)));
+  };
+  const changeQuestionKind = (i: number, kind: QuestionKind) => {
+    const q = questions[i];
+    if (!q || q.kind === kind) return;
+    const byKind = earlier.current.get(q.id) ?? new Map<QuestionKind, AuthoringQuestion>();
+    byKind.set(q.kind, q);
+    earlier.current.set(q.id, byKind);
+    const before = byKind.get(kind);
+    onChange(replaceAtIndex(questions, i, before ? withKind(q, before) : changeKind(q, kind)));
+    toast(t('kindChanged', { name: t('numbered', { n: i + 1 }) }), {
+      action: { label: tCommon('undo'), onClick: () => replace(q.id, q) },
+      duration: 8000,
+    });
+  };
+  const removeQuestion = (i: number) => {
+    const q = questions[i];
+    if (!q) return;
+    onChange(removeAt(questions, i));
+    toast(t('removed', { name: t('numbered', { n: i + 1 }) }), {
+      action: {
+        label: tCommon('undo'),
+        onClick: () => {
+          const { questions: now, onChange: change } = latest.current;
+          if (!now.some((x) => x.id === q.id)) change(insertAt(now, i, q, max));
+        },
+      },
+      duration: 8000,
+    });
+  };
 
   return (
-    <fieldset className="space-y-3" lang="fr-CA">
+    <fieldset className="space-y-3">
       <legend className="text-sm font-medium text-slate-700">{label}</legend>
       {questions.length ? (
         <ol className="space-y-4">
           {questions.map((q, i) => (
-            <li key={`${q.id}-${i}`}>
+            <li key={keys[i]}>
               <QuestionEditor
                 question={q}
                 number={i + 1}
@@ -98,8 +147,9 @@ export function QuestionListEditor({
                 path={`${path}.${i}`}
                 kinds={kinds}
                 onChange={(next) => onChange(questions.map((x, j) => (j === i ? next : x)))}
+                onKind={(kind) => changeQuestionKind(i, kind)}
                 onMove={(direction) => onChange(move(questions, i, direction))}
-                onRemove={() => onChange(removeAt(questions, i))}
+                onRemove={() => removeQuestion(i)}
                 canRemove={questions.length > min}
               />
             </li>
@@ -141,6 +191,12 @@ export function QuestionListEditor({
   );
 }
 
+const replaceAtIndex = (
+  list: readonly AuthoringQuestion[],
+  index: number,
+  next: AuthoringQuestion,
+): AuthoringQuestion[] => list.map((x, j) => (j === index ? next : x));
+
 function QuestionEditor({
   question: q,
   number,
@@ -148,6 +204,7 @@ function QuestionEditor({
   path,
   kinds,
   onChange,
+  onKind,
   onMove,
   onRemove,
   canRemove,
@@ -158,6 +215,7 @@ function QuestionEditor({
   path: string;
   kinds: readonly QuestionKind[];
   onChange: (q: AuthoringQuestion) => void;
+  onKind: (kind: QuestionKind) => void;
   onMove: (direction: 'up' | 'down') => void;
   onRemove: () => void;
   canRemove: boolean;
@@ -190,7 +248,7 @@ function QuestionEditor({
               aria-label={t('kind', { name })}
               value={q.kind}
               className="w-44"
-              onChange={(e) => onChange(changeKind(q, e.target.value as QuestionKind))}
+              onChange={(e) => onKind(e.target.value as QuestionKind)}
             >
               {kinds.map((k) => (
                 <option key={k} value={k}>
@@ -218,6 +276,7 @@ function QuestionEditor({
       <Field label={t('prompt')} htmlFor={id('prompt')} error={err('prompt')}>
         <Textarea
           id={id('prompt')}
+          lang="fr-CA"
           value={q.prompt}
           maxLength={1000}
           className="min-h-16"
@@ -241,6 +300,7 @@ function QuestionEditor({
       <Field label={t('hint')} htmlFor={id('hint')} error={err('hint')}>
         <Input
           id={id('hint')}
+          lang="fr-CA"
           value={q.hint}
           maxLength={300}
           onChange={(e) => set('hint', e.target.value)}
@@ -254,6 +314,7 @@ function QuestionEditor({
       >
         <Textarea
           id={id('explanation')}
+          lang="fr-CA"
           value={q.explanation}
           maxLength={500}
           className="min-h-16"
@@ -274,14 +335,13 @@ function QuestionEditor({
             hint={t('pointsHint')}
             error={err('points')}
           >
-            <Input
+            <NumberInput
               id={id('points')}
-              type="number"
-              inputMode="numeric"
               min={QUESTION_LIMITS.points.min}
               max={QUESTION_LIMITS.points.max}
-              value={q.points ?? ''}
-              onChange={(e) => set('points', clampInt(e.target.value, QUESTION_LIMITS.points))}
+              nullable
+              value={q.points}
+              onValue={(points) => set('points', points)}
             />
           </Field>
           <Field
@@ -397,6 +457,7 @@ function ChoicesEditor({
               <div className="min-w-0 flex-1 space-y-1">
                 <Input
                   id={fieldId(textPath)}
+                  lang="fr-CA"
                   aria-label={name}
                   aria-invalid={error ? true : undefined}
                   value={choice.text}
@@ -498,6 +559,7 @@ function MatchingEditor({
                 <div className="space-y-1">
                   <Input
                     id={fieldId(leftPath)}
+                    lang="fr-CA"
                     aria-label={t('left', { n: i + 1 })}
                     placeholder={t('left', { n: i + 1 })}
                     aria-invalid={leftError ? true : undefined}
@@ -512,6 +574,7 @@ function MatchingEditor({
                   ) : null}
                 </div>
                 <Input
+                  lang="fr-CA"
                   aria-label={t('right', { n: i + 1 })}
                   placeholder={t('right', { n: i + 1 })}
                   value={pair.right}
@@ -542,6 +605,7 @@ function MatchingEditor({
             {q.extraRight.map((item, i) => (
               <li key={item.id} className="flex items-start gap-2">
                 <Input
+                  lang="fr-CA"
                   aria-label={t('extraRight', { n: i + 1 })}
                   value={item.text}
                   maxLength={300}
@@ -594,6 +658,7 @@ function OrderingEditor({
                 {i + 1}.
               </span>
               <Input
+                lang="fr-CA"
                 aria-label={name}
                 value={item.text}
                 maxLength={300}
@@ -643,6 +708,7 @@ function ShortAnswerEditor({
       >
         <Textarea
           id={id('sampleAnswer')}
+          lang="fr-CA"
           value={q.sampleAnswer}
           maxLength={1000}
           className="min-h-16"
@@ -662,6 +728,7 @@ function ShortAnswerEditor({
                   <div className="min-w-0 flex-1 space-y-1">
                     <Input
                       id={fieldId(answerPath)}
+                      lang="fr-CA"
                       aria-label={t('acceptableN', { n: i + 1 })}
                       aria-invalid={error ? true : undefined}
                       value={answer}
@@ -697,20 +764,13 @@ function ShortAnswerEditor({
         hint={t('linesHint')}
         error={errors.at(`${path}.lines`)}
       >
-        <Input
+        <NumberInput
           id={id('lines')}
-          type="number"
-          inputMode="numeric"
           className="w-28"
           min={QUESTION_LIMITS.lines.min}
           max={QUESTION_LIMITS.lines.max}
           value={q.lines}
-          onChange={(e) =>
-            onChange({
-              ...q,
-              lines: clampInt(e.target.value, QUESTION_LIMITS.lines) ?? QUESTION_LIMITS.lines.min,
-            })
-          }
+          onValue={(lines) => onChange({ ...q, lines: lines ?? QUESTION_LIMITS.lines.min })}
         />
       </Field>
     </AnswerGroup>

@@ -1,4 +1,5 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
+import { SEED, closeDb, query } from './db';
 import { DEMO, expectAccessible, login } from './helpers';
 
 // Needs the worker running with AI_PROVIDER=fake (as in CI): nothing leaves the machine.
@@ -10,6 +11,10 @@ const TEXT =
   'Il vit en famille dans une hutte.';
 
 const suffix = () => Date.now().toString().slice(-5);
+
+test.afterAll(async () => {
+  await closeDb();
+});
 
 /** A click before the page is interactive is lost: retry until the dialog opens. */
 async function confirm(page: Page, trigger: Locator, button: string) {
@@ -358,4 +363,61 @@ test('a level used by a request or a saved text is kept until nothing uses it', 
   await page.goto('/differentiate/levels');
   await confirm(page, row.getByRole('button', { name: 'Supprimer' }), 'Supprimer');
   await expect(page.getByText('Niveau supprimé.')).toBeVisible();
+});
+
+test('without the Library module, a saved text still opens, prints and is deleted', async ({
+  page,
+}) => {
+  test.setTimeout(90_000);
+  const libraryModule = (enabled: boolean) =>
+    query(
+      `update public.module_entitlements set enabled = $2 where school_id = $1 and module = 'library'`,
+      [SEED.school, enabled],
+    );
+  await login(page, DEMO.teacher5);
+  const title = `La marmotte ${suffix()}`;
+  await sendRequest(page, title);
+  await expect(page.getByRole('heading', { name: 'Débutant' })).toBeVisible({ timeout: 30_000 });
+  try {
+    await libraryModule(false);
+    await page.getByRole('button', { name: 'Enregistrer', exact: true }).click();
+    await page.waitForURL(ITEM_URL);
+    await expect(page.getByRole('heading', { level: 1, name: title })).toBeVisible();
+    // Nothing else of the library: no « Ressources », no editor, no workflow.
+    const nav = page.getByRole('navigation', { name: 'Navigation principale' }).first();
+    await expect(nav.getByRole('link', { name: 'Ressources' })).toHaveCount(0);
+    await expect(page.getByRole('link', { name: 'Modifier' })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'J’ai révisé cette ressource' })).toHaveCount(0);
+    await expect(page.getByRole('link', { name: 'Texte différencié' }).first()).toHaveAttribute(
+      'href',
+      '/differentiate',
+    );
+    await expectAccessible(page);
+    const itemUrl = page.url();
+
+    // « Mes textes différenciés » leads to it, and it prints.
+    await page.goto('/differentiate');
+    await page
+      .getByRole('list', { name: 'Mes textes différenciés' })
+      .getByRole('link', { name: title })
+      .click();
+    await page.waitForURL(ITEM_URL);
+    await page.goto(`${itemUrl}/print?doc=student`);
+    await expect(
+      page.getByTestId('print-sheets').getByTestId('sheet-number').first(),
+    ).toBeVisible();
+
+    // « Supprimer » takes it away and goes back to « Texte différencié ».
+    await page.goto(itemUrl);
+    await confirm(page, page.getByRole('button', { name: 'Supprimer', exact: true }), 'Supprimer');
+    await page.waitForURL(/\/differentiate$/);
+    const [row] = await query<{ count: number }>(
+      `select count(*)::int as count from public.library_items where title = $1`,
+      [title],
+    );
+    expect(row?.count).toBe(0);
+  } finally {
+    await libraryModule(true);
+  }
+  await discardRequest(page, title);
 });

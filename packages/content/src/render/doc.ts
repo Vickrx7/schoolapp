@@ -56,7 +56,9 @@ export type LeafBlock =
       rows: { category: string; criterion: string; cells: string[] }[];
     }
   | { type: 'answer'; number: number; text: string; details: string[]; explanation: string }
-  | { type: 'poem'; title: string; lines: string[] };
+  | { type: 'poem'; title: string; lines: string[] }
+  /** « Nom : ____  Date : ____ » at the top of a sheet students fill in (labels in French). */
+  | { type: 'nameLine'; labels: string[] };
 
 /** Content in another language (the English half of a family guide) is a section. */
 export interface SectionBlock {
@@ -150,6 +152,7 @@ const leafBlockSchema = z.discriminatedUnion('type', [
     explanation: text(5000),
   }),
   z.strictObject({ type: z.literal('poem'), title: text(500), lines: many(text(2000), 200) }),
+  z.strictObject({ type: z.literal('nameLine'), labels: many(text(100), 4) }),
 ]);
 
 export const docBlockSchema: z.ZodType<DocBlock> = z.union([

@@ -1,13 +1,14 @@
 /**
  * The student sheet (DECISIONS D-062, D-075). It takes no answer key, renders from
  * `studentContent` (no teacher-only field can reach it) and never shows a level name: only the
- * small version number (D-042).
+ * small version number (D-042). A sheet students fill in (questions or writing lines) starts
+ * with « Nom : ____  Date : ____ », so collected sheets can be told apart.
  */
 import type { LibraryItemType } from '../catalog';
 import { studentContent } from '../project';
 import { str } from './builder';
 import { renderContentBlocks } from './content';
-import type { DocBlock, RenderedDoc } from './doc';
+import type { DocBlock, LeafBlock, RenderedDoc } from './doc';
 import { DOC_LABELS_FR } from './labels-fr';
 
 export interface StudentDocOptions {
@@ -20,6 +21,12 @@ export interface StudentDocOptions {
    * « Afficher le lien sur la feuille de l’élève », and always for a Catholic reflection.
    */
   faith?: { connection: string | null; onStudentSheet: boolean } | null;
+}
+
+/** Whether students write on the sheet: a question or writing lines, in any section. */
+function filledIn(blocks: readonly DocBlock[]): boolean {
+  const writes = (b: LeafBlock) => b.type === 'question' || b.type === 'lines';
+  return blocks.some((b) => (b.type === 'section' ? b.blocks.some(writes) : writes(b)));
 }
 
 /** Null for teacher-only types (`lesson_plan`, `teacher_guide`). */
@@ -52,6 +59,9 @@ export function renderStudentDoc(
     });
   }
   blocks.push(...renderContentBlocks(type, student, 'student'));
+  if (filledIn(blocks)) {
+    blocks.unshift({ type: 'nameLine', labels: [DOC_LABELS_FR.name, DOC_LABELS_FR.date] });
+  }
   return {
     kind: 'student',
     lang: 'fr-CA',

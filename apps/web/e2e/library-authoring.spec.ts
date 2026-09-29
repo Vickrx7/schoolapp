@@ -61,6 +61,7 @@ test('a teacher writes a quiz with every question kind, marks it reviewed and sh
   await login(page, DEMO.teacher3);
   await page.goto('/library/new');
   await expect(page.getByRole('heading', { level: 1, name: 'Nouvelle ressource' })).toBeVisible();
+  await expectAccessible(page);
   await page.getByRole('link', { name: /^Quiz/ }).click();
   await page.waitForURL(/\/library\/new\?type=quiz/);
   await expect(
@@ -294,4 +295,111 @@ test('the editor’s device draft survives a reload before saving', async ({ pag
   await expect(title).toHaveValue(`${PREFIX} Billet non enregistré`);
   await page.getByRole('button', { name: 'Effacer le brouillon' }).click();
   await expect(title).toHaveValue('');
+});
+
+test('saving a resource that waits for approval says what it withdraws, and asks first', async ({
+  page,
+}) => {
+  const itemId = await insertReadyItem({
+    author: DEMO.teacher3,
+    type: 'worksheet',
+    title: `${PREFIX} Fiche proposée`,
+    status: 'teacher_reviewed',
+  });
+  await query(
+    `update public.library_items set review_requested_at = now(), review_requested_by = author_id
+     where id = $1`,
+    [itemId],
+  );
+  const requested = async () =>
+    (
+      await query<{ requested: boolean }>(
+        `select review_requested_at is not null as requested from public.library_items where id = $1`,
+        [itemId],
+      )
+    )[0]?.requested;
+
+  await login(page, DEMO.teacher3);
+  await page.goto(`/library/items/${itemId}/edit`);
+  await expect(
+    page.getByText(
+      'Cette ressource est en attente d’approbation : l’enregistrer retire la demande.',
+      {
+        exact: false,
+      },
+    ),
+  ).toBeVisible();
+  // Nothing changed: nothing to send, so the request cannot be withdrawn by accident.
+  const saveButton = saveBar(page).getByRole('button', { name: 'Enregistrer', exact: true });
+  await expect(saveButton).toBeDisabled();
+
+  await page.getByLabel('Titre', { exact: true }).fill(`${PREFIX} Fiche proposée (modifiée)`);
+  await save(page);
+  const dialog = page.getByRole('dialog', { name: 'Enregistrer les modifications?' });
+  await expect(dialog).toContainText('l’enregistrer retire la demande');
+  await expectAccessible(page);
+  await dialog.getByRole('button', { name: 'Annuler' }).click();
+  expect(await requested()).toBe(true);
+
+  await save(page);
+  await dialog.getByRole('button', { name: 'Enregistrer quand même' }).click();
+  await expect(saveBar(page)).toContainText('Enregistré à');
+  expect(await requested()).toBe(false);
+});
+
+test('closer supervision unticks « Conçue pour une personne suppléante » and the save goes through', async ({
+  page,
+}) => {
+  const itemId = await insertReadyItem({
+    author: DEMO.teacher3,
+    type: 'experiment',
+    title: `${PREFIX} Expérience pour la suppléance`,
+    subFriendly: true,
+  });
+  await login(page, DEMO.teacher3);
+  await page.goto(`/library/items/${itemId}/edit`);
+  const forSubs = page.getByRole('checkbox', { name: 'Conçue pour une personne suppléante' });
+  await expect(forSubs).toBeChecked();
+  await page.getByRole('radio', { name: 'Supervision étroite' }).check();
+  await expect(forSubs).not.toBeChecked();
+  await expect(forSubs).toBeDisabled();
+  await save(page);
+  await expect(saveBar(page)).toContainText('Enregistré à');
+  const [row] = await query<{ sub_friendly: boolean; supervision: string }>(
+    `select sub_friendly, safety_notes ->> 'supervision' as supervision
+     from public.library_items where id = $1`,
+    [itemId],
+  );
+  expect(row).toEqual({ sub_friendly: false, supervision: 'close' });
+});
+
+test('a result opened while choosing for a lesson keeps the lesson and the search', async ({
+  page,
+}) => {
+  const [lesson] = await query<{ id: string }>(
+    `select id from public.unit_lessons where unit_id = $1 and sequence_number = 4`,
+    [UNIT_FRA_3],
+  );
+  await login(page, DEMO.teacher3);
+  await page.goto(`/library?q=huard&attachTo=${lesson!.id}`);
+  await page
+    .getByRole('region', { name: 'Résultats' })
+    .getByRole('link', { name: HUARD, exact: true })
+    .click();
+  await page.waitForURL(
+    new RegExp(`/library/items/[0-9a-f-]{36}\\?q=huard&attachTo=${lesson!.id}$`),
+  );
+  await expect(page.getByTestId('attach-banner')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Retour aux résultats' })).toHaveAttribute(
+    'href',
+    `/library?q=huard&attachTo=${lesson!.id}`,
+  );
+  await expectAccessible(page);
+  await page.getByRole('button', { name: `Joindre « ${HUARD} » à cette leçon` }).click();
+  await expect(page.getByText('Jointe à la leçon 4.')).toBeVisible();
+  await page.waitForURL(new RegExp(`/classes/${SEED.class3}/planning/${UNIT_FRA_3}`));
+  await expect(
+    page.getByRole('main').locator('ol > li').nth(3).getByTestId('lesson-resource-chip'),
+  ).toContainText(HUARD);
+  await query(`update public.unit_lessons set library_item_id = null where id = $1`, [lesson!.id]);
 });

@@ -1,10 +1,10 @@
 # Handoff
 
 Written 2026-09-28 by the session that built Phases 1 and 2 (branch `claude/nifty-fermat-8hhl1l`);
-updated 2026-09-29 by the session that built Phase 3 (branch `claude/serene-ride-3n2fa1`). Read
-`SPEC.md` and `DECISIONS.md` first; this file covers what they don't: the conversation with Mike,
-the current state, how to run things in these containers, and what's next. Phase notes:
-`docs/phase-1.md`, `docs/phase-2.md`, `docs/phase-3.md`.
+updated 2026-09-29 by the session that built Phases 3 and 4 (branch `claude/serene-ride-3n2fa1`).
+Read `SPEC.md` and `DECISIONS.md` first; this file covers what they don't: the conversation with
+Mike, the current state, how to run things in these containers, and what's next. Phase notes:
+`docs/phase-1.md`, `docs/phase-2.md`, `docs/phase-3.md`, `docs/phase-4.md`.
 
 ## 1. The brief
 
@@ -56,8 +56,8 @@ Ardoise). No availability or trademark check has been done yet.
 - [Vickrx7/schoolapp#1](https://github.com/Vickrx7/schoolapp/pull/1) (draft, branch
   `claude/nifty-fermat-8hhl1l`): Phases 1 and 2. Not merged; no reviews.
 - [Vickrx7/schoolapp#2](https://github.com/Vickrx7/schoolapp/pull/2) (draft, branch
-  `claude/serene-ride-3n2fa1`, stacked on #1): the Phase 2 hardening and Phase 3. Once #1 is
-  merged, retarget #2 to `main`. Phases 4 and 5 are planned to land on the same PR.
+  `claude/serene-ride-3n2fa1`, stacked on #1): the Phase 2 hardening, Phase 3 and Phase 4. Once
+  #1 is merged, retarget #2 to `main`. Phase 5 is planned to land on the same PR.
 
 **Commits on #2:**
 
@@ -72,11 +72,21 @@ Ardoise). No availability or trademark check has been done yet.
 | `36c5b91` | Office account kept in French for the browser tests (CI fix)                          |
 | `21f9ba6` | The substitute's report, the teacher's confirmation, PDFs                             |
 | `edd830b` | Phase 3b: « Consignes détaillées (IA) » and the students' activity sheets             |
-| (latest)  | Phase 3 hardening (26 review findings) and the Phase 3 docs, decisions D-047 to D-060 |
+| `31412d8` | Phase 3 hardening (26 review findings) and the Phase 3 docs, decisions D-047 to D-060 |
+| `6f29480` | Phase 3 tests: ending the day unsent, step undo, the editor staying open              |
+| `8230bb1` | Phase 4 head start: `@lynx/content` and the 29 demo resources (merged branches)       |
+| `5200997` | Phase 4 database: saving, review, sharing, board approval; D-061 to D-081             |
+| `166483b` | Library item page, printing, the demo seed and the curriculum import                  |
+| `b1cdcbe` | Library search, browsing by attente and PDFs (and a PDF font fix for all PDFs)        |
+| `c871b45` | Marketing: bilingual landing page, board fact sheet, promo script v2 (and 2 fixes)    |
+| `ebe1a8f` | Writing, review, sharing, planning and AI generation of library resources             |
+| `703da28` | Substitute plans use reviewed library resources                                       |
+| (latest)  | Phase 4 hardening (30 review findings) and the Phase 4 docs                           |
 
-**Verified (locally, from an empty database, and in CI on each pushed commit):** 407 unit tests,
-609 pgTAP tests, 34 integration tests, 43 Playwright tests (desktop and phone, axe on every
-Phase 3 page), lint, typecheck, format, generated DB types up to date, web build.
+**Verified (locally, from an empty database, and in CI on each pushed commit):** 690 unit tests,
+904 pgTAP tests, 50 integration tests, 71 Playwright tests (desktop and phone, axe on every
+Phase 3 and Phase 4 page), lint, typecheck, format, generated DB types up to date, the demo
+library seed up to date (`pnpm library:seed:check`), web build.
 
 **Phase 3 is complete** (3a and 3b; see `docs/phase-3.md`): absence button, plans built in the
 request and kept current by the worker, review and editing, release at 07:30, codes, the
@@ -89,12 +99,27 @@ report confirmation against the version shown, request ids tied to their dates, 
 absences, plans rebuilt from stale sources, the day's access following the codes issued;
 screens: the phone bar, 44 px targets, drafts, French `lang` on plan content, and more).
 
-**Not verified:** nothing has been sent to the real Claude API (neither « Texte différencié » nor
-« Consignes détaillées »): `ANTHROPIC_API_KEY` is not set in this environment. No hosted
-deployment exists; the reverse proxy and the portal role's password are deployment steps
-written in `docs/phase-3.md`.
+**Phase 4 is complete** (see `docs/phase-4.md`): « Banque de ressources » with search in French
+and filters, browsing by attente, 25 resource types with one editor, the review workflow with
+reviewers designated by the board (content and faith), sharing with a first-name check, print
+and PDF (student sheet and teacher copy apart, never a level name, never a key on a student
+sheet), attaching a resource to a lesson, AI generation and level versions (fake provider only),
+substitute plans that use reviewed resources, 29 original demo resources and the curriculum
+import tool. A review of the build found 30 problems; all are fixed with tests in the latest
+commit (governance: faith content could stay on the whole board after an edit, AI level versions
+reached colleagues unreviewed, an author who left the board could still widen sharing; plans: a
+lesson's own resource could be taken by an earlier lesson, a hidden resource left its step;
+search: « 1000 » vs « 1 000 », « B1.2 » matched its siblings; screens: a reviewer's « Page
+introuvable » after sending back, a save silently withdrawing a request, saved texts unreachable
+without the Library module, the phone filter sheet losing focus, the question editor's undo and
+focus, `lang` on English labels, 44 px targets, English and French copy, and more).
 
-**Half-built:** nothing. Phase 4 (library core) has not started; its tables exist (Phase 1).
+**Not verified:** nothing has been sent to the real Claude API (« Texte différencié »,
+« Consignes détaillées », « Créer avec l'IA », « Créer les versions manquantes »):
+`ANTHROPIC_API_KEY` is not set in this environment. No hosted deployment exists; the reverse
+proxy and the portal role's password are deployment steps written in `docs/phase-3.md`.
+
+**Half-built:** nothing. Phase 5 (class mode) has not started; Phase 4 left its hooks (D-081).
 
 **Other deliverables:**
 
@@ -102,8 +127,11 @@ written in `docs/phase-3.md`.
   French version (voice `ff_siwis`, which has a France-French accent). Sources in
   `marketing/promo/` (rebuild steps in its README; models, venv and videos are git-ignored). The
   sick-day plan is labelled « Bientôt » there: it now exists.
-- **Screenshots:** Phase 1 screens in `marketing/promo/screens/`. None of Phases 2 and 3 are kept;
+- **Screenshots:** Phase 1 screens in `marketing/promo/screens/`. None of Phases 2 to 4 are kept;
   retake them from the running app if needed.
+- **Marketing site and board fact sheet** (`marketing/site`, `marketing/one-pager`, promo script
+  v2): they claim only what ships and still label the library « En construction ». Update that
+  once Mike has seen Phase 4.
 
 ## 3. How to run it (in these containers)
 
@@ -123,6 +151,7 @@ tools/lite-stack/stack.sh test             # pgTAP (needs pg_prove; was preinsta
 SUB_PORTAL_DATABASE_URL=postgresql://lynx_sub_portal:lynx-sub-portal-local-only@127.0.0.1:54322/postgres \
   pnpm test:int                            # integration (worker stopped; needs DATABASE_URL)
 pnpm db:types:direct                       # regenerate types (needs DATABASE_URL, else it tries :5432)
+pnpm library:seed:check                    # the demo library seed matches content/library/demo
 
 pnpm --filter @lynx/web build
 (cd apps/worker && set -a && . ../web/.env.local; set +a && \
@@ -168,7 +197,7 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   local password again. `pnpm test:int` also needs `SUB_PORTAL_DATABASE_URL` (in `.env.example`).
 - **Migrations are applied once.** The lite stack does not re-apply an edited migration: after
   editing one that is not committed yet, `stack.sh reset`. Never edit a committed migration; add
-  a new one (the latest is `20261015090100_library_search.sql`, pgTAP file `17`).
+  a new one (the latest is `20261015090400_library_review_fixes.sql`, pgTAP file `19`).
 - **Seeds come in two parts.** `supabase/seed.sql`, then `supabase/seeds/*.sql` by name
   (`config.toml` `sql_paths` for the CLI, `cmd_seed` in `stack.sh`). `seeds/20_library_demo.sql`
   is generated from `content/library/demo`: after changing the pack, run `pnpm library:seed`
@@ -176,6 +205,13 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
 - **Phase 3 browser tests** need the worker (`AI_PROVIDER=fake`) for the refresh and AI
   scenarios, move code windows around the real clock (`e2e/db.ts` `openCodeWindow`) and clean up
   after themselves; `e2e/mobile.spec.ts` briefly gives Isabelle a vice-principal role.
+- **Phase 4 browser tests** title their resources `e2ePrefix()` (« E2E-… » in base 36: a
+  13-digit timestamp reads as an identification number to the privacy guard) and delete them;
+  `differentiate.spec.ts` briefly turns the school's Library module off, `library-ai.spec.ts`
+  turns AI on and puts it back. A result's link carries the search (`?q=…`), so wait for item
+  URLs with the query.
+- **Library reviewers** come from `seed.sql` (Nathalie Roy, content and faith); on a real board
+  nobody reviews until `pnpm admin set-library-reviewer` (docs/phase-4.md).
 - **PDF fonts are warmed once per server process.** The PDF library keeps one glyph per letter
   for the life of the process, so an accented capital in one PDF could drop the plain letter from
   later ones, and a ligature could split words. Every render in `server/pdf/render.ts` calls
@@ -264,17 +300,23 @@ Where an item is already in `DECISIONS.md`, the D-number is given. Don't add dup
 
 ## 6. Next steps (in order)
 
-1. **Show Mike Phase 3** with a short summary and the three questions in `docs/phase-3.md` (we
-   built on the recommended answers: office prints plans with first names, substitutes see alerts
-   on screen, AI instructions are optional with a preview). Update PR #2's description.
+1. **Show Mike Phases 3 and 4** with a short summary each: the three questions in
+   `docs/phase-3.md` and the six in `docs/phase-4.md` (we built on the recommended answers:
+   reviewers named by the board, school and board sharing before approval with faith content
+   faith-reviewed first, AI may draft faith reflections, AI level versions by default, 29 demo
+   resources shown to pilot teachers; who owns shared content is still open). Update PR #2's
+   description.
 2. **Real-API evaluation**, once `ANTHROPIC_API_KEY` is set and Mike agrees: `pnpm ai:eval --yes`
-   (11 cases, about $1.60) and `pnpm ai:eval --feature sub_plan --yes` (11 cases, about $2).
-   Reports go to `packages/ai/eval-results/` (git-ignored): send them to Mike. Propose prompt
-   changes first; never edit a used prompt version (add `v2`).
+   (11 cases, about $1.60), `pnpm ai:eval --feature sub_plan --yes` (11 cases, about $2), then
+   one library case alone (`pnpm ai:eval --feature library_item --case quiz-5e --yes`, under $1)
+   before `--feature library_item` and `--feature library_levels` (about $3–5 together). Reports
+   go to `packages/ai/eval-results/` (git-ignored): send them to Mike. Propose prompt changes
+   first; never edit a used prompt version (add `v2`).
 3. **Get PRs #1 and #2 reviewed and merged.**
-4. **Test with a real teacher and a real substitute** (`docs/phase-3.md`, « What to test »).
-5. **Phase 4 (library core).** Present a short plan and questions to Mike before building.
-   Library items then fill the gaps in substitute plans (D-052).
+4. **Test with real teachers and a real substitute** (`docs/phase-3.md` and `docs/phase-4.md`,
+   « What to test »), including a teacher reading five demo resources for Ontario French.
+5. **Phase 5 (class mode, quiz battles, « Essayer comme les élèves », remix, ratings).** Present a
+   short plan and questions to Mike before building; Phase 4 left the hooks (D-081).
 6. **Hosted beta**, when Mike provides the accounts: Supabase in Canada Central, web and worker
    in a Canadian region, real SMTP, secrets (including the portal role's password and the code
    keys), a reverse proxy set up as `docs/phase-3.md` says, and a zero-data-retention request to
@@ -310,10 +352,19 @@ Where an item is already in `DECISIONS.md`, the D-number is given. Don't add dup
 - **Clicks before hydration** can be lost in browser tests on a slow CI runner; specs retry with
   `expect(...).toPass()`.
 - **Deleting a level in use is refused** with a message suggesting to turn it off.
+- **Library readiness is checked twice:** the database checks what is present; the content schema
+  and the key's completeness are checked by the app. An API caller could mark reviewed a resource
+  whose content fails the schema; the renderer copes (D-067).
+- **The library's first-name check knows the teacher's own students only;** faith content relies
+  on the author's box, the keyword suggestion and reviewers' flag (docs/phase-4.md).
+- **Who owns shared resources is open** (Phase 4 question 5): licences are empty.
+- **Office staff can read shared resources' answer keys through the API** (not personal data; no
+  library screens).
 
-**Waiting on Mike:** the three Phase 3 questions; the product name; the hosted beta accounts; the
-zero-data-retention request; OK on the budget pooling nuance; whether the France-French promo
-voice is fine; the real-API evaluation go-ahead; the Phase 4 plan; whether to turn on the API's
+**Waiting on Mike:** the three Phase 3 questions; the six Phase 4 questions (above all who owns
+shared content, and who reviews for a pilot board); the product name; the hosted beta accounts;
+the zero-data-retention request; OK on the budget pooling nuance; whether the France-French promo
+voice is fine; the real-API evaluation go-ahead; the Phase 5 plan; whether to turn on the API's
 server-side refusal fallbacks (a beta; it brings in a second model and its price, D-045).
 
 ## 7. Starting a new session
@@ -321,7 +372,7 @@ server-side refusal fallbacks (a beta; it brings in a second model and its price
 Paste something like this (adjust the task):
 
 ```
-Continue the school app project (Vickrx7/schoolapp) on branch claude/serene-ride-3n2fa1 (draft PR #2, stacked on #1). Read docs/HANDOFF.md, SPEC.md, DECISIONS.md and docs/phase-3.md first.
+Continue the school app project (Vickrx7/schoolapp) on branch claude/serene-ride-3n2fa1 (draft PR #2, stacked on #1). Read docs/HANDOFF.md, SPEC.md, DECISIONS.md, docs/phase-3.md and docs/phase-4.md first.
 
-Phase 3 (substitute hand-off) is done and CI is green. Next: present the Phase 4 (library core) plan and questions to me before building. Never print or commit ANTHROPIC_API_KEY.
+Phases 3 (substitute hand-off) and 4 (library core) are done and CI is green. Next: present the Phase 5 (class mode) plan and questions to me before building. Never print or commit ANTHROPIC_API_KEY.
 ```

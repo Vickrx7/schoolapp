@@ -6,14 +6,17 @@ import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { z } from 'zod';
 import { AnswerKeyReveal } from '@/components/library/answer-key-reveal';
+import { AttachToLessonButton } from '@/components/library/attach-to-lesson-button';
 import { DocView } from '@/components/library/doc-view';
 import { ItemDetails } from '@/components/library/item-details';
 import { ItemHeader } from '@/components/library/item-header';
 import { isItemTab, type ItemTab } from '@/components/library/item-tabs';
 import { ItemViewer } from '@/components/library/item-viewer';
+import { SavedTextActions } from '@/components/library/saved-text-actions';
 import { LevelsAiSlot } from '@/components/library/slots/levels-ai-slot';
 import { PdfSlot } from '@/components/library/slots/pdf-slot';
 import { PlanningSlot } from '@/components/library/slots/planning-slot';
+import { ResultsBannerSlot } from '@/components/library/slots/results-banner-slot';
 import { WorkflowSlot } from '@/components/library/slots/workflow-slot';
 import type { VersionChoice } from '@/components/library/version-picker';
 import { Notice } from '@/components/ui/card';
@@ -23,13 +26,16 @@ import {
   type StudentVersionDocs,
   type TeacherVersionDocs,
 } from '@/server/library/item-docs';
-import { printHref } from '@/server/library/view-model';
+import { libraryHref, parseLibrarySearch, showsResults } from '@/server/library/search-params';
+import { isSavedDifferentiation, printHref } from '@/server/library/view-model';
 import { loadItemKeys, loadLibraryItem } from '@/server/queries/library';
-import { getSession, requireSession, showLibrary } from '@/server/session';
+import { loadAttachTarget } from '@/server/queries/library-search';
+import { aiSchools, getSession, requireSession, showLibrary } from '@/server/session';
 
 type Props = {
   params: Promise<{ itemId: string }>;
-  searchParams: Promise<{ v?: string | string[]; tab?: string | string[] }>;
+  /** `v` and `tab`, plus the search the item was found with (`itemHref`). */
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
 const first = (value: string | string[] | undefined) => (Array.isArray(value) ? value[0] : value);
@@ -80,16 +86,21 @@ function PartialNotice() {
  * (row level security; not found otherwise), with its versions, « Pour les élèves » (never a
  * key or a teacher note), « Guide et corrigé » (the key collapsed until asked for) and
  * « Détails ». Library screens need a library school or a reviewer designation (D-078); office
- * staff have none.
+ * staff have none. A teacher without them still opens, prints and deletes her own texts saved
+ * from « Texte différencié » (D-073), with nothing else of the library.
+ *
+ * Opened from the results, the page carries their search: « Retour aux résultats » goes back
+ * to them, and while a resource is chosen for a lesson it offers « Joindre à cette leçon ».
  */
 export default async function LibraryItemPage({ params, searchParams }: Props) {
   const session = await requireSession();
-  if (!showLibrary(session)) notFound();
+  const library = showLibrary(session);
+  if (!library && aiSchools(session).length === 0) notFound();
   const { itemId } = await params;
   if (!z.uuid().safeParse(itemId).success) notFound();
   const locale = await getLocale();
   const item = await loadLibraryItem(itemId, session, locale);
-  if (!item) notFound();
+  if (!item || (!library && !isSavedDifferentiation(item))) notFound();
 
   const [t, format, keys, query] = await Promise.all([
     getTranslations('libraryItem'),
@@ -102,6 +113,14 @@ export default async function LibraryItemPage({ params, searchParams }: Props) {
   ]);
 
   const hasStudentSheet = TYPE_INFO[item.type].audience !== 'teacher';
+  const search = parseLibrarySearch(query);
+  const fromResults = library && showsResults(search);
+  const attachTarget = library && search.attachTo ? await loadAttachTarget(search.attachTo) : null;
+  const back = !library
+    ? { href: '/differentiate', label: t('backToDifferentiate') }
+    : fromResults
+      ? { href: libraryHref(search), label: t('backToResults') }
+      : undefined;
   const wantedVersion = first(query.v);
   const initialVersionId =
     item.versions.find((v) => v.id === wantedVersion)?.id ?? item.versions[0]?.id ?? '';
@@ -149,7 +168,14 @@ export default async function LibraryItemPage({ params, searchParams }: Props) {
 
   return (
     <div className="space-y-5">
-      <ItemHeader item={item} />
+      <ItemHeader item={item} back={back} editable={library && item.canEdit} />
+
+      {attachTarget ? (
+        <div className="space-y-2 print:hidden">
+          <ResultsBannerSlot attachTo={attachTarget} />
+          <AttachToLessonButton itemId={item.id} itemTitle={item.title} target={attachTarget} />
+        </div>
+      ) : null}
 
       {item.source === 'ai_generated' && item.status === 'draft' && item.mine ? (
         <Notice>{t('aiDraft')}</Notice>
@@ -164,7 +190,7 @@ export default async function LibraryItemPage({ params, searchParams }: Props) {
         <Notice>{t('awaiting', { date: date(item.review.requestedAt) })}</Notice>
       ) : null}
 
-      <WorkflowSlot item={item} />
+      {library ? <WorkflowSlot item={item} /> : <SavedTextActions itemId={item.id} />}
 
       {item.versions.length ? (
         <ItemViewer
@@ -177,8 +203,8 @@ export default async function LibraryItemPage({ params, searchParams }: Props) {
           details={<ItemDetails item={item} />}
           printLinks={printLinks}
           versionActions={versionActions}
-          belowPicker={<LevelsAiSlot item={item} />}
-          actions={<PlanningSlot item={item} />}
+          belowPicker={library ? <LevelsAiSlot item={item} /> : null}
+          actions={library ? <PlanningSlot item={item} /> : null}
         />
       ) : (
         // Every item has a base version; if none can be read, the details still can.

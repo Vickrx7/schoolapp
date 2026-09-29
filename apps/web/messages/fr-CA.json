@@ -502,6 +502,7 @@
       "address": "Adresse",
       "birthDate": "Date de naissance"
     },
+    "blockedItem": "{kind} : <code>{match}</code>",
     "send": "Envoyer à l’IA",
     "sending": "Envoi…",
     "editText": "Modifier le texte",
@@ -1251,6 +1252,8 @@
   "libraryItem": {
     "title": "Fiche de la ressource",
     "back": "Banque de ressources",
+    "backToResults": "Retour aux résultats",
+    "backToDifferentiate": "Texte différencié",
     "tabs": {
       "label": "Contenu de la ressource",
       "student": "Pour les élèves",
@@ -1371,8 +1374,9 @@
       "openCount": "Filtres ({count})",
       "title": "Filtres",
       "close": "Fermer",
-      "show": "{count, plural, =0 {Aucune ressource} one {Voir # ressource} other {Voir les # ressources}}",
+      "show": "{count, plural, =0 {Voir les résultats (aucun)} one {Voir # ressource} other {Voir les # ressources}}",
       "clear": "Effacer les filtres",
+      "leftResults": "Filtres effacés : retour à la banque de ressources.",
       "grade": "Année d’études",
       "anyGrade": "Toutes les années",
       "subject": "Matière",
@@ -1453,6 +1457,9 @@
     "recoverDraft": "Récupérer mes changements",
     "reviewedNotice": "Cette ressource est révisée : elle doit rester complète pour être enregistrée. Pour l’enregistrer incomplète, remettez-la d’abord en brouillon.",
     "sharedNotice": "Cette ressource est partagée : les prénoms d’élèves trouvés dans le texte vous seront signalés avant l’enregistrement.",
+    "requestedNotice": "Cette ressource est en attente d’approbation : l’enregistrer retire la demande. Vous pourrez la proposer de nouveau au conseil.",
+    "faithReviewedNotice": "Le contenu de foi de cette ressource a été révisé : après une modification, il devra être révisé de nouveau.",
+    "boardFaithNotice": "Cette ressource est partagée avec tout le conseil et contient du contenu de foi : après une modification, elle sera partagée avec votre école seulement (ou redeviendra privée) jusqu’à la révision de son contenu de foi.",
     "save": {
       "save": "Enregistrer",
       "view": "Voir la ressource",
@@ -1894,6 +1901,8 @@
       "newKind": "Type de la prochaine question",
       "add": "Ajouter une question",
       "numbered": "Question {n}",
+      "kindChanged": "{name} : type de question changé.",
+      "removed": "{name} retirée.",
       "kind": "{name} : type de question",
       "prompt": "Énoncé",
       "hint": "Indice (facultatif)",
@@ -2162,6 +2171,10 @@
       "unpairedLeft": "Chaque élément doit avoir sa correspondance.",
       "notPermutation": "L’ordre du corrigé ne correspond pas aux éléments à mettre en ordre.",
       "orderGivesAnswer": "L’ordre affiché aux élèves donnerait la réponse."
+    },
+    "confirmSave": {
+      "title": "Enregistrer les modifications?",
+      "confirm": "Enregistrer quand même"
     }
   },
   "libraryReview": {
@@ -2191,6 +2204,7 @@
       "rejectIntro": "La ressource redevient privée et « À retravailler », avec votre note.",
       "rejected": "Ressource renvoyée pour révision.",
       "ownItem": "Vous ne pouvez pas approuver une ressource que vous avez créée.",
+      "ownItemHint": "Vous avez créé cette ressource : une autre personne désignée l’approuvera ou la renverra. Pour la modifier, utilisez d’abord « Retirer la demande ».",
       "faithPending": "En attente de la révision du contenu de foi",
       "notReady": "La ressource n’est pas complète pour l’approbation (voir la liste).",
       "faithTitle": "Contenu de foi",
@@ -2255,7 +2269,7 @@
       "back": "Retour à la planification"
     },
     "lessonRow": {
-      "chip": "Ressource",
+      "chipTitle": "Ressource : <name>{title}</name>",
       "hidden": "Ressource non disponible",
       "detach": "Retirer la ressource",
       "detachNamed": "Retirer la ressource de la leçon {n}",
@@ -2293,7 +2307,7 @@
       "levels": "Niveaux",
       "withLevels": "Créer aussi une version par niveau",
       "withLevelsHint": "Plus long à préparer : l’IA écrit une version pour chaque niveau choisi, avec la même intention d’apprentissage.",
-      "personalLevel": "à moi",
+      "personalLevel": "niveau personnel",
       "faithGroup": "Foi",
       "faith": "Ajouter un lien avec la foi",
       "faithForced": "Une réflexion catholique a toujours un lien avec la foi.",
@@ -2309,7 +2323,7 @@
     },
     "referenceTypes": {
       "virtue": "vertu",
-      "graduate_expectation": "attente du diplômé",
+      "graduate_expectation": "attente de l’élève diplômé·e",
       "reflection": "réflexion",
       "prayer": "prière",
       "scripture": "Écriture sainte"
@@ -2331,6 +2345,7 @@
       "button": "Créer les versions manquantes avec l’IA",
       "title": "Créer les versions manquantes",
       "intro": "À partir de la version de base, l’IA écrit une version pour chaque niveau choisi, avec la même intention d’apprentissage. Vous pourrez ensuite la relire et la modifier.",
+      "backToDraft": "Cette ressource est révisée : quand les versions arriveront, elle redeviendra un brouillon privé, pour que vous les relisiez avant que quelqu’un d’autre les utilise. Marquez-la ensuite révisée et partagez-la de nouveau.",
       "levels": "Niveaux sans version",
       "hint": "Plus il y a de niveaux, plus la préparation est longue.",
       "previewIntro": "Voici exactement ce qui sera envoyé : la version de base et son corrigé, sans les noms des élèves et du personnel."
@@ -2352,6 +2367,8 @@
       "workingHint": "Vous pouvez quitter cette page : la ressource vous attendra dans « Mes ressources ».",
       "levelsWorking": "L’IA prépare les versions par niveau (quelques minutes).",
       "levelsWorkingHint": "Vous pouvez quitter cette page : les versions s’ajouteront à la ressource.",
+      "tooLongHint": "Le service d’IA est peut-être occupé ou arrêté. Votre demande n’est pas perdue : revenez plus tard ou reprenez-la.",
+      "levelsTooLongHint": "Le service d’IA est peut-être occupé ou arrêté. La ressource n’a pas changé : revenez plus tard ou demandez les versions de nouveau à partir de la ressource.",
       "failed": "La ressource n’a pas pu être préparée.",
       "levelsFailed": "Les versions par niveau n’ont pas pu être préparées.",
       "failedKept": "Votre demande n’est pas perdue : vous pouvez la reprendre.",

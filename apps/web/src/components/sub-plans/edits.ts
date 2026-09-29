@@ -4,12 +4,14 @@
  * for: it applies only while the block keeps that lesson, and is never lost when the plan is
  * rebuilt.
  */
-import type {
-  ComposedBlock,
-  DetachedEdit,
-  SubPlanBlockEdit,
-  SubPlanEdits,
-  SubPlanStepEdit,
+import {
+  insertLibraryStep,
+  libraryStepText,
+  type ComposedBlock,
+  type DetachedEdit,
+  type SubPlanBlockEdit,
+  type SubPlanEdits,
+  type SubPlanStepEdit,
 } from '@lynx/domain';
 
 export const MAX_STEPS = 12;
@@ -62,11 +64,32 @@ export function setBlockNote(edits: SubPlanEdits, block: Block, note: string): S
 /**
  * « Ne pas utiliser cette ressource » (true) and « Utiliser cette ressource » (false): the
  * block's library resource is hidden for everyone, for the lesson the block has now (D-077).
+ * The resource's step (« Distribuez … ») follows it in her own steps too: hiding takes it out,
+ * and bringing the resource back puts it before her main step if she wrote her steps while it
+ * was hidden (unless her list is full).
  */
-export function setHideLibrary(edits: SubPlanEdits, block: Block, hide: boolean): SubPlanEdits {
+export function setHideLibrary(
+  edits: SubPlanEdits,
+  block: Block & Pick<ComposedBlock, 'library' | 'hiddenLibrary'>,
+  hide: boolean,
+): SubPlanEdits {
   const edit: SubPlanBlockEdit = { ...currentEdit(edits, block) };
-  if (hide) edit.hideLibrary = true;
-  else delete edit.hideLibrary;
+  if (hide) {
+    edit.hideLibrary = true;
+    const step = block.library ? libraryStepText(block.library) : null;
+    if (edit.steps && step) edit.steps = edit.steps.filter((s) => s.text !== step);
+  } else {
+    delete edit.hideLibrary;
+    const step = block.hiddenLibrary?.stepText;
+    if (
+      edit.steps &&
+      step &&
+      edit.steps.length < MAX_STEPS &&
+      !edit.steps.some((s) => s.text === step)
+    ) {
+      edit.steps = insertLibraryStep(edit.steps, { minutes: null, text: step });
+    }
+  }
   const empty = !edit.steps && edit.teacherNote === undefined && !edit.hideLibrary;
   return withBlock(edits, block.key, empty ? null : edit);
 }

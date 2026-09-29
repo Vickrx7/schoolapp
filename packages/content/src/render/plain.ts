@@ -69,6 +69,8 @@ function leafToText(block: LeafBlock): string {
     }
     case 'poem':
       return [block.title, ...block.lines].filter(Boolean).join('\n');
+    case 'nameLine':
+      return block.labels.map((label) => labelled(label, '________________')).join('   ');
   }
 }
 

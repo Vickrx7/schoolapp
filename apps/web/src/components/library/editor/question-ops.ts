@@ -53,6 +53,16 @@ export function replaceAt<T>(list: readonly T[], index: number, value: T): T[] {
   return list.map((item, i) => (i === index ? value : item));
 }
 
+/**
+ * « Annuler » after removing an element: `item` back at `index` in the list as it is now (later
+ * changes kept), or at the end if the list got shorter; nothing when the list is full again.
+ */
+export function insertAt<T>(list: readonly T[], index: number, item: T, max: number): T[] {
+  if (list.length >= max) return [...list];
+  const at = Math.min(Math.max(index, 0), list.length);
+  return [...list.slice(0, at), item, ...list.slice(at)];
+}
+
 /** The kinds a question list offers: riddles are short answers only. */
 export function kindsFor(shortAnswerOnly: boolean): readonly QuestionKind[] {
   return shortAnswerOnly ? ['short_answer'] : QUESTION_KINDS;
@@ -144,6 +154,23 @@ export function changeKind(q: AuthoringQuestion, kind: QuestionKind): AuthoringQ
     default:
       return { ...fresh, ...common };
   }
+}
+
+/**
+ * The question as it was under an earlier type (`before`), with what every type shares (prompt,
+ * hint, points, category, explanation) as it is now: switching back to a type the question had
+ * brings its answers back instead of starting them again.
+ */
+export function withKind(q: AuthoringQuestion, before: AuthoringQuestion): AuthoringQuestion {
+  return {
+    ...before,
+    id: q.id,
+    prompt: q.prompt,
+    hint: q.hint,
+    points: q.points,
+    category: q.category,
+    explanation: q.explanation,
+  };
 }
 
 // ---------------------------------------------------------------------------------------
@@ -305,6 +332,13 @@ export function setAcceptable(q: ShortAnswer, index: number, text: string): Shor
 
 export function removeAcceptable(q: ShortAnswer, index: number): ShortAnswer {
   return { ...q, acceptableAnswers: removeAt(q.acceptableAnswers, index) };
+}
+
+/** The whole number typed, or null when the field is empty or holds no number. */
+export function parseWhole(raw: string): number | null {
+  if (raw.trim() === '') return null;
+  const n = Math.round(Number(raw));
+  return Number.isFinite(n) ? n : null;
 }
 
 /** A whole number within `limits`, or null when the field was emptied. */

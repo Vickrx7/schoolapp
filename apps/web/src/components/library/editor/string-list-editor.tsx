@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { fieldId, useEditorErrors } from './editor-errors';
 import { AddButton, ItemControls } from './list-controls';
 import { move, removeAt, replaceAt } from './question-ops';
+import { useRowKeys } from './row-keys';
 
 /**
  * A list of short texts (success criteria, steps, hints…): one field per element, each with its
@@ -38,6 +39,7 @@ export function StringListEditor({
   max?: number;
   maxLength?: number;
   multiline?: boolean;
+  /** The language of what is typed (content, `fr-CA` by default); labels stay in the UI's. */
   lang?: string;
   hint?: string;
 }) {
@@ -45,8 +47,9 @@ export function StringListEditor({
   const errors = useEditorErrors();
   const one = itemLabel ?? t('item');
   const listError = errors.at(path);
+  const rows = useRowKeys(items.length);
   return (
-    <fieldset className="space-y-2" lang={lang}>
+    <fieldset className="space-y-2">
       <legend className="text-sm font-medium text-slate-700">{label}</legend>
       {hint ? <p className="text-sm text-slate-500">{hint}</p> : null}
       {items.length ? (
@@ -57,10 +60,11 @@ export function StringListEditor({
             const error = errors.at(itemPath);
             const Control = multiline ? Textarea : Input;
             return (
-              <li key={i} className="flex items-start gap-1">
+              <li key={rows.keys[i] ?? i} className="flex items-start gap-1">
                 <div className="min-w-0 flex-1 space-y-1">
                   <Control
                     id={fieldId(itemPath)}
+                    lang={lang ?? 'fr-CA'}
                     aria-label={name}
                     aria-invalid={error ? true : undefined}
                     value={text}
@@ -78,8 +82,14 @@ export function StringListEditor({
                   name={name}
                   index={i}
                   count={items.length}
-                  onMove={(direction) => onChange(move(items, i, direction))}
-                  onRemove={() => onChange(removeAt(items, i))}
+                  onMove={(direction) => {
+                    rows.move(i, direction);
+                    onChange(move(items, i, direction));
+                  }}
+                  onRemove={() => {
+                    rows.remove(i);
+                    onChange(removeAt(items, i));
+                  }}
                 />
               </li>
             );

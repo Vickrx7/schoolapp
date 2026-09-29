@@ -151,7 +151,7 @@ export default async function MyLibraryPage({
                   <h3 className="text-base font-semibold text-slate-900">
                     <Link
                       href={`/library/items/${item.id}`}
-                      className="-my-1 block py-1 hover:text-brand-700 hover:underline"
+                      className="flex min-h-11 items-center hover:text-brand-700 hover:underline"
                     >
                       {item.title}
                     </Link>

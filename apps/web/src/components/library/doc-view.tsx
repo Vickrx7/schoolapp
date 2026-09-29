@@ -264,6 +264,17 @@ function Leaf({ block, level }: { block: LeafBlock; level: number }) {
       );
     case 'lines':
       return <WritingLines count={block.count} />;
+    case 'nameLine':
+      return (
+        <div className="flex flex-wrap gap-x-8 gap-y-2">
+          {block.labels.map((label, i) => (
+            <p key={i} className={cn('flex items-end gap-2', i === 0 ? 'min-w-56 flex-1' : 'w-44')}>
+              <span>{`${label}\u00a0:`}</span>
+              <span aria-hidden className="h-6 flex-1 border-b border-slate-400" />
+            </p>
+          ))}
+        </div>
+      );
     case 'callout':
       return (
         <div

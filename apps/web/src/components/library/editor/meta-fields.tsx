@@ -164,8 +164,9 @@ export function MetaFields({
           <input
             type="checkbox"
             className="size-5"
-            checked={form.subFriendly && subAllowed}
-            disabled={!subAllowed}
+            checked={form.subFriendly}
+            // Kept enabled while ticked, so a box the rules no longer allow can still be unticked.
+            disabled={!subAllowed && !form.subFriendly}
             aria-describedby={fieldId('subFriendly-hint')}
             onChange={(e) => patch({ subFriendly: e.target.checked })}
           />

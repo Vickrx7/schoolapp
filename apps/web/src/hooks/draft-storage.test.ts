@@ -7,6 +7,7 @@ import {
   forgetSentDrafts,
   removeDrafts,
   serializeDraft,
+  storeDraft,
 } from './draft-storage';
 
 /** A localStorage stand-in. */
@@ -66,6 +67,18 @@ describe('restoring drafts', () => {
     expect(decideDraft(raw, initial, { sentPolicy: status('succeeded') })).toEqual({
       kind: 'drop',
     });
+  });
+});
+
+describe('handing a draft to another form', () => {
+  it('keeps what was typed during a new resource’s first save as its edit page’s draft', () => {
+    const storage = memoryStorage();
+    const typed = { itemId: 'i1', form: { title: 'Le huard (suite)' } };
+    storeDraft('library-item:u1:i1', typed, { version: '1' }, storage);
+    const raw = storage.getItem(`${DRAFT_PREFIX}library-item:u1:i1`);
+    // The edit page opens revision 1: the draft is brought back as is.
+    const saved = { itemId: 'i1', form: { title: 'Le huard' } };
+    expect(decideDraft(raw, saved, { version: '1' })).toEqual({ kind: 'restore', value: typed });
   });
 });
 

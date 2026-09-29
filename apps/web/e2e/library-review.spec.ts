@@ -163,6 +163,12 @@ test('a resource sent back for rework shows the reviewer’s note to its author'
   await expectAccessible(page);
   await dialog.getByRole('button', { name: 'Renvoyer pour révision' }).click();
   await expect(page.getByText('Ressource renvoyée pour révision.')).toBeVisible();
+  // The item is private again, so she can no longer open it: she goes back to the queue, never
+  // to « Page introuvable ».
+  await expect(page).toHaveURL(/\/library\/review$/);
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Approbation des ressources' }),
+  ).toBeVisible();
   expect(await statusOf(itemId)).toMatchObject({
     status: 'rejected',
     share_scope: 'private',

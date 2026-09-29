@@ -70,6 +70,8 @@ export interface LibraryItemView {
   requested: boolean;
   /** The user wrote it. */
   mine: boolean;
+  /** The board's own item (`board_created`, no author), kept by its content reviewers. */
+  boardOwn: boolean;
   /** « Mme Tremblay »; null for the board's own items and authors the user cannot see. */
   authorName: string | null;
   subject: { id: string; code: string; label: string; labelFr: string } | null;
@@ -320,6 +322,19 @@ export function itemBadges(
 export type PrintDoc = 'student' | 'teacher';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * Her own text saved from « Texte différencié » (DECISIONS D-073, D-078): a teacher whose school
+ * has AI but not the Library module can still open it, print it, download it and delete it
+ * (Phase 2's saved texts), without the library's other screens and actions.
+ */
+export function isSavedDifferentiation(
+  item: Pick<LibraryItemView, 'mine' | 'source' | 'provenance'>,
+): boolean {
+  return (
+    item.mine && item.source === 'ai_generated' && item.provenance.aiFeature === 'differentiate'
+  );
+}
 
 /** The print page of an item for some of its versions (all of them when none are given). */
 export function printHref(itemId: string, doc: PrintDoc, versionIds: readonly string[] = []) {

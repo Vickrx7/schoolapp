@@ -14,7 +14,7 @@ import {
   rankLibraryCandidates,
   type LibraryChoiceInput,
 } from './library';
-import { subPlanEditsSchema, subPlanV1Schema, type SubPlanV1 } from './schema';
+import { subPlanEditsSchema, subPlanV1Schema, type SubPlanAiLayer, type SubPlanV1 } from './schema';
 import { subPlanSourcesSchema, type SubPlanSourceLibraryItem } from './sources';
 import {
   C3,
@@ -182,6 +182,31 @@ describe('choosing a resource (domain 3, 4)', () => {
     );
     expect(uses.filter((id) => id === HUARD)).toHaveLength(1);
     expect(uses).toContain(LESSON_PLAN);
+  });
+
+  it('keeps a lesson’s own resource for it when an earlier lesson shares its attente', () => {
+    // Lesson 5 (11 h 15) links the huard; lesson 4 (8 h 55) comes first and has the huard as
+    // its best candidate for their shared attente. Lesson 4 takes its next candidate instead.
+    const library: RawLibrary = isabelleLibrary();
+    library.lessonCandidates.push({
+      lessonId: lesson('fra3', 5),
+      candidates: [{ itemId: HUARD, reason: 'linked', overlap: 1 }],
+    });
+    const plan = build(library)[0]!.plan;
+    const first = plan.blocks.find((b) => b.key === frenchKey())!;
+    const second = plan.blocks.find((b) => b.key === block(C3, 4, '11:15'))!;
+    expect(second.lesson?.lessonId).toBe(lesson('fra3', 5));
+    expect(second.library).toMatchObject({ itemId: HUARD, reason: 'linked' });
+    expect(first.library).toMatchObject({ itemId: LESSON_PLAN, reason: 'expectation' });
+
+    // Only lessons the absence assigns keep a resource: lesson 6 (Friday) is not in this one.
+    const later: RawLibrary = isabelleLibrary();
+    later.lessonCandidates.push({
+      lessonId: lesson('fra3', 6),
+      candidates: [{ itemId: HUARD, reason: 'linked', overlap: 1 }],
+    });
+    const thursdayOnly = build(later)[0]!.plan;
+    expect(thursdayOnly.blocks.find((b) => b.key === frenchKey())?.library?.itemId).toBe(HUARD);
   });
 });
 
@@ -413,7 +438,9 @@ describe('hiding a resource (domain 9) and the AI request (domain 11)', () => {
       expect(JSON.stringify(composed)).not.toContain(HUARD_DEBUTANT);
       // Only the owner learns what was hidden, to bring it back.
       expect(block.hiddenLibrary).toEqual(
-        audience === 'owner' ? { itemId: HUARD, title: 'Le huard, oiseau des lacs' } : null,
+        audience === 'owner'
+          ? { itemId: HUARD, title: 'Le huard, oiseau des lacs', stepText: step }
+          : null,
       );
     }
     // Without the edit, everyone sees it.
@@ -422,6 +449,56 @@ describe('hiding a resource (domain 9) and the AI request (domain 11)', () => {
     expect(block.library?.itemId).toBe(HUARD);
     expect(block.steps.map((s) => s.text)).toContain(step);
     expect(block.hiddenLibrary).toBeNull();
+  });
+
+  it('takes its step out of the teacher’s own steps and the AI’s too', () => {
+    // She edited the steps first (the editor starts from the composed ones, step included).
+    const edited = subPlanEditsSchema.parse({
+      blocks: {
+        [frenchKey()]: {
+          forLessonId: lesson('fra3', 4),
+          hideLibrary: true,
+          steps: [
+            { minutes: 5, text: 'Rappel de la leçon.' },
+            { minutes: null, text: step },
+            { minutes: 30, text: 'Lecture en équipes.' },
+          ],
+        },
+      },
+    });
+    const composed = composeSubPlan(plan, { edits: edited, audience: 'substitute' });
+    expect(composed.blocks.find((b) => b.key === frenchKey())!.steps.map((s) => s.text)).toEqual([
+      'Rappel de la leçon.',
+      'Lecture en équipes.',
+    ]);
+
+    const ai: SubPlanAiLayer = {
+      jobId: 'job',
+      appliedAt: NOW.toISOString(),
+      refs: [{ key: 'B1', ref: { blockKey: frenchKey(), lessonId: lesson('fra3', 4) } }],
+      result: {
+        dayOverview: '',
+        blocks: [
+          {
+            key: 'B1',
+            overview: 'Aperçu',
+            steps: [
+              { minutes: 2, instruction: step, say: '' },
+              { minutes: 20, instruction: 'Lecture guidée.', say: '' },
+            ],
+            differentiation: [],
+            ifTimeRemains: '',
+            materialsChecklist: [],
+            activity: null,
+          },
+        ],
+        faithSentence: '',
+      },
+    };
+    const withAi = composeSubPlan(plan, { edits: hide, ai, audience: 'substitute' });
+    expect(withAi.blocks.find((b) => b.key === frenchKey())!.steps.map((s) => s.text)).toEqual([
+      'Lecture guidée.',
+    ]);
   });
 
   it('applies only while the block keeps its lesson, and shows no detached edit', () => {

@@ -24,5 +24,12 @@ export async function LevelsAiSlot({ item }: { item: LibraryItemView }) {
     .filter((l) => l.boardId === item.boardId && !l.personal && l.active && !have.has(l.id))
     .map((l) => ({ id: l.id, label: l.label }));
   if (!missing.length) return null;
-  return <LevelsAiButton itemId={item.id} schoolId={school.id} missing={missing} />;
+  return (
+    <LevelsAiButton
+      itemId={item.id}
+      schoolId={school.id}
+      missing={missing}
+      reviewed={item.status === 'teacher_reviewed'}
+    />
+  );
 }

@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/card';
 import { Field, Input, Select, Textarea } from '@/components/ui/field';
 import { fieldId, useEditorErrors } from './editor-errors';
 import { limitsOf } from './field-limits';
+import { NumberInput } from './number-input';
 import { ObjectListEditor } from './object-list-editor';
 import { QuestionListEditor } from './question-list-editor';
 import { RubricEditor, type RubricCriterion } from './rubric-editor';
@@ -96,13 +97,18 @@ export interface ContentFieldsProps {
   subjectCode: string | null;
   /** Every question id of the version (new questions get a fresh one). */
   questionIds: () => string[];
+  /**
+   * The language of what is typed here (`fr-CA`; `en-CA` in a family guide's English half). It
+   * goes on the fields themselves: labels, hints and buttons are in the interface's language.
+   */
+  lang?: 'fr-CA' | 'en-CA';
 }
 
 /**
  * « Contenu »: the fields of a type's content, driven by `EDITOR_SPEC` (@lynx/content), so every
  * type has its editor without a screen of its own. Teacher-only fields say so (they never reach
- * the student sheet). Content is French (`lang="fr-CA"`), except the English half of a family
- * guide.
+ * the student sheet). Content is French (`lang="fr-CA"` on each field), except the English half
+ * of a family guide.
  */
 export function ContentFields({
   type,
@@ -113,6 +119,7 @@ export function ContentFields({
   limitsPath,
   subjectCode,
   questionIds,
+  lang = 'fr-CA',
 }: ContentFieldsProps) {
   const t = useTranslations('libraryEdit');
   const errors = useEditorErrors();
@@ -136,6 +143,7 @@ export function ContentFields({
             label
           );
         const current = value[spec.path];
+        const fieldLang = spec.lang ?? lang;
 
         switch (spec.kind) {
           case 'text':
@@ -152,7 +160,7 @@ export function ContentFields({
               >
                 <Control
                   id={fieldId(fieldPath)}
-                  lang={spec.lang}
+                  lang={fieldLang}
                   value={asString(current)}
                   maxLength={spec.maxLength}
                   aria-invalid={error ? true : undefined}
@@ -173,21 +181,14 @@ export function ContentFields({
                 hint={hint}
                 error={error}
               >
-                <Input
+                <NumberInput
                   id={fieldId(fieldPath)}
-                  type="number"
-                  inputMode="numeric"
                   className="w-32"
-                  value={typeof current === 'number' ? current : ''}
+                  value={typeof current === 'number' ? current : null}
+                  min={1}
+                  nullable={spec.nullable}
                   aria-invalid={error ? true : undefined}
-                  onChange={(e) => {
-                    const raw = e.target.value.trim();
-                    const n = raw === '' ? null : Math.round(Number(raw));
-                    set(
-                      spec.path,
-                      n === null || !Number.isFinite(n) ? (spec.nullable ? null : 1) : n,
-                    );
-                  }}
+                  onValue={(n) => set(spec.path, n)}
                 />
               </Field>
             );
@@ -246,7 +247,7 @@ export function ContentFields({
                 max={limits.max}
                 maxLength={limits.itemMaxLength}
                 multiline={(limits.itemMaxLength ?? 0) > 300}
-                lang={spec.lang}
+                lang={fieldLang}
               />
             );
           case 'objectList': {
@@ -263,7 +264,6 @@ export function ContentFields({
                 path={fieldPath}
                 min={limits.min}
                 max={limits.max}
-                lang={spec.lang}
                 newItem={() => emptyRecord(fields)}
                 renderItem={(record, _i, change, itemPath) => (
                   <ContentFields
@@ -275,6 +275,7 @@ export function ContentFields({
                     limitsPath={limitsPath ? `${limitsPath}.${spec.path}` : spec.path}
                     subjectCode={subjectCode}
                     questionIds={questionIds}
+                    lang={fieldLang}
                   />
                 )}
               />
@@ -287,7 +288,6 @@ export function ContentFields({
               <fieldset
                 key={spec.path}
                 className="space-y-3 rounded-lg border border-slate-200 p-3"
-                lang={spec.lang}
               >
                 <legend className="px-1 text-sm font-medium text-slate-700">{label}</legend>
                 {hint ? <p className="text-sm text-slate-500">{hint}</p> : null}
@@ -314,6 +314,7 @@ export function ContentFields({
                     limitsPath={limitsPath ? `${limitsPath}.${spec.path}` : spec.path}
                     subjectCode={subjectCode}
                     questionIds={questionIds}
+                    lang={fieldLang}
                   />
                 ) : null}
                 {error ? (

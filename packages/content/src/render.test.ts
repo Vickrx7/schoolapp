@@ -202,6 +202,39 @@ describe('render', () => {
     }
   });
 
+  it('37b. a sheet students fill in starts with « Nom » and « Date », never a level', () => {
+    const writes = (blocks: DocBlock[]): boolean =>
+      blocks.some((b) =>
+        b.type === 'section' ? writes(b.blocks) : b.type === 'question' || b.type === 'lines',
+      );
+    let filled = 0;
+    for (const type of STUDENT_TYPES) {
+      const doc = renderStudentDoc(type, sampleCanonical(type).content, {
+        itemTitle: 'T',
+        number: 2,
+      })!;
+      const nameLines = doc.blocks.filter((b) => b.type === 'nameLine');
+      if (writes(doc.blocks)) {
+        filled += 1;
+        expect(doc.blocks[0], type).toEqual({ type: 'nameLine', labels: ['Nom', 'Date'] });
+        expect(nameLines, type).toHaveLength(1);
+      } else {
+        expect(nameLines, type).toEqual([]);
+      }
+    }
+    expect(filled).toBeGreaterThan(5);
+    const quiz = renderStudentDoc('quiz', sampleCanonical('quiz').content, {
+      itemTitle: 'Quiz',
+      number: 1,
+    })!;
+    const text = docToPlainText(quiz);
+    expect(text).toContain(`Nom${NBSP}: ________________   Date${NBSP}: ________________`);
+    expect(text).not.toMatch(/Débutant|Intermédiaire|Avancé|Enrichi|niveau/i);
+    // Teacher copies and answer keys have none.
+    const teacher = renderTeacherDoc({ itemTitle: 'T' }, 'quiz', sampleCanonical('quiz').content);
+    expect(teacher.blocks.some((b) => b.type === 'nameLine')).toBe(false);
+  });
+
   it('38. lesson phases follow the subject', () => {
     expect(lessonPhaseLabels('mat')).toEqual({
       opening: 'Mise en train',

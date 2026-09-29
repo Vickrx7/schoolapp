@@ -21,6 +21,7 @@ function view(type: LibraryItemType, over: Partial<LibraryItemView> = {}): Libra
     source: 'board_created',
     requested: false,
     mine: false,
+    boardOwn: true,
     authorName: null,
     subject: { id: 'mat', code: 'mat', label: 'Mathématiques', labelFr: 'Mathématiques' },
     grades: [{ code: '3', label: '3e année', labelFr: '3e année' }],

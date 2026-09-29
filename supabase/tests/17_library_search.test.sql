@@ -3,7 +3,7 @@
 -- DECISIONS D-065, D-068, D-069).
 begin;
 \ir _helpers.psql
-select plan(64);
+select plan(68);
 select tests.build_fixture();
 select tests.build_library_fixture();
 
@@ -412,6 +412,27 @@ select tests.authenticate_as('former_teacher');
 select throws_ok(
   $$select * from public.library_expectation_counts('3', (select id from public.subjects where code = 'fra' and board_id is null))$$,
   '42501', null, 'a deactivated user gets no counts');
+select tests.clear_authentication();
+
+-- ---------------------------------------------------------------------------------------
+-- 8. Numbers and curriculum codes as teachers type them (20261015090400_library_review_fixes.sql)
+-- ---------------------------------------------------------------------------------------
+
+select tests.search_item('n_mille', 'teacher_a_other', 'worksheet', 'teacher_reviewed', 'board',
+  'Ordonner des nombres jusqu’à 1 000', null, E'Compare 2 500 et 2 050.');
+-- Linked to the overall attente T1, with a 3 in its title: « T1.3 » split into words would find it.
+select tests.search_item('code_parent', 'teacher_a_other', 'game', 'teacher_reviewed', 'board',
+  'Jeu des 3 familles', 'exp_a_parent');
+
+select tests.authenticate_as('teacher_a');
+select is(tests.search_keys('{"q": "nombres 1000"}'), array['n_mille'],
+  '« 1000 » finds « 1 000 »');
+select is(tests.search_keys('{"q": "nombres 1 000"}'), array['n_mille'],
+  'and so does « 1 000 »');
+select is(tests.search_keys(jsonb_build_object('q', E'2 050')), array['n_mille'],
+  'a number written with a no-break space finds it too');
+select is(tests.search_set('{"q": "T1.3"}'), array['f_sibling'],
+  'a code typed as written finds the items of that code only');
 select tests.clear_authentication();
 
 select * from finish();

@@ -5,6 +5,7 @@ import {
   MAX_PAGES,
   clearFilters,
   hasFilters,
+  itemHref,
   libraryHref,
   withChanges,
   type LibrarySearch,
@@ -81,6 +82,7 @@ export function ResultList({
           <ItemCard
             key={card.id}
             card={card}
+            href={itemHref(card.id, search)}
             index={index}
             gradeLabels={gradeLabels}
             attachTo={attachTo}

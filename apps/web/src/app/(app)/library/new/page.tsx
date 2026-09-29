@@ -119,6 +119,9 @@ export default async function NewLibraryItemPage({ searchParams }: { searchParam
         context={context}
         status="draft"
         shared={false}
+        boardWide={false}
+        requested={false}
+        faithReviewed={false}
         faithFlagged={false}
       />
     </div>

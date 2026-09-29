@@ -46,7 +46,11 @@ export function BlockedDetails({ blocked }: { blocked: { kind: BlockedKind; matc
       <ul className="list-disc space-y-1 pl-5">
         {blocked.map((b, i) => (
           <li key={i}>
-            {tDiff(`blocked.${b.kind}`)} : <span className="font-mono">{b.match}</span>
+            {tDiff.rich('blockedItem', {
+              kind: tDiff(`blocked.${b.kind}`),
+              match: b.match,
+              code: (chunks) => <span className="font-mono">{chunks}</span>,
+            })}
           </li>
         ))}
       </ul>

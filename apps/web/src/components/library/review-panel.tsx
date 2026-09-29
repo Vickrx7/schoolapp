@@ -20,8 +20,10 @@ export interface ReviewState {
   status: LibraryItemStatus;
   shareScope: ShareScope;
   requested: boolean;
-  /** The reviewer wrote it: never approved by them (D-064). */
+  /** The reviewer wrote it: never approved or sent back by them (D-064). */
   mine: boolean;
+  /** The board's own item (no author): content reviewers keep reading it after a decision. */
+  boardOwn: boolean;
   kinds: ReviewerKind[];
   requiresFaithReview: boolean;
   faithReviewed: boolean;
@@ -40,6 +42,12 @@ export function ReviewPanel({ state, checklist }: { state: ReviewState; checklis
   const t = useTranslations('libraryReview.decision');
   const router = useRouter();
   const refresh = { onSuccess: () => router.refresh() };
+  // Sending back or withdrawing makes a teacher's item private again: the reviewer can no longer
+  // open it, so she goes back to the queue. The board's own items stay open to content reviewers.
+  const afterDecision = (by: ReviewerKind) => () => {
+    if (state.mine || (state.boardOwn && by === 'content')) router.refresh();
+    else router.push('/library/review');
+  };
   const approve = useAction(decideItem, { successMessage: t('approved'), ...refresh });
   const faithOk = useAction(decideFaith, { successMessage: t('faithApproved'), ...refresh });
   const flag = useAction(flagFaith, { successMessage: t('flagged'), ...refresh });
@@ -86,23 +94,27 @@ export function ReviewPanel({ state, checklist }: { state: ReviewState; checklis
               <ShieldCheck aria-hidden />
               {t('approve')}
             </Button>
-            <RejectDialog
-              userId={state.userId}
-              itemId={state.itemId}
-              kind="reject"
-              label={t('reject')}
-              title={t('reject')}
-              intro={t('rejectIntro')}
-              submitLabel={t('reject')}
-              successMessage={t('rejected')}
-              onSubmit={(note) => decideItem(state.itemId, 'reject', note, state.revision)}
-            />
+            {state.mine ? null : (
+              <RejectDialog
+                userId={state.userId}
+                itemId={state.itemId}
+                kind="reject"
+                label={t('reject')}
+                title={t('reject')}
+                intro={t('rejectIntro')}
+                submitLabel={t('reject')}
+                successMessage={t('rejected')}
+                onDone={afterDecision('content')}
+                onSubmit={(note) => decideItem(state.itemId, 'reject', note, state.revision)}
+              />
+            )}
           </div>
           {approveBlocked ? (
             <p id="review-approve-blocked" className="text-sm text-slate-700">
               {approveBlocked}
             </p>
           ) : null}
+          {state.mine ? <p className="text-sm text-slate-700">{t('ownItemHint')}</p> : null}
         </div>
       ) : null}
 
@@ -131,6 +143,7 @@ export function ReviewPanel({ state, checklist }: { state: ReviewState; checklis
                 intro={t('faithRejectIntro')}
                 submitLabel={t('reject')}
                 successMessage={t('rejected')}
+                onDone={afterDecision('faith')}
                 onSubmit={(note) => decideFaith(state.itemId, 'reject', note, state.revision)}
               />
             </div>
@@ -163,6 +176,7 @@ export function ReviewPanel({ state, checklist }: { state: ReviewState; checklis
               intro={t('retractIntro')}
               submitLabel={t('retract')}
               successMessage={t('retracted')}
+              onDone={afterDecision('content')}
               variant="danger"
               onSubmit={(note) => retractItem(state.itemId, note)}
             />

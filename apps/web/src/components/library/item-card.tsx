@@ -14,7 +14,8 @@ const FORMAT_ICONS = {
 } as const;
 
 /**
- * A search result (D-068): the type, the title (a link to « Fiche de la ressource »), grades and
+ * A search result (D-068): the type, the title (a link to « Fiche de la ressource », 44 px tall,
+ * that keeps the search for the way back), grades and
  * duration, the summary, the badges as text (« Approuvée par le conseil », « Suppléance »,
  * « 4 niveaux » or « Version de base seulement », « IA », « Foi »; the workflow status too on
  * the user's own items) and the formats. The card's actions (« Joindre à cette leçon ») are the
@@ -22,11 +23,14 @@ const FORMAT_ICONS = {
  */
 export function ItemCard({
   card,
+  href,
   gradeLabels,
   attachTo,
   index,
 }: {
   card: LibraryResultCard;
+  /** The item page, with the search it was found with (`itemHref`). */
+  href: string;
   /** Grade code → « 3e année ». */
   gradeLabels: ReadonlyMap<string, string>;
   attachTo: AttachTarget | null;
@@ -49,8 +53,8 @@ export function ItemCard({
         </p>
         <h3 className="text-base leading-snug font-semibold break-words text-slate-900">
           <Link
-            href={`/library/items/${card.id}`}
-            className="-my-1 block py-1 hover:text-brand-700 hover:underline"
+            href={href}
+            className="flex min-h-11 items-center hover:text-brand-700 hover:underline"
           >
             {card.title}
           </Link>

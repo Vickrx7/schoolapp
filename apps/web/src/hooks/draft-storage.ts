@@ -81,6 +81,23 @@ export function draftStorage(kind: DraftStorageKind = 'local'): Storage | null {
   }
 }
 
+/**
+ * Keeps `value` as the draft of another form (`key` without the prefix), as `useDraft` would:
+ * what a teacher typed while a new item's first save ran becomes the draft of its edit page.
+ */
+export function storeDraft<T>(
+  key: string,
+  value: T,
+  meta: { version?: string } = {},
+  storage = draftStorage(),
+): void {
+  try {
+    storage?.setItem(DRAFT_PREFIX + key, serializeDraft(value, meta));
+  } catch {
+    // Quota or private mode: the draft is lost, as with useDraft.
+  }
+}
+
 /** Removes every draft whose key (without the prefix) matches. */
 export function removeDrafts(match: (key: string) => boolean, storage = draftStorage()): void {
   if (!storage) return;

@@ -104,6 +104,7 @@ export async function WorkflowSlot({ item }: { item: LibraryItemView }) {
             shareScope: item.shareScope,
             requested: item.requested,
             mine: item.mine,
+            boardOwn: item.boardOwn,
             kinds: item.reviewerKinds,
             requiresFaithReview: item.faith.requiresReview,
             faithReviewed: item.faith.reviewed,

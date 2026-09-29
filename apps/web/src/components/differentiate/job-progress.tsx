@@ -17,7 +17,8 @@ type Check = { kind: 'open'; status: Open } | { kind: 'done' } | { kind: 'error'
  * Waits for the worker to finish a request, then shows the result. Checks less often as time
  * passes, keeps trying after an error, pauses while the tab is hidden and stops after a limit.
  * Every AI feature's job page uses it: its texts are generic (`differentiate` messages), except
- * what is being prepared (`working`, `workingHint`), which a page may give in its own words.
+ * what is being prepared (`working`, `workingHint`) and, when it takes too long, what is kept and
+ * how to start again (`tooLongHint`, `resumeLabel`), which a page gives in its own words.
  */
 export function JobProgress({
   jobId,
@@ -26,6 +27,8 @@ export function JobProgress({
   resumeHref,
   working,
   workingHint,
+  tooLongHint,
+  resumeLabel,
 }: {
   jobId: string;
   status: Open;
@@ -35,6 +38,10 @@ export function JobProgress({
   working?: string;
   /** What to do meanwhile (translated); the differentiated text's by default. */
   workingHint?: string;
+  /** When it takes too long: what is kept (translated); the differentiated text's by default. */
+  tooLongHint?: string;
+  /** The link to `resumeHref` (translated); « Reprendre ce texte » by default. */
+  resumeLabel?: string;
 }) {
   const t = useTranslations('differentiate');
   const router = useRouter();
@@ -126,7 +133,7 @@ export function JobProgress({
         <CardBody className="space-y-3 pt-4">
           <Notice tone="warning" className="space-y-1">
             <p className="font-medium">{t('tooLong')}</p>
-            <p>{t('tooLongHint')}</p>
+            <p>{tooLongHint ?? t('tooLongHint')}</p>
           </Notice>
           <p className="text-sm text-slate-600" role="status">
             {t(`status.${status}`)}
@@ -138,7 +145,7 @@ export function JobProgress({
             <Button asChild variant="secondary">
               <Link href={resumeHref}>
                 <RotateCcw aria-hidden />
-                {t('resume')}
+                {resumeLabel ?? t('resume')}
               </Link>
             </Button>
           </div>

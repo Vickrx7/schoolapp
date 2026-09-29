@@ -26,6 +26,7 @@ export function RejectDialog({
   submitLabel,
   onSubmit,
   successMessage,
+  onDone,
   variant = 'secondary',
 }: {
   userId: string;
@@ -40,6 +41,11 @@ export function RejectDialog({
   onSubmit: (note: string) => Promise<ActionResult>;
   /** Shown once it is done. */
   successMessage: string;
+  /**
+   * What happens next (default: the page is refreshed). A decision that ends the reviewer's
+   * access to the item goes back to the queue instead of a « Page introuvable ».
+   */
+  onDone?: () => void;
   variant?: 'secondary' | 'danger';
 }) {
   const t = useTranslations('libraryReview');
@@ -75,7 +81,8 @@ export function RejectDialog({
                   draft.clear();
                   setOpen(false);
                   toast.success(successMessage);
-                  router.refresh();
+                  if (onDone) onDone();
+                  else router.refresh();
                 } else {
                   setError(result.fieldErrors?.note ?? result.error);
                 }

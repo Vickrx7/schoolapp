@@ -151,7 +151,9 @@ does not have yet, from its base version.
    and so do the resource's and levels' ids, which never leave Canada.
 4. **The answer comes back** to the worker, which puts the names back (the answer may only repeat
    the markers the base version had). The database adds the versions only if the resource has not
-   changed since the request; otherwise nothing is added and she asks again.
+   changed since the request; otherwise nothing is added and she asks again. A reviewed resource
+   that gains versions becomes her private draft again: nobody else uses what the AI wrote before
+   she has read it, marked it reviewed and shared it again (the first-name check runs again).
 
 ## How names are found
 

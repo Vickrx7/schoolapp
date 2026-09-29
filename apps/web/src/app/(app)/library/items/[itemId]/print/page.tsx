@@ -11,9 +11,13 @@ import { PdfSlot } from '@/components/library/slots/pdf-slot';
 import { Card, CardBody } from '@/components/ui/card';
 import { PageHeader } from '@/components/ui/page';
 import { studentVersionDocs, teacherVersionDocs } from '@/server/library/item-docs';
-import { parsePrintParams, selectVersions } from '@/server/library/view-model';
+import {
+  isSavedDifferentiation,
+  parsePrintParams,
+  selectVersions,
+} from '@/server/library/view-model';
 import { loadItemForStudentSheet, loadItemKeys, loadLibraryItem } from '@/server/queries/library';
-import { getSession, requireSession, showLibrary } from '@/server/session';
+import { aiSchools, getSession, requireSession, showLibrary } from '@/server/session';
 
 type Props = {
   params: Promise<{ itemId: string }>;
@@ -38,13 +42,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
  */
 export default async function LibraryPrintPage({ params, searchParams }: Props) {
   const session = await requireSession();
-  if (!showLibrary(session)) notFound();
+  const library = showLibrary(session);
+  if (!library && aiSchools(session).length === 0) notFound();
   const { itemId } = await params;
   if (!z.uuid().safeParse(itemId).success) notFound();
   const locale = await getLocale();
   // Labels for the options only (screen); no key is read here.
   const item = await loadLibraryItem(itemId, session, locale);
-  if (!item) notFound();
+  // Outside the library, only the teacher's own saved texts (D-073, D-078).
+  if (!item || (!library && !isSavedDifferentiation(item))) notFound();
   const [t, query] = await Promise.all([getTranslations('libraryItem'), searchParams]);
 
   const hasStudentSheet = TYPE_INFO[item.type].audience !== 'teacher';
