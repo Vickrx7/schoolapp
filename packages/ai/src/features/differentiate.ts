@@ -5,6 +5,7 @@
 import { z } from 'zod';
 import type { BlockedFinding, Redactor } from '../privacy';
 import type { FeatureDefinition } from '../types';
+import { mentionsLevelLabel, tagged } from './shared';
 
 export const DIFFERENTIATE = 'differentiate';
 
@@ -67,12 +68,6 @@ const ITEM_TYPE_LABELS: Record<DifferentiateItemType, string> = {
   reading_passage: 'un texte à lire',
   worksheet: 'des consignes ou une activité',
 };
-
-function tagged(tag: string, content: string): string {
-  // The teacher's text cannot close our tags.
-  const safe = content.replaceAll(`</${tag}>`, `< /${tag}>`);
-  return `<${tag}>\n${safe}\n</${tag}>`;
-}
 
 export const differentiateFeature: FeatureDefinition<DifferentiateInput, DifferentiateOutput> = {
   name: DIFFERENTIATE,
@@ -139,15 +134,11 @@ export const differentiateFeature: FeatureDefinition<DifferentiateInput, Differe
     for (const key of got) if (!expected.includes(key)) problems.push(`unexpected level ${key}`);
     if (!output.objective.trim()) problems.push('empty objective');
     // Student copies must not label anyone "Débutant": no level name in a title.
+    const labels = input.levels.map((l) => l.label);
     for (const v of output.versions) {
-      const title = v.title.toLowerCase();
-      const labelled = input.levels.some((l) =>
-        new RegExp(
-          `(^|[^\\p{L}])${l.label.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}($|[^\\p{L}])`,
-          'u',
-        ).test(title),
-      );
-      if (labelled) problems.push(`level name shown to students in ${v.level}`);
+      if (mentionsLevelLabel(v.title, labels)) {
+        problems.push(`level name shown to students in ${v.level}`);
+      }
     }
     const maxLength = Math.max(input.text.length * 4, 8000);
     for (const v of output.versions) {

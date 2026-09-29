@@ -5,6 +5,28 @@ import { localized } from '@/i18n/config';
 import type { PlanLevel, RosterStudent } from './types';
 
 /**
+ * « G1 · Débutant »: how the AI layer's instructions by group name each group, for adults only
+ * (students never see a level name).
+ */
+export function groupLabels(
+  plan: Pick<ComposedSubPlan, 'groups'>,
+  levels: readonly PlanLevel[],
+  locale: string,
+  noLevel: string,
+): Record<string, string> {
+  const levelById = new Map(levels.map((l) => [l.id, l]));
+  return Object.fromEntries(
+    plan.groups.map((g) => {
+      const level = g.levelId ? levelById.get(g.levelId) : undefined;
+      return [
+        g.key,
+        `${g.key} · ${level ? localized(locale, level.labelFr, level.labelEn) : noLevel}`,
+      ];
+    }),
+  );
+}
+
+/**
  * Groups by language level, with first names joined from the roster the database derived for
  * the plan (the plan JSON holds ids only). Level names are for adults: never read out to the
  * class.

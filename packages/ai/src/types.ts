@@ -80,8 +80,15 @@ export interface FeatureDefinition<I, O> {
   inputSchema: z.ZodType<I>;
   outputSchema: z.ZodType<O>;
   maxTokens: number;
-  /** De-identifies every free-text field of the input with the request's redactor. */
-  redactInput(input: I, redactor: Redactor): { input: I; blocked: BlockedFinding[] };
+  /**
+   * De-identifies every free-text field of the input with the request's redactor. A personal
+   * detail in `blocked` refuses the whole request. A feature may instead leave a field out (sent
+   * empty) and list its path in `dropped`: paths only, never content, since they are logged.
+   */
+  redactInput(
+    input: I,
+    redactor: Redactor,
+  ): { input: I; blocked: BlockedFinding[]; dropped?: string[] };
   buildUserMessage(input: I): string;
   /** Problems with an answer that matched the schema (missing levels, empty text...). */
   validate(output: O, input: I): string[];

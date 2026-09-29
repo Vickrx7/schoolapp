@@ -102,7 +102,9 @@ function nonBlank(value: string | null | undefined): string | null {
 /** The AI layer per timetable block, for the lessons it was written for. Invalid: ignored. */
 function aiByBlock(ai: unknown) {
   const parsed = ai == null ? null : subPlanAiLayerSchema.safeParse(ai);
-  if (!parsed?.success) return { overview: null, faithSentence: null, blocks: new Map() };
+  if (!parsed?.success) {
+    return { overview: null, faithSentence: null, faithRef: undefined, blocks: new Map() };
+  }
   const refs = new Map(parsed.data.refs.map((r) => [r.key, r.ref]));
   const blocks = new Map<
     string,
@@ -133,6 +135,7 @@ function aiByBlock(ai: unknown) {
   return {
     overview: nonBlank(parsed.data.result.dayOverview),
     faithSentence: nonBlank(parsed.data.result.faithSentence),
+    faithRef: parsed.data.faithRef,
     blocks,
   };
 }
@@ -203,7 +206,11 @@ export function composeSubPlan(
         type: plan.faith.type,
         title: plan.faith.title,
         text: plan.faith.text,
-        linkSentence: ai.faithSentence,
+        // Only for the reference it was written for: a rebuild may pick another one.
+        linkSentence:
+          ai.faithRef === undefined || ai.faithRef === plan.faith.referenceId
+            ? ai.faithSentence
+            : null,
         edited: false,
       }
     : null;

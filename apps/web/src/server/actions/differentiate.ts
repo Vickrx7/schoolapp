@@ -6,10 +6,11 @@ import {
   MAX_TEXT_TIMES_LEVELS,
   type DifferentiateInput,
 } from '@lynx/ai/features/differentiate';
-import { Redactor, type BlockedKind, type KnownPerson, type Segment } from '@lynx/ai/privacy';
+import { Redactor, type BlockedKind, type Segment } from '@lynx/ai/privacy';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { fail, ok, okVoid, type ActionResult } from '@/lib/action-result';
+import { visiblePeople } from '../ai-people';
 import { reportError } from '../errors';
 import type { VersionContent } from '../queries/differentiate';
 import { aiSchools, requireSession } from '../session';
@@ -91,22 +92,6 @@ async function buildInput(
   };
   const parsed = differentiateInputSchema.safeParse(input);
   return parsed.success ? parsed.data : null;
-}
-
-/**
- * The people this user can see (their classes' students, their colleagues), for the preview.
- * The worker checks again with a roster that includes everyone this user can see, in every
- * school.
- */
-async function visiblePeople(supabase: Supabase): Promise<KnownPerson[]> {
-  const [students, users] = await Promise.all([
-    supabase.from('students').select('first_name'),
-    supabase.from('users').select('display_name'),
-  ]);
-  return [
-    ...(students.data ?? []).map((s) => ({ name: s.first_name, kind: 'student' as const })),
-    ...(users.data ?? []).map((u) => ({ name: u.display_name, kind: 'staff' as const })),
-  ];
 }
 
 export interface PreviewResult {

@@ -2,7 +2,7 @@
 
 This page describes exactly what goes to the AI provider, written to help answer a school board's
 privacy questionnaire. It will become part of `PRIVACY.md` in Phase 6. Decisions: DECISIONS.md,
-D-037 to D-043.
+D-037 to D-046, and D-052 for the substitute plan.
 
 ## The rule
 
@@ -40,6 +40,59 @@ on and whose board allows it. Students never use AI features and never send anyt
 
 5. **The answer comes back** to the worker in Canada, which puts the real names back in place of
    the markers and stores the result for the teacher.
+
+## Plan de suppléance: « Consignes détaillées »
+
+A teacher who is away can ask the AI to detail her substitute plan: timed steps with short
+« Dites : » lines, instructions for each language-level group, an activity when a lesson is
+missing or thin, and one sentence linking the day's faith moment to the topic. The plan is
+complete without it: this is an optional step, never automatic, and never part of reporting an
+absence at 6 a.m.
+
+1. **Preview, in the browser.** On the plan page, « Ajouter des consignes détaillées (IA) » opens
+   « Vérifier avant d'envoyer ». The server builds the request from the plan as the teacher sees
+   it (with her edits), replaces the names she can see with markers and shows her exactly the
+   text that would be sent, with the replaced names highlighted.
+2. **Fields left out instead of a blocked request.** A field that holds a personal detail (a phone
+   number in a note for the substitute, an email in the materials...) is not sent at all, and the
+   preview lists it as « Non envoyé », with where it comes from and why. The rest of the plan is
+   still sent. This is the one difference from « Texte différencié », where such a detail blocks
+   the request until the teacher removes it (D-038 as amended by D-052).
+3. **Queue.** On « Envoyer à l'IA », the request is stored in the Canadian database (`ai_jobs`,
+   feature `sub_plan`), only for a plan that has not changed since the preview and that no
+   substitute has opened yet. The same school switch, budget and limits per person apply.
+4. **De-identification, again, on the server.** The worker replaces every student and staff member
+   of every school where the teacher works with a marker, leaves out any field with a personal
+   detail again, and runs the same last check on the exact outbound text.
+5. **The call.** The worker sends the system prompt (`prompts/sub_plan/v1.md`) and, for the
+   teaching periods of the day (at most 10):
+   - the weekday and the grades (« 3e année »);
+   - the language-level groups as keys, level names, level descriptions and **numbers of
+     students** (« G1 : Débutant, 3 élèves »), never who is in them;
+   - per period: its times and minutes to plan, whether an event shortens or interrupts it (and
+     the event's title), the subject, the unit title, the room (« Gymnase »), which groups are
+     there, and the teacher's lesson (title, learning goal, materials, content, note for the
+     substitute), or the class's « Activités de rechange » when there is no lesson;
+   - the faith moment already chosen for the day (its title and text).
+
+   It sends **no** student or staff names, no class or school names, no alerts, no « Gestion de
+   classe », no arrival or dismissal notes, no absence note, no report content, and no ids: the
+   ids of the timetable block, the lesson and the faith reference stay in Canada, to put the
+   answer in the right place.
+
+6. **The answer comes back** to the worker, which puts the real names back. The database adds it
+   to the plan as its AI layer only if no substitute has opened the plan in the meantime. The
+   teacher's own edits always come first, and each period's AI part is shown only while the
+   period still has the lesson it was written for. The teacher can remove it at any time, and
+   « Voir exactement ce qui a été envoyé » shows the exact text sent.
+
+Once released, the AI layer is part of the plan: the substitute, the direction and the office read
+it with the rest of the plan (D-056), and the plan PDF prints it. Instructions by group name the
+level for adults; what students receive never names a level. The students' activities print as a
+separate PDF, « Activités pour les élèves », in French: one page per group for each activity, with
+only the group's number in a corner. Before printing, any student's first name or level name still
+in the activity text is replaced by « … », since the answer came back with real names and a level
+may have been renamed after the answer was checked.
 
 ## How names are found
 
@@ -89,13 +142,14 @@ of the text.
 
 ## What is kept, where and for how long
 
-| Data                                                                                               | Where             | Kept                                                 |
-| -------------------------------------------------------------------------------------------------- | ----------------- | ---------------------------------------------------- |
-| The teacher's text, the answer, and the exact de-identified text sent (`ai_jobs`)                  | Canadian database | 30 days, then deleted                                |
-| Saved differentiated texts (library drafts)                                                        | Canadian database | Until the teacher deletes them                       |
-| Usage records: date, feature, prompt version, model, token counts, cost, status (`ai_generations`) | Canadian database | Kept (no text)                                       |
-| Request log for the hourly limit: job id, user id, time (`ai_request_log`)                         | Canadian database | 1 day (no text)                                      |
-| What the provider receives                                                                         | The AI provider   | Under the provider's own retention terms (see below) |
+| Data                                                                                                | Where             | Kept                                                 |
+| --------------------------------------------------------------------------------------------------- | ----------------- | ---------------------------------------------------- |
+| The teacher's text, the answer, and the exact de-identified text sent (`ai_jobs`)                   | Canadian database | 30 days, then deleted                                |
+| Saved differentiated texts (library drafts)                                                         | Canadian database | Until the teacher deletes them                       |
+| A substitute plan's AI layer (`sub_plans.ai`: the answer with names back, and block and lesson ids) | Canadian database | With the plan (1 year, D-059), or until removed      |
+| Usage records: date, feature, prompt version, model, token counts, cost, status (`ai_generations`)  | Canadian database | Kept (no text)                                       |
+| Request log for the hourly limit: job id, user id, time (`ai_request_log`)                          | Canadian database | 1 day (no text)                                      |
+| What the provider receives                                                                          | The AI provider   | Under the provider's own retention terms (see below) |
 
 ## The provider
 

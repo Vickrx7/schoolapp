@@ -36,7 +36,11 @@ function currentEdit(edits: SubPlanEdits, block: Block): SubPlanBlockEdit {
 
 /** The steps the editor starts from: the teacher's own, else what the plan shows now. */
 export function stepsForEditing(block: Block): SubPlanStepEdit[] {
-  return block.steps.map((s) => ({ minutes: s.minutes, text: s.text }));
+  // An AI step's « Dites : » line stays with its step (plan content is always French).
+  return block.steps.map((s) => ({
+    minutes: s.minutes,
+    text: (s.say ? `${s.text} Dites : ${s.say}` : s.text).slice(0, 1000),
+  }));
 }
 
 export function setBlockSteps(

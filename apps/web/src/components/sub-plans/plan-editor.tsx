@@ -57,6 +57,7 @@ export function PlanEditor({
   plan,
   initialEdits,
   editsRevision,
+  ai = null,
   context,
   roster,
   levels,
@@ -68,6 +69,8 @@ export function PlanEditor({
   plan: SubPlanV1;
   initialEdits: SubPlanEdits | null;
   editsRevision: number;
+  /** The AI layer (D-052): shown under the teacher's edits. */
+  ai?: unknown;
   context: PlanContext;
   roster: RosterStudent[];
   levels: PlanLevel[];
@@ -92,7 +95,10 @@ export function PlanEditor({
     (fn: (e: SubPlanEdits) => SubPlanEdits) => setValue((v) => ({ edits: fn(v.edits) })),
     [setValue],
   );
-  const composed = useMemo(() => composeSubPlan(plan, { edits, audience: 'owner' }), [plan, edits]);
+  const composed = useMemo(
+    () => composeSubPlan(plan, { edits, ai, audience: 'owner' }),
+    [plan, edits, ai],
+  );
 
   // ---- Saving -------------------------------------------------------------------------
   const payload = useMemo(() => toPayload(edits), [edits]);

@@ -92,7 +92,7 @@ const loadSchema = z.discriminatedUnion('status', [
     plan: z.union([
       z.null(),
       z.literal('unchanged'),
-      z.object({ plan: z.unknown(), edits: z.unknown() }),
+      z.object({ plan: z.unknown(), edits: z.unknown(), ai: z.unknown() }),
     ]),
     roster: z
       .array(z.object({ id: z.string(), classId: z.string(), firstName: z.string() }))
@@ -121,7 +121,15 @@ export interface PortalDay {
    * null until the plan is released; 'unchanged' when the caller already shows this version.
    * `plan` is null when the stored plan cannot be read (the web view says so).
    */
-  plan: { plan: SubPlanV1 | null; edits: SubPlanEdits | null } | 'unchanged' | null;
+  plan:
+    | {
+        plan: SubPlanV1 | null;
+        edits: SubPlanEdits | null;
+        /** The AI layer (D-052), read leniently by composeSubPlan. */
+        ai: unknown;
+      }
+    | 'unchanged'
+    | null;
   roster: RosterStudent[];
   levels: PlanLevel[];
   report: PortalReport | null;
@@ -150,7 +158,11 @@ export async function loadDay(
   else if (parsed.plan) {
     const p = subPlanV1Schema.safeParse(parsed.plan.plan);
     const e = parsed.plan.edits == null ? null : subPlanEditsSchema.safeParse(parsed.plan.edits);
-    plan = { plan: p.success ? p.data : null, edits: e?.success ? e.data : null };
+    plan = {
+      plan: p.success ? p.data : null,
+      edits: e?.success ? e.data : null,
+      ai: parsed.plan.ai ?? null,
+    };
   }
   return {
     context: parsed.context,

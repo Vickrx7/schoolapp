@@ -7,6 +7,7 @@ import { notFound } from 'next/navigation';
 import { z } from 'zod';
 import { capitalize } from '@/components/absences/absence-summary';
 import { PlanStatusBadge } from '@/components/absences/plan-status-badge';
+import { SubPlanAiPanel } from '@/components/sub-plans/ai-panel';
 import { AlertsReveal } from '@/components/sub-plans/alerts-reveal';
 import { PlanEditor } from '@/components/sub-plans/plan-editor';
 import { PdfLink } from '@/components/sub-plans/pdf-link';
@@ -15,12 +16,15 @@ import { ReleaseButton } from '@/components/sub-plans/release-button';
 import { Notice } from '@/components/ui/card';
 import { PageHeader } from '@/components/ui/page';
 import { formatInstantTime, formatLocalDate, instantInZone } from '@/lib/format';
+import { hasActivitySheets } from '@/server/pdf/activities-model';
+import { loadSubPlanAiState } from '@/server/queries/sub-plan-ai';
 import {
   loadPlanForOwner,
   loadPlanForStaff,
   staffSchoolForAbsence,
 } from '@/server/queries/sub-plans';
 import { requireSession, type SessionContext } from '@/server/session';
+import { createSupabaseServerClient } from '@/server/supabase';
 
 type Params = { params: Promise<{ absenceId: string; planId: string }> };
 
@@ -86,6 +90,10 @@ async function StaffPlanPage({
   }
 
   const audience = staff.role === 'office' ? 'office' : 'staff';
+  const plan = staff.plan
+    ? composeSubPlan(staff.plan, { edits: staff.edits, ai: staff.ai, audience })
+    : null;
+  const pdf = `/absences/${absenceId}/plans/${planId}/pdf`;
   return (
     <div className="space-y-4">
       <PageHeader
@@ -97,15 +105,24 @@ async function StaffPlanPage({
           t(`absences.part.${staff.context.part}`),
         ].join(' · ')}
         actions={
-          staff.plan ? (
-            <PdfLink href={`/absences/${absenceId}/plans/${planId}/pdf`} label={t('pdf.print')} />
+          plan ? (
+            <div className="flex flex-wrap items-center gap-2">
+              <PdfLink href={pdf} label={t('pdf.print')} />
+              {hasActivitySheets(plan) ? (
+                <PdfLink
+                  href={`${pdf}?doc=activities`}
+                  label={t('activitySheets.open')}
+                  testId="activity-sheets-pdf"
+                />
+              ) : null}
+            </div>
           ) : null
         }
       />
       <Notice>{t('subPlanStaff.readOnly')}</Notice>
-      {staff.plan ? (
+      {plan ? (
         <PlanView
-          plan={composeSubPlan(staff.plan, { edits: staff.edits, audience })}
+          plan={plan}
           context={staff.context}
           roster={staff.roster}
           levels={staff.levels}
@@ -116,7 +133,7 @@ async function StaffPlanPage({
                     <AlertsReveal
                       classId={cls.classId}
                       className={cls.name}
-                      showClassName={staff.plan!.classes.length > 1}
+                      showClassName={plan.classes.length > 1}
                       roster={staff.roster}
                     />
                   ),
@@ -145,6 +162,12 @@ export default async function PlanPage({ params }: Params) {
   if (owned.absence.id !== absenceId) notFound();
   const t = await getTranslations();
   const locale = await getLocale();
+  // « Consignes détaillées (IA) » (3b): null when there is nothing to offer or show.
+  const aiState = await loadSubPlanAiState(await createSupabaseServerClient(), session, owned);
+  const plan = owned.plan
+    ? composeSubPlan(owned.plan, { edits: owned.edits, ai: owned.ai, audience: 'owner' })
+    : null;
+  const pdf = `/absences/${absenceId}/plans/${planId}/pdf`;
 
   return (
     <div className="space-y-4">
@@ -172,15 +195,29 @@ export default async function PlanPage({ params }: Params) {
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <PlanStatusBadge plan={owned} timeZone={owned.context.timezone} />
-            {owned.plan && owned.absence.published ? (
-              <PdfLink href={`/absences/${absenceId}/plans/${planId}/pdf`} label={t('pdf.open')} />
+            {plan && owned.absence.published ? (
+              <>
+                <PdfLink href={pdf} label={t('pdf.open')} />
+                {/* The students' own pages, once the AI's instructions hold an activity (3b). */}
+                {hasActivitySheets(plan) ? (
+                  <PdfLink
+                    href={`${pdf}?doc=activities`}
+                    label={t('activitySheets.open')}
+                    testId="activity-sheets-pdf"
+                  />
+                ) : null}
+              </>
             ) : null}
             {!owned.released && owned.editable ? <ReleaseButton planId={owned.id} /> : null}
           </div>
         }
       />
 
-      {!owned.plan ? (
+      {aiState ? (
+        <SubPlanAiPanel planId={owned.id} state={aiState} timeZone={owned.context.timezone} />
+      ) : null}
+
+      {!owned.plan || !plan ? (
         <Notice tone="warning">{t('subPlan.notReadable')}</Notice>
       ) : owned.editable ? (
         <PlanEditor
@@ -191,6 +228,7 @@ export default async function PlanPage({ params }: Params) {
           plan={owned.plan}
           initialEdits={owned.edits}
           editsRevision={owned.editsRevision}
+          ai={owned.ai}
           context={owned.context}
           roster={owned.roster}
           levels={owned.levels}
@@ -201,7 +239,7 @@ export default async function PlanPage({ params }: Params) {
         <>
           <Notice>{t('subPlan.readOnly')}</Notice>
           <PlanView
-            plan={composeSubPlan(owned.plan, { edits: owned.edits, audience: 'owner' })}
+            plan={plan}
             context={owned.context}
             roster={owned.roster}
             levels={owned.levels}

@@ -111,7 +111,9 @@
     "subCodesKeyMissing": "Substitute codes aren’t set up on this server. Contact the support team.",
     "encryptionKeyMissing": "Encryption isn’t set up on this server. Your answers are kept: contact the support team.",
     "subReportPending": "The report can still arrive: wait until the substitute’s day is over.",
-    "subReportExists": "A report arrived for this day: confirm it instead."
+    "subReportExists": "A report arrived for this day: confirm it instead.",
+    "subPlanAiStale": "The plan changed since the preview. Check again before sending.",
+    "subPlanAiNothing": "This plan has no teaching period to detail."
   },
   "days": {
     "1": "Monday",
@@ -733,6 +735,77 @@
     },
     "blockWarning": "{block}: {warning}"
   },
+  "subPlanAi": {
+    "title": "Detailed instructions (AI)",
+    "intro": "From your lessons, AI can prepare timed steps with lines to say, instructions for each group and an activity when a lesson is thin. You first check exactly what will be sent.",
+    "add": "Add detailed instructions (AI)",
+    "redo": "Prepare new instructions",
+    "preview": "Check before sending",
+    "previewIntro": "This is exactly what will be sent to the AI, along with the app’s fixed instructions. Names are replaced with placeholders and groups are only numbers of students. The real names are put back only once the answer is back on our servers, in Canada.",
+    "periods": "{count, plural, one {# period will be detailed.} other {# periods will be detailed.}}",
+    "replacedCount": "{count, plural, =0 {No names replaced.} one {# name replaced.} other {# names replaced.}}",
+    "previewCheck": "Check that no other personal information (a parent’s name, for example) remains in the text. Alerts, class management, your absence note and the class and school names are never sent.",
+    "notSent": "Not sent",
+    "notSentTitle": "Not sent: contains personal information",
+    "notSentIntro": "These parts of your planning will not be sent. To include them, remove the information from them, then check again.",
+    "notSentItem": "{where} — {field}: {kinds}",
+    "group": "Group {key}",
+    "theDay": "The day",
+    "fields": {
+      "title": "lesson title",
+      "objectives": "learning goal",
+      "materials": "materials",
+      "content": "lesson content",
+      "subNotes": "note for the substitute",
+      "fallback": "backup activities",
+      "subjectLabel": "subject",
+      "unitTitle": "unit title",
+      "room": "room",
+      "eventTitle": "event",
+      "levelLabel": "level name",
+      "levelDescription": "level description",
+      "faithTitle": "faith moment title",
+      "faithText": "faith moment text",
+      "gradeLabel": "grade"
+    },
+    "kinds": {
+      "email": "an email address",
+      "phone": "a phone number",
+      "identifier": "an identification number",
+      "postalCode": "a postal code",
+      "address": "an address",
+      "birthDate": "a date of birth"
+    },
+    "send": "Send to AI",
+    "sending": "Sending…",
+    "queued": "Waiting…",
+    "running": "AI is preparing the detailed instructions…",
+    "runningHint": "This usually takes a minute or two. You can leave this page: the instructions will be added to the plan.",
+    "reconnecting": "Connection to the server lost. Trying again…",
+    "tooLong": "This is taking longer than expected.",
+    "tooLongHint": "The AI service may be busy. Your plan is complete without the detailed instructions: check again later.",
+    "checkAgain": "Check again",
+    "applied": "Detailed instructions added",
+    "appliedAt": "Added on {date} at {time}. Your own changes always come first.",
+    "appliedHint": "Your own changes always come first.",
+    "failed": "The detailed instructions could not be prepared. Your plan is complete without them.",
+    "notApplied": "The instructions arrived after the substitute opened the plan: they were not added.",
+    "inUse": "A substitute has already opened this plan: detailed instructions can no longer be added.",
+    "aiOff": "AI is not turned on for your school. The principal can turn it on in the School page.",
+    "nothing": "This plan has no teaching period to detail.",
+    "remove": "Remove the detailed instructions",
+    "removeConfirm": "Remove the detailed instructions from this plan? Your own changes stay.",
+    "removeConfirmButton": "Remove",
+    "removed": "Detailed instructions removed.",
+    "sentText": "See exactly what was sent",
+    "block": {
+      "badge": "Prepared with AI",
+      "overview": "In short",
+      "differentiation": "Instructions by group",
+      "activity": "Activity for the students",
+      "perGroup": "Version for group {group}"
+    }
+  },
   "subProfile": {
     "title": "Substitute sheet",
     "intro": "This information goes into every substitute plan for the class.",
@@ -1003,5 +1076,10 @@
     "page": "Page {page} of {total}",
     "alertsElsewhere": "Safety or medical alerts: check the app or ask the principal.",
     "failed": "The PDF could not be created. The plan is still available in the app: try again in a moment."
+  },
+  "activitySheets": {
+    "open": "Student activity sheets (PDF)",
+    "download": "Download the student activity sheets",
+    "hint": "One page per group, with its number in the corner: no student names and no level names."
   }
 }

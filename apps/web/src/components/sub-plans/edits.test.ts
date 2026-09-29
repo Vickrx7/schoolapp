@@ -96,6 +96,36 @@ describe('plan editor overlay', () => {
     expect(composed.steps.map((s) => s.text)).toContain('Relisez.');
   });
 
+  it('keeps an AI step’s « Dites : » line when the teacher edits the steps', () => {
+    const ai = {
+      refs: [{ key: 'B1', ref: { blockKey: BLOCK, lessonId: L4 } }],
+      result: {
+        dayOverview: '',
+        blocks: [
+          {
+            key: 'B1',
+            overview: '',
+            steps: [
+              { minutes: 5, instruction: 'Présentez l’objectif.', say: '« Aujourd’hui, on lit! »' },
+              { minutes: 40, instruction: 'Lecture en équipes.', say: '' },
+            ],
+            differentiation: [],
+            ifTimeRemains: '',
+            materialsChecklist: [],
+            activity: null,
+          },
+        ],
+        faithSentence: '',
+      },
+    };
+    const block = composeSubPlan(plan(L4), { audience: 'owner', ai }).blocks[0]!;
+    expect(block.stepsSource).toBe('ai');
+    expect(stepsForEditing(block)).toEqual([
+      { minutes: 5, text: 'Présentez l’objectif. Dites : « Aujourd’hui, on lit! »' },
+      { minutes: 40, text: 'Lecture en équipes.' },
+    ]);
+  });
+
   it('keeps the note and the steps of the same block together', () => {
     const block = blockOf(plan(L4));
     let edits = setBlockSteps({}, block, [{ minutes: 10, text: 'Lecture.' }]);

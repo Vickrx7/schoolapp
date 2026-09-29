@@ -63,6 +63,11 @@ export function planPdfLabels(locale: AppLocale, catalog: typeof messages): Plan
       otherAdult: (name) => t('subPlan.block.otherAdult', { name }),
       minutes: (n) => t('subPlan.block.minutes', { n }),
     },
+    ai: {
+      overview: t('subPlanAi.block.overview'),
+      differentiation: t('subPlanAi.block.differentiation'),
+      activity: t('subPlanAi.block.activity'),
+    },
     classNotes: {
       arrival: t('subPlan.classNotes.arrival'),
       routines: t('subPlan.classNotes.routines'),

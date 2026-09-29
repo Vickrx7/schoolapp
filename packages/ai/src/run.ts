@@ -87,9 +87,13 @@ export async function runFeature<I, O>(options: RunOptions<I, O>): Promise<RunRe
   if (!parsed.success) return result('failed', 'invalidInput');
 
   const redactor = new Redactor(options.people, options.now);
-  const { input, blocked } = feature.redactInput(parsed.data, redactor);
+  const { input, blocked, dropped = [] } = feature.redactInput(parsed.data, redactor);
+  // Fields left out because they held a personal detail: their paths only (they are logged).
+  const droppedProblems = dropped.map((path) => `dropped ${path}`);
   if (blocked.length) {
-    return result('failed', 'personalInfo', { problems: blocked.map((b) => `blocked ${b.kind}`) });
+    return result('failed', 'personalInfo', {
+      problems: [...droppedProblems, ...blocked.map((b) => `blocked ${b.kind}`)],
+    });
   }
 
   const user = feature.buildUserMessage(input);
@@ -98,7 +102,7 @@ export async function runFeature<I, O>(options: RunOptions<I, O>): Promise<RunRe
   } catch (error) {
     if (error instanceof PrivacyViolation) {
       return result('failed', 'personalInfo', {
-        problems: error.findings.map((f) => `outbound ${f.kind}`),
+        problems: [...droppedProblems, ...error.findings.map((f) => `outbound ${f.kind}`)],
       });
     }
     throw error;
@@ -107,7 +111,7 @@ export async function runFeature<I, O>(options: RunOptions<I, O>): Promise<RunRe
   const maxAttempts = options.maxAttempts ?? 3;
   const signal =
     options.timeoutMs === undefined ? undefined : AbortSignal.timeout(options.timeoutMs);
-  const problems: string[] = [];
+  const problems: string[] = [...droppedProblems];
   let model = provider.model;
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     if (signal?.aborted) {

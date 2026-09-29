@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { differentiateFeature, type DifferentiateInput } from './features/differentiate';
+import { subPlanFeature, type SubPlanAiInput } from './features/sub-plan';
 import { priceFor, estimateCostUsd, UnknownModelPriceError } from './pricing';
 import { loadPrompt } from './prompts';
 import { createFakeProvider } from './providers';
@@ -394,5 +395,106 @@ describe('differentiate checks', () => {
     expect(differentiateFeature.validate(output, input)).toEqual([
       'level name shown to students in L1',
     ]);
+  });
+});
+
+describe('runFeature: a substitute plan (sub_plan)', () => {
+  const plan: SubPlanAiInput = {
+    gradeLabels: ['3e année'],
+    weekday: 'mercredi',
+    groups: [
+      { key: 'G1', levelLabel: 'Débutant', levelDescription: 'Phrases courtes.', size: 3 },
+      { key: 'G2', levelLabel: 'Avancé', levelDescription: null, size: 17 },
+    ],
+    faith: null,
+    blocks: [
+      {
+        key: 'B1',
+        ref: {
+          blockKey: '60000000-0000-4000-8000-000000031085',
+          lessonId: '40000000-0000-4000-8000-000000030104',
+        },
+        start: '08:55',
+        end: '09:45',
+        minutes: 50,
+        status: 'normal',
+        eventTitle: null,
+        subjectLabel: 'Français',
+        unitTitle: 'Lire pour s’informer',
+        room: 'Local 101',
+        groups: ['G1', 'G2'],
+        lesson: {
+          title: 'Trouver l’idée principale',
+          objectives: 'Repérer l’idée principale d’un paragraphe.',
+          materials: 'Texte « Le huard ».',
+          content: 'Léa distribue les textes. Travail en dyades.',
+          subNotes: 'Si Mme Tremblay est absente longtemps, appelez le 613-555-0142.',
+        },
+        fallback: null,
+        needsActivity: false,
+      },
+    ],
+  };
+
+  it('leaves out a field with a personal detail, logs its path only, and sends the rest', async () => {
+    const { provider, requests } = spyProvider();
+    const result = await runFeature({
+      ...base,
+      feature: subPlanFeature,
+      provider,
+      input: plan,
+      systemPrompt: await loadPrompt('sub_plan', 'v1'),
+    });
+    expect(result.status).toBe('succeeded');
+    expect(result.problems).toEqual(['dropped blocks.B1.lesson.subNotes']);
+    const sent = `${requests[0]!.system}\n${requests[0]!.user}`;
+    expect(result.sentText).toBe(requests[0]!.user);
+    expect(sent).not.toMatch(/613|Tremblay|Léa|appelez/);
+    expect(sent).not.toContain('60000000-0000-4000-8000-000000031085');
+    expect(sent).toContain('Élève A distribue les textes.');
+    // The answer comes back with the name, and nothing of the note that was left out.
+    const steps = result.output!.blocks[0]!.steps.map((s) => s.instruction).join('\n');
+    expect(steps).toContain('Léa distribue les textes.');
+    expect(JSON.stringify(result.output)).not.toContain('613');
+  });
+
+  it('still refuses to send a detail that reached the message another way', async () => {
+    const { provider, requests } = spyProvider();
+    const result = await runFeature({
+      ...base,
+      feature: {
+        ...subPlanFeature,
+        // A feature that forgets to clean a field: the last check still catches it.
+        redactInput: (value: SubPlanAiInput) => ({ input: value, blocked: [], dropped: [] }),
+      },
+      provider,
+      input: plan,
+      systemPrompt: 'Système.',
+    });
+    expect(result).toMatchObject({ status: 'failed', errorCode: 'personalInfo', sentText: null });
+    expect(requests).toHaveLength(0);
+  });
+
+  it('runs with the real prompt when staff names hold particles or very short parts', async () => {
+    const { provider } = spyProvider();
+    const result = await runFeature({
+      ...base,
+      feature: subPlanFeature,
+      provider,
+      input: {
+        ...plan,
+        blocks: [{ ...plan.blocks[0]!, lesson: { ...plan.blocks[0]!.lesson!, subNotes: null } }],
+      },
+      systemPrompt: await loadPrompt('sub_plan', 'v1'),
+      people: [
+        ...people,
+        { name: 'Marc De Grandpré', kind: 'staff' },
+        { name: 'Marie La Salle', kind: 'staff' },
+        { name: 'Minh Lê', kind: 'staff' },
+        { name: 'Anh Tạ', kind: 'staff' },
+      ],
+    });
+    expect(result.status).toBe('succeeded');
+    expect(result.problems).toEqual([]);
   });
 });

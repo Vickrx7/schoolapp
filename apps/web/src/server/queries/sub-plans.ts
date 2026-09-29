@@ -31,6 +31,10 @@ export interface OwnerPlan {
   plan: SubPlanV1 | null;
   /** The teacher's overlay (D-048); an unreadable overlay is ignored rather than shown. */
   edits: SubPlanEdits | null;
+  /** The AI layer (sub_plans.ai, D-052), read leniently by composeSubPlan. */
+  ai: unknown;
+  /** The plan's latest « Consignes détaillées » request, if any (ai_jobs, 30 days). */
+  aiJobId: string | null;
   absence: {
     id: string;
     schoolId: string;
@@ -62,7 +66,7 @@ export async function loadPlanForOwner(
   const { data: row } = await supabase
     .from('sub_plans')
     .select(
-      'id, plan_date, status, review_deadline, released_at, content_version, edits, edits_revision, edited_at, plan, absences!inner(id, school_id, teacher_id, starts_on, ends_on, part, note, status, sources_changed_at)',
+      'id, plan_date, status, review_deadline, released_at, content_version, edits, edits_revision, edited_at, plan, ai, ai_job_id, absences!inner(id, school_id, teacher_id, starts_on, ends_on, part, note, status, sources_changed_at)',
     )
     .eq('id', planId)
     .maybeSingle();
@@ -119,6 +123,8 @@ export async function loadPlanForOwner(
     editedAt: row.edited_at,
     plan,
     edits: parsedEdits?.success ? parsedEdits.data : null,
+    ai: row.ai,
+    aiJobId: row.ai_job_id,
     absence: {
       id: absence.id,
       schoolId: absence.school_id,
@@ -170,6 +176,7 @@ const staffPlanSchema = z.union([
     contentVersion: z.number().int(),
     plan: z.unknown(),
     edits: z.unknown(),
+    ai: z.unknown(),
     school: z.object({
       name: z.string(),
       officePhone: z.string().nullable(),
@@ -203,6 +210,8 @@ export type StaffPlan =
       /** Null when the stored plan cannot be read. */
       plan: SubPlanV1 | null;
       edits: SubPlanEdits | null;
+      /** The AI layer, read leniently by composeSubPlan. */
+      ai: unknown;
       context: PlanContext;
       roster: RosterStudent[];
       levels: PlanLevel[];
@@ -264,6 +273,7 @@ export async function loadPlanForStaff(
     contentVersion: d.contentVersion,
     plan: plan.success ? plan.data : null,
     edits: edits?.success ? edits.data : null,
+    ai: d.ai ?? null,
     context: {
       planId: d.planId,
       planDate: d.planDate,

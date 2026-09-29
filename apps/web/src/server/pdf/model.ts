@@ -61,6 +61,8 @@ export interface PlanPdfLabels {
     otherAdult: (name: string) => string;
     minutes: (n: number) => string;
   };
+  /** The AI layer's parts of a block (3b, D-052). */
+  ai: Record<'overview' | 'differentiation' | 'activity', string>;
   /** No « Gestion de classe »: it is never printed. */
   classNotes: Record<'arrival' | 'routines' | 'dismissal' | 'fallbackActivities', string>;
   contacts: Record<'office' | 'neighbour' | 'arrival' | 'emergency', string>;
@@ -133,7 +135,7 @@ export interface PlanPdfModel {
 }
 
 /** Teacher text as typed: Windows line breaks and tabs made plain, trailing space removed. */
-function clean(text: string): string {
+export function clean(text: string): string {
   return text
     .replace(/\r\n?/g, '\n')
     .replace(/\t/g, '    ')
@@ -141,7 +143,7 @@ function clean(text: string): string {
     .trim();
 }
 
-function nonBlank(text: string | null | undefined): string | null {
+export function nonBlank(text: string | null | undefined): string | null {
   const v = text == null ? '' : clean(text);
   return v ? v : null;
 }
@@ -162,10 +164,15 @@ function listPart(label: string | null, items: readonly string[]): PdfPart[] {
   return cleaned.length ? [{ kind: 'list', label, items: cleaned }] : [];
 }
 
-function pdfBlock(block: ComposedBlock, labels: PlanPdfLabels, showClass: boolean): PlanPdfBlock {
+function pdfBlock(
+  block: ComposedBlock,
+  labels: PlanPdfLabels,
+  showClass: boolean,
+  groupName: (key: string) => string,
+): PlanPdfBlock {
   const { locale } = labels;
   const lesson = block.lesson;
-  const details: PdfPart[] = [];
+  const details: PdfPart[] = [...textPart(labels.ai.overview, block.ai?.overview)];
   if (lesson) {
     if (!quoted(block, lesson.objectives)) {
       details.push(...textPart(labels.block.objectives, lesson.objectives));
@@ -180,8 +187,19 @@ function pdfBlock(block: ComposedBlock, labels: PlanPdfLabels, showClass: boolea
   }
   details.push(...textPart(labels.block.notes, block.notes));
 
+  // The AI layer's instructions by group are for the adult (level names allowed); the students'
+  // own copies of an activity are a separate document (never with a level name, D-042).
+  const activity = block.ai?.activity;
   const extras: PdfPart[] = [
     ...textPart(labels.block.teacherNote, block.teacherNote),
+    ...listPart(
+      labels.ai.differentiation,
+      (block.ai?.differentiation ?? []).map((d) => `${groupName(d.group)} — ${d.instruction}`),
+    ),
+    ...textPart(
+      labels.ai.activity,
+      activity ? `${activity.title}\n${activity.studentInstructions}` : null,
+    ),
     ...listPart(labels.block.materials, block.ai?.materialsChecklist ?? []),
     ...textPart(labels.block.ifTime, block.ai?.ifTimeRemains),
   ];
@@ -314,10 +332,18 @@ export function buildPlanPdfModel(
     }
   };
 
+  const levelById = new Map(levels.map((l) => [l.id, l]));
+  const groupNames = new Map(
+    plan.groups.map((g) => {
+      const level = g.levelId ? levelById.get(g.levelId) : undefined;
+      const name = level ? localized(locale, level.labelFr, level.labelEn) : labels.groups.noLevel;
+      return [g.key, `${g.key} · ${name}`];
+    }),
+  );
   section(
     'schedule',
     [],
-    plan.blocks.map((b) => pdfBlock(b, labels, several)),
+    plan.blocks.map((b) => pdfBlock(b, labels, several, (key) => groupNames.get(key) ?? key)),
   );
   section(
     'events',

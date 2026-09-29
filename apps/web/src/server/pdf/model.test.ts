@@ -11,6 +11,7 @@ import {
   EN_LABELS,
   FR_LABELS,
   FRENCH_TYPOGRAPHY,
+  LESSON_4,
   LEVELS,
   pdfPlan,
   ROSTER,
@@ -127,6 +128,56 @@ describe('buildPlanPdfModel', () => {
       ['Note de l’enseignant·e', 'Les responsables de la semaine distribuent les textes.'],
     ]);
     expect(m.stepsLabel).toBe('Déroulement');
+  });
+
+  it('prints the AI layer’s parts for the adult, under the teacher’s own steps', () => {
+    const ai = {
+      jobId: 'job',
+      refs: [{ key: 'B1', ref: { blockKey: BLOCK.french, lessonId: LESSON_4 } }],
+      result: {
+        dayOverview: '',
+        blocks: [
+          {
+            key: 'B1',
+            overview: 'Lecture du huard et idée principale.',
+            steps: [{ minutes: 50, instruction: 'Lisez le texte.', say: '« Écoutez bien. »' }],
+            differentiation: [
+              { group: 'G1', instruction: 'Version illustrée du texte.' },
+              { group: 'G2', instruction: 'Un paragraphe de plus.' },
+            ],
+            ifTimeRemains: 'Lecture libre.',
+            materialsChecklist: ['Texte « Le huard »'],
+            activity: {
+              title: 'Mon idée principale',
+              studentInstructions: 'Écris l’idée principale du texte.',
+              perGroup: [{ group: 'G1', studentInstructions: 'Dessine-la.' }],
+            },
+          },
+        ],
+        faithSentence: '',
+      },
+    };
+    const plan = composeSubPlan(pdfPlan(), { edits: EDITS, ai, audience: 'pdf' });
+    const french = block(model(FR_LABELS, plan), BLOCK.french);
+    // The teacher's steps win; the AI layer adds its overview, groups and activity.
+    expect(french.steps[0]).toEqual({ minutes: '10 min', text: FRENCH_TYPOGRAPHY, say: null });
+    expect(texts(french.details)[0]).toEqual(['En bref', 'Lecture du huard et idée principale.']);
+    expect(texts(french.extras)).toEqual([
+      ['Note de l’enseignant·e', 'Les responsables de la semaine distribuent les textes.'],
+      [
+        'Consignes par groupe',
+        'G1 · Débutant — Version illustrée du texte.',
+        'G2 · Avancé — Un paragraphe de plus.',
+      ],
+      ['Activité pour les élèves', 'Mon idée principale\nÉcris l’idée principale du texte.'],
+      ['Matériel et où le trouver', 'Texte « Le huard »'],
+      ['Si vous avez du temps', 'Lecture libre.'],
+    ]);
+    // Without the teacher's steps, the AI's steps and « Dites : » lines are printed.
+    const aiOnly = composeSubPlan(pdfPlan(), { ai, audience: 'pdf' });
+    expect(block(model(FR_LABELS, aiOnly), BLOCK.french).steps).toEqual([
+      { minutes: '50 min', text: 'Lisez le texte.', say: 'Dites : « Écoutez bien. »' },
+    ]);
   });
 
   it('prints events on their block, handovers and the day’s other events', () => {

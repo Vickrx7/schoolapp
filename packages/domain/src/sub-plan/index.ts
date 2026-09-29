@@ -10,3 +10,4 @@ export * from './compose';
 export * from './report';
 export * from './absence-form';
 export * from './access-code';
+export * from './ai-input';

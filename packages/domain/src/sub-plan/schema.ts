@@ -233,7 +233,8 @@ export type SubPlanEdits = z.infer<typeof subPlanEditsSchema>;
 
 // ---------------------------------------------------------------------------------------
 // AI layer (3b, sub_plans.ai), read leniently: anything unexpected makes the layer ignored.
-// Written by the database from the ai_jobs row: {jobId, appliedAt, refs: input.blocks, result}.
+// Written by the database from the ai_jobs row (app.ai_jobs_apply_sub_plan): {jobId, appliedAt,
+// refs: each request block's key and ref, faithRef, result}.
 // ---------------------------------------------------------------------------------------
 
 export const subPlanAiLayerSchema = z.object({
@@ -246,6 +247,8 @@ export const subPlanAiLayerSchema = z.object({
       ref: z.object({ blockKey: uuid, lessonId: uuid.nullable() }),
     }),
   ),
+  /** The faith reference the sentence was written for (null: the request had none). */
+  faithRef: uuid.nullable().optional(),
   result: z.object({
     dayOverview: z.string(),
     blocks: z.array(

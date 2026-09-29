@@ -46,6 +46,8 @@ const KNOWN_ERRORS = new Set([
   'encryptionKeyMissing',
   'subReportPending',
   'subReportExists',
+  'subPlanAiStale',
+  'subPlanAiNothing',
 ]);
 
 /** Translates an error key from a server action; unknown keys fall back to a generic message. */

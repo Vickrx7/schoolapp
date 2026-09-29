@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { pdfNotFound, planPdfResponse } from '@/server/pdf/response';
+import { pdfNotFound, planPdfResponse, requestedPdfDoc } from '@/server/pdf/response';
 import {
   loadPlanForOwner,
   loadPlanForStaff,
@@ -16,14 +16,18 @@ export const dynamic = 'force-dynamic';
  * prefetched. The absent teacher prints her own plan (RLS, not audited) at any time while the
  * absence stands; direction and office print it once released, through get_sub_plan_for_staff,
  * which records sub_plan.printed. Never alerts, never « Gestion de classe ».
+ *
+ * `?doc=activities` prints the students' activity sheets instead (3b): the same people, the same
+ * checks and the same audit; 404 when the plan has no activity.
  */
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: RouteContext<'/absences/[absenceId]/plans/[planId]/pdf'>,
 ) {
   const session = await requireSession();
   const { absenceId, planId } = await params;
-  if (!z.uuid().safeParse(absenceId).success || !z.uuid().safeParse(planId).success) {
+  const doc = requestedPdfDoc(request);
+  if (!doc || !z.uuid().safeParse(absenceId).success || !z.uuid().safeParse(planId).success) {
     return pdfNotFound();
   }
 
@@ -39,23 +43,29 @@ export async function GET(
     ) {
       return pdfNotFound();
     }
-    return planPdfResponse({
+    const response = await planPdfResponse({
+      doc,
       plan: owned.plan,
       edits: owned.edits,
+      ai: owned.ai,
       context: owned.context,
       roster: owned.roster,
       levels: owned.levels,
     });
+    return response ?? pdfNotFound();
   }
 
   if (!(await staffSchoolForAbsence(session, absenceId))) return pdfNotFound();
   const staff = await loadPlanForStaff(planId, 'pdf');
   if (!staff?.released || staff.absenceId !== absenceId || !staff.plan) return pdfNotFound();
-  return planPdfResponse({
+  const response = await planPdfResponse({
+    doc,
     plan: staff.plan,
     edits: staff.edits,
+    ai: staff.ai,
     context: staff.context,
     roster: staff.roster,
     levels: staff.levels,
   });
+  return response ?? pdfNotFound();
 }

@@ -178,6 +178,18 @@ describe('composeSubPlan', () => {
 
     const broken = composeSubPlan(plan, { audience: 'substitute', ai: { result: 'oops' } });
     expect(broken.blocks).toEqual(composeSubPlan(plan, { audience: 'substitute' }).blocks);
+
+    // The faith sentence goes with the reference it was written for, not one a rebuild picked.
+    const sameRef = composeSubPlan(plan, {
+      audience: 'substitute',
+      ai: { ...ai, faithRef: plan.faith!.referenceId },
+    });
+    expect(sameRef.faith?.linkSentence).toBe('Aujourd’hui, pensons aux animaux.');
+    const otherRef = composeSubPlan(plan, {
+      audience: 'substitute',
+      ai: { ...ai, faithRef: 'bbbbbbbb-0000-4000-8000-000000000000' },
+    });
+    expect(otherRef.faith).toMatchObject({ text: plan.faith!.text, linkSentence: null });
   });
 });
 

@@ -111,7 +111,9 @@
     "subCodesKeyMissing": "Les codes de suppléance ne sont pas configurés sur ce serveur. Communiquez avec l’équipe de soutien.",
     "encryptionKeyMissing": "Le chiffrement n’est pas configuré sur ce serveur. Vos réponses sont gardées : communiquez avec l’équipe de soutien.",
     "subReportPending": "Le suivi peut encore arriver : attendez la fin de la journée de la personne suppléante.",
-    "subReportExists": "Un suivi est arrivé pour cette journée : confirmez-le plutôt."
+    "subReportExists": "Un suivi est arrivé pour cette journée : confirmez-le plutôt.",
+    "subPlanAiStale": "Le plan a changé depuis l’aperçu. Vérifiez de nouveau avant d’envoyer.",
+    "subPlanAiNothing": "Ce plan n’a aucune période d’enseignement à détailler."
   },
   "days": {
     "1": "lundi",
@@ -733,6 +735,77 @@
     },
     "blockWarning": "{block} : {warning}"
   },
+  "subPlanAi": {
+    "title": "Consignes détaillées (IA)",
+    "intro": "À partir de vos leçons, l’IA peut préparer des étapes minutées avec des phrases à dire, des consignes pour chaque groupe et une activité quand une leçon est mince. Vous vérifiez d’abord exactement ce qui sera envoyé.",
+    "add": "Ajouter des consignes détaillées (IA)",
+    "redo": "Préparer de nouvelles consignes",
+    "preview": "Vérifier avant d’envoyer",
+    "previewIntro": "Voici exactement ce qui sera envoyé à l’IA, avec les consignes fixes de l’application. Les noms sont remplacés par des marqueurs et les groupes ne sont que des nombres d’élèves. Les vrais noms sont remis seulement une fois la réponse revenue sur nos serveurs, au Canada.",
+    "periods": "{count, plural, one {# période sera détaillée.} other {# périodes seront détaillées.}}",
+    "replacedCount": "{count, plural, =0 {Aucun nom remplacé.} one {# nom remplacé.} other {# noms remplacés.}}",
+    "previewCheck": "Vérifiez qu’aucun autre renseignement personnel (par exemple le nom d’un parent) ne reste dans le texte. Les alertes, la gestion de classe, votre note d’absence et les noms de la classe et de l’école ne sont jamais envoyés.",
+    "notSent": "Non envoyé",
+    "notSentTitle": "Non envoyé : contient un renseignement personnel",
+    "notSentIntro": "Ces éléments de votre planification ne seront pas envoyés. Pour les inclure, retirez-en le renseignement, puis vérifiez de nouveau.",
+    "notSentItem": "{where} — {field} : {kinds}",
+    "group": "Groupe {key}",
+    "theDay": "La journée",
+    "fields": {
+      "title": "titre de la leçon",
+      "objectives": "intention d’apprentissage",
+      "materials": "matériel",
+      "content": "contenu de la leçon",
+      "subNotes": "note pour la personne suppléante",
+      "fallback": "activités de rechange",
+      "subjectLabel": "matière",
+      "unitTitle": "titre de l’unité",
+      "room": "local",
+      "eventTitle": "événement",
+      "levelLabel": "nom du niveau",
+      "levelDescription": "description du niveau",
+      "faithTitle": "titre du moment de foi",
+      "faithText": "texte du moment de foi",
+      "gradeLabel": "année d’études"
+    },
+    "kinds": {
+      "email": "un courriel",
+      "phone": "un numéro de téléphone",
+      "identifier": "un numéro d’identification",
+      "postalCode": "un code postal",
+      "address": "une adresse",
+      "birthDate": "une date de naissance"
+    },
+    "send": "Envoyer à l’IA",
+    "sending": "Envoi…",
+    "queued": "En attente…",
+    "running": "L’IA prépare les consignes détaillées…",
+    "runningHint": "Cela prend habituellement une ou deux minutes. Vous pouvez quitter cette page : les consignes seront ajoutées au plan.",
+    "reconnecting": "Connexion au serveur interrompue. Nouvelle tentative en cours…",
+    "tooLong": "C’est plus long que prévu.",
+    "tooLongHint": "Le service d’IA est peut-être occupé. Votre plan est complet sans les consignes détaillées : vérifiez de nouveau plus tard.",
+    "checkAgain": "Vérifier de nouveau",
+    "applied": "Consignes détaillées ajoutées",
+    "appliedAt": "Ajoutées le {date} à {time}. Vos propres modifications passent toujours en premier.",
+    "appliedHint": "Vos propres modifications passent toujours en premier.",
+    "failed": "Les consignes détaillées n’ont pas pu être préparées. Votre plan reste complet sans elles.",
+    "notApplied": "Les consignes sont arrivées après que la personne suppléante a ouvert le plan : elles n’ont pas été ajoutées.",
+    "inUse": "Une personne suppléante a déjà ouvert ce plan : on ne peut plus y ajouter de consignes détaillées.",
+    "aiOff": "L’IA n’est pas activée pour votre école. La direction peut l’activer dans la page École.",
+    "nothing": "Ce plan n’a aucune période d’enseignement à détailler.",
+    "remove": "Retirer les consignes détaillées",
+    "removeConfirm": "Retirer les consignes détaillées de ce plan ? Vos propres modifications restent.",
+    "removeConfirmButton": "Retirer",
+    "removed": "Consignes détaillées retirées.",
+    "sentText": "Voir exactement ce qui a été envoyé",
+    "block": {
+      "badge": "Préparé avec l’IA",
+      "overview": "En bref",
+      "differentiation": "Consignes par groupe",
+      "activity": "Activité pour les élèves",
+      "perGroup": "Version pour le groupe {group}"
+    }
+  },
   "subProfile": {
     "title": "Fiche de suppléance",
     "intro": "Ces renseignements sont repris dans chaque plan de suppléance de la classe.",
@@ -1003,5 +1076,10 @@
     "page": "Page {page} sur {total}",
     "alertsElsewhere": "Alertes de sécurité ou médicales : consultez l’application ou la direction.",
     "failed": "Le PDF n’a pas pu être créé. Le plan reste affiché dans l’application : réessayez dans un moment."
+  },
+  "activitySheets": {
+    "open": "Activités pour les élèves (PDF)",
+    "download": "Télécharger les activités des élèves",
+    "hint": "Une page par groupe, avec son numéro dans le coin : aucun nom d’élève ni nom de niveau."
   }
 }

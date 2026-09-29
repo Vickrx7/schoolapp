@@ -7,6 +7,7 @@ import { PortalPlan } from '@/components/sub-portal/portal-plan';
 import { PortalPoller } from '@/components/sub-portal/portal-poller';
 import { Notice } from '@/components/ui/card';
 import { formatInstantTime, formatLocalDate, instantInZone } from '@/lib/format';
+import { hasActivitySheets } from '@/server/pdf/activities-model';
 import { requireSubDay } from '@/server/sub-portal/session';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -67,7 +68,11 @@ export default async function PortalPlanPage() {
     );
   }
 
-  const plan = composeSubPlan(stored.plan, { edits: stored.edits, audience: 'substitute' });
+  const plan = composeSubPlan(stored.plan, {
+    edits: stored.edits,
+    ai: stored.ai,
+    audience: 'substitute',
+  });
   // « Mis à jour à 9 h 12 »: the teacher changed the plan after it went out.
   const changedAfterRelease =
     new Date(context.updatedAt).getTime() > new Date(context.releaseAt).getTime();
@@ -103,6 +108,7 @@ export default async function PortalPlanPage() {
         }}
         roster={day.roster}
         levels={day.levels}
+        activitySheets={hasActivitySheets(plan)}
       />
     </div>
   );

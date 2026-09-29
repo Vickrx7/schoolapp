@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatLocalDate, formatTime, formatTimeRange } from '@/lib/format';
 import { BlockCard, TypedText } from './block-card';
-import { GroupsPanel } from './groups-panel';
+import { GroupsPanel, groupLabels } from './groups-panel';
 import type { PlanContext, PlanLevel, RosterStudent } from './types';
 import { WarningsList } from './warnings-list';
 
@@ -76,6 +76,7 @@ export function PlanView({
   const neighbours = plan.classNotes.filter((n) => n.neighbour);
   const team = plan.classNotes.flatMap((n) => n.team.map((m) => ({ ...m, classId: n.classId })));
   const className = (id: string) => plan.classes.find((c) => c.classId === id)?.name ?? '';
+  const labels = groupLabels(plan, levels, locale, t('groups.noLevel'));
 
   return (
     <div className="space-y-4">
@@ -143,6 +144,7 @@ export function PlanView({
                 block={b}
                 audience={plan.audience}
                 showClass={multipleClasses}
+                groupLabels={labels}
                 edit={slots.block?.(b)}
               />
             </li>

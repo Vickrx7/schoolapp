@@ -2163,6 +2163,8 @@ export type Database = {
           edited_by: string | null;
           edited_at: string | null;
           released_by: string | null;
+          ai: Json | null;
+          ai_job_id: string | null;
         };
         Insert: {
           id?: string;
@@ -2184,6 +2186,8 @@ export type Database = {
           edited_by?: string | null;
           edited_at?: string | null;
           released_by?: string | null;
+          ai?: Json | null;
+          ai_job_id?: string | null;
         };
         Update: {
           id?: string;
@@ -2205,6 +2209,8 @@ export type Database = {
           edited_by?: string | null;
           edited_at?: string | null;
           released_by?: string | null;
+          ai?: Json | null;
+          ai_job_id?: string | null;
         };
         Relationships: [
           {
@@ -2212,6 +2218,13 @@ export type Database = {
             columns: ['absence_id'];
             isOneToOne: false;
             referencedRelation: 'absences';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'sub_plans_ai_job_id_fkey';
+            columns: ['ai_job_id'];
+            isOneToOne: false;
+            referencedRelation: 'ai_jobs';
             referencedColumns: ['id'];
           },
           {
@@ -2797,6 +2810,10 @@ export type Database = {
         Args: { p_absence_id: string };
         Returns: undefined;
       };
+      clear_sub_plan_ai: {
+        Args: { p_plan_id: string };
+        Returns: undefined;
+      };
       confirm_sub_report: {
         Args: { p_report_id: string; p_decisions: Json };
         Returns: undefined;
@@ -2907,6 +2924,10 @@ export type Database = {
       };
       request_ai_job: {
         Args: { p_school_id: string; p_feature: string; p_input: Json };
+        Returns: string;
+      };
+      request_sub_plan_ai: {
+        Args: { p_plan_id: string; p_input: Json; p_expected_version?: number };
         Returns: string;
       };
       revoke_sub_access_code: {

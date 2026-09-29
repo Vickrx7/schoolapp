@@ -1,5 +1,5 @@
 import type { ComposedBlock, SubPlanAudience } from '@lynx/domain';
-import { MapPin, Pencil, TriangleAlert, Users } from 'lucide-react';
+import { MapPin, Pencil, Sparkles, TriangleAlert, Users } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
 import { Badge, Card } from '@/components/ui/card';
@@ -32,14 +32,18 @@ export function BlockCard({
   block,
   audience,
   showClass,
+  groupLabels = {},
   edit,
 }: {
   block: ComposedBlock;
   audience: SubPlanAudience;
   showClass: boolean;
+  /** « G1 · Débutant », for the AI layer's instructions by group (groups-panel.tsx). */
+  groupLabels?: Readonly<Record<string, string>>;
   edit?: { steps?: ReactNode; actions?: ReactNode };
 }) {
   const t = useTranslations('subPlan');
+  const tAi = useTranslations('subPlanAi');
   const tRoot = useTranslations();
   const locale = useLocale();
   const lesson = block.lesson;
@@ -135,16 +139,30 @@ export function BlockCard({
           </Labelled>
         ) : null}
 
+        {block.ai?.overview ? (
+          <Labelled label={tAi('block.overview')}>
+            <TypedText text={block.ai.overview} />
+          </Labelled>
+        ) : null}
+
         {edit?.steps ?? (
           <div>
-            <p className="mb-1 text-sm font-medium text-slate-700">{t('block.steps')}</p>
+            <p className="mb-1 flex flex-wrap items-center gap-2 text-sm font-medium text-slate-700">
+              {t('block.steps')}
+              {block.stepsSource === 'ai' ? (
+                <Badge tone="brand">
+                  <Sparkles className="size-3" aria-hidden />
+                  {tAi('block.badge')}
+                </Badge>
+              ) : null}
+            </p>
             {block.steps.length === 0 ? (
               <p className="text-sm text-slate-500">{t('block.noSteps')}</p>
             ) : (
               <ol className="space-y-1.5 text-sm">
                 {block.steps.map((s, i) => (
                   <li key={i} className="flex gap-2">
-                    <span className="w-12 shrink-0 text-slate-500 tabular-nums">
+                    <span className="w-14 shrink-0 whitespace-nowrap text-slate-500 tabular-nums">
                       {s.minutes ? t('block.minutes', { n: s.minutes }) : '•'}
                     </span>
                     <span className="min-w-0 flex-1">
@@ -166,6 +184,41 @@ export function BlockCard({
           <Labelled label={t('block.teacherNote')}>
             <TypedText text={block.teacherNote} />
           </Labelled>
+        ) : null}
+
+        {block.ai?.differentiation.length ? (
+          <Labelled label={tAi('block.differentiation')}>
+            <ul className="mt-1 space-y-1.5" data-testid="plan-ai-groups">
+              {block.ai.differentiation.map((d, i) => (
+                <li key={i}>
+                  <span className="font-medium">{groupLabels[d.group] ?? d.group}</span>
+                  <TypedText text={d.instruction} />
+                </li>
+              ))}
+            </ul>
+          </Labelled>
+        ) : null}
+        {block.ai?.activity ? (
+          <div
+            className="space-y-1.5 rounded-lg border border-slate-200 p-3 text-sm"
+            data-testid="plan-ai-activity"
+          >
+            <p className="font-medium text-slate-700">{tAi('block.activity')}</p>
+            <p className="font-medium text-slate-900">{block.ai.activity.title}</p>
+            <TypedText text={block.ai.activity.studentInstructions} className="text-slate-800" />
+            {block.ai.activity.perGroup.length ? (
+              <ul className="space-y-1.5">
+                {block.ai.activity.perGroup.map((g, i) => (
+                  <li key={i}>
+                    <span className="font-medium text-slate-700">
+                      {tAi('block.perGroup', { group: groupLabels[g.group] ?? g.group })}
+                    </span>
+                    <TypedText text={g.studentInstructions} className="text-slate-800" />
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
         ) : null}
 
         {block.ai?.materialsChecklist.length ? (

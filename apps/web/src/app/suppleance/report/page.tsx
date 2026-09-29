@@ -57,7 +57,11 @@ export default async function PortalReportPage() {
     );
   }
 
-  const plan = composeSubPlan(stored.plan, { edits: stored.edits, audience: 'substitute' });
+  const plan = composeSubPlan(stored.plan, {
+    edits: stored.edits,
+    ai: stored.ai,
+    audience: 'substitute',
+  });
   const lessons = reportableLessons(plan);
   const rosterIds = new Set(day.roster.map((s) => s.id));
   const report = day.report;

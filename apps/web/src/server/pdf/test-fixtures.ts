@@ -26,6 +26,8 @@ export const BLOCK = {
   gym: id('60000000', 4),
   dismissal: id('60000000', 5),
 };
+/** A science period without a lesson (withScience): the AI adds an activity to such periods. */
+export const SCIENCE_BLOCK = id('60000000', 6);
 export const LESSON_4 = id('40000000', 4);
 const DEBUTANT = id('70000000', 1);
 const AVANCE = id('70000000', 2);
@@ -209,6 +211,71 @@ export function pdfPlan(overrides: Partial<SubPlanV1> = {}): SubPlanV1 {
     generator: { version: 'domain-1', generatedAt: '2026-10-20T10:00:00.000Z' },
     ...overrides,
   });
+}
+
+/** pdfPlan with a science period at 11:15 that has no lesson (for the activity sheets). */
+export function withScience(overrides: Partial<SubPlanV1> = {}): SubPlanV1 {
+  const base = pdfPlan(overrides);
+  const math = base.blocks.findIndex((b) => b.key === BLOCK.math);
+  const science: SubPlanV1['blocks'][number] = {
+    ...base.blocks[math]!,
+    key: SCIENCE_BLOCK,
+    start: '11:15',
+    end: '12:05',
+    status: 'normal',
+    title: 'Sciences et technologie',
+    subjectLabel: 'Sciences et technologie',
+    event: null,
+    lesson: null,
+    steps: [{ minutes: null, text: 'Proposez une activité de rechange.' }],
+    warnings: ['no_active_unit'],
+  };
+  return subPlanV1Schema.parse({
+    ...base,
+    blocks: [...base.blocks.slice(0, math + 1), science, ...base.blocks.slice(math + 1)],
+  });
+}
+
+/** An activity of the AI layer (sub_plans.ai), as the answer holds it. */
+export interface Activity {
+  title: string;
+  studentInstructions: string;
+  perGroup: { group: string; studentInstructions: string }[];
+}
+
+/**
+ * An AI layer (sub_plans.ai) for withScience: Français (B1, written for `frenchLesson`) and
+ * Sciences (B2), each with the given activity or none.
+ */
+export function activityLayer(
+  french: Activity | null,
+  science: Activity | null,
+  frenchLesson: string | null = LESSON_4,
+) {
+  const block = (key: string, activity: Activity | null) => ({
+    key,
+    overview: 'Aperçu pour l’adulte.',
+    steps: [{ minutes: 40, instruction: 'Menez l’activité.', say: '' }],
+    differentiation: [
+      { group: 'G1', instruction: 'Débutant : version illustrée.' },
+      { group: 'G2', instruction: 'Avancé : un défi de plus.' },
+    ],
+    ifTimeRemains: '',
+    materialsChecklist: [],
+    activity,
+  });
+  return {
+    jobId: 'job',
+    refs: [
+      { key: 'B1', ref: { blockKey: BLOCK.french, lessonId: frenchLesson } },
+      { key: 'B2', ref: { blockKey: SCIENCE_BLOCK, lessonId: null } },
+    ],
+    result: {
+      dayOverview: '',
+      blocks: [block('B1', french), block('B2', science)],
+      faithSentence: '',
+    },
+  };
 }
 
 /** The teacher's overlay: her own steps for Français, a note and an overview. */

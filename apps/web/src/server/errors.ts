@@ -32,6 +32,9 @@ export function errorKey(error: PgLikeError | null | undefined): string {
       return 'subCodeLimit';
     case 'LXS14':
       return 'subDayOver';
+    // « Consignes détaillées » (supabase/migrations/20261002100000_sub_plan_ai.sql).
+    case 'LXS15':
+      return 'subPlanAiStale';
     case 'LXS20':
       return 'absencePast';
     case 'LXS21':

@@ -6,7 +6,9 @@
   "exports": {
     ".": "./src/index.ts",
     "./privacy": "./src/privacy.ts",
-    "./features/differentiate": "./src/features/differentiate.ts"
+    "./features/differentiate": "./src/features/differentiate.ts",
+    "./features/sub-plan": "./src/features/sub-plan.ts",
+    "./features/shared": "./src/features/shared.ts"
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json"

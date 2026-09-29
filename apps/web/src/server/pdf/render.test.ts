@@ -1,9 +1,13 @@
+import { composeSubPlan } from '@lynx/domain';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import { sheetBodySize } from './activities-document';
+import { buildActivitiesPdfModel } from './activities-model';
 import { registerPdfFonts } from './fonts';
 import { buildPlanPdfModel } from './model';
-import { renderPlanPdf } from './render';
+import { renderActivitiesPdf, renderPlanPdf } from './render';
 import {
+  activityLayer,
   composed,
   CONTEXT,
   EN_LABELS,
@@ -12,6 +16,7 @@ import {
   LEVELS,
   pdfPlan,
   ROSTER,
+  withScience,
 } from './test-fixtures';
 
 // The server runs from apps/web; the tests run from the repository root.
@@ -76,5 +81,56 @@ describe('renderPlanPdf', () => {
     );
     expectPdf(pdf);
     expect(pages(pdf)).toBe(1);
+  });
+});
+
+describe('renderActivitiesPdf', () => {
+  /** French text of exactly `n` characters. */
+  const fill = (n: number) => {
+    const sentence =
+      'Lis la consigne avec ton ou ta camarade, puis écris ta réponse dans ton cahier. ';
+    return sentence.repeat(Math.ceil(n / sentence.length)).slice(0, n);
+  };
+
+  it('renders one page per group, even for the longest activity the AI may write', async () => {
+    // The longest parts validateSubPlan lets through: a 120-character title, 1 200 characters
+    // for the class and 800 for a group, with line breaks.
+    const longest = {
+      title: fill(120),
+      studentInstructions: `${fill(400)}\n${fill(400)}\n${fill(398)}`,
+      perGroup: [
+        { group: 'G1', studentInstructions: `${fill(399)}\n${fill(400)}` },
+        { group: 'G2', studentInstructions: 'Nomme trois forces.' },
+      ],
+    };
+    const short = {
+      title: 'Les forces autour de moi',
+      studentInstructions: 'Observe la classe.',
+      perGroup: [
+        { group: 'G1', studentInstructions: 'Dessine une poussée.' },
+        { group: 'G2', studentInstructions: 'Nomme trois forces.' },
+      ],
+    };
+    const model = buildActivitiesPdfModel(
+      composeSubPlan(withScience(), { ai: activityLayer(longest, short), audience: 'pdf' }),
+      ROSTER,
+      LEVELS,
+    );
+    expect(model.sheets).toHaveLength(4);
+    const pdf = await renderActivitiesPdf(model);
+    expectPdf(pdf);
+    expect(pages(pdf)).toBe(4);
+    // Large print for a short activity; smaller for a long one, so that it stays on its page.
+    const sizes = model.sheets.map(sheetBodySize);
+    expect(sizes[3]).toBe(15);
+    expect(sizes[0]).toBeLessThan(sizes[3]!);
+    const raw = pdf.toString('latin1');
+    expect(raw).toMatch(/\/BaseFont\s*\/[A-Z]{6}\+NotoSans-Bold/);
+  });
+
+  it('refuses to render a document without a sheet', async () => {
+    const model = buildActivitiesPdfModel(composed('pdf'), ROSTER, LEVELS);
+    expect(model.sheets).toEqual([]);
+    await expect(renderActivitiesPdf(model)).rejects.toThrow(/No activity sheet/);
   });
 });

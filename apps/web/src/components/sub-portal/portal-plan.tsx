@@ -6,7 +6,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useState, type KeyboardEvent, type ReactNode } from 'react';
 import { BlockCard, TypedText } from '@/components/sub-plans/block-card';
-import { GroupsPanel } from '@/components/sub-plans/groups-panel';
+import { GroupsPanel, groupLabels } from '@/components/sub-plans/groups-panel';
 import { PdfLink } from '@/components/sub-plans/pdf-link';
 import { PlanSection } from '@/components/sub-plans/plan-view';
 import { Timeline } from '@/components/sub-plans/timeline';
@@ -55,22 +55,27 @@ export function PortalPlan({
   context,
   roster,
   levels,
+  activitySheets,
 }: {
   plan: ComposedSubPlan;
   context: PortalPlanContext;
   roster: RosterStudent[];
   levels: PlanLevel[];
+  /** Whether the plan has students' activity sheets to download (3b). */
+  activitySheets: boolean;
 }) {
   const t = useTranslations('subPortal');
   const tPlan = useTranslations('subPlan');
   const tReport = useTranslations('subReport');
   const tPdf = useTranslations('pdf');
+  const tSheets = useTranslations('activitySheets');
   const tRoot = useTranslations();
   const locale = useLocale();
   const online = useOnline();
   const [tab, setTab] = useState<Tab>('schedule');
 
   const multipleClasses = plan.classes.length > 1;
+  const labels = groupLabels(plan, levels, locale, tPlan('groups.noLevel'));
   const className = (id: string) => plan.classes.find((c) => c.classId === id)?.name ?? '';
   const withClass = (label: string, classId: string) =>
     multipleClasses ? `${label} · ${className(classId)}` : label;
@@ -145,6 +150,18 @@ export function PortalPlan({
             <PdfLink href="/suppleance/pdf" label={tPdf('download')} download />
             <p className="text-sm text-slate-600">{tPdf('noAlerts')}</p>
           </div>
+          {/* The students' own pages, apart from the substitute's instructions (SPEC 9.4.5). */}
+          {activitySheets ? (
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+              <PdfLink
+                href="/suppleance/pdf?doc=activities"
+                label={tSheets('download')}
+                download
+                testId="activity-sheets-pdf"
+              />
+              <p className="text-sm text-slate-600">{tSheets('hint')}</p>
+            </div>
+          ) : null}
 
           {context.absenceNote || plan.overview ? (
             <PlanSection title={t('teacherNote')}>
@@ -209,7 +226,12 @@ export function PortalPlan({
             <ol className="space-y-3">
               {plan.blocks.map((b) => (
                 <li key={b.key} id={`block-${b.key}`} className="scroll-mt-40">
-                  <BlockCard block={b} audience="substitute" showClass={multipleClasses} />
+                  <BlockCard
+                    block={b}
+                    audience="substitute"
+                    showClass={multipleClasses}
+                    groupLabels={labels}
+                  />
                 </li>
               ))}
             </ol>
