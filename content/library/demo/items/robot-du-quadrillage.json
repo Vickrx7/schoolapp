@@ -26,7 +26,7 @@
   "durationMinutes": 30,
   "materials": "Du ruban-cache pour tracer au sol un quadrillage de 5 cases sur 5 (cases d’environ 40 cm de côté); de petits objets qui servent de trésors (gomme à effacer, cube, jeton); une feuille et un crayon par équipe. Sans espace libre au sol : un quadrillage de 5 × 5 cases sur une feuille et un pion par équipe.",
   "keywords": "codage, code, robot, programmation sans écran, instructions, séquence, répétition, boucle, déboguer, événements simultanés, quadrillage",
-  "tags": ["jeu", "stim", "cooperation", "mouvement"],
+  "tags": ["jeu", "stim", "cooperation", "mouvement", "codage"],
   "formats": {
     "printable": true,
     "projectable": true,

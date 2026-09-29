@@ -62,8 +62,9 @@ Every overall attente (attente) of each subject and grade is there. Contenus d�
 - **Planned codes:** `seed-pack.test.ts` allows four planned 5e Français codes until they are
   seeded (plan C5): C1, C1.2, D1 and D1.1. They are here, with the same meanings as the 3e codes.
   5e C1.1 and C1.3 were added with the 3e meanings too.
-- **Demo pack links:** every attente that a demo pack item links to exists in these files (29
-  links).
+- **Demo pack links:** every attente that a demo pack item links to exists in these files (107
+  links to 90 codes). Most of those codes are not in `supabase/seed.sql`, so the demo pack's SQL
+  can only load once these files are imported.
 - **Strand label:** importing these files rewrites the seeded Français strand labels with a
   non-breaking space before `:` (« Compréhension : … »). The seed has an ordinary space there.
 
@@ -94,6 +95,7 @@ Every overall attente (attente) of each subject and grade is there. Contenus d�
 ```bash
 # Every file parses (an empty array means no errors):
 pnpm exec tsx -e "import { readFileSync, readdirSync } from 'node:fs'; import { parseCurriculumFile } from './packages/content/src/curriculum-import'; for (const f of readdirSync('content/curriculum').filter((f) => f.endsWith('.json'))) console.log(f, parseCurriculumFile(readFileSync('content/curriculum/' + f, 'utf8')).errors);"
+pnpm exec vitest run packages/content/src/seed-pack.test.ts
 pnpm exec prettier --check content
 ```
 
@@ -106,8 +108,10 @@ These files were first checked with a one-off script. The script did the followi
 - It checked that the files are a superset of the seeded attentes.
 - It checked that the planned codes and the demo pack links exist.
 
-No test covers this folder yet. Turning those checks into a vitest file, like `seed-pack.test.ts`,
-would keep them.
+`packages/content/src/seed-pack.test.ts` now keeps most of those checks: every file parses
+without `--confirm-licence`, one subject and grade per file with a matching name, the same strands
+in both grades of a subject, the French style, the seeded and planned codes, and every attente a
+demo pack item links to. The parents and strands are checked by `parseCurriculumFile` itself.
 
 ## Loading
 
@@ -116,6 +120,8 @@ header of `curriculum-import.ts` describes it, and it is a dry run unless you pa
 
 - Never pass `--confirm-licence` for these files: they are paraphrases, not official text.
 - Load them only once the reviewer has gone through « À vérifier ».
+- Load them before the demo library pack (`content/library/demo`): its items link to these codes,
+  and the pack's SQL stops on the first attente it cannot find.
 
 ## « À vérifier »
 

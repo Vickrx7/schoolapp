@@ -26,7 +26,7 @@
   "durationMinutes": 45,
   "materials": "Par équipe : une règle d’un mètre, un ruban à mesurer d’au moins 3 m, une règle de 30 cm, une craie, une planchette à pince, une feuille d’enregistrement et un crayon. Pour le groupe : deux cônes, du ruban-cache et un sifflet.",
   "keywords": "mesure, longueur, centimètre, mètre, estimation, repères, règle, ruban à mesurer, craie, cour d’école",
-  "tags": ["exterieur", "mouvement", "cooperation"],
+  "tags": ["exterieur", "mouvement", "cooperation", "mesure"],
   "formats": {
     "printable": true,
     "projectable": false,

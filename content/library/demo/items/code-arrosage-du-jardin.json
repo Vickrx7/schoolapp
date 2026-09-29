@@ -26,7 +26,7 @@
   "durationMinutes": 40,
   "materials": "Une copie de la fiche par élève, dans la version prévue pour son groupe; un crayon; une gomme à effacer. Pour la simulation : quatre chaises et quatre cartes-nombres.",
   "keywords": "codage, code, pseudocode, condition, SI ALORS SINON, instruction conditionnelle, répétition, boucle, déboguer, variable, jardin",
-  "tags": ["stim"],
+  "tags": ["stim", "codage"],
   "formats": {
     "printable": true,
     "projectable": false,

@@ -26,7 +26,7 @@
   "durationMinutes": 30,
   "materials": "Par équipe : deux dés ordinaires (un rouge et un bleu, si possible), 11 jetons, une feuille pour la piste et un crayon.",
   "keywords": "probabilité, probabilité théorique, probabilité expérimentale, dés, somme, hasard, prédiction, tableau des effectifs, jeu",
-  "tags": ["jeu"],
+  "tags": ["jeu", "donnees"],
   "formats": {
     "printable": true,
     "projectable": true,

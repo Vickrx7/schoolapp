@@ -30,7 +30,7 @@
   "durationMinutes": 15,
   "materials": "Le défi affiché ou une copie par élève, un cahier de mathématiques et un crayon. Facultatif : de la monnaie de jeu et une calculatrice pour vérifier les calculs du vendredi.",
   "keywords": "défi de la semaine, littératie financière, budget, taxe de vente, TVH, argent, dollars et cents, revenus, dépenses, solde, comparer des prix",
-  "tags": ["decimaux"],
+  "tags": ["decimaux", "litteratie-financiere"],
   "formats": {
     "printable": true,
     "projectable": true,

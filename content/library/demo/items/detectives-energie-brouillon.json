@@ -27,7 +27,7 @@
   "durationMinutes": 45,
   "materials": "Par équipe de 3 : 1 planchette à pince, 1 feuille d’enquête avec un tableau de trois colonnes, 1 crayon. Pour l’adulte : un sifflet et des cônes pour délimiter la zone.",
   "keywords": "énergie, formes d’énergie, transformation de l’énergie, énergie lumineuse, thermique, mécanique, sonore, électrique, chimique, énergie renouvelable, cour d’école, plein air",
-  "tags": ["sciences", "exterieur"],
+  "tags": ["sciences", "exterieur", "energie"],
   "formats": {
     "printable": true,
     "projectable": false,

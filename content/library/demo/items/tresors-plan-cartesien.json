@@ -22,7 +22,7 @@
   "durationMinutes": 30,
   "materials": "Par élève : deux feuilles quadrillées (carreaux d’environ 1 cm), un crayon et une règle. Par équipe : un cartable ou une chemise de carton pour cacher les feuilles.",
   "keywords": "plan cartésien, premier quadrant, coordonnées, axe des x, axe des y, origine, translation, échelle, jeu de repérage",
-  "tags": ["jeu"],
+  "tags": ["jeu", "geometrie"],
   "formats": {
     "printable": true,
     "projectable": true,

@@ -22,7 +22,7 @@
   "durationMinutes": 40,
   "materials": "Deux feuilles de papier quadrillé à centimètres par élève, une règle, des ciseaux, de la colle ou du ruban adhésif et des crayons de couleur.",
   "keywords": "aire, parallélogramme, triangle, rectangle, base, hauteur, formule, découpage, papier quadrillé, centimètres carrés",
-  "tags": [],
+  "tags": ["geometrie", "mesure"],
   "formats": {
     "printable": true,
     "projectable": true,

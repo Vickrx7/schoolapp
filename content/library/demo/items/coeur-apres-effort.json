@@ -24,7 +24,7 @@
   "durationMinutes": 50,
   "materials": "Par dyade : 1 minuterie ou 1 horloge avec une aiguille des secondes, 1 feuille d’observation et 1 crayon. Pour la classe : un espace dégagé (la classe, chaises rangées, ou le gymnase).",
   "keywords": "pouls, fréquence cardiaque, respiration, système circulatoire, système respiratoire, cœur, poumons, oxygène, exercice, santé, expérience",
-  "tags": ["sciences", "mouvement"],
+  "tags": ["sciences", "mouvement", "corps-humain"],
   "formats": {
     "printable": true,
     "projectable": false,

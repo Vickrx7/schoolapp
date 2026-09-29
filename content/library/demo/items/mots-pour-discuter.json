@@ -26,7 +26,7 @@
   "durationMinutes": 20,
   "materials": "Une copie par élève ou une projection au tableau. Facultatif : les expressions écrites sur des bandes de carton pour le coin de discussion.",
   "keywords": "communication orale, discussion, débat, opinion, argument, reformuler, fait et opinion, tours de parole, expressions utiles",
-  "tags": ["vocabulaire", "cooperation"],
+  "tags": ["vocabulaire", "cooperation", "communication-orale"],
   "formats": {
     "printable": true,
     "projectable": true,

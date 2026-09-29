@@ -26,7 +26,7 @@
   "durationMinutes": 20,
   "materials": "Une copie du quiz par élève (dans la version qui convient à son niveau de langue) et un crayon. Facultatif : de la monnaie de jeu (pièces de 25 ¢, de 1 $ et de 2 $; billets de 5 $, de 10 $, de 20 $ et de 50 $).",
   "keywords": "quiz, monnaie canadienne, argent, pièces, billets, dollars, compter de l’argent, estimation, littératie financière",
-  "tags": ["evaluation"],
+  "tags": ["evaluation", "litteratie-financiere"],
   "formats": {
     "printable": true,
     "projectable": true,

@@ -34,7 +34,7 @@
   "durationMinutes": 30,
   "materials": "Pour le centre : 4 sacs de 20 à 30 petits objets à trier (boutons, blocs logiques ou bouchons de bouteilles de couleurs et de formes variées), 4 napperons plastifiés pour le diagramme de Carroll, des étiquettes, du papier quadrillé, des crayons de couleur, deux cordes et une minuterie.",
   "keywords": "trier, attributs, diagramme de Carroll, diagramme de Venn, tableau des effectifs, traits de dénombrement, pictogramme, échelle, mode, données",
-  "tags": ["cooperation"],
+  "tags": ["cooperation", "donnees"],
   "formats": {
     "printable": true,
     "projectable": false,

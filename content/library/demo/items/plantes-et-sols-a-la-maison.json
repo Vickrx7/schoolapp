@@ -22,7 +22,7 @@
   "durationMinutes": 10,
   "materials": "Une copie par famille : la partie en français, puis la partie en anglais.",
   "keywords": "guide pour les familles, parents, maison, plantes, sols, sciences, bilingue, anglais, promenade, compost",
-  "tags": ["famille", "sciences"],
+  "tags": ["famille", "sciences", "plantes", "sols"],
   "formats": {
     "printable": true,
     "projectable": false,

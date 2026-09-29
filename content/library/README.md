@@ -16,18 +16,33 @@ content/library/
 ## The demo pack
 
 « Ressources de démonstration (à valider en classe) », version `2026.1`, for the demo board
-`csc-demo`. It has 29 original items in Canadian French, with at least 3 in each of the six buckets
-and 24 global tags. Seven items have a version for each of the four board levels: the six approved
-reading passages, worksheets, exit ticket and quiz, plus Marc's exit ticket.
+`csc-demo`. It has 78 original items in Canadian French and 36 global tags. The depth is in 3e and
+5e année, in Français, Mathématiques and Sciences et technologie (SPEC §9.3, « depth before
+breadth »):
 
-- Most items are `board_created` and approved by the content reviewer
-  (`nathalie.roy@demo.lynx.test`). The Catholic reflection is also faith-reviewed.
-- A few items belong to Isabelle (3e) or Marc (5e) to show the workflow:
-  - reviewed and shared with the school;
-  - shared with the board;
-  - an AI-generated draft (`comparer-des-nombres-brouillon`);
-  - an exit ticket waiting in the reviewer's queue (`billet-fractions-equivalentes`).
+| Subject                 | 3e  | 5e  | Several grades                                             |
+| ----------------------- | --- | --- | ---------------------------------------------------------- |
+| Français                | 16  | 9   | 2: a song, a culture hook                                  |
+| Mathématiques           | 17  | 15  | none                                                       |
+| Sciences et technologie | 5   | 7   | 1: a brain break                                           |
+| Other subjects          |     |     | 6: 2 EPS brain breaks, an arts culture hook, 3 reflections |
+
+- **Buckets:** Enseigner 9, Pratiquer 26, Explorer 13, Évaluer 7, Jouer 14, Relier 9.
+- **Levels:** 19 items have a version for each of the four board levels: the 18 approved reading
+  passages, worksheets, exit tickets and quizzes, plus Marc's exit ticket.
+- **Workflow:**
+  - 57 items are `board_created` and approved by the content reviewer
+    (`nathalie.roy@demo.lynx.test`). The three Catholic reflections are also faith-reviewed.
+  - 21 items belong to Isabelle (3e), Marc (5e) or Paul Leblanc (EPS) to show the workflow:
+    reviewed and shared with the school, shared with the board, private drafts (five of them
+    AI-generated, such as `comparer-des-nombres-brouillon`), and three items waiting in the
+    reviewer's queue (`billet-fractions-equivalentes`, `atelier-carte-postale`,
+    `coeur-apres-effort`).
 - Item `ordonner-nombres-1000` is linked to 3e MAT lesson 5 by the Phase 4 seed.
+- **Attentes:** the items link to attentes of the curriculum sample in `content/curriculum` (107
+  links). Most of those codes are not in `supabase/seed.sql`, so **the curriculum files must be
+  imported before the pack's SQL runs**; otherwise its `DO` block stops on the first missing
+  attente.
 
 Every item is written to be read by a teacher before it is used in a class (plan J3), which is why
 the pack's title says « à valider en classe ».
@@ -64,8 +79,8 @@ pnpm exec vitest run packages/content    # includes seed-pack.test.ts (plan test
 pnpm exec prettier --check content
 ```
 
-`packages/content/src/seed-pack.test.ts` reads every file in this pack, plus `supabase/seed.sql`,
-and checks the following:
+`packages/content/src/seed-pack.test.ts` reads every file in this pack, plus `supabase/seed.sql`
+and the curriculum files in `content/curriculum`, and checks the following:
 
 - **Validity:** every item parses in `final` mode and its answer keys are valid.
 - **French style:** every French string passes `frenchStyleProblems`:
@@ -74,10 +89,16 @@ and checks the following:
   - no CP, CE1… or `NOT_CANADIAN` words;
   - non-breaking spaces inside « » and before `:`.
 - **The pack as a whole:**
-  - it has 29 items, at least 3 per bucket, with unique slugs and ids;
+  - it has 78 items, at least 3 per bucket, with unique slugs and ids;
   - every tag is defined, and the pack converts to SQL;
-  - every attente exists in the seeded curriculum. The four planned 5e Français codes from plan C5
-    are allowed until they are added to `seed.sql`.
+  - every attente exists in the seeded curriculum or in a curriculum file of `content/curriculum`,
+    for one of the item's grades. The four planned 5e Français codes from plan C5 are allowed too.
+- **The curriculum files:**
+  - every file passes `parseCurriculumFile` without `--confirm-licence` (paraphrases only, D-030);
+  - one subject and grade per file, named after its version and grade (`mat-2020-3e.json`), and
+    the same strands in both grades of a subject;
+  - their French passes `frenchStyleProblems`;
+  - together they hold every seeded attente and the four planned codes.
 - **Levels:**
   - approved reading passages, worksheets, exit tickets and quizzes have all four board levels;
   - every version keeps the base version's objective;
@@ -96,8 +117,8 @@ and checks the following:
 - **Readiness:** reviewed and approved items pass `reviewReadiness`, with no warning other than
   « Version de base seulement ».
 
-The test expects exactly 29 items. Adding or removing an item means updating that number on
-purpose.
+The test expects exactly 78 items, and a fixed number of approved items per type that need levels.
+Adding or removing an item means updating those numbers on purpose.
 
 ## Writing rules
 
@@ -218,9 +239,12 @@ notes, answer keys, materials and summaries.
 ### Metadata
 
 - **Grades:** at most 4.
-- **Attentes:** existing codes only. Never invent a code.
+- **Attentes:** existing codes only, from `supabase/seed.sql` or `content/curriculum`. Never
+  invent a code.
   - Brain breaks, Catholic reflections, culture hooks and songs may have none.
-  - The seeded attentes are paraphrased and marked « À vérifier » (D-030).
+  - The seeded attentes and the curriculum files are paraphrased and marked « À vérifier »
+    (D-030). An item linked to a code on the curriculum README's « À vérifier » list changes with
+    it if the code is renumbered.
 - **Duration and materials:** always set. Write « Aucun matériel particulier » when there is
   nothing to prepare.
 - **Tags and keywords:** tags from `pack.json`, plus free keywords.

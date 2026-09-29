@@ -18,7 +18,7 @@
   "durationMinutes": 5,
   "materials": "Aucun matériel particulier.",
   "keywords": "pause active, états de la matière, solide, liquide, gaz, particules, changements d’état, mouvement, écoute",
-  "tags": ["mouvement", "sciences", "jeu"],
+  "tags": ["mouvement", "sciences", "jeu", "matiere"],
   "formats": {
     "printable": true,
     "projectable": true,

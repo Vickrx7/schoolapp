@@ -19,7 +19,7 @@
   "durationMinutes": 10,
   "materials": "Une copie par famille : la partie en français, puis la partie en anglais.",
   "keywords": "guide pour les familles, parents, maison, cuisine, matière, états de la matière, changements d’état, changement physique, changement chimique, bilingue, anglais",
-  "tags": ["famille", "sciences"],
+  "tags": ["famille", "sciences", "matiere"],
   "formats": {
     "printable": true,
     "projectable": false,

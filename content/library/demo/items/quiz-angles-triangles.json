@@ -26,7 +26,7 @@
   "durationMinutes": 25,
   "materials": "Une copie du quiz par élève (dans la version qui convient à son niveau de langue), un crayon, une gomme à effacer, une règle graduée en centimètres et un rapporteur d’angle.",
   "keywords": "quiz, angles, angle aigu, angle droit, angle obtus, angle plat, triangles, équilatéral, isocèle, scalène, acutangle, rectangle, obtusangle, rapporteur d’angle, construction",
-  "tags": ["evaluation"],
+  "tags": ["evaluation", "geometrie", "mesure"],
   "formats": {
     "printable": true,
     "projectable": true,

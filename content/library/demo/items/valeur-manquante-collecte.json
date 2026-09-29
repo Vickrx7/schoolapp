@@ -26,7 +26,7 @@
   "durationMinutes": 30,
   "materials": "L’exemple affiché ou une copie par élève, un crayon et une bande de papier pour tracer une droite numérique ouverte.",
   "keywords": "valeur manquante, équation, variable, lettre, addition, soustraction, droite numérique ouverte, vérifier, collecte de denrées",
-  "tags": ["nombres"],
+  "tags": ["nombres", "algebre"],
   "formats": {
     "printable": true,
     "projectable": true,

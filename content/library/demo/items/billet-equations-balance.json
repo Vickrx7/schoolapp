@@ -26,7 +26,7 @@
   "durationMinutes": 10,
   "materials": "Une copie du billet par élève, dans la version prévue pour son groupe; un crayon. Facultatif : une balance à plateaux et des billes ou des cubes pour la démonstration.",
   "keywords": "équation, variable, valeur manquante, balance, équilibre, vérifier, substitution, billet de sortie",
-  "tags": ["nombres", "evaluation"],
+  "tags": ["nombres", "evaluation", "algebre"],
   "formats": {
     "printable": true,
     "projectable": false,

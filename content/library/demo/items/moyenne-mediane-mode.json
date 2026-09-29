@@ -22,7 +22,7 @@
   "durationMinutes": 40,
   "materials": "Une copie de la fiche par élève, dans la version prévue pour son groupe; un crayon; une gomme à effacer. Facultatif : une cinquantaine de cubes emboîtables par équipe.",
   "keywords": "moyenne, médiane, mode, données, mesures de tendance centrale, ordre croissant, nombres décimaux, club de lecture",
-  "tags": ["decimaux"],
+  "tags": ["decimaux", "donnees"],
   "formats": {
     "printable": true,
     "projectable": false,

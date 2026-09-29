@@ -26,7 +26,7 @@
   "durationMinutes": 45,
   "materials": "Par équipe de 3 : 1 planchette à pince, 1 feuille d’enquête (cinq cases, une par mission), 1 crayon, 1 loupe (facultatif). Pour l’adulte : un sifflet, des cônes pour délimiter la zone, la trousse de premiers soins et les auto-injecteurs d’épinéphrine des élèves qui en ont.",
   "keywords": "plantes, parties d’une plante, cour d’école, observation, besoins des plantes, pollinisation, plantes et animaux, protection des plantes, enquête, plein air",
-  "tags": ["sciences", "exterieur", "cooperation"],
+  "tags": ["sciences", "exterieur", "cooperation", "plantes"],
   "formats": {
     "printable": true,
     "projectable": false,

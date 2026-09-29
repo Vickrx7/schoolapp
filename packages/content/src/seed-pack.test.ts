@@ -4,11 +4,15 @@
  * content that fails `final`, a broken answer key, European French, a seed student's first name,
  * missing level versions, missing safety notes or faith content that nobody reviewed. A teacher
  * still reads them (plan J3); the writing rules are in `content/library/README.md`.
+ *
+ * The curriculum sample in `content/curriculum` is checked here too: the items link to its
+ * attentes, so its files must parse and keep every seeded code.
  */
 import { readdirSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { validateAnswerKey } from './answer-key';
 import { LIBRARY_BUCKETS, TYPE_INFO } from './catalog';
+import { parseCurriculumFile } from './curriculum-import';
 import { questionsOf } from './questions-of';
 import { reviewReadiness } from './readiness';
 import { docToPlainText } from './render/plain';
@@ -72,6 +76,27 @@ const SEEDED_EXPECTATIONS = new Set(
  * block raises if one is missing when it loads.
  */
 const PLANNED_EXPECTATIONS = ['fra 5 C1', 'fra 5 C1.2', 'fra 5 D1', 'fra 5 D1.1'];
+
+/**
+ * The curriculum sample (`content/curriculum/*.json`, D-030): paraphrased attentes for 3e and 5e,
+ * loaded with `pnpm admin import-curriculum`. Parsed without `confirmLicence`, so a file that
+ * says it holds official or verified text fails. Items may link to its attentes; the generated
+ * seed's `DO` block raises if one is missing, so these files are imported before the pack loads.
+ */
+const curriculumDir = new URL('content/curriculum/', repo);
+const curriculumFiles = readdirSync(curriculumDir)
+  .filter((file) => file.endsWith('.json'))
+  .sort();
+const curricula = curriculumFiles.map((file) => ({
+  file,
+  ...parseCurriculumFile(readText(new URL(file, curriculumDir))),
+}));
+/** The curriculum files' attentes as `subject grade code`. */
+const CURRICULUM_EXPECTATIONS = new Set(
+  curricula.flatMap(({ data }) =>
+    data ? data.expectations.map((e) => `${data.subjectCode} ${e.grade} ${e.code}`) : [],
+  ),
+);
 
 /** The board levels every new board gets (`provision_board_defaults`), with their labels. */
 const BOARD_LEVELS = [
@@ -170,10 +195,10 @@ describe('seed pack (content/library/demo)', () => {
     expect(problems).toEqual([]);
   });
 
-  it('50. the pack lists its 29 items once each, every bucket has at least 3, and ids are unique', () => {
-    expect(itemFiles).toHaveLength(29);
-    expect(items).toHaveLength(29);
-    expect(pack.items).toHaveLength(29);
+  it('50. the pack lists its 78 items once each, every bucket has at least 3, and ids are unique', () => {
+    expect(itemFiles).toHaveLength(78);
+    expect(items).toHaveLength(78);
+    expect(pack.items).toHaveLength(78);
     expect(new Set(pack.items).size).toBe(pack.items.length);
     expect([...pack.items].sort()).toEqual(items.map((i) => i.slug).sort());
 
@@ -203,10 +228,15 @@ describe('seed pack (content/library/demo)', () => {
     expect(() => packToSql(rawPack, raws)).not.toThrow();
   });
 
-  it('51. every attente exists in the seeded curriculum (with the planned 5e Français codes)', () => {
+  it('51. every attente exists in the seeded curriculum or the curriculum files', () => {
     expect(SEEDED_EXPECTATIONS.size).toBeGreaterThanOrEqual(18);
     expect(SEEDED_EXPECTATIONS).toContain('fra 3 C1.2');
-    const known = new Set([...SEEDED_EXPECTATIONS, ...PLANNED_EXPECTATIONS]);
+    expect(CURRICULUM_EXPECTATIONS).toContain('mat 5 E2.5');
+    const known = new Set([
+      ...SEEDED_EXPECTATIONS,
+      ...PLANNED_EXPECTATIONS,
+      ...CURRICULUM_EXPECTATIONS,
+    ]);
     const problems: string[] = [];
     for (const item of items) {
       for (const e of item.expectations) {
@@ -216,6 +246,52 @@ describe('seed pack (content/library/demo)', () => {
           problems.push(`${item.slug}: attente ${key} is not for one of the item's grades`);
         }
       }
+    }
+    expect(problems).toEqual([]);
+  });
+
+  it('the curriculum files parse, one subject and grade each, and keep every seeded attente', () => {
+    expect(curriculumFiles.length).toBeGreaterThan(0);
+    const problems: string[] = [];
+    const strandsByVersion = new Map<string, string>();
+    const subjectGrades = new Set<string>();
+    for (const { file, data, errors } of curricula) {
+      for (const error of errors) problems.push(`${file}: ${error.path}: ${error.message}`);
+      if (!data) continue;
+
+      // One subject and grade per file, named after them (`mat-2020-3e.json`).
+      const grades = [...new Set(data.expectations.map((e) => e.grade))];
+      const grade = grades[0]!;
+      if (grades.length !== 1) problems.push(`${file}: more than one grade (${grades.join(', ')})`);
+      const expected = `${data.curriculumVersion}-${grade === '1' ? '1re' : `${grade}e`}.json`;
+      if (file !== expected) problems.push(`${file}: expected the name ${expected}`);
+      if (!data.curriculumVersion.startsWith(`${data.subjectCode}-`)) {
+        problems.push(`${file}: version ${data.curriculumVersion} is not for ${data.subjectCode}`);
+      }
+      const subjectGrade = `${data.subjectCode} ${grade}`;
+      if (subjectGrades.has(subjectGrade)) problems.push(`${file}: second file for the grade`);
+      subjectGrades.add(subjectGrade);
+
+      // Both grades of a subject version list the same strands, with the same labels.
+      const strands = JSON.stringify(data.strands);
+      const other = strandsByVersion.get(data.curriculumVersion);
+      if (other !== undefined && other !== strands) problems.push(`${file}: other strands`);
+      strandsByVersion.set(data.curriculumVersion, strands);
+
+      const french = [
+        data.sourceNote ?? '',
+        ...data.strands.map((s) => s.labelFr),
+        ...data.expectations.map((e) => e.textFr),
+      ];
+      for (const text of french) {
+        for (const problem of frenchStyleProblems(text)) {
+          problems.push(`${file}: ${problem.code} « ${problem.match} »`);
+        }
+      }
+    }
+    // A superset of the seed and the planned codes: the files never drop or renumber a code.
+    for (const key of [...SEEDED_EXPECTATIONS, ...PLANNED_EXPECTATIONS]) {
+      if (!CURRICULUM_EXPECTATIONS.has(key)) problems.push(`no curriculum file has ${key}`);
     }
     expect(problems).toEqual([]);
   });
@@ -237,14 +313,16 @@ describe('seed pack (content/library/demo)', () => {
     const needLevels = items.filter(
       (i) => i.status === 'board_approved' && TYPE_INFO[i.type].levelsForApproval,
     );
-    expect(needLevels.map((i) => i.type).sort()).toEqual([
-      'exit_ticket',
-      'quiz',
-      'reading_passage',
-      'reading_passage',
-      'worksheet',
-      'worksheet',
-    ]);
+    const needLevelsByType: Record<string, number> = {};
+    for (const item of needLevels) {
+      needLevelsByType[item.type] = (needLevelsByType[item.type] ?? 0) + 1;
+    }
+    expect(needLevelsByType).toEqual({
+      exit_ticket: 3,
+      quiz: 3,
+      reading_passage: 7,
+      worksheet: 5,
+    });
     for (const item of needLevels) {
       const levels = item.versions.flatMap((v) => (v.level ? [v.level] : []));
       expect([...levels].sort(), item.slug).toEqual([...boardCodes].sort());

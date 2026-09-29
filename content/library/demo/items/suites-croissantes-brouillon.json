@@ -26,7 +26,7 @@
   "durationMinutes": 30,
   "materials": "Une copie par élève et un crayon. Facultatif : des cubes emboîtables pour construire les suites.",
   "keywords": "suites, suite croissante, suite décroissante, motif répété, règle, régularité, prolonger, éléments manquants",
-  "tags": ["nombres"],
+  "tags": ["nombres", "algebre"],
   "formats": {
     "printable": true,
     "projectable": false,
