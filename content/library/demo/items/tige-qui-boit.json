@@ -1,0 +1,226 @@
+{
+  "slug": "tige-qui-boit",
+  "type": "experiment",
+  "title": "La tige, un chemin pour l’eau",
+  "summary": "En équipes, les élèves placent une fleur blanche ou une branche de céleri dans de l’eau colorée, et une autre dans de l’eau claire. Sur deux jours, la classe observe l’eau monter dans la tige jusqu’aux pétales ou aux feuilles, puis relie ses observations au rôle de chaque partie de la plante.",
+  "source": "board_created",
+  "status": "board_approved",
+  "shareScope": "board",
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "gradeCodes": ["3"],
+  "subjectCode": "sci",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "B2.2"
+    },
+    {
+      "grade": "3",
+      "code": "A1.2"
+    }
+  ],
+  "durationMinutes": 45,
+  "materials": "Par équipe de 3 : 2 œillets blancs ou 2 branches de céleri avec leurs feuilles, 2 gobelets de plastique transparents, 1 bâtonnet de bois pour brasser, du colorant alimentaire bleu ou rouge, 1 étiquette, 1 loupe (facultatif), 1 feuille d’observation. Pour l’adulte : 1 paire de ciseaux pour couper le bas des tiges, 1 pichet d’eau, des essuie-tout.",
+  "keywords": "plante, parties d’une plante, tige, feuille, fleur, racine, transport de l’eau, œillet, céleri, colorant, témoin, expérience",
+  "tags": ["sciences", "plantes"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "safetyNotes": {
+    "ageSuitability": "Convient aux élèves de 3e année (de 7 à 9 ans), avec la supervision habituelle de la classe.",
+    "allergyAwareMaterials": "On ne mange rien pendant l’expérience : le céleri et l’eau colorée ne se goûtent pas. Si un ou une élève est allergique au céleri, utilisez seulement des œillets; en cas d’allergie au pollen, utilisez seulement du céleri. Aucun matériel en latex; pas de noix, d’arachides ni de graines.",
+    "supervision": "standard",
+    "hazards": [
+      "Le colorant tache la peau, les vêtements et les tables : on verse les gouttes au-dessus d’un essuie-tout et on essuie tout dégât tout de suite.",
+      "L’eau renversée rend le plancher glissant : on transporte les gobelets à deux mains et on essuie l’eau renversée.",
+      "Seul l’adulte utilise les ciseaux pour couper les tiges."
+    ],
+    "notes": "Coupez le bas des tiges juste avant de les placer dans l’eau : l’eau monte mieux dans une coupe fraîche. Les couleurs foncées, comme le bleu et le rouge, se voient mieux que le jaune. Si possible, faites un essai quelques jours avant la leçon."
+  },
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "J’observe comment l’eau voyage dans une plante et je décris le rôle de la tige, des feuilles et des autres parties de la plante.",
+        "teacherNote": "Conçue pour une personne suppléante : le matériel est simple et les consignes sont complètes. Faites la mise en place le matin : les premiers changements sont souvent visibles en fin de journée, et plus nets le lendemain (le céleri change souvent plus vite que les œillets). L’observation du lendemain peut être faite par l’enseignante ou l’enseignant titulaire. Le gobelet d’eau claire sert de témoin : il montre que la couleur vient de l’eau colorée. À l’étape 8, coupez en travers une tige de l’eau colorée : les petits points colorés sont les tubes qui transportent l’eau. Vocabulaire à afficher : racine, tige, feuille, fleur, fruit, graine, témoin.",
+        "researchQuestion": "Par où l’eau passe-t-elle pour aller jusqu’aux feuilles et aux fleurs d’une plante?",
+        "hypothesisPrompt": "Selon toi, que verras-tu sur les pétales ou sur les feuilles demain? Pourquoi?",
+        "steps": [
+          "Colle l’étiquette de ton équipe sur un des gobelets. Ce sera le gobelet d’eau colorée.",
+          "Demande à l’adulte de verser de l’eau dans les deux gobelets, jusqu’à la moitié environ.",
+          "Dans le gobelet étiqueté, ajoute 20 gouttes de colorant, au-dessus d’un essuie-tout. Brasse doucement avec le bâtonnet. L’autre gobelet garde de l’eau claire : c’est le gobelet témoin.",
+          "Observe les deux fleurs ou les deux branches de céleri, avec la loupe si tu en as une. Dans la première ligne du tableau, décris leur couleur.",
+          "L’adulte coupe le bas des tiges. Place tout de suite une fleur ou une branche dans chaque gobelet, la coupe dans l’eau.",
+          "Pose les deux gobelets à l’endroit que l’adulte indique, près d’une fenêtre.",
+          "À la fin de la journée, observe les pétales ou les feuilles de chaque plante. Note tes observations dans la deuxième ligne du tableau.",
+          "Le lendemain, observe de nouveau les deux plantes et le niveau de l’eau dans les gobelets. Note tes observations dans la troisième ligne. L’adulte coupe ensuite en travers une tige de l’eau colorée : observe la coupe.",
+          "Vide les gobelets dans l’évier, range le matériel et lave-toi les mains."
+        ],
+        "observationTable": {
+          "columns": ["Moment", "Plante dans l’eau colorée", "Plante dans l’eau claire (témoin)"],
+          "rows": 3
+        },
+        "conclusionQuestions": [
+          {
+            "id": "c1",
+            "kind": "multiple_choice",
+            "prompt": "Quelle partie de la plante a transporté l’eau colorée jusqu’aux pétales ou aux feuilles?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "La racine"
+              },
+              {
+                "id": "b",
+                "text": "La tige"
+              },
+              {
+                "id": "c",
+                "text": "La fleur"
+              },
+              {
+                "id": "d",
+                "text": "La graine"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "c2",
+            "kind": "short_answer",
+            "prompt": "Qu’as-tu observé sur les pétales ou les feuilles de la plante placée dans l’eau colorée? Compare-la avec la plante témoin.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          },
+          {
+            "id": "c3",
+            "kind": "short_answer",
+            "prompt": "À quoi servait la plante placée dans l’eau claire?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "c4",
+            "kind": "matching",
+            "prompt": "Associe chaque partie de la plante à son rôle.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "l1",
+                "text": "La racine"
+              },
+              {
+                "id": "l2",
+                "text": "La tige"
+              },
+              {
+                "id": "l3",
+                "text": "La feuille"
+              },
+              {
+                "id": "l4",
+                "text": "La fleur"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "Elle transporte l’eau et soutient la plante."
+              },
+              {
+                "id": "rb",
+                "text": "Elle produit les graines."
+              },
+              {
+                "id": "rc",
+                "text": "Elle absorbe l’eau du sol et tient la plante en place."
+              },
+              {
+                "id": "rd",
+                "text": "Elle capte la lumière du Soleil pour fabriquer la nourriture de la plante."
+              }
+            ]
+          },
+          {
+            "id": "c5",
+            "kind": "short_answer",
+            "prompt": "Tu arroses une plante en pot. Explique le chemin que suit l’eau, du sol jusqu’aux feuilles.",
+            "hint": "",
+            "points": 2,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "communication": "Explique à une autre équipe le chemin de l’eau dans ta plante, du gobelet jusqu’aux pétales ou aux feuilles. Utilise les mots tige, feuille et fleur, et montre ta plante comme preuve."
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "c1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "La tige transporte l’eau jusqu’aux feuilles et aux fleurs. Ici, la plante n’a plus de racines : l’eau entre directement par la coupe de la tige."
+          },
+          {
+            "questionId": "c2",
+            "kind": "short_answer",
+            "sampleAnswer": "Les bords des pétales de la fleur dans l’eau colorée sont devenus bleus, et on voit de petites lignes bleues. La fleur témoin est restée blanche.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter toute observation précise qui compare les deux plantes (couleur des pétales, des nervures ou des feuilles)."
+          },
+          {
+            "questionId": "c3",
+            "kind": "short_answer",
+            "sampleAnswer": "Elle servait à comparer : elle montre que la couleur vient de l’eau colorée, et non de la plante elle-même.",
+            "acceptableAnswers": [],
+            "explanation": ""
+          },
+          {
+            "questionId": "c4",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "ra"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l4",
+                "rightId": "rb"
+              }
+            ],
+            "explanation": ""
+          },
+          {
+            "questionId": "c5",
+            "kind": "short_answer",
+            "sampleAnswer": "Les racines absorbent l’eau du sol. Ensuite, l’eau monte dans la tige par de petits tubes, puis elle va jusqu’aux feuilles et aux fleurs.",
+            "acceptableAnswers": [],
+            "explanation": "Évaluer l’ordre du chemin (racines, tige, feuilles) et l’usage du vocabulaire."
+          }
+        ],
+        "solution": "Plante dans l’eau colorée : après quelques heures, puis plus nettement le lendemain, les bords des pétales de l’œillet prennent la couleur de l’eau; sur le céleri, les nervures des feuilles se colorent. La coupe en travers de la tige montre de petits points colorés : ce sont les tubes qui transportent l’eau.\n\nLe niveau de l’eau baisse un peu dans les gobelets, car la plante absorbe de l’eau (une petite partie s’évapore aussi).\n\nPlante témoin : elle garde sa couleur.\n\nConclusion : l’eau entre par la tige et monte jusqu’aux feuilles et aux fleurs. Dans une plante entière, elle entre d’abord par les racines."
+      }
+    }
+  ]
+}

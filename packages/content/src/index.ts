@@ -33,6 +33,7 @@ export * from './samples';
 export * from './style';
 export * from './rubric';
 export * from './curriculum-import';
+export * from './curriculum-sql';
 export * from './uuid';
 export * from './seed-pack';
 export * from './seed-sql';

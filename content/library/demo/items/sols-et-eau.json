@@ -1,0 +1,178 @@
+{
+  "slug": "sols-et-eau",
+  "type": "experiment",
+  "title": "Quel sol retient le plus d’eau?",
+  "summary": "Les équipes versent la même quantité d’eau sur du sable, de la terre argileuse et du terreau, mesurent l’eau qui s’écoule en 5 minutes et calculent l’eau retenue par chaque sol. Elles relient ensuite leurs résultats à la composition des sols et au jardinage.",
+  "source": "board_created",
+  "status": "board_approved",
+  "shareScope": "board",
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "gradeCodes": ["3"],
+  "subjectCode": "sci",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "E2.2"
+    },
+    {
+      "grade": "3",
+      "code": "E2.1"
+    }
+  ],
+  "durationMinutes": 50,
+  "materials": "Par équipe de 3 : 3 petits contenants remplis chacun de 125 mL d’un sol légèrement humide (sable, terre argileuse, terreau), préparés et étiquetés par l’adulte; 3 entonnoirs de plastique (ou 3 bouteilles de 2 L coupées en deux d’avance par l’adulte, le haut retourné servant d’entonnoir); 3 bocaux ou grands gobelets transparents qui peuvent tenir un entonnoir; 3 filtres à café; 3 gobelets pour verser l’eau; 1 tasse à mesurer graduée en millilitres; 1 minuterie; 3 étiquettes; 1 feuille d’observation. Pour la classe : du papier journal pour couvrir les tables, des essuie-tout, des gants sans latex (nitrile) pour les élèves qui en ont besoin.",
+  "keywords": "sol, sable, argile, terreau, humus, eau, composition du sol, mesurer, millilitres, jardinage, expérience",
+  "tags": ["sciences", "sols"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "safetyNotes": {
+    "ageSuitability": "Convient aux élèves de 3e année (de 7 à 9 ans), avec la supervision habituelle de la classe.",
+    "allergyAwareMaterials": "Utilisez du sable de jeu lavé, et de la terre argileuse et du terreau neufs, sans engrais ajouté si possible. Offrez des gants sans latex (nitrile) à qui en veut; ils sont nécessaires pour les élèves qui ont des coupures aux mains, de l’eczéma ou une allergie aux moisissures. Aucun aliment : pas de noix, d’arachides ni de graines.",
+    "supervision": "standard",
+    "hazards": [
+      "Le sol et le terreau contiennent des microbes : on ne porte pas les mains à la bouche ni aux yeux, et tout le monde se lave les mains à l’eau et au savon après l’activité.",
+      "La poussière de sol sec peut irriter les yeux et les voies respiratoires, surtout chez les élèves qui ont de l’asthme : les sols sont légèrement humidifiés d’avance, et on les verse doucement, sans secouer.",
+      "L’eau et la terre renversées rendent le plancher glissant : on travaille sur du papier journal et on essuie tout de suite.",
+      "Les bords d’une bouteille coupée peuvent couper : seul l’adulte coupe les bouteilles et couvre les bords de ruban-cache."
+    ],
+    "notes": "Préparez les sols la veille et gardez-les légèrement humides : un terreau très sec repousse l’eau au début et fausse les résultats. Faites un essai avant la leçon pour connaître l’ordre de grandeur des résultats avec vos sols. Jetez les sols utilisés dans une plate-bande, jamais dans l’évier."
+  },
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je compare des sols selon leur capacité à retenir l’eau et je relie mes résultats à leur composition.",
+        "teacherNote": "Préparez pour chaque équipe trois contenants de 125 mL, étiquetés : sable, terre argileuse et terreau. Si vous utilisez des bouteilles coupées, préparez-les d’avance et couvrez les bords de ruban-cache. Le sable laisse presque toujours passer le plus d’eau, et le plus vite. L’argile et le terreau en retiennent davantage, mais l’ordre entre ces deux sols varie selon leur humidité et leur tassement : acceptez les deux résultats s’ils sont bien mesurés. Faites le lien avec la composition des sols : les grains de sable sont gros et laissent de grands espaces; les particules d’argile sont très fines; l’humus du terreau agit comme une éponge. La question c2 demande une soustraction jusqu’à 100. S’il reste de l’eau sur le dessus d’un sol après 5 minutes (souvent l’argile), faites-le noter : cette eau n’a pas encore traversé le sol, mais elle n’est pas retenue par lui.",
+        "researchQuestion": "Quel sol retient le plus d’eau : le sable, la terre argileuse ou le terreau?",
+        "hypothesisPrompt": "Observe les trois sols. Selon toi, lequel retiendra le plus d’eau? Pourquoi?",
+        "steps": [
+          "Couvre ta table de papier journal. Colle une étiquette sur chaque bocal : « Sable », « Argile », « Terreau ».",
+          "Observe chaque sol et touche-le du bout des doigts (avec des gants si tu en portes). Dans la deuxième colonne du tableau, décris sa couleur et ce que tu sens au toucher : doux, granuleux, collant…",
+          "Place un filtre à café dans chaque entonnoir, puis pose chaque entonnoir sur son bocal.",
+          "Verse chaque sol dans l’entonnoir de son bocal. Égalise le dessus doucement, sans tasser le sol.",
+          "Chaque membre de l’équipe mesure 100 mL d’eau avec la tasse à mesurer et la verse dans un gobelet.",
+          "Au signal, versez l’eau en même temps et lentement, un gobelet sur chaque sol. Démarrez la minuterie.",
+          "Après 5 minutes, retirez les entonnoirs. Verse l’eau de chaque bocal dans la tasse à mesurer, un bocal à la fois, et note le volume en millilitres dans le tableau.",
+          "Calcule l’eau retenue par chaque sol : 100 mL moins l’eau recueillie. Note tes résultats.",
+          "Jette les sols dans le bac prévu par l’adulte, range le matériel et lave-toi les mains à l’eau et au savon."
+        ],
+        "observationTable": {
+          "columns": [
+            "Sol",
+            "Couleur et toucher",
+            "Eau recueillie après 5 min (mL)",
+            "Eau retenue (mL)"
+          ],
+          "rows": 3
+        },
+        "conclusionQuestions": [
+          {
+            "id": "c1",
+            "kind": "short_answer",
+            "prompt": "Quel sol a laissé passer le plus d’eau? Quel sol en a retenu le plus? Appuie ta réponse sur tes mesures.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          },
+          {
+            "id": "c2",
+            "kind": "short_answer",
+            "prompt": "Une autre équipe a versé 100 mL d’eau sur son argile. Après 5 minutes, elle a recueilli 35 mL d’eau. Combien de millilitres d’eau l’argile a-t-elle retenus?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "c3",
+            "kind": "multiple_choice",
+            "prompt": "Pourquoi l’eau passe-t-elle facilement à travers le sable?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "Ses grains sont gros et laissent de grands espaces entre eux."
+              },
+              {
+                "id": "b",
+                "text": "Il contient beaucoup d’humus."
+              },
+              {
+                "id": "c",
+                "text": "Ses particules sont très fines et collées les unes aux autres."
+              },
+              {
+                "id": "d",
+                "text": "Il est toujours mouillé."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "c4",
+            "kind": "true_false",
+            "prompt": "Le terreau retient beaucoup d’eau parce qu’il contient de l’humus, fait de restes de plantes et d’animaux décomposés.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "c5",
+            "kind": "short_answer",
+            "prompt": "Tu veux planter des fleurs qui ont besoin d’un sol qui reste un peu humide, sans être détrempé. Quel sol choisirais-tu? Explique ton choix à l’aide de tes résultats.",
+            "hint": "",
+            "points": 2,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "communication": "Présente à la classe le sol qui a retenu le plus d’eau et celui qui en a retenu le moins. Donne tes mesures comme preuves et utilise les mots sable, argile, terreau et humus."
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "c1",
+            "kind": "short_answer",
+            "sampleAnswer": "Le sable a laissé passer le plus d’eau : nous avons recueilli 60 mL, donc il a retenu 40 mL. Le terreau en a retenu le plus : nous avons recueilli 15 mL, donc il a retenu 85 mL.",
+            "acceptableAnswers": [],
+            "explanation": "Les mesures varient selon les sols. Vérifier que la réponse s’appuie sur les mesures de l’équipe et que l’eau retenue est bien calculée (100 mL moins l’eau recueillie)."
+          },
+          {
+            "questionId": "c2",
+            "kind": "short_answer",
+            "sampleAnswer": "L’argile a retenu 65 mL d’eau.",
+            "acceptableAnswers": ["65", "65 mL", "65 millilitres"],
+            "explanation": "100 mL − 35 mL = 65 mL."
+          },
+          {
+            "questionId": "c3",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Entre les gros grains de sable, il y a de grands espaces où l’eau passe facilement. Les très fines particules d’argile ne laissent que de tout petits espaces : l’eau y passe lentement."
+          },
+          {
+            "questionId": "c4",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "L’humus, formé de matières organiques décomposées, absorbe l’eau comme une éponge."
+          },
+          {
+            "questionId": "c5",
+            "kind": "short_answer",
+            "sampleAnswer": "Je choisirais le terreau. Dans notre expérience, il a retenu beaucoup d’eau, et il contient de l’humus qui nourrit les plantes. Le sable laisserait partir l’eau trop vite.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter un autre choix bien justifié par les résultats de l’équipe, par exemple un mélange de terreau et de sable."
+          }
+        ],
+        "solution": "Résultats typiques (ils varient selon les sols) : le sable laisse passer l’eau rapidement et en retient peu; l’argile laisse passer l’eau très lentement; le terreau retient beaucoup d’eau grâce à l’humus. Selon l’humidité et le tassement, c’est l’argile ou le terreau qui donne le moins d’eau après 5 minutes.\n\nExemple de résultats : sable, 60 mL recueillis (40 mL retenus); argile, 25 mL recueillis (75 mL retenus); terreau, 15 mL recueillis (85 mL retenus).\n\nConclusion attendue : les sols qui ont de fines particules ou beaucoup d’humus retiennent mieux l’eau que le sable, dont les gros grains laissent de grands espaces."
+      }
+    }
+  ]
+}

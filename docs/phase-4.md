@@ -71,15 +71,19 @@ principal: whoever the operator designates)
   French typography checks, the seed pack format and curriculum-import validation.
 - Library content is written only through database functions; every status change is audited
   with ids only. Search is one database function with the visibility rule written in.
-- 29 original demo resources (`content/library/demo`), generated into
-  `supabase/seeds/20_library_demo.sql` and linked to the demo planning by
-  `supabase/seeds/30_demo_links.sql`.
+- 78 original demo resources (`content/library/demo`: 29 at the end of Phase 4, 49 more from the
+  library expansion), generated into `supabase/seeds/20_library_demo.sql` and linked to the demo
+  planning by `supabase/seeds/30_demo_links.sql`.
+- A wider curriculum sample for 3e and 5e année in Français, Mathématiques and Sciences et
+  technologie (`content/curriculum`, 265 paraphrased attentes, all unverified and shown
+  « À vérifier », D-030), generated into `supabase/seeds/10_curriculum_demo.sql` and loaded before
+  the demo resources, which link to it.
 - Migrations `20261015090000` to `20261015090400`; database tests `15` to `19`.
 
 ## How to run it
 
 ```bash
-tools/lite-stack/stack.sh reset   # or: pnpm db:reset (Supabase CLI); loads the 29 demo resources
+tools/lite-stack/stack.sh reset   # or: pnpm db:reset (Supabase CLI); loads the curriculum sample and the 78 demo resources
 pnpm dev                          # web app
 pnpm dev:worker                   # AI jobs (fake provider by default), plan rebuilds
 ```
@@ -105,17 +109,18 @@ The Library module is licensed per school: `pnpm admin set-module --school csc-d
 ### Demo resources
 
 The pack is `content/library/demo` (`pack.json` and one file per resource, rules in
-`content/library/README.md`). After changing it:
+`content/library/README.md`). After changing it or the curriculum sample:
 
 ```bash
 pnpm exec vitest run packages/content   # the pack tests: style, names, levels, safety, faith
-pnpm library:seed                       # regenerates supabase/seeds/20_library_demo.sql
+pnpm library:seed                       # regenerates supabase/seeds/10_curriculum_demo.sql and 20_library_demo.sql
 pnpm library:seed:check                 # what CI runs: fails when the SQL is out of date
 tools/lite-stack/stack.sh reset         # the seed block stops on any missing reference
 ```
 
-Never edit `20_library_demo.sql` by hand. Resource ids are UUIDv5 of `demo/<slug>` under a fixed
-namespace: renaming a slug makes a new resource.
+Never edit `10_curriculum_demo.sql` or `20_library_demo.sql` by hand. The curriculum sample's
+files are in `content/curriculum` (rules and the « À vérifier » list in its README). Resource ids
+are UUIDv5 of `demo/<slug>` under a fixed namespace: renaming a slug makes a new resource.
 
 ### Curriculum import
 
@@ -244,7 +249,7 @@ names she typed; nobody else reads them, board admins included. PDFs are never s
    use shared resources within the board; IP Lynx does not resell teacher content without a
    separate agreement. To confirm with a lawyer before selling content packs. Licences are left
    empty until then._
-6. **May we show pilot teachers our 29 demo resources** (written by us, original, labelled
+6. **May we show pilot teachers our 78 demo resources** (written by us, original, labelled
    « Démonstration ») until real ones replace them? _Built: yes._
 
 Assumptions that need no answer now (in DECISIONS as **Assumption**): board admins are not

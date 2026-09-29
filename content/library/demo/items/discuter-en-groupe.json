@@ -1,0 +1,108 @@
+{
+  "slug": "discuter-en-groupe",
+  "type": "anchor_chart",
+  "title": "Quand on discute en groupe",
+  "summary": "Référentiel à afficher en classe pour la communication orale : écouter activement, attendre son tour, montrer qu’on a compris, donner son idée et réagir avec respect, avec des phrases modèles à dire.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["3"],
+  "subjectCode": "fra",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "B1.2"
+    },
+    {
+      "grade": "3",
+      "code": "B1.1"
+    }
+  ],
+  "durationMinutes": 20,
+  "materials": "Grande feuille et marqueurs de couleur, ou projection au tableau. Un objet de parole (une balle douce ou un petit toutou) pour les discussions en cercle.",
+  "keywords": "référentiel, communication orale, écoute active, tours de parole, discussion, respect, phrases modèles, cercle de discussion",
+  "tags": ["cooperation", "communication-orale"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": false,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "J’écoute les autres et je prends la parole à mon tour pour participer à une discussion avec respect.",
+        "teacherNote": "Référentiel à construire avec les élèves au début de l’année, puis à relire avant chaque discussion en groupe. Faites jouer chaque section en petites saynètes (une bonne façon et une moins bonne façon d’écouter, par exemple) avant de l’afficher. Toutes les façons d’écouter ne se ressemblent pas : certains élèves écoutent mieux sans regarder la personne dans les yeux, ou en bougeant un peu les mains. Acceptez ces façons de faire; l’important est de pouvoir redire ce que l’autre a dit. Les phrases modèles peuvent être affichées en bandes près du coin de discussion.",
+        "heading": "Je discute avec les autres",
+        "sections": [
+          {
+            "title": "J’écoute avec attention",
+            "points": [
+              "Je me tourne vers la personne qui parle.",
+              "Je garde ma bouche fermée pendant qu’elle parle.",
+              "Je pense à ce qu’elle dit, pas à ce que je vais dire.",
+              "Mes mains et mes pieds restent calmes."
+            ],
+            "example": "Pendant que Yanis parle, je me tourne vers lui et j’écoute son idée jusqu’au bout."
+          },
+          {
+            "title": "J’attends mon tour",
+            "points": [
+              "Je lève la main ou j’attends que la personne ait fini.",
+              "Quand j’ai l’objet de parole, c’est mon tour; ensuite, je le passe.",
+              "Je laisse aussi la place aux personnes qui parlent moins souvent."
+            ],
+            "example": "« Est-ce que je peux ajouter quelque chose? »"
+          },
+          {
+            "title": "Je montre que j’ai compris",
+            "points": [
+              "Je redis une idée de l’autre avec mes mots.",
+              "Je pose une question si je ne comprends pas."
+            ],
+            "example": "« Tu veux dire que…? » « Peux-tu me donner un exemple? »"
+          },
+          {
+            "title": "Je donne mon idée",
+            "points": [
+              "Je parle assez fort et clairement pour que tout le groupe m’entende.",
+              "Je dis mon idée, puis je dis pourquoi je pense cela.",
+              "Je reste sur le sujet de la discussion."
+            ],
+            "example": "« Je pense que…, parce que… »"
+          },
+          {
+            "title": "Je réagis avec respect",
+            "points": [
+              "J’ai le droit de ne pas être d’accord, et je le dis avec respect.",
+              "Je parle de l’idée, pas de la personne.",
+              "Je dis aussi quand j’aime une idée."
+            ],
+            "example": "« Je ne suis pas d’accord avec ton idée, parce que… » « J’aime ton idée! »"
+          }
+        ],
+        "visualIdeas": [
+          "Un petit pictogramme à côté de chaque section : une oreille, une main levée, une bulle avec un point d’interrogation, une bouche, un cœur.",
+          "Les phrases modèles écrites sur des bandes de couleur, que les élèves peuvent prendre pendant la discussion.",
+          "Des photos de la classe pendant une discussion, prises avec la permission des familles, collées près des sections."
+        ]
+      },
+      "answerKey": null
+    }
+  ]
+}

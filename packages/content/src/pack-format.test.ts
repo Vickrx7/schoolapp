@@ -97,6 +97,7 @@ describe('content pack format', () => {
       sci: 'sci-2022',
     });
     expect(REFERENCE_TYPES['Prendre soin de la création']).toBe('reflection');
+    expect(REFERENCE_TYPES['Prière de l’Avent']).toBe('prayer');
 
     const pack = demo();
     const seed = seedPackSchema.parse(rawPack);
@@ -108,10 +109,12 @@ describe('content pack format', () => {
       contentSchemaVersion: 1,
     });
     expect(pack.items.map((i) => i.key)).toEqual(seed.items);
-    expect(pack.items).toHaveLength(29);
+    expect(pack.items).toHaveLength(78);
     expect(pack.levels.map((l) => l.code)).toEqual(BOARD_DEFAULT_LEVELS.map((l) => l.code));
     expect(pack.catholicReferences).toEqual([
       { type: 'reflection', title: 'Prendre soin de la création' },
+      { type: 'virtue', title: 'La compassion' },
+      { type: 'virtue', title: 'La persévérance' },
     ]);
     // No user, school or workflow data travels in a pack.
     const json = JSON.stringify(pack);

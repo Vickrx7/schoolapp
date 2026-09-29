@@ -1,0 +1,199 @@
+{
+  "slug": "tour-qui-resiste-au-vent",
+  "type": "stem_challenge",
+  "title": "Défi STIM : la tour qui résiste au vent",
+  "summary": "En suivant le processus de design, les équipes construisent avec 20 fiches et du ruban-cache une tour d’au moins 30 cm qui porte une gomme à effacer et résiste au vent d’un éventail. Elles découvrent comment la forme des matériaux et la base rendent une structure solide et stable.",
+  "source": "teacher_created",
+  "author": "isabelle.tremblay@demo.lynx.test",
+  "school": "saint-exemple",
+  "status": "teacher_reviewed",
+  "shareScope": "school",
+  "gradeCodes": ["3"],
+  "subjectCode": "sci",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "D2.2"
+    },
+    {
+      "grade": "3",
+      "code": "A1.3"
+    }
+  ],
+  "durationMinutes": 60,
+  "materials": "Par équipe de 3 : 20 fiches blanches (7,6 cm sur 12,7 cm), 50 cm de ruban-cache, 1 paire de ciseaux à bouts ronds, 1 gomme à effacer en vinyle (sans latex), 1 règle de 30 cm, 1 feuille de planification. Pour la classe : 1 éventail fait d’un carton rigide d’environ 30 cm sur 40 cm, 1 ruban à mesurer, du ruban-cache de rechange.",
+  "keywords": "tour, structure, stabilité, solidité, base, forme, fiches, vent, processus de design, ingénierie, défi",
+  "tags": ["stim", "structures", "cooperation"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "safetyNotes": {
+    "ageSuitability": "Convient aux élèves de 3e année (de 7 à 9 ans).",
+    "allergyAwareMaterials": "Fiches, ruban-cache, ciseaux à bouts ronds et gomme à effacer seulement : aucun aliment (pas de noix, d’arachides ni de graines). Certaines gommes à effacer contiennent du caoutchouc naturel : choisissez des gommes en vinyle, sans latex.",
+    "supervision": "standard",
+    "hazards": [
+      "Ciseaux : on coupe assis et on passe les ciseaux lames fermées.",
+      "Pendant le test du vent, seul l’adulte agite l’éventail, toujours vers la tour et jamais vers le visage d’une personne.",
+      "Une tour qui tombe peut faire rouler la gomme à effacer : on garde le visage loin de la tour pendant les tests."
+    ],
+    "notes": "Faites les tests sur une table dégagée, une équipe à la fois, pendant que les autres équipes observent à une distance d’un bras."
+  },
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je construis une structure solide et stable, et j’explique comment sa forme et sa base l’aident à tenir debout.",
+        "teacherNote": "Défi d’environ 60 minutes : 10 minutes pour définir et rechercher, 10 minutes pour planifier, 25 minutes pour construire et tester, 15 minutes pour améliorer et communiquer. Pour que le test soit juste, agitez toujours l’éventail de la même façon : 5 coups, à 50 cm de la tour, à la hauteur de son milieu. Mesurez chaque tour avec le ruban à mesurer avant le test. Pour les élèves qui ont besoin d’appui, montrez une fiche pliée en triangle et une fiche roulée en tube pendant l’étape de recherche. Suite possible en 5e année : le défi « Le pont de papier ».",
+        "challenge": "Construis une tour d’au moins 30 cm de haut avec 20 fiches et du ruban-cache. Ta tour doit tenir debout toute seule, porter une gomme à effacer à son sommet et résister au vent d’un éventail. Quelle forme donneras-tu aux fiches et quelle base choisiras-tu pour que ta tour reste debout?",
+        "constraints": [
+          "Tu peux utiliser seulement 20 fiches et 50 cm de ruban-cache.",
+          "La tour ne peut pas être collée ni attachée à la table.",
+          "La gomme à effacer est posée au sommet de la tour, sans ruban.",
+          "Vous avez 25 minutes pour construire et tester votre tour."
+        ],
+        "criteria": [
+          "La tour mesure au moins 30 cm de haut.",
+          "La tour tient debout toute seule pendant 10 secondes, avec la gomme à effacer à son sommet.",
+          "La tour reste debout après 5 coups d’éventail donnés à 50 cm.",
+          "L’équipe explique comment la forme des fiches et la base aident la tour à rester solide et stable.",
+          "L’équipe améliore sa tour après le premier test et compare les deux résultats."
+        ],
+        "designStages": [
+          {
+            "stage": "definir",
+            "prompt": "Explique le défi dans tes mots. Que doit faire ta tour? Quelles sont les contraintes?"
+          },
+          {
+            "stage": "rechercher",
+            "prompt": "Fais trois essais avec une fiche chacun : une fiche debout, à plat; une fiche pliée en triangle; une fiche roulée en tube. Pose la gomme à effacer sur chacune. Laquelle la porte le mieux?"
+          },
+          {
+            "stage": "planifier",
+            "prompt": "Dessine ta tour sur la feuille de planification. Montre sa base et les formes que tu utiliseras. Écris combien de fiches tu prévois pour chaque partie."
+          },
+          {
+            "stage": "construire",
+            "prompt": "Construis ta tour en respectant les contraintes. Mesure sa hauteur avec la règle."
+          },
+          {
+            "stage": "tester",
+            "prompt": "Pose la gomme à effacer au sommet et compte jusqu’à 10. Ensuite, l’adulte donne 5 coups d’éventail à 50 cm. Note si ta tour est restée debout, a penché ou est tombée."
+          },
+          {
+            "stage": "ameliorer",
+            "prompt": "Observe ce qui a fait bouger ta tour. Change une seule chose (la base, une forme ou la hauteur), puis refais le test."
+          },
+          {
+            "stage": "communiquer",
+            "prompt": "Présente ta tour à la classe : sa hauteur, ses formes, sa base et ce que tu as changé après le premier test."
+          }
+        ],
+        "reflectionQuestions": [
+          {
+            "id": "r1",
+            "kind": "multiple_choice",
+            "prompt": "Qu’est-ce qui aide une tour à rester stable? Choisis toutes les bonnes réponses.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "Une base large"
+              },
+              {
+                "id": "b",
+                "text": "Des parties plus lourdes en bas qu’en haut"
+              },
+              {
+                "id": "c",
+                "text": "Une base très étroite"
+              },
+              {
+                "id": "d",
+                "text": "Un objet très lourd posé au sommet"
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "r2",
+            "kind": "short_answer",
+            "prompt": "Pendant la recherche, quelle fiche a le mieux porté la gomme à effacer : à plat, pliée en triangle ou roulée en tube? Pourquoi, selon toi?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          },
+          {
+            "id": "r3",
+            "kind": "short_answer",
+            "prompt": "Qu’as-tu changé après le premier test? Est-ce que ça a aidé ta tour à résister au vent? Appuie ta réponse sur tes deux tests.",
+            "hint": "",
+            "points": 2,
+            "category": "communication",
+            "lines": 4
+          },
+          {
+            "id": "r4",
+            "kind": "true_false",
+            "prompt": "Plus une tour est haute, plus elle est stable.",
+            "hint": "",
+            "points": null,
+            "category": "application"
+          },
+          {
+            "id": "r5",
+            "kind": "short_answer",
+            "prompt": "Nomme une structure de ta communauté qui doit résister au vent. Comment est-elle construite pour rester debout?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "r1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "b"],
+            "explanation": "Une base large et du poids près du sol empêchent la tour de basculer. Une base étroite ou un objet lourd au sommet la rendent instable."
+          },
+          {
+            "questionId": "r2",
+            "kind": "short_answer",
+            "sampleAnswer": "La fiche roulée en tube a le mieux porté la gomme. Le tube est rond et fermé, alors il ne plie pas facilement. La fiche à plat a plié tout de suite.",
+            "acceptableAnswers": [],
+            "explanation": "Le tube et le triangle sont tous les deux beaucoup plus solides qu’une fiche à plat : accepter l’un ou l’autre s’il correspond à l’essai de l’équipe."
+          },
+          {
+            "questionId": "r3",
+            "kind": "short_answer",
+            "sampleAnswer": "Nous avons élargi la base en ajoutant trois pattes en triangle. Au premier test, la tour est tombée au troisième coup d’éventail. Au deuxième test, elle est restée debout.",
+            "acceptableAnswers": [],
+            "explanation": "Évaluer l’usage des résultats des deux tests pour justifier la conclusion."
+          },
+          {
+            "questionId": "r4",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Une tour plus haute bascule plus facilement. Pour la rendre stable, il faut une base plus large ou plus de poids près du sol."
+          },
+          {
+            "questionId": "r5",
+            "kind": "short_answer",
+            "sampleAnswer": "Un lampadaire : il a une base large et solide, bien fixée dans le sol, alors le vent ne le fait pas tomber.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter toute structure réelle (pont, tour, clôture, abribus, maison) avec un élément de construction qui l’aide à résister au vent."
+          }
+        ],
+        "solution": "Stratégies efficaces : plier les fiches en triangles ou les rouler en tubes pour en faire des colonnes; construire une base large (trépied, carré ou triangle de fiches); relier les colonnes par des fiches en diagonale pour les empêcher de pencher; garder le haut de la tour léger.\n\nUne tour haute et étroite, faite de fiches à plat, bascule souvent au premier coup d’éventail. Les tours qui résistent le mieux ont une base large et des colonnes pliées ou roulées."
+      }
+    }
+  ]
+}

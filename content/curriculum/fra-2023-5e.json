@@ -1,0 +1,427 @@
+{
+  "official": false,
+  "verified": false,
+  "subjectCode": "fra",
+  "curriculumVersion": "fra-2023",
+  "sourceNote": "Résumé paraphrasé du curriculum de français de l’Ontario (2023), à vérifier contre le document officiel.",
+  "strands": [
+    {
+      "code": "A",
+      "labelFr": "Liens et applications en littératie",
+      "labelEn": null
+    },
+    {
+      "code": "B",
+      "labelFr": "Fondements de la langue",
+      "labelEn": null
+    },
+    {
+      "code": "C",
+      "labelFr": "Compréhension : comprendre et réagir à des textes",
+      "labelEn": null
+    },
+    {
+      "code": "D",
+      "labelFr": "Composition : exprimer ses idées et créer des textes",
+      "labelEn": null
+    }
+  ],
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "A1",
+      "kind": "overall",
+      "strandCode": "A",
+      "parentCode": null,
+      "textFr": "Reconnaître et utiliser les compétences transférables (pensée critique, communication, collaboration, créativité, apprentissage autonome, citoyenneté) dans ses apprentissages en littératie.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "A1.1",
+      "kind": "specific",
+      "strandCode": "A",
+      "parentCode": "A1",
+      "textFr": "Expliquer comment les compétences transférables l’aident à apprendre en littératie et dans d’autres contextes, et se fixer des objectifs pour les développer.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "A2",
+      "kind": "overall",
+      "strandCode": "A",
+      "parentCode": null,
+      "textFr": "Démontrer une compréhension de la littératie médiatique numérique et utiliser les médias numériques de façon sécuritaire, responsable et éthique.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "A2.1",
+      "kind": "specific",
+      "strandCode": "A",
+      "parentCode": "A2",
+      "textFr": "Utiliser des outils numériques pour chercher, évaluer et organiser de l’information, et pour créer des textes en français.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "A2.2",
+      "kind": "specific",
+      "strandCode": "A",
+      "parentCode": "A2",
+      "textFr": "Adopter des comportements sécuritaires, respectueux et éthiques en ligne, dont citer ses sources et protéger ses renseignements personnels.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "A3",
+      "kind": "overall",
+      "strandCode": "A",
+      "parentCode": null,
+      "textFr": "Appliquer ses compétences en littératie dans d’autres matières et reconnaître l’apport de diverses communautés, dont les communautés francophones et les Premières Nations, les Métis et les Inuit.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "A3.1",
+      "kind": "specific",
+      "strandCode": "A",
+      "parentCode": "A3",
+      "textFr": "Utiliser ses compétences en lecture, en écriture et en communication orale dans les autres matières, par exemple pour rédiger un compte rendu en sciences.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "A3.2",
+      "kind": "specific",
+      "strandCode": "A",
+      "parentCode": "A3",
+      "textFr": "Explorer et comparer des textes créés par des autrices et des auteurs de diverses communautés, dont des Franco-Ontariennes et des Franco-Ontariens, et des Premières Nations, des Métis et des Inuit.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B1",
+      "kind": "overall",
+      "strandCode": "B",
+      "parentCode": null,
+      "textFr": "Utiliser des habiletés d’écoute, d’expression orale et de communication non verbale pour interagir dans diverses situations.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B1.1",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B1",
+      "textFr": "Écouter activement pour comprendre un message oral, en dégager l’information importante et distinguer les faits des opinions.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B1.2",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B1",
+      "textFr": "Participer à des discussions en respectant les tours de parole, en reformulant les idées des autres et en justifiant son point de vue.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B2",
+      "kind": "overall",
+      "strandCode": "B",
+      "parentCode": null,
+      "textFr": "Utiliser ses connaissances des mots, de leur formation et de leur sens pour lire et écrire avec aisance.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B2.1",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B2",
+      "textFr": "Lire et orthographier des mots de plus en plus complexes, dont des mots d’usage fréquent et des termes propres aux matières étudiées.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B2.2",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B2",
+      "textFr": "Enrichir son vocabulaire à l’aide du contexte, des préfixes, des suffixes, des familles de mots et du dictionnaire.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B2.3",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B2",
+      "textFr": "Lire avec fluidité, c’est-à-dire avec précision, à un rythme approprié et avec une intonation adaptée au texte.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B3",
+      "kind": "overall",
+      "strandCode": "B",
+      "parentCode": null,
+      "textFr": "Appliquer ses connaissances des conventions linguistiques (syntaxe, grammaire, ponctuation) pour lire et écrire.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B3.1",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B3",
+      "textFr": "Construire des phrases variées (déclaratives, interrogatives, exclamatives, impératives) et les enrichir à l’aide de compléments.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B3.2",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B3",
+      "textFr": "Faire les accords dans le groupe du nom et accorder le verbe avec son sujet, y compris lorsque le sujet est éloigné du verbe.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B3.3",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B3",
+      "textFr": "Utiliser correctement les signes de ponctuation, dont la virgule et les signes du dialogue (deux-points, tiret, guillemets).",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C1",
+      "kind": "overall",
+      "strandCode": "C",
+      "parentCode": null,
+      "textFr": "Utiliser des stratégies pour comprendre divers textes, dont des textes informatifs et narratifs, et réagir à ce qu’elle ou il lit.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C1.1",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C1",
+      "textFr": "Faire des prédictions et activer ses connaissances antérieures avant et pendant la lecture, puis vérifier ses prédictions.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C1.2",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C1",
+      "textFr": "Dégager l’idée principale et les détails importants d’un texte informatif ou narratif.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C1.3",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C1",
+      "textFr": "Utiliser les caractéristiques des textes informatifs (intertitres, encadrés, schémas, tableaux, glossaire) pour trouver et relier de l’information.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C1.4",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C1",
+      "textFr": "Reconnaître les caractéristiques de divers genres de textes (récit d’aventures, légende, texte explicatif, texte d’opinion, poème) et leur intention.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C2",
+      "kind": "overall",
+      "strandCode": "C",
+      "parentCode": null,
+      "textFr": "Appliquer des stratégies de compréhension (se poser des questions, faire des liens, faire des inférences, vérifier sa compréhension) pour construire le sens de textes variés.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C2.1",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C2",
+      "textFr": "Se poser des questions de différents types avant, pendant et après la lecture pour approfondir sa compréhension.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C2.2",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C2",
+      "textFr": "Faire des liens entre des textes, ses expériences et des enjeux de sa communauté ou du monde.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C2.3",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C2",
+      "textFr": "Faire des inférences à partir d’indices du texte pour dégager des sentiments, des motivations ou des liens de cause à effet.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C2.4",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C2",
+      "textFr": "Vérifier sa compréhension et choisir des stratégies de dépannage appropriées, comme relire, reformuler ou consulter un glossaire.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C3",
+      "kind": "overall",
+      "strandCode": "C",
+      "parentCode": null,
+      "textFr": "Analyser des textes de façon critique en tenant compte du point de vue, de l’intention, des stéréotypes et des personnes représentées, et justifier sa réaction.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C3.1",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C3",
+      "textFr": "Reconnaître le point de vue présenté dans un texte, repérer des stéréotypes ou des préjugés et se demander quelles voix sont absentes.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C3.2",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C3",
+      "textFr": "Exprimer une réaction à un texte et l’appuyer à l’aide d’exemples précis tirés du texte et de ses connaissances.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D1",
+      "kind": "overall",
+      "strandCode": "D",
+      "parentCode": null,
+      "textFr": "Planifier et rédiger des textes variés pour communiquer de l’information et des idées à un public donné.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D1.1",
+      "kind": "specific",
+      "strandCode": "D",
+      "parentCode": "D1",
+      "textFr": "Organiser ses idées et l’information recueillie à l’aide d’un organisateur graphique avant d’écrire.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D1.2",
+      "kind": "specific",
+      "strandCode": "D",
+      "parentCode": "D1",
+      "textFr": "Trouver et développer des idées pour écrire en tenant compte de l’intention et du public.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D1.3",
+      "kind": "specific",
+      "strandCode": "D",
+      "parentCode": "D1",
+      "textFr": "Recueillir de l’information dans diverses sources, imprimées ou numériques, en vérifiant leur fiabilité et en notant les sources.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D2",
+      "kind": "overall",
+      "strandCode": "D",
+      "parentCode": null,
+      "textFr": "Rédiger des textes de divers genres en choisissant les mots, les phrases et la structure qui conviennent à l’intention et au public.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D2.1",
+      "kind": "specific",
+      "strandCode": "D",
+      "parentCode": "D2",
+      "textFr": "Écrire des textes de divers genres (récit, texte explicatif, texte d’opinion, compte rendu, poème) en respectant leurs caractéristiques.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D2.3",
+      "kind": "specific",
+      "strandCode": "D",
+      "parentCode": "D2",
+      "textFr": "Choisir un vocabulaire précis et varié, dont des termes propres aux matières et des marqueurs de relation, pour rendre son texte clair et cohérent.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D2.6",
+      "kind": "specific",
+      "strandCode": "D",
+      "parentCode": "D2",
+      "textFr": "Réviser son brouillon pour améliorer la clarté, la cohérence et l’enchaînement des idées, de façon autonome ou avec ses pairs.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D3",
+      "kind": "overall",
+      "strandCode": "D",
+      "parentCode": null,
+      "textFr": "Corriger, publier et présenter ses textes, et réfléchir à ses stratégies d’écriture.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D3.1",
+      "kind": "specific",
+      "strandCode": "D",
+      "parentCode": "D3",
+      "textFr": "Corriger son texte à l’aide d’outils (grille de vérification, dictionnaire, correcticiel) pour produire une version finale soignée.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D3.2",
+      "kind": "specific",
+      "strandCode": "D",
+      "parentCode": "D3",
+      "textFr": "Publier ou présenter ses textes dans des formats variés, imprimés, oraux ou numériques, en tenant compte du public.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D3.3",
+      "kind": "specific",
+      "strandCode": "D",
+      "parentCode": "D3",
+      "textFr": "Réfléchir aux stratégies d’écriture qui l’aident le plus et se fixer des objectifs d’amélioration.",
+      "textEn": null
+    }
+  ]
+}

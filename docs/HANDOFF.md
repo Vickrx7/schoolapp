@@ -61,32 +61,37 @@ Ardoise). No availability or trademark check has been done yet.
 
 **Commits on #2:**
 
-| Commit    | What                                                                                  |
-| --------- | ------------------------------------------------------------------------------------- |
-| `9bba837` | Phase 2 hardening: privacy layer, AI limits, the « Différencier » screens (41 fixes)  |
-| `25f9659` | Phase 3 groundwork: the plan builder (`packages/domain`) and the database behind it   |
-| `f6a6816` | Merge of the fact-checked handoff note from PR #1's branch                            |
-| `16cc8fa` | Absence form, absence page, plan review and editing, Fiche, worker refresh            |
-| `e46a56f` | Codes, the substitute portal, the office and direction board                          |
-| `9aa32d8` | CI prints the page snapshot of a failed browser test                                  |
-| `36c5b91` | Office account kept in French for the browser tests (CI fix)                          |
-| `21f9ba6` | The substitute's report, the teacher's confirmation, PDFs                             |
-| `edd830b` | Phase 3b: « Consignes détaillées (IA) » and the students' activity sheets             |
-| `31412d8` | Phase 3 hardening (26 review findings) and the Phase 3 docs, decisions D-047 to D-060 |
-| `6f29480` | Phase 3 tests: ending the day unsent, step undo, the editor staying open              |
-| `8230bb1` | Phase 4 head start: `@lynx/content` and the 29 demo resources (merged branches)       |
-| `5200997` | Phase 4 database: saving, review, sharing, board approval; D-061 to D-081             |
-| `166483b` | Library item page, printing, the demo seed and the curriculum import                  |
-| `b1cdcbe` | Library search, browsing by attente and PDFs (and a PDF font fix for all PDFs)        |
-| `c871b45` | Marketing: bilingual landing page, board fact sheet, promo script v2 (and 2 fixes)    |
-| `ebe1a8f` | Writing, review, sharing, planning and AI generation of library resources             |
-| `703da28` | Substitute plans use reviewed library resources                                       |
-| (latest)  | Phase 4 hardening (30 review findings) and the Phase 4 docs                           |
+| Commit    | What                                                                                     |
+| --------- | ---------------------------------------------------------------------------------------- |
+| `9bba837` | Phase 2 hardening: privacy layer, AI limits, the « Différencier » screens (41 fixes)     |
+| `25f9659` | Phase 3 groundwork: the plan builder (`packages/domain`) and the database behind it      |
+| `f6a6816` | Merge of the fact-checked handoff note from PR #1's branch                               |
+| `16cc8fa` | Absence form, absence page, plan review and editing, Fiche, worker refresh               |
+| `e46a56f` | Codes, the substitute portal, the office and direction board                             |
+| `9aa32d8` | CI prints the page snapshot of a failed browser test                                     |
+| `36c5b91` | Office account kept in French for the browser tests (CI fix)                             |
+| `21f9ba6` | The substitute's report, the teacher's confirmation, PDFs                                |
+| `edd830b` | Phase 3b: « Consignes détaillées (IA) » and the students' activity sheets                |
+| `31412d8` | Phase 3 hardening (26 review findings) and the Phase 3 docs, decisions D-047 to D-060    |
+| `6f29480` | Phase 3 tests: ending the day unsent, step undo, the editor staying open                 |
+| `8230bb1` | Phase 4 head start: `@lynx/content` and the 29 demo resources (merged branches)          |
+| `5200997` | Phase 4 database: saving, review, sharing, board approval; D-061 to D-081                |
+| `166483b` | Library item page, printing, the demo seed and the curriculum import                     |
+| `b1cdcbe` | Library search, browsing by attente and PDFs (and a PDF font fix for all PDFs)           |
+| `c871b45` | Marketing: bilingual landing page, board fact sheet, promo script v2 (and 2 fixes)       |
+| `ebe1a8f` | Writing, review, sharing, planning and AI generation of library resources                |
+| `703da28` | Substitute plans use reviewed library resources                                          |
+| `9d45e0e` | Phase 4 hardening (30 review findings) and the Phase 4 docs                              |
+| `958fd3f` | The ratings table in the Phase 4 security review                                         |
+| `e0ab7de` | Phase 5 head start: class-mode slides and the content pack format (pure code, tests)     |
+| `d37bbb6` | Phase 5 head start: class portal codes and gate, coverage and lineage views (pure)       |
+| (latest)  | Library expansion: 49 more demo resources (78) and the curriculum sample, « À vérifier » |
 
-**Verified (locally, from an empty database, and in CI on each pushed commit):** 690 unit tests,
-904 pgTAP tests, 50 integration tests, 71 Playwright tests (desktop and phone, axe on every
-Phase 3 and Phase 4 page), lint, typecheck, format, generated DB types up to date, the demo
-library seed up to date (`pnpm library:seed:check`), web build.
+**Verified (locally, from an empty database, and in CI on each pushed commit):** 792 unit tests
+(one more skipped until Phase 5's `libraryGrowth` messages exist), 904 pgTAP tests, 53
+integration tests, 71 Playwright tests (desktop and phone, axe on every Phase 3 and Phase 4
+page), lint, typecheck, format, generated DB types up to date, the demo curriculum and library
+seeds up to date (`pnpm library:seed:check`), web build.
 
 **Phase 3 is complete** (3a and 3b; see `docs/phase-3.md`): absence button, plans built in the
 request and kept current by the worker, review and editing, release at 07:30, codes, the
@@ -104,8 +109,9 @@ and filters, browsing by attente, 25 resource types with one editor, the review 
 reviewers designated by the board (content and faith), sharing with a first-name check, print
 and PDF (student sheet and teacher copy apart, never a level name, never a key on a student
 sheet), attaching a resource to a lesson, AI generation and level versions (fake provider only),
-substitute plans that use reviewed resources, 29 original demo resources and the curriculum
-import tool. A review of the build found 30 problems; all are fixed with tests in the latest
+substitute plans that use reviewed resources, original demo resources (29 at the end of Phase 4,
+78 since the library expansion, with a wider curriculum sample for 3e and 5e flagged « À vérifier »)
+and the curriculum import tool. A review of the build found 30 problems; all are fixed with tests in the latest
 commit (governance: faith content could stay on the whole board after an edit, AI level versions
 reached colleagues unreviewed, an author who left the board could still widen sharing; plans: a
 lesson's own resource could be taken by an earlier lesson, a hidden resource left its step;
@@ -119,7 +125,10 @@ focus, `lang` on English labels, 44 px targets, English and French copy, and mor
 `ANTHROPIC_API_KEY` is not set in this environment. No hosted deployment exists; the reverse
 proxy and the portal role's password are deployment steps written in `docs/phase-3.md`.
 
-**Half-built:** nothing. Phase 5 (class mode) has not started; Phase 4 left its hooks (D-081).
+**Half-built:** Phase 5 (class mode and library growth) has its pure head start merged
+(`packages/content/src/class-mode.ts`, `pack-format.ts`; `apps/web/src/server/class-portal/*`,
+`server/class-mode/aggregate.ts`, `server/library/{coverage-view,lineage-view}.ts`, all with
+tests) and nothing else yet: no migration, screen or worker task. Phase 4 left its hooks (D-081).
 
 **Other deliverables:**
 
@@ -303,7 +312,7 @@ Where an item is already in `DECISIONS.md`, the D-number is given. Don't add dup
 1. **Show Mike Phases 3 and 4** with a short summary each: the three questions in
    `docs/phase-3.md` and the six in `docs/phase-4.md` (we built on the recommended answers:
    reviewers named by the board, school and board sharing before approval with faith content
-   faith-reviewed first, AI may draft faith reflections, AI level versions by default, 29 demo
+   faith-reviewed first, AI may draft faith reflections, AI level versions by default, the 78 demo
    resources shown to pilot teachers; who owns shared content is still open). Update PR #2's
    description.
 2. **Real-API evaluation**, once `ANTHROPIC_API_KEY` is set and Mike agrees: `pnpm ai:eval --yes`

@@ -71,7 +71,7 @@ test('a teacher writes a quiz with every question kind, marks it reviewed and sh
   await page.getByLabel('Titre', { exact: true }).fill(title);
   // Isabelle teaches 3e année only: it is chosen already.
   await expect(page.getByRole('checkbox', { name: '3e année' })).toBeChecked();
-  await page.getByLabel('Matière').selectOption({ label: 'Français' });
+  await page.getByLabel('Matière', { exact: true }).selectOption({ label: 'Français' });
 
   // One question of each kind, with its answer written next to it.
   await addQuestion(page, 'Choix multiple');

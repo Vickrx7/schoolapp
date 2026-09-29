@@ -214,12 +214,14 @@ summaries (not official text) with `is_verified = false`, shown as "à vérifier
 Licensing must be confirmed before loading official Ministry curriculum text into a commercial
 product; the Catholic graduate expectations and the religion curriculum belong to Catholic
 education bodies and need separate permission. _Amended in Phase 4:_ the JSON import tool
-exists, with a licensing gate (D-070).
+exists, with a licensing gate (D-070). _Amended in the library expansion:_ the demo database also
+loads a wider paraphrased sample for 3e and 5e, every row unverified (D-071).
 
 **D-031 — Library seed items move to Phase 4 (deviation).** The spec asked for 20–30 library items
 in the Phase 1 seed. The item types' schemas are defined in Phase 4, so items written now would have
 to be rewritten. All library tables, the review workflow statuses and access rules exist now.
-_Delivered in Phase 4:_ 29 original items as a content pack (D-071).
+_Delivered in Phase 4:_ 29 original items as a content pack (D-071); 78 since the library
+expansion.
 
 **D-032 — Language levels are configurable and not an official scale.** Each board gets
 Débutant, Intermédiaire, Avancé, Enrichi by default; boards can edit them and teachers can add
@@ -782,7 +784,17 @@ the workflow. Ids are UUIDv5 of `demo/<slug>` under a fixed namespace. The readi
 worksheets, exit tickets and the quiz have the four board levels. The seed curriculum gains four
 5e Français attentes with the same meaning as the 3e ones (C1, C1.2, D1, D1.1, unverified); no
 other code is invented. A short list of global tags is seeded. Who owns what teachers share is
-still open (licence left empty).
+still open (licence left empty). _Amended in the library expansion:_ the pack has 78 items (49
+more, for 3e and 5e in Français, Mathématiques and Sciences et technologie, plus a few Relier and
+Jouer items), and items may link to attentes of the curriculum sample in `content/curriculum`
+(3e and 5e, the same three subjects, 265 paraphrased attentes in the import format of D-070,
+`"official": false` and `"verified": false`, uncertain codes listed under « À vérifier » in its
+README). `pnpm library:seed` also turns that folder into `supabase/seeds/10_curriculum_demo.sql`,
+loaded before the pack (seeds load in name order) and checked for drift in CI; it refuses
+official or verified files. It keeps the rows `seed.sql` already has (ids, wording, strand,
+parent) and only gives them the files' sort order, and the files keep every seeded code with its
+wording (tested). A real board gets curriculum files only through the import command, after the
+« À vérifier » review.
 
 **D-072 — On-demand generation: the database builds the request, and the result is a private
 draft (amends D-038).** The AI feature `library_item` is requested with

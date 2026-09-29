@@ -1,0 +1,47 @@
+{
+  "slug": "pause-graine-qui-pousse",
+  "type": "brain_break",
+  "title": "Pause active : la graine qui pousse",
+  "summary": "Une pause d’étirements de 5 minutes, à côté des pupitres : les élèves deviennent une graine qui germe, pousse vers la lumière, se balance au vent et fleurit, puis terminent par trois respirations calmes.",
+  "source": "teacher_created",
+  "author": "paul.leblanc@demo.lynx.test",
+  "school": "saint-exemple",
+  "status": "teacher_reviewed",
+  "shareScope": "school",
+  "gradeCodes": ["1", "2", "3"],
+  "subjectCode": "eps",
+  "durationMinutes": 5,
+  "materials": "Aucun matériel particulier.",
+  "keywords": "pause active, étirements, calme, respiration, graine, croissance d’une plante, cycle de vie, mouvement",
+  "tags": ["mouvement", "sciences", "plantes"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je m’étire lentement pour me dégourdir et retrouver mon calme, en imitant la croissance d’une plante.",
+        "teacherNote": "Pause d’étirements de 3 à 5 minutes, idéale après une longue période assise. Conçue pour une personne suppléante : lisez chaque étape d’une voix calme et laissez environ 20 secondes par étape. Les mouvements sont lents; personne ne saute. En 3e année, faites le lien avec le cycle de vie des plantes étudié en sciences. Si une personne doit rester assise, elle fait la version calme.",
+        "space": "desk",
+        "steps": [
+          "Place-toi à côté de ton pupitre, avec un bras de distance autour de toi.",
+          "Tu es une graine dans la terre : accroupis-toi, entoure tes genoux de tes bras et baisse doucement la tête.",
+          "La pluie tombe et le Soleil réchauffe la terre. Ta racine pousse : appuie bien tes pieds sur le sol.",
+          "Ta tige sort de la terre : lève-toi très lentement en déroulant ton dos, la tête en dernier.",
+          "Tes feuilles s’ouvrent : ouvre les bras de chaque côté, les paumes vers le ciel.",
+          "Tu cherches la lumière : étire-toi vers le haut, sur la pointe des pieds, pendant cinq secondes.",
+          "Le vent souffle : balance-toi doucement de gauche à droite, sans bouger les pieds.",
+          "Tu fleuris : réunis tes mains au-dessus de ta tête, puis ouvre tes doigts comme des pétales.",
+          "Tu es maintenant une plante calme : prends trois grandes respirations, puis assieds-toi sans bruit."
+        ],
+        "calmVariant": "En position assise : pour la graine, on pose la tête sur ses bras croisés sur le pupitre. On se redresse lentement, on ouvre les bras, on s’étire vers le haut et on se balance doucement. Terminez par trois respirations lentes."
+      },
+      "answerKey": null
+    }
+  ]
+}

@@ -1,0 +1,140 @@
+{
+  "slug": "plantes-et-sols-a-la-maison",
+  "type": "parent_guide",
+  "title": "Les plantes et les sols à la maison / Plants and soil at home",
+  "summary": "Un guide bilingue (français et anglais) pour aider les familles à soutenir l’apprentissage des plantes et des sols en 3e année, avec des activités simples à faire à la maison ou en promenade, sans achat, et les mots utilisés en classe.",
+  "source": "board_created",
+  "status": "board_approved",
+  "shareScope": "board",
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "gradeCodes": ["3"],
+  "subjectCode": "sci",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "B2"
+    },
+    {
+      "grade": "3",
+      "code": "E2"
+    }
+  ],
+  "durationMinutes": 10,
+  "materials": "Une copie par famille : la partie en français, puis la partie en anglais.",
+  "keywords": "guide pour les familles, parents, maison, plantes, sols, sciences, bilingue, anglais, promenade, compost",
+  "tags": ["famille", "sciences", "plantes", "sols"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Démontrer une compréhension des besoins et des parties des plantes, et de la composition des sols.",
+        "teacherNote": "Guide à remettre aux familles au début de l’unité sur les plantes ou sur les sols, dans l’agenda ou par courriel. La partie en anglais suit la partie en français point par point, pour les familles plus à l’aise en anglais. Sa liste de mots explique en anglais les mots français utilisés en classe. Les activités ne demandent aucun achat.",
+        "fr": {
+          "intro": "En 3e année, en sciences et technologie, votre enfant étudie les plantes et les sols. Votre enfant apprend ce dont une plante a besoin pour vivre et grandir, le rôle de chacune de ses parties et ce que contient le sol où elle pousse. Votre enfant réfléchit aussi à l’importance des plantes et des sols pour tous les êtres vivants, et aux façons d’en prendre soin. Pas besoin d’un jardin pour explorer! Une plante d’intérieur, un parc ou une promenade suffisent, en français ou dans la langue parlée à la maison.",
+          "learning": [
+            "nommer les besoins des plantes : air, eau, lumière, chaleur, espace et nutriments",
+            "nommer les parties d’une plante (racine, tige, feuille, fleur, fruit, graine) et expliquer le rôle de chacune",
+            "décrire les changements d’une plante au cours de son cycle de vie, de la graine à la plante adulte",
+            "décrire ce que contient le sol : de petites particules de roche, de l’humus, de l’air, de l’eau et des êtres vivants",
+            "comparer des sols, comme le sable, l’argile et le terreau, selon leur capacité à retenir l’eau",
+            "proposer des façons de protéger les plantes et les sols"
+          ],
+          "atHome": [
+            "pendant une promenade, nommer ensemble les parties des plantes que vous voyez, et chercher des indices que des animaux utilisent les plantes (un nid, une feuille grignotée, un insecte sur une fleur)",
+            "à l’épicerie, chercher des parties de plantes que l’on mange : des racines (carottes), des tiges (céleri), des feuilles (laitue), des fruits (pommes) et des graines (pois, haricots)",
+            "prendre soin d’une plante d’intérieur : l’arroser, la placer près de la lumière et noter chaque semaine ce qui change",
+            "déposer le haut d’une carotte dans une soucoupe d’eau et observer, pendant une ou deux semaines, les nouvelles feuilles qui poussent",
+            "observer une poignée de terre d’un jardin ou d’un parc sur une feuille blanche : chercher de petits cailloux, des restes de feuilles et de petites bêtes, puis tout remettre dehors et se laver les mains",
+            "parler du compost ou du bac vert : quelles matières deviennent, avec le temps, de la terre riche pour les plantes?"
+          ],
+          "words": [
+            {
+              "term": "racine",
+              "definition": "Partie de la plante, souvent sous la terre, qui absorbe l’eau et les nutriments et qui tient la plante en place."
+            },
+            {
+              "term": "tige",
+              "definition": "Partie de la plante qui la soutient et qui transporte l’eau jusqu’aux feuilles et aux fleurs. Le tronc d’un arbre est une tige."
+            },
+            {
+              "term": "nutriments",
+              "definition": "Éléments nutritifs que la plante puise dans le sol pour grandir."
+            },
+            {
+              "term": "humus",
+              "definition": "Partie sombre du sol, faite de restes de plantes et d’animaux décomposés. Il retient l’eau et nourrit les plantes."
+            },
+            {
+              "term": "cycle de vie",
+              "definition": "Les étapes de la vie d’une plante : graine, pousse, plante adulte, fleur, fruit et nouvelles graines."
+            },
+            {
+              "term": "pollinisation",
+              "definition": "Transport du pollen d’une fleur à une autre, souvent par des insectes, pour que des graines se forment."
+            },
+            {
+              "term": "sol sableux / sol argileux",
+              "definition": "Un sol sableux est fait surtout de sable et laisse passer l’eau vite. Un sol argileux est fait de très fines particules et retient l’eau."
+            }
+          ]
+        },
+        "en": {
+          "intro": "In Grade 3 science and technology, your child is learning about plants and soil. Your child is learning what a plant needs to live and grow, what each of its parts does and what is in the soil it grows in. Your child is also thinking about why plants and soil matter to all living things, and how to take care of them. You don’t need a garden to explore! A houseplant, a park or a walk is enough, in French or in the language you speak at home. Lessons at school are in French: the words below will help you talk about plants and soil with your child.",
+          "learning": [
+            "name what plants need: air, water, light, warmth, space and nutrients",
+            "name the parts of a plant (root, stem, leaf, flower, fruit, seed) and explain what each one does",
+            "describe how a plant changes during its life cycle, from seed to adult plant",
+            "describe what soil contains: tiny bits of rock, humus, air, water and living things",
+            "compare soils, such as sand, clay and potting soil, by how much water they hold",
+            "suggest ways to protect plants and soil"
+          ],
+          "atHome": [
+            "on a walk, name together the parts of the plants you see, and look for signs that animals use plants (a nest, a chewed leaf, an insect on a flower)",
+            "at the grocery store, look for plant parts we eat: roots (carrots), stems (celery), leaves (lettuce), fruits (apples) and seeds (peas, beans)",
+            "take care of a houseplant: water it, place it near the light and write down every week what changes",
+            "put the top of a carrot in a saucer of water and watch new leaves grow over one or two weeks",
+            "look at a handful of soil from a garden or a park on a sheet of white paper: look for small pebbles, bits of leaves and tiny creatures, then put everything back outside and wash your hands",
+            "talk about compost or the green bin: which materials slowly turn into rich soil for plants?"
+          ],
+          "words": [
+            {
+              "term": "racine",
+              "definition": "root; the part of a plant, often underground, that takes in water and nutrients and holds the plant in place"
+            },
+            {
+              "term": "tige",
+              "definition": "stem; it holds the plant up and carries water to the leaves and flowers (a tree trunk is a stem)"
+            },
+            {
+              "term": "nutriments",
+              "definition": "nutrients; what a plant takes from the soil to grow"
+            },
+            {
+              "term": "humus",
+              "definition": "humus; the dark part of soil, made of decayed plants and animals, that holds water and feeds plants"
+            },
+            {
+              "term": "cycle de vie",
+              "definition": "life cycle; the stages of a plant’s life: seed, sprout, adult plant, flower, fruit and new seeds"
+            },
+            {
+              "term": "pollinisation",
+              "definition": "pollination; moving pollen from one flower to another, often by insects, so that seeds can form"
+            },
+            {
+              "term": "sol sableux / sol argileux",
+              "definition": "sandy soil / clay soil; sandy soil lets water through quickly, clay soil holds water"
+            }
+          ]
+        }
+      },
+      "answerKey": null
+    }
+  ]
+}

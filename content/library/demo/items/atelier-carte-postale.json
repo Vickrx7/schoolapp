@@ -1,0 +1,68 @@
+{
+  "slug": "atelier-carte-postale",
+  "type": "learning_centre",
+  "title": "Atelier d’écriture : une carte postale de ma communauté",
+  "summary": "Un centre autonome où chaque élève écrit une carte postale à une ou un élève d’une autre communauté francophone du Canada pour présenter un lieu qu’elle ou il aime dans sa communauté : dessin, salutation, message, question et signature.",
+  "source": "teacher_created",
+  "author": "isabelle.tremblay@demo.lynx.test",
+  "school": "saint-exemple",
+  "status": "teacher_reviewed",
+  "shareScope": "school",
+  "reviewRequested": true,
+  "approvedBy": null,
+  "faithReviewed": false,
+  "gradeCodes": ["3"],
+  "subjectCode": "fra",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "D2.1"
+    },
+    {
+      "grade": "3",
+      "code": "D1.2"
+    }
+  ],
+  "durationMinutes": 30,
+  "materials": "Des cartes blanches de 10 cm sur 15 cm ou des fiches cartonnées, des crayons de couleur et des crayons à mine, une carte du Canada, un modèle de carte postale affiché et une boîte aux lettres de classe (par exemple, une boîte à chaussures décorée).",
+  "keywords": "carte postale, communauté, lieu préféré, francophonie canadienne, classe jumelle, salutation, genre de texte, écriture",
+  "tags": ["ecriture", "francophonie", "identite"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "subFriendly": false,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "J’écris une carte postale qui respecte les parties de ce genre de texte pour présenter un lieu de ma communauté.",
+        "teacherNote": "Ce centre fait découvrir aux élèves qu’on vit en français ailleurs au Canada et les amène à présenter avec fierté un lieu de leur propre communauté. Avant la première visite, montrez une vraie carte postale et nommez ses parties avec la classe : l’image, la salutation, le message, la question, la formule de fin et la signature. Les élèves qui apprennent le français peuvent écrire deux phrases à l’aide d’un modèle (« Voici… », « J’aime ce lieu parce que… »). Pour protéger la vie privée, les élèves signent seulement avec leur prénom et n’écrivent jamais d’adresse personnelle. Si votre classe a une classe jumelle dans une autre école de langue française, envoyez-lui les cartes; sinon, affichez-les dans le corridor.",
+        "setup": "Installez une table pour 4 élèves avec les cartes blanches, les crayons, une carte du Canada où sont marquées quelques communautés francophones (par exemple Saint-Boniface au Manitoba, Moncton au Nouveau-Brunswick, Sudbury et Hearst en Ontario) et un modèle de carte postale affiché. Au dos de chaque carte, tracez d’avance une ligne verticale au centre : à gauche, le message; à droite, le nom de la classe qui la recevra. Affichez aussi une courte liste de vérification : majuscule au début de chaque phrase, point à la fin, question qui finit par un point d’interrogation, prénom à la fin.",
+        "groupSize": "4 élèves",
+        "studentSteps": [
+          "Pense à un lieu de ta communauté que tu aimes : un parc, la patinoire, la bibliothèque, un sentier, un marché… Dis-le tout bas à la personne à côté de toi.",
+          "Sur le devant de ta carte, dessine ce lieu en couleur.",
+          "Au dos, à gauche de la ligne, commence ton message par une salutation, comme « Bonjour! ».",
+          "Écris trois ou quatre phrases : Quel est ce lieu? Où est-il? Qu’est-ce qu’on y fait? Pourquoi l’aimes-tu?",
+          "Ajoute une question pour la personne qui va lire ta carte, par exemple : « Quel est ton endroit préféré dans ta ville? »",
+          "Termine par une formule de fin, comme « À bientôt! », puis signe avec ton prénom seulement.",
+          "Relis ta carte avec la liste de vérification. Dépose-la ensuite dans la boîte aux lettres de la classe."
+        ],
+        "extension": "Écris une deuxième carte à une personne qui parle français autour de toi : une personne de ta famille, une voisine, un voisin ou une ou un élève d’une autre classe. Raconte-lui une chose que tu as apprise cette semaine.",
+        "cleanup": "Range les crayons dans le bac, remets la carte du Canada à sa place et dépose les cartes blanches qui restent dans leur boîte."
+      },
+      "answerKey": null
+    }
+  ]
+}

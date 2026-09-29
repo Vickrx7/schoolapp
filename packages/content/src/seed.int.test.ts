@@ -1,9 +1,10 @@
 /**
- * Integration test for the demo library seed (DECISIONS D-071; plan H3 tests 1–2). Needs a
- * migrated and seeded database (DATABASE_URL), e.g. after `tools/lite-stack/stack.sh reset` or
- * `supabase db reset`. The seeded items must exist, so this also proves that the reset loaded
- * `supabase/seeds/*.sql` after `seed.sql` (config.toml `sql_paths` in CI, `stack.sh` locally).
- * Read-only.
+ * Integration test for the demo library seed and the curriculum sample it links to (DECISIONS
+ * D-030, D-071; plan H3 tests 1–2). Needs a migrated and seeded database (DATABASE_URL), e.g.
+ * after `tools/lite-stack/stack.sh reset` or `supabase db reset`. The seeded attentes and items
+ * must exist, so this also proves that the reset loaded `supabase/seeds/*.sql` after `seed.sql`,
+ * the curriculum (`10_…`) before the library (`20_…`) (config.toml `sql_paths` in CI,
+ * `stack.sh` locally). Read-only.
  *
  * Each seeded item is compared with its file in `content/library/demo`, and the database's own
  * readiness rules (`app.library_assert_ready`) must accept every reviewed and approved item, so
@@ -13,6 +14,8 @@ import { readdirSync, readFileSync } from 'node:fs';
 import pg from 'pg';
 import { afterAll, describe, expect, it } from 'vitest';
 import { LIBRARY_BUCKETS, LIBRARY_ITEM_TYPES, TYPE_INFO } from './catalog';
+import { parseCurriculumFile, type CurriculumFile } from './curriculum-import';
+import { curriculumExpectationId, curriculumStrandId } from './curriculum-sql';
 import {
   SEED_ITEMS_DIR,
   seedItemRequiresFaithReview,
@@ -49,6 +52,15 @@ const items: SeedItem[] = readdirSync(new URL(`${SEED_ITEMS_DIR}/`, packDir))
   .map((file) => seedItemSchema.parse(readJson(new URL(`${SEED_ITEMS_DIR}/${file}`, packDir))))
   .sort((a, b) => pack.items.indexOf(a.slug) - pack.items.indexOf(b.slug));
 const PACK_ID = seedPackId(pack.slug, pack.version);
+
+const curriculumDir = new URL('../../../content/curriculum/', import.meta.url);
+const curricula: { name: string; file: CurriculumFile }[] = readdirSync(curriculumDir)
+  .filter((name) => name.endsWith('.json'))
+  .sort()
+  .map((name) => ({
+    name,
+    file: parseCurriculumFile(readFileSync(new URL(name, curriculumDir), 'utf8')).data!,
+  }));
 const idOf = (slug: string) => seedItemId(pack.slug, slug);
 
 /** One seeded item as the database has it, with its references back as codes. */
@@ -141,7 +153,7 @@ describe('library catalogue and database (H3 1)', () => {
 });
 
 describe('the demo library seed (H3 2)', () => {
-  it('loads the pack: 29 items in the 6 buckets, with the ids of their slugs', async () => {
+  it('loads the pack: 78 items in the 6 buckets, with the ids of their slugs', async () => {
     const { rows } = await pool.query<{ slug: string; version: string; board_id: string }>(
       'select slug, version, board_id from public.content_packs where id = $1',
       [PACK_ID],
@@ -149,7 +161,7 @@ describe('the demo library seed (H3 2)', () => {
     expect(rows).toEqual([{ slug: 'demo', version: '2026.1', board_id: BOARD }]);
 
     const seeded = await seededItems();
-    expect(seeded.size).toBe(29);
+    expect(seeded.size).toBe(78);
     expect([...seeded.keys()].sort()).toEqual(pack.items.map(idOf).sort());
     expect(new Set([...seeded.values()].map((i) => i.bucket))).toEqual(new Set(LIBRARY_BUCKETS));
     // The pack's global tags, once each.
@@ -223,7 +235,7 @@ describe('the demo library seed (H3 2)', () => {
 
   it('passes the database’s own readiness rules, for approval when approved or requested', async () => {
     const reviewed = items.filter((i) => i.status !== 'draft');
-    expect(reviewed.length).toBe(28);
+    expect(reviewed.length).toBe(71);
     for (const item of reviewed) {
       // Raises LXL01 (with what is missing) or LXL02, as the workflow functions would.
       await expect(
@@ -236,7 +248,7 @@ describe('the demo library seed (H3 2)', () => {
     }
   });
 
-  it('has seven items with a version for each of the four board levels, six of them approved', async () => {
+  it('has 19 items with a version for each of the four board levels, 18 of them approved', async () => {
     const { rows } = await pool.query<{ id: string; status: string }>(
       `select i.id, i.status::text from public.library_items i
        where i.content_pack_id = $1
@@ -245,9 +257,9 @@ describe('the demo library seed (H3 2)', () => {
               where v.item_id = i.id and ll.board_id = $2 and ll.owner_user_id is null) = 4`,
       [PACK_ID, BOARD],
     );
-    expect(rows).toHaveLength(7);
-    expect(rows.filter((r) => r.status === 'board_approved')).toHaveLength(6);
-    // The seventh is Marc's exit ticket, waiting in the reviewer's queue.
+    expect(rows).toHaveLength(19);
+    expect(rows.filter((r) => r.status === 'board_approved')).toHaveLength(18);
+    // The other one is Marc's exit ticket, waiting in the reviewer's queue.
     const waiting = rows.find((r) => r.status !== 'board_approved');
     expect(waiting?.id).toBe(idOf('billet-fractions-equivalentes'));
   });
@@ -360,5 +372,109 @@ describe('the demo library seed (H3 2)', () => {
         is_verified: false,
       },
     ]);
+  });
+});
+
+describe('the curriculum sample seed (10_curriculum_demo.sql)', () => {
+  interface Row {
+    id: string;
+    subject: string;
+    version: string;
+    grade: string;
+    code: string;
+    kind: string;
+    strand: string | null;
+    parent: string | null;
+    text_fr: string;
+    is_verified: boolean;
+    sort_order: number;
+  }
+
+  async function rows(): Promise<Map<string, Row>> {
+    const { rows } = await pool.query<Row>(
+      `select ce.id, su.code as subject, ce.curriculum_version as version,
+         ce.grade_code as grade, ce.code, ce.kind::text, st.code as strand, p.code as parent,
+         ce.text_fr, ce.is_verified, ce.sort_order
+       from public.curriculum_expectations ce
+       join public.subjects su on su.id = ce.subject_id and su.board_id is null
+       left join public.strands st on st.id = ce.strand_id
+       left join public.curriculum_expectations p on p.id = ce.parent_id
+       where (su.code, ce.curriculum_version) in (select * from unnest($1::text[], $2::text[]))`,
+      [curricula.map((c) => c.file.subjectCode), curricula.map((c) => c.file.curriculumVersion)],
+    );
+    return new Map(rows.map((r) => [`${r.subject} ${r.version} ${r.grade} ${r.code}`, r]));
+  }
+
+  it('holds every attente of content/curriculum, unverified, in its strand and under its parent', async () => {
+    expect(curricula.length).toBeGreaterThanOrEqual(6);
+    const seeded = await rows();
+    const expected = curricula.flatMap(({ file }) => file.expectations.map((e) => ({ file, e })));
+    expect(seeded.size).toBe(expected.length);
+    const positions = new Map<string, number>();
+    for (const { file, e } of expected) {
+      const key = `${file.subjectCode} ${file.curriculumVersion} ${e.grade} ${e.code}`;
+      const grade = `${file.subjectCode} ${e.grade}`;
+      const position = (positions.get(grade) ?? 0) + 1;
+      positions.set(grade, position);
+      const row = seeded.get(key);
+      expect(row, key).toBeDefined();
+      expect(
+        {
+          kind: row!.kind,
+          strand: row!.strand,
+          parent: row!.parent,
+          verified: row!.is_verified,
+          sortOrder: row!.sort_order,
+        },
+        key,
+      ).toEqual({
+        kind: e.kind,
+        strand: e.strandCode,
+        parent: e.parentCode,
+        verified: false,
+        sortOrder: position,
+      });
+      // New rows have their UUIDv5 id and the file's text; rows of seed.sql keep theirs.
+      if (row!.id.startsWith('20000000-')) continue;
+      expect(row!.id, key).toBe(
+        curriculumExpectationId(file.subjectCode, file.curriculumVersion, e.grade, e.code),
+      );
+      expect(row!.text_fr, key).toBe(e.textFr);
+    }
+  });
+
+  it('keeps the attentes of seed.sql: their ids, wording and source note', async () => {
+    const { rows } = await pool.query<{ id: string; code: string; text_fr: string; note: string }>(
+      `select ce.id, ce.code, ce.text_fr, ce.source_note as note
+       from public.curriculum_expectations ce where ce.id::text like '20000000-%' order by ce.id`,
+    );
+    expect(rows).toHaveLength(22);
+    expect(new Set(rows.map((r) => r.note))).toEqual(
+      new Set(['Résumé à vérifier contre le document officiel.']),
+    );
+    expect(rows.find((r) => r.id === FRA_3_C1_2)).toMatchObject({
+      code: 'C1.2',
+      text_fr: "Repérer l'idée principale et quelques détails importants d'un texte informatif.",
+    });
+  });
+
+  it('adds the missing strands with their ids, in the files’ order', async () => {
+    const { rows } = await pool.query<{ id: string; subject: string; code: string; sort: number }>(
+      `select st.id, su.code as subject, st.code, st.sort_order as sort
+       from public.strands st join public.subjects su on su.id = st.subject_id
+       where su.board_id is null and st.curriculum_version in ('fra-2023', 'mat-2020', 'sci-2022')
+       order by su.code, st.sort_order`,
+    );
+    const versions = new Map(curricula.map(({ file }) => [file.subjectCode, file]));
+    expect(rows.map((r) => `${r.subject} ${r.code} ${r.sort}`)).toEqual(
+      [...versions.values()]
+        .sort((a, b) => a.subjectCode.localeCompare(b.subjectCode))
+        .flatMap((f) => f.strands.map((s, i) => `${f.subjectCode} ${s.code} ${i + 1}`)),
+    );
+    // seed.sql's strands keep their ids (lessons and tests point at them).
+    const mat = rows.find((r) => r.subject === 'mat' && r.code === 'B');
+    expect(mat?.id).toBe('10000000-0000-4000-8000-00000000aa02');
+    const matA = rows.find((r) => r.subject === 'mat' && r.code === 'A');
+    expect(matA?.id).toBe(curriculumStrandId('mat', 'mat-2020', 'A'));
   });
 });

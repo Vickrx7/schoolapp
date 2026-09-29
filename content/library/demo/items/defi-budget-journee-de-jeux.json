@@ -1,0 +1,93 @@
+{
+  "slug": "defi-budget-journee-de-jeux",
+  "type": "weekly_challenge",
+  "title": "Défi de la semaine : le budget de la journée de jeux",
+  "summary": "Un défi en cinq jours pour le comité d’achat d’une journée de jeux : calculer le coût de plusieurs articles en dollars et en cents, ajouter la taxe de vente, comparer deux magasins et préparer un budget qui garde une réserve pour les imprévus, avec des indices et la solution complète.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["5"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "F1.2"
+    },
+    {
+      "grade": "5",
+      "code": "F1.3"
+    },
+    {
+      "grade": "5",
+      "code": "B2.4"
+    }
+  ],
+  "durationMinutes": 15,
+  "materials": "Le défi affiché ou une copie par élève, un cahier de mathématiques et un crayon. Facultatif : de la monnaie de jeu et une calculatrice pour vérifier les calculs du vendredi.",
+  "keywords": "défi de la semaine, littératie financière, budget, taxe de vente, TVH, argent, dollars et cents, revenus, dépenses, solde, comparer des prix",
+  "tags": ["decimaux", "litteratie-financiere"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": false,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je calcule le coût d’achats en dollars et en cents, taxe comprise, et je prépare un budget simple pour aider à prendre une décision.",
+        "teacherNote": "Affichez le défi le lundi. Les élèves font une tâche par jour, environ 15 minutes. Les prix sont fictifs et ont été choisis pour que les calculs de taxe tombent juste. La taxe de vente harmonisée (TVH) de l’Ontario, 13 %, est présentée aux élèves comme « 13 ¢ pour chaque dollar », sans pourcentage. À vérifier avant l’usage : le taux de TVH en vigueur (13 % en Ontario depuis 2010) et le fait que les articles du défi sont taxables (certains articles, comme les aliments de base, ne le sont pas). Le vendredi, faites comparer les budgets en groupe : plusieurs choix sont possibles s’ils respectent le budget et la réserve de 10 $. La solution de chaque jour est dans le corrigé.",
+        "challenge": "Pour la journée de jeux de la fin de l’année, ta classe a amassé 150,00 $ grâce à une vente de livres usagés. Tu fais partie du comité d’achat! Chaque jour, fais la tâche du jour dans ton cahier de mathématiques. Montre tes calculs et explique tes choix. En Ontario, on paie une taxe de vente sur la plupart des achats. Dans ce défi, la taxe ajoute 13 ¢ pour chaque dollar dépensé. Vendredi, on compare nos budgets en groupe.",
+        "days": [
+          {
+            "label": "Lundi",
+            "task": "Le comité veut acheter 3 ballons de soccer à 12,00 $ chacun, 6 cordes à sauter à 3,50 $ chacune et 2 grosses boîtes de craies de trottoir à 6,50 $ chacune. Estime d’abord : le total dépasse-t-il 60 $? Calcule ensuite le coût total exact, avant la taxe."
+          },
+          {
+            "label": "Mardi",
+            "task": "Calcule la taxe sur le montant de lundi. Rappel : la taxe ajoute 13 ¢ pour chaque dollar. Quel est le coût total du matériel, taxe comprise?"
+          },
+          {
+            "label": "Mercredi",
+            "task": "Combien d’argent reste-t-il dans le budget de 150,00 $ après l’achat du matériel, taxe comprise? Le comité aimerait aussi louer un jeu gonflable qui coûte 65,00 $, taxe comprise. Est-ce possible? Combien d’argent resterait-il?"
+          },
+          {
+            "label": "Jeudi",
+            "task": "Dans un autre magasin, les mêmes ballons de soccer se vendent en paquet de 3 pour 30,00 $, avant la taxe. Combien le comité économiserait-il sur les ballons, avant la taxe? Calcule le nouveau coût total du matériel, taxe comprise. Quelle est l’économie, taxe comprise?"
+          },
+          {
+            "label": "Vendredi",
+            "task": "Le grand défi! Le comité veut acheter le matériel de lundi, louer le jeu gonflable et garder au moins 10 $ pour les imprévus. Est-ce possible? Présente ton budget dans un tableau à deux colonnes, « Revenus » et « Dépenses », puis calcule le solde. Explique comment ton budget aide le comité à prendre sa décision."
+          }
+        ],
+        "hints": [
+          "Pour multiplier un prix, décompose-le : 6 × 3,50 $, c’est 6 × 3 $ plus 6 × 0,50 $.",
+          "La taxe ajoute 13 ¢ par dollar : pour 10 $, c’est 1,30 $. Pour 70 $, c’est 7 fois plus.",
+          "Pour soustraire 79,10 $ de 150,00 $, compte par bonds : de 79,10 $ à 80,00 $, puis de 80,00 $ à 150,00 $.",
+          "Aligne les virgules quand tu additionnes ou que tu soustrais des montants d’argent.",
+          "Un budget compare l’argent qui entre (les revenus) et l’argent qui sort (les dépenses). Le solde, c’est ce qui reste."
+        ],
+        "extension": "Un commerce du quartier donne 25,00 $ de plus au comité. Propose une façon d’utiliser ce don, calcule son coût avec la taxe et mets ton budget à jour. Ton solde respecte-t-il toujours la réserve de 10 $?"
+      },
+      "answerKey": {
+        "answers": [],
+        "solution": "Lundi : 3 × 12,00 $ = 36,00 $; 6 × 3,50 $ = 21,00 $; 2 × 6,50 $ = 13,00 $. Total avant la taxe : 36,00 $ + 21,00 $ + 13,00 $ = 70,00 $. Le total dépasse donc 60 $.\n\nMardi : taxe = 70 × 13 ¢ = 910 ¢ = 9,10 $. Coût total, taxe comprise : 70,00 $ + 9,10 $ = 79,10 $.\n\nMercredi : 150,00 $ − 79,10 $ = 70,90 $. Le jeu gonflable coûte 65,00 $, taxe comprise : c’est possible, et il resterait 70,90 $ − 65,00 $ = 5,90 $.\n\nJeudi : avant la taxe, le comité économiserait 36,00 $ − 30,00 $ = 6,00 $ sur les ballons. Nouveau total avant la taxe : 70,00 $ − 6,00 $ = 64,00 $. Taxe : 64 × 13 ¢ = 832 ¢ = 8,32 $. Nouveau total, taxe comprise : 64,00 $ + 8,32 $ = 72,32 $. Économie, taxe comprise : 79,10 $ − 72,32 $ = 6,78 $. Elle est plus grande qu’avant la taxe, car on évite aussi la taxe sur les 6,00 $ économisés (6 × 13 ¢ = 78 ¢).\n\nVendredi (exemple de budget) : Revenus : vente de livres usagés, 150,00 $. Dépenses : matériel acheté avec le paquet de ballons de l’autre magasin, 72,32 $; location du jeu gonflable, 65,00 $. Total des dépenses : 72,32 $ + 65,00 $ = 137,32 $. Solde : 150,00 $ − 137,32 $ = 12,68 $, ce qui respecte la réserve de 10 $. Sans le paquet de ballons, il ne resterait que 5,90 $ (mercredi) : le comité ne pourrait pas garder 10 $ pour les imprévus. Le budget montre donc qu’il faut acheter le paquet de ballons pour pouvoir louer le jeu gonflable. D’autres budgets sont acceptables, par exemple renoncer au jeu gonflable et acheter d’autres jeux, s’ils respectent le total de 150,00 $ et la réserve de 10 $, et si la taxe est calculée."
+      }
+    }
+  ]
+}

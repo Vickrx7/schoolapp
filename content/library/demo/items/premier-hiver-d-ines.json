@@ -1,0 +1,948 @@
+{
+  "slug": "premier-hiver-d-ines",
+  "type": "reading_passage",
+  "title": "Le premier hiver d’Inès",
+  "summary": "Récit de cinq paragraphes : arrivée à Timmins à la fin de l’été, Inès découvre la neige et des mots d’ici (tuque, banc de neige, mitaines), puis elle apprend à sa classe un mot de chez elle. Des questions pour trouver le sens d’un mot à l’aide du contexte. Quatre versions selon le niveau de langue.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["3"],
+  "subjectCode": "fra",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "B2.2"
+    },
+    {
+      "grade": "3",
+      "code": "C2.2"
+    }
+  ],
+  "durationMinutes": 30,
+  "materials": "Une copie du texte par élève, dans la version prévue pour son groupe; un crayon; le carnet de mots de chaque élève (facultatif).",
+  "keywords": "hiver, neige, Timmins, Nord de l’Ontario, tuque, mitaines, banc de neige, indices de contexte, sens des mots, nouvelle arrivante, francophonie, construction identitaire",
+  "tags": ["lecture", "vocabulaire", "francophonie", "identite"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "J’utilise les indices du texte pour trouver le sens d’un mot nouveau.",
+        "teacherNote": "Les quatre versions racontent la même histoire. Les mots « tuque », « banc de neige » et « mitaines » ne sont pas dans le glossaire : les élèves doivent trouver leur sens grâce aux indices du texte (un synonyme, une description, un exemple). Modelez la stratégie avec « tuque » avant de laisser les élèves continuer. L’histoire ne nomme ni le pays d’Inès ni l’autre langue de sa famille, pour que chaque élève puisse s’y reconnaître. Accueillez toutes les langues de la classe dans la discussion : les élèves qui parlent d’autres langues à la maison font aussi partie de la francophonie ontarienne. Au paragraphe 3, rappelez au besoin les règles de votre école pour jouer dans les bancs de neige. Pour prolonger, utilisez la banque de mots « Les mots de l’hiver ».",
+        "text": "1. Inès est arrivée à Timmins, dans le Nord de l’Ontario, à la fin de l’été. Avant, elle vivait dans un pays chaud où l’on parle aussi français. À sa nouvelle école, tout le monde parle français, mais certains mots sont nouveaux pour elle.\n\n2. Un matin de novembre, Inès regarde par la fenêtre de la classe. Tout est blanc! C’est la première fois de sa vie qu’elle voit de la neige. À la récréation, son ami Jules lui dit : « Mets ta tuque, sinon tu vas avoir froid aux oreilles! » Inès fouille dans son sac. Elle en sort le bonnet de laine que sa voisine lui a donné et l’enfile sur sa tête. Jules sourit : « Voilà, c’est ça, une tuque! »\n\n3. Dehors, Jules court vers un gros banc de neige, près de la clôture. C’est une petite montagne de neige que le chasse-neige a poussée là pendant la nuit. Les élèves grimpent dessus et glissent jusqu’en bas. Inès les imite, mais ses mains sont vite gelées. « Tu devrais mettre tes mitaines », lui conseille Océane. Elle lui montre ses propres mitaines : de gros gants chauds, avec une place pour le pouce et une seule grande place pour les quatre autres doigts. Inès enfile les siennes, et ses doigts se réchauffent tout de suite.\n\n4. De retour en classe, Inès a les joues rouges et les yeux brillants. Elle ouvre son carnet de mots et écrit : tuque, banc de neige, mitaines. À côté de chaque mot, elle fait un petit dessin. Son enseignante lui demande alors : « Et toi, Inès, as-tu un mot de chez toi à nous apprendre? » Inès réfléchit, puis elle sourit. Elle apprend à la classe à dire « bonjour » dans l’autre langue que parle sa famille. Tout le monde répète en riant, et plusieurs élèves l’écrivent dans leur carnet.\n\n5. Le soir, Inès raconte sa journée à la maison. « Aujourd’hui, j’ai appris trois mots d’ici, dit-elle fièrement. Et j’ai appris un mot de chez nous à toute ma classe! Maintenant, je connais le français d’ici et le français de chez nous. » Ce soir-là, Inès se sent un peu plus chez elle dans sa nouvelle ville. Elle a déjà hâte de revoir la neige.",
+        "glossary": [
+          {
+            "term": "fouiller",
+            "definition": "Chercher partout dans quelque chose."
+          },
+          {
+            "term": "enfiler",
+            "definition": "Mettre un vêtement."
+          },
+          {
+            "term": "une clôture",
+            "definition": "Une barrière qui entoure un terrain, comme la cour d’école."
+          },
+          {
+            "term": "le chasse-neige",
+            "definition": "Un gros camion qui pousse la neige hors des rues et des cours."
+          },
+          {
+            "term": "imiter",
+            "definition": "Faire la même chose que quelqu’un d’autre."
+          },
+          {
+            "term": "un carnet",
+            "definition": "Un petit cahier."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Au paragraphe 2, que veut dire le mot « tuque »?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "c",
+                "text": "Une paire de bottes."
+              },
+              {
+                "id": "a",
+                "text": "Un bonnet chaud qu’on porte sur la tête."
+              },
+              {
+                "id": "d",
+                "text": "Un foulard qu’on met autour du cou."
+              },
+              {
+                "id": "b",
+                "text": "Un manteau d’hiver."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Quels mots du paragraphe 2 t’aident à trouver le sens de « tuque »? Écris-en deux.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Au paragraphe 3, qu’est-ce qu’un « banc de neige »? Explique-le dans tes mots.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q4",
+            "kind": "multiple_choice",
+            "prompt": "Au paragraphe 3, que sont des « mitaines »?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "d",
+                "text": "Des gants très minces, avec une place pour chaque doigt."
+              },
+              {
+                "id": "b",
+                "text": "Des chaussettes de laine."
+              },
+              {
+                "id": "a",
+                "text": "Des gants chauds où le pouce est séparé des quatre autres doigts."
+              },
+              {
+                "id": "c",
+                "text": "Des bottes pour marcher dans la neige."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q5",
+            "kind": "true_false",
+            "prompt": "Inès avait déjà vu de la neige avant d’arriver à Timmins.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "À la fin, Inès dit : « Maintenant, je connais le français d’ici et le français de chez nous. » Pourquoi est-elle fière?",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Une vraie tuque et une paire de mitaines à faire circuler pendant la discussion, après la lecture.",
+          "Une photo d’une cour d’école avec un gros banc de neige le long de la clôture.",
+          "Une carte de l’Ontario pour situer Timmins, dans le Nord de la province.",
+          "Le carnet de mots de la classe, où l’on ajoute les mots d’ici et les mots des familles."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Les indices : on la met pour ne pas avoir froid aux oreilles, et Inès sort un bonnet de laine qu’elle enfile sur sa tête."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "« froid aux oreilles » et « bonnet de laine ».",
+            "acceptableAnswers": [],
+            "explanation": "Indices possibles : « froid aux oreilles », « bonnet de laine », « l’enfile sur sa tête », « c’est ça, une tuque ». Deux indices sont attendus."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "C’est un gros tas de neige, comme une petite montagne, que le chasse-neige a poussé au bord de la cour.",
+            "acceptableAnswers": [],
+            "explanation": "L’indice est dans la phrase qui suit : « C’est une petite montagne de neige que le chasse-neige a poussée là pendant la nuit. » Accepter « un gros tas de neige »."
+          },
+          {
+            "questionId": "q4",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Le texte décrit les mitaines d’Océane : de gros gants chauds, avec une place pour le pouce et une seule grande place pour les quatre autres doigts. Le choix d décrit des gants ordinaires."
+          },
+          {
+            "questionId": "q5",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : au paragraphe 2, c’est la première fois de sa vie qu’elle voit de la neige."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Elle a appris des mots d’ici, et elle a aussi appris un mot de chez elle à sa classe. Ses deux façons de parler comptent, et elle se sent plus chez elle.",
+            "acceptableAnswers": [],
+            "explanation": "Attendu : Inès apprend et elle enseigne; elle garde sa langue et sa culture tout en adoptant les mots d’ici. Une bonne occasion de parler des façons de vivre en français dans la classe."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "debutant",
+      "content": {
+        "title": "",
+        "objective": "J’utilise les indices du texte pour trouver le sens d’un mot nouveau.",
+        "teacherNote": "Version Débutant : phrases courtes au présent, une idée par phrase. Les indices de contexte sont placés juste après chaque mot nouveau. Les questions 1, 2 et 4 sont des choix multiples, et la question 3 a un indice. Les quatre versions racontent la même histoire.",
+        "text": "1. Inès habite à Timmins, dans le Nord de l’Ontario. Elle est arrivée à la fin de l’été. Avant, elle vivait dans un pays chaud. Dans ce pays, on parle aussi français. À sa nouvelle école, tout le monde parle français. Mais Inès ne connaît pas tous les mots.\n\n2. Un matin de novembre, tout est blanc dehors! Inès voit de la neige pour la première fois. À la récréation, son ami Jules dit : « Mets ta tuque! Sinon, tu vas avoir froid aux oreilles. » Inès prend son bonnet de laine dans son sac. Elle le met sur sa tête. Jules sourit : « C’est ça, une tuque! »\n\n3. Dehors, il y a un gros banc de neige près de la clôture. C’est une petite montagne de neige. Les élèves grimpent dessus. Ils glissent jusqu’en bas. Inès glisse aussi. Mais elle a très froid aux mains. Océane dit : « Mets tes mitaines! » Océane montre ses mitaines. Ce sont de gros gants chauds. Le pouce a sa place. Les quatre autres doigts sont ensemble. Inès met ses mitaines. Ses mains sont bien au chaud.\n\n4. En classe, Inès écrit trois mots dans son carnet : tuque, banc de neige, mitaines. Elle fait un dessin pour chaque mot. Son enseignante demande : « Inès, as-tu un mot de chez toi à nous apprendre? » Inès sourit. Elle apprend à la classe à dire « bonjour » dans l’autre langue de sa famille. Tout le monde répète!\n\n5. Le soir, Inès parle de sa journée à la maison. « J’ai appris trois mots d’ici. Et j’ai appris un mot de chez nous à ma classe! Maintenant, je connais le français d’ici et le français de chez nous. » Inès est contente. Elle a hâte de revoir la neige.",
+        "glossary": [
+          {
+            "term": "la récréation",
+            "definition": "Le moment où les élèves jouent dehors."
+          },
+          {
+            "term": "une clôture",
+            "definition": "Une barrière autour de la cour."
+          },
+          {
+            "term": "grimper",
+            "definition": "Monter en s’aidant des mains et des pieds."
+          },
+          {
+            "term": "un carnet",
+            "definition": "Un petit cahier."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Que veut dire le mot « tuque »?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "c",
+                "text": "Des bottes."
+              },
+              {
+                "id": "a",
+                "text": "Un bonnet chaud pour la tête."
+              },
+              {
+                "id": "b",
+                "text": "Un manteau."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "multiple_choice",
+            "prompt": "Quels mots t’aident à trouver le sens de « tuque »?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "b",
+                "text": "« un matin de novembre »"
+              },
+              {
+                "id": "a",
+                "text": "« froid aux oreilles » et « bonnet de laine »"
+              },
+              {
+                "id": "c",
+                "text": "« son ami Jules »"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Qu’est-ce qu’un « banc de neige »?",
+            "hint": "Lis la phrase qui suit le mot au paragraphe 3.",
+            "points": null,
+            "category": "habiletes",
+            "lines": 1
+          },
+          {
+            "id": "q4",
+            "kind": "multiple_choice",
+            "prompt": "Que sont des « mitaines »?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "b",
+                "text": "Des chaussettes."
+              },
+              {
+                "id": "a",
+                "text": "De gros gants chauds, avec le pouce à part."
+              },
+              {
+                "id": "c",
+                "text": "Des bottes."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q5",
+            "kind": "true_false",
+            "prompt": "Inès avait déjà vu de la neige avant d’arriver à Timmins.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Inès est contente à la fin. Pourquoi?",
+            "hint": "Relis ce qu’elle dit au paragraphe 5.",
+            "points": null,
+            "category": "communication",
+            "lines": 2
+          }
+        ],
+        "visualSupports": [
+          "Une vraie tuque et une paire de mitaines à faire circuler pendant la discussion, après la lecture.",
+          "Une photo d’une cour d’école avec un gros banc de neige le long de la clôture.",
+          "Une carte de l’Ontario pour situer Timmins, dans le Nord de la province.",
+          "Le carnet de mots de la classe, où l’on ajoute les mots d’ici et les mots des familles."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Inès met son bonnet de laine sur sa tête, et Jules dit : « C’est ça, une tuque! »"
+          },
+          {
+            "questionId": "q2",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "On met une tuque pour ne pas avoir froid aux oreilles, et c’est un bonnet de laine."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "Une petite montagne de neige.",
+            "acceptableAnswers": [
+              "une petite montagne de neige",
+              "un gros tas de neige",
+              "un tas de neige",
+              "une montagne de neige"
+            ],
+            "explanation": "L’indice est dans la phrase qui suit : « C’est une petite montagne de neige. »"
+          },
+          {
+            "questionId": "q4",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Océane explique : ce sont de gros gants chauds; le pouce a sa place et les quatre autres doigts sont ensemble."
+          },
+          {
+            "questionId": "q5",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : elle voit de la neige pour la première fois."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Elle a appris des mots d’ici, et elle a appris un mot de chez elle à sa classe.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter une des deux raisons; les deux ensemble montrent que ses deux façons de parler comptent."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "intermediaire",
+      "content": {
+        "title": "",
+        "objective": "J’utilise les indices du texte pour trouver le sens d’un mot nouveau.",
+        "teacherNote": "Version Intermédiaire : phrases simples ou composées, quelques mots nouveaux expliqués dans le glossaire, et des indices pour les questions de vocabulaire. Les quatre versions racontent la même histoire.",
+        "text": "1. Inès est arrivée à Timmins, dans le Nord de l’Ontario, à la fin de l’été. Avant, elle vivait dans un pays chaud où l’on parle aussi français. À sa nouvelle école, tout le monde parle français, mais certains mots sont nouveaux pour elle.\n\n2. Un matin de novembre, Inès regarde par la fenêtre. Tout est blanc! C’est la première fois qu’elle voit de la neige. À la récréation, son ami Jules lui dit : « Mets ta tuque, sinon tu vas avoir froid aux oreilles! » Inès cherche dans son sac. Elle trouve le bonnet de laine que sa voisine lui a donné et le met sur sa tête. Jules sourit : « Voilà, c’est ça, une tuque! »\n\n3. Dehors, Jules court vers un gros banc de neige, près de la clôture. C’est une petite montagne de neige que le chasse-neige a poussée là pendant la nuit. Les élèves grimpent dessus et glissent jusqu’en bas. Inès fait comme eux, mais ses mains gèlent vite. « Tu devrais mettre tes mitaines », lui dit Océane. Elle lui montre ses mitaines : de gros gants chauds, avec une place pour le pouce et une seule place pour les quatre autres doigts. Inès met les siennes, et ses doigts se réchauffent tout de suite.\n\n4. De retour en classe, Inès a les joues rouges. Elle ouvre son carnet de mots et écrit : tuque, banc de neige, mitaines. À côté de chaque mot, elle fait un petit dessin. Son enseignante lui demande : « Et toi, Inès, as-tu un mot de chez toi à nous apprendre? » Inès sourit. Elle apprend à la classe à dire « bonjour » dans l’autre langue que parle sa famille. Tout le monde répète en riant.\n\n5. Le soir, Inès raconte sa journée à la maison. « Aujourd’hui, j’ai appris trois mots d’ici, dit-elle fièrement. Et j’ai appris un mot de chez nous à toute ma classe! Maintenant, je connais le français d’ici et le français de chez nous. » Inès se sent un peu plus chez elle dans sa nouvelle ville. Elle a déjà hâte de revoir la neige.",
+        "glossary": [
+          {
+            "term": "une clôture",
+            "definition": "Une barrière qui entoure un terrain, comme la cour d’école."
+          },
+          {
+            "term": "le chasse-neige",
+            "definition": "Un gros camion qui pousse la neige hors des rues et des cours."
+          },
+          {
+            "term": "grimper",
+            "definition": "Monter en s’aidant des mains et des pieds."
+          },
+          {
+            "term": "un carnet",
+            "definition": "Un petit cahier."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Au paragraphe 2, que veut dire le mot « tuque »?",
+            "hint": "Qu’est-ce qu’Inès met sur sa tête?",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "c",
+                "text": "Une paire de bottes."
+              },
+              {
+                "id": "a",
+                "text": "Un bonnet chaud qu’on porte sur la tête."
+              },
+              {
+                "id": "d",
+                "text": "Un foulard qu’on met autour du cou."
+              },
+              {
+                "id": "b",
+                "text": "Un manteau d’hiver."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Écris deux mots ou groupes de mots du paragraphe 2 qui t’aident à trouver le sens de « tuque ».",
+            "hint": "Regarde ce que dit Jules et ce que fait Inès.",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Au paragraphe 3, qu’est-ce qu’un « banc de neige »? Explique-le dans tes mots.",
+            "hint": "Lis la phrase qui suit le mot.",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q4",
+            "kind": "multiple_choice",
+            "prompt": "Au paragraphe 3, que sont des « mitaines »?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "d",
+                "text": "Des gants très minces, avec une place pour chaque doigt."
+              },
+              {
+                "id": "b",
+                "text": "Des chaussettes de laine."
+              },
+              {
+                "id": "a",
+                "text": "Des gants chauds où le pouce est séparé des quatre autres doigts."
+              },
+              {
+                "id": "c",
+                "text": "Des bottes pour marcher dans la neige."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q5",
+            "kind": "true_false",
+            "prompt": "Inès avait déjà vu de la neige avant d’arriver à Timmins.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "À la fin, Inès dit : « Maintenant, je connais le français d’ici et le français de chez nous. » Pourquoi est-elle fière?",
+            "hint": "Pense à ce qu’elle a appris et à ce qu’elle a enseigné.",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Une vraie tuque et une paire de mitaines à faire circuler pendant la discussion, après la lecture.",
+          "Une photo d’une cour d’école avec un gros banc de neige le long de la clôture.",
+          "Une carte de l’Ontario pour situer Timmins, dans le Nord de la province.",
+          "Le carnet de mots de la classe, où l’on ajoute les mots d’ici et les mots des familles."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "On la met pour ne pas avoir froid aux oreilles, et Inès met un bonnet de laine sur sa tête."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "« froid aux oreilles » et « bonnet de laine ».",
+            "acceptableAnswers": [],
+            "explanation": "Indices possibles : « froid aux oreilles », « bonnet de laine », « le met sur sa tête », « c’est ça, une tuque »."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "C’est un gros tas de neige, comme une petite montagne, que le chasse-neige a poussé au bord de la cour.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter « un gros tas de neige » ou « une petite montagne de neige »."
+          },
+          {
+            "questionId": "q4",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Le texte décrit les mitaines d’Océane : une place pour le pouce et une seule place pour les quatre autres doigts."
+          },
+          {
+            "questionId": "q5",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : c’est la première fois qu’elle voit de la neige."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Elle a appris des mots d’ici, et elle a appris un mot de chez elle à sa classe. Ses deux façons de parler comptent.",
+            "acceptableAnswers": [],
+            "explanation": "Attendu : Inès apprend et elle enseigne; elle garde sa langue tout en adoptant les mots d’ici."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "avance",
+      "content": {
+        "title": "",
+        "objective": "J’utilise les indices du texte pour trouver le sens d’un mot nouveau.",
+        "teacherNote": "Version Avancé : même texte que la version de base, écrit dans le français attendu en 3e année. Les quatre versions racontent la même histoire.",
+        "text": "1. Inès est arrivée à Timmins, dans le Nord de l’Ontario, à la fin de l’été. Avant, elle vivait dans un pays chaud où l’on parle aussi français. À sa nouvelle école, tout le monde parle français, mais certains mots sont nouveaux pour elle.\n\n2. Un matin de novembre, Inès regarde par la fenêtre de la classe. Tout est blanc! C’est la première fois de sa vie qu’elle voit de la neige. À la récréation, son ami Jules lui dit : « Mets ta tuque, sinon tu vas avoir froid aux oreilles! » Inès fouille dans son sac. Elle en sort le bonnet de laine que sa voisine lui a donné et l’enfile sur sa tête. Jules sourit : « Voilà, c’est ça, une tuque! »\n\n3. Dehors, Jules court vers un gros banc de neige, près de la clôture. C’est une petite montagne de neige que le chasse-neige a poussée là pendant la nuit. Les élèves grimpent dessus et glissent jusqu’en bas. Inès les imite, mais ses mains sont vite gelées. « Tu devrais mettre tes mitaines », lui conseille Océane. Elle lui montre ses propres mitaines : de gros gants chauds, avec une place pour le pouce et une seule grande place pour les quatre autres doigts. Inès enfile les siennes, et ses doigts se réchauffent tout de suite.\n\n4. De retour en classe, Inès a les joues rouges et les yeux brillants. Elle ouvre son carnet de mots et écrit : tuque, banc de neige, mitaines. À côté de chaque mot, elle fait un petit dessin. Son enseignante lui demande alors : « Et toi, Inès, as-tu un mot de chez toi à nous apprendre? » Inès réfléchit, puis elle sourit. Elle apprend à la classe à dire « bonjour » dans l’autre langue que parle sa famille. Tout le monde répète en riant, et plusieurs élèves l’écrivent dans leur carnet.\n\n5. Le soir, Inès raconte sa journée à la maison. « Aujourd’hui, j’ai appris trois mots d’ici, dit-elle fièrement. Et j’ai appris un mot de chez nous à toute ma classe! Maintenant, je connais le français d’ici et le français de chez nous. » Ce soir-là, Inès se sent un peu plus chez elle dans sa nouvelle ville. Elle a déjà hâte de revoir la neige.",
+        "glossary": [
+          {
+            "term": "fouiller",
+            "definition": "Chercher partout dans quelque chose."
+          },
+          {
+            "term": "enfiler",
+            "definition": "Mettre un vêtement."
+          },
+          {
+            "term": "une clôture",
+            "definition": "Une barrière qui entoure un terrain, comme la cour d’école."
+          },
+          {
+            "term": "le chasse-neige",
+            "definition": "Un gros camion qui pousse la neige hors des rues et des cours."
+          },
+          {
+            "term": "imiter",
+            "definition": "Faire la même chose que quelqu’un d’autre."
+          },
+          {
+            "term": "un carnet",
+            "definition": "Un petit cahier."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Au paragraphe 2, que veut dire le mot « tuque »?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "c",
+                "text": "Une paire de bottes."
+              },
+              {
+                "id": "a",
+                "text": "Un bonnet chaud qu’on porte sur la tête."
+              },
+              {
+                "id": "d",
+                "text": "Un foulard qu’on met autour du cou."
+              },
+              {
+                "id": "b",
+                "text": "Un manteau d’hiver."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Quels mots du paragraphe 2 t’aident à trouver le sens de « tuque »? Écris-en deux.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Au paragraphe 3, qu’est-ce qu’un « banc de neige »? Explique-le dans tes mots.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q4",
+            "kind": "multiple_choice",
+            "prompt": "Au paragraphe 3, que sont des « mitaines »?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "d",
+                "text": "Des gants très minces, avec une place pour chaque doigt."
+              },
+              {
+                "id": "b",
+                "text": "Des chaussettes de laine."
+              },
+              {
+                "id": "a",
+                "text": "Des gants chauds où le pouce est séparé des quatre autres doigts."
+              },
+              {
+                "id": "c",
+                "text": "Des bottes pour marcher dans la neige."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q5",
+            "kind": "true_false",
+            "prompt": "Inès avait déjà vu de la neige avant d’arriver à Timmins.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "À la fin, Inès dit : « Maintenant, je connais le français d’ici et le français de chez nous. » Pourquoi est-elle fière?",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Une vraie tuque et une paire de mitaines à faire circuler pendant la discussion, après la lecture.",
+          "Une photo d’une cour d’école avec un gros banc de neige le long de la clôture.",
+          "Une carte de l’Ontario pour situer Timmins, dans le Nord de la province.",
+          "Le carnet de mots de la classe, où l’on ajoute les mots d’ici et les mots des familles."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Les indices : on la met pour ne pas avoir froid aux oreilles, et Inès sort un bonnet de laine qu’elle enfile sur sa tête."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "« froid aux oreilles » et « bonnet de laine ».",
+            "acceptableAnswers": [],
+            "explanation": "Indices possibles : « froid aux oreilles », « bonnet de laine », « l’enfile sur sa tête », « c’est ça, une tuque ». Deux indices sont attendus."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "C’est un gros tas de neige, comme une petite montagne, que le chasse-neige a poussé au bord de la cour.",
+            "acceptableAnswers": [],
+            "explanation": "L’indice est dans la phrase qui suit : « C’est une petite montagne de neige que le chasse-neige a poussée là pendant la nuit. » Accepter « un gros tas de neige »."
+          },
+          {
+            "questionId": "q4",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Le texte décrit les mitaines d’Océane : de gros gants chauds, avec une place pour le pouce et une seule grande place pour les quatre autres doigts. Le choix d décrit des gants ordinaires."
+          },
+          {
+            "questionId": "q5",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : au paragraphe 2, c’est la première fois de sa vie qu’elle voit de la neige."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Elle a appris des mots d’ici, et elle a aussi appris un mot de chez elle à sa classe. Ses deux façons de parler comptent, et elle se sent plus chez elle.",
+            "acceptableAnswers": [],
+            "explanation": "Attendu : Inès apprend et elle enseigne; elle garde sa langue et sa culture tout en adoptant les mots d’ici."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "enrichi",
+      "content": {
+        "title": "",
+        "objective": "J’utilise les indices du texte pour trouver le sens d’un mot nouveau.",
+        "teacherNote": "Version Enrichi : vocabulaire plus riche, phrases plus variées, un mot d’ici de plus (« poudrerie », au paragraphe 5) et deux questions d’approfondissement (questions 7 et 8). La question 8 invite l’élève à partager un mot de sa famille ou de sa communauté : accueillez toutes les langues. Les quatre versions racontent la même histoire.",
+        "text": "1. Inès est arrivée à Timmins, dans le Nord de l’Ontario, à la toute fin de l’été. Auparavant, elle habitait un pays chaud où l’on parle aussi français. À sa nouvelle école, tout le monde s’exprime en français, mais certains mots lui sont encore inconnus.\n\n2. Un matin de novembre, Inès jette un coup d’œil par la fenêtre de la classe et reste bouche bée : tout est blanc! Pour la première fois de sa vie, elle voit de la neige. À la récréation, son ami Jules l’avertit : « Mets ta tuque, sinon tu vas avoir froid aux oreilles! » Inès fouille dans son sac et en sort le bonnet de laine que sa voisine lui a offert. Elle l’enfile jusqu’aux oreilles. Jules s’exclame en souriant : « Voilà, c’est ça, une tuque! »\n\n3. Dans la cour, Jules s’élance vers un énorme banc de neige, le long de la clôture. C’est une véritable petite montagne de neige, que le chasse-neige a repoussée là pendant la nuit. Les élèves l’escaladent, puis dévalent la pente en glissant. Inès les imite, mais ses mains sont bientôt engourdies par le froid. « Tu devrais mettre tes mitaines », lui conseille Océane en agitant les siennes : de gros gants bien chauds, avec une place pour le pouce et une seule grande place pour les quatre autres doigts. Inès enfile les siennes et sent aussitôt ses doigts se réchauffer.\n\n4. De retour en classe, les joues rouges et les yeux pétillants, Inès ouvre son carnet de mots. Elle y inscrit : tuque, banc de neige, mitaines, et illustre chaque mot d’un petit dessin. Son enseignante lui demande alors : « Et toi, Inès, aurais-tu un mot de chez toi à nous apprendre? » Après un moment de réflexion, Inès sourit. Elle enseigne à la classe comment dire « bonjour » dans l’autre langue que parle sa famille. Tout le monde répète en riant, et plusieurs élèves s’empressent de noter le mot dans leur carnet.\n\n5. Le soir venu, un vent glacial soulève la neige et la fait tourbillonner dans la rue : c’est la poudrerie. Bien au chaud à la maison, Inès raconte sa journée. « Aujourd’hui, j’ai appris trois mots d’ici, annonce-t-elle fièrement. Et j’ai appris un mot de chez nous à toute ma classe! Maintenant, je connais le français d’ici et le français de chez nous. » Ce soir-là, Inès se sent un peu plus chez elle dans sa nouvelle ville. Elle a déjà hâte de retrouver la neige.",
+        "glossary": [
+          {
+            "term": "rester bouche bée",
+            "definition": "Être si surpris qu’on en reste la bouche ouverte, sans parler."
+          },
+          {
+            "term": "escalader",
+            "definition": "Grimper sur quelque chose de haut."
+          },
+          {
+            "term": "dévaler",
+            "definition": "Descendre très vite une pente."
+          },
+          {
+            "term": "engourdi",
+            "definition": "Qui ne sent presque plus rien, par exemple à cause du froid."
+          },
+          {
+            "term": "pétillant",
+            "definition": "Ici, qui brille de joie."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Au paragraphe 2, que signifie le mot « tuque »?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "c",
+                "text": "Une paire de bottes."
+              },
+              {
+                "id": "a",
+                "text": "Un bonnet chaud qu’on porte sur la tête."
+              },
+              {
+                "id": "d",
+                "text": "Un foulard qu’on met autour du cou."
+              },
+              {
+                "id": "b",
+                "text": "Un manteau d’hiver."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Relève deux indices du paragraphe 2 qui t’aident à trouver le sens de « tuque ».",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Au paragraphe 3, qu’est-ce qu’un « banc de neige »? Explique-le dans tes mots et nomme l’indice qui t’aide.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          },
+          {
+            "id": "q4",
+            "kind": "multiple_choice",
+            "prompt": "Au paragraphe 3, que sont des « mitaines »?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "d",
+                "text": "Des gants très minces, avec une place pour chaque doigt."
+              },
+              {
+                "id": "b",
+                "text": "Des chaussettes de laine."
+              },
+              {
+                "id": "a",
+                "text": "Des gants chauds où le pouce est séparé des quatre autres doigts."
+              },
+              {
+                "id": "c",
+                "text": "Des bottes pour marcher dans la neige."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q5",
+            "kind": "true_false",
+            "prompt": "Inès avait déjà vu de la neige avant de s’installer à Timmins.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "À la fin, Inès affirme : « Maintenant, je connais le français d’ici et le français de chez nous. » Pourquoi en est-elle fière?",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Au paragraphe 5, trouve le sens du mot « poudrerie » à l’aide des indices du texte. Quels mots t’aident?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Connais-tu un mot qu’on utilise dans ta famille ou dans ta communauté, et que d’autres personnes ne connaissent peut-être pas? Écris-le, puis explique son sens dans une phrase qui donne un indice, comme dans le texte.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 4
+          }
+        ],
+        "visualSupports": [
+          "Une vraie tuque et une paire de mitaines à faire circuler pendant la discussion, après la lecture.",
+          "Une photo d’une cour d’école avec un gros banc de neige le long de la clôture.",
+          "Une carte de l’Ontario pour situer Timmins, dans le Nord de la province.",
+          "Le carnet de mots de la classe, où l’on ajoute les mots d’ici et les mots des familles."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "On la met pour ne pas avoir froid aux oreilles, et Inès enfile un bonnet de laine jusqu’aux oreilles."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "« froid aux oreilles » et « bonnet de laine ».",
+            "acceptableAnswers": [],
+            "explanation": "Indices possibles : « froid aux oreilles », « bonnet de laine », « l’enfile jusqu’aux oreilles », « c’est ça, une tuque »."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "C’est un énorme tas de neige, comme une petite montagne, que le chasse-neige a repoussé le long de la clôture. L’indice est la phrase qui suit : « C’est une véritable petite montagne de neige. »",
+            "acceptableAnswers": [],
+            "explanation": "Attendu : une définition dans ses mots et l’indice (la phrase qui suit le mot)."
+          },
+          {
+            "questionId": "q4",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Le texte décrit les mitaines d’Océane : une place pour le pouce et une seule grande place pour les quatre autres doigts."
+          },
+          {
+            "questionId": "q5",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : au paragraphe 2, elle voit de la neige pour la première fois de sa vie."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Elle a adopté des mots d’ici tout en faisant découvrir un mot de chez elle à sa classe : ses deux façons de parler ont leur place, et elle se sent davantage chez elle.",
+            "acceptableAnswers": [],
+            "explanation": "Attendu : Inès apprend et elle enseigne; elle garde sa langue et sa culture tout en adoptant les mots d’ici."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "La poudrerie, c’est de la neige que le vent soulève et fait tourbillonner. Les indices : « un vent glacial soulève la neige et la fait tourbillonner ».",
+            "acceptableAnswers": [],
+            "explanation": "Question d’approfondissement : l’indice est placé juste avant le mot, dans la même phrase."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "Chez nous, on dit « bec » pour un bisou : « Avant de partir, grand-papa m’a donné un bec sur la joue. »",
+            "acceptableAnswers": [],
+            "explanation": "Question d’approfondissement : accepter tout mot, dans n’importe quelle langue ou variété de français, avec une phrase qui aide à en deviner le sens."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

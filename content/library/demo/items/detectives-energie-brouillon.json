@@ -1,0 +1,69 @@
+{
+  "slug": "detectives-energie-brouillon",
+  "type": "outdoor_activity",
+  "title": "Les détectives de l’énergie (brouillon)",
+  "summary": "Une enquête dans la cour d’école : des équipes cherchent des exemples d’énergie (lumière, chaleur, mouvement, son), nomment les formes d’énergie et décrivent les transformations qu’elles observent.",
+  "source": "ai_generated",
+  "author": "marc.gagnon@demo.lynx.test",
+  "school": "saint-exemple",
+  "status": "draft",
+  "shareScope": "private",
+  "gradeCodes": ["5"],
+  "subjectCode": "sci",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "E2.1"
+    },
+    {
+      "grade": "5",
+      "code": "E2.2"
+    },
+    {
+      "grade": "5",
+      "code": "E2.4"
+    }
+  ],
+  "durationMinutes": 45,
+  "materials": "Par équipe de 3 : 1 planchette à pince, 1 feuille d’enquête avec un tableau de trois colonnes, 1 crayon. Pour l’adulte : un sifflet et des cônes pour délimiter la zone.",
+  "keywords": "énergie, formes d’énergie, transformation de l’énergie, énergie lumineuse, thermique, mécanique, sonore, électrique, chimique, énergie renouvelable, cour d’école, plein air",
+  "tags": ["sciences", "exterieur", "energie"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "promptVersion": "v1",
+  "model": "claude-opus-5-5",
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "Les détectives de l’énergie",
+        "objective": "Je reconnais des formes d’énergie autour de moi et je décris comment l’énergie se transforme d’une forme à une autre.",
+        "teacherNote": "Enquête d’environ 30 minutes dehors et de 15 minutes en classe. Formes d’énergie à reconnaître : mécanique (mouvement), électrique, thermique (chaleur), chimique (emmagasinée dans les aliments, les piles et l’essence), sonore et lumineuse. Exemples fréquents dans une cour : le Soleil (lumineuse et thermique), un lampadaire (électrique en lumineuse et en thermique), les élèves qui courent (chimique, grâce aux aliments, en mécanique et en thermique), un autobus qui passe (chimique en mécanique, en sonore et en thermique), les feuilles qui bougent au vent (mécanique). Faites remarquer qu’une partie de l’énergie se transforme presque toujours en chaleur.",
+        "location": "La cour d’école, dans une zone délimitée que l’adulte voit en entier, loin de la rue et du stationnement.",
+        "setup": "Délimitez la zone avec des cônes, loin de la rue et du stationnement. Préparez une feuille d’enquête par équipe avec trois colonnes : « Ce que j’observe », « Forme d’énergie » et « Transformation (de… à…) ». En classe, avant la sortie, revoyez les six formes d’énergie et faites un exemple ensemble : une lampe de poche transforme l’énergie chimique de ses piles en énergie électrique, puis en énergie lumineuse et thermique.",
+        "steps": [
+          "Forme une équipe de trois avec les élèves que l’adulte nomme. Prends la planchette, la feuille d’enquête et le crayon de ton équipe.",
+          "Cherche au moins six exemples d’énergie dans la zone : quelque chose qui bouge, qui éclaire, qui chauffe ou qui fait du bruit.",
+          "Pour chaque exemple, écris ce que tu observes et nomme la forme d’énergie : mécanique, électrique, thermique, chimique, sonore ou lumineuse.",
+          "Pour au moins trois exemples, décris la transformation de l’énergie. Par exemple : « Lampadaire : de l’énergie électrique à l’énergie lumineuse et thermique ».",
+          "Place une main au soleil et l’autre à l’ombre pendant 30 secondes. Que sens-tu? Quelles formes d’énergie le Soleil nous envoie-t-il?",
+          "Trouve un exemple de source d’énergie renouvelable (le Soleil, le vent) et un exemple de source d’énergie non renouvelable (l’essence d’un véhicule).",
+          "Au coup de sifflet, reviens au point de rencontre avec ta feuille.",
+          "En classe, chaque équipe présente sa transformation préférée. Ensemble, cherchez dans quels exemples une partie de l’énergie devient de la chaleur."
+        ],
+        "safetyReminders": [
+          "Reste dans la zone délimitée, loin de la rue et du stationnement.",
+          "Observe les véhicules de loin; ne t’approche jamais d’un véhicule en marche.",
+          "Ne touche pas aux boîtes électriques, aux climatiseurs ni aux lampadaires.",
+          "Ne regarde jamais directement le Soleil.",
+          "Au coup de sifflet, reviens tout de suite au point de rencontre."
+        ],
+        "weatherAlternative": "Par mauvais temps, faites l’enquête à l’intérieur de l’école : dans la classe, le corridor et le gymnase, cherchez des exemples d’énergie (lumières, ordinateurs, ventilation, cloche, élèves qui bougent). Les consignes restent les mêmes, sauf l’étape 5, à faire près d’une fenêtre ensoleillée."
+      },
+      "answerKey": null
+    }
+  ]
+}

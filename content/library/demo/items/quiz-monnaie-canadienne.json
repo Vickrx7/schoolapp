@@ -1,0 +1,1277 @@
+{
+  "slug": "quiz-monnaie-canadienne",
+  "type": "quiz",
+  "title": "Quiz : la monnaie canadienne jusqu’à 100 $",
+  "summary": "Un quiz de 8 questions pour estimer, compter et représenter la valeur de collections de pièces et de billets canadiens d’au plus 100 $. Il contient les cinq sortes de questions (choix multiple, vrai ou faux, associations, mise en ordre, réponse courte) et une version pour chaque niveau de langue.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["3"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "F1"
+    }
+  ],
+  "durationMinutes": 20,
+  "materials": "Une copie du quiz par élève (dans la version qui convient à son niveau de langue) et un crayon. Facultatif : de la monnaie de jeu (pièces de 25 ¢, de 1 $ et de 2 $; billets de 5 $, de 10 $, de 20 $ et de 50 $).",
+  "keywords": "quiz, monnaie canadienne, argent, pièces, billets, dollars, compter de l’argent, estimation, littératie financière",
+  "tags": ["evaluation", "litteratie-financiere"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "J’estime, je compte et je représente la valeur de collections de pièces et de billets canadiens jusqu’à 100 $.",
+        "teacherNote": "Quiz de révision sur l’attente F1 (la valeur de la monnaie canadienne) : il contient les cinq sortes de questions. Savoir compter et représenter un montant prépare au calcul de la monnaie à rendre (F1.1). Comptez environ 20 minutes. Les montants sont en dollars entiers, sauf à la question 3 (quatre pièces de 25 ¢) : le quiz évite la notation décimale (2,50 $). Pièces courantes au Canada : 5 ¢, 10 ¢, 25 ¢, 1 $ et 2 $; billets courants : 5 $, 10 $, 20 $, 50 $ et 100 $. Les versions par niveau de langue gardent les mêmes questions, les mêmes montants et les mêmes réponses : seule la formulation change. Les questions 7 et 8 se corrigent à la main.",
+        "instructions": "Lis chaque question attentivement et réponds sur la feuille. Tu peux faire tes calculs dans la marge.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Coche toutes les collections qui valent exactement 10 $.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "deux billets de 5 $"
+              },
+              {
+                "id": "b",
+                "text": "un billet de 5 $ et deux pièces de 2 $"
+              },
+              {
+                "id": "c",
+                "text": "cinq pièces de 2 $"
+              },
+              {
+                "id": "d",
+                "text": "un billet de 20 $"
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Combien vaut cette collection : un billet de 20 $, un billet de 10 $, une pièce de 2 $ et trois pièces de 1 $?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q3",
+            "kind": "true_false",
+            "prompt": "Quatre pièces de 25 ¢ valent autant qu’une pièce de 1 $.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q4",
+            "kind": "matching",
+            "prompt": "Associe chaque collection à sa valeur. Une des valeurs est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "left": [
+              {
+                "id": "l1",
+                "text": "3 billets de 20 $"
+              },
+              {
+                "id": "l2",
+                "text": "1 billet de 50 $ et 1 billet de 5 $"
+              },
+              {
+                "id": "l3",
+                "text": "7 billets de 10 $"
+              },
+              {
+                "id": "l4",
+                "text": "2 billets de 20 $ et 3 pièces de 2 $"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "46 $"
+              },
+              {
+                "id": "rb",
+                "text": "70 $"
+              },
+              {
+                "id": "rc",
+                "text": "60 $"
+              },
+              {
+                "id": "rd",
+                "text": "64 $"
+              },
+              {
+                "id": "re",
+                "text": "55 $"
+              }
+            ]
+          },
+          {
+            "id": "q5",
+            "kind": "ordering",
+            "prompt": "Place ces collections de celle qui vaut le moins à celle qui vaut le plus.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "items": [
+              {
+                "id": "a",
+                "text": "4 billets de 5 $"
+              },
+              {
+                "id": "b",
+                "text": "1 billet de 10 $ et 6 pièces de 2 $"
+              },
+              {
+                "id": "c",
+                "text": "9 pièces de 2 $"
+              },
+              {
+                "id": "d",
+                "text": "1 billet de 20 $ et 3 pièces de 1 $"
+              }
+            ]
+          },
+          {
+            "id": "q6",
+            "kind": "multiple_choice",
+            "prompt": "Jules a un billet de 50 $, un billet de 20 $, un billet de 10 $ et quelques pièces qui valent moins de 10 $ en tout. Environ combien d’argent a-t-il?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "choices": [
+              {
+                "id": "a",
+                "text": "moins de 50 $"
+              },
+              {
+                "id": "b",
+                "text": "entre 50 $ et 80 $"
+              },
+              {
+                "id": "c",
+                "text": "entre 80 $ et 90 $"
+              },
+              {
+                "id": "d",
+                "text": "plus de 100 $"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Représente 38 $ avec le moins de billets et de pièces possible. Écris les billets et les pièces que tu utilises.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Yanis a 6 pièces de monnaie. Raphaëlle a 2 billets. Yanis dit : « J’ai plus d’argent que toi, parce que j’ai plus d’objets. » A-t-il toujours raison? Explique avec un exemple.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "c"],
+            "explanation": "5 $ + 5 $ = 10 $ et 2 $ + 2 $ + 2 $ + 2 $ + 2 $ = 10 $. Un billet de 5 $ et deux pièces de 2 $ font 9 $, et le billet de 20 $ vaut plus que 10 $."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "35 $",
+            "acceptableAnswers": ["35 $", "35$", "35", "35 dollars", "trente-cinq dollars"],
+            "explanation": "20 $ + 10 $ = 30 $; 30 $ + 2 $ = 32 $; 32 $ + 3 $ = 35 $."
+          },
+          {
+            "questionId": "q3",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "25 ¢ + 25 ¢ + 25 ¢ + 25 ¢ = 100 ¢, et 100 ¢ = 1 $."
+          },
+          {
+            "questionId": "q4",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "re"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "l4",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "3 × 20 $ = 60 $; 50 $ + 5 $ = 55 $; 7 × 10 $ = 70 $; 40 $ + 6 $ = 46 $. La valeur 64 $ n’est pas utilisée."
+          },
+          {
+            "questionId": "q5",
+            "kind": "ordering",
+            "orderedIds": ["c", "a", "b", "d"],
+            "explanation": "9 pièces de 2 $ = 18 $; 4 billets de 5 $ = 20 $; 10 $ + 12 $ = 22 $; 20 $ + 3 $ = 23 $."
+          },
+          {
+            "questionId": "q6",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "Les billets valent 50 $ + 20 $ + 10 $ = 80 $. Les pièces ajoutent moins de 10 $ : Jules a donc entre 80 $ et 90 $."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "Un billet de 20 $, un billet de 10 $, un billet de 5 $, une pièce de 2 $ et une pièce de 1 $ : 5 billets et pièces en tout.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : 20 $ + 10 $ + 5 $ + 2 $ + 1 $ = 38 $. Une collection qui vaut 38 $ avec plus de billets et de pièces montre que l’élève sait représenter le montant, mais la réponse complète n’en utilise que 5."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. Cela dépend de la valeur des pièces et des billets. Par exemple, 6 pièces de 1 $ font 6 $, mais 2 billets de 5 $ font 10 $ : Raphaëlle a alors plus d’argent que Yanis.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire non (ou « pas toujours ») et donner un exemple où les 2 billets valent plus que les 6 pièces."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "debutant",
+      "content": {
+        "title": "",
+        "objective": "J’estime, je compte et je représente la valeur de collections de pièces et de billets canadiens jusqu’à 100 $.",
+        "teacherNote": "Version avec phrases courtes, mots fréquents, petit lexique dans les consignes et indices. Lisez les questions à voix haute au besoin : on évalue l’argent, pas la lecture.",
+        "instructions": "Lis chaque question. Réponds sur la feuille.\n\nMots utiles : une pièce = de l’argent en métal (5 ¢, 10 ¢, 25 ¢, 1 $, 2 $); un billet = 5 $, 10 $, 20 $, 50 $ ou 100 $; la valeur = combien d’argent il y a.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Coche les collections qui valent 10 $.",
+            "hint": "Il y a deux bonnes réponses.",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "deux billets de 5 $"
+              },
+              {
+                "id": "b",
+                "text": "un billet de 5 $ et deux pièces de 2 $"
+              },
+              {
+                "id": "c",
+                "text": "cinq pièces de 2 $"
+              },
+              {
+                "id": "d",
+                "text": "un billet de 20 $"
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Combien vaut cet argent : 1 billet de 20 $, 1 billet de 10 $, 1 pièce de 2 $ et 3 pièces de 1 $?",
+            "hint": "Commence par les billets.",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q3",
+            "kind": "true_false",
+            "prompt": "4 pièces de 25 ¢ valent la même chose qu’une pièce de 1 $.",
+            "hint": "1 $ = 100 ¢",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q4",
+            "kind": "matching",
+            "prompt": "Relie chaque collection à sa valeur. Une valeur ne va avec rien.",
+            "hint": "3 billets de 20 $ : 20, 40, 60.",
+            "points": null,
+            "category": "habiletes",
+            "left": [
+              {
+                "id": "l1",
+                "text": "3 billets de 20 $"
+              },
+              {
+                "id": "l2",
+                "text": "1 billet de 50 $ et 1 billet de 5 $"
+              },
+              {
+                "id": "l3",
+                "text": "7 billets de 10 $"
+              },
+              {
+                "id": "l4",
+                "text": "2 billets de 20 $ et 3 pièces de 2 $"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "46 $"
+              },
+              {
+                "id": "rb",
+                "text": "70 $"
+              },
+              {
+                "id": "rc",
+                "text": "60 $"
+              },
+              {
+                "id": "rd",
+                "text": "64 $"
+              },
+              {
+                "id": "re",
+                "text": "55 $"
+              }
+            ]
+          },
+          {
+            "id": "q5",
+            "kind": "ordering",
+            "prompt": "Place les collections dans l’ordre. Commence par celle qui vaut le moins.",
+            "hint": "Trouve d’abord la valeur de chaque collection.",
+            "points": null,
+            "category": "habiletes",
+            "items": [
+              {
+                "id": "a",
+                "text": "4 billets de 5 $"
+              },
+              {
+                "id": "b",
+                "text": "1 billet de 10 $ et 6 pièces de 2 $"
+              },
+              {
+                "id": "c",
+                "text": "9 pièces de 2 $"
+              },
+              {
+                "id": "d",
+                "text": "1 billet de 20 $ et 3 pièces de 1 $"
+              }
+            ]
+          },
+          {
+            "id": "q6",
+            "kind": "multiple_choice",
+            "prompt": "Jules a 3 billets : 50 $, 20 $ et 10 $. Il a aussi des pièces. Ses pièces valent moins de 10 $. Environ combien d’argent a Jules?",
+            "hint": "Additionne d’abord les billets.",
+            "points": null,
+            "category": "application",
+            "choices": [
+              {
+                "id": "a",
+                "text": "moins de 50 $"
+              },
+              {
+                "id": "b",
+                "text": "entre 50 $ et 80 $"
+              },
+              {
+                "id": "c",
+                "text": "entre 80 $ et 90 $"
+              },
+              {
+                "id": "d",
+                "text": "plus de 100 $"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Tu veux faire 38 $. Utilise le moins de billets et de pièces possible. Écris les billets et les pièces.",
+            "hint": "Commence par le plus gros billet possible : 20 $.",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Yanis a 6 pièces. Raphaëlle a 2 billets. Yanis dit : « J’ai plus d’argent, parce que j’ai plus d’objets. » A-t-il toujours raison? Écris oui ou non. Donne un exemple.",
+            "hint": "Pense à 2 billets de 5 $.",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "c"],
+            "explanation": "5 $ + 5 $ = 10 $ et 2 $ + 2 $ + 2 $ + 2 $ + 2 $ = 10 $. Un billet de 5 $ et deux pièces de 2 $ font 9 $, et le billet de 20 $ vaut plus que 10 $."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "35 $",
+            "acceptableAnswers": ["35 $", "35$", "35", "35 dollars", "trente-cinq dollars"],
+            "explanation": "20 $ + 10 $ = 30 $; 30 $ + 2 $ = 32 $; 32 $ + 3 $ = 35 $."
+          },
+          {
+            "questionId": "q3",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "25 ¢ + 25 ¢ + 25 ¢ + 25 ¢ = 100 ¢, et 100 ¢ = 1 $."
+          },
+          {
+            "questionId": "q4",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "re"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "l4",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "3 × 20 $ = 60 $; 50 $ + 5 $ = 55 $; 7 × 10 $ = 70 $; 40 $ + 6 $ = 46 $. La valeur 64 $ n’est pas utilisée."
+          },
+          {
+            "questionId": "q5",
+            "kind": "ordering",
+            "orderedIds": ["c", "a", "b", "d"],
+            "explanation": "9 pièces de 2 $ = 18 $; 4 billets de 5 $ = 20 $; 10 $ + 12 $ = 22 $; 20 $ + 3 $ = 23 $."
+          },
+          {
+            "questionId": "q6",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "Les billets valent 50 $ + 20 $ + 10 $ = 80 $. Les pièces ajoutent moins de 10 $ : Jules a donc entre 80 $ et 90 $."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "Un billet de 20 $, un billet de 10 $, un billet de 5 $, une pièce de 2 $ et une pièce de 1 $ : 5 billets et pièces en tout.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : 20 $ + 10 $ + 5 $ + 2 $ + 1 $ = 38 $. Une collection qui vaut 38 $ avec plus de billets et de pièces montre que l’élève sait représenter le montant, mais la réponse complète n’en utilise que 5."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. Cela dépend de la valeur des pièces et des billets. Par exemple, 6 pièces de 1 $ font 6 $, mais 2 billets de 5 $ font 10 $ : Raphaëlle a alors plus d’argent que Yanis.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire non (ou « pas toujours ») et donner un exemple où les 2 billets valent plus que les 6 pièces."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "intermediaire",
+      "content": {
+        "title": "",
+        "objective": "J’estime, je compte et je représente la valeur de collections de pièces et de billets canadiens jusqu’à 100 $.",
+        "teacherNote": "Version avec phrases simples, un court lexique et quelques indices. Les questions et les réponses sont les mêmes que dans la version de base.",
+        "instructions": "Lis chaque question et réponds sur la feuille. Tu peux faire tes calculs dans la marge.\n\nMots utiles : les pièces de monnaie (5 ¢, 10 ¢, 25 ¢, 1 $, 2 $); les billets (5 $, 10 $, 20 $, 50 $, 100 $); la valeur = le montant d’argent.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Coche toutes les collections qui valent exactement 10 $.",
+            "hint": "Il y a deux bonnes réponses.",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "deux billets de 5 $"
+              },
+              {
+                "id": "b",
+                "text": "un billet de 5 $ et deux pièces de 2 $"
+              },
+              {
+                "id": "c",
+                "text": "cinq pièces de 2 $"
+              },
+              {
+                "id": "d",
+                "text": "un billet de 20 $"
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Combien vaut cette collection : un billet de 20 $, un billet de 10 $, une pièce de 2 $ et trois pièces de 1 $?",
+            "hint": "Additionne d’abord les billets, puis les pièces.",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q3",
+            "kind": "true_false",
+            "prompt": "Quatre pièces de 25 ¢ valent autant qu’une pièce de 1 $.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q4",
+            "kind": "matching",
+            "prompt": "Associe chaque collection à sa valeur. Une des valeurs est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "left": [
+              {
+                "id": "l1",
+                "text": "3 billets de 20 $"
+              },
+              {
+                "id": "l2",
+                "text": "1 billet de 50 $ et 1 billet de 5 $"
+              },
+              {
+                "id": "l3",
+                "text": "7 billets de 10 $"
+              },
+              {
+                "id": "l4",
+                "text": "2 billets de 20 $ et 3 pièces de 2 $"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "46 $"
+              },
+              {
+                "id": "rb",
+                "text": "70 $"
+              },
+              {
+                "id": "rc",
+                "text": "60 $"
+              },
+              {
+                "id": "rd",
+                "text": "64 $"
+              },
+              {
+                "id": "re",
+                "text": "55 $"
+              }
+            ]
+          },
+          {
+            "id": "q5",
+            "kind": "ordering",
+            "prompt": "Place ces collections de celle qui vaut le moins à celle qui vaut le plus.",
+            "hint": "Calcule d’abord la valeur de chaque collection.",
+            "points": null,
+            "category": "habiletes",
+            "items": [
+              {
+                "id": "a",
+                "text": "4 billets de 5 $"
+              },
+              {
+                "id": "b",
+                "text": "1 billet de 10 $ et 6 pièces de 2 $"
+              },
+              {
+                "id": "c",
+                "text": "9 pièces de 2 $"
+              },
+              {
+                "id": "d",
+                "text": "1 billet de 20 $ et 3 pièces de 1 $"
+              }
+            ]
+          },
+          {
+            "id": "q6",
+            "kind": "multiple_choice",
+            "prompt": "Jules a un billet de 50 $, un billet de 20 $, un billet de 10 $ et quelques pièces qui valent moins de 10 $ en tout. Environ combien d’argent a-t-il?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "choices": [
+              {
+                "id": "a",
+                "text": "moins de 50 $"
+              },
+              {
+                "id": "b",
+                "text": "entre 50 $ et 80 $"
+              },
+              {
+                "id": "c",
+                "text": "entre 80 $ et 90 $"
+              },
+              {
+                "id": "d",
+                "text": "plus de 100 $"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Représente 38 $ avec le moins de billets et de pièces possible. Écris les billets et les pièces que tu utilises.",
+            "hint": "Commence par le plus gros billet qui ne dépasse pas 38 $.",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Yanis a 6 pièces de monnaie. Raphaëlle a 2 billets. Yanis dit : « J’ai plus d’argent que toi, parce que j’ai plus d’objets. » A-t-il toujours raison? Explique avec un exemple.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "c"],
+            "explanation": "5 $ + 5 $ = 10 $ et 2 $ + 2 $ + 2 $ + 2 $ + 2 $ = 10 $. Un billet de 5 $ et deux pièces de 2 $ font 9 $, et le billet de 20 $ vaut plus que 10 $."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "35 $",
+            "acceptableAnswers": ["35 $", "35$", "35", "35 dollars", "trente-cinq dollars"],
+            "explanation": "20 $ + 10 $ = 30 $; 30 $ + 2 $ = 32 $; 32 $ + 3 $ = 35 $."
+          },
+          {
+            "questionId": "q3",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "25 ¢ + 25 ¢ + 25 ¢ + 25 ¢ = 100 ¢, et 100 ¢ = 1 $."
+          },
+          {
+            "questionId": "q4",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "re"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "l4",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "3 × 20 $ = 60 $; 50 $ + 5 $ = 55 $; 7 × 10 $ = 70 $; 40 $ + 6 $ = 46 $. La valeur 64 $ n’est pas utilisée."
+          },
+          {
+            "questionId": "q5",
+            "kind": "ordering",
+            "orderedIds": ["c", "a", "b", "d"],
+            "explanation": "9 pièces de 2 $ = 18 $; 4 billets de 5 $ = 20 $; 10 $ + 12 $ = 22 $; 20 $ + 3 $ = 23 $."
+          },
+          {
+            "questionId": "q6",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "Les billets valent 50 $ + 20 $ + 10 $ = 80 $. Les pièces ajoutent moins de 10 $ : Jules a donc entre 80 $ et 90 $."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "Un billet de 20 $, un billet de 10 $, un billet de 5 $, une pièce de 2 $ et une pièce de 1 $ : 5 billets et pièces en tout.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : 20 $ + 10 $ + 5 $ + 2 $ + 1 $ = 38 $. Une collection qui vaut 38 $ avec plus de billets et de pièces montre que l’élève sait représenter le montant, mais la réponse complète n’en utilise que 5."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. Cela dépend de la valeur des pièces et des billets. Par exemple, 6 pièces de 1 $ font 6 $, mais 2 billets de 5 $ font 10 $ : Raphaëlle a alors plus d’argent que Yanis.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire non (ou « pas toujours ») et donner un exemple où les 2 billets valent plus que les 6 pièces."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "avance",
+      "content": {
+        "title": "",
+        "objective": "J’estime, je compte et je représente la valeur de collections de pièces et de billets canadiens jusqu’à 100 $.",
+        "teacherNote": "Version au niveau attendu en 3e année, sans lexique ni indices. Les questions et les réponses sont les mêmes que dans la version de base.",
+        "instructions": "Lis chaque question attentivement et réponds sur la feuille. Tu peux faire tes calculs dans la marge.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Coche toutes les collections qui valent exactement 10 $.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "deux billets de 5 $"
+              },
+              {
+                "id": "b",
+                "text": "un billet de 5 $ et deux pièces de 2 $"
+              },
+              {
+                "id": "c",
+                "text": "cinq pièces de 2 $"
+              },
+              {
+                "id": "d",
+                "text": "un billet de 20 $"
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Combien vaut cette collection : un billet de 20 $, un billet de 10 $, une pièce de 2 $ et trois pièces de 1 $?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q3",
+            "kind": "true_false",
+            "prompt": "Quatre pièces de 25 ¢ valent autant qu’une pièce de 1 $.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q4",
+            "kind": "matching",
+            "prompt": "Associe chaque collection à sa valeur. Une des valeurs est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "left": [
+              {
+                "id": "l1",
+                "text": "3 billets de 20 $"
+              },
+              {
+                "id": "l2",
+                "text": "1 billet de 50 $ et 1 billet de 5 $"
+              },
+              {
+                "id": "l3",
+                "text": "7 billets de 10 $"
+              },
+              {
+                "id": "l4",
+                "text": "2 billets de 20 $ et 3 pièces de 2 $"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "46 $"
+              },
+              {
+                "id": "rb",
+                "text": "70 $"
+              },
+              {
+                "id": "rc",
+                "text": "60 $"
+              },
+              {
+                "id": "rd",
+                "text": "64 $"
+              },
+              {
+                "id": "re",
+                "text": "55 $"
+              }
+            ]
+          },
+          {
+            "id": "q5",
+            "kind": "ordering",
+            "prompt": "Place ces collections de celle qui vaut le moins à celle qui vaut le plus.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "items": [
+              {
+                "id": "a",
+                "text": "4 billets de 5 $"
+              },
+              {
+                "id": "b",
+                "text": "1 billet de 10 $ et 6 pièces de 2 $"
+              },
+              {
+                "id": "c",
+                "text": "9 pièces de 2 $"
+              },
+              {
+                "id": "d",
+                "text": "1 billet de 20 $ et 3 pièces de 1 $"
+              }
+            ]
+          },
+          {
+            "id": "q6",
+            "kind": "multiple_choice",
+            "prompt": "Jules a un billet de 50 $, un billet de 20 $, un billet de 10 $ et quelques pièces qui valent moins de 10 $ en tout. Environ combien d’argent a-t-il?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "choices": [
+              {
+                "id": "a",
+                "text": "moins de 50 $"
+              },
+              {
+                "id": "b",
+                "text": "entre 50 $ et 80 $"
+              },
+              {
+                "id": "c",
+                "text": "entre 80 $ et 90 $"
+              },
+              {
+                "id": "d",
+                "text": "plus de 100 $"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Représente 38 $ avec le moins de billets et de pièces possible. Écris les billets et les pièces que tu utilises.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Yanis a 6 pièces de monnaie. Raphaëlle a 2 billets. Yanis dit : « J’ai plus d’argent que toi, parce que j’ai plus d’objets. » A-t-il toujours raison? Explique avec un exemple.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "c"],
+            "explanation": "5 $ + 5 $ = 10 $ et 2 $ + 2 $ + 2 $ + 2 $ + 2 $ = 10 $. Un billet de 5 $ et deux pièces de 2 $ font 9 $, et le billet de 20 $ vaut plus que 10 $."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "35 $",
+            "acceptableAnswers": ["35 $", "35$", "35", "35 dollars", "trente-cinq dollars"],
+            "explanation": "20 $ + 10 $ = 30 $; 30 $ + 2 $ = 32 $; 32 $ + 3 $ = 35 $."
+          },
+          {
+            "questionId": "q3",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "25 ¢ + 25 ¢ + 25 ¢ + 25 ¢ = 100 ¢, et 100 ¢ = 1 $."
+          },
+          {
+            "questionId": "q4",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "re"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "l4",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "3 × 20 $ = 60 $; 50 $ + 5 $ = 55 $; 7 × 10 $ = 70 $; 40 $ + 6 $ = 46 $. La valeur 64 $ n’est pas utilisée."
+          },
+          {
+            "questionId": "q5",
+            "kind": "ordering",
+            "orderedIds": ["c", "a", "b", "d"],
+            "explanation": "9 pièces de 2 $ = 18 $; 4 billets de 5 $ = 20 $; 10 $ + 12 $ = 22 $; 20 $ + 3 $ = 23 $."
+          },
+          {
+            "questionId": "q6",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "Les billets valent 50 $ + 20 $ + 10 $ = 80 $. Les pièces ajoutent moins de 10 $ : Jules a donc entre 80 $ et 90 $."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "Un billet de 20 $, un billet de 10 $, un billet de 5 $, une pièce de 2 $ et une pièce de 1 $ : 5 billets et pièces en tout.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : 20 $ + 10 $ + 5 $ + 2 $ + 1 $ = 38 $. Une collection qui vaut 38 $ avec plus de billets et de pièces montre que l’élève sait représenter le montant, mais la réponse complète n’en utilise que 5."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. Cela dépend de la valeur des pièces et des billets. Par exemple, 6 pièces de 1 $ font 6 $, mais 2 billets de 5 $ font 10 $ : Raphaëlle a alors plus d’argent que Yanis.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire non (ou « pas toujours ») et donner un exemple où les 2 billets valent plus que les 6 pièces."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "enrichi",
+      "content": {
+        "title": "",
+        "objective": "J’estime, je compte et je représente la valeur de collections de pièces et de billets canadiens jusqu’à 100 $.",
+        "teacherNote": "Version au vocabulaire plus riche (valeur totale, montant, posséder) avec une explication plus poussée à la question 8. Les montants et les réponses sont les mêmes que dans la version de base.",
+        "instructions": "Lis attentivement chaque question. Quand on te demande d’expliquer, appuie ta réponse sur des calculs.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Coche toutes les collections qui valent exactement 10 $.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "deux billets de 5 $"
+              },
+              {
+                "id": "b",
+                "text": "un billet de 5 $ et deux pièces de 2 $"
+              },
+              {
+                "id": "c",
+                "text": "cinq pièces de 2 $"
+              },
+              {
+                "id": "d",
+                "text": "un billet de 20 $"
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Quelle est la valeur totale de cette collection : un billet de 20 $, un billet de 10 $, une pièce de 2 $ et trois pièces de 1 $?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q3",
+            "kind": "true_false",
+            "prompt": "Quatre pièces de 25 ¢ valent autant qu’une pièce de 1 $.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q4",
+            "kind": "matching",
+            "prompt": "Associe chaque collection à sa valeur. Une des valeurs est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "left": [
+              {
+                "id": "l1",
+                "text": "3 billets de 20 $"
+              },
+              {
+                "id": "l2",
+                "text": "1 billet de 50 $ et 1 billet de 5 $"
+              },
+              {
+                "id": "l3",
+                "text": "7 billets de 10 $"
+              },
+              {
+                "id": "l4",
+                "text": "2 billets de 20 $ et 3 pièces de 2 $"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "46 $"
+              },
+              {
+                "id": "rb",
+                "text": "70 $"
+              },
+              {
+                "id": "rc",
+                "text": "60 $"
+              },
+              {
+                "id": "rd",
+                "text": "64 $"
+              },
+              {
+                "id": "re",
+                "text": "55 $"
+              }
+            ]
+          },
+          {
+            "id": "q5",
+            "kind": "ordering",
+            "prompt": "Place ces collections de celle qui vaut le moins à celle qui vaut le plus.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "items": [
+              {
+                "id": "a",
+                "text": "4 billets de 5 $"
+              },
+              {
+                "id": "b",
+                "text": "1 billet de 10 $ et 6 pièces de 2 $"
+              },
+              {
+                "id": "c",
+                "text": "9 pièces de 2 $"
+              },
+              {
+                "id": "d",
+                "text": "1 billet de 20 $ et 3 pièces de 1 $"
+              }
+            ]
+          },
+          {
+            "id": "q6",
+            "kind": "multiple_choice",
+            "prompt": "Jules possède un billet de 50 $, un billet de 20 $, un billet de 10 $ ainsi que quelques pièces dont la valeur totale est inférieure à 10 $. Quel montant estimes-tu qu’il possède?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "choices": [
+              {
+                "id": "a",
+                "text": "moins de 50 $"
+              },
+              {
+                "id": "b",
+                "text": "entre 50 $ et 80 $"
+              },
+              {
+                "id": "c",
+                "text": "entre 80 $ et 90 $"
+              },
+              {
+                "id": "d",
+                "text": "plus de 100 $"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Représente un montant de 38 $ à l’aide du plus petit nombre possible de billets et de pièces. Nomme chaque billet et chaque pièce.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Yanis a 6 pièces de monnaie et Raphaëlle a 2 billets. Yanis affirme : « J’ai plus d’argent que toi, parce que j’ai plus d’objets. » Son raisonnement est-il toujours juste? Justifie ta réponse avec un exemple où il a raison et un exemple où il a tort.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "c"],
+            "explanation": "5 $ + 5 $ = 10 $ et 2 $ + 2 $ + 2 $ + 2 $ + 2 $ = 10 $. Un billet de 5 $ et deux pièces de 2 $ font 9 $, et le billet de 20 $ vaut plus que 10 $."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "35 $",
+            "acceptableAnswers": ["35 $", "35$", "35", "35 dollars", "trente-cinq dollars"],
+            "explanation": "20 $ + 10 $ = 30 $; 30 $ + 2 $ = 32 $; 32 $ + 3 $ = 35 $."
+          },
+          {
+            "questionId": "q3",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "25 ¢ + 25 ¢ + 25 ¢ + 25 ¢ = 100 ¢, et 100 ¢ = 1 $."
+          },
+          {
+            "questionId": "q4",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "re"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "l4",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "3 × 20 $ = 60 $; 50 $ + 5 $ = 55 $; 7 × 10 $ = 70 $; 40 $ + 6 $ = 46 $. La valeur 64 $ n’est pas utilisée."
+          },
+          {
+            "questionId": "q5",
+            "kind": "ordering",
+            "orderedIds": ["c", "a", "b", "d"],
+            "explanation": "9 pièces de 2 $ = 18 $; 4 billets de 5 $ = 20 $; 10 $ + 12 $ = 22 $; 20 $ + 3 $ = 23 $."
+          },
+          {
+            "questionId": "q6",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "Les billets valent 50 $ + 20 $ + 10 $ = 80 $. Les pièces ajoutent moins de 10 $ : Jules a donc entre 80 $ et 90 $."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "Un billet de 20 $, un billet de 10 $, un billet de 5 $, une pièce de 2 $ et une pièce de 1 $ : 5 billets et pièces en tout.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : 20 $ + 10 $ + 5 $ + 2 $ + 1 $ = 38 $. Une collection qui vaut 38 $ avec plus de billets et de pièces montre que l’élève sait représenter le montant, mais la réponse complète n’en utilise que 5."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "Non, pas toujours. Si Yanis a 6 pièces de 2 $ (12 $) et que Raphaëlle a 2 billets de 5 $ (10 $), Yanis a raison. Mais s’il a 6 pièces de 1 $ (6 $), il a moins d’argent que Raphaëlle. C’est la valeur des pièces et des billets qui compte, pas leur nombre.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire non (ou « pas toujours ») et donner un exemple où les 2 billets valent plus que les 6 pièces."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}
