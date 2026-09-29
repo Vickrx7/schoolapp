@@ -152,6 +152,15 @@ export const hasModule = (school: SchoolContext, module: ModuleKey) =>
 export const teachingSchools = (session: SessionContext) =>
   session.schools.filter((s) => hasRole(s, 'teacher') && hasModule(s, 'teaching'));
 
+/**
+ * Schools whose « Suppléances » board the user sees: direction and office staff, where the
+ * Teaching module is licensed (DECISIONS D-056, D-060).
+ */
+export const substituteBoardSchools = (session: SessionContext) =>
+  session.schools.filter(
+    (s) => hasRole(s, 'principal', 'vice_principal', 'office_admin') && hasModule(s, 'teaching'),
+  );
+
 /** Whether a school's AI is on: its principal turned it on and its board allows AI. */
 export const aiOn = (session: SessionContext, school: SchoolContext) =>
   school.aiEnabled &&

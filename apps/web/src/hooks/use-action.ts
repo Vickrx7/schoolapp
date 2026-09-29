@@ -41,6 +41,8 @@ const KNOWN_ERRORS = new Set([
   'absenceTooLong',
   'absenceOverlap',
   'halfDaySingleDay',
+  'subPortalNotConfigured',
+  'subCodesKeyMissing',
 ]);
 
 /** Translates an error key from a server action; unknown keys fall back to a generic message. */

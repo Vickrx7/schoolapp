@@ -1,6 +1,14 @@
 'use client';
 
-import { CalendarDays, CircleUser, House, Layers, School, Users } from 'lucide-react';
+import {
+  CalendarDays,
+  CircleUser,
+  ClipboardList,
+  House,
+  Layers,
+  School,
+  Users,
+} from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -8,13 +16,14 @@ import { cn } from '@/lib/utils';
 
 type Item = {
   href: string;
-  key: 'today' | 'classes' | 'differentiate' | 'calendar' | 'school' | 'profile';
+  key: 'today' | 'classes' | 'substitutes' | 'differentiate' | 'calendar' | 'school' | 'profile';
   icon: typeof House;
 };
 
 const ALL_ITEMS: Item[] = [
   { href: '/today', key: 'today', icon: House },
   { href: '/classes', key: 'classes', icon: Users },
+  { href: '/absences', key: 'substitutes', icon: ClipboardList },
   { href: '/differentiate', key: 'differentiate', icon: Layers },
   { href: '/calendar', key: 'calendar', icon: CalendarDays },
   { href: '/school', key: 'school', icon: School },
@@ -24,17 +33,21 @@ const ALL_ITEMS: Item[] = [
 export function AppNav({
   appName,
   showTeaching,
+  showSubstitutes,
   showDifferentiate,
   showSchool,
 }: {
   appName: string;
   showTeaching: boolean;
+  /** « Suppléances »: direction and office at a school with the Teaching module. */
+  showSubstitutes: boolean;
   showDifferentiate: boolean;
   showSchool: boolean;
 }) {
   const t = useTranslations('nav');
   const pathname = usePathname();
   const items = ALL_ITEMS.filter((i) => (i.key !== 'today' && i.key !== 'classes') || showTeaching)
+    .filter((i) => i.key !== 'substitutes' || showSubstitutes)
     .filter((i) => i.key !== 'differentiate' || showDifferentiate)
     .filter((i) => i.key !== 'school' || showSchool);
   const active = (href: string) => pathname === href || pathname.startsWith(`${href}/`);

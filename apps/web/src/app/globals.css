@@ -38,3 +38,13 @@
   --warning-text: #92400e;
   --error-text: #991b1b;
 }
+
+/*
+ * A substitute's welcome sheet (components/sub-codes/welcome-sheet.tsx): while it is on the page,
+ * it is the only thing printed (the app and the open dialog are left out).
+ */
+@media print {
+  body:has(> [data-print-sheet]) > :not([data-print-sheet]) {
+    display: none !important;
+  }
+}

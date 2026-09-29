@@ -33,6 +33,13 @@ describe('alert encryption', () => {
   it('rejects malformed key configuration', () => {
     expect(parseKeyRing('')).toBeNull();
     expect(() => parseKeyRing('1:tooShort')).toThrow(/32 bytes/);
-    expect(() => parseKeyRing('abc')).toThrow();
+    expect(() => parseKeyRing('abc')).toThrow(/ALERTS_ENCRYPTION_KEYS/);
+  });
+
+  it('names the setting a key ring came from in its errors', () => {
+    expect(() => parseKeyRing('abc', 'SUB_CODE_HMAC_KEYS')).toThrow(/^SUB_CODE_HMAC_KEYS/);
+    expect(() => parseKeyRing('1:tooShort', 'SUB_CODE_HMAC_KEYS')).toThrow(
+      /SUB_CODE_HMAC_KEYS key v1 must be 32 bytes/,
+    );
   });
 });

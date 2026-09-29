@@ -2830,6 +2830,10 @@ export type Database = {
         Args: { p_school_id: string; p_from: string; p_to: string; p_absence_id?: string };
         Returns: Json;
       };
+      issue_sub_access_code: {
+        Args: { p_plan_id: string; p_code_mac: string };
+        Returns: { code_id: string; valid_from: string; expires_at: string }[];
+      };
       list_school_sub_days: {
         Args: { p_school_id: string; p_from: string; p_to: string };
         Returns: {
@@ -2851,6 +2855,10 @@ export type Database = {
           last_seen_at: string;
           report_status: string;
         }[];
+      };
+      list_sub_plan_access: {
+        Args: { p_plan_id: string };
+        Returns: Json;
       };
       mark_lesson_taught: {
         Args: { p_lesson_id: string; p_taught_on: string };
@@ -2892,6 +2900,18 @@ export type Database = {
       request_ai_job: {
         Args: { p_school_id: string; p_feature: string; p_input: Json };
         Returns: string;
+      };
+      revoke_sub_access_code: {
+        Args: { p_code_id: string };
+        Returns: undefined;
+      };
+      revoke_sub_plan_access: {
+        Args: { p_plan_id: string };
+        Returns: undefined;
+      };
+      revoke_sub_session: {
+        Args: { p_session_id: string };
+        Returns: undefined;
       };
       save_ai_job_to_library: {
         Args: {

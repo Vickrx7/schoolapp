@@ -10,7 +10,7 @@ test('the login page switches to English and back', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Connexion' })).toBeVisible();
 });
 
-// The office account is used by no other test, so its saved language cannot leak into them.
+// No other test changes the office account's language, so its saved choice cannot leak into them.
 test('each account keeps its own language across devices', async ({ page, context }) => {
   // English picked on the login page is kept after signing in, and saved to the account.
   await page.goto('/login');

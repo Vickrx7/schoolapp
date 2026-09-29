@@ -12,7 +12,15 @@ import {
   SEED,
   setProgress,
 } from './db';
-import { addDaysIso, DEMO, expectAccessible, isSeededSchoolDay, login, schoolDay } from './helpers';
+import {
+  addDaysIso,
+  DEMO,
+  expectAccessible,
+  isSeededSchoolDay,
+  login,
+  reportAbsence,
+  schoolDay,
+} from './helpers';
 
 // « Plan de suppléance », teacher side: publishing builds the plan in the request (no worker),
 // the owner reviews and edits it, and changes to the absence rebuild it. The automatic refresh
@@ -32,37 +40,6 @@ test.afterAll(async () => {
   for (const id of createdEvents) await deleteEvent(id);
   await closeDb();
 });
-
-/** A chip of the absence form (a radio button or a checkbox drawn as a button). */
-const chip = (page: Page, name: string) =>
-  page.locator('label').filter({ hasText: new RegExp(`^${name}$`) });
-
-/**
- * Reports an absence through « Signaler une absence »: « Autre date », « Plusieurs jours » for
- * a range, a half day if asked, then « Envoyer ». Waits for the absence page.
- */
-async function reportAbsence(
-  page: Page,
-  options: { startsOn: string; endsOn?: string; part?: 'Matin' | 'Après-midi' },
-) {
-  await page.goto('/absences/new');
-  const dateField = page.getByLabel('Date', { exact: true });
-  // A tap before the page is interactive is lost: retry until the date field shows.
-  await expect(async () => {
-    if (!(await dateField.isVisible())) await chip(page, 'Autre date').click();
-    await expect(dateField).toBeVisible({ timeout: 1000 });
-  }).toPass();
-  await dateField.fill(options.startsOn);
-  if (options.endsOn) {
-    await chip(page, 'Plusieurs jours').click();
-    await page.getByLabel('Dernier jour').fill(options.endsOn);
-  }
-  if (options.part) await chip(page, options.part).click();
-  // The summary is built by the server from the same plans « Envoyer » publishes.
-  await expect(page.getByTestId('absence-summary')).toContainText('à couvrir');
-  await page.getByRole('button', { name: 'Envoyer' }).click();
-  await page.waitForURL(/\/absences\/[0-9a-f-]{36}$/);
-}
 
 async function openPlan(page: Page) {
   await page.getByRole('link', { name: 'Réviser le plan' }).first().click();

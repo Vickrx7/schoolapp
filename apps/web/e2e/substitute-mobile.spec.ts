@@ -1,16 +1,19 @@
-import { expect, test, type Locator, type Page } from '@playwright/test';
-import { cleanupAbsences, closeDb } from './db';
-import { DEMO, expectAccessible, login } from './helpers';
+import { devices, expect, test, type Locator, type Page } from '@playwright/test';
+import { cleanupAbsences, clearAttempts, closeDb, openCodeWindow, planIdOn } from './db';
+import { DEMO, expectAccessible, login, reportAbsence, schoolDay, torontoInstant } from './helpers';
 
-// « Plan de suppléance » on a phone (the `phone` project runs *mobile.spec.ts on a Pixel 7).
-// The substitute's side (code, « Maintenant », report) is added with the portal.
+// « Plan de suppléance » on a phone (the `phone` project runs *mobile.spec.ts on a Pixel 7): the
+// teacher reports an absence and gives a code; the substitute signs in and finds « Maintenant ».
+// (The substitute's end-of-day report comes with its own round.)
 
 test.beforeAll(async () => {
   await cleanupAbsences(DEMO.teacher3);
+  await clearAttempts();
 });
 
 test.afterAll(async () => {
   await cleanupAbsences(DEMO.teacher3);
+  await clearAttempts();
   await closeDb();
 });
 
@@ -62,4 +65,61 @@ test('a teacher reports an absence from Aujourd’hui in two taps', async ({ pag
     page.getByRole('button', { name: 'Annuler l’absence', exact: true }),
   );
   await expectAccessible(page);
+});
+
+test('a substitute signs in on a phone and finds what is happening now', async ({
+  page,
+  browser,
+}) => {
+  await cleanupAbsences(DEMO.teacher3);
+  // A Thursday four weeks ahead: 3e année has Mathématiques at 9 h 45 every day.
+  const thursday = schoolDay({ weeksAhead: 4, isoWeekday: 4 });
+  await login(page, DEMO.teacher3);
+  await reportAbsence(page, { startsOn: thursday });
+  const absenceId = /\/absences\/([0-9a-f-]{36})$/.exec(page.url())![1]!;
+  await page.getByRole('button', { name: 'Publier maintenant' }).click();
+  await expect(page.getByTestId('plan-status').first()).toHaveText('Publié');
+
+  // « Code pour la personne suppléante » on the absence page, shown once.
+  const generate = page.getByRole('button', { name: 'Code pour la personne suppléante' });
+  await expectAboveBottomBar(page, generate);
+  await generate.click();
+  const code = (await page.getByTestId('sub-code').textContent())!.trim();
+  expect(code).toMatch(/^[0-9A-Z]{5}-[0-9A-Z]{5}$/);
+  await expectNoHorizontalScroll(page);
+  await page.getByRole('button', { name: 'Fermer' }).click();
+  await expect(page.getByText('1 code actif')).toBeVisible();
+
+  // The substitute's own phone, at 10 h on the plan date (the code window follows the real
+  // clock; « Maintenant » follows the phone's).
+  await openCodeWindow(await planIdOn(absenceId, thursday));
+  const use = test.info().project.use;
+  const context = await browser.newContext({
+    ...devices['Pixel 7'],
+    baseURL: use.baseURL,
+    locale: use.locale,
+    timezoneId: use.timezoneId,
+  });
+  try {
+    const sub = await context.newPage();
+    await sub.clock.setFixedTime(torontoInstant(thursday, '10:00'));
+    await sub.goto('/suppleance');
+    await sub.getByLabel('Code d’accès').fill(code);
+    await sub.getByRole('button', { name: 'Commencer' }).click();
+    await sub.waitForURL(/\/suppleance\/plan$/);
+    const timeline = sub.getByTestId('timeline');
+    await expect(timeline).toContainText('Maintenant');
+    await expect(timeline).toContainText('9 h 45 – 10 h 35');
+    await expect(timeline).toContainText('Mathématiques');
+    await expect(timeline).toContainText('Ensuite');
+    await expect(sub.getByText('Valide jusqu’à')).toBeVisible();
+    await expectNoHorizontalScroll(sub);
+    await expectAccessible(sub);
+
+    await sub.getByRole('tab', { name: 'Fin de journée' }).click();
+    await expect(sub.getByRole('link', { name: 'Terminer ma journée' })).toBeVisible();
+    await expectNoHorizontalScroll(sub);
+  } finally {
+    await context.close();
+  }
 });

@@ -32,6 +32,9 @@ export interface AbsencePlanRow {
   contentVersion: number;
   /** Null in lists, or when the stored plan cannot be read. */
   summary: PlanDaySummary | null;
+  /** The classes and rooms the plan covers, as shown in it (empty in lists). */
+  classNames: string[];
+  roomNames: string[];
 }
 
 export interface AbsenceRow {
@@ -72,6 +75,10 @@ function toPlanRow(p: PlanFields, now: Date): AbsencePlanRow {
     releasedByHand: p.status === 'released',
     contentVersion: p.content_version,
     summary: parsed?.success ? summarizePlan(parsed.data) : null,
+    classNames: parsed?.success ? parsed.data.classes.map((c) => c.name) : [],
+    roomNames: parsed?.success
+      ? [...new Set(parsed.data.classes.map((c) => c.roomName).filter((r): r is string => !!r))]
+      : [],
   };
 }
 

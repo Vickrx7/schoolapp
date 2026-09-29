@@ -12,7 +12,11 @@ export type KeyRing = { current: number; keys: Map<number, Buffer> };
 
 export class AlertCryptoError extends Error {}
 
-export function parseKeyRing(spec: string): KeyRing | null {
+/**
+ * Parses a "version:base64key" list (32-byte keys). `envName` is the setting it came from, so
+ * a configuration error names the right one (the same format serves SUB_CODE_HMAC_KEYS).
+ */
+export function parseKeyRing(spec: string, envName = 'ALERTS_ENCRYPTION_KEYS'): KeyRing | null {
   const keys = new Map<number, Buffer>();
   for (const part of spec
     .split(',')
@@ -21,10 +25,11 @@ export function parseKeyRing(spec: string): KeyRing | null {
     const [versionText, keyText] = part.split(':');
     const version = Number(versionText);
     if (!Number.isInteger(version) || version < 1 || !keyText) {
-      throw new AlertCryptoError('ALERTS_ENCRYPTION_KEYS must look like "1:<base64 key>"');
+      throw new AlertCryptoError(`${envName} must look like "1:<base64 key>"`);
     }
     const key = Buffer.from(keyText, 'base64');
-    if (key.length !== 32) throw new AlertCryptoError(`alert key v${version} must be 32 bytes`);
+    if (key.length !== 32)
+      throw new AlertCryptoError(`${envName} key v${version} must be 32 bytes`);
     keys.set(version, key);
   }
   if (keys.size === 0) return null;

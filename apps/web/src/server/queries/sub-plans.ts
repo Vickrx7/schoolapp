@@ -1,7 +1,9 @@
 import 'server-only';
 import {
+  absenceParts,
   formalStaffName,
   localDateIn,
+  localDateSchema,
   subPlanEditsSchema,
   subPlanV1Schema,
   type AbsencePart,
@@ -9,9 +11,11 @@ import {
   type SubPlanEdits,
   type SubPlanV1,
 } from '@lynx/domain';
+import { z } from 'zod';
 import type { PlanContext, PlanLevel, RosterStudent } from '@/components/sub-plans/types';
 import type { SessionContext } from '../session';
 import { findSchool } from '../session';
+import { withClassManagementKey } from '../sub-plans/office-copy';
 import { createSupabaseServerClient } from '../supabase';
 
 export interface OwnerPlan {
@@ -151,5 +155,98 @@ export async function loadPlanForOwner(
     })),
     editable: published && row.plan_date >= localDateIn(school.timezone, now),
     alertsEnabled: school.studentAlertsEnabled,
+  };
+}
+
+const staffPlanSchema = z.union([
+  z.object({ released: z.literal(false), releaseAt: z.string() }),
+  z.object({
+    released: z.literal(true),
+    planId: z.string(),
+    absenceId: z.string(),
+    planDate: localDateSchema,
+    part: z.enum(absenceParts),
+    note: z.string().nullable(),
+    contentVersion: z.number().int(),
+    plan: z.unknown(),
+    edits: z.unknown(),
+    school: z.object({
+      name: z.string(),
+      officePhone: z.string().nullable(),
+      arrivalInstructions: z.string().nullable(),
+      emergencyInfo: z.string().nullable(),
+      timezone: z.string(),
+    }),
+    teacherName: z.string(),
+    roster: z.array(z.object({ id: z.string(), classId: z.string(), firstName: z.string() })),
+    levels: z.array(
+      z.object({
+        id: z.string(),
+        labelFr: z.string(),
+        labelEn: z.string().nullable(),
+        descriptionFr: z.string().nullable(),
+        sortOrder: z.number(),
+      }),
+    ),
+    role: z.enum(['direction', 'office']),
+  }),
+]);
+
+export type StaffPlan =
+  | { released: false; releaseAt: string }
+  | {
+      released: true;
+      role: 'direction' | 'office';
+      absenceId: string;
+      planDate: LocalDate;
+      contentVersion: number;
+      /** Null when the stored plan cannot be read. */
+      plan: SubPlanV1 | null;
+      edits: SubPlanEdits | null;
+      context: PlanContext;
+      roster: RosterStudent[];
+      levels: PlanLevel[];
+    };
+
+/**
+ * A plan for direction or office (DECISIONS D-056): only once released, through
+ * get_sub_plan_for_staff, which audits every view and leaves « Gestion de classe » out for the
+ * office. Null when the caller is neither (or the plan does not exist).
+ */
+export async function loadPlanForStaff(planId: string): Promise<StaffPlan | null> {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.rpc('get_sub_plan_for_staff', {
+    p_plan_id: planId,
+    p_purpose: 'view',
+  });
+  if (error || !data) return null;
+  const parsed = staffPlanSchema.safeParse(data);
+  if (!parsed.success) return null;
+  const d = parsed.data;
+  if (!d.released) return { released: false, releaseAt: d.releaseAt };
+  const plan = subPlanV1Schema.safeParse(withClassManagementKey(d.plan));
+  const edits = d.edits == null ? null : subPlanEditsSchema.safeParse(d.edits);
+  return {
+    released: true,
+    role: d.role,
+    absenceId: d.absenceId,
+    planDate: d.planDate,
+    contentVersion: d.contentVersion,
+    plan: plan.success ? plan.data : null,
+    edits: edits?.success ? edits.data : null,
+    context: {
+      planId: d.planId,
+      planDate: d.planDate,
+      part: d.part,
+      schoolName: d.school.name,
+      timezone: d.school.timezone,
+      officePhone: d.school.officePhone?.trim() || null,
+      arrivalInstructions: d.school.arrivalInstructions,
+      emergencyInfo: d.school.emergencyInfo,
+      teacherName: d.teacherName,
+      absenceNote: d.note,
+    },
+    roster: d.roster,
+    levels: d.levels,
   };
 }

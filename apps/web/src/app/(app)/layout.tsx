@@ -4,7 +4,13 @@ import { AppNav } from '@/components/app/app-nav';
 import { SignOutForm } from '@/components/app/sign-out-form';
 import { Notice } from '@/components/ui/card';
 import { APP_NAME } from '@/lib/app-name';
-import { aiSchools, hasRole, requireSession, teachingSchools } from '@/server/session';
+import {
+  aiSchools,
+  hasRole,
+  requireSession,
+  substituteBoardSchools,
+  teachingSchools,
+} from '@/server/session';
 
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const session = await requireSession();
@@ -20,6 +26,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
   }
 
   const showTeaching = teachingSchools(session).length > 0;
+  const showSubstitutes = substituteBoardSchools(session).length > 0;
   const showDifferentiate = aiSchools(session).length > 0;
   const showSchool = session.schools.some((s) =>
     hasRole(s, 'principal', 'vice_principal', 'office_admin'),
@@ -30,6 +37,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
       <AppNav
         appName={APP_NAME}
         showTeaching={showTeaching}
+        showSubstitutes={showSubstitutes}
         showDifferentiate={showDifferentiate}
         showSchool={showSchool}
       />

@@ -1,5 +1,6 @@
 import {
   datesInRange,
+  formalStaffName,
   isWeekend,
   localDateIn,
   noSchoolEventOn,
@@ -18,13 +19,19 @@ import { AbsenceStatusPoller } from '@/components/absences/absence-status-poller
 import { capitalize, NoSchoolLine, useDaySummaryText } from '@/components/absences/absence-summary';
 import { useAbsenceTitle } from '@/components/absences/absence-title';
 import { PlanStatusBadge } from '@/components/absences/plan-status-badge';
+import type { SubAccess } from '@/components/sub-codes/access-view';
+import { CodePanel } from '@/components/sub-codes/code-panel';
+import type { SubCodeContext } from '@/components/sub-codes/types';
 import { ReleaseButton } from '@/components/sub-plans/release-button';
 import { Button } from '@/components/ui/button';
 import { Card, CardBody, Notice } from '@/components/ui/card';
 import { EmptyState, PageHeader } from '@/components/ui/page';
 import { formatLocalDate, formatShortDate } from '@/lib/format';
 import { loadAbsence, loadSchoolEvents, type AbsencePlanRow } from '@/server/queries/absences';
+import { loadSubAccess } from '@/server/queries/sub-access';
 import { findSchool, requireSession } from '@/server/session';
+import { subPortalConfigured } from '@/server/sub-portal/db';
+import { subCodeKeys } from '@/server/sub-portal/keys';
 import { createSupabaseServerClient } from '@/server/supabase';
 
 type Params = { params: Promise<{ absenceId: string }> };
@@ -34,17 +41,27 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t('title') };
 }
 
-/** One day of the absence: its release status, what it covers and the owner's actions. */
+/**
+ * One day of the absence: its release status, what it covers, the owner's actions and, for a
+ * day not over yet, « Code pour la personne suppléante » (D-050) when she knows who is coming.
+ */
 function PlanDayPanel({
   absenceId,
   plan,
   timeZone,
   today,
+  codes,
 }: {
   absenceId: string;
   plan: AbsencePlanRow;
   timeZone: string;
   today: LocalDate;
+  codes: {
+    access: SubAccess;
+    context: SubCodeContext;
+    configured: boolean;
+    now: string;
+  } | null;
 }) {
   const t = useTranslations();
   const locale = useLocale();
@@ -87,6 +104,19 @@ function PlanDayPanel({
             <ReleaseButton planId={plan.id} variant="secondary" />
           ) : null}
         </div>
+        {codes ? (
+          <div className="border-t border-slate-100 pt-3">
+            <h3 className="mb-2 text-sm font-semibold text-slate-800">{t('subCodes.title')}</h3>
+            <CodePanel
+              context={codes.context}
+              access={codes.access}
+              generateLabel={t('subCodes.forSubstitute')}
+              canIssue={plan.planDate >= today}
+              configured={codes.configured}
+              now={codes.now}
+            />
+          </div>
+        ) : null}
       </CardBody>
     </Card>
   );
@@ -144,6 +174,35 @@ export default async function AbsencePage({ params }: Params) {
     return event ? [{ date, reason: event.eventType, title: event.title }] : [];
   });
   const upcoming = absence.plans.filter((p) => p.planDate >= today);
+  // Codes and devices of the days not over yet (metadata only).
+  const accessByPlan = new Map(
+    await Promise.all(
+      upcoming.map(async (p) => [p.id, await loadSubAccess(supabase, p.id)] as const),
+    ),
+  );
+  const codesConfigured = subPortalConfigured() && subCodeKeys() !== null;
+  const now = new Date().toISOString();
+  const codesFor = (p: AbsencePlanRow) => {
+    const access = accessByPlan.get(p.id);
+    if (!access) return null;
+    return {
+      access,
+      configured: codesConfigured,
+      now,
+      context: {
+        planId: p.id,
+        planDate: p.planDate,
+        timezone: school.timezone,
+        schoolName: school.name,
+        schoolShortName: school.shortName,
+        teacherName: formalStaffName(session.displayName, session.honorific),
+        classNames: p.classNames,
+        roomNames: p.roomNames,
+        officePhone: school.settings.contact.officePhone?.trim() || null,
+        arrivalInstructions: school.settings.substitute.arrivalInstructions,
+      },
+    };
+  };
 
   return (
     <div className="space-y-4">
@@ -184,6 +243,7 @@ export default async function AbsencePage({ params }: Params) {
               plan={p}
               timeZone={school.timezone}
               today={today}
+              codes={codesFor(p)}
             />
           ),
         }))}

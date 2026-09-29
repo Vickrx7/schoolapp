@@ -20,6 +20,30 @@ export const webServerEnvSchema = z.object({
    * Leave empty to keep the alerts feature unavailable.
    */
   ALERTS_ENCRYPTION_KEYS: z.string().default(''),
+  /**
+   * Direct Postgres connection for the substitute portal, as the database role
+   * lynx_sub_portal (DECISIONS D-049). Server-only. Unset: the portal shows that substitute
+   * access is not configured, and codes cannot be issued.
+   */
+  SUB_PORTAL_DATABASE_URL: z.string().min(1).optional(),
+  /**
+   * Keys for hashing substitute access codes (and the device and network keys used for
+   * throttling), in the same "version:base64key" format as ALERTS_ENCRYPTION_KEYS: at most two,
+   * the current one (highest version) and the previous one during a rotation. Empty: codes
+   * cannot be issued or redeemed.
+   */
+  SUB_CODE_HMAC_KEYS: z.string().default(''),
+  /** Request header that carries the client address (set or appended by the reverse proxy). */
+  CLIENT_IP_HEADER: z
+    .string()
+    .regex(/^[A-Za-z0-9-]+$/)
+    .transform((v) => v.toLowerCase())
+    .default('x-forwarded-for'),
+  /**
+   * How many trusted proxies append to CLIENT_IP_HEADER: the client address is the entry this
+   * many places from the right. 0 ignores the header (every request shares one bucket).
+   */
+  TRUSTED_PROXY_HOPS: z.coerce.number().int().min(0).max(5).default(1),
 });
 
 export type WebServerEnv = z.infer<typeof webServerEnvSchema>;

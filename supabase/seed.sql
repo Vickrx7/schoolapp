@@ -442,5 +442,13 @@ insert into public.catholic_references (board_id, type, title, text_fr, grade_mi
   ('b0000000-0000-4000-8000-000000000001', 'prayer', 'Prière avant le travail', 'Seigneur, aide-moi à bien écouter, à faire de mon mieux et à aider mes amis aujourd''hui. Amen.', -1, 6, null, '{prière,journée}', 'Texte original de démonstration.'),
   ('b0000000-0000-4000-8000-000000000001', 'prayer', 'Prière de l''Avent', 'Seigneur, pendant ce temps d''attente, rends nos cœurs prêts à t''accueillir et à partager avec les autres. Amen.', -1, 8, 'avent', '{avent,partage}', 'Texte original de démonstration.');
 
+-- ---------------------------------------------------------------------------------------
+-- The substitute portal's database login (DECISIONS D-049), for local development and CI
+-- ONLY. The web server connects with it through SUB_PORTAL_DATABASE_URL (.env.example). Never
+-- reuse this password: in production the operator sets a secret one (docs/phase-3.md).
+-- ---------------------------------------------------------------------------------------
+
+alter role lynx_sub_portal with login password 'lynx-sub-portal-local-only';
+
 -- The seed's own events are just noise for the worker.
 delete from public.event_outbox;

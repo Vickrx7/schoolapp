@@ -206,3 +206,33 @@ export async function deleteAlertsFor(studentName: string, classId: string): Pro
     [studentName, classId],
   );
 }
+
+/** The database's clock, as an ISO instant (audit rows are stamped with it). */
+export async function dbNow(): Promise<string> {
+  const [row] = await query<{ now: Date }>('select now() as now');
+  return row!.now.toISOString();
+}
+
+/** Audit rows of an action by one staff account since an instant. */
+export async function auditCountBy(
+  action: string,
+  email: string,
+  sinceIso: string,
+): Promise<number> {
+  const [row] = await query<{ n: string }>(
+    `select count(*) as n from public.audit_log a join public.users u on u.id = a.actor_user_id
+     where a.action = $1 and u.email = $2 and a.occurred_at >= $3`,
+    [action, email, sinceIso],
+  );
+  return Number(row?.n ?? 0);
+}
+
+/** The plan of a published absence on one date. */
+export async function planIdOn(absenceId: string, date: string): Promise<string> {
+  const [row] = await query<{ id: string }>(
+    'select id from public.sub_plans where absence_id = $1 and plan_date = $2',
+    [absenceId, date],
+  );
+  if (!row) throw new Error(`no plan on ${date} for absence ${absenceId}`);
+  return row.id;
+}
