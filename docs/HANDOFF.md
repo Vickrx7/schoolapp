@@ -31,12 +31,16 @@ the beta (DECISIONS D-001, D-003).
 - **Privacy is paramount** (his words). First names only for students; alerts encrypted, hidden and
   audited; RLS everywhere; data at rest in Canada. For AI: **"if the information leaves Canada it
   can't hold ANY personal data, and encrypted traffic if possible."** Students never use AI; only
-  teachers and principals do.
-- **Hosting:** our hosted version in Canada (Supabase Canada Central) or board-hosted with Docker
-  (SPEC §7). Nothing hosted yet.
+  teachers and the direction (principals and vice-principals) do.
+- **Hosting:** our hosted version in Canada or board-hosted with Docker (SPEC §7). In the hosted
+  version the database (Supabase Canada Central) **and** the web server and worker must run in a
+  Canadian region: they handle teachers' text with real names before de-identifying it (D-029,
+  `docs/ai-data-flow.md`). Nothing hosted yet.
 - **AI:** Mike pays during the beta, with his own Anthropic key. He chose **Claude Opus 5.5, medium
   effort**. Budgets: $50–100 per school per month, with tiers and pooling across a board's schools;
-  he manages it and bills each board monthly (implemented as D-040).
+  he manages it and bills each board monthly. As implemented (D-040), amounts are **US dollars of
+  provider (Anthropic) cost**, not the price charged to boards: default allowance 50 USD per school,
+  ceiling 2x; what Mike charges boards is separate.
 - **Budget/deadlines:** none given beyond the AI budget above. "No urgency" on the product name.
 
 **The name.** "Lynx École" is a placeholder (`NEXT_PUBLIC_APP_NAME`). Mike is open to anything and
@@ -48,7 +52,8 @@ Ardoise). No availability or trademark check has been done yet.
 
 **Branch and PR.** Everything is on `claude/nifty-fermat-8hhl1l`, in draft PR
 [Vickrx7/schoolapp#1](https://github.com/Vickrx7/schoolapp/pull/1) (Phases 1 and 2). CI is green
-on `14762db`. No reviews or review comments; Mike hasn't merged it. The new session's own branch is
+on `715de79` (the handoff commit) and on every commit before it. No reviews or review comments;
+Mike hasn't merged it. The new session's own branch is
 different (`claude/serene-ride-3n2fa1`), so it cannot push to PR #1 unless Mike allows it. Simplest:
 Mike merges PR #1 into `main` once he's happy, then new work branches from `main`. Otherwise, base
 the new branch on `claude/nifty-fermat-8hhl1l` and open a PR on top of it.
@@ -65,6 +70,7 @@ the new branch on `claude/nifty-fermat-8hhl1l` and open a PR on top of it.
 | `3af4da0` | Phase 2: AI service (jobs, privacy layer, budgets, evaluation set)                          |
 | `b859fc6` | Phase 2: « Texte différencié » screens and the principal's AI switch                        |
 | `14762db` | CI race fix in the AI e2e test; class pages guard a missing class                           |
+| `715de79` | This handoff note and the promo video sources (`marketing/promo/`)                          |
 
 **Verified (locally and in CI):** 113 unit tests, 217 pgTAP tests, 7 integration tests, 13
 Playwright tests (desktop + phone), lint, typecheck, format, generated DB types up to date.
@@ -83,7 +89,9 @@ class mode) with RLS and tests, but no screens.
   version (voice `ff_siwis`, which has a France-French accent). Both MP4s were sent to Mike in the
   chat. Their sources are now in `marketing/promo/` (rebuild steps in its README; models, venv and
   videos are git-ignored).
-- **Screenshots** of the app were only in the old container's scratchpad (not kept).
+- **Screenshots:** the promo's app screenshots (Phase 1 screens, fictional demo data) are kept in
+  `marketing/promo/screens/`. The Phase 2 screenshots sent to Mike in the chat were only in the old
+  container and are gone; retake them from the running app if needed.
 
 **Watching.** The old session is still subscribed to PR #1 events and has a one-off check-in
 scheduled around 22:07 UTC today. If you take over the PR, tell Mike so only one session drives it.
@@ -142,14 +150,22 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
 - **Network:** GitHub Actions artifact downloads (`*.blob.core.windows.net`) are blocked by the
   egress policy. Read CI failures from the job logs.
 - **Deletes:** `rm -rf *` style commands are refused by a safety check. Use explicit paths.
-- **Next warning:** "next start does not work with output: standalone" is harmless in tests.
-  Production uses `node .next/standalone/server.js`.
+- **Next warning:** "next start does not work with output: standalone" is harmless in tests. The
+  standalone server is at `apps/web/.next/standalone/apps/web/server.js` (monorepo tracing root);
+  there is no production or Docker setup yet (Phase 6, D-029).
 
 ## 4. Environment ("School app")
 
-| Name                | Required         | What it's for                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| ------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ANTHROPIC_API_KEY` | For real AI only | Mike's Anthropic key. Mike was told to add it as an **environment variable** in the "School app" environment; check with `[ -n "$ANTHROPIC_API_KEY" ] && echo set` (never echo the value). The worker (`AI_PROVIDER=anthropic`) and `pnpm ai:eval` read it. Never print or commit it. Adding it as an "API credential" (egress header `x-api-key` for `api.anthropic.com`) failed 4 times with "Failed to create egress credential", hence the plain variable in a dedicated environment. Mike was advised to set a low spend limit on it in the Anthropic Console. |
+**`ANTHROPIC_API_KEY`** (needed only for real AI):
+
+- Mike's Anthropic key. He was told to add it as an **environment variable** in the "School app"
+  environment. Check with `[ -n "$ANTHROPIC_API_KEY" ] && echo set`, and never print or commit the
+  value.
+- Read by the worker (with `AI_PROVIDER=anthropic`) and by `pnpm ai:eval`.
+- Adding it as an "API credential" instead (egress header `x-api-key` for `api.anthropic.com`)
+  failed 4 times with "Failed to create egress credential". Hence the plain variable, in an
+  environment only this project uses. Mike was advised to set a low spend limit on it in the
+  Anthropic Console.
 
 Everything else comes from `.env.example` (copy it to `apps/web/.env.local`). It uses the local demo
 keys, and none of it is secret:
@@ -160,13 +176,19 @@ keys, and none of it is secret:
 - **Worker:** `DATABASE_URL`, `WORKER_CONCURRENCY`, `OUTBOX_BATCH_SIZE`, `INTEGRATIONS_MODE`,
   `LOG_EVENTS`, `AI_PROVIDER` (`none` | `fake` | `anthropic`), `AI_MODEL` (default
   `claude-opus-5-5`), `AI_EFFORT` (default `medium`), `AI_JOB_RETENTION_DAYS` (default 30).
-- **Optional:** `AI_PRICE_INPUT_PER_MTOK` / `AI_PRICE_OUTPUT_PER_MTOK` for unknown models,
-  `AI_FAKE_DELAY_MS`, `PROMPTS_DIR`.
+- **Optional, not in `.env.example`:**
+  - `AI_PRICE_INPUT_PER_MTOK` / `AI_PRICE_OUTPUT_PER_MTOK`: prices for models the app doesn't
+    know (`packages/config/src/index.ts`).
+  - `AI_FAKE_DELAY_MS`: simulated latency of the fake provider (default 800).
+  - `PROMPTS_DIR`: where the prompts live (default: the repo's `prompts/`; read by
+    `packages/ai/src/prompts.ts`).
 
 Network access "Trusted" (same as Default) is enough: npm, GitHub release downloads,
 `api.anthropic.com`.
 
-## 5. Decisions from the chat not written elsewhere
+## 5. Decisions and preferences from the chat
+
+Where an item is already in `DECISIONS.md`, the D-number is given. Don't add duplicate entries.
 
 - **How Mike likes to work.**
   - Short, plain answers with a recommendation, not a menu.
@@ -176,31 +198,34 @@ Network access "Trusted" (same as Default) is enough: npm, GitHub release downlo
   - Explain anything he has to click (environment settings, keys) step by step. He follows along
     on the web/phone app and sends screenshots.
   - Never ask him to paste keys in chat.
-- **PR style.** Draft PRs, plain-language descriptions, commit messages in English with the
-  Co-Authored-By/session trailers your system prompt gives you. No model names in commits or PRs.
-  Keep CI green; fix red CI before anything else.
-- **UI copy.** French-first, Canadian, inclusive writing; English kept in sync (a unit test checks
-  keys and placeholders). What staff type stays as typed.
+- **PR style.**
+  - Draft PRs with plain-language descriptions; commit messages in English.
+  - End commits and PRs with the attribution trailers your own session's instructions give you.
+    Apart from those, don't say which AI model wrote the code. Naming the app's configured AI model
+    (a product setting) is fine.
+  - Keep CI green, and fix red CI before anything else.
+- **UI copy (D-033).** French-first, Canadian, inclusive writing; English kept in sync (a unit test
+  checks keys and placeholders). What staff type stays as typed.
 - **Approved by Mike:**
   - the English toggle;
   - Phase 2 scope;
-  - Opus 5.5 at medium effort;
-  - $50–100 per school with pooling and monthly billing by him;
+  - Opus 5.5 at medium effort (D-041);
+  - $50–100 per school with pooling, and monthly billing by him (D-040; see the USD note in section 1);
   - his own key during the beta;
   - "no personal data leaves Canada";
-  - AI only for teachers and principals;
-  - the French promo.
+  - AI only for teachers and the direction (principals and vice-principals; D-039);
+  - the French promo;
+  - a separate environment for this project (he created "School app").
 - **Suggested, not yet answered:**
-  - a separate environment for this project (he created "School app");
   - a zero-data-retention agreement with Anthropic before real students' names are in the app;
   - a hosted beta before showing teachers (needs his accounts: Supabase in Canada Central, a host
-    for web and worker, an email sender);
+    for the web server and worker in a Canadian region, an email sender);
   - the product name.
 - **Pooling detail (D-040).** A school can always use its own allowance even after others borrowed
   from the pool, so a board can go over its pool by at most what was borrowed. Mike hasn't
   commented on that nuance.
-- **Printouts never show level names** (no student labelled « Débutant »). A small number marks the
-  level for the teacher.
+- **Printouts never show level names** (D-042): no student is labelled « Débutant ». A small number
+  marks the level for the teacher.
 - **The promo claims only shipped features.** The sick-day plan is labelled « Bientôt ».
 
 ## 6. Next steps (in order)
@@ -209,16 +234,20 @@ Network access "Trusted" (same as Default) is enough: npm, GitHub release downlo
    is written to `packages/ai/eval-results/`, which is git-ignored, so send it to Mike). Check that
    the provider code works on Opus 5.5 (streamed structured output, effort, `max_tokens` with
    thinking, and the time the largest case takes against the 13-minute limit), then review the
-   French. If the prompt needs changes, add `prompts/differentiate/v2.md` and bump
-   `promptVersion`; never edit a version that has been used.
+   French. If the prompt needs changes, propose them to Mike first. Once he approves, add
+   `prompts/differentiate/v2.md` and bump `promptVersion`; never edit a version that has been
+   used.
 2. **Get PR #1 reviewed and merged** (see branch note in section 2).
-3. **Hosted beta** so Mike and the teachers can use it:
-   - Supabase project in Canada Central;
-   - web and worker hosting;
+3. **Hosted beta**, once Mike agrees and provides the accounts. Present a short plan first. It
+   covers:
+   - a Supabase project in Canada Central;
+   - web and worker hosting in a Canadian region;
    - real SMTP for login codes;
    - secrets;
    - a zero-data-retention request to Anthropic.
-     This pulls part of Phase 6 (`DEPLOYMENT.md`) forward.
+
+   This pulls part of Phase 6 (`DEPLOYMENT.md`) forward.
+
 4. **Name.** Once chosen: check availability, then rename `NEXT_PUBLIC_APP_NAME`, the icon, the
    login email template and the promo.
 5. **Phase 3 (substitute hand-off).** Present a short plan and questions to Mike before building.
@@ -263,5 +292,5 @@ Task: test Phase 2 against the real Claude API. ANTHROPIC_API_KEY is set in this
 
 An earlier version (before the API-credential route failed) said the key was "set up as an API
 credential for api.anthropic.com, sent as the `x-api-key` header" and to use a placeholder key if
-the SDK needed one. That no longer applies: the plan is now a plain environment variable (check that
-it is set before running the evaluation).
+the SDK needed one. That no longer applies: the key is meant to be a plain environment variable now
+(check that it is set before running the evaluation).
