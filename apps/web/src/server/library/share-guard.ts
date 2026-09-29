@@ -8,15 +8,12 @@
  *
  * Pure (the students come from the caller), so it is unit-tested.
  */
-import { Redactor, findBlockedDetails, type BlockedKind, type KnownPerson } from '@lynx/ai/privacy';
+import { findPersonalInfo, type BlockedKind, type PersonalInfoFindings } from '@lynx/ai/privacy';
 import { MACHINE_KEYS } from '@lynx/content';
 
-export interface PersonalInfoFindings {
-  /** Students' first names found, as the roster spells them, in the order found. */
-  studentNames: string[];
-  /** Kinds of personal detail found (each once). */
-  blocked: BlockedKind[];
-}
+// The check itself lives with the other privacy tools (it also guards class devices and content
+// pack exports); re-exported here for the library's callers.
+export { findPersonalInfo, type PersonalInfoFindings };
 
 /** Every prose string of a JSON value (ids, kinds and other machine values are left out). */
 export function proseStrings(value: unknown, out: string[] = []): string[] {
@@ -60,28 +57,6 @@ export function itemStrings(item: GuardedItem): string[] {
     proseStrings(version.answerKey, out);
   }
   return out;
-}
-
-/**
- * Students' first names and personal details in `strings`. Only `kind: 'student'` people are
- * looked for: staff names may appear in shared resources. A name that is also an everyday word
- * (Rose, Pierre) counts only when capitalized, as the AI preview does.
- */
-export function findPersonalInfo(
-  strings: readonly string[],
-  people: readonly KnownPerson[],
-): PersonalInfoFindings {
-  const redactor = new Redactor(people.filter((p) => p.kind === 'student'));
-  const blocked = new Set<BlockedKind>();
-  for (const text of strings) {
-    redactor.redact(text);
-    for (const finding of findBlockedDetails(text)) blocked.add(finding.kind);
-  }
-  const studentNames: string[] = [];
-  for (const r of redactor.replacements()) {
-    if (r.kind === 'student' && !studentNames.includes(r.original)) studentNames.push(r.original);
-  }
-  return { studentNames, blocked: [...blocked] };
 }
 
 const fold = (name: string) =>

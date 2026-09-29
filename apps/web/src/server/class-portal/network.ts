@@ -1,5 +1,5 @@
 /**
- * The network bucket for join throttling (Phase 5 plan, decision P-3). The per-network count
+ * The network bucket for join throttling (DECISIONS D-084). The per-network count
  * of failed typed codes is keyed by an HMAC of this prefix (`crypto.ts#networkKey`), never by a
  * raw address:
  *

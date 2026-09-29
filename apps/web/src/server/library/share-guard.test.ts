@@ -1,4 +1,4 @@
-import type { KnownPerson } from '@lynx/ai/privacy';
+import { findPersonalInfo as privacyFindPersonalInfo, type KnownPerson } from '@lynx/ai/privacy';
 import { sampleCanonical } from '@lynx/content';
 import { describe, expect, it } from 'vitest';
 import {
@@ -58,15 +58,8 @@ describe('the first-name guard', () => {
     ).toEqual({ studentNames: ['Samuel', 'Aïcha'], blocked: [] });
   });
 
-  it('counts a name that is an everyday word only when it is capitalized', () => {
-    expect(findPersonalInfo(['Dessinez une rose rouge.'], PEOPLE).studentNames).toEqual([]);
-    expect(findPersonalInfo(['Rose dessine une fleur.'], PEOPLE).studentNames).toEqual(['Rose']);
-  });
-
-  it('allows staff names', () => {
-    expect(
-      findPersonalInfo(['Préparée par Mme Tremblay avec Marc Gagnon.', 'Isabelle lit.'], PEOPLE),
-    ).toEqual({ studentNames: [], blocked: [] });
+  it('uses the privacy package’s check (its own tests are in packages/ai privacy.test.ts)', () => {
+    expect(findPersonalInfo).toBe(privacyFindPersonalInfo);
   });
 
   it('always blocks e-mail addresses and phone numbers', () => {

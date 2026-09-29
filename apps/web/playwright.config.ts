@@ -24,12 +24,20 @@ export default defineConfig({
     {
       name: 'desktop',
       use: { ...devices['Desktop Chrome'], launchOptions: { executablePath } },
-      testIgnore: /mobile\.spec\.ts/,
+      testIgnore: /(mobile|tablet)\.spec\.ts/,
     },
     {
       name: 'phone',
       use: { ...devices['Pixel 7'], launchOptions: { executablePath } },
       testMatch: /mobile\.spec\.ts/,
+    },
+    {
+      // Class devices (« Quiz sur les appareils », Phase 5). Only Chromium is installed here, so
+      // this is Chrome on an Android tablet; Chromebooks are a 1366×768 viewport in the specs and
+      // iPads are checked by hand.
+      name: 'tablet',
+      use: { ...devices['Galaxy Tab S4'], launchOptions: { executablePath } },
+      testMatch: /tablet\.spec\.ts/,
     },
   ],
   webServer: process.env.E2E_BASE_URL

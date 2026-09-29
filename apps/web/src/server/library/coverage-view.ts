@@ -1,5 +1,5 @@
 /**
- * « Couverture du curriculum » (Phase 5 plan, decision P-13): which attentes of a grade and
+ * « Couverture du curriculum » (DECISIONS D-094): which attentes of a grade and
  * subject have few or no board-approved resources, by domaine.
  *
  * What counts is decided in SQL (`public.library_coverage`): for a specific attente, the

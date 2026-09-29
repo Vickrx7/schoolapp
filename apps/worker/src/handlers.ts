@@ -83,6 +83,21 @@ export function buildSubscriptions(options: { logEvents: boolean }): Subscriptio
     },
   });
 
+  // Bulk generation (D-095, D-101): a run that starts, or a cancellation, runs the bulk tick now
+  // instead of at its next 5-minute slot. The job key keeps at most one tick waiting: `replace`
+  // (the default) moves a queued tick to now; while one is running a new one is queued, since
+  // the running one may have read the runs before the change (each run is locked in the
+  // database while a tick works on it).
+  subs.push({
+    handler: 'library_bulk_kick',
+    events: ['library_bulk_run.started', 'library_bulk_run.cancel_requested'],
+    run: async (_event, { pool }) => {
+      await pool.query(
+        "select graphile_worker.add_job('library_bulk_tick', '{}'::json, job_key => 'library_bulk_tick')",
+      );
+    },
+  });
+
   // Example of an integration reacting to an event: a day-only door credential for the
   // substitute (VantageCore). Phase 3 makes no integration calls (DECISIONS D-060), so this only
   // logs. The event carries ids, dates and the part of day; log the ids only.

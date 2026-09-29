@@ -5,7 +5,8 @@ import { useCallback, useState, useTransition } from 'react';
 import { toast } from 'sonner';
 import type { ActionResult } from '@/lib/action-result';
 
-const KNOWN_ERRORS = new Set([
+/** Error keys with a message under `errors` (anything else shows the generic message). */
+export const KNOWN_ERRORS: ReadonlySet<string> = new Set([
   'forbidden',
   'duplicate',
   'inUse',
@@ -64,6 +65,18 @@ const KNOWN_ERRORS = new Set([
   'libraryStudentNames',
   'libraryInvalidContent',
   'libraryChanged',
+  // Class mode (DECISIONS D-082 to D-090) and library growth (D-091 to D-093).
+  'classSessionOpen',
+  'classSessionChanged',
+  'classSessionNoMore',
+  'classSessionEnded',
+  'classModeNotPlayable',
+  'classPortalNotConfigured',
+  'libraryRateOwn',
+  'libraryRateNotApproved',
+  'libraryRemixArchived',
+  'libraryRemixLicence',
+  'libraryShareCap',
   // What a resource is missing (readinessFieldErrors, D-067).
   'readiness.grades',
   'readiness.subject',

@@ -1,7 +1,7 @@
 /**
- * The credit line of an adaptation (« Adapter », Phase 5 plan, decision P-11): « Adaptée de
- * « … » » plus who made the original, read live from `public.library_item_lineage` (direct
- * parent only; names are never stored in the copy):
+ * The credit line of an adaptation (« Adapter », DECISIONS D-092): « Adaptée de « … » » plus
+ * who made the original, read live from `public.library_item_lineage` (direct parent only;
+ * names are never stored in the copy):
  *
  * - « par Mme Tremblay (É.É.C. Saint-Exemple) » for a teacher's resource the viewer can use (the
  *   school only when the original is school-scoped);
@@ -12,8 +12,7 @@
  *   link and no name.
  *
  * Pure so it is unit-tested. The screens translate the keys below in the `libraryGrowth`
- * namespace, which slice S0/S4 owns in `messages/*.json`. Proposed strings for the integrator
- * (each credit reads after `basedOn`, separated by a space):
+ * namespace of `messages/*.json` (each credit reads after `basedOn`, separated by a space):
  *
  *   key               fr-CA                                     en-CA
  *   basedOn           Adaptée de « {title} »                    Adapted from “{title}”
@@ -24,11 +23,11 @@
  *   pack              (ensemble « {title} »)                    (pack “{title}”)
  *   unavailable       (ressource d’origine non disponible)      (original resource not available)
  *
- * Differences from the plan's G4 list, for the integrator to confirm: `basedOnUntitled` (an item
- * adapted before Phase 5 may have no copied title) and `byAtSchool` (P-11 shows the school, `by`
- * has no placeholder for it) are new; `board` and `pack` carry parentheses like `unavailable`
- * and the example « Adaptée de « … » (Conseil scolaire) » (A1.7); `pack` says « ensemble », the
- * word the item page's provenance already uses for content packs (the plan says « Paquet »).
+ * Differences from the plan's list: `basedOnUntitled` (an item adapted before Phase 5 may have
+ * no copied title) and `byAtSchool` (D-092 shows the school, `by` has no placeholder for it) are
+ * new; `board` and `pack` carry parentheses like `unavailable` and the example « Adaptée de
+ * « … » (Conseil scolaire) »; `pack` says « ensemble », the word the item page's provenance
+ * already uses for content packs (the plan says « Paquet »).
  */
 
 /** The messages namespace of the keys below. */

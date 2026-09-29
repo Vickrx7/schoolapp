@@ -7,6 +7,7 @@ import { createIntegrations } from '@lynx/integrations';
 import { run } from 'graphile-worker';
 import pg from 'pg';
 import { createAiRuntime } from './ai';
+import { CRONTAB_LINES } from './crontab';
 import { buildSubscriptions } from './handlers';
 import { createLogger } from './logger';
 import { buildTaskList } from './tasks';
@@ -29,14 +30,9 @@ const runner = await run({
     context: { integrations, logger: createLogger('events'), pool, ai },
     batchSize: env.OUTBOX_BATCH_SIZE,
     aiJobRetentionDays: env.AI_JOB_RETENTION_DAYS,
+    bulkMaxRunUsd: env.BULK_MAX_RUN_USD,
   }),
-  crontab: [
-    // Safety net: sweep the outbox every minute in case a notification was missed.
-    '* * * * * dispatch_outbox ?jobKey=dispatch_outbox&jobKeyMode=preserve_run_at',
-    '17 * * * * ai_maintenance ?jobKey=ai_maintenance',
-    // Daily substitute access retention (old codes, sign-in attempts, report notes).
-    '43 3 * * * sub_access_maintenance ?jobKey=sub_access_maintenance',
-  ].join('\n'),
+  crontab: CRONTAB_LINES.join('\n'),
 });
 
 const wake = () =>

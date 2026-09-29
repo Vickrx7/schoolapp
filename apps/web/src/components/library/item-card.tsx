@@ -6,6 +6,7 @@ import type { LibraryResultCard } from '@/server/queries/library-search';
 import type { AttachTarget } from '@/server/library/view-model';
 import { ItemBadges } from './item-badges';
 import { CardActionsSlot } from './slots/card-actions-slot';
+import { CardStatsSlot } from './slots/card-stats-slot';
 
 const FORMAT_ICONS = {
   printable: Printer,
@@ -19,7 +20,7 @@ const FORMAT_ICONS = {
  * duration, the summary, the badges as text (« Approuvée par le conseil », « Suppléance »,
  * « 4 niveaux » or « Version de base seulement », « IA », « Foi »; the workflow status too on
  * the user's own items) and the formats. The card's actions (« Joindre à cette leçon ») are the
- * card actions slot's.
+ * card actions slot's; its opinions and usage are the card stats slot's.
  */
 export function ItemCard({
   card,
@@ -85,6 +86,8 @@ export function ItemCard({
             levelCount: card.levelIds.length,
           }}
         />
+        {/* Opinions and « Utilisée dans N unités » (Phase 5, D-093). */}
+        <CardStatsSlot card={card} />
         {formats.length ? (
           <ul aria-label={t('card.formats')} className="mt-auto flex flex-wrap gap-3 pt-1">
             {formats.map((f) => {

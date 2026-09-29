@@ -70,6 +70,29 @@ export function errorKey(error: PgLikeError | null | undefined): string {
       return 'libraryLevelExists';
     case 'LXL10':
       return 'libraryPersonalLevels';
+    // Class mode (Phase 5, DECISIONS D-082 to D-090; raised by the class-mode functions).
+    case 'LXC01':
+      return 'classSessionOpen';
+    case 'LXC02':
+      return 'classSessionChanged';
+    case 'LXC03':
+      return 'classSessionNoMore';
+    case 'LXC04':
+      return 'classModeNotPlayable';
+    case 'LXC05':
+      return 'classSessionEnded';
+    // Adaptations (D-092): LXM03 comes from a trigger, so every sharing path can raise it.
+    case 'LXM01':
+      return 'libraryRemixArchived';
+    case 'LXM02':
+      return 'libraryRemixLicence';
+    case 'LXM03':
+      return 'libraryShareCap';
+    // Opinions (D-093).
+    case 'LXR01':
+      return 'libraryRateOwn';
+    case 'LXR02':
+      return 'libraryRateNotApproved';
     default:
       return 'unexpected';
   }

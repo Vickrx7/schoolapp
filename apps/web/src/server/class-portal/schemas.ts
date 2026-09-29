@@ -1,5 +1,5 @@
 /**
- * What crosses the wire in « Quiz sur les appareils » (Phase 5 plan, decisions P-2 to P-6):
+ * What crosses the wire in « Quiz sur les appareils » (DECISIONS D-083 to D-087):
  *
  * - the results of the `class_portal` functions, which are not in the generated types (the
  *   schema is not exposed by the API), parsed before a device gets anything;
@@ -8,7 +8,7 @@
  *
  * Every object schema **strips** unknown keys (Zod's default; never `looseObject`, `passthrough`
  * or a record of unknown values). This is one of the guards that keep answer keys off student
- * devices (P-5, guard 4): even if a database function one day returned `accepted`, `answer` or
+ * devices (D-086, guard 4): even if a database function one day returned `accepted`, `answer` or
  * `explanation`, the web server would drop it. The projector receives the current answer only in
  * the reveal phases, and `liveStateSchema` drops `reveal` in any other phase.
  *
@@ -87,7 +87,7 @@ export const deviceQuestionSchema = z.object({
   left: orNull(options),
   right: orNull(options),
   items: orNull(options),
-  /** The question counts for points (short answers are not scored by default, P-6). */
+  /** The question counts for points (short answers are not scored by default, D-087). */
   scorable: z.boolean().default(false),
 });
 export type DeviceQuestion = z.output<typeof deviceQuestionSchema>;
@@ -106,7 +106,7 @@ export type TeamScore = z.output<typeof teamScoreSchema>;
 
 const deviceSessionSchema = z.object({
   title: orNull(z.string().max(200)),
-  /** The content's language (`ang` → en-CA); the screens around it stay French (P-9). */
+  /** The content's language (`ang` → en-CA); the screens around it stay French (D-090). */
   lang: z.enum(['fr-CA', 'en-CA']),
   mode: z.enum(['teams', 'solo']),
   phase,
@@ -135,7 +135,7 @@ const deviceOkSchema = z.object({
     team: orNull(teamKey),
   }),
   question: orNull(deviceQuestionSchema),
-  /** This device's answer to the current question; its result only after the reveal (P-5). */
+  /** This device's answer to the current question; its result only after the reveal (D-086). */
   myAnswer: orNull(
     z.object({
       answered: z.literal(true),
@@ -299,7 +299,7 @@ const answerShapes = {
     }),
   }),
   ordering: z.object({ orderedIds: z.array(id).min(1).max(8) }),
-  /** Graded in the transaction that receives it, then stored as `{}` (P-7). */
+  /** Graded in the transaction that receives it, then stored as `{}` (D-088). */
   short_answer: z.object({ text: z.string().trim().min(1).max(100) }),
 } as const satisfies Record<QuestionKind, z.ZodType>;
 

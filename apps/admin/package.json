@@ -8,6 +8,7 @@
     "cli": "tsx --env-file-if-exists=../web/.env.local src/cli.ts"
   },
   "dependencies": {
+    "@lynx/ai": "workspace:*",
     "@lynx/config": "workspace:*",
     "@lynx/content": "workspace:*",
     "@lynx/db": "workspace:*",

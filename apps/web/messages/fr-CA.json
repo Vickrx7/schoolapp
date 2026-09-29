@@ -131,6 +131,17 @@
     "libraryStudentNames": "Le texte contient des prénoms d’élèves de votre école. Retirez-les, ou confirmez que ce ne sont pas des noms d’élèves.",
     "libraryInvalidContent": "Certaines parties de la ressource ne sont pas valides. Vérifiez les champs signalés.",
     "libraryChanged": "La ressource a changé pendant la préparation. Relancez la demande.",
+    "classSessionOpen": "Une séance est déjà en cours pour cette classe.",
+    "classSessionChanged": "La séance a changé dans un autre onglet.",
+    "classSessionNoMore": "C’était la dernière question.",
+    "classSessionEnded": "Cette séance est terminée.",
+    "classModeNotPlayable": "Cette ressource n’a pas de question pour un quiz sur les appareils.",
+    "classPortalNotConfigured": "Les appareils des élèves ne sont pas configurés sur ce serveur : vous pouvez tout de même présenter.",
+    "libraryRateOwn": "Vous ne pouvez pas donner votre avis sur une ressource que vous avez créée.",
+    "libraryRateNotApproved": "Seules les ressources approuvées par le conseil peuvent recevoir un avis.",
+    "libraryRemixArchived": "Une ressource archivée ne peut pas être adaptée.",
+    "libraryRemixLicence": "Cette ressource ne peut pas être adaptée (licence).",
+    "libraryShareCap": "Cette adaptation peut être partagée au plus avec l’école de la ressource d’origine.",
     "readiness": {
       "grades": "Ajoutez au moins une année d’études.",
       "subject": "Choisissez une matière.",
@@ -2397,5 +2408,32 @@
     "pdf": {
       "material": "Matériel pour les élèves : « Activités pour les élèves (PDF) », une copie par groupe."
     }
+  },
+  "classPresenter": {
+    "present": "Présenter à la classe"
+  },
+  "classMode": {
+    "tab": "Mode classe"
+  },
+  "classPortal": {
+    "title": "Rejoindre la partie"
+  },
+  "libraryGrowth": {
+    "basedOn": "Adaptée de « {title} »",
+    "basedOnUntitled": "Adaptée d’une autre ressource",
+    "by": "par {name}",
+    "byAtSchool": "par {name} ({school})",
+    "board": "(Conseil scolaire)",
+    "pack": "(ensemble « {title} »)",
+    "unavailable": "(ressource d’origine non disponible)"
+  },
+  "libraryCoverage": {
+    "title": "Couverture du curriculum"
+  },
+  "libraryBulk": {
+    "tab": "Brouillons du conseil (IA) ({count})"
+  },
+  "libraryPacks": {
+    "badge": "Ensemble : {title} {version}"
   }
 }

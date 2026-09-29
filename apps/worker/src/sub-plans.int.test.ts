@@ -79,6 +79,7 @@ function taskList(logger: Logger) {
     context: { integrations: createMockIntegrations(), logger, pool, ai: null },
     batchSize: 10,
     aiJobRetentionDays: 30,
+    bulkMaxRunUsd: 100,
   });
 }
 

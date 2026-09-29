@@ -53,6 +53,9 @@ importers:
 
   apps/admin:
     dependencies:
+      '@lynx/ai':
+        specifier: workspace:*
+        version: link:../../packages/ai
       '@lynx/config':
         specifier: workspace:*
         version: link:../../packages/config

@@ -62,6 +62,27 @@ describe('database errors shown to users', () => {
     }
   });
 
+  it('maps the Phase 5 codes to their messages', () => {
+    const phase5 = {
+      LXC01: 'classSessionOpen',
+      LXC02: 'classSessionChanged',
+      LXC03: 'classSessionNoMore',
+      LXC04: 'classModeNotPlayable',
+      LXC05: 'classSessionEnded',
+      LXM01: 'libraryRemixArchived',
+      LXM02: 'libraryRemixLicence',
+      LXM03: 'libraryShareCap',
+      LXR01: 'libraryRateOwn',
+      LXR02: 'libraryRateNotApproved',
+    };
+    for (const [code, key] of Object.entries(phase5)) {
+      expect(errorKey({ code }), code).toBe(key);
+      expect(fr.errors, code).toHaveProperty(key);
+    }
+    // Returned by the class-mode actions themselves when this server has no device access.
+    expect(fr.errors).toHaveProperty('classPortalNotConfigured');
+  });
+
   it('turns what a resource is missing into a field error with a message', () => {
     expect(readinessFieldErrors({ code: 'LXL01', details: 'expectations' })).toEqual({
       'readiness.expectations': 'readiness.expectations',

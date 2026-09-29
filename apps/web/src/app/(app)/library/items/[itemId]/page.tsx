@@ -13,9 +13,13 @@ import { ItemHeader } from '@/components/library/item-header';
 import { isItemTab, type ItemTab } from '@/components/library/item-tabs';
 import { ItemViewer } from '@/components/library/item-viewer';
 import { SavedTextActions } from '@/components/library/saved-text-actions';
+import { ClassModeSlot } from '@/components/library/slots/class-mode-slot';
 import { LevelsAiSlot } from '@/components/library/slots/levels-ai-slot';
+import { LineageSlot } from '@/components/library/slots/lineage-slot';
 import { PdfSlot } from '@/components/library/slots/pdf-slot';
 import { PlanningSlot } from '@/components/library/slots/planning-slot';
+import { RatingSlot } from '@/components/library/slots/rating-slot';
+import { RemixSlot } from '@/components/library/slots/remix-slot';
 import { ResultsBannerSlot } from '@/components/library/slots/results-banner-slot';
 import { WorkflowSlot } from '@/components/library/slots/workflow-slot';
 import type { VersionChoice } from '@/components/library/version-picker';
@@ -160,7 +164,13 @@ export default async function LibraryItemPage({ params, searchParams }: Props) {
       student: printHref(item.id, 'student', [v.id]),
       teacher: printHref(item.id, 'teacher', [v.id]),
     };
-    versionActions[v.id] = <PdfSlot item={item} versionIds={[v.id]} />;
+    versionActions[v.id] = (
+      <>
+        <PdfSlot item={item} versionIds={[v.id]} />
+        {/* « Présenter à la classe » and quizzes on devices (Phase 5, D-082). */}
+        {library ? <ClassModeSlot item={item} versionId={v.id} /> : null}
+      </>
+    );
   }
 
   const date = (instant: string) =>
@@ -169,6 +179,8 @@ export default async function LibraryItemPage({ params, searchParams }: Props) {
   return (
     <div className="space-y-5">
       <ItemHeader item={item} back={back} editable={library && item.canEdit} />
+      {/* « Adaptée de « … » » for an adaptation (Phase 5, D-092). */}
+      {library ? <LineageSlot item={item} /> : null}
 
       {attachTarget ? (
         <div className="space-y-2 print:hidden">
@@ -204,7 +216,15 @@ export default async function LibraryItemPage({ params, searchParams }: Props) {
           printLinks={printLinks}
           versionActions={versionActions}
           belowPicker={library ? <LevelsAiSlot item={item} /> : null}
-          actions={library ? <PlanningSlot item={item} /> : null}
+          actions={
+            library ? (
+              <>
+                <PlanningSlot item={item} />
+                {/* « Adapter cette ressource » (Phase 5, D-092). */}
+                <RemixSlot item={item} />
+              </>
+            ) : null
+          }
         />
       ) : (
         // Every item has a base version; if none can be read, the details still can.
@@ -215,6 +235,9 @@ export default async function LibraryItemPage({ params, searchParams }: Props) {
           </div>
         </div>
       )}
+
+      {/* « Votre avis », opinions and usage (Phase 5, D-093). */}
+      {library ? <RatingSlot item={item} /> : null}
     </div>
   );
 }

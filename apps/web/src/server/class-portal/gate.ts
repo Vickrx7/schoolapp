@@ -1,5 +1,5 @@
 /**
- * Load shedding for the device API (Phase 5 plan, decision P-2). A class of 30 devices polls
+ * Load shedding for the device API (DECISIONS D-083). A class of 30 devices polls
  * about 20 times a second, and the portal pool has 5 connections, so each web server process:
  *
  * - lets at most 5 portal calls run at once and 50 wait for a turn, first come first served;

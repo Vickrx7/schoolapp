@@ -2,6 +2,7 @@ import { useFormatter, useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
 import { Badge } from '@/components/ui/card';
 import type { LibraryItemView } from '@/server/library/view-model';
+import { PackProvenanceSlot } from './slots/pack-provenance-slot';
 
 function Row({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -147,6 +148,8 @@ export function ItemDetails({ item }: { item: LibraryItemView }) {
             <li key={line}>{line}</li>
           ))}
         </ul>
+        {/* A content pack's declared publisher, import date and fingerprint (Phase 5, D-100). */}
+        <PackProvenanceSlot item={item} />
       </Row>
     </dl>
   );

@@ -116,9 +116,7 @@ describe('lineageView (W7)', () => {
     expect([...keys].sort()).toEqual([...LINEAGE_MESSAGE_KEYS].sort());
   });
 
-  // Runs once the integrator adds the proposed strings to messages/*.json.
-  const namespace = (fr as Record<string, unknown>)[LINEAGE_MESSAGES_NAMESPACE];
-  it.skipIf(namespace === undefined)('has every key in both catalogues', () => {
+  it('has every key in both catalogues', () => {
     for (const catalogue of [fr, en] as Record<string, Record<string, unknown>>[]) {
       const messages = catalogue[LINEAGE_MESSAGES_NAMESPACE] ?? {};
       for (const key of LINEAGE_MESSAGE_KEYS) {

@@ -85,13 +85,13 @@ Ardoise). No availability or trademark check has been done yet.
 | `958fd3f` | The ratings table in the Phase 4 security review                                         |
 | `e0ab7de` | Phase 5 head start: class-mode slides and the content pack format (pure code, tests)     |
 | `d37bbb6` | Phase 5 head start: class portal codes and gate, coverage and lineage views (pure)       |
-| (latest)  | Library expansion: 49 more demo resources (78) and the curriculum sample, « À vérifier » |
+| `219d5bb` | Library expansion: 49 more demo resources (78) and the curriculum sample, « À vérifier » |
+| (latest)  | Phase 5 foundation: D-082 to D-101, settings, messages, empty hooks, admin, worker tasks |
 
-**Verified (locally, from an empty database, and in CI on each pushed commit):** 792 unit tests
-(one more skipped until Phase 5's `libraryGrowth` messages exist), 904 pgTAP tests, 53
-integration tests, 71 Playwright tests (desktop and phone, axe on every Phase 3 and Phase 4
-page), lint, typecheck, format, generated DB types up to date, the demo curriculum and library
-seeds up to date (`pnpm library:seed:check`), web build.
+**Verified (locally, from an empty database, and in CI on each pushed commit):** 831 unit tests
+(none skipped), 904 pgTAP tests, 53 integration tests, 71 Playwright tests (desktop and phone,
+axe on every Phase 3 and Phase 4 page), lint, typecheck, format, generated DB types up to date,
+the demo curriculum and library seeds up to date (`pnpm library:seed:check`), web build.
 
 **Phase 3 is complete** (3a and 3b; see `docs/phase-3.md`): absence button, plans built in the
 request and kept current by the worker, review and editing, release at 07:30, codes, the
@@ -128,7 +128,14 @@ proxy and the portal role's password are deployment steps written in `docs/phase
 **Half-built:** Phase 5 (class mode and library growth) has its pure head start merged
 (`packages/content/src/class-mode.ts`, `pack-format.ts`; `apps/web/src/server/class-portal/*`,
 `server/class-mode/aggregate.ts`, `server/library/{coverage-view,lineage-view}.ts`, all with
-tests) and nothing else yet: no migration, screen or worker task. Phase 4 left its hooks (D-081).
+tests) and its foundation: decisions D-082 to D-101; the settings `CLASS_PORTAL_DATABASE_URL`,
+`CLASS_PORTAL_HMAC_KEY` and `BULK_MAX_RUN_USD`; the error messages and one anchor key per new
+message namespace; empty slots wired into the library pages (`components/library/slots/`); the
+admin CLI split into `apps/admin/src/commands/`, where the Phase 5 commands answer « pas encore
+disponible »; the worker tasks `class_mode_maintenance`, `library_bulk_tick` (also woken by the
+`library_bulk_kick` handler) and `library_maintenance`, scheduled but empty; a `tablet` Playwright
+project with no specs yet; and `findPersonalInfo` moved to `@lynx/ai/privacy`. No migration or
+screen yet. Phase 4 left its hooks (D-081).
 
 **Other deliverables:**
 

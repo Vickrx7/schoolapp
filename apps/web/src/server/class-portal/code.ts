@@ -1,5 +1,5 @@
 /**
- * Join codes and class links for « Quiz sur les appareils » (Phase 5 plan, decision P-3).
+ * Join codes and class links for « Quiz sur les appareils » (DECISIONS D-084).
  *
  * - A join code has 6 characters from a 22-character alphabet with no look-alikes (no 0/O/Q,
  *   1/I/L, 2/Z, 5/S, 6/G or 8/B), so a child copying it from the board cannot mix two letters

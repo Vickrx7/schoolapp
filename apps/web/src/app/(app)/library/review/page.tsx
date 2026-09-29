@@ -3,6 +3,10 @@ import { getFormatter, getLocale, getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Badge } from '@/components/ui/card';
+import {
+  boardDraftsQueue,
+  ReviewBoardDraftsSlot,
+} from '@/components/library/slots/review-board-drafts-slot';
 import { EmptyState, PageHeader } from '@/components/ui/page';
 import { cn } from '@/lib/utils';
 import { loadReviewQueues, type ReviewQueueRow } from '@/server/queries/library-authoring';
@@ -14,13 +18,15 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t('title') };
 }
 
-type Queue = 'content' | 'faith';
+type Queue = 'content' | 'faith' | 'drafts';
 
 /**
  * « Approbation des ressources » (DECISIONS D-064): for the board's designated reviewers, the
  * resources proposed to the board (« À approuver ») and, for faith reviewers, those whose faith
  * content waits for its review (« Contenu de foi »), oldest request first. Each row opens the
- * resource, where the « Décision » panel is. Not found for everyone else.
+ * resource, where the « Décision » panel is. Board drafts from bulk generation have their own
+ * tab, « Brouillons du conseil (IA) » (Phase 5, D-095; the board drafts slot). Not found for
+ * everyone else.
  */
 export default async function ReviewQueuePage({
   searchParams,
@@ -30,21 +36,31 @@ export default async function ReviewQueuePage({
   const session = await requireSession();
   if (!session.libraryReviewer.length) notFound();
   const locale = await getLocale();
-  const [t, tc, format, queues, options, query] = await Promise.all([
+  const [t, tb, tc, format, queues, drafts, options, query] = await Promise.all([
     getTranslations('libraryReview'),
+    getTranslations('libraryBulk'),
     getTranslations('libraryCommon'),
     getFormatter(),
     loadReviewQueues(session),
+    boardDraftsQueue(session),
     loadLibrarySearchOptions(session, locale),
     searchParams,
   ]);
   const available: Queue[] = [
     ...(queues.content ? (['content'] as const) : []),
     ...(queues.faith ? (['faith'] as const) : []),
+    ...(drafts ? (['drafts'] as const) : []),
   ];
   const wanted = Array.isArray(query.queue) ? query.queue[0] : query.queue;
   const queue: Queue = available.find((q) => q === wanted) ?? available[0] ?? 'content';
-  const rows: ReviewQueueRow[] = (queue === 'faith' ? queues.faith : queues.content) ?? [];
+  const rows: ReviewQueueRow[] =
+    (queue === 'faith' ? queues.faith : queue === 'content' ? queues.content : null) ?? [];
+  const queueLabel = (q: Queue) =>
+    q === 'drafts'
+      ? tb('tab', { count: drafts?.count ?? 0 })
+      : t(`queues.${q}`, {
+          count: (q === 'faith' ? queues.faith : queues.content)?.length ?? 0,
+        });
   const gradeLabel = (code: string) => options.grades.find((g) => g.code === code)?.label ?? code;
   const date = (instant: string) =>
     format.dateTime(new Date(instant), { day: 'numeric', month: 'short' });
@@ -79,9 +95,7 @@ export default async function ReviewQueuePage({
                       : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50',
                   )}
                 >
-                  {t(`queues.${q}`, {
-                    count: (q === 'faith' ? queues.faith : queues.content)?.length ?? 0,
-                  })}
+                  {queueLabel(q)}
                 </Link>
               </li>
             ))}
@@ -94,9 +108,11 @@ export default async function ReviewQueuePage({
           id="review-queue"
           className={available.length > 1 ? 'sr-only' : 'mb-3 text-base font-semibold'}
         >
-          {t(`queues.${queue}`, { count: rows.length })}
+          {queueLabel(queue)}
         </h2>
-        {rows.length === 0 ? (
+        {queue === 'drafts' ? (
+          <ReviewBoardDraftsSlot session={session} />
+        ) : rows.length === 0 ? (
           <EmptyState title={t(`empty.${queue}`)} />
         ) : (
           <ul className="space-y-3">

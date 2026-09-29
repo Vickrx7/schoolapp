@@ -107,6 +107,8 @@ substitute access hours, modules...) are stored in the database (DECISIONS.md, D
 | `SUB_PORTAL_DATABASE_URL`                               | web           | Direct connection as `lynx_sub_portal` for the substitute portal; empty turns it off (phase-3.md) |
 | `SUB_CODE_HMAC_KEYS`                                    | web           | `version:base64` keys (at most two) hashing substitute codes; empty turns codes off               |
 | `CLIENT_IP_HEADER`, `TRUSTED_PROXY_HOPS`                | web           | Client address for throttling; production needs an appending reverse proxy (docs/phase-3.md)      |
+| `CLASS_PORTAL_DATABASE_URL`                             | web           | Direct connection as `lynx_class_portal` for quizzes on class devices; empty turns them off       |
+| `CLASS_PORTAL_HMAC_KEY`                                 | web           | base64 key (32 bytes) for the class devices' throttle keys; empty turns device quizzes off        |
 | `DATABASE_URL`                                          | worker, tests | Direct Postgres connection (also for `pnpm test:int` and `pnpm db:types:direct`)                  |
 | `WORKER_CONCURRENCY`, `OUTBOX_BATCH_SIZE`, `LOG_EVENTS` | worker        | Job concurrency (4), outbox batch (100), log each event (`true`/`false`)                          |
 | `INTEGRATIONS_MODE`                                     | worker        | `mock` (the only mode in the MVP)                                                                 |
@@ -116,6 +118,7 @@ substitute access hours, modules...) are stored in the database (DECISIONS.md, D
 | `AI_JOB_RETENTION_DAYS`                                 | worker        | Days before AI requests are deleted (30)                                                          |
 | `AI_PRICE_INPUT_PER_MTOK`, `AI_PRICE_OUTPUT_PER_MTOK`   | worker        | Optional prices for a model the app does not know                                                 |
 | `AI_FAKE_DELAY_MS`                                      | worker        | Optional latency of the fake provider (800)                                                       |
+| `BULK_MAX_RUN_USD`                                      | worker, admin | The most one bulk generation run may cost at its worst case, in USD (100; at most 1000)           |
 
 ## Privacy in one paragraph
 

@@ -11,6 +11,7 @@ import { ResultCount, ResultList } from '@/components/library/result-list';
 import { SearchForm } from '@/components/library/search-form';
 import { PendingRegion, SearchNavigation } from '@/components/library/search-navigation';
 import { HubAiSlot } from '@/components/library/slots/hub-ai-slot';
+import { HubCoverageSlot } from '@/components/library/slots/hub-coverage-slot';
 import { HubCreateSlot } from '@/components/library/slots/hub-create-slot';
 import { ResultsBannerSlot } from '@/components/library/slots/results-banner-slot';
 import { Notice } from '@/components/ui/card';
@@ -109,6 +110,8 @@ async function Hub({ session, locale }: { session: SessionContext; locale: strin
           <ListTree className="size-5" aria-hidden />
           {t('browseCurriculum')}
         </Link>
+        {/* « Couverture du curriculum » (Phase 5, D-094). */}
+        <HubCoverageSlot session={session} />
       </section>
 
       <section aria-labelledby="library-categories" className="space-y-3">

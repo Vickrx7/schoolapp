@@ -936,6 +936,358 @@ import, images and math drawings, e-mail notifications, a board admin screen for
 tags, kindergarten content, keys in substitute plans and CSV import are not in Phase 4;
 `ai_generations.batch_id` stays unused.
 
+## Library growth and class mode (Phase 5)
+
+**D-082 — Class mode has two players: « Présenter », which needs no session, and « Quiz sur les
+appareils », which uses one; class mode never uses AI.** « Présenter à la classe »
+(`/projector/items/[id]?v=…&s=…`) is a full-screen projector page built from a version the teacher
+can read; it writes nothing. `presentSlides` (`@lynx/content`) builds the slides from the student
+content only: every presentation opens with a title slide and closes with an end slide; `quiz`,
+`exit_ticket` and `game` show one question per slide (a game shows « Déroulement » and « Pour
+gagner » first), `brain_break` and `experiment` one step per slide, and any other item marked
+projectable (a morning prayer, a song, a riddle) its student document in large type, one section per
+slide. Types that need safety notes (experiments and STEM challenges) start with a « Sécurité »
+slide made only of the reminders written for students, or a generic reminder, never the item's
+teacher-facing `safety_notes` (they can mention a child's allergy). A question's answer and
+explanation are fetched only when the teacher presses « Afficher la réponse ». « Quiz sur les
+appareils » plays `quiz`, and `game` with at least one valid question, in the five question kinds
+(multiple choice, true or false, matching, ordering, short answer). `unit_test` and `diagnostic` are
+individual and on paper; `exit_ticket` is presented but not played on devices (Assumption: its
+purpose is to see who needs help tomorrow, which anonymous play cannot show). No class-mode code
+imports `@lynx/ai`, and the portal role can execute no AI function (students never use AI, D-039).
+_Why:_ most classrooms will project without devices, and a presentation that holds nobody's data
+should leave nothing in the database; prayers, songs and riddles are projected every day. Deviation
+from SPEC §9.3 (« Class mode »): exit tickets are presented, not played on devices.
+
+**D-083 — Student devices reach the database only through a private schema run by a dedicated role
+(amends D-012; the pattern of D-049).** The functions live in schema `class_portal`, which PostgREST
+does not expose, and are executed by the role `lynx_class_portal`: the migration creates it
+`NOLOGIN` (the operator gives it `LOGIN` and a secret password; the seed sets a local-only one), it
+is never granted to `authenticator`, holds no table privilege and executes the five portal functions
+(`join`, `state`, `set_team`, `answer`, `leave`) and nothing in `public` or `app`. The web server
+connects with `CLASS_PORTAL_DATABASE_URL`: a `pg` pool of at most 5 connections with
+`statement_timeout` 3 s and a 2 s connection timeout set by the client, so they also hold under the
+CI fallback (`postgres` with `-c role=lynx_class_portal`), where role settings do not apply. Device
+calls are route handlers under `/jouer/api/*` (not server actions), easy to scan, load-test and
+protect. Each web process lets 5 calls run and 50 wait for the pool, and answers any further call
+`503` with `Retry-After: 2`; an unknown device token is remembered as gone for 60 s (an LRU of
+10,000 hashes), so a flood of random tokens never reaches the database. The role is kept apart from
+`lynx_sub_portal` on purpose: that one reads alerts, and student devices must never share its path.
+`anon` still executes nothing and `authenticated` cannot call the portal. Every call re-checks the
+device token, the session's status and expiry, and closes an expired session itself; joining also
+checks the school's Library module. Throttle keys are HMACs with their own key,
+`CLASS_PORTAL_HMAC_KEY` (32 bytes, base64), so an install with the Library module but without the
+substitute portal works. Without the URL or the key, quizzes on devices are off and « Présenter »
+still works. _Why:_ functions executable by `anon` could be called by anyone holding the public key;
+minting JWTs would put the JWT secret in the web server; the service role bypasses row level
+security. One more role, password and pool: on hosted Supabase the pooler user is
+`lynx_class_portal.<project-ref>`.
+
+**D-084 — Joining: the class link first, a short code as a fallback, joining open only in the lobby
+(Assumption on the numbers).** « Lien de la classe »: each class gets a random 32-byte token (43
+base64url characters), created on first use and replaceable by the class team (« Remplacer le
+lien », audited). It is stored in plain text in `class_mode_links`, a table no API role can read,
+and the class team gets it through `public.class_mode_link()`, because the teacher must be able to
+show it again. On its own it grants nothing: it lets a device into that class's lobby while joining
+is open. The projector's QR code shows the same link; a device that opened it once and bookmarked it
+joins by itself (`/jouer#k=…`: a fragment never reaches the server's logs). The code has 6
+characters from a 22-character alphabet without look-alikes, `ACDEFHJKMNPRTUVWXY3479` (no 0/O/Q,
+1/I/L, 2/Z, 5/S, 6/G or 8/B); it is unique among open sessions, shown in two groups (« K7M 4R9 »),
+accepted with spaces, hyphens or in lowercase, and stored in clear in `class_sessions.join_code`;
+any other character is refused by the web server without a database call. Joining is open only in
+the lobby: it closes at « Commencer » or 20 minutes after the lobby opens, « Rouvrir les
+inscriptions » reopens it for 20 minutes, and a session takes at most 60 devices. Joining returns a
+random 32-byte device token, stored as its SHA-256 (`session_participants.token_hash`) and sent in
+an HttpOnly cookie (`__Secure-lynx_jouer` over https, else `lynx_jouer`; `SameSite=Lax`,
+`Path=/jouer`, the session's expiry). A second cookie, `lynx_jouer_device` (random, 30 days),
+identifies the device for throttling, and the device API refuses a POST whose `Origin` is not
+`APP_BASE_URL`. Throttling follows D-051: only failures are stored (`class_join_failures`, as HMAC
+keys, never a raw address; IPv6 grouped by /64). Per device, after 10 failures in 15 minutes, wait
+15 s × 2ⁿ (at most 5 minutes); per network, for typed codes only, after 100 failures in 15 minutes,
+wait 2 s × 2ⁿ, at most 10 s (a board often sends every school through a few addresses, so the
+network bucket can be the whole board, and one child with private windows must never stall it).
+Nothing is recorded while waiting; an unknown class link counts against the device only; a valid
+link with no lobby open answers « waiting », which is not a failure. A guessed code shows only the
+quiz, and the teacher sees every device and can remove it (« Retirer »). Since the quiz can be the
+teacher's own private draft, starting a session checks its device-visible text for the class's first
+names (`findPersonalInfo`) and warns (« Lancer quand même »). Deviation from SPEC §6 and §9.3 (« a
+team name or nickname »): devices get generated numbers and fixed team names (D-088). _Why:_ 22⁶ ≈
+1.1·10⁸ codes open a few minutes at a time: about 760 guesses an hour per network give about
+1.4·10⁻⁴ chance per hour of reaching one of 20 open lobbies, for an extra device the teacher sees;
+class devices use the unguessable link.
+
+**D-085 — Live updates by short polling, not Server-Sent Events or Realtime.** Devices call `GET
+/jouer/api/state?v=<stateVersion>` every 1.5 s ± 250 ms while the page is visible, and back off to 5
+s after errors; the answer is `{"status":"unchanged"}` unless the phase changed. `last_seen_at` is
+touched at most every 10 s, and « connecté » means seen within 20 s. The projector polls `GET
+/projector/sessions/[id]/state` every second. The transport is isolated in `useClassState` and
+`useProjectorState`, so it can move to Server-Sent Events without SQL changes. _Why:_ Realtime is
+not in CI and needs `anon` (D-012); school filtering proxies often buffer or cut long-lived streams;
+polling is stateless and easy to test; scoring ignores speed (D-087), so 1–2 s of latency is fair to
+everyone. About 20 small requests a second per class.
+
+**D-086 — Answer keys never reach devices; a device sees only its own result, only after the
+question closes, and only when answers are shown (Assumption on the device feedback).** At start,
+SQL builds `class_sessions.questions` from the version's content with a whitelist (`id`, `kind`,
+`prompt`, `hint`, `multipleAnswers`, `choices`/`left`/`right`/`items` as `{id, text}`, and
+`scorable`); it never reads `library_item_answer_keys` for that. The key entries (short answers
+normalized) are copied into `class_session_keys`, which no API role and not the portal role can
+read, and an answer is graded in SQL when it arrives. With « Montrer la bonne réponse après chaque
+question » on (the default), a device learns only `{correct, points}` for its own answer, after
+« Afficher la réponse »; with it off, nothing until the end, and the ranking only after the last
+question. A device never shows the correct answer or the explanation. The projector (the teacher's
+signed-in session) gets the current question's answer only in the reveal phase and only when answers
+are shown; the full « corrigé » is never shown in class views. « Présenter » builds its slides on
+the server and sends the player only the slides, never the item or its teacher-only fields, and
+fetches one question's answer when asked. Five guards: pgTAP records every portal output over whole
+sessions with sentinels planted in every key field; the portal role cannot select any table; ESLint
+forbids portal code from importing library queries, Supabase clients and `@lynx/ai`; the web
+server's Zod parsers strip unknown keys; Playwright scans every `/jouer/api/*` body for sentinels
+and key names, and the HTML and RSC payloads for the sentinel values. _Why:_ SPEC §9.3 and §11
+(« answer keys never reaching student devices »).
+
+**D-087 — Scoring: accuracy only; a team's score is the sum of its per-question averages
+(Assumption).** A question is worth 100 points. Matching earns round(100 × correct pairs ÷ pairs);
+everything else is all or nothing. Short answers are not scored by default (young, ALF and PANA
+students would lose on spelling); with « Noter les réponses courtes (orthographe exacte) », a short
+answer counts only when its normalized form equals a normalized accepted answer
+(`app.normalize_answer` in SQL: case, accents, quotes and apostrophes, spaces in numbers, the
+decimal comma; pinned by pgTAP vectors; class mode does not use Phase 4's TypeScript
+`normalizeAnswer`). There is no speed bonus, and no timer by default (20, 30 or 60 s on request). A
+team's score is the sum, over the scored questions played, of the team's average score among its
+members who answered; a question nobody on the team answered counts 0, so team size, late joiners
+and silent devices do not change it. A device that leaves keeps its answers until the session ends;
+a device the teacher removes loses them. Empty teams show « — » and rank last; ties share a rank. In
+« Chacun pour soi » the projector shows class figures only (« 74 % de bonnes réponses »), never
+device numbers, and each device sees only its own total. _Why:_ fair to classes of mixed language
+levels, and nobody is ranked in public.
+
+**D-088 — Nothing a student types is stored (Assumption).** There are no free nicknames: devices are
+numbered (« Tu es l'appareil 7 »), and teams come from a fixed list (« Les Huards », « Les
+Castors », « Les Orignaux », « Les Ours », « Les Loups », « Les Renards »; keys `huards` to
+`renards`, the same in `CLASS_TEAMS`, in SQL and in the messages). A short answer is graded in the
+transaction that receives it and stored as `{}`: only its score and correctness are kept. Devices
+keep typed text in component state only (nothing in `localStorage`), and inputs turn off
+autocomplete, autocorrect, automatic capitals and spell check (Chrome's enhanced spell check sends
+text to Google). _Why:_ Mike's privacy rule; there is nothing to moderate, and nothing to delete but
+counts. Deviation from SPEC §6 and §9.3 (nicknames).
+
+**D-089 — Responses are deleted when a session ends; only the class aggregates the teacher chooses
+to keep survive (implements SPEC §6; amends D-018; Assumption on the interpretation).** Ending a
+session (`end_class_session`), or its expiry 2 hours after the start, deletes in one transaction
+every answer and device of the session, its keys and its question snapshot. If « Garder les
+résultats de la classe (sans noms) » was ticked (it is off by default),
+`class_session_results.aggregate` is written first: counts per question and choice, team scores and
+totals, never device numbers, participant ids or anything typed. An expired session is closed by the
+worker's sweep every 5 minutes (`class_mode_maintenance`) and by every portal call,
+`class_session_live`, `class_mode_overview` and `start_class_session`, so an install whose worker is
+down still deletes at the next class-mode call for that class. Each end is audited
+(`class_session.ended`, counts only). Kept results last `classModeResultsRetentionDays` (a board
+setting, default 365 days); closed sessions without results are deleted after 30 days and join
+failures after a day. Deleted rows survive in database backups and point-in-time recovery for the
+backup window, which `docs/phase-5.md` (and PRIVACY.md in Phase 6) says.
+
+**D-090 — Who runs class mode, one version per session, French student screens (Assumption).** Class
+mode is part of the Library module; the class tab « Mode classe » also needs Teaching, as every
+class page does (pilot schools have both). Only the class team with a teacher role starts, controls,
+ends or reads sessions and results (`app.my_class_ids()`, D-036); principals and office staff get
+nothing new and never see a teacher's sessions or results (D-013). A session plays one version (the
+base one by default; the others sit under « Autre version », so level names are not on screen by
+default), so every team answers the same questions, and the projector never shows a level name.
+Student screens are in French whatever the device's language cookie: the proxy marks `/jouer`
+requests, and `i18n/request.ts` then serves `fr-CA` with only the `classPortal` messages, so no
+staff catalogue reaches a device. Content follows its subject: Anglais (`ang`) is `en-CA`,
+everything else `fr-CA`. For a noisy classroom and a washed-out projector: targets of at least 64 px
+on devices, text of at least 22 px on devices and 40 px on the projector, colour always paired with
+a shape and a letter (team colours `--color-team-blue`, `-orange`, `-green`, `-purple`, `-slate` and
+`-red`), no sounds, and `prefers-reduced-motion` respected. The projector needs 768 px of width in
+landscape; below, it says « Ouvrez cette page sur l'ordinateur branché au projecteur. »
+
+**D-091 — Board items: `board_owned` replaces « board_created with no author » (amends D-065).**
+`library_items.board_owned` is set at creation for the seed's board items, bulk drafts and pack
+imports, and a check forces `author_id` to be null. The board's content reviewers read, edit and
+keep board items at any status, and may delete board drafts (draft, sent back or archived).
+Approving a board-owned item makes it board-shared (`share_scope = 'board'`); before that it is
+private. An item whose author was deleted does not become board-owned and stays unreadable, so
+nobody reads a teacher's private drafts (D-065). `app.am_library_reviewer(board, kind)` (the current
+user) is added for policies; `app.library_reviewer(p_user, …)` stays service-role only.
+
+**D-092 — « Adapter » (remix): a private copy with lineage, credit and a sharing cap (uses the D-081
+hook; amends D-063).** `public.remix_library_item` copies any item the user can use (their own, or
+reviewed and shared with them, or approved) that is not archived (`LXM01`) and whose licence allows
+derivatives (`no_derivatives`, else `LXM02`: « Cette ressource ne peut pas être adaptée
+(licence). »). The copy is a private `teacher_created` draft of the user, with `parent_item_id` and
+`parent_title` (the original's title at copy time); its id is chosen by the client once per dialog,
+so a retry returns the same copy. Copied: grades, attentes, tags, keywords, materials, duration,
+formats, safety notes, the faith fields (faith review still applies) and the licence, and each
+version for the base, a board level or the user's own personal level, with its key. Not copied:
+`sub_friendly` (reset), AI provenance, the pack link, who flagged faith content, opinions and usage.
+Sharing cap: an adaptation of an item shared with one school may be shared at most with that school
+(`LXM03`, from a trigger on every write path); a copy of a board-shared or approved item, or of
+one's own item, has no cap, and a copy of a capped item keeps the cap. Credit, read live from
+`public.library_item_lineage` and never stored in the copy (the direct parent only): « Adaptée de
+« … » », then « par Mme Tremblay (É.É.C. Saint-Exemple) » when the viewer can use the original (the
+school only for a school-scoped original), « (Conseil scolaire) » for board items, « (ensemble
+« … ») » for pack items (Phase 4's word for content packs on the item page), or « (ressource
+d'origine non disponible) ». The first-name guard (D-066) also reads `parent_title`. Approved items
+stay read-only: to change one, even her own, a teacher adapts it. Audited as `library_item.remixed
+{parent_item_id}`.
+
+**D-093 — Opinions (« Votre avis »): anonymous stars on board-approved items, an average from 5
+opinions, rounded to the half star (Assumption; deviation from SPEC §9.3).** A staff member who can
+use a `board_approved` item and did not write it gives it 1 to 5 stars, with no text, through
+`public.rate_library_item` only (`LXR01` on one's own item, `LXR02` on an item that is not
+board-approved); board-owned items have no author, so anyone may rate them, principals included
+(question 6). Teachers' school-shared items are not rated, to avoid peer judgement: SPEC §9.3 says
+« anonymous ratings » without that limit. A rating is readable only by its rater and is never
+audited; nobody, reviewers and direction included, sees who rated. Cards and the item page show « ★
+4,5 sur 5 (7 avis) » from 5 opinions, and below that « 3 avis : pas encore assez pour une moyenne ».
+Usage is Phase 4's `usage_count` (« Utilisée dans 12 unités », D-076); class-mode plays are not
+counted. The label is « Votre avis », because « appréciation » evokes « appréciation du rendement »
+in Ontario schools.
+
+**D-094 — Coverage counts board-approved items linked directly.** « Couverture du curriculum »
+(`/library/coverage`, and `pnpm admin coverage` from the same database function) lists, for a grade
+and subject, each attente with the number of the board's approved items linked to it; for an overall
+attente, the items linked to it or to one of its specific attentes, each counted once. This differs
+from browsing (D-069), which also matches the parent attente, so one overall-level item would look
+like coverage of every specific attente; the page says so (« Comment on compte »). Items that are
+only shared are not counted, so no other school's school-scoped item is revealed. « Aucune » is 0
+approved; « Peu » is fewer than the threshold (default 2; 1 to 5). The board's content reviewers
+also see « en révision » (requested items and non-archived board drafts). Everyone with the Library
+module sees the page; the operator gets the same data from the CLI (the service role may call the
+function).
+
+**D-095 — Bulk generation is an operator tool that writes board drafts through the Message Batches
+API (Assumption on who runs it).** Only the operator launches it (`pnpm admin bulk-plan`,
+`bulk-start`, `bulk-status`, `bulk-cancel`, `bulk-report`), for one board at a time and with at most
+one active (planned or running) run per board. Board admins get no screen: they hold no library
+role, and bulk spending is outside school budgets. Content reviewers see the drafts grouped by run
+in « Brouillons du conseil (IA) », with « Approuver pour le conseil » in one step. It uses the same
+feature `library_item`, prompt version, input schema, `normalize`, `validate` and `max_tokens`
+(64,000, D-045) as on-demand generation (D-072), with inputs built in SQL from ids; there is no
+teacher note: the note holds the operator's (at most 1,000 characters) and the titles of existing
+board-visible items for that attente and type (« Ressources existantes à ne pas reprendre : … »).
+Durations are the type's default; `subFriendly` comes from `--sub-friendly`. Refused:
+`catholic_reflection` and the Enseignement religieux subject (faith content is generated one item at
+a time), and a board that does not allow AI (`LXA01`, checked at planning, at start and before
+submission). The results are board-owned drafts (`ai_generated`, `bulk_run_id`, provenance from
+`ai_generations`) that reviewers review. Costs go to `ai_generations` with the batch id and the
+board, `school_id` and `user_id` null; `pnpm admin ai-usage` shows them as « Génération en lot
+(conseil) ». Each batch is deleted at the provider as soon as its results are read. Implements SPEC
+§9.3 (« Bulk ») and §10.
+
+**D-096 — A hard cost cap per run: one batch, sized to its worst case.** Each run has a required
+`max_cost_usd` (at most 1,000, checked in SQL); the worker refuses a run above `BULK_MAX_RUN_USD`
+(default 100) before submitting it (`overLimit`), and the CLI checks the same setting. The worst
+case of a request is input tokens × the higher of the input and cache-write prices × 0.5, plus
+`max_tokens` × the output price × 0.5. Input tokens come from `messages.countTokens` with the same
+system, message and output format (free; plus 2 % and 50 tokens), or, if counting fails, from the
+UTF-8 bytes of the system, the message and the JSON schema plus 2,000 (a token covers at least a
+byte). `max_tokens` bounds the output, thinking included, so a run can never cost more than its
+worst case as long as the price table is right. The worker takes requests in order while the running
+sum of worst cases stays within the cap, and the rest become `skipped/cost_cap`. One batch per run
+and no retries: running `bulk-plan` again plans only what is still missing. Real cost is about a
+fifth of the worst case, so the CLI prints both (« pire cas » and « habituel »). _Why:_ SPEC §10 and
+§9.3 (per-run caps): a cap guaranteed by `max_tokens` and the price table, not an estimate, without
+a reservation engine. With Opus 5.5 batch prices a request's worst case is about $0.66, so a $25 cap
+sends about 37 requests.
+
+**D-097 — Deduplication before and after generation.** At planning, an (attente, type) pair is
+`skipped/covered` when the board already has at least `--per-expectation` items (default 1, at
+most 3) of that type linked directly to that attente: board-approved items, board-shared reviewed
+items and non-archived board drafts count; school-shared items do not. There is one active run per
+board, so two runs never claim the same pair. The prompt receives the titles of the existing
+board-visible items for that attente and type. After generation, a normalized title equal to that
+of a non-archived board-visible item of the same type keeps the draft (it was paid for) and flags
+it for the reviewer (« Titre semblable à une ressource existante »). Running the same `bulk-plan`
+later retries only what is still missing, because created drafts count as covered.
+
+**D-098 — The provider's batch extension shares the privacy checks (amends D-037 and D-041).**
+`AiProvider` gains an optional `batch` (`countInputTokens`, `submit`, `status`, `results`, `cancel`,
+`remove`): the Anthropic implementation uses `messages.batches.*` and `messages.countTokens`, and
+the fake answers with each item's `fake()` and ends at once. `runFeature` is split into
+`prepareCall` (validate, redact, block, `assertSafeOutbound`, choose the schema and `max_tokens`)
+and `checkOutput` (normalize, validate, restore); the streamed and batch paths both use them, and a
+test pins that they refuse the same inputs. Bulk inputs are redacted with everyone of the board
+(`loadBoardPeople`: every student of its schools and every staff member with a role at the board or
+its schools). So a fixed first name in a system prompt would eventually refuse every request of
+every board: character names are chosen per request, less anyone the request knows (D-072), and a
+test runs every `prompts/**/*.md` through the last check with the demo people. When results arrive,
+the worker prepares each call again and compares the SHA-256 of what it would send with the stored
+one; a mismatch (the people changed) fails that request (`redaction_changed`), so names are never
+put back against different markers. Costs use the batch price (half). `ai_jobs_feature_check` and
+`request_ai_job` are unchanged: bulk requests live in `library_bulk_requests`, not `ai_jobs`, so
+school budgets and per-person limits do not apply (D-096 does). `library_bulk_requests.sent_text`
+keeps exactly what was sent for 30 days, then only its SHA-256.
+
+**D-099 — Content pack format v1 and export scope (Assumption on the scope; uses the D-081 hook).**
+One UTF-8 JSON file (`@lynx/content` `pack-format.ts`): `{format: 'lynx-content-pack',
+formatVersion: 1, pack: {slug, version, title, publisher, licence, noDerivatives, createdAt,
+contentSchemaVersion: 1}, levels, tags, catholicReferences, items, checksum}`. Items point to the
+subject code, grade codes, attentes as (curriculum version, grade, code), level codes, tag slugs
+(the tags are listed once at the top) and Catholic references as (type, title); each has a stable
+`key`, a `hash` (SHA-256 of its canonical JSON) and `provenance {source, promptVersion, model}`, and
+its text fields are strings (empty rather than null). The version is `YYYY.N` with no leading zero
+(`2026.10` comes after `2026.9`); the checksum is the SHA-256 of the sorted « key hash » lines, so
+item order does not matter. A pack holds no user ids, names or school data. Exported by default:
+board-approved, board-owned items that did not come from another publisher's pack;
+`--include-pack-items` adds other packs' items (a licensing choice), and `--include-teacher-items`
+adds approved items written by teachers, credited to the board only, with the licensing warning
+(question 5). Versions for personal levels are never exported. Every string goes through the
+first-name check (`findPersonalInfo`) with the board's students and staff: items with a hit are left
+out and reported by key and word, and `--allow-names` lists words the operator confirms are not
+people (Marie, Joseph, Pierre…). Pack files contain answer keys, so they are confidential and never
+hosted publicly (`docs/content-packs.md`). Export and import are CLI-only: board-hosted installs
+have no Storage or upload screen yet, so the board's IT receives the file (download, USB key or
+e-mail) and runs the CLI. Implements SPEC §9.3 (« On-prem »).
+
+**D-100 — Import is staged, previewed and applied in one transaction; it lands private in the
+board's approval queue, and local edits win (Assumption).** The CLI stages the file in chunks of 50
+items, then previews it (a real dry run, the default) or applies it with `--apply` in one
+transaction; a staged import can be discarded and is deleted after a day. New items are board-owned,
+`teacher_reviewed` (the provenance says the publisher reviewed them) and private with approval
+requested, so only reviewers see them until they are approved; `sub_friendly` is forced off; faith
+content is the pack's flag, or a faith word (`suggestsFaithContent`), or the Enseignement religieux
+subject, or a « Réflexion catholique »; at most 30 new board tags are created per import (the rest
+are dropped with a warning). Levels map by code, with `--level-map` for different codes (the
+versions of an unmapped level are skipped with a warning); attentes need their exact curriculum
+version; a Catholic reference matches (type, title) among the board's rows, then the global ones,
+and none or several gives no link and a warning. `--approve --approver <email>` approves through the
+same path as `library_decide` (the approver recorded, `library_item.approved` emitted, audited with
+`{via: 'content_pack'}` and actor `service`), only when the approver is one of the board's content
+reviewers (`LXP04`), and only ready items, never faith items, experiments, STEM challenges or
+outdoor activities. Later versions: the same hash is `unchanged`; an item edited locally since its
+import (`content_revision ≠ pack_revision`) is `skipped_modified_locally`; an untouched item not yet
+approved is updated in place and stays in the queue; an untouched approved item is
+`changed_not_applied` (reported, never replaced in v1); items missing from the new version are
+reported as `not_in_pack`. Importing a version already applied gives `LXP01`, a lower one `LXP02`.
+The item shows « Éditeur déclaré : IP Lynx · importé le … · empreinte 3fa4c1d2e9b0 » (the first 12
+characters of the file's SHA-256). _Why:_ a checksum is not a signature and the publisher is
+self-declared, so nothing imported reaches teachers until a named reviewer approves it; signed packs
+come later.
+
+**D-101 — Events, audit and retention for Phase 5 (amends D-018 and D-079).** Events carry ids only:
+`library_bulk_run.started {runId}` and `library_bulk_run.cancel_requested {runId}` (the worker's
+`library_bulk_kick` handler runs the bulk tick at once), `library_bulk_run.completed {runId}`,
+`content_pack.imported {packId}`, and `library_item.approved` through Phase 4's path. Class mode
+emits none (30 devices would flood the outbox for no subscriber). Audit: `class_session.ended
+{responses_deleted, participants_deleted, results_kept}`, `class_mode_link.replaced {class_id}`,
+`library_item.remixed {parent_item_id}`, `library_item.generated {bulk_run_id}`,
+`library_item.approved {…, via}`, `library_bulk_run.started {max_cost_usd, request_count}`,
+`library_bulk_run.cancelled`, `library_bulk_run.completed {created, similar, skipped, failed,
+spent_usd}`, `content_pack.exported {slug, version, item_count}` and `content_pack.imported {slug,
+version, created, updated, unchanged, skipped}`; ratings are never audited. `class_session.ended`
+rows show how often each teacher uses class mode, so the Phase 6 audit viewer must not give the
+direction a per-teacher view of them (D-013). Worker tasks: `class_mode_maintenance` and
+`library_bulk_tick` every 5 minutes, `library_maintenance` daily. Retention: class-mode answers and
+devices until the session ends (at most 2 hours, plus 5 minutes if nobody calls); join failures a
+day; closed sessions without results 30 days; kept aggregates `classModeResultsRetentionDays` (365
+by default); bulk runs and requests a year (they hold no personal data), runs planned but never
+started a day, `sent_text` 30 days (its SHA-256 stays); provider batches deleted once read
+(otherwise at most 29 days at the provider); staged pack imports a day; opinions until the rater or
+the item is deleted.
+
 ## Schema additions beyond SPEC section 8
 
 `school_years`, `rooms`, `class_grades`, `school_cycle_anchors`, `unit_lesson_expectations`,

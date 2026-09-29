@@ -44,9 +44,28 @@ export const webServerEnvSchema = z.object({
    * many places from the right. 0 ignores the header (every request shares one bucket).
    */
   TRUSTED_PROXY_HOPS: z.coerce.number().int().min(0).max(5).default(1),
+  /**
+   * Direct Postgres connection for class devices (« Quiz sur les appareils »), as the database
+   * role lynx_class_portal (DECISIONS D-083), kept apart from the substitute portal's. Server-only.
+   * Unset: quizzes on devices are off, and « Présenter à la classe » still works.
+   */
+  CLASS_PORTAL_DATABASE_URL: z.string().min(1).optional(),
+  /**
+   * Key for the device and network keys that throttle joining (32 random bytes, base64;
+   * D-083, D-084). Its own key, so an install with the Library module but without the
+   * substitute portal still works. Empty: quizzes on devices are off.
+   */
+  CLASS_PORTAL_HMAC_KEY: z.string().default(''),
 });
 
 export type WebServerEnv = z.infer<typeof webServerEnvSchema>;
+
+/**
+ * The most one bulk generation run may cost, in US dollars of provider cost at its worst case
+ * (DECISIONS D-096): the worker refuses to submit a run whose cap is higher, and
+ * `pnpm admin bulk-plan` checks the same value. At most 1,000, the database's own limit.
+ */
+const bulkMaxRunUsd = z.coerce.number().positive().max(1000).default(100);
 
 /** Settings the background worker needs. */
 export const workerEnvSchema = z
@@ -73,6 +92,7 @@ export const workerEnvSchema = z
     AI_JOB_RETENTION_DAYS: z.coerce.number().int().min(1).max(365).default(30),
     /** Simulated latency of the fake provider, in milliseconds. */
     AI_FAKE_DELAY_MS: z.coerce.number().int().min(0).max(60_000).default(800),
+    BULK_MAX_RUN_USD: bulkMaxRunUsd,
   })
   .refine((env) => env.AI_PROVIDER !== 'anthropic' || env.ANTHROPIC_API_KEY, {
     message: 'ANTHROPIC_API_KEY is required when AI_PROVIDER=anthropic',
@@ -80,6 +100,15 @@ export const workerEnvSchema = z
   });
 
 export type WorkerEnv = z.infer<typeof workerEnvSchema>;
+
+/** Settings the admin CLI needs (`pnpm admin`, run only from a trusted machine). */
+export const adminEnvSchema = z.object({
+  NEXT_PUBLIC_SUPABASE_URL: z.url(),
+  SUPABASE_SERVICE_ROLE_KEY: z.string().min(20),
+  BULK_MAX_RUN_USD: bulkMaxRunUsd,
+});
+
+export type AdminEnv = z.infer<typeof adminEnvSchema>;
 
 export class EnvError extends Error {}
 

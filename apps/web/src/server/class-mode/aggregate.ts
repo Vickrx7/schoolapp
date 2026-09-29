@@ -1,5 +1,5 @@
 /**
- * Kept class results (« Résultats gardés », Phase 5 plan, decision P-8). When the teacher ticks
+ * Kept class results (« Résultats gardés », DECISIONS D-089). When the teacher ticks
  * « Garder les résultats de la classe (sans noms) », `app.class_session_aggregate` writes
  * `class_session_results.aggregate` before the session's answers are deleted. It holds counts
  * per question and choice, team scores and totals: never device numbers, participant ids or

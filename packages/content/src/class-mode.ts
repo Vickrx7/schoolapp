@@ -1,7 +1,7 @@
 /**
- * Class mode (« Mode classe », Phase 5 plan P-1, P-5, P-7 and P-9): what can be presented on the
- * projector or played on student devices, the projector's slides, the fixed teams and the
- * language of the content.
+ * Class mode (« Mode classe », DECISIONS D-082, D-086, D-088 and D-090): what can be presented
+ * on the projector or played on student devices, the projector's slides, the fixed teams and
+ * the language of the content.
  *
  * Slides are built from `studentContent` only, and questions are copied through a whitelist (the
  * fields the device snapshot also keeps), so no answer key, teacher-only field or safety note
@@ -38,7 +38,7 @@ export const PRESENT_KIND: Partial<Record<LibraryItemType, PresentKind>> = {
 };
 
 /**
- * The types « Quiz sur les appareils » can play (P-1): unit tests and diagnostics are individual
+ * The types « Quiz sur les appareils » can play (D-082): unit tests and diagnostics are individual
  * and on paper, and an exit ticket must show who needs help, which anonymous play cannot.
  */
 export const DEVICE_QUIZ_TYPES = ['quiz', 'game'] as const satisfies readonly LibraryItemType[];
@@ -65,7 +65,7 @@ export function canPlayOnDevices(type: LibraryItemType, content: unknown): boole
 // Slides
 // ---------------------------------------------------------------------------------------
 
-/** A question as the projector shows it: the whitelist of the device snapshot (P-5). */
+/** A question as the projector shows it: the whitelist of the device snapshot (D-086). */
 export interface SlideQuestion {
   /** For « Afficher la réponse », which fetches this question's answer only. */
   id: string;
@@ -276,7 +276,7 @@ export const TEAM_SHAPES = ['circle', 'triangle', 'square', 'diamond', 'star', '
 export type TeamShape = (typeof TEAM_SHAPES)[number];
 
 /**
- * The fixed team names (P-7): `session_participants.team` and `classMode.teams.<key>`
+ * The fixed team names (D-088): `session_participants.team` and `classMode.teams.<key>`
  * (« Les Huards »…). Same order as `app.class_team_keys`, which uses the first `team_count`.
  */
 export const CLASS_TEAM_KEYS = [
@@ -291,7 +291,7 @@ export type ClassTeamKey = (typeof CLASS_TEAM_KEYS)[number];
 
 export interface ClassTeam {
   key: ClassTeamKey;
-  /** The web app's colour token (`--color-<token>`); always shown with the shape (P-9). */
+  /** The web app's colour token (`--color-<token>`); always shown with the shape (D-090). */
   colorToken: string;
   shape: TeamShape;
 }
@@ -305,7 +305,7 @@ export const CLASS_TEAMS: readonly ClassTeam[] = [
   { key: 'renards', colorToken: 'team-red', shape: 'hexagon' },
 ];
 
-/** The language of a subject's content (P-9): Anglais is `en-CA`, everything else `fr-CA`. */
+/** The language of a subject's content (D-090): Anglais is `en-CA`, everything else `fr-CA`. */
 export function contentLang(subjectCode: string | null | undefined): DocLang {
   return subjectCode === 'ang' ? 'en-CA' : 'fr-CA';
 }

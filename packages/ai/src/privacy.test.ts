@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   findBlockedDetails,
+  findPersonalInfo,
   PrivacyViolation,
   redactStrings,
   Redactor,
@@ -520,5 +521,69 @@ describe('redactStrings', () => {
     // Checking left no replacement behind: the next text starts at « Élève A ».
     expect(r.replacements()).toEqual([]);
     expect(r.redact('Aïcha').text).toBe('Élève A');
+  });
+});
+
+// Moved here from apps/web's share guard (Phase 5, test A7): the same check also guards class
+// devices and content pack exports, and behaves exactly as before.
+describe('findPersonalInfo', () => {
+  const people: KnownPerson[] = [
+    { name: 'Samuel', kind: 'student' },
+    { name: 'Aïcha', kind: 'student' },
+    { name: 'Rose', kind: 'student' },
+    { name: 'Isabelle Tremblay', kind: 'staff' },
+    { name: 'Marc Gagnon', kind: 'staff' },
+  ];
+
+  it('finds students’ names in any string, spelled as the roster spells them, once each', () => {
+    expect(
+      findPersonalInfo(['Quiz : les nombres', 'Samuel compte jusqu’à 1 000.'], people),
+    ).toEqual({ studentNames: ['Samuel'], blocked: [] });
+    // The roster spelling comes back, whatever the accents typed.
+    expect(findPersonalInfo(['Demandez à aicha de lire la réponse.'], people)).toEqual({
+      studentNames: ['Aïcha'],
+      blocked: [],
+    });
+    expect(findPersonalInfo(['Pour Samuel et Aïcha.', 'Samuel lit, puis Aïcha.'], people)).toEqual({
+      studentNames: ['Samuel', 'Aïcha'],
+      blocked: [],
+    });
+  });
+
+  it('counts a name that is an everyday word only when it is capitalized', () => {
+    expect(findPersonalInfo(['Dessinez une rose rouge.'], people).studentNames).toEqual([]);
+    expect(findPersonalInfo(['Rose dessine une fleur.'], people).studentNames).toEqual(['Rose']);
+  });
+
+  it('allows staff names', () => {
+    expect(
+      findPersonalInfo(['Préparée par Mme Tremblay avec Marc Gagnon.', 'Isabelle lit.'], people),
+    ).toEqual({ studentNames: [], blocked: [] });
+  });
+
+  it('reports each kind of personal detail once', () => {
+    const found = findPersonalInfo(
+      ['Écrivez à parent.samuel@example.com', 'Appelez le 613-555-0142.', 'Ou le 613-555-0199.'],
+      people,
+    );
+    expect(found.blocked.sort()).toEqual(['email', 'phone']);
+  });
+
+  it('finds names that are also a saint’s or a historical figure’s, for the teacher to confirm', () => {
+    expect(
+      findPersonalInfo(
+        ['Samuel de Champlain et saint Thomas.'],
+        [...people, { name: 'Thomas', kind: 'student' }],
+      ).studentNames,
+    ).toEqual(['Samuel', 'Thomas']);
+  });
+
+  it('finds nothing in an ordinary text, or with no strings', () => {
+    expect(findPersonalInfo(['Rien à signaler.'], people)).toEqual({
+      studentNames: [],
+      blocked: [],
+    });
+    expect(findPersonalInfo([], people)).toEqual({ studentNames: [], blocked: [] });
+    expect(findPersonalInfo(['Samuel lit.'], [])).toEqual({ studentNames: [], blocked: [] });
   });
 });

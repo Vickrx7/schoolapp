@@ -906,3 +906,35 @@ export function redactStrings<T>(
   };
   return { value: walk(value) as T, blocked };
 }
+
+export interface PersonalInfoFindings {
+  /** Students' first names found, as the roster spells them, in the order found. */
+  studentNames: string[];
+  /** Kinds of personal detail found (each once). */
+  blocked: BlockedKind[];
+}
+
+/**
+ * Students' first names and personal details in `strings` (the first-name guard, D-066). Only
+ * `kind: 'student'` people are looked for: staff names may appear in shared resources. A name
+ * that is also an everyday word (Rose, Pierre) counts only when capitalized, as the AI preview
+ * does. Nothing is sent anywhere: the web server runs it before a resource is shared, and the
+ * same check runs before a quiz reaches class devices and before a content pack is exported
+ * (D-086, D-099).
+ */
+export function findPersonalInfo(
+  strings: readonly string[],
+  people: readonly KnownPerson[],
+): PersonalInfoFindings {
+  const redactor = new Redactor(people.filter((p) => p.kind === 'student'));
+  const blocked = new Set<BlockedKind>();
+  for (const text of strings) {
+    redactor.redact(text);
+    for (const finding of findBlockedDetails(text)) blocked.add(finding.kind);
+  }
+  const studentNames: string[] = [];
+  for (const r of redactor.replacements()) {
+    if (r.kind === 'student' && !studentNames.includes(r.original)) studentNames.push(r.original);
+  }
+  return { studentNames, blocked: [...blocked] };
+}

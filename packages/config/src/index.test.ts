@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EnvError, loadEnv, webServerEnvSchema, workerEnvSchema } from './index';
+import { adminEnvSchema, EnvError, loadEnv, webServerEnvSchema, workerEnvSchema } from './index';
 
 describe('loadEnv', () => {
   it('applies defaults and treats empty strings as unset', () => {
@@ -43,6 +43,54 @@ describe('loadEnv', () => {
     expect(() => loadEnv(webServerEnvSchema, { ...base, CLIENT_IP_HEADER: 'x forwarded' })).toThrow(
       /CLIENT_IP_HEADER/,
     );
+  });
+
+  it('leaves quizzes on devices off by default (D-083)', () => {
+    const base = {
+      NEXT_PUBLIC_SUPABASE_URL: 'http://127.0.0.1:54321',
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'x'.repeat(40),
+    };
+    const defaults = loadEnv(webServerEnvSchema, {
+      ...base,
+      CLASS_PORTAL_DATABASE_URL: '',
+      CLASS_PORTAL_HMAC_KEY: '',
+    });
+    expect(defaults.CLASS_PORTAL_DATABASE_URL).toBeUndefined();
+    expect(defaults.CLASS_PORTAL_HMAC_KEY).toBe('');
+    expect(
+      loadEnv(webServerEnvSchema, {
+        ...base,
+        CLASS_PORTAL_DATABASE_URL: 'postgresql://lynx_class_portal:x@127.0.0.1:54322/postgres',
+        CLASS_PORTAL_HMAC_KEY: 'a2V5',
+      }),
+    ).toMatchObject({
+      CLASS_PORTAL_DATABASE_URL: 'postgresql://lynx_class_portal:x@127.0.0.1:54322/postgres',
+      CLASS_PORTAL_HMAC_KEY: 'a2V5',
+    });
+  });
+
+  it('caps a bulk generation run at 100 USD by default, 1,000 at most (D-096)', () => {
+    const worker = { DATABASE_URL: 'postgres://x' };
+    expect(loadEnv(workerEnvSchema, worker).BULK_MAX_RUN_USD).toBe(100);
+    expect(loadEnv(workerEnvSchema, { ...worker, BULK_MAX_RUN_USD: '25.5' }).BULK_MAX_RUN_USD).toBe(
+      25.5,
+    );
+    for (const bad of ['0', '-1', '1001', 'beaucoup']) {
+      expect(() => loadEnv(workerEnvSchema, { ...worker, BULK_MAX_RUN_USD: bad }), bad).toThrow(
+        /BULK_MAX_RUN_USD/,
+      );
+    }
+    // The admin CLI reads the same setting, so both sides agree on the cap.
+    const admin = {
+      NEXT_PUBLIC_SUPABASE_URL: 'http://127.0.0.1:54321',
+      SUPABASE_SERVICE_ROLE_KEY: 'x'.repeat(40),
+    };
+    expect(loadEnv(adminEnvSchema, admin).BULK_MAX_RUN_USD).toBe(100);
+    expect(loadEnv(adminEnvSchema, { ...admin, BULK_MAX_RUN_USD: '40' }).BULK_MAX_RUN_USD).toBe(40);
+    expect(() => loadEnv(adminEnvSchema, { ...admin, BULK_MAX_RUN_USD: '5000' })).toThrow(
+      /BULK_MAX_RUN_USD/,
+    );
+    expect(() => loadEnv(adminEnvSchema, {})).toThrow(/SUPABASE_SERVICE_ROLE_KEY/);
   });
 
   it('keeps AI off by default and needs a key for Anthropic', () => {

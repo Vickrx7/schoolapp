@@ -1,5 +1,5 @@
 /**
- * Content pack format v1 (Phase 5 plan P-18 and P-19; DECISIONS D-071, D-081): one UTF-8 JSON
+ * Content pack format v1 (DECISIONS D-099, D-100, D-071 and D-081): one UTF-8 JSON
  * file that carries a board's resources to another install, through the admin CLI's
  * `export-pack` and `import-pack`.
  *
@@ -75,7 +75,7 @@ export const packHeaderSchema = z.strictObject({
   /** « Éditeur déclaré »: self-declared. */
   publisher: nonBlank(120),
   licence: text(500),
-  /** The items may not be adapted (« Adapter », P-11). */
+  /** The items may not be adapted (« Adapter », D-092). */
   noDerivatives: bool,
   createdAt: z.iso.datetime({ offset: true, error: 'invalid' }),
   contentSchemaVersion: z.literal(CURRENT_SCHEMA_VERSION, { error: 'schemaVersion' }),
