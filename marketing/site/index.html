@@ -1,0 +1,3178 @@
+<title>Lynx École</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Lexend:wght@400..700&family=Caveat:wght@500;700&family=Zilla+Slab:ital,wght@0,500;0,700;1,500&display=swap"
+/>
+<style>
+  /* Layout: a teacher's cahier. A red margin rule runs down the left (wide screens), handwritten
+     times and labels sit in that margin, and the chalkboard is the one bold object on the page.
+     Status stamps: ink (available), hatched pencil (in construction), dotted (coming soon). */
+  :root {
+    --paper: #f4f7f1;
+    --paper-2: #e8efe3;
+    --card: #ffffff;
+    --ink: #14231a;
+    --ink-2: #4a5a4f;
+    --line: #c5d2c7;
+    --rule: #c3d5e8;
+    --margin: #c5443a;
+    --green: #0a7a3d;
+    --green-ink: #086332;
+    --on-green: #ffffff;
+    --green-soft: #d9eedf;
+    --build: #6b4f00;
+    --build-bg: #f6e8ad;
+    --build-bg-2: #efdc8c;
+    --build-line: #c9a633;
+    --soon: #33537a;
+    --later: #5b665e;
+    --focus: #1a5fcc;
+    --err: #b3261e;
+    --mark: #fbe49a;
+    --mark-ink: #14231a;
+    --board: #1e3a2e;
+    --board-2: #26473a;
+    --chalk: #eef2ea;
+    --chalk-2: #b7c8bb;
+    --chalk-y: #f2d36b;
+    --frame: #9b7648;
+    --frame-2: #775630;
+    --felt: #3b3f45;
+    --phone: #101814;
+    --phone-screen: #f7faf6;
+    --phone-ink: #14231a;
+    --phone-soft: #dde6de;
+    --sheet: #ffffff;
+    --sheet-back: #e2e9e0;
+    --sheet-ink: #14231a;
+    --flag-g: #16803c;
+    --flag-w: #ffffff;
+    --phone-green: #0a7a3d;
+    --phone-on: #ffffff;
+    --sheet-hand: #b8392f;
+    --display: 'Zilla Slab', Rockwell, 'Roboto Slab', Georgia, serif;
+    --body: Lexend, 'Segoe UI', system-ui, -apple-system, sans-serif;
+    --hand: 'Caveat', 'Segoe Print', 'Bradley Hand', cursive;
+    --mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+    --gutter: clamp(16px, 4vw, 40px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --paper: #0f1914;
+      --paper-2: #15231c;
+      --card: #17251e;
+      --ink: #e5eee6;
+      --ink-2: #a6b6ab;
+      --line: #2d4136;
+      --rule: #23384c;
+      --margin: #e0776c;
+      --green: #3fbf78;
+      --green-ink: #62d493;
+      --on-green: #06150d;
+      --green-soft: #173a26;
+      --build: #ecce63;
+      --build-bg: #3a310f;
+      --build-bg-2: #453a12;
+      --build-line: #8c7424;
+      --soon: #a2bde2;
+      --later: #a3b0a7;
+      --focus: #8ab8ff;
+      --err: #ff8a80;
+      --mark: #5c4b10;
+      --mark-ink: #fff4c7;
+      --frame: #7d5f3a;
+      --frame-2: #5f4526;
+      --sheet: #dfe7de;
+      --sheet-back: #2a3b31;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme='dark'] {
+    --paper: #0f1914;
+    --paper-2: #15231c;
+    --card: #17251e;
+    --ink: #e5eee6;
+    --ink-2: #a6b6ab;
+    --line: #2d4136;
+    --rule: #23384c;
+    --margin: #e0776c;
+    --green: #3fbf78;
+    --green-ink: #62d493;
+    --on-green: #06150d;
+    --green-soft: #173a26;
+    --build: #ecce63;
+    --build-bg: #3a310f;
+    --build-bg-2: #453a12;
+    --build-line: #8c7424;
+    --soon: #a2bde2;
+    --later: #a3b0a7;
+    --focus: #8ab8ff;
+    --err: #ff8a80;
+    --mark: #5c4b10;
+    --mark-ink: #fff4c7;
+    --frame: #7d5f3a;
+    --frame-2: #5f4526;
+    --sheet: #dfe7de;
+    --sheet-back: #2a3b31;
+    color-scheme: dark;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    padding-inline: var(--gutter);
+    background: var(--paper);
+    color: var(--ink);
+    font: 400 1rem/1.62 var(--body);
+    -webkit-text-size-adjust: 100%;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--display);
+    font-weight: 700;
+    line-height: 1.12;
+    margin: 0;
+    text-wrap: balance;
+  }
+  p,
+  ul,
+  ol,
+  figure {
+    margin: 0;
+  }
+  a {
+    color: var(--green-ink);
+    text-underline-offset: 0.18em;
+  }
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+  mark {
+    background: var(--mark);
+    color: var(--mark-ink);
+    padding: 0 0.15em;
+    border-radius: 2px;
+  }
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- Header ---------- */
+  .top {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 10;
+    margin-inline: calc(-1 * var(--gutter));
+    padding: 10px var(--gutter);
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+  }
+  .top-in {
+    max-width: 1160px;
+    margin-inline: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px 20px;
+    flex-wrap: wrap;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink);
+    text-decoration: none;
+    font: 700 1.25rem/1 var(--display);
+  }
+  .brand svg {
+    flex: none;
+  }
+  .nav {
+    display: flex;
+    gap: 4px 18px;
+    flex-wrap: wrap;
+    margin-inline-start: auto;
+    font-size: 0.9375rem;
+  }
+  .nav a {
+    color: var(--ink-2);
+    text-decoration: none;
+    padding-block: 10px;
+  }
+  .nav a:hover {
+    color: var(--ink);
+    text-decoration: underline;
+  }
+  .lang {
+    display: inline-flex;
+    border: 1.5px solid var(--ink);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .lang button {
+    appearance: none;
+    border: 0;
+    margin: 0;
+    min-width: 44px;
+    min-height: 40px;
+    padding: 0 10px;
+    background: transparent;
+    color: var(--ink);
+    font: 700 0.875rem/1 var(--body);
+    letter-spacing: 0.06em;
+    cursor: pointer;
+  }
+  .lang button[aria-pressed='true'] {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  @media (max-width: 859px) {
+    .nav {
+      display: none;
+    }
+    .lang {
+      margin-inline-start: auto;
+    }
+  }
+
+  /* ---------- Page and cahier margin ---------- */
+  main {
+    max-width: 1160px;
+    margin-inline: auto;
+    position: relative;
+  }
+  @media (min-width: 900px) {
+    main {
+      padding-inline-start: 76px;
+    }
+    .foot {
+      padding-inline-start: 76px;
+    }
+    main::before {
+      content: '';
+      position: absolute;
+      inset-block: 0;
+      left: 40px;
+      width: 6px;
+      border-inline: 1.5px solid var(--margin);
+      opacity: 0.5;
+      pointer-events: none;
+    }
+  }
+  .sec {
+    padding-block: clamp(52px, 8vw, 96px);
+    border-top: 1px solid var(--line);
+  }
+  .sec-head {
+    display: grid;
+    gap: 10px;
+    max-width: 46rem;
+    margin-bottom: clamp(24px, 4vw, 40px);
+  }
+  .hand {
+    font: 700 1.5rem/1.1 var(--hand);
+    color: var(--margin);
+    transform: rotate(-1.2deg);
+    transform-origin: left center;
+  }
+  .sec h2 {
+    font-size: clamp(1.75rem, 3.6vw, 2.6rem);
+  }
+  .intro {
+    font-size: 1.125rem;
+    color: var(--ink-2);
+    max-width: 44rem;
+  }
+  .stamps {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .stamp {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.32em 0.6em;
+    border: 1.5px solid currentColor;
+    border-radius: 3px;
+    font: 700 0.75rem/1.25 var(--body);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .stamp--ok {
+    background: var(--green);
+    border-color: var(--green);
+    color: var(--on-green);
+  }
+  .stamp--build {
+    color: var(--build);
+    border-color: var(--build-line);
+    border-style: dashed;
+    background: repeating-linear-gradient(
+      135deg,
+      var(--build-bg) 0 7px,
+      var(--build-bg-2) 7px 14px
+    );
+  }
+  .stamp--soon {
+    color: var(--soon);
+    border-style: dotted;
+    border-width: 2px;
+  }
+  .stamp--later {
+    color: var(--later);
+    border-style: dashed;
+  }
+  .tag {
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+  .note {
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    display: grid;
+    gap: clamp(28px, 5vw, 56px);
+    padding-block: clamp(32px, 6vw, 72px) clamp(40px, 6vw, 72px);
+    align-items: center;
+  }
+  @media (min-width: 980px) {
+    .hero {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    }
+  }
+  .hero-text {
+    display: grid;
+    gap: 20px;
+    min-width: 0;
+  }
+  .eyebrow {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--green-ink);
+    letter-spacing: 0.02em;
+  }
+  .hero h1 {
+    font-size: clamp(2.2rem, 5.2vw, 3.7rem);
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+  }
+  .hero h1 em {
+    font-style: italic;
+    font-weight: 500;
+    color: var(--green-ink);
+  }
+  .lede {
+    font-size: 1.1875rem;
+    max-width: 36rem;
+  }
+  .actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0 20px;
+    border: 2px solid var(--ink);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--ink);
+    font: 700 1rem/1.2 var(--body);
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .btn:hover {
+    background: var(--paper-2);
+  }
+  .btn--go {
+    background: var(--green);
+    border-color: var(--green);
+    color: var(--on-green);
+  }
+  .btn--go:hover {
+    background: var(--green-ink);
+    border-color: var(--green-ink);
+  }
+  .status-line {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+  .board-fig {
+    display: grid;
+    gap: 10px;
+    min-width: 0;
+  }
+  .board-fig svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .board-fig figcaption,
+  .fig-cap {
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+
+  /* SVG classes (chalkboard, phone, sheet) */
+  .sv-frame {
+    fill: var(--frame);
+  }
+  .sv-frame-2 {
+    fill: var(--frame-2);
+  }
+  .sv-board {
+    fill: var(--board);
+  }
+  .sv-dust {
+    fill: var(--chalk);
+    fill-opacity: 0.045;
+  }
+  .sv-chalk {
+    fill: var(--chalk);
+    font-family: var(--hand);
+    font-weight: 500;
+  }
+  .sv-chalk-2 {
+    fill: var(--chalk-2);
+    font-family: var(--hand);
+    font-weight: 500;
+  }
+  .sv-chalk-y {
+    fill: var(--chalk-y);
+    font-family: var(--hand);
+    font-weight: 700;
+  }
+  .sv-stroke-chalk {
+    fill: none;
+    stroke: var(--chalk);
+    stroke-linecap: round;
+    stroke-opacity: 0.8;
+  }
+  .sv-stroke-y {
+    fill: none;
+    stroke: var(--chalk-y);
+    stroke-width: 2.5;
+  }
+  .sv-stick {
+    fill: var(--chalk);
+  }
+  .sv-felt {
+    fill: var(--felt);
+  }
+  .sv-phone {
+    fill: var(--phone);
+  }
+  .sv-screen {
+    fill: var(--phone-screen);
+  }
+  .sv-p-ink {
+    fill: var(--phone-ink);
+    font-family: var(--body);
+  }
+  .sv-p-title {
+    fill: var(--phone-ink);
+    font-family: var(--display);
+    font-weight: 700;
+  }
+  .sv-p-soft {
+    fill: var(--phone-soft);
+  }
+  .sv-p-line {
+    fill: none;
+    stroke: var(--phone-soft);
+  }
+  .sv-p-green {
+    fill: var(--phone-green);
+  }
+  .sv-p-green-stroke {
+    fill: none;
+    stroke: var(--phone-green);
+    stroke-width: 1.6;
+  }
+  .sv-p-green-text {
+    fill: var(--phone-green);
+    font-family: var(--body);
+    font-weight: 700;
+  }
+  .sv-p-white {
+    fill: var(--phone-on);
+    font-family: var(--body);
+    font-weight: 700;
+  }
+  .sv-sheet {
+    fill: var(--sheet);
+    stroke: var(--line);
+  }
+  .sv-sheet-back {
+    fill: var(--sheet-back);
+  }
+  .sv-s-ink {
+    fill: var(--sheet-ink);
+    font-family: var(--body);
+  }
+  .sv-s-title {
+    fill: var(--sheet-ink);
+    font-family: var(--display);
+    font-weight: 700;
+  }
+  .sv-s-code {
+    fill: var(--sheet-ink);
+    font-family: var(--mono);
+    font-weight: 700;
+  }
+  .sv-s-box {
+    fill: none;
+    stroke: var(--sheet-ink);
+    stroke-width: 1.5;
+  }
+  .sv-s-hand {
+    fill: var(--sheet-hand);
+    font-family: var(--hand);
+    font-weight: 700;
+  }
+  .sv-flag-g {
+    fill: var(--flag-g);
+  }
+  .sv-flag-w {
+    fill: var(--flag-w);
+  }
+  .sv-flag-edge {
+    fill: none;
+    stroke: var(--line);
+  }
+  .sv-ink {
+    fill: var(--ink);
+  }
+  .sv-green {
+    fill: var(--green);
+  }
+  .sv-chalk-board {
+    fill: var(--board);
+    stroke: var(--frame);
+    stroke-width: 2;
+  }
+
+  /* ---------- Legend ---------- */
+  .legend {
+    display: grid;
+    gap: 14px 28px;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    padding-block: 24px;
+    border-top: 1px solid var(--line);
+  }
+  .legend h2 {
+    font-size: 1.125rem;
+    grid-column: 1 / -1;
+  }
+  .legend-item {
+    display: grid;
+    gap: 6px;
+    align-content: start;
+    min-width: 0;
+  }
+  .legend-item p {
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+
+  /* ---------- Day timeline ---------- */
+  .day {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    max-width: 50rem;
+  }
+  .day li {
+    display: grid;
+    grid-template-columns: 5.4rem minmax(0, 1fr);
+    gap: 6px 18px;
+    padding-block: 18px;
+    border-top: 1px solid var(--rule);
+  }
+  .day li:last-child {
+    border-bottom: 1px solid var(--rule);
+  }
+  .day-t {
+    font: 700 1.6rem/1.1 var(--hand);
+    color: var(--margin);
+    white-space: nowrap;
+  }
+  .day-b {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+  }
+  .day-b h3,
+  .grid-item h3,
+  .card h3,
+  .lib-item h3,
+  .brd h3 {
+    font-size: 1.25rem;
+  }
+  @media (min-width: 900px) {
+    .day li {
+      grid-template-columns: 6.5rem minmax(0, 1fr);
+    }
+  }
+  .sub-h {
+    font-size: 1.4rem;
+    margin-top: clamp(36px, 6vw, 56px);
+    margin-bottom: 18px;
+  }
+  .grid {
+    display: grid;
+    gap: 22px 28px;
+  }
+  @media (min-width: 600px) {
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 900px) {
+    .grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .grid-item {
+    display: grid;
+    gap: 6px;
+    align-content: start;
+    padding-top: 12px;
+    border-top: 2px solid var(--ink);
+    min-width: 0;
+  }
+
+  /* ---------- Substitute steps ---------- */
+  .sub-layout {
+    display: grid;
+    gap: clamp(28px, 5vw, 56px);
+  }
+  @media (min-width: 1000px) {
+    .sub-layout {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+      align-items: start;
+    }
+  }
+  .steps {
+    list-style: none;
+    padding: 0;
+    counter-reset: step;
+    display: grid;
+    gap: 0;
+    min-width: 0;
+  }
+  .steps > li {
+    counter-increment: step;
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr);
+    gap: 4px 16px;
+    padding-block: 18px;
+    border-top: 1px solid var(--line);
+  }
+  .steps > li::before {
+    content: counter(step);
+    grid-row: 1 / span 3;
+    font: 700 2.1rem/1 var(--display);
+    color: var(--green-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .step-meta {
+    display: flex;
+    gap: 6px 12px;
+    flex-wrap: wrap;
+    align-items: baseline;
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+  .who {
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+  }
+  .when {
+    font: 700 1.25rem/1 var(--hand);
+    color: var(--margin);
+  }
+  .steps h3 {
+    font-size: 1.25rem;
+  }
+  .steps p {
+    min-width: 0;
+  }
+  .sub-aside {
+    display: grid;
+    gap: 18px;
+    min-width: 0;
+  }
+  .sheet-fig svg {
+    width: 100%;
+    max-width: 360px;
+    height: auto;
+    display: block;
+  }
+  .facts {
+    display: grid;
+    gap: 10px;
+    padding: 18px 20px;
+    background: var(--paper-2);
+    border-radius: 4px;
+  }
+  .facts h3 {
+    font-size: 1.125rem;
+  }
+  .facts ul {
+    padding-inline-start: 1.1em;
+    display: grid;
+    gap: 6px;
+    font-size: 0.9375rem;
+  }
+  .extras {
+    margin-top: clamp(28px, 5vw, 44px);
+  }
+
+  /* ---------- Differentiation ---------- */
+  .two {
+    display: grid;
+    gap: clamp(28px, 5vw, 56px);
+  }
+  @media (min-width: 980px) {
+    .two {
+      grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+      align-items: start;
+    }
+  }
+  .prose {
+    display: grid;
+    gap: 16px;
+    min-width: 0;
+    max-width: 42rem;
+  }
+  .ticks {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .ticks li {
+    position: relative;
+    padding-inline-start: 1.6em;
+  }
+  .ticks li::before {
+    content: '';
+    position: absolute;
+    left: 0.15em;
+    top: 0.45em;
+    width: 0.8em;
+    height: 0.45em;
+    border-left: 2.5px solid var(--green);
+    border-bottom: 2.5px solid var(--green);
+    transform: rotate(-45deg);
+  }
+  .pv {
+    display: grid;
+    gap: 10px;
+    min-width: 0;
+  }
+  .pv-screen {
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    background: var(--card);
+    overflow: hidden;
+  }
+  .pv-bar {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+    font: 700 1.0625rem/1.2 var(--display);
+  }
+  .pv-bar span:last-child {
+    font: 400 0.8125rem/1.4 var(--body);
+    color: var(--ink-2);
+  }
+  .pv-body {
+    display: grid;
+    gap: 10px;
+    padding: 16px;
+  }
+  .pv-k {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  .pv-text {
+    padding: 12px 14px;
+    background: var(--paper);
+    border-radius: 6px;
+    font-size: 1rem;
+  }
+  .pv-small {
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+  .pv-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+  .pv-btn {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 16px;
+    border-radius: 6px;
+    background: var(--green);
+    color: var(--on-green);
+    font-weight: 700;
+    font-size: 0.9375rem;
+  }
+  .caveat {
+    padding-inline-start: 14px;
+    border-inline-start: 3px solid var(--margin);
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+
+  /* ---------- Library (in construction) and class mode (coming soon) ---------- */
+  .lib,
+  .cm,
+  .cards {
+    display: grid;
+    gap: 16px;
+  }
+  @media (min-width: 640px) {
+    .lib,
+    .cm,
+    .cards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 980px) {
+    .lib {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .lib-item {
+    display: grid;
+    gap: 6px;
+    align-content: start;
+    padding: 16px 18px;
+    border: 1.5px dashed var(--build-line);
+    border-radius: 4px;
+    min-width: 0;
+  }
+  .lib-item p,
+  .cm-item p {
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+  .where {
+    margin-top: 22px;
+    display: grid;
+    gap: 8px;
+    padding: 18px 20px;
+    background: var(--paper-2);
+    border-radius: 4px;
+    max-width: 50rem;
+  }
+  .where h3 {
+    font-size: 1.125rem;
+  }
+  .cm-item {
+    display: grid;
+    gap: 6px;
+    align-content: start;
+    padding: 16px 18px;
+    border: 2px dotted var(--soon);
+    border-radius: 4px;
+    min-width: 0;
+  }
+  .cm-item h3 {
+    font-size: 1.1875rem;
+  }
+
+  /* ---------- Privacy: index cards (fiches) ---------- */
+  .card {
+    display: grid;
+    gap: 10px;
+    align-content: start;
+    padding: 18px 20px 20px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--margin);
+    border-radius: 2px;
+    min-width: 0;
+  }
+  .card h3 {
+    font-size: 1.3rem;
+  }
+  .card p {
+    font-size: 0.96875rem;
+    line-height: 1.8;
+    /* written on the lines of an index card; skipped where the lh unit is unknown */
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0 calc(1lh - 1px),
+      var(--rule) calc(1lh - 1px) 1lh
+    );
+  }
+  .card .limit {
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+  .also {
+    margin-top: 32px;
+    display: grid;
+    gap: 28px;
+  }
+  @media (min-width: 900px) {
+    .also {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+  }
+  .also h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+  .also ul {
+    padding-inline-start: 1.1em;
+    display: grid;
+    gap: 8px;
+    font-size: 0.9375rem;
+  }
+
+  /* ---------- Identity ---------- */
+  .ident {
+    display: grid;
+    gap: 32px;
+  }
+  @media (min-width: 900px) {
+    .ident {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+  }
+  .ident-col {
+    display: grid;
+    gap: 14px;
+    align-content: start;
+    min-width: 0;
+  }
+  .ident-head {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+  .ident-head svg {
+    flex: none;
+  }
+  .ident-head h3 {
+    font-size: 1.5rem;
+  }
+
+  /* ---------- Boards ---------- */
+  .brds {
+    display: grid;
+    gap: 26px 32px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  }
+  .brd {
+    display: grid;
+    gap: 8px;
+    align-content: start;
+    padding-top: 14px;
+    border-top: 2px solid var(--ink);
+    min-width: 0;
+  }
+  .brd p {
+    font-size: 0.96875rem;
+  }
+  .vision {
+    margin-top: 36px;
+    display: grid;
+    gap: 12px;
+    max-width: 52rem;
+  }
+  .vision h3 {
+    font-size: 1.2rem;
+  }
+  .vision ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    list-style: none;
+    padding: 0;
+  }
+  .vision li {
+    padding: 6px 12px;
+    border: 1.5px dashed var(--later);
+    border-radius: 3px;
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+
+  /* ---------- Pilot form ---------- */
+  .pilot {
+    display: grid;
+    gap: clamp(28px, 5vw, 56px);
+  }
+  @media (min-width: 980px) {
+    .pilot {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      align-items: start;
+    }
+  }
+  .panel {
+    padding: clamp(18px, 3vw, 28px);
+    background: var(--card);
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    min-width: 0;
+  }
+  .notice {
+    display: grid;
+    gap: 4px;
+    padding: 12px 14px;
+    margin-bottom: 18px;
+    background: var(--green-soft);
+    border-radius: 6px;
+    font-size: 0.9375rem;
+  }
+  form {
+    display: grid;
+    gap: 16px;
+  }
+  .field {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+  }
+  .field label {
+    font-weight: 700;
+  }
+  .opt {
+    font-weight: 400;
+    color: var(--ink-2);
+  }
+  input,
+  select,
+  textarea {
+    width: 100%;
+    min-height: 46px;
+    padding: 10px 12px;
+    border: 1.5px solid var(--ink-2);
+    border-radius: 6px;
+    background: var(--paper);
+    color: var(--ink);
+    font: 400 1rem/1.4 var(--body);
+  }
+  textarea {
+    min-height: 96px;
+    resize: vertical;
+  }
+  [aria-invalid='true'] {
+    border-color: var(--err);
+    border-width: 2px;
+  }
+  .err {
+    color: var(--err);
+    font-size: 0.9375rem;
+    font-weight: 700;
+  }
+  .row2 {
+    display: grid;
+    gap: 16px;
+    align-items: end;
+  }
+  @media (min-width: 620px) {
+    .row2 {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+  }
+  .thanks {
+    display: grid;
+    gap: 14px;
+  }
+  .thanks h3 {
+    font-size: 1.5rem;
+  }
+  .email-line {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .email {
+    font: 700 1.25rem/1.3 var(--mono);
+    user-select: all;
+    -webkit-user-select: all;
+    padding: 6px 10px;
+    background: var(--paper-2);
+    border-radius: 4px;
+    word-break: break-all;
+  }
+  .msg {
+    font-family: var(--mono);
+    font-size: 0.875rem;
+    min-height: 200px;
+  }
+  .live {
+    min-height: 1.5em;
+    font-size: 0.9375rem;
+    color: var(--green-ink);
+    font-weight: 700;
+  }
+
+  /* ---------- Footer ---------- */
+  .foot {
+    max-width: 1160px;
+    margin-inline: auto;
+    padding-block: 36px 48px;
+    border-top: 1px solid var(--line);
+    display: grid;
+    gap: 10px;
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+  .foot strong {
+    color: var(--ink);
+    font-family: var(--display);
+    font-size: 1.125rem;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .btn,
+    .lang button {
+      transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease;
+    }
+  }
+</style>
+
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="#haut">
+      <svg width="34" height="28" viewBox="0 0 34 28" aria-hidden="true">
+        <rect class="sv-chalk-board" x="1" y="1" width="32" height="24" rx="3" />
+        <text class="sv-chalk" x="11" y="20" font-size="19">é</text>
+      </svg>
+      <span data-app-name>Lynx École</span>
+    </a>
+    <nav class="nav" aria-label="Sections" data-aria-en="Sections">
+      <a href="#suppleance" data-en="Substitute day">Suppléance</a>
+      <a href="#differencier" data-en="Differentiated text">Texte différencié</a>
+      <a href="#vie-privee" data-en="Privacy">Vie privée</a>
+      <a href="#conseils" data-en="School boards">Conseils scolaires</a>
+      <a href="#pilote" data-en="Pilot">Projet pilote</a>
+    </nav>
+    <div class="lang" role="group" aria-label="Langue / Language">
+      <button type="button" id="lang-fr" lang="fr-CA" aria-pressed="true" data-set-lang="fr">
+        FR
+      </button>
+      <button type="button" id="lang-en" lang="en-CA" aria-pressed="false" data-set-lang="en">
+        EN
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="haut">
+  <!-- ================= HERO ================= -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-text">
+      <p class="eyebrow" data-en="For Ontario’s French-language Catholic elementary schools">
+        Pour les écoles élémentaires catholiques de langue française de l’Ontario
+      </p>
+      <h1 id="hero-title">
+        <span data-l="fr" lang="fr-CA"
+          >Malade à 6 h? <em>Deux touches</em>, et votre plan de suppléance est prêt.</span
+        >
+        <span data-l="en" lang="en-CA" hidden
+          >Sick at 6 a.m.? <em>Two taps</em>, and your substitute plan is ready.</span
+        >
+      </h1>
+      <p class="lede" data-l="fr" lang="fr-CA">
+        Le plan part de là où chaque classe est rendue : prochaines leçons, horaire, calendrier,
+        groupes par niveau de langue, routines et moment de foi. Il est complet sans IA. Le
+        secrétariat remet un code d’une journée à la personne suppléante, qui vous envoie son suivi
+        en fin de journée.
+      </p>
+      <p class="lede" data-l="en" lang="en-CA" hidden>
+        The plan starts where each class left off: next lessons, timetable, calendar, groups by
+        language level, routines and a faith moment. It is complete without AI. The office gives the
+        substitute a one-day code, and the substitute sends you a report at the end of the day.
+      </p>
+      <div class="actions">
+        <a class="btn btn--go" href="#suppleance" data-en="See the steps">Voir les étapes</a>
+        <a class="btn" href="#pilote" data-en="Join the free pilot">Participer au projet pilote</a>
+      </div>
+      <p class="status-line">
+        <span class="stamp stamp--ok" data-en="Available (pilot build)"
+          >Disponible (version pilote)</span
+        >
+        <span data-en="In development. Nothing is online yet; a free pilot is planned."
+          >En développement. Rien n’est encore en ligne; un projet pilote gratuit est prévu.</span
+        >
+      </p>
+    </div>
+
+    <figure class="board-fig">
+      <svg viewBox="0 0 720 470" role="img" aria-labelledby="board-t board-d">
+        <title
+          id="board-t"
+          data-en="A classroom chalkboard with the day’s plan, and a phone showing the two taps"
+        >
+          Un tableau de classe avec le plan de la journée, et un téléphone qui montre les deux
+          touches
+        </title>
+        <desc
+          id="board-d"
+          data-en="The board reads, in French: Tuesday, October 6, Day 3, Grade 3, room 104. 8:45 Morning prayer and O Canada. 9:00 Français, Lesson 7. 9:45 Math, Lesson 5. 10:30 Nutrition break. 11:20 Phys. ed. with Mr. Leblanc in the gym. 1:30 School mass, replaces Science. 2:40 Faith moment. 3:20 End of day, buses. The phone shows Today, then the button I’m absent (tap 1), then Send (tap 2)."
+        >
+          Au tableau : Mardi 6 octobre, Jour 3, 3e année, local 104. 8 h 45 Prière du matin et Ô
+          Canada. 9 h 00 Français, leçon 7. 9 h 45 Mathématiques, leçon 5. 10 h 30 Pause santé.
+          11 h 20 EPS avec M. Leblanc au gymnase. 13 h 30 Messe de l’école, remplace Sciences.
+          14 h 40 Moment de foi. 15 h 20 Fin de la journée, autobus. Le téléphone montre
+          Aujourd’hui, le bouton Je suis absent·e (touche 1), puis Envoyer (touche 2).
+        </desc>
+        <rect class="sv-frame" x="0" y="0" width="720" height="452" rx="14" />
+        <rect class="sv-board" x="18" y="18" width="684" height="416" rx="5" />
+        <ellipse class="sv-dust" cx="230" cy="130" rx="190" ry="46" />
+        <ellipse class="sv-dust" cx="470" cy="330" rx="210" ry="60" />
+        <ellipse class="sv-dust" cx="120" cy="380" rx="90" ry="30" />
+        <text x="46" y="72" lang="fr-CA">
+          <tspan class="sv-chalk" font-size="36">Mardi 6 octobre</tspan>
+          <tspan class="sv-chalk-y" font-size="30" dx="12">· Jour 3</tspan>
+        </text>
+        <text class="sv-chalk-2" x="676" y="68" font-size="24" text-anchor="end" lang="fr-CA">
+          3e année · local 104
+        </text>
+        <path class="sv-stroke-chalk" stroke-width="2.4" d="M44 86 C 140 82, 260 90, 372 83" />
+        <g lang="fr-CA">
+          <text class="sv-chalk-y tnum" x="46" y="130" font-size="25">8 h 45</text>
+          <text class="sv-chalk" x="136" y="130" font-size="26">Prière du matin et Ô Canada</text>
+          <text class="sv-chalk-y tnum" x="46" y="170" font-size="25">9 h 00</text>
+          <text class="sv-chalk" x="136" y="170" font-size="26">
+            Français — Leçon 7 : l’idée principale
+          </text>
+          <text class="sv-chalk-y tnum" x="46" y="210" font-size="25">9 h 45</text>
+          <text class="sv-chalk" x="136" y="210" font-size="26">Mathématiques — Leçon 5</text>
+          <text class="sv-chalk-y tnum" x="46" y="250" font-size="25">10 h 30</text>
+          <text class="sv-chalk" x="136" y="250" font-size="26">Pause santé</text>
+          <text class="sv-chalk-y tnum" x="46" y="290" font-size="25">11 h 20</text>
+          <text class="sv-chalk" x="136" y="290" font-size="26">EPS avec M. Leblanc (gymnase)</text>
+          <text class="sv-chalk-y tnum" x="46" y="330" font-size="25">13 h 30</text>
+          <text x="136" y="330">
+            <tspan class="sv-chalk" font-size="26">Messe de l’école</tspan>
+            <tspan class="sv-chalk-2" font-size="21" dx="14">(remplace Sciences)</tspan>
+          </text>
+          <text class="sv-chalk-y tnum" x="46" y="370" font-size="25">14 h 40</text>
+          <text class="sv-chalk" x="136" y="370" font-size="26">Moment de foi</text>
+          <text class="sv-chalk-y tnum" x="46" y="410" font-size="25">15 h 20</text>
+          <text class="sv-chalk" x="136" y="410" font-size="26">Fin de la journée : autobus</text>
+        </g>
+        <path
+          class="sv-stroke-chalk"
+          stroke-width="1.8"
+          d="M292 314 C 296 336, 470 340, 486 318 C 490 306, 470 300, 440 304"
+        />
+        <rect class="sv-frame-2" x="10" y="436" width="700" height="14" rx="3" />
+        <rect class="sv-stick" x="96" y="428" width="44" height="9" rx="4" />
+        <rect class="sv-stick" x="150" y="430" width="22" height="7" rx="3" />
+        <rect class="sv-frame" x="206" y="420" width="84" height="10" rx="2" />
+        <rect class="sv-felt" x="206" y="428" width="84" height="8" rx="2" />
+
+        <!-- Phone: the two taps -->
+        <g transform="translate(548 140)">
+          <rect class="sv-phone" x="0" y="0" width="152" height="310" rx="22" />
+          <rect class="sv-screen" x="8" y="10" width="136" height="290" rx="15" />
+          <text class="sv-p-ink tnum" x="22" y="30" font-size="10" data-en="6:05">6 h 05</text>
+          <text class="sv-p-title" x="20" y="54" font-size="17" data-l="fr" lang="fr-CA">
+            Aujourd’hui
+          </text>
+          <text class="sv-p-title" x="20" y="54" font-size="17" data-l="en" lang="en-CA" hidden>
+            Today
+          </text>
+          <rect class="sv-p-soft" x="20" y="66" width="112" height="9" rx="3" />
+          <rect class="sv-p-soft" x="20" y="82" width="86" height="9" rx="3" />
+          <rect class="sv-p-soft" x="20" y="98" width="100" height="9" rx="3" />
+          <rect class="sv-p-green-stroke" x="18" y="118" width="116" height="32" rx="8" />
+          <text
+            class="sv-p-green-text"
+            x="76"
+            y="139"
+            font-size="12"
+            text-anchor="middle"
+            data-l="fr"
+            lang="fr-CA"
+          >
+            Je suis absent·e
+          </text>
+          <text
+            class="sv-p-green-text"
+            x="76"
+            y="139"
+            font-size="12"
+            text-anchor="middle"
+            data-l="en"
+            lang="en-CA"
+            hidden
+          >
+            I’m absent
+          </text>
+          <rect class="sv-p-soft" x="8" y="170" width="136" height="130" rx="0" />
+          <rect class="sv-screen" x="8" y="176" width="136" height="124" rx="12" />
+          <text class="sv-p-ink" x="20" y="198" font-size="10.5" data-l="fr" lang="fr-CA">
+            Mardi 6 octobre
+          </text>
+          <text class="sv-p-ink" x="20" y="198" font-size="10.5" data-l="en" lang="en-CA" hidden>
+            Tuesday, October 6
+          </text>
+          <text class="sv-p-ink" x="20" y="214" font-size="10.5" data-l="fr" lang="fr-CA">
+            Journée complète
+          </text>
+          <text class="sv-p-ink" x="20" y="214" font-size="10.5" data-l="en" lang="en-CA" hidden>
+            Full day
+          </text>
+          <text class="sv-p-ink" x="20" y="232" font-size="10.5" data-l="fr" lang="fr-CA">
+            Moment de foi
+          </text>
+          <text class="sv-p-ink" x="20" y="232" font-size="10.5" data-l="en" lang="en-CA" hidden>
+            Faith moment
+          </text>
+          <rect class="sv-p-green" x="108" y="223" width="24" height="12" rx="6" />
+          <circle class="sv-screen" cx="126" cy="229" r="4.5" />
+          <rect class="sv-p-green" x="18" y="250" width="116" height="32" rx="8" />
+          <text
+            class="sv-p-white"
+            x="76"
+            y="271"
+            font-size="12.5"
+            text-anchor="middle"
+            data-l="fr"
+            lang="fr-CA"
+          >
+            Envoyer
+          </text>
+          <text
+            class="sv-p-white"
+            x="76"
+            y="271"
+            font-size="12.5"
+            text-anchor="middle"
+            data-l="en"
+            lang="en-CA"
+            hidden
+          >
+            Send
+          </text>
+        </g>
+        <circle class="sv-stroke-y" cx="518" cy="274" r="16" />
+        <text class="sv-chalk-y" x="518" y="283" font-size="26" text-anchor="middle">1</text>
+        <circle class="sv-stroke-y" cx="518" cy="406" r="16" />
+        <text class="sv-chalk-y" x="518" y="415" font-size="26" text-anchor="middle">2</text>
+      </svg>
+      <figcaption
+        data-en="A Grade 3 board on a Tuesday morning, and the two taps that start the plan. Illustration with fictional data."
+      >
+        Un tableau de 3e année un mardi matin, et les deux touches qui déclenchent le plan.
+        Illustration, données fictives.
+      </figcaption>
+    </figure>
+  </section>
+
+  <!-- ================= STATUS LEGEND ================= -->
+  <section class="legend" aria-labelledby="legend-title">
+    <h2 id="legend-title" data-en="How to read our labels">Comment lire nos étiquettes</h2>
+    <div class="legend-item">
+      <span
+        ><span class="stamp stamp--ok" data-en="Available (pilot build)"
+          >Disponible (version pilote)</span
+        ></span
+      >
+      <p
+        data-en="Built and covered by automated tests in the development build. It is not a live service yet, and no teacher has used it in class."
+      >
+        Construit et couvert par des tests automatisés dans la version de développement. Ce n’est
+        pas encore un service en ligne, et personne ne l’a encore utilisé en classe.
+      </p>
+    </div>
+    <div class="legend-item">
+      <span><span class="stamp stamp--build" data-en="In construction">En construction</span></span>
+      <p
+        data-en="Being built now. Some screens exist in the development build, but the feature is not finished."
+      >
+        En cours. Certains écrans existent dans la version de développement, mais la fonction n’est
+        pas terminée.
+      </p>
+    </div>
+    <div class="legend-item">
+      <span><span class="stamp stamp--soon" data-en="Coming soon">Bientôt</span></span>
+      <p data-en="Planned, not built yet.">Prévu, pas encore construit.</p>
+    </div>
+    <div class="legend-item">
+      <span><span class="stamp stamp--later" data-en="Later">Vision</span></span>
+      <p data-en="Later, with no schedule.">Plus tard, sans échéancier.</p>
+    </div>
+  </section>
+
+  <!-- ================= TEACHER'S DAY ================= -->
+  <section class="sec" id="journee" aria-labelledby="journee-title">
+    <div class="sec-head">
+      <p class="hand" data-en="An ordinary day">Une journée ordinaire</p>
+      <h2 id="journee-title" data-en="Your whole day on one screen">
+        Toute votre journée sur un seul écran
+      </h2>
+      <div class="stamps">
+        <span class="stamp stamp--ok" data-en="Available (pilot build)"
+          >Disponible (version pilote)</span
+        >
+      </div>
+      <p class="intro" data-l="fr" lang="fr-CA">
+        « Aujourd’hui » s’ouvre sur vos périodes, avec le calendrier appliqué et la prochaine leçon
+        de chaque matière. Voici un exemple de journée.
+      </p>
+      <p class="intro" data-l="en" lang="en-CA" hidden>
+        “Today” opens on your periods, with the calendar applied and the next lesson in each
+        subject. Here is an example day.
+      </p>
+    </div>
+
+    <ol class="day">
+      <li>
+        <span class="day-t tnum" data-en="7:50 a.m.">7 h 50</span>
+        <div class="day-b">
+          <h3 data-en="“Today”">« Aujourd’hui »</h3>
+          <p data-l="fr" lang="fr-CA">
+            Vos périodes du jour, avec le calendrier appliqué, et la prochaine leçon de chaque
+            matière. Passez au jour précédent ou au jour suivant.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            Your periods for the day with the calendar applied, and the next lesson in each subject.
+            Move to the previous or the next day.
+          </p>
+        </div>
+      </li>
+      <li>
+        <span class="day-t tnum" data-en="8:45 a.m.">8 h 45</span>
+        <div class="day-b">
+          <h3 data-en="Routines are periods too">Les routines ont leur place</h3>
+          <p data-l="fr" lang="fr-CA">
+            La prière du matin et l’Ô Canada, la récréation, le dîner, la pause santé, la
+            surveillance et le temps de planification sont des périodes de l’horaire, comme les
+            matières.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            Morning prayer and O Canada, recess, lunch, nutrition breaks, duty and prep time are
+            periods in the timetable, like subjects.
+          </p>
+        </div>
+      </li>
+      <li>
+        <span class="day-t tnum" data-en="9:44 a.m.">9 h 44</span>
+        <div class="day-b">
+          <h3 data-en="“Lesson taught”">« Leçon donnée »</h3>
+          <p data-l="fr" lang="fr-CA">
+            Une touche marque la leçon comme donnée, avec « Annuler » pour revenir en arrière. Votre
+            planification avance. Si une leçon plus tôt dans l’unité n’a jamais été cochée, un
+            avertissement s’affiche.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            One tap marks the lesson as taught, with “Undo” to take it back. Your planning moves
+            forward. If an earlier lesson in the unit was never checked off, you get a warning.
+          </p>
+        </div>
+      </li>
+      <li>
+        <span class="day-t tnum" data-en="1:30 p.m.">13 h 30</span>
+        <div class="day-b">
+          <h3 data-en="The day adjusts itself">La journée s’ajuste toute seule</h3>
+          <p data-l="fr" lang="fr-CA">
+            Messe de l’école cet après-midi? Les messes, les rassemblements et les départs hâtifs
+            remplacent, interrompent ou raccourcissent les périodes touchées. Journée pédagogique ou
+            congé : pas d’école ce jour-là.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            School mass this afternoon? Masses, assemblies and early dismissals replace, interrupt
+            or shorten the periods they touch. PA day or holiday: no school that day.
+          </p>
+        </div>
+      </li>
+      <li>
+        <span class="day-t tnum" data-en="3:45 p.m.">15 h 45</span>
+        <div class="day-b">
+          <h3 data-en="“Planning”">« Planification »</h3>
+          <p data-l="fr" lang="fr-CA">
+            Des unités par matière, une unité active à la fois. Chaque leçon garde ses objectifs,
+            son matériel, son contenu, des notes pour la suppléance et les attentes liées (marquées
+            « à vérifier »). Vous réordonnez et cochez les leçons.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            Units per subject, one active unit at a time. Each lesson holds its objectives,
+            materials, content, notes for the substitute and linked expectations (marked “à
+            vérifier”, to verify). You reorder and check off lessons.
+          </p>
+        </div>
+      </li>
+    </ol>
+
+    <h3 class="sub-h" data-en="Once, at the start of the year">Une fois, en début d’année</h3>
+    <div class="grid">
+      <div class="grid-item">
+        <h3 data-en="“Classes”">« Classes »</h3>
+        <p data-l="fr" lang="fr-CA">
+          Créez une classe, combinée au besoin (3e/4e année), avec son local et son équipe-classe.
+          Pour la supprimer avec tout son contenu, vous tapez son nom pour confirmer.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          Create a class, combined grades included (Grade 3/4), with its room and class team. To
+          delete it with everything in it, you type its name to confirm.
+        </p>
+      </div>
+      <div class="grid-item">
+        <h3 data-en="“Students”">« Élèves »</h3>
+        <p data-l="fr" lang="fr-CA">
+          Collez une liste de prénoms ou importez un fichier CSV. Le fichier est lu sur votre
+          appareil, et seule la colonne des prénoms est envoyée. Un niveau de français par défaut
+          (Débutant, Intermédiaire, Avancé, Enrichi) sert à former des groupes : ce n’est pas une
+          évaluation officielle.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          Paste a list of first names or import a CSV file. The file is read on your device, and
+          only the first-name column is sent. A default French level (Débutant, Intermédiaire,
+          Avancé, Enrichi) is used to form groups: it is not an official evaluation.
+        </p>
+      </div>
+      <div class="grid-item">
+        <h3 data-en="“Timetable”">« Horaire »</h3>
+        <p data-l="fr" lang="fr-CA">
+          Une semaine ou des jours en rotation (Jour 1 à N). Ajoutez une période à plusieurs jours
+          d’un coup, indiquez qui l’enseigne et où (enseignement en rotation, couverture du temps de
+          planification). Les chevauchements sont signalés.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          A weekly timetable or rotating days (Day 1 to N). Add one period to several days at once,
+          and record who teaches it and where (rotary teaching, prep coverage). Overlaps are
+          flagged.
+        </p>
+      </div>
+      <div class="grid-item">
+        <h3 data-en="“Calendar”">« Calendrier »</h3>
+        <p data-l="fr" lang="fr-CA">
+          Voyez les événements du conseil et de l’école, et ajoutez ceux de votre classe, une sortie
+          éducative par exemple.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          See board and school events, and add events for your own class, a field trip for example.
+        </p>
+      </div>
+      <div class="grid-item">
+        <h3 data-en="“Profile”">« Profil »</h3>
+        <p data-l="fr" lang="fr-CA">
+          Votre nom affiché, votre titre (Mme, M.) utilisé dans les plans, et la langue de
+          l’interface : français ou anglais.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          Your display name, your title (Mme, M.) used in plans, and the interface language: French
+          or English.
+        </p>
+      </div>
+      <div class="grid-item">
+        <h3 data-en="Made for the phone">Pensée pour le téléphone</h3>
+        <p data-l="fr" lang="fr-CA">
+          Navigation en bas de l’écran, cibles de 44 px, et l’application s’installe sur l’écran
+          d’accueil. Les longs formulaires gardent un brouillon sur l’appareil, et une erreur du
+          serveur n’efface pas ce que vous avez tapé.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          Bottom navigation, 44 px tap targets, and it installs on the home screen. Long forms keep
+          a draft on the device, and a server error doesn’t erase what you typed.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SUBSTITUTE HAND-OFF ================= -->
+  <section class="sec" id="suppleance" aria-labelledby="supp-title">
+    <div class="sec-head">
+      <p class="hand" data-en="The day you’re sick">Le jour où vous êtes malade</p>
+      <h2 id="supp-title" data-en="The substitute day, from 6 a.m. to the next morning">
+        La suppléance, de 6 h au lendemain
+      </h2>
+      <div class="stamps">
+        <span class="stamp stamp--ok" data-en="Available (pilot build)"
+          >Disponible (version pilote)</span
+        >
+      </div>
+      <p class="intro" data-l="fr" lang="fr-CA">
+        Chaque étape existe dans la version pilote et est couverte par des tests automatisés. Aucune
+        n’a encore été essayée avec une vraie classe ni avec une vraie personne suppléante.
+      </p>
+      <p class="intro" data-l="en" lang="en-CA" hidden>
+        Every step exists in the pilot build and is covered by automated tests. None has been tried
+        yet with a real class or a real substitute.
+      </p>
+    </div>
+
+    <div class="sub-layout">
+      <ol class="steps">
+        <li>
+          <p class="step-meta">
+            <span class="when tnum" data-en="6:05 a.m.">6 h 05</span
+            ><span class="who" data-en="You">Vous</span>
+          </p>
+          <h3 data-en="“I’m absent”, then “Send”">« Je suis absent·e », puis « Envoyer »</h3>
+          <p data-l="fr" lang="fr-CA">
+            Deux touches depuis « Aujourd’hui ». Une journée complète, un matin, un après-midi ou
+            jusqu’à 14 jours, avec une note facultative et un interrupteur « Moment de foi ». Un
+            raccourci « Signaler une absence » est aussi offert sur l’icône de l’application, sur
+            les appareils qui l’affichent.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            Two taps from “Today”. A full day, a morning, an afternoon or up to 14 days, with an
+            optional note and a “Faith moment” switch. A “Report an absence” shortcut is also on the
+            app icon, on devices that show it.
+          </p>
+        </li>
+        <li>
+          <p class="step-meta">
+            <span class="when tnum" data-en="6:05 a.m.">6 h 05</span
+            ><span class="who" data-en="The app">L’application</span>
+          </p>
+          <h3 data-en="The plan is ready">Le plan est prêt</h3>
+          <p data-l="fr" lang="fr-CA">
+            Il est construit à partir de là où chaque classe est rendue : prochaines leçons (d’un
+            jour à l’autre si l’absence dure), horaire, calendrier, groupes par niveau de langue,
+            routines, contacts, fin de journée et moment de foi. Il est complet sans IA. Jusqu’à sa
+            publication, il suit votre planification : cochez une leçon ou changez l’horaire, et il
+            se reconstruit.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            It is built from where each class left off: next lessons (continued day by day for a
+            longer absence), timetable, calendar, groups by language level, routines, contacts, end
+            of day and a faith moment. It is complete without AI. Until it is released, it follows
+            your planning: check off a lesson or change the timetable, and it rebuilds.
+          </p>
+        </li>
+        <li>
+          <p class="step-meta">
+            <span class="when" data-en="If you want">Si vous le voulez</span
+            ><span class="who" data-en="You">Vous</span>
+          </p>
+          <h3 data-en="“Review the plan”">« Réviser le plan »</h3>
+          <p data-l="fr" lang="fr-CA">
+            Modifiez les étapes, les notes, la liste de fin de journée et le moment de foi. Vos
+            changements s’enregistrent seuls et survivent aux reconstructions. Si votre école a
+            activé l’IA, « Consignes détaillées (IA) » peut ajouter des étapes minutées avec des
+            répliques « Dites : », après que vous avez vu exactement ce qui serait envoyé. Ce n’est
+            jamais automatique.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            Edit steps, notes, the end-of-day list and the faith moment. Your edits save themselves
+            and survive rebuilds. If your school has AI on, “Detailed instructions (AI)” can add
+            timed steps with “Dites :” (“Say:”) lines, after you have seen exactly what would be
+            sent. It is never automatic.
+          </p>
+        </li>
+        <li>
+          <p class="step-meta">
+            <span class="when tnum" data-en="7:30 a.m.">7 h 30</span
+            ><span class="who" data-en="The app">L’application</span>
+          </p>
+          <h3 data-en="Released">Publication</h3>
+          <p data-l="fr" lang="fr-CA">
+            Le plan est publié automatiquement à 7 h 30 (un réglage du conseil), ou plus tôt avec
+            « Publier maintenant ».
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            The plan is released automatically at 7:30 a.m. (a board setting), or earlier with
+            “Release now”.
+          </p>
+        </li>
+        <li>
+          <p class="step-meta">
+            <span class="when tnum" data-en="7:40 a.m.">7 h 40</span
+            ><span class="who" data-en="Office">Secrétariat</span>
+          </p>
+          <h3 data-en="“Generate a code”">« Générer un code »</h3>
+          <p data-l="fr" lang="fr-CA">
+            Le code s’affiche une seule fois, avec une feuille d’accueil à imprimer. « Texto » et
+            « Courriel » ouvrent l’application de téléphone ou de courriel du secrétariat :
+            l’application ne garde aucun numéro ni aucune adresse. « Couper » un appareil, un code
+            ou tout l’accès prend effet immédiatement. Vous pouvez aussi générer ou couper un code
+            vous-même.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            The code is shown once, with a welcome sheet to print. “Text” and “Email” open the
+            office’s own phone or mail app: the app keeps no phone number and no address. “Cut” a
+            device, a code or all access, and it takes effect at once. You can also generate or cut
+            a code yourself.
+          </p>
+        </li>
+        <li>
+          <p class="step-meta">
+            <span class="when tnum" data-en="8:15 a.m.">8 h 15</span
+            ><span class="who" data-en="Substitute, no account"
+              >Personne suppléante, sans compte</span
+            >
+          </p>
+          <h3 data-en="“The day’s plan”">« Plan de la journée »</h3>
+          <p data-l="fr" lang="fr-CA">
+            Elle ouvre …/s et tape le code de 10 caractères tel qu’on le lui a lu au téléphone. Elle
+            voit « Maintenant », « Ensuite », les étapes de chaque période, les groupes avec les
+            prénoms, les contacts et la fin de journée, et peut télécharger le PDF. Les alertes de
+            sécurité ou médicales s’affichent seulement après une touche, disparaissent quand le
+            téléphone est rangé et ne sont jamais imprimées. Les écrans passent au français ou à
+            l’anglais; le plan reste dans votre français.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            The substitute opens …/s and types the 10-character code as it was read over the phone.
+            The screen shows “Now”, “Next”, each period’s steps, groups with first names, contacts
+            and the end of day, and a PDF can be downloaded. Safety and medical alerts appear only
+            after a tap, clear when the phone is put away and are never printed. The screens switch
+            between French and English; the plan stays in your French.
+          </p>
+        </li>
+        <li>
+          <p class="step-meta">
+            <span class="when tnum" data-en="3:30 p.m.">15 h 30</span
+            ><span class="who" data-en="Substitute">Personne suppléante</span>
+          </p>
+          <h3 data-en="“End-of-day report”">« Suivi de la journée »</h3>
+          <p data-l="fr" lang="fr-CA">
+            Terminé, En partie ou Pas fait pour chaque leçon, les élèves absents, le comportement et
+            des notes pour vous. Le suivi s’enregistre au fil de la journée, puis « Envoyer le
+            suivi ».
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            Done, Partly or Not done for each lesson, absent students, behaviour and notes for you.
+            The report saves as the day goes, then “Send the report”.
+          </p>
+        </li>
+        <li>
+          <p class="step-meta">
+            <span class="when" data-en="The next day">Le lendemain</span
+            ><span class="who" data-en="You">Vous</span>
+          </p>
+          <h3 data-en="“Substitute’s report”">« Suivi de la suppléance »</h3>
+          <p data-l="fr" lang="fr-CA">
+            Vous confirmez chaque leçon signalée : « Confirmer », « Pas terminée » ou « Sautée ».
+            Rien n’est marqué comme fait sans vous.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            You confirm each lesson the substitute reported: “Confirm”, “Not finished” or “Skipped”.
+            Nothing is marked done without you.
+          </p>
+        </li>
+      </ol>
+
+      <aside class="sub-aside" aria-labelledby="code-title">
+        <figure class="sheet-fig">
+          <svg viewBox="0 0 320 400" role="img" aria-labelledby="sheet-t">
+            <title
+              id="sheet-t"
+              data-en="Illustration of a printed welcome sheet with a one-day access code"
+            >
+              Illustration d’une feuille d’accueil imprimée avec un code d’accès d’une journée
+            </title>
+            <rect
+              class="sv-sheet-back"
+              x="22"
+              y="18"
+              width="286"
+              height="372"
+              rx="3"
+              transform="rotate(2.2 165 204)"
+            />
+            <g transform="rotate(-1.4 160 200)">
+              <rect class="sv-sheet" x="14" y="12" width="286" height="372" rx="3" />
+              <text class="sv-s-title" x="36" y="50" font-size="19" data-l="fr" lang="fr-CA">
+                Feuille d’accueil
+              </text>
+              <text class="sv-s-title" x="36" y="50" font-size="19" data-l="en" lang="en-CA" hidden>
+                Welcome sheet
+              </text>
+              <text class="sv-s-ink" x="36" y="70" font-size="12.5" data-l="fr" lang="fr-CA">
+                Personne suppléante
+              </text>
+              <text class="sv-s-ink" x="36" y="70" font-size="12.5" data-l="en" lang="en-CA" hidden>
+                Substitute
+              </text>
+              <text class="sv-s-ink" x="36" y="98" font-size="12.5" data-l="fr" lang="fr-CA">
+                Classe de Mme Tremblay · Local : 104
+              </text>
+              <text class="sv-s-ink" x="36" y="98" font-size="12.5" data-l="en" lang="en-CA" hidden>
+                Mme Tremblay’s class · Room: 104
+              </text>
+              <text
+                class="sv-s-ink"
+                x="36"
+                y="130"
+                font-size="11"
+                font-weight="700"
+                letter-spacing="1"
+                data-l="fr"
+                lang="fr-CA"
+              >
+                CODE D’ACCÈS
+              </text>
+              <text
+                class="sv-s-ink"
+                x="36"
+                y="130"
+                font-size="11"
+                font-weight="700"
+                letter-spacing="1"
+                data-l="en"
+                lang="en-CA"
+                hidden
+              >
+                ACCESS CODE
+              </text>
+              <rect class="sv-s-box" x="36" y="140" width="242" height="54" rx="4" />
+              <text
+                class="sv-s-code"
+                x="157"
+                y="176"
+                font-size="27"
+                text-anchor="middle"
+                letter-spacing="1"
+              >
+                K7M4R-9QW2X
+              </text>
+              <text class="sv-s-ink" x="36" y="222" font-size="11.5" data-l="fr" lang="fr-CA">
+                Sur un téléphone ou un ordinateur, ouvrez :
+              </text>
+              <text
+                class="sv-s-ink"
+                x="36"
+                y="222"
+                font-size="11.5"
+                data-l="en"
+                lang="en-CA"
+                hidden
+              >
+                On a phone or a computer, open:
+              </text>
+              <text class="sv-s-code" x="36" y="244" font-size="16">…/s</text>
+              <text class="sv-s-ink" x="36" y="274" font-size="12" data-l="fr" lang="fr-CA">
+                Valide le mardi 6 octobre de 5 h à 18 h
+              </text>
+              <text class="sv-s-ink" x="36" y="274" font-size="12" data-l="en" lang="en-CA" hidden>
+                Valid Tue., Oct. 6, 5 a.m. to 6 p.m.
+              </text>
+              <text class="sv-s-ink" x="36" y="294" font-size="12" data-l="fr" lang="fr-CA">
+                Secrétariat : 555-0100
+              </text>
+              <text class="sv-s-ink" x="36" y="294" font-size="12" data-l="en" lang="en-CA" hidden>
+                Office: 555-0100
+              </text>
+              <text class="sv-s-hand" x="36" y="334" font-size="19" data-l="fr" lang="fr-CA">
+                Gardez ce code sur vous;
+              </text>
+              <text class="sv-s-hand" x="36" y="356" font-size="19" data-l="fr" lang="fr-CA">
+                ne le laissez pas sur le bureau.
+              </text>
+              <text class="sv-s-hand" x="36" y="334" font-size="19" data-l="en" lang="en-CA" hidden>
+                Keep this code with you;
+              </text>
+              <text class="sv-s-hand" x="36" y="356" font-size="19" data-l="en" lang="en-CA" hidden>
+                don’t leave it on the desk.
+              </text>
+            </g>
+          </svg>
+          <figcaption
+            class="fig-cap"
+            data-en="Illustration. The code, school and phone number are fictional."
+          >
+            Illustration. Le code, la classe et le numéro sont fictifs.
+          </figcaption>
+        </figure>
+        <div class="facts">
+          <h3 id="code-title" data-en="The code, in short">Le code, en bref</h3>
+          <ul data-l="fr" lang="fr-CA">
+            <li>
+              10 caractères, une seule journée, pendant les heures d’accès de l’école (par défaut de
+              5 h à 18 h).
+            </li>
+            <li>
+              Affiché une seule fois et conservé seulement sous forme de hachage à clé : personne ne
+              peut le retrouver plus tard.
+            </li>
+            <li>Au plus 2 codes par plan et 2 appareils par code.</li>
+            <li>
+              Chaque utilisation du code, consultation du plan, impression, affichage d’alerte et
+              suivi est journalisé, avec la personne qui a émis le code.
+            </li>
+            <li>
+              Limite connue : un code fonctionne pour quiconque le détient. Cette utilisation est
+              journalisée.
+            </li>
+          </ul>
+          <ul data-l="en" lang="en-CA" hidden>
+            <li>
+              10 characters, one day only, during the school’s access hours (by default 5 a.m. to 6
+              p.m.).
+            </li>
+            <li>Shown once and stored only as a keyed hash: nobody can look it up later.</li>
+            <li>At most 2 codes per plan and 2 devices per code.</li>
+            <li>
+              Every code use, plan view, print, alert reveal and report is logged, along with who
+              issued the code.
+            </li>
+            <li>Known limit: a code works for whoever holds it. That use is logged.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+
+    <div class="grid extras">
+      <div class="grid-item">
+        <h3 data-en="“Substitute sheet”">« Fiche de suppléance »</h3>
+        <p data-l="fr" lang="fr-CA">
+          Un onglet par classe : l’arrivée, les routines, la gestion de classe, la fin de journée,
+          les activités de rechange et la ou le collègue d’à côté. La direction ajoute les heures
+          d’accès, les consignes d’arrivée et les procédures d’urgence de l’école, qui paraissent
+          dans chaque plan.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          One tab per class: arrival, routines, classroom management, end of day, fallback
+          activities and the colleague next door. The direction adds the school’s access hours,
+          arrival instructions and emergency procedures, which appear in every plan.
+        </p>
+      </div>
+      <div class="grid-item">
+        <h3 data-en="The plan PDF">Le PDF du plan</h3>
+        <p data-l="fr" lang="fr-CA">
+          Produit sur demande et jamais conservé. Il ne contient jamais les alertes ni la « Gestion
+          de classe ». Le secrétariat peut voir et imprimer le plan publié, sans les alertes ni la
+          « Gestion de classe », et chaque consultation et impression est journalisée.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          Generated on demand and never stored. It never includes alerts or “Classroom management”.
+          The office can view and print the released plan, without alerts or “Classroom management”,
+          and every view and print is logged.
+        </p>
+      </div>
+      <div class="grid-item">
+        <h3 data-en="“Student activity sheets”">« Activités pour les élèves »</h3>
+        <p data-l="fr" lang="fr-CA">
+          Un PDF avec une page par groupe et par activité, sans noms d’élèves ni noms de niveaux.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          A PDF with one page per group and activity, with no student names and no level names.
+        </p>
+      </div>
+    </div>
+    <p class="caveat extras" data-l="fr" lang="fr-CA">
+      Une absence dure au plus 14 jours, et le secrétariat ne peut pas signaler une absence à la
+      place d’un membre du personnel enseignant.
+    </p>
+    <p class="caveat extras" data-l="en" lang="en-CA" hidden>
+      An absence lasts at most 14 days, and the office cannot report an absence on a teacher’s
+      behalf.
+    </p>
+  </section>
+
+  <!-- ================= DIFFERENTIATED TEXT ================= -->
+  <section class="sec" id="differencier" aria-labelledby="diff-title">
+    <div class="sec-head">
+      <p class="hand" data-en="One class, several levels of French">
+        Une classe, plusieurs niveaux de français
+      </p>
+      <h2 id="diff-title" data-en="One text, two to six language levels">
+        Un même texte, de deux à six niveaux de langue
+      </h2>
+      <div class="stamps">
+        <span class="stamp stamp--ok" data-en="Available (pilot build)"
+          >Disponible (version pilote)</span
+        >
+        <span class="tag" data-en="“Differentiated text”, only if your school turns AI on"
+          >« Texte différencié », seulement si votre école active l’IA</span
+        >
+      </div>
+    </div>
+
+    <div class="two">
+      <div class="prose">
+        <p data-l="fr" lang="fr-CA">
+          Dans une même classe, des élèves francophones côtoient des élèves qui apprennent encore le
+          français : c’est la réalité des programmes ALF et PANA. Collez un texte, choisissez
+          l’année, la matière et de 2 à 6 niveaux, vérifiez exactement ce qui sera envoyé, puis
+          recevez une version modifiable par niveau, avec la même intention d’apprentissage.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          In one class, francophone students sit next to students who are still learning French:
+          that is the reality of the ALF and PANA programs. Paste a text, choose the grade, subject
+          and 2 to 6 levels, check exactly what will be sent, then get one editable version per
+          level with the same learning goal.
+        </p>
+        <ul class="ticks" data-l="fr" lang="fr-CA">
+          <li>
+            Chaque niveau s’imprime sur sa propre page, sans nom de niveau : aucun élève ne se voit
+            étiqueté.
+          </li>
+          <li>Les résultats sont enregistrés comme brouillons privés.</li>
+          <li>
+            Les niveaux Débutant, Intermédiaire, Avancé et Enrichi aident à former des groupes. Ce
+            n’est pas une échelle officielle ALF, PANA ou du Ministère. « Gérer les niveaux » vous
+            permet d’ajouter les vôtres.
+          </li>
+          <li>
+            Avant l’envoi, les noms connus deviennent des marqueurs (« Élève A »), et un courriel,
+            un numéro de téléphone, un numéro d’identification, une adresse ou la date de naissance
+            d’un enfant bloquent la demande.
+          </li>
+        </ul>
+        <ul class="ticks" data-l="en" lang="en-CA" hidden>
+          <li>Each level prints on its own page with no level name, so no student sees a label.</li>
+          <li>Results are saved as private drafts.</li>
+          <li>
+            The levels Débutant, Intermédiaire, Avancé and Enrichi help you form groups. They are
+            not an official ALF, PANA or Ministry scale. “Manage levels” lets you add your own.
+          </li>
+          <li>
+            Before sending, known names become markers (“Élève A”), and an email, a phone number, an
+            identification number, an address or a child’s birth date blocks the request.
+          </li>
+        </ul>
+        <p class="caveat" data-l="fr" lang="fr-CA">
+          Le vrai modèle d’IA (Claude, d’Anthropic) n’a encore jamais été appelé : la version de
+          démonstration utilise un faux fournisseur qui tronque le texte. Nous ne promettons ni
+          qualité ni temps gagné avant le projet pilote.
+        </p>
+        <p class="caveat" data-l="en" lang="en-CA" hidden>
+          The real AI model (Claude, by Anthropic) has never been called yet: the demo uses a fake
+          provider that truncates text. We promise no quality and no time saved before the pilot.
+        </p>
+      </div>
+
+      <figure class="pv">
+        <div class="pv-screen">
+          <div class="pv-bar">
+            <span data-en="Check before sending">Vérifier avant d’envoyer</span>
+            <span data-en="Grade 3 · Français · 3 levels">3e année · Français · 3 niveaux</span>
+          </div>
+          <div class="pv-body">
+            <p class="pv-k" data-en="What will be sent">Ce qui sera envoyé</p>
+            <p class="pv-text" lang="fr-CA">
+              Au bord du lac, <mark>Élève A</mark> et <mark>Élève B</mark> observent un huard.
+              L’oiseau plonge, puis reparaît plus loin. <mark>Élève A</mark> compte les secondes :
+              vingt-deux!
+            </p>
+            <p class="pv-small" data-l="fr" lang="fr-CA">
+              <mark>Surligné</mark> : noms remplacés par des marqueurs.
+            </p>
+            <p class="pv-small" data-l="en" lang="en-CA" hidden>
+              <mark>Highlighted</mark>: names replaced by markers.
+            </p>
+            <p class="pv-k" data-en="Never sent">Jamais envoyé</p>
+            <p class="pv-small" data-en="Alerts, and user, school, board or account identifiers.">
+              Les alertes, et les identifiants d’utilisateur, d’école, de conseil ou de compte.
+            </p>
+            <div class="pv-actions">
+              <span class="pv-btn" data-en="Send to the AI">Envoyer à l’IA</span>
+            </div>
+          </div>
+        </div>
+        <figcaption
+          class="fig-cap"
+          data-en="Illustration of the preview, fictional text. No AI answer is shown on this page."
+        >
+          Illustration de l’aperçu, texte fictif. Aucune réponse de l’IA n’est montrée sur cette
+          page.
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ================= LIBRARY (IN CONSTRUCTION) ================= -->
+  <section class="sec" id="ressources" aria-labelledby="lib-title">
+    <div class="sec-head">
+      <p class="hand" data-en="On the workbench">Sur l’établi</p>
+      <h2 id="lib-title" data-en="Resource bank">Banque de ressources</h2>
+      <div class="stamps">
+        <span class="stamp stamp--build" data-en="In construction">En construction</span>
+      </div>
+      <p class="intro" data-l="fr" lang="fr-CA">
+        Nous la construisons en ce moment. Certains écrans existent déjà dans la version de
+        développement, mais la fonction n’est pas terminée. Voici ce qu’elle doit faire.
+      </p>
+      <p class="intro" data-l="en" lang="en-CA" hidden>
+        We are building it now. Some screens already exist in the development build, but the feature
+        is not finished. Here is what it is meant to do.
+      </p>
+    </div>
+    <div class="lib">
+      <div class="lib-item">
+        <h3 data-en="Browse by expectation">Parcourir par attente</h3>
+        <p data-l="fr" lang="fr-CA">
+          Année, matière, domaine, puis attente, en 6 catégories : Enseigner, Pratiquer, Explorer,
+          Évaluer, Jouer et Relier. 25 types de ressources.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          Grade, subject, strand, then expectation, in 6 categories: Teach, Practise, Explore,
+          Assess, Play and Connect. 25 resource types.
+        </p>
+      </div>
+      <div class="lib-item">
+        <h3 data-en="Search in French">Chercher en français</h3>
+        <p data-l="fr" lang="fr-CA">
+          Sans tenir compte des accents, avec des filtres : type, durée, format, « Pour la
+          suppléance », approuvées seulement, niveau.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          Accents don’t matter, with filters: type, duration, format, “For substitutes”, approved
+          only, level.
+        </p>
+      </div>
+      <div class="lib-item">
+        <h3 data-en="A version per level">Une version par niveau</h3>
+        <p data-l="fr" lang="fr-CA">
+          « Pour les élèves » et « Guide et corrigé » restent séparés. Le corrigé reste caché
+          jusqu’à ce que vous l’affichiez et n’apparaît jamais sur la feuille de l’élève, qui ne
+          porte aucun nom de niveau.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          “For students” and “Guide and answer key” stay separate. The answer key stays hidden until
+          you tap and never appears on the student sheet, which carries no level name.
+        </p>
+      </div>
+      <div class="lib-item">
+        <h3 data-en="Into your planning and your plans">Dans votre planification et vos plans</h3>
+        <p data-l="fr" lang="fr-CA">
+          « Ajouter à ma planification » joint une ressource à une leçon, ou l’ajoute comme nouvelle
+          leçon. Les plans de suppléance utiliseront les ressources révisées adaptées à la
+          suppléance, dans la version de chaque groupe, et jamais le corrigé.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          “Add to my planning” attaches a resource to a lesson, or adds it as a new lesson.
+          Substitute plans will use reviewed, substitute-friendly resources, with each group’s
+          version and never the answer key.
+        </p>
+      </div>
+      <div class="lib-item">
+        <h3 data-en="Create by hand or with AI">Créer à la main ou avec l’IA</h3>
+        <p data-l="fr" lang="fr-CA">
+          Choisissez une attente et un type, vérifiez l’aperçu, et recevez un brouillon privé. Les
+          versions par niveau peuvent aussi être préparées avec l’IA. « Ajouter un lien avec la
+          foi » est offert.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          Pick an expectation and a type, check the preview, and get a private draft. Versions per
+          level can also be prepared with AI. “Add a faith connection” is offered.
+        </p>
+      </div>
+      <div class="lib-item">
+        <h3 data-en="Review before sharing">Réviser avant de partager</h3>
+        <p data-l="fr" lang="fr-CA">
+          Brouillon, puis « révisée » avec une case d’originalité. Partage avec l’école ou le
+          conseil, avec une vérification qui signale les prénoms d’élèves. Approbation par des
+          personnes désignées par le conseil, et révision distincte pour le contenu de foi.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          Draft, then “reviewed” with an originality checkbox. Sharing with the school or the board,
+          with a check that flags students’ first names. Approval by reviewers the board designates,
+          and a separate review for faith content.
+        </p>
+      </div>
+    </div>
+    <div class="where">
+      <h3 data-en="Where it stands">Où on en est</h3>
+      <p data-l="fr" lang="fr-CA">
+        29 ressources de démonstration originales, « à valider en classe », surtout en 3e et en 5e
+        année, en français et en mathématiques. Le curriculum chargé est un petit échantillon
+        d’attentes résumées, non officielles, marquées « à vérifier ». Qui possède le contenu que le
+        personnel enseignant partage reste à décider.
+      </p>
+      <p data-l="en" lang="en-CA" hidden>
+        29 original demo resources, “à valider en classe” (to be tried in class), mostly for Grades
+        3 and 5 in Français and Math. The curriculum loaded is a small sample of paraphrased,
+        unofficial expectations, marked “à vérifier” (to verify). Who owns the content that teachers
+        share is still to be decided.
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= CLASS MODE (COMING SOON) ================= -->
+  <section class="sec" id="mode-classe" aria-labelledby="cm-title">
+    <div class="sec-head">
+      <p class="hand" data-en="Next">Ensuite</p>
+      <h2 id="cm-title" data-en="Class mode">Mode classe</h2>
+      <div class="stamps">
+        <span class="stamp stamp--soon" data-en="Coming soon">Bientôt</span>
+      </div>
+      <p class="intro" data-en="Planned for the next phase. Nothing below is built yet.">
+        Prévu pour la prochaine phase. Rien de ce qui suit n’est encore construit.
+      </p>
+    </div>
+    <div class="cm">
+      <div class="cm-item">
+        <h3 data-en="“Present to the class”">« Présenter à la classe »</h3>
+        <p data-l="fr" lang="fr-CA">
+          Un lecteur pour le projecteur : quiz, jeux, pauses actives et expériences étape par étape.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          A projector player for quizzes, games, brain breaks and step-by-step experiments.
+        </p>
+      </div>
+      <div class="cm-item">
+        <h3 data-en="“Quiz on devices”">« Quiz sur les appareils »</h3>
+        <p data-l="fr" lang="fr-CA">
+          Les élèves se joignent depuis les tablettes de la classe par le lien de la classe, un code
+          QR ou un code. Aucun compte d’élève. En équipes (bataille de quiz avec classement) ou
+          chacun pour soi. Les corrigés n’atteignent jamais les appareils des élèves.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          Students join from class tablets with the class link, a QR code or a code. No student
+          accounts. In teams (a quiz battle with a leaderboard) or solo. Answer keys never reach
+          student devices.
+        </p>
+      </div>
+      <div class="cm-item">
+        <h3 data-en="Erased at the end">Effacé à la fin</h3>
+        <p data-l="fr" lang="fr-CA">
+          Les réponses sont effacées quand la séance se termine. Vous pouvez garder les résultats de
+          la classe, sans noms.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          Responses are erased when the session ends. You can keep the class results, without names.
+        </p>
+      </div>
+      <div class="cm-item">
+        <h3 data-en="The library grows">La banque grandit</h3>
+        <p data-l="fr" lang="fr-CA">
+          « Adapter » une ressource en créditant l’originale, « Votre avis » (évaluations anonymes),
+          le nombre d’utilisations et la « Couverture du curriculum » : les attentes qui ont peu de
+          ressources approuvées.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          “Adapt” a resource with credit to the original, “Your opinion” (anonymous ratings), usage
+          counts and “Curriculum coverage”: the expectations with few approved resources.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PRIVACY ================= -->
+  <section class="sec" id="vie-privee" aria-labelledby="priv-title">
+    <div class="sec-head">
+      <p class="hand" data-en="No fine print">Sans petits caractères</p>
+      <h2 id="priv-title" data-en="Privacy in plain words">La vie privée, en clair</h2>
+      <p class="intro" data-en="What the app actually does today, and what it doesn’t do yet.">
+        Ce que l’application fait réellement aujourd’hui, et ce qu’elle ne fait pas encore.
+      </p>
+    </div>
+    <div class="cards">
+      <article class="card">
+        <h3 data-en="First names, nothing more">Des prénoms, rien de plus</h3>
+        <p data-l="fr" lang="fr-CA">
+          L’application ne conserve qu’un prénom ou un surnom par élève. Il n’y a aucun champ pour
+          un nom de famille, un numéro d’élève (NISO), une date de naissance ou une adresse. Votre
+          fichier est lu sur votre appareil : seule la colonne des prénoms est envoyée, et les
+          colonnes qui semblent sensibles sont affichées « jamais envoyées ». Dans la version
+          actuelle, les élèves n’ont ni compte ni écran.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          The app keeps only a first name or nickname for each student. There is no field for a last
+          name, a student number (OEN), a birthdate or an address. Your file is read on your device:
+          only the first-name column is sent, and columns that look sensitive are shown as “never
+          sent”. In the current version, students have no accounts and no screens.
+        </p>
+      </article>
+      <article class="card">
+        <h3 data-en="Alerts encrypted and hidden">Des alertes chiffrées et cachées</h3>
+        <p data-l="fr" lang="fr-CA">
+          Les alertes de sécurité ou médicales sont désactivées dans chaque école jusqu’à ce que la
+          direction les active, après approbation du conseil. Le serveur chiffre leur texte
+          (AES-256-GCM) avant qu’il atteigne la base de données. Elles restent cachées jusqu’à ce
+          que vous les affichiez, et chaque consultation est enregistrée. Le secrétariat ne les voit
+          jamais dans ses écrans, et elles ne sont jamais imprimées.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          Safety and medical alerts are off in each school until the direction turns them on, after
+          board approval. The server encrypts their text (AES-256-GCM) before it reaches the
+          database. They stay hidden until you tap, and every view is logged. The office never sees
+          them on its own screens, and they are never printed.
+        </p>
+      </article>
+      <article class="card">
+        <h3 data-en="AI off by default, names out before sending">
+          IA désactivée par défaut, noms retirés avant l’envoi
+        </h3>
+        <p data-l="fr" lang="fr-CA">
+          L’IA est désactivée dans chaque école jusqu’à ce que la direction l’active, et un conseil
+          peut l’interdire dans toutes ses écoles. Seul le personnel l’utilise, jamais les élèves,
+          et le plan de suppléance comme le reste fonctionnent sans elle. Avant l’envoi, les noms
+          connus deviennent des marqueurs, un renseignement personnel bloque la demande, et une
+          dernière vérification porte sur le texte exact. Vous voyez exactement ce qui sera envoyé.
+          Les appels partent seulement de notre serveur en arrière-plan, jamais du navigateur. Le
+          texte dépersonnalisé est traité par Claude, d’Anthropic, possiblement hors du Canada.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          AI is off in each school until the direction turns it on, and a board can forbid it in all
+          its schools. Only staff use it, never students, and the substitute plan and everything
+          else work without it. Before sending, known names become markers, a personal detail blocks
+          the request, and a last check runs on the exact text. You see exactly what will be sent.
+          Calls go out only from our background server, never from the browser. The de-identified
+          text is processed by Claude, by Anthropic, possibly outside Canada.
+        </p>
+        <p class="limit" data-l="fr" lang="fr-CA">
+          Limite : un nom que l’application ne connaît pas (un parent, une sœur) ne peut être repéré
+          que par vous, à l’aperçu.
+        </p>
+        <p class="limit" data-l="en" lang="en-CA" hidden>
+          Limit: a name the app doesn’t know (a parent, a sibling) can only be caught by you, at the
+          preview.
+        </p>
+      </article>
+      <article class="card">
+        <h3 data-en="Designed to be hosted in Canada">Conçue pour être hébergée au Canada</h3>
+        <p data-l="fr" lang="fr-CA">
+          C’est une règle de conception : dans la version hébergée, la base de données, le serveur
+          web et le serveur de traitement en arrière-plan fonctionneront tous dans une région
+          canadienne. Rien n’est encore hébergé. Une installation sur les serveurs du conseil, avec
+          Docker, est aussi prévue.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          It is a design rule: in the hosted version, the database, the web server and the
+          background worker will all run in a Canadian region. Nothing is hosted yet. An install on
+          the board’s own servers, with Docker, is also planned.
+        </p>
+      </article>
+    </div>
+
+    <div class="also">
+      <div>
+        <h3 data-en="Also">Aussi</h3>
+        <ul data-l="fr" lang="fr-CA">
+          <li>
+            Comptes sur invitation seulement, sans mot de passe : un code à 6 chiffres envoyé par
+            courriel.
+          </li>
+          <li>
+            Chaque personne ne voit que ce que son rôle permet. La sécurité au niveau des lignes est
+            active sur chaque table, et des tests automatisés le vérifient.
+          </li>
+          <li>
+            Le journal d’audit est en ajout seulement et ne contient jamais de noms d’élèves ni de
+            texte d’alerte.
+          </li>
+          <li>Vous pouvez supprimer une classe et toutes ses données d’un coup.</li>
+          <li>
+            Suppressions automatiques déjà construites : demandes d’IA après 30 jours, codes de
+            suppléance 30 jours après leur expiration, notes des suivis après 60 jours.
+          </li>
+          <li>Aucun numéro de téléphone ni courriel de personne suppléante n’est conservé.</li>
+        </ul>
+        <ul data-l="en" lang="en-CA" hidden>
+          <li>Invite-only accounts, no passwords: a 6-digit code sent by email.</li>
+          <li>
+            Each person sees only what their role allows. Row Level Security is on every table, and
+            automated tests check it.
+          </li>
+          <li>The audit log is append-only and never contains student names or alert text.</li>
+          <li>You can delete a class and all its data at once.</li>
+          <li>
+            Automatic deletions already built: AI requests after 30 days, substitute codes 30 days
+            after they expire, report notes after 60 days.
+          </li>
+          <li>No substitute’s phone number or email is stored.</li>
+        </ul>
+      </div>
+      <div>
+        <h3 data-en="Not done yet, said up front">Pas encore fait, dit d’avance</h3>
+        <ul data-l="fr" lang="fr-CA">
+          <li>
+            Durées de conservation proposées, pas encore automatisées : données de classe jusqu’à la
+            fin de l’année scolaire plus un an, journal d’audit deux ans, plans de suppléance un an.
+          </li>
+          <li>
+            Qui voit quoi selon le rôle : ces règles par défaut sont des hypothèses à confirmer avec
+            un conseil.
+          </li>
+          <li>
+            Le document de confidentialité complet est prévu. La description de ce que voit l’IA
+            existe déjà.
+          </li>
+          <li>
+            Aucune certification ni évaluation des facteurs relatifs à la vie privée n’a encore été
+            faite.
+          </li>
+        </ul>
+        <ul data-l="en" lang="en-CA" hidden>
+          <li>
+            Proposed retention periods, not automated yet: class data until the end of the school
+            year plus one year, the audit log two years, substitute plans one year.
+          </li>
+          <li>Who sees what by role: these defaults are assumptions to confirm with a board.</li>
+          <li>
+            The full privacy document is planned. The description of what the AI sees already
+            exists.
+          </li>
+          <li>No certification and no privacy impact assessment has been done yet.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= IDENTITY ================= -->
+  <section class="sec" id="identite" aria-labelledby="id-title">
+    <div class="sec-head">
+      <p class="hand" data-en="Our schools">Nos écoles</p>
+      <h2 id="id-title" data-en="Made for French-language Catholic schools">
+        Pensée pour les écoles catholiques de langue française
+      </h2>
+    </div>
+    <div class="ident">
+      <div class="ident-col">
+        <div class="ident-head">
+          <svg width="34" height="44" viewBox="0 0 34 44" aria-hidden="true">
+            <rect class="sv-green" x="14" y="2" width="6" height="40" rx="1" />
+            <rect class="sv-green" x="4" y="12" width="26" height="6" rx="1" />
+          </svg>
+          <h3 data-en="Catholic identity">Identité catholique</h3>
+        </div>
+        <ul class="ticks" data-l="fr" lang="fr-CA">
+          <li>La prière du matin et l’Ô Canada sont une période de l’horaire.</li>
+          <li>La messe de l’école et les célébrations liturgiques réorganisent la journée.</li>
+          <li>
+            Chaque plan de suppléance peut inclure un « Moment de foi », choisi selon l’année et le
+            temps liturgique (Avent, Noël, Carême, Pâques). Vous le modifiez ou le retirez.
+          </li>
+        </ul>
+        <ul class="ticks" data-l="en" lang="en-CA" hidden>
+          <li>Morning prayer and O Canada are a period in the timetable.</li>
+          <li>School masses and liturgical celebrations reshape the day.</li>
+          <li>
+            Each substitute plan can include a “Faith moment”, matched to the grade and the
+            liturgical season (Advent, Christmas, Lent, Easter). You edit or remove it.
+          </li>
+        </ul>
+        <p class="caveat" data-l="fr" lang="fr-CA">
+          Les textes de foi actuels sont 7 textes écrits pour la démonstration. Aucune autorité
+          catholique ne les a encore révisés, et le conseil ne peut pas encore les modifier à
+          l’écran.
+        </p>
+        <p class="caveat" data-l="en" lang="en-CA" hidden>
+          The current faith texts are 7 texts written for the demo. No Catholic authority has
+          reviewed them yet, and the board cannot edit them on screen yet.
+        </p>
+      </div>
+      <div class="ident-col">
+        <div class="ident-head">
+          <svg width="84" height="56" viewBox="0 0 90 60" aria-hidden="true">
+            <rect class="sv-flag-g" x="0" y="0" width="45" height="60" />
+            <rect class="sv-flag-w" x="45" y="0" width="45" height="60" />
+            <g class="sv-flag-w" transform="translate(8 15) scale(0.72)">
+              <path d="M20 3c3 4 5 8 5 12s-2 7-5 9c-3-2-5-5-5-9s2-8 5-12z" />
+              <path d="M17 25c-6 1-12-2-12-8 0-3 2-5 5-5-1 3 0 6 3 7 2 1 3 2 4 6z" />
+              <path d="M23 25c6 1 12-2 12-8 0-3-2-5-5-5 1 3 0 6-3 7-2 1-3 2-4 6z" />
+              <rect x="12" y="24" width="16" height="3" rx="1" />
+              <path d="M17 27c0 5-3 8-6 9 4 0 7-2 9-5 2 3 5 5 9 5-3-1-6-4-6-9z" />
+            </g>
+            <g class="sv-flag-g" transform="translate(67.5 31)">
+              <path d="M0 0C4-4 4-10 0-14C-4-10-4-4 0 0Z" />
+              <path d="M0 0C4-4 4-10 0-14C-4-10-4-4 0 0Z" transform="rotate(120)" />
+              <path d="M0 0C4-4 4-10 0-14C-4-10-4-4 0 0Z" transform="rotate(240)" />
+              <path
+                d="M0 0C1.6-3 1.6-7 0-10C-1.6-7-1.6-3 0 0Z"
+                transform="rotate(60)"
+                fill-opacity="0.55"
+              />
+              <path
+                d="M0 0C1.6-3 1.6-7 0-10C-1.6-7-1.6-3 0 0Z"
+                transform="rotate(180)"
+                fill-opacity="0.55"
+              />
+              <path
+                d="M0 0C1.6-3 1.6-7 0-10C-1.6-7-1.6-3 0 0Z"
+                transform="rotate(300)"
+                fill-opacity="0.55"
+              />
+            </g>
+            <rect class="sv-flag-edge" x="0.5" y="0.5" width="89" height="59" />
+          </svg>
+          <h3 data-en="Franco-Ontarian identity">Identité franco-ontarienne</h3>
+        </div>
+        <ul class="ticks" data-l="fr" lang="fr-CA">
+          <li>
+            Une interface en français canadien d’abord, avec les mots de l’école : journée
+            pédagogique, pause santé, départ hâtif, personne suppléante. L’anglais est offert à qui
+            le veut; ce que le personnel tape reste tel quel.
+          </li>
+          <li>
+            Les années d’études et les matières de l’Ontario, les jours en rotation (Jour 1 à N) et
+            l’enseignement en rotation.
+          </li>
+          <li>
+            Des niveaux de langue par élève et le « Texte différencié » pour les classes où la
+            maîtrise du français varie.
+          </li>
+          <li>
+            Une écriture inclusive : « la personne suppléante », « le personnel enseignant », « la
+            direction ».
+          </li>
+        </ul>
+        <ul class="ticks" data-l="en" lang="en-CA" hidden>
+          <li>
+            A Canadian-French interface first, with the school’s own words: journée pédagogique,
+            pause santé, départ hâtif, personne suppléante. English is there for anyone who wants
+            it; what staff type stays as typed.
+          </li>
+          <li>Ontario grades and subjects, rotating days (Day 1 to N) and rotary teaching.</li>
+          <li>
+            Language levels per student and “Differentiated text” for classes where French
+            proficiency varies.
+          </li>
+          <li>
+            Inclusive writing in French: “la personne suppléante”, “le personnel enseignant”, “la
+            direction”.
+          </li>
+        </ul>
+        <p class="caveat" data-l="fr" lang="fr-CA">
+          Le curriculum chargé est un échantillon marqué « à vérifier », pas le texte officiel. La
+          maternelle et le jardin d’enfants n’ont pas encore de structure qui leur est propre.
+        </p>
+        <p class="caveat" data-l="en" lang="en-CA" hidden>
+          The curriculum loaded is a sample marked “à vérifier” (to verify), not the official text.
+          Kindergarten (Maternelle and Jardin d’enfants) has no structure of its own yet.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SCHOOL BOARDS ================= -->
+  <section class="sec" id="conseils" aria-labelledby="brd-title">
+    <div class="sec-head">
+      <p class="hand" data-en="For decision makers">Pour les décideurs</p>
+      <h2 id="brd-title" data-en="For school boards">Pour les conseils scolaires</h2>
+      <p class="intro" data-l="fr" lang="fr-CA">
+        Aucun conseil scolaire n’est client, et le projet pilote n’a pas commencé. Voici ce qui est
+        construit pour vous, et ce qui est prévu.
+      </p>
+      <p class="intro" data-l="en" lang="en-CA" hidden>
+        No school board is a client, and the pilot has not started. Here is what is built for you,
+        and what is planned.
+      </p>
+    </div>
+    <div class="brds">
+      <div class="brd">
+        <span
+          ><span class="stamp stamp--ok" data-en="Available (pilot build)"
+            >Disponible (version pilote)</span
+          ></span
+        >
+        <h3 data-en="Modules, school by school">Des modules, école par école</h3>
+        <p data-l="fr" lang="fr-CA">
+          Les modules sous licence s’activent pour chaque école. Pour l’instant, IP Lynx,
+          l’exploitant, les active avec ses outils d’administration.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          Licensed modules are turned on per school. For now, IP Lynx, the operator, turns them on
+          with its admin tools.
+        </p>
+      </div>
+      <div class="brd">
+        <span
+          ><span class="stamp stamp--ok" data-en="Available (pilot build)"
+            >Disponible (version pilote)</span
+          ></span
+        >
+        <h3 data-en="Your choices, applied for you">Vos choix, appliqués pour vous</h3>
+        <p data-l="fr" lang="fr-CA">
+          Interdire l’IA dans toutes vos écoles, mettre en commun son budget, définir vos niveaux de
+          langue, l’année où commence l’anglais et l’heure de publication automatique des plans :
+          ces choix existent dans les données et l’exploitant les applique à la demande du conseil.
+          Il n’y a pas encore d’écrans pour le conseil.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          Forbidding AI in all your schools, pooling its budget, your language levels, the grade
+          where English starts and the plans’ automatic release time: these choices exist as data,
+          and the operator applies them at the board’s request. There are no board screens yet.
+        </p>
+      </div>
+      <div class="brd">
+        <span class="stamps"
+          ><span class="stamp stamp--ok" data-en="Available (pilot build)"
+            >Disponible (version pilote)</span
+          ><span class="stamp stamp--soon" data-en="Viewer: coming soon"
+            >Écran : bientôt</span
+          ></span
+        >
+        <h3 data-en="An audit log">Un journal d’audit</h3>
+        <p data-l="fr" lang="fr-CA">
+          En ajout seulement, sans noms d’élèves ni texte d’alerte. Chaque utilisation de code,
+          consultation de plan, impression, affichage d’alerte et suivi y est inscrit, avec la
+          personne qui a émis le code. L’écran pour le consulter est prévu.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          Append-only, with no student names or alert text. Every code use, plan view, print, alert
+          reveal and report is recorded, with who issued the code. A screen to read it is planned.
+        </p>
+      </div>
+      <div class="brd">
+        <span
+          ><span class="stamp stamp--ok" data-en="Available (pilot build)"
+            >Disponible (version pilote)</span
+          ></span
+        >
+        <h3 data-en="Each role sees its share">Chacun voit ce qui lui revient</h3>
+        <p data-l="fr" lang="fr-CA">
+          Le personnel enseignant ne voit que ses propres classes. La direction ne voit pas la
+          planification ni la progression du personnel enseignant. Le secrétariat ne voit pas les
+          listes de classe, sauf les prénoms d’un plan de suppléance publié, et c’est journalisé.
+          L’administration du conseil ne voit aucune donnée d’élève. Hypothèses à confirmer avec un
+          conseil.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          Teachers see only their own classes. The direction does not see teachers’ planning or
+          progress. The office sees no class lists, except first names in a released substitute
+          plan, and that is logged. The board admin sees no student data. These are assumptions to
+          confirm with a board.
+        </p>
+      </div>
+      <div class="brd">
+        <span
+          ><span class="stamp stamp--ok" data-en="Available (pilot build)"
+            >Disponible (version pilote)</span
+          ></span
+        >
+        <h3 data-en="AI under control">L’IA sous contrôle</h3>
+        <p data-l="fr" lang="fr-CA">
+          Désactivée par défaut dans chaque école. Un budget mensuel par école, qui peut être mis en
+          commun entre les écoles du conseil, et au plus 3 demandes à la fois et 40 par heure par
+          personne. La direction voit l’utilisation du mois. Aucun prix n’est encore fixé.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          Off by default in each school. A monthly budget per school, which can be pooled across the
+          board’s schools, and at most 3 requests at a time and 40 per hour per person. The
+          direction sees the month’s use. No pricing is set yet.
+        </p>
+      </div>
+      <div class="brd">
+        <span><span class="stamp stamp--soon" data-en="Coming soon">Bientôt</span></span>
+        <h3 data-en="Hosting in Canada, or on your servers">Hébergement au Canada, ou chez vous</h3>
+        <p data-l="fr" lang="fr-CA">
+          Deux options prévues : notre version hébergée, où la base de données, le serveur web et le
+          traitement en arrière-plan fonctionneront dans une région canadienne, ou une installation
+          sur les serveurs du conseil avec Docker. Aucune n’existe encore. L’architecture garde les
+          deux possibles : tâches en arrière-plan dans Postgres seulement, aucun service propre à un
+          hébergeur, un serveur web autonome.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          Two planned options: our hosted version, where the database, web server and background
+          worker will run in a Canadian region, or an install on the board’s own servers with
+          Docker. Neither exists yet. The architecture keeps both possible: background jobs in
+          Postgres only, no host-only services, a standalone web server build.
+        </p>
+      </div>
+    </div>
+    <p class="caveat extras" data-l="fr" lang="fr-CA">
+      Accessibilité : la cible est WCAG 2.0 AA (LAPHO), avec des vérifications automatiques axe sur
+      les pages clés. C’est une cible, pas une certification.
+    </p>
+    <p class="caveat extras" data-l="en" lang="en-CA" hidden>
+      Accessibility: the target is WCAG 2.0 AA (AODA), with automated axe checks on key pages. It is
+      a target, not a certification.
+    </p>
+    <div class="vision">
+      <div class="stamps">
+        <span class="stamp stamp--later" data-en="Later">Vision</span>
+        <h3 data-en="Later, with no date">Plus tard, sans date</h3>
+      </div>
+      <ul>
+        <li data-en="Office: attendance and visitors">Secrétariat : présences et visiteurs</li>
+        <li data-en="Links with school systems: doors, PA, intercoms, cameras">
+          Liens avec les systèmes de l’école : portes, sonorisation, interphones, caméras
+        </li>
+        <li data-en="Microsoft or Google sign-in">Connexion Microsoft ou Google</li>
+        <li data-en="Parents">Parents</li>
+        <li data-en="Board analytics">Analyses pour le conseil</li>
+        <li data-en="Report-card comments and an IEP log">
+          Commentaires de bulletin et journal du PEI
+        </li>
+      </ul>
+      <p
+        class="note"
+        data-en="None of these exists today. The platform has no link with PA, doors, intercoms or cameras."
+      >
+        Rien de cela n’existe aujourd’hui. La plateforme n’a aucun lien avec la sonorisation, les
+        portes, les interphones ou les caméras.
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= PILOT ================= -->
+  <section class="sec" id="pilote" aria-labelledby="pilot-title">
+    <div class="pilot">
+      <div class="prose">
+        <p class="hand" data-en="Your turn">À vous</p>
+        <h2 id="pilot-title" data-en="Try it with us">Essayez-la avec nous</h2>
+        <p data-l="fr" lang="fr-CA">
+          Le projet pilote est gratuit et n’a pas encore commencé. Nous cherchons des membres du
+          personnel enseignant d’écoles élémentaires catholiques de langue française de l’Ontario,
+          et des personnes des conseils scolaires qui veulent suivre le projet.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          The pilot is free and has not started yet. We are looking for teachers in Ontario’s
+          French-language Catholic elementary schools, and for school-board staff who want to follow
+          the project.
+        </p>
+        <p data-l="fr" lang="fr-CA">
+          Nous vous demanderons de l’essayer sur votre propre téléphone et de nous dire ce qui
+          manque. Par exemple : combien de temps faut-il pour signaler une absence à 6 h, au saut du
+          lit? Notre objectif est moins de 60 secondes. Ce n’est pas encore mesuré.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          We will ask you to try it on your own phone and tell us what is missing. For example: how
+          long does it take to report an absence at 6 a.m., just out of bed? Our goal is under 60
+          seconds. It has not been measured yet.
+        </p>
+      </div>
+
+      <div class="panel">
+        <div class="notice" role="note">
+          <strong data-en="This form doesn’t send anything yet."
+            >Ce formulaire n’envoie rien pour l’instant.</strong
+          >
+          <span data-l="fr" lang="fr-CA"
+            >Il prépare votre message; vous nous l’envoyez ensuite vous-même, à
+            <span class="email-inline" data-contact-email>pilote@iplynx.ca</span>.</span
+          >
+          <span data-l="en" lang="en-CA" hidden
+            >It prepares your message; you then send it to us yourself, at
+            <span class="email-inline" data-contact-email>pilote@iplynx.ca</span>.</span
+          >
+        </div>
+
+        <form id="pilot-form" novalidate>
+          <div class="row2">
+            <div class="field">
+              <label for="f-name" data-en="First and last name">Prénom et nom</label>
+              <input
+                id="f-name"
+                name="name"
+                type="text"
+                autocomplete="name"
+                required
+                aria-describedby="f-name-err"
+              />
+              <p class="err" id="f-name-err" hidden></p>
+            </div>
+            <div class="field">
+              <label for="f-email" data-en="Email">Courriel</label>
+              <input
+                id="f-email"
+                name="email"
+                type="email"
+                inputmode="email"
+                autocomplete="email"
+                required
+                aria-describedby="f-email-err"
+              />
+              <p class="err" id="f-email-err" hidden></p>
+            </div>
+          </div>
+          <div class="field">
+            <label for="f-role" data-en="Your role">Votre rôle</label>
+            <select id="f-role" name="role" required aria-describedby="f-role-err">
+              <option value="" data-en="Choose…">Choisissez…</option>
+              <option value="teacher" data-en="Teacher">Enseignant·e</option>
+              <option value="direction" data-en="Principal or vice-principal">
+                Direction ou direction adjointe
+              </option>
+              <option value="office" data-en="School office">Secrétariat</option>
+              <option value="board" data-en="School board">Conseil scolaire</option>
+              <option value="other" data-en="Other">Autre</option>
+            </select>
+            <p class="err" id="f-role-err" hidden></p>
+          </div>
+          <div class="row2">
+            <div class="field">
+              <label for="f-school"
+                ><span data-en="School and board">École et conseil scolaire</span>
+                <span class="opt" data-en="(optional)">(facultatif)</span></label
+              >
+              <input id="f-school" name="school" type="text" autocomplete="organization" />
+            </div>
+            <div class="field">
+              <label for="f-grades"
+                ><span data-en="Grade(s)">Année(s) d’études</span>
+                <span class="opt" data-en="(optional)">(facultatif)</span></label
+              >
+              <input
+                id="f-grades"
+                name="grades"
+                type="text"
+                placeholder="Ex. : 3e année"
+                data-ph-en="E.g. Grade 3"
+              />
+            </div>
+          </div>
+          <div class="field">
+            <label for="f-msg"
+              ><span data-en="Message">Message</span>
+              <span class="opt" data-en="(optional)">(facultatif)</span></label
+            >
+            <textarea id="f-msg" name="message" rows="3"></textarea>
+          </div>
+          <div class="actions">
+            <button class="btn btn--go" type="submit" data-en="Prepare my request">
+              Préparer ma demande
+            </button>
+          </div>
+        </form>
+
+        <div class="thanks" id="pilot-thanks" hidden tabindex="-1">
+          <h3 id="thanks-title"></h3>
+          <p id="thanks-body"></p>
+          <div class="email-line">
+            <span class="email" id="thanks-email" data-contact-email>pilote@iplynx.ca</span>
+            <button class="btn" type="button" id="copy-email" data-en="Copy the address">
+              Copier l’adresse
+            </button>
+          </div>
+          <div class="field">
+            <label for="f-out" data-en="Your message, ready to copy"
+              >Votre message, prêt à copier</label
+            >
+            <textarea id="f-out" class="msg" readonly rows="10"></textarea>
+          </div>
+          <div class="actions">
+            <button class="btn btn--go" type="button" id="copy-msg" data-en="Copy the message">
+              Copier le message
+            </button>
+            <button class="btn" type="button" id="edit-req" data-en="Edit my request">
+              Modifier ma demande
+            </button>
+          </div>
+          <p class="live" id="copy-live" aria-live="polite"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <strong data-app-name>Lynx École</strong>
+  <p data-l="fr" lang="fr-CA">
+    « <span data-app-name>Lynx École</span> » est un nom de travail qui peut changer. Une plateforme
+    d’IP Lynx Inc., intégrateur ontarien en sécurité et en télécommunications. En développement :
+    aucun service en ligne, aucun conseil scolaire client, aucun témoignage. Les exemples et les
+    prénoms de cette page sont fictifs. État au 29 septembre 2026.
+  </p>
+  <p data-l="en" lang="en-CA" hidden>
+    “<span data-app-name>Lynx École</span>” is a working name that may change. A platform by IP Lynx
+    Inc., an Ontario security and telecom integrator. In development: no live service, no
+    school-board clients, no testimonials. The examples and first names on this page are fictional.
+    Status as of September 29, 2026.
+  </p>
+</footer>
+
+<script>
+  (function () {
+    'use strict';
+
+    // Working name (DECISIONS D-002). Change it here and every [data-app-name] follows.
+    var APP_NAME = 'Lynx École';
+    // Placeholder address: confirm with the product owner before sharing this page.
+    var CONTACT_EMAIL = 'pilote@iplynx.ca';
+    var STORE_KEY = 'lynx-ecole-site-lang';
+
+    var root = document.documentElement;
+    var current = 'fr';
+
+    function readSaved() {
+      try {
+        return window.localStorage.getItem(STORE_KEY);
+      } catch (e) {
+        return null;
+      }
+    }
+    function save(value) {
+      try {
+        window.localStorage.setItem(STORE_KEY, value);
+      } catch (e) {
+        /* storage unavailable: the choice lasts for this visit only */
+      }
+    }
+    function each(selector, fn) {
+      Array.prototype.forEach.call(document.querySelectorAll(selector), fn);
+    }
+
+    each('[data-app-name]', function (el) {
+      el.textContent = APP_NAME;
+    });
+    each('[data-contact-email]', function (el) {
+      el.textContent = CONTACT_EMAIL;
+    });
+
+    // Short strings: the French is in the markup, the English in data-en.
+    each('[data-en]', function (el) {
+      el.setAttribute('data-fr', el.textContent.replace(/[ \t\r\n]+/g, ' ').trim());
+    });
+    each('[data-ph-en]', function (el) {
+      el.setAttribute('data-ph-fr', el.getAttribute('placeholder') || '');
+    });
+    each('[data-aria-en]', function (el) {
+      el.setAttribute('data-aria-fr', el.getAttribute('aria-label') || '');
+    });
+
+    var TEXT = {
+      fr: {
+        nameMissing: 'Écrivez votre prénom et votre nom.',
+        emailMissing: 'Écrivez votre adresse courriel.',
+        emailBad: 'Cette adresse courriel semble incomplète. Exemple : prenom.nom@conseil.ca',
+        roleMissing: 'Choisissez votre rôle.',
+        thanksTitle: function (first) {
+          return 'Merci, ' + first + '! Votre demande est prête.';
+        },
+        thanksBody:
+          'Rien n’a été envoyé. Copiez le message ci-dessous et envoyez-le à cette adresse :',
+        copiedEmail: 'Adresse copiée.',
+        copiedMsg: 'Message copié.',
+        copyFailed:
+          'La copie n’a pas fonctionné ici : le texte est sélectionné, copiez-le avec votre clavier.',
+        subject: 'Objet : Projet pilote ',
+        hello: 'Bonjour,',
+        want: 'J’aimerais participer au projet pilote.',
+        name: 'Nom : ',
+        email: 'Courriel : ',
+        role: 'Rôle : ',
+        school: 'École et conseil scolaire : ',
+        grades: 'Année(s) d’études : ',
+        message: 'Message : ',
+        none: '(non précisé)',
+      },
+      en: {
+        nameMissing: 'Enter your first and last name.',
+        emailMissing: 'Enter your email address.',
+        emailBad: 'This email address looks incomplete. Example: first.last@board.ca',
+        roleMissing: 'Choose your role.',
+        thanksTitle: function (first) {
+          return 'Thank you, ' + first + '! Your request is ready.';
+        },
+        thanksBody: 'Nothing has been sent. Copy the message below and send it to this address:',
+        copiedEmail: 'Address copied.',
+        copiedMsg: 'Message copied.',
+        copyFailed: 'Copying didn’t work here: the text is selected, copy it with your keyboard.',
+        subject: 'Subject: Pilot project, ',
+        hello: 'Hello,',
+        want: 'I would like to take part in the pilot.',
+        name: 'Name: ',
+        email: 'Email: ',
+        role: 'Role: ',
+        school: 'School and board: ',
+        grades: 'Grade(s): ',
+        message: 'Message: ',
+        none: '(not given)',
+      },
+    };
+
+    var form = document.getElementById('pilot-form');
+    var thanks = document.getElementById('pilot-thanks');
+    var fields = {
+      name: document.getElementById('f-name'),
+      email: document.getElementById('f-email'),
+      role: document.getElementById('f-role'),
+      school: document.getElementById('f-school'),
+      grades: document.getElementById('f-grades'),
+      message: document.getElementById('f-msg'),
+    };
+    var errors = {}; // field id -> message key
+    var lastGood = null;
+
+    function showError(key, msgKey) {
+      var input = fields[key];
+      var out = document.getElementById(input.id + '-err');
+      if (msgKey) {
+        errors[key] = msgKey;
+        input.setAttribute('aria-invalid', 'true');
+        out.textContent = TEXT[current][msgKey];
+        out.hidden = false;
+      } else {
+        delete errors[key];
+        input.removeAttribute('aria-invalid');
+        out.textContent = '';
+        out.hidden = true;
+      }
+    }
+
+    function validate() {
+      var v = {
+        name: fields.name.value.trim(),
+        email: fields.email.value.trim(),
+        role: fields.role.value,
+      };
+      showError('name', v.name ? null : 'nameMissing');
+      if (!v.email) showError('email', 'emailMissing');
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.email)) showError('email', 'emailBad');
+      else showError('email', null);
+      showError('role', v.role ? null : 'roleMissing');
+      return !errors.name && !errors.email && !errors.role;
+    }
+
+    function roleLabel() {
+      var opt = fields.role.options[fields.role.selectedIndex];
+      return opt ? opt.textContent : '';
+    }
+
+    function renderThanks() {
+      if (!lastGood) return;
+      var t = TEXT[current];
+      var first = lastGood.name.split(/\s+/)[0];
+      document.getElementById('thanks-title').textContent = t.thanksTitle(first);
+      document.getElementById('thanks-body').textContent = t.thanksBody;
+      var lines = [
+        t.subject + APP_NAME,
+        '',
+        t.hello,
+        '',
+        t.want,
+        '',
+        t.name + lastGood.name,
+        t.email + lastGood.email,
+        t.role + roleLabel(),
+        t.school + (lastGood.school || t.none),
+        t.grades + (lastGood.grades || t.none),
+      ];
+      if (lastGood.message) lines.push(t.message + lastGood.message);
+      document.getElementById('f-out').value = lines.join('\n');
+    }
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      if (!validate()) {
+        var firstBad = ['name', 'email', 'role'].filter(function (k) {
+          return errors[k];
+        })[0];
+        if (firstBad) fields[firstBad].focus();
+        return;
+      }
+      lastGood = {
+        name: fields.name.value.trim(),
+        email: fields.email.value.trim(),
+        school: fields.school.value.trim(),
+        grades: fields.grades.value.trim(),
+        message: fields.message.value.trim(),
+      };
+      renderThanks();
+      form.hidden = true;
+      thanks.hidden = false;
+      document.getElementById('copy-live').textContent = '';
+      thanks.focus();
+    });
+
+    ['name', 'email', 'role'].forEach(function (key) {
+      fields[key].addEventListener(key === 'role' ? 'change' : 'input', function () {
+        if (errors[key]) validate();
+      });
+    });
+
+    document.getElementById('edit-req').addEventListener('click', function () {
+      thanks.hidden = true;
+      form.hidden = false;
+      fields.name.focus();
+    });
+
+    function selectNode(node) {
+      if (node.select) {
+        node.focus();
+        node.select();
+        return;
+      }
+      var range = document.createRange();
+      range.selectNodeContents(node);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+    function copy(text, node, okKey) {
+      var live = document.getElementById('copy-live');
+      function failed() {
+        selectNode(node);
+        live.textContent = TEXT[current].copyFailed;
+      }
+      try {
+        if (!navigator.clipboard || !navigator.clipboard.writeText) return failed();
+        navigator.clipboard.writeText(text).then(function () {
+          live.textContent = TEXT[current][okKey];
+        }, failed);
+      } catch (e) {
+        failed();
+      }
+    }
+    document.getElementById('copy-email').addEventListener('click', function () {
+      copy(CONTACT_EMAIL, document.getElementById('thanks-email'), 'copiedEmail');
+    });
+    document.getElementById('copy-msg').addEventListener('click', function () {
+      var out = document.getElementById('f-out');
+      copy(out.value, out, 'copiedMsg');
+    });
+
+    function setLang(lang, persist) {
+      current = lang === 'en' ? 'en' : 'fr';
+      root.lang = current === 'en' ? 'en-CA' : 'fr-CA';
+      each('[data-l]', function (el) {
+        if (el.getAttribute('data-l') === current) el.removeAttribute('hidden');
+        else el.setAttribute('hidden', '');
+      });
+      each('[data-en]', function (el) {
+        el.textContent = el.getAttribute('data-' + current);
+      });
+      each('[data-ph-en]', function (el) {
+        el.setAttribute('placeholder', el.getAttribute('data-ph-' + current));
+      });
+      each('[data-aria-en]', function (el) {
+        el.setAttribute('aria-label', el.getAttribute('data-aria-' + current));
+      });
+      each('[data-set-lang]', function (btn) {
+        btn.setAttribute('aria-pressed', String(btn.getAttribute('data-set-lang') === current));
+      });
+      document.title = APP_NAME;
+      Object.keys(errors).forEach(function (key) {
+        showError(key, errors[key]);
+      });
+      if (!thanks.hidden) renderThanks();
+      if (persist) save(current);
+    }
+
+    each('[data-set-lang]', function (btn) {
+      btn.addEventListener('click', function () {
+        setLang(btn.getAttribute('data-set-lang'), true);
+      });
+    });
+
+    setLang(readSaved() === 'en' ? 'en' : 'fr', false);
+  })();
+</script>

@@ -5,6 +5,11 @@ from code and the app screenshots in `screens/`. The finished videos are not com
 rebuild them with the steps below. Generated files (`build/`, `models/`, `venv/`, `*.mp4`, storyboards)
 are git-ignored.
 
+> **Out of date on one scene.** This v1 cut labels the sick-day substitute plan « Bientôt » and
+> says « une seule touche ». The plan has shipped, and reporting an absence takes two taps. The
+> next cut follows [`script-v2.md`](script-v2.md); see also [`../README.md`](../README.md) for the
+> "claims only what ships" rule.
+
 ## Deliverables
 
 | File                                               | What                                                                               |
