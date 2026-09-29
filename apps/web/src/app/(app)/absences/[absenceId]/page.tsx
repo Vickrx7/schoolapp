@@ -235,6 +235,7 @@ export default async function AbsencePage({ params }: Params) {
         subtitle={t(`absences.part.${absence.part}`)}
         actions={
           <AbsenceActions
+            userId={session.userId}
             absence={{
               id: absence.id,
               startsOn: absence.startsOn,

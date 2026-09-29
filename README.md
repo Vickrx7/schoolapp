@@ -1,13 +1,15 @@
 # Lynx École
 
 Plateforme pour les écoles élémentaires catholiques de langue française de l’Ontario: planning,
-lesson tracking, differentiated texts with AI and (next) substitute hand-off, built for teachers
+lesson tracking, differentiated texts with AI and the substitute hand-off, built for teachers
 first.
 
 - Product brief: [`SPEC.md`](SPEC.md)
 - Decisions and assumptions: [`DECISIONS.md`](DECISIONS.md)
 - Phase notes, demo scripts and what to test with teachers: [`docs/phase-1.md`](docs/phase-1.md),
-  [`docs/phase-2.md`](docs/phase-2.md)
+  [`docs/phase-2.md`](docs/phase-2.md), [`docs/phase-3.md`](docs/phase-3.md) (substitute hand-off,
+  including its deployment steps)
+- Where things stand and how to continue: [`docs/HANDOFF.md`](docs/HANDOFF.md)
 - What the AI sees (for privacy reviews): [`docs/ai-data-flow.md`](docs/ai-data-flow.md)
 
 ## Repository layout
@@ -69,23 +71,44 @@ Same ports and keys as the Supabase CLI, so the same `.env.local` works. See
 
 ## Commands
 
-| Command                                        | What it does                                                                      |
-| ---------------------------------------------- | --------------------------------------------------------------------------------- |
-| `pnpm dev` / `pnpm dev:worker`                 | Run the web app / the worker                                                      |
-| `pnpm lint` · `pnpm typecheck` · `pnpm format` | Code quality                                                                      |
-| `pnpm test`                                    | Unit tests (domain logic, config, integrations, alert encryption)                 |
-| `pnpm test:db`                                 | pgTAP database tests (RLS, audit, alerts, planner) via `supabase test db`         |
-| `pnpm test:int`                                | Integration tests that need a database (`DATABASE_URL`)                           |
-| `pnpm test:e2e`                                | Playwright end-to-end tests (needs the stack running and a built app)             |
-| `pnpm db:types` / `pnpm db:types:direct`       | Regenerate `packages/db/src/database.types.ts`                                    |
-| `pnpm admin <command>`                         | Onboard boards, schools and staff; AI budgets and usage (`apps/admin/src/cli.ts`) |
-| `pnpm ai:eval [--provider fake] [--yes]`       | Run the AI evaluation set (Claude costs about $1; `fake` is free)                 |
+| Command                                                       | What it does                                                                                 |
+| ------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `pnpm dev` / `pnpm dev:worker`                                | Run the web app / the worker                                                                 |
+| `pnpm lint` · `pnpm typecheck` · `pnpm format`                | Code quality                                                                                 |
+| `pnpm test`                                                   | Unit tests (domain logic, config, integrations, alert encryption)                            |
+| `pnpm test:db`                                                | pgTAP database tests (RLS, audit, alerts, planner, substitute access) via `supabase test db` |
+| `pnpm test:int`                                               | Integration tests that need a database (`DATABASE_URL`)                                      |
+| `pnpm test:e2e`                                               | Playwright end-to-end tests (needs the stack running and a built app)                        |
+| `pnpm db:types` / `pnpm db:types:direct`                      | Regenerate `packages/db/src/database.types.ts`                                               |
+| `pnpm admin <command>`                                        | Onboard boards, schools and staff; AI budgets and usage (`apps/admin/src/cli.ts`)            |
+| `pnpm ai:eval [--feature sub_plan] [--provider fake] [--yes]` | Run an AI evaluation set (Claude costs about $1–2; `fake` is free)                           |
 
 ## Configuration
 
 Everything is configured with environment variables, documented in [`.env.example`](.env.example).
 Board- and school-level options (schedule type, Anglais start grade, alerts on/off, language levels,
-modules...) are stored in the database (DECISIONS.md, D-003).
+substitute access hours, modules...) are stored in the database (DECISIONS.md, D-003).
+
+| Variable                                                | Used by       | What it is                                                                                        |
+| ------------------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`                              | web           | Supabase API URL                                                                                  |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY`                         | web           | Public API key (RLS protects all data)                                                            |
+| `SUPABASE_SERVICE_ROLE_KEY`                             | admin CLI     | Service key, for `pnpm admin` only; never in the web app                                          |
+| `APP_BASE_URL`                                          | web           | Public address (links in codes and emails; `https:` makes portal cookies `__Secure-`)             |
+| `NEXT_PUBLIC_APP_NAME`                                  | web           | Product name shown in the UI (placeholder « Lynx École »)                                         |
+| `ALERTS_ENCRYPTION_KEYS`                                | web           | `version:base64` keys for alert text and substitute report notes; empty turns alerts off          |
+| `SUB_PORTAL_DATABASE_URL`                               | web           | Direct connection as `lynx_sub_portal` for the substitute portal; empty turns it off (phase-3.md) |
+| `SUB_CODE_HMAC_KEYS`                                    | web           | `version:base64` keys (at most two) hashing substitute codes; empty turns codes off               |
+| `CLIENT_IP_HEADER`, `TRUSTED_PROXY_HOPS`                | web           | Client address for throttling; production needs an appending reverse proxy (docs/phase-3.md)      |
+| `DATABASE_URL`                                          | worker, tests | Direct Postgres connection (also for `pnpm test:int` and `pnpm db:types:direct`)                  |
+| `WORKER_CONCURRENCY`, `OUTBOX_BATCH_SIZE`, `LOG_EVENTS` | worker        | Job concurrency (4), outbox batch (100), log each event (`true`/`false`)                          |
+| `INTEGRATIONS_MODE`                                     | worker        | `mock` (the only mode in the MVP)                                                                 |
+| `AI_PROVIDER`                                           | worker        | `none`, `fake` (local answers) or `anthropic`                                                     |
+| `ANTHROPIC_API_KEY`                                     | worker, eval  | Provider key; never commit it                                                                     |
+| `AI_MODEL`, `AI_EFFORT`                                 | worker, eval  | Default `claude-opus-5-5`, `medium`                                                               |
+| `AI_JOB_RETENTION_DAYS`                                 | worker        | Days before AI requests are deleted (30)                                                          |
+| `AI_PRICE_INPUT_PER_MTOK`, `AI_PRICE_OUTPUT_PER_MTOK`   | worker        | Optional prices for a model the app does not know                                                 |
+| `AI_FAKE_DELAY_MS`                                      | worker        | Optional latency of the fake provider (800)                                                       |
 
 ## Privacy in one paragraph
 
@@ -94,4 +117,7 @@ readable only by the class team and the school's direction, hidden on screen unt
 read is audited. Row Level Security protects every table; logged-out requests get nothing. AI is off
 per school until the principal turns it on, and nothing personal is sent to the AI provider: names
 become markers and personal details block the request ([`docs/ai-data-flow.md`](docs/ai-data-flow.md)).
-Details in `DECISIONS.md` (D-012 to D-019, D-037 to D-043); `PRIVACY.md` comes in a later phase.
+Substitutes have no account: a one-day code, hashed at rest, rate-limited and revocable, opens only
+that day's plan, and every view of a plan, print and alert reveal is audited. Details in
+`DECISIONS.md` (D-012 to D-019, D-037 to D-046, D-049 to D-056); `PRIVACY.md` comes in a later
+phase.

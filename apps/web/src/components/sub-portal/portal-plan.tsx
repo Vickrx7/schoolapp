@@ -5,7 +5,7 @@ import { ArrowRight, ClipboardCheck, Phone } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useState, type KeyboardEvent, type ReactNode } from 'react';
-import { BlockCard, TypedText } from '@/components/sub-plans/block-card';
+import { BlockCard, PLAN_CONTENT_LANG, TypedText } from '@/components/sub-plans/block-card';
 import { GroupsPanel, groupLabels } from '@/components/sub-plans/groups-panel';
 import { PdfLink } from '@/components/sub-plans/pdf-link';
 import { PlanSection } from '@/components/sub-plans/plan-view';
@@ -147,7 +147,7 @@ export function PortalPlan({
         <>
           {/* The plan on paper or on the phone (D-053): alerts stay on screen, behind a tap. */}
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <PdfLink href="/suppleance/pdf" label={tPdf('download')} download />
+            <PdfLink href="/suppleance/pdf" label={tPdf('download')} save />
             <p className="text-sm text-slate-600">{tPdf('noAlerts')}</p>
           </div>
           {/* The students' own pages, apart from the substitute's instructions (SPEC 9.4.5). */}
@@ -156,7 +156,7 @@ export function PortalPlan({
               <PdfLink
                 href="/suppleance/pdf?doc=activities"
                 label={tSheets('download')}
-                download
+                save
                 testId="activity-sheets-pdf"
               />
               <p className="text-sm text-slate-600">{tSheets('hint')}</p>
@@ -205,7 +205,9 @@ export function PortalPlan({
               <ul className="space-y-1 text-sm">
                 {plan.dayEvents.map((e, i) => (
                   <li key={i} className="flex flex-wrap gap-x-2">
-                    <span className="font-medium">{e.title}</span>
+                    <span lang={PLAN_CONTENT_LANG} className="font-medium">
+                      {e.title}
+                    </span>
                     {e.start ? (
                       <span className="text-slate-600">
                         {e.end
@@ -256,7 +258,9 @@ export function PortalPlan({
           {plan.faith ? (
             <PlanSection title={tPlan('sections.faith')}>
               {plan.faith.title ? (
-                <p className="text-sm font-medium text-slate-800">{plan.faith.title}</p>
+                <p lang={PLAN_CONTENT_LANG} className="text-sm font-medium text-slate-800">
+                  {plan.faith.title}
+                </p>
               ) : null}
               <TypedText text={plan.faith.text} className="text-sm text-slate-800" />
               {plan.faith.linkSentence ? (
@@ -349,7 +353,10 @@ export function PortalPlan({
               {tPlan('endOfDayAt', { time: formatTime(plan.endOfDay.time, locale) })}
             </p>
             {plan.endOfDay.checklist.length > 0 ? (
-              <ul className="list-disc space-y-1 pl-5 text-sm text-slate-800">
+              <ul
+                lang={PLAN_CONTENT_LANG}
+                className="list-disc space-y-1 pl-5 text-sm text-slate-800"
+              >
                 {plan.endOfDay.checklist.map((item, i) => (
                   <li key={i}>{item}</li>
                 ))}
@@ -383,7 +390,7 @@ export function PortalPlan({
             <p className="text-sm text-slate-700">{t('endDayHint')}</p>
             <Button asChild variant="secondary">
               <Link href="/suppleance/done">
-                {t('endDay')}
+                {t('goToEndOfDay')}
                 <ArrowRight aria-hidden />
               </Link>
             </Button>

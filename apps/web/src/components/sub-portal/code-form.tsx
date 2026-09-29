@@ -1,11 +1,12 @@
 'use client';
 
 import { KeyRound } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useActionState, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/field';
 import { useErrorText } from '@/hooks/use-action';
+import { formatLocalDate, formatTime } from '@/lib/format';
 import { redeemSubCode, type RedeemState } from '@/server/actions/sub-portal';
 
 /** Reads `code=` from the URL fragment (a texted link), then removes it from the address bar. */
@@ -33,6 +34,7 @@ function takeCodeFromFragment(): string | null {
  */
 export function CodeForm() {
   const t = useTranslations('subPortal');
+  const locale = useLocale();
   const errorText = useErrorText();
   const [code, setCode] = useState('');
   const [state, formAction, pending] = useActionState<RedeemState, FormData>(redeemSubCode, null);
@@ -49,7 +51,18 @@ export function CodeForm() {
   else if (state?.outcome === 'wait') message = t('wait', { seconds: state.retryAfter });
   else if (state?.outcome === 'used_up') message = t('usedUp');
   else if (state?.outcome === 'revoked') message = t('revoked');
-  else if (state?.outcome === 'invalid') message = t('invalid');
+  else if (state?.outcome === 'closed') message = t('closed');
+  else if (state?.outcome === 'not_yet') {
+    // The day and hour come from the database, already in the school's time zone.
+    message = t('notYet', {
+      date: formatLocalDate(state.validOn, locale, {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+      }),
+      time: formatTime(state.validFrom, locale),
+    });
+  } else if (state?.outcome === 'invalid') message = t('invalid');
 
   return (
     <form action={formAction} className="space-y-4">

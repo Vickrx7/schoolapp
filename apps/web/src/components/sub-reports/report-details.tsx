@@ -1,5 +1,5 @@
 import { useTranslations } from 'next-intl';
-import { TypedText } from '@/components/sub-plans/block-card';
+import { PLAN_CONTENT_LANG, TypedText } from '@/components/sub-plans/block-card';
 import { Badge, Notice } from '@/components/ui/card';
 import { formatTimeRange } from '@/lib/format';
 import type { ReportLessonView, ReportView } from '@/server/queries/sub-reports';
@@ -37,7 +37,9 @@ export function ReportLessonHeader({
         <h3 className="font-semibold text-slate-900">
           {t('lessonLine', { n: lesson.sequenceNumber, title: lesson.title })}
         </h3>
-        <p className="text-sm text-slate-600">{lesson.unitTitle}</p>
+        <p lang={PLAN_CONTENT_LANG} className="text-sm text-slate-600">
+          {lesson.unitTitle}
+        </p>
       </div>
       <p className="flex flex-wrap items-center gap-2 text-sm text-slate-800">
         <span>

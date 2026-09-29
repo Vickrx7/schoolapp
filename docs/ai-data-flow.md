@@ -49,10 +49,11 @@ missing or thin, and one sentence linking the day's faith moment to the topic. T
 complete without it: this is an optional step, never automatic, and never part of reporting an
 absence at 6 a.m.
 
-1. **Preview, in the browser.** On the plan page, « Ajouter des consignes détaillées (IA) » opens
-   « Vérifier avant d'envoyer ». The server builds the request from the plan as the teacher sees
-   it (with her edits), replaces the names she can see with markers and shows her exactly the
-   text that would be sent, with the replaced names highlighted.
+1. **Preview, in the browser.** On the plan page, « Ajouter des consignes détaillées (IA) » first
+   saves any edit still pending, then opens « Vérifier avant d'envoyer ». The server builds the
+   request from the plan as the teacher sees it (with her edits), replaces the names she can see
+   with markers and shows her exactly the text that would be sent, with the replaced names
+   highlighted.
 2. **Fields left out instead of a blocked request.** A field that holds a personal detail (a phone
    number in a note for the substitute, an email in the materials...) is not sent at all, and the
    preview lists it as « Non envoyé », with where it comes from and why. The rest of the plan is
@@ -60,7 +61,8 @@ absence at 6 a.m.
    the request until the teacher removes it (D-038 as amended by D-052).
 3. **Queue.** On « Envoyer à l'IA », the request is stored in the Canadian database (`ai_jobs`,
    feature `sub_plan`), only for a plan that has not changed since the preview and that no
-   substitute has opened yet. The same school switch, budget and limits per person apply.
+   substitute has opened yet (a plan changed since is not sent: the preview opens again with the
+   new text). The same school switch, budget and limits per person apply.
 4. **De-identification, again, on the server.** The worker replaces every student and staff member
    of every school where the teacher works with a marker, leaves out any field with a personal
    detail again, and runs the same last check on the exact outbound text.

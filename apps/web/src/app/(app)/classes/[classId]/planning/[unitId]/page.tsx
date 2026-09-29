@@ -11,6 +11,22 @@ import { loadClass } from '@/server/queries/classes';
 import { findSchool, requireSession } from '@/server/session';
 import { createSupabaseServerClient } from '@/server/supabase';
 
+/**
+ * The report a pending lesson is confirmed in (D-054): a lesson the substitute reported is
+ * confirmed there, never checked off from here.
+ */
+function pendingReportOf(
+  row:
+    | {
+        status: ProgressStatus;
+        sub_reports: { sub_plan_id: string; sub_plans: { absence_id: string } | null } | null;
+      }
+    | undefined,
+): { absenceId: string; planId: string } | null {
+  if (row?.status !== 'pending_confirmation' || !row.sub_reports?.sub_plans) return null;
+  return { absenceId: row.sub_reports.sub_plans.absence_id, planId: row.sub_reports.sub_plan_id };
+}
+
 export default async function UnitPage({
   params,
 }: {
@@ -42,10 +58,16 @@ export default async function UnitPage({
     lessonIds.length
       ? supabase
           .from('lesson_progress')
-          .select('lesson_id, status, taught_on')
+          // The substitute's report behind a pending lesson (sub_reports is the owner's, RLS).
+          .select('lesson_id, status, taught_on, sub_reports(sub_plan_id, sub_plans(absence_id))')
           .in('lesson_id', lessonIds)
       : Promise.resolve({
-          data: [] as { lesson_id: string; status: ProgressStatus; taught_on: string | null }[],
+          data: [] as {
+            lesson_id: string;
+            status: ProgressStatus;
+            taught_on: string | null;
+            sub_reports: { sub_plan_id: string; sub_plans: { absence_id: string } | null } | null;
+          }[],
         }),
     supabase
       .from('curriculum_expectations')
@@ -72,6 +94,7 @@ export default async function UnitPage({
       expectationIds: l.unit_lesson_expectations.map((e) => e.expectation_id),
       status: progress.get(l.id)?.status ?? null,
       taughtOn: progress.get(l.id)?.taught_on ?? null,
+      pendingReport: pendingReportOf(progress.get(l.id)),
     }));
   const next = nextLessons(
     lessons,

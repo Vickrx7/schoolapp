@@ -2,6 +2,7 @@
 
 import { ArrowDown, ArrowUp, Pencil, Plus, Trash2 } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
+import Link from 'next/link';
 import { useState } from 'react';
 import { CheckOffButton } from '@/components/app/check-off-button';
 import { ConfirmButton } from '@/components/app/confirm-button';
@@ -20,6 +21,8 @@ export interface LessonItem extends LessonDraft {
   sequenceNumber: number;
   status: 'completed' | 'skipped' | 'pending_confirmation' | null;
   taughtOn: string | null;
+  /** For a lesson a substitute reported: the report where it is confirmed. */
+  pendingReport: { absenceId: string; planId: string } | null;
 }
 
 export function LessonList({
@@ -42,6 +45,7 @@ export function LessonList({
 }) {
   const t = useTranslations('lessons');
   const tCommon = useTranslations('common');
+  const tReport = useTranslations('subReport');
   const locale = useLocale();
   const [editing, setEditing] = useState<LessonItem | 'new' | null>(null);
   const move = useAction(moveLesson);
@@ -63,6 +67,8 @@ export function LessonList({
         <ol className="space-y-2">
           {lessons.map((l, i) => {
             const taught = l.status === 'completed' || l.status === 'skipped';
+            // Reported by a substitute: confirmed through the report only (D-054).
+            const pending = l.status === 'pending_confirmation';
             return (
               <li key={l.id}>
                 <Card className={cn('p-3', l.id === nextLessonId && 'ring-2 ring-brand-400')}>
@@ -70,7 +76,11 @@ export function LessonList({
                     <span
                       className={cn(
                         'flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold',
-                        taught ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700',
+                        taught
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : pending
+                            ? 'bg-amber-100 text-amber-900'
+                            : 'bg-slate-100 text-slate-700',
                       )}
                     >
                       {l.sequenceNumber}
@@ -100,13 +110,29 @@ export function LessonList({
                       </div>
                     </div>
                     <div className="flex flex-wrap items-center gap-1">
-                      <CheckOffButton
-                        lessonId={l.id}
-                        lessonTitle={l.title}
-                        date={today}
-                        taught={taught}
-                        size="sm"
-                      />
+                      {pending ? (
+                        l.pendingReport ? (
+                          <Link
+                            href={`/absences/${l.pendingReport.absenceId}/plans/${l.pendingReport.planId}/report`}
+                            className="inline-flex min-h-11 items-center rounded-full bg-amber-100 px-3 text-sm font-medium text-amber-900 underline-offset-2 hover:underline"
+                            data-testid="pending-chip"
+                          >
+                            {tReport('pendingChip')}
+                          </Link>
+                        ) : (
+                          <Badge tone="warning" data-testid="pending-chip">
+                            {tReport('pendingChip')}
+                          </Badge>
+                        )
+                      ) : (
+                        <CheckOffButton
+                          lessonId={l.id}
+                          lessonTitle={l.title}
+                          date={today}
+                          taught={taught}
+                          size="sm"
+                        />
+                      )}
                       <Button
                         variant="ghost"
                         size="icon"

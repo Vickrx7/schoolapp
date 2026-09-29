@@ -5,7 +5,17 @@ import type { createSupabaseServerClient } from '../supabase';
 
 type Supabase = Awaited<ReturnType<typeof createSupabaseServerClient>>;
 
-export type SourcesResult = { ok: true; sources: SubPlanSources } | { ok: false; error: string };
+export type SourcesResult =
+  | {
+      ok: true;
+      sources: SubPlanSources;
+      /**
+       * What the database read, summed up. Sent back with the plans built from it, so a plan
+       * built from sources that changed in the meantime stays marked for the worker (D-047).
+       */
+      fingerprint: string | null;
+    }
+  | { ok: false; error: string };
 
 /**
  * Everything a plan is built from, read as the signed-in teacher (get_sub_plan_sources returns
@@ -39,5 +49,9 @@ export async function loadSubPlanSources(
     );
     return { ok: false, error: 'unexpected' };
   }
-  return { ok: true, sources: parsed.data };
+  const fingerprint =
+    data && typeof data === 'object' && !Array.isArray(data) && typeof data.fingerprint === 'string'
+      ? data.fingerprint
+      : null;
+  return { ok: true, sources: parsed.data, fingerprint };
 }

@@ -33,21 +33,26 @@ function refresh() {
 /**
  * « Confirmer le suivi »: « Confirmer » marks the lesson completed, « Pas terminée » makes it the
  * next lesson again, « Sautée » marks it skipped. Lessons the substitute marked done and that
- * are not listed are confirmed as done. Owner only (checked by confirm_sub_report); confirming
- * twice does nothing.
+ * are not listed are confirmed as done. `shownVersion` is the report's updated_at as the page
+ * showed it (the database's text, to the microsecond): if the substitute sent the report again
+ * since, nothing is confirmed (`subReportChanged`) and the page reloads. Owner only (checked by
+ * confirm_sub_report); confirming twice does nothing.
  */
 export async function confirmSubReport(
   reportId: string,
   decisions: ConfirmDecisionsInput,
+  shownVersion: string,
 ): Promise<ActionResult> {
   await requireSession();
   if (!z.uuid().safeParse(reportId).success) return fail('invalid');
+  if (!z.iso.datetime({ offset: true }).safeParse(shownVersion).success) return fail('invalid');
   const parsed = parseInput(decisionsSchema, decisions);
   if (!parsed.ok) return parsed.result;
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.rpc('confirm_sub_report', {
     p_report_id: reportId,
     p_decisions: parsed.data,
+    p_expected_updated_at: shownVersion,
   });
   if (error) return fail(reportError('confirmSubReport', error));
   refresh();

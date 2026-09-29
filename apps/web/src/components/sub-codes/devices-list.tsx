@@ -46,6 +46,7 @@ export function DevicesList({ devices, timeZone }: { devices: SubDevice[]; timeZ
               label={t('cutDeviceLabel', { n: d.deviceNumber })}
               message={t('cutDeviceConfirm', { n: d.deviceNumber })}
               confirmLabel={t('cutDevice')}
+              size="md"
               disabled={cut.pending}
               onConfirm={() => cut.run(d.sessionId)}
             >

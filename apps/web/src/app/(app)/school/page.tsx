@@ -1,11 +1,14 @@
+import { ClipboardList } from 'lucide-react';
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { AiSchoolCard, type AiUsage } from '@/components/school/ai-school-card';
 import { SchoolSettingsForm } from '@/components/school/school-settings-form';
 import { SubstituteSettingsCard } from '@/components/school/substitute-settings-card';
+import { Button } from '@/components/ui/button';
 import { PageHeader } from '@/components/ui/page';
-import { hasModule, hasRole, requireSession } from '@/server/session';
+import { hasModule, hasRole, requireSession, substituteBoardSchools } from '@/server/session';
 import { createSupabaseServerClient } from '@/server/supabase';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -20,6 +23,7 @@ export default async function SchoolPage() {
   );
   if (schools.length === 0) redirect('/today');
   const t = await getTranslations('school');
+  const tNav = await getTranslations('nav');
   const supabase = await createSupabaseServerClient();
   const { data: anchors } = await supabase
     .from('school_cycle_anchors')
@@ -53,7 +57,20 @@ export default async function SchoolPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title={t('title')} />
+      <PageHeader
+        title={t('title')}
+        actions={
+          substituteBoardSchools(session).length > 0 ? (
+            // Also here for phones, whose bottom bar may have no room for it (nav-items.ts).
+            <Button asChild variant="secondary">
+              <Link href="/absences">
+                <ClipboardList aria-hidden />
+                {tNav('substitutes')}
+              </Link>
+            </Button>
+          ) : null
+        }
+      />
       {schools.map((s) => (
         <div key={s.id} className="space-y-4">
           <SchoolSettingsForm

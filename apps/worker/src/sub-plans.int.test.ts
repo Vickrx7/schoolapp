@@ -117,7 +117,11 @@ let nextFrench = 0;
 let paDayId: string | null = null;
 let absenceId: string | null = null;
 let oldAbsenceId: string | null = null;
+/** A separate absence the school day after the test's absence. */
+let nextAbsenceId: string | null = null;
 let completedLessonId: string | null = null;
+/** A lesson the last test checks off (Monday's first Français lesson). */
+let mondayLessonId: string | null = null;
 /** Lessons the substitute's report wrote progress for. */
 let reportedLessonIds: string[] = [];
 const attemptDeviceKeys: string[] = [];
@@ -228,7 +232,9 @@ function changingBeforeSave(change: (save: number) => Promise<void>) {
 }
 
 async function cleanUp() {
-  const absences = [absenceId, oldAbsenceId].filter((id): id is string => id !== null);
+  const absences = [absenceId, oldAbsenceId, nextAbsenceId].filter(
+    (id): id is string => id !== null,
+  );
   const plans = await pool.query<{ id: string }>(
     'select id from public.sub_plans where absence_id = any($1::uuid[])',
     [absences],
@@ -246,10 +252,10 @@ async function cleanUp() {
   );
   // Plans, codes, sessions and reports go with their absence.
   await pool.query('delete from public.absences where id = any($1::uuid[])', [absences]);
-  if (completedLessonId) {
-    await pool.query('delete from public.lesson_progress where lesson_id = $1', [
-      completedLessonId,
-    ]);
+  for (const lessonId of [completedLessonId, mondayLessonId]) {
+    if (lessonId) {
+      await pool.query('delete from public.lesson_progress where lesson_id = $1', [lessonId]);
+    }
   }
   if (paDayId) {
     await pool.query('delete from public.school_calendar_events where id = $1', [paDayId]);
@@ -264,12 +270,13 @@ async function cleanUp() {
     ...reports.rows.map((r) => r.id),
     ...reportedLessonIds,
     completedLessonId,
+    mondayLessonId,
   ];
   await pool.query(
     'delete from public.event_outbox where id > $1 and aggregate_id = any($2::uuid[])',
     [outboxStart, aggregates.filter((id): id is string => id !== null)],
   );
-  absenceId = oldAbsenceId = completedLessonId = paDayId = null;
+  absenceId = oldAbsenceId = nextAbsenceId = completedLessonId = mondayLessonId = paDayId = null;
 }
 
 beforeAll(async () => {
@@ -624,6 +631,89 @@ describe('substitute plans after publishing', () => {
     );
     expect(mondayLessons.filter((id) => done.includes(id))).toEqual([]);
     expect(await mark()).toBeNull();
+  });
+
+  it('continues a separate absence the next school day, and rebuilds it with the earlier one', async () => {
+    // The first school day after Monday (a day off in between is skipped).
+    let next = addDays(monday, 1);
+    for (;;) {
+      const { rows } = await pool.query<{ off: boolean }>(
+        `select extract(isodow from $3::date) > 5 or exists (
+             select 1 from public.school_calendar_events e
+              where e.board_id = $1 and (e.school_id is null or e.school_id = $2)
+                and e.event_type in ('pa_day', 'holiday')
+                and e.starts_on <= $3::date and e.ends_on >= $3::date
+           ) as off`,
+        [BOARD, SCHOOL, next],
+      );
+      if (!rows[0]!.off) break;
+      next = addDays(next, 1);
+    }
+
+    // Published as the web server does: the sources, their fingerprint, the plans.
+    nextAbsenceId = await asTeacher(async (db) => {
+      const loaded = await db.query<{ sources: { fingerprint?: string } }>(
+        'select public.get_sub_plan_sources($1, $2::date, $2::date) as sources',
+        [SCHOOL, next],
+      );
+      const raw = loaded.rows[0]!.sources;
+      const sources = subPlanSourcesSchema.parse(raw);
+      expect(sources.earlierPlans.map((e) => e.planDate)).toContain(monday);
+      const built = buildAbsencePlans(
+        sources,
+        { startsOn: next, endsOn: next, part: 'full_day', catholicConnection: true },
+        { now: new Date() },
+      );
+      const published = await db.query<{ id: string }>(
+        `select public.publish_absence($1, $2::date, $2::date, 'full_day', null, true, $3,
+                $4::jsonb, $5) as id`,
+        [SCHOOL, next, randomUUID(), JSON.stringify(built.plans), raw.fingerprint],
+      );
+      return published.rows[0]!.id;
+    });
+    // Built from sources that did not change meanwhile: not marked.
+    expect(await mark(nextAbsenceId)).toBeNull();
+    const mondayPlan = (await planRows()).at(-1)!;
+    const [nextPlan] = await planRows(nextAbsenceId);
+    // Monday's lessons (no report yet) count as taught: the next day does not repeat them.
+    expect(frenchSequence(nextPlan!.plan)[0]).toBe(frenchSequence(mondayPlan.plan).at(-1)! + 1);
+
+    // Monday's first Français lesson is checked off: both absences are marked. Clear the next
+    // one's mark to see that the earlier absence's rebuild wakes it on its own.
+    const firstMonday = frenchSequence(mondayPlan.plan)[0]!;
+    mondayLessonId = [...frenchLessons].find(([, seq]) => seq === firstMonday)![0];
+    await pool.query(
+      `insert into public.lesson_progress (lesson_id, class_id, status, taught_on, completed_by)
+       values ($1, $2, 'completed', $3::date, $4)`,
+      [mondayLessonId, CLASS_3E, today, TEACHER],
+    );
+    await pool.query('update public.absences set sources_changed_at = null where id = $1', [
+      nextAbsenceId,
+    ]);
+    expect(await refreshAbsencePlans(absenceId!, { pool, logger: recordingLogger() })).toBe(
+      'refreshed',
+    );
+    const { rows: woken } = await pool.query<{ event_id: string }>(
+      `select event_id from public.event_outbox
+        where id > $1 and event_type = 'absence.sources_changed' and aggregate_id = $2
+          and payload ->> 'cause' = 'earlier_absence'`,
+      [outboxStart, nextAbsenceId],
+    );
+    expect(woken.length).toBeGreaterThan(0);
+
+    // A plain run finds no mark; the dispatched event rebuilds it anyway.
+    expect(await refreshAbsencePlans(nextAbsenceId, { pool, logger: recordingLogger() })).toBe(
+      'up_to_date',
+    );
+    await taskList(recordingLogger()).handle_event!(
+      { eventId: woken.at(-1)!.event_id, handler: 'sub_plan_refresh' },
+      helpers,
+    );
+    const mondayAfter = (await planRows()).at(-1)!;
+    const [nextAfter] = await planRows(nextAbsenceId);
+    expect(frenchSequence(mondayAfter.plan)[0]).toBe(firstMonday + 1);
+    expect(frenchSequence(nextAfter!.plan)[0]).toBe(frenchSequence(mondayAfter.plan).at(-1)! + 1);
+    expect(nextAfter!.contentVersion).toBe(nextPlan!.contentVersion + 1);
   });
 });
 

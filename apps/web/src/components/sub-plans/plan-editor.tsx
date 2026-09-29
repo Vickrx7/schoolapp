@@ -9,7 +9,15 @@ import {
 import { CloudOff, Pencil } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+  type ReactNode,
+} from 'react';
 import { Button } from '@/components/ui/button';
 import { Notice } from '@/components/ui/card';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
@@ -34,6 +42,7 @@ import {
   stepsForEditing,
   toPayload,
 } from './edits';
+import { registerPlanFlush } from './plan-flush';
 import { PlanSection, PlanView } from './plan-view';
 import { ChecklistEditor, StepListEditor } from './step-list-editor';
 import type { PlanContext, PlanLevel, RosterStudent } from './types';
@@ -45,25 +54,7 @@ const OFFLINE_RETRY_MS = 15_000;
 
 type SaveState = 'idle' | 'saving' | 'saved' | 'offline' | 'error' | 'conflict';
 
-/**
- * « Réviser le plan »: the owner's plan with inline editing. Changes are an overlay on the
- * generated plan (D-048), kept on this device as a draft while she types and saved to the
- * server 3 seconds after the last change. Saving checks the revision she started from, so two
- * devices never overwrite each other silently.
- */
-export function PlanEditor({
-  userId,
-  planId,
-  plan,
-  initialEdits,
-  editsRevision,
-  ai = null,
-  context,
-  roster,
-  levels,
-  alertsEnabled,
-  editable,
-}: {
+interface PlanEditorProps {
   userId: string;
   planId: string;
   plan: SubPlanV1;
@@ -76,12 +67,62 @@ export function PlanEditor({
   levels: PlanLevel[];
   alertsEnabled: boolean;
   editable: boolean;
+}
+
+/**
+ * « Réviser le plan »: the owner's plan with inline editing. Changes are an overlay on the
+ * generated plan (D-048), kept on this device as a draft while she types and saved to the
+ * server 3 seconds after the last change. Saving checks the revision she started from, so two
+ * devices never overwrite each other silently.
+ *
+ * Other refreshes of the page (the AI request finishing, her own saves) flow in as props and
+ * leave the editor as it is: open editors, focus and the draft stay. Only « Prendre la plus
+ * récente » starts the editor over, once the newer version has loaded.
+ */
+export function PlanEditor(props: PlanEditorProps) {
+  const router = useRouter();
+  const [generation, setGeneration] = useState(0);
+  const [waiting, setWaiting] = useState(false);
+  const [loading, startLoading] = useTransition();
+  useEffect(() => {
+    if (!waiting || loading) return;
+    // The newer version is on the page: start over from it.
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- runs once per « Prendre la plus récente »
+    setWaiting(false);
+    setGeneration((g) => g + 1);
+  }, [waiting, loading]);
+  const takeLatest = useCallback(() => {
+    setWaiting(true);
+    startLoading(() => router.refresh());
+  }, [router]);
+  return (
+    <PlanEditorBody key={generation} {...props} reloading={waiting} onTakeLatest={takeLatest} />
+  );
+}
+
+function PlanEditorBody({
+  userId,
+  planId,
+  plan,
+  initialEdits,
+  editsRevision,
+  ai = null,
+  context,
+  roster,
+  levels,
+  alertsEnabled,
+  editable,
+  reloading,
+  onTakeLatest,
+}: PlanEditorProps & {
+  /** « Prendre la plus récente » is loading the newer version: nothing is saved meanwhile. */
+  reloading: boolean;
+  onTakeLatest: () => void;
 }) {
   const t = useTranslations('subPlan');
   const tCommon = useTranslations('common');
   const errorText = useErrorText();
   const locale = useLocale();
-  const router = useRouter();
   const online = useOnline();
 
   const initial = useMemo(() => ({ edits: initialEdits ?? {} }), [initialEdits]);
@@ -108,46 +149,65 @@ export function PlanEditor({
   const [savedAt, setSavedAt] = useState<string | null>(null);
   const [error, setError] = useState<{ key: string; json: string } | null>(null);
   const latest = useRef({ payload, json: payloadJson, revision });
-  const inFlight = useRef(false);
+  /** What the server has, and whether saving is refused until she chooses (conflict). */
+  const saved = useRef({ json: savedJson, conflict: false });
+  const inFlight = useRef<Promise<void> | null>(null);
   useEffect(() => {
     latest.current = { payload, json: payloadJson, revision };
   }, [payload, payloadJson, revision]);
 
   const save = useCallback(
-    async (overwrite = false) => {
-      if (inFlight.current || !editable) return;
-      inFlight.current = true;
-      const sent = latest.current;
-      setState('saving');
-      try {
-        const result = await saveSubPlanEdits(planId, sent.payload, sent.revision, { overwrite });
-        if (result.ok) {
-          latest.current = { ...latest.current, revision: result.data.revision };
-          setRevision(result.data.revision);
-          setSavedJson(sent.json);
-          setSavedAt(result.data.savedAt);
-          setError(null);
-          setState('saved');
-          // Nothing typed during the save: the device copy is no longer needed.
-          if (latest.current.json === sent.json) clearDraft();
-        } else if (result.error === 'subPlanConflict') {
-          setState('conflict');
-        } else {
-          setError({ key: result.error, json: sent.json });
-          setState('error');
+    (overwrite = false): Promise<void> => {
+      if (!editable) return Promise.resolve();
+      if (inFlight.current) return inFlight.current;
+      const run = async () => {
+        const sent = latest.current;
+        setState('saving');
+        try {
+          const result = await saveSubPlanEdits(planId, sent.payload, sent.revision, {
+            overwrite,
+          });
+          if (result.ok) {
+            latest.current = { ...latest.current, revision: result.data.revision };
+            saved.current = { json: sent.json, conflict: false };
+            setRevision(result.data.revision);
+            setSavedJson(sent.json);
+            setSavedAt(result.data.savedAt);
+            setError(null);
+            setState('saved');
+            // Nothing typed during the save: the device copy is no longer needed.
+            if (latest.current.json === sent.json) clearDraft();
+          } else if (result.error === 'subPlanConflict') {
+            saved.current = { ...saved.current, conflict: true };
+            setState('conflict');
+          } else {
+            setError({ key: result.error, json: sent.json });
+            setState('error');
+          }
+        } catch {
+          setState('offline');
         }
-      } catch {
-        setState('offline');
-      } finally {
-        inFlight.current = false;
-      }
+      };
+      inFlight.current = run().finally(() => {
+        inFlight.current = null;
+      });
+      return inFlight.current;
     },
     [planId, editable, clearDraft],
   );
 
+  // Another part of the page (the AI preview) can have the pending changes saved first.
+  useEffect(
+    () =>
+      registerPlanFlush(planId, async () => {
+        if (inFlight.current) await inFlight.current;
+        if (!editable || reloading || saved.current.conflict) return;
+        if (latest.current.json !== saved.current.json) await save();
+      }),
+    [planId, editable, reloading, save],
+  );
+
   const dirty = payloadJson !== savedJson;
-  // « Prendre la plus récente »: nothing is saved while the newer version loads.
-  const [reloading, setReloading] = useState(false);
   useEffect(() => {
     if (!editable || !dirty || !online || reloading) return;
     if (state === 'saving' || state === 'conflict') return;
@@ -161,11 +221,10 @@ export function PlanEditor({
   }, [editable, dirty, online, reloading, state, error, payloadJson, save]);
 
   const takeLatest = () => {
-    // The page remounts this editor with the newer revision (see its `key`).
+    // PlanEditor starts this editor over once the newer revision has loaded.
     clearDraft();
-    setReloading(true);
     setState('idle');
-    router.refresh();
+    onTakeLatest();
   };
 
   // ---- Editing controls ---------------------------------------------------------------
@@ -192,7 +251,7 @@ export function PlanEditor({
     if (!open.has(b.key)) {
       return {
         actions: (
-          <Button size="sm" variant="secondary" onClick={() => toggle(b.key, true)}>
+          <Button variant="secondary" onClick={() => toggle(b.key, true)}>
             <Pencil aria-hidden />
             {t('editSteps')}
           </Button>
@@ -220,11 +279,9 @@ export function PlanEditor({
       ),
       actions: (
         <>
-          <Button size="sm" onClick={() => toggle(b.key, false)}>
-            {t('doneEditing')}
-          </Button>
+          <Button onClick={() => toggle(b.key, false)}>{t('doneEditing')}</Button>
           {b.edited ? (
-            <Button size="sm" variant="ghost" onClick={() => change((e) => resetBlock(e, b.key))}>
+            <Button variant="ghost" onClick={() => change((e) => resetBlock(e, b.key))}>
               {t('resetBlock')}
             </Button>
           ) : null}
@@ -243,11 +300,9 @@ export function PlanEditor({
           onChange={(items) => change((e) => setChecklist(e, items))}
         />
         <div className="flex flex-wrap gap-2">
-          <Button size="sm" onClick={() => setChecklistOpen(false)}>
-            {t('doneEditing')}
-          </Button>
+          <Button onClick={() => setChecklistOpen(false)}>{t('doneEditing')}</Button>
           {edits.endOfDayChecklist ? (
-            <Button size="sm" variant="ghost" onClick={() => change(resetChecklist)}>
+            <Button variant="ghost" onClick={() => change(resetChecklist)}>
               {t('resetBlock')}
             </Button>
           ) : null}
@@ -262,7 +317,7 @@ export function PlanEditor({
             ))}
           </ul>
         ) : null}
-        <Button size="sm" variant="secondary" onClick={() => setChecklistOpen(true)}>
+        <Button variant="secondary" onClick={() => setChecklistOpen(true)}>
           <Pencil aria-hidden />
           {t('editChecklist')}
         </Button>
@@ -290,16 +345,15 @@ export function PlanEditor({
           <TypedText text={composed.faith.text} className="text-sm text-slate-800" />
         )}
         <div className="flex flex-wrap gap-2">
-          <Button size="sm" variant="secondary" onClick={() => setFaithOpen((o) => !o)}>
+          <Button variant="secondary" onClick={() => setFaithOpen((o) => !o)}>
             {faithOpen ? t('doneEditing') : t('faithEdit')}
           </Button>
           {edits.faith ? (
-            <Button size="sm" variant="ghost" onClick={() => change((e) => setFaith(e, undefined))}>
+            <Button variant="ghost" onClick={() => change((e) => setFaith(e, undefined))}>
               {t('resetBlock')}
             </Button>
           ) : null}
           <Button
-            size="sm"
             variant="ghost"
             onClick={() => {
               setFaithOpen(false);
@@ -316,11 +370,7 @@ export function PlanEditor({
       <PlanSection title={t('sections.faith')}>
         <p className="text-sm text-slate-600">{t('faithRemoved')}</p>
         <div>
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={() => change((e) => setFaith(e, undefined))}
-          >
+          <Button variant="secondary" onClick={() => change((e) => setFaith(e, undefined))}>
             {t('faithRestore')}
           </Button>
         </div>
@@ -368,7 +418,7 @@ export function PlanEditor({
     status = (
       <span className="inline-flex flex-wrap items-center gap-2 text-red-700">
         {t('saveFailed')} {errorText(error?.key)}
-        <Button size="sm" variant="secondary" onClick={() => void save()}>
+        <Button variant="secondary" onClick={() => void save()}>
           {t('retry')}
         </Button>
       </span>

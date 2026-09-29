@@ -72,7 +72,9 @@ function parseSources(raw: unknown): SubPlanSources {
 
 /**
  * Rebuilds the plans of one absence if it is marked as out of date. Safe to run more than once:
- * a run that finds the mark cleared does nothing.
+ * a run that finds the mark cleared does nothing, unless `force` says the event came from the
+ * teacher's earlier absence, whose lessons this one continues (app.write_absence_plans wakes
+ * the next absence without marking it, so it never locks a second absence).
  *
  * Throws when the sources kept changing for REFRESH_ATTEMPTS builds in a row (the job is then
  * retried later), and on database or loader errors. A day whose build throws gets the minimal
@@ -80,14 +82,16 @@ function parseSources(raw: unknown): SubPlanSources {
  */
 export async function refreshAbsencePlans(
   absenceId: string,
-  deps: { pool: Db; logger: Logger; now?: () => Date },
+  deps: { pool: Db; logger: Logger; now?: () => Date; force?: boolean },
 ): Promise<RefreshOutcome> {
   const { pool, logger } = deps;
   const now = deps.now ?? (() => new Date());
 
   for (let attempt = 1; attempt <= REFRESH_ATTEMPTS; attempt += 1) {
     const absence = await readAbsence(pool, absenceId);
-    if (!absence || absence.status !== 'published' || absence.sources_changed_at === null) {
+    if (!absence || absence.status !== 'published') return 'up_to_date';
+    // Not marked: nothing changed since the last build, unless the earlier absence did.
+    if (absence.sources_changed_at === null && !(deps.force && attempt === 1)) {
       return 'up_to_date';
     }
 

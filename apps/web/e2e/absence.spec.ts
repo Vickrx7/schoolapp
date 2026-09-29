@@ -17,6 +17,7 @@ import {
   DEMO,
   expectAccessible,
   isSeededSchoolDay,
+  chip,
   login,
   reportAbsence,
   schoolDay,
@@ -134,6 +135,31 @@ test('a teacher reports an absence and reviews, edits and releases the plan', as
 
   await page.getByRole('button', { name: 'Publier maintenant' }).click();
   await expect(page.getByTestId('plan-status')).toHaveText('Publié');
+});
+
+test('a draft restored on a later day keeps the date it was for', async ({ page }) => {
+  // A draft left on the next-school-day chip when that meant a day three weeks ahead: today the
+  // chip means another day, so the form keeps the draft's own date and says so.
+  const planned = schoolDay({ weeksAhead: 3, isoWeekday: 3 });
+  await login(page, DEMO.teacher3);
+  await page.evaluate(
+    ({ key, planned }) =>
+      window.localStorage.setItem(
+        key,
+        JSON.stringify({
+          value: { choice: 'next', note: 'Rendez-vous chez le médecin', forStartsOn: planned },
+          savedAt: Date.now(),
+        }),
+      ),
+    { key: 'lynx-draft:absence:d0000000-0000-4000-8000-000000000001:new', planned },
+  );
+  await page.goto('/absences/new');
+  await expect(page.getByTestId('stale-draft-date')).toContainText('Ce brouillon était pour le');
+  await expect(chip(page, 'Autre date').locator('input')).toBeChecked();
+  await expect(page.getByLabel('Date', { exact: true })).toHaveValue(planned);
+  await expectAccessible(page);
+  await page.getByRole('button', { name: 'Effacer le brouillon' }).click();
+  await expect(page.getByTestId('stale-draft-date')).toHaveCount(0);
 });
 
 test('checking off a lesson moves the plan on by itself (worker)', async ({ page }) => {
@@ -282,6 +308,15 @@ test('an absence is shortened with « Je reviens plus tôt », and another is ca
     }
     await expect(dialog).toBeVisible({ timeout: 1000 });
   }).toPass();
+  await expectAccessible(page);
+  // Closed by accident (Escape) and opened again: what was typed is still there (D-035).
+  await dialog.getByLabel(/^Note pour le secrétariat/).fill('Je reviens jeudi soir.');
+  await page.keyboard.press('Escape');
+  await expect(dialog).toBeHidden();
+  await page.getByRole('button', { name: 'Modifier / Je reviens plus tôt' }).click();
+  await expect(dialog.getByLabel(/^Note pour le secrétariat/)).toHaveValue(
+    'Je reviens jeudi soir.',
+  );
   await dialog.getByLabel('Dernier jour').fill(thursday);
   await dialog.getByRole('button', { name: 'Enregistrer les changements' }).click();
   await expect(page.getByText('Absence modifiée. Le plan est à jour.')).toBeVisible();

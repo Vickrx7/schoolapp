@@ -192,7 +192,7 @@ test('a teacher adds detailed instructions to her plan after checking what is se
     const subSheets = sub.getByTestId('activity-sheets-pdf');
     await expect(subSheets).toHaveText('Télécharger les activités des élèves');
     const subSheetsHref = (await subSheets.getAttribute('href'))!;
-    expect(subSheetsHref).toBe('/suppleance/pdf?doc=activities');
+    expect(subSheetsHref).toBe('/suppleance/pdf?doc=activities&download=1');
     const since = await dbNow();
     const subPdf = await sub.request.get(subSheetsHref);
     expect(subPdf.status()).toBe(200);

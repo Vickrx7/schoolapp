@@ -45,6 +45,7 @@ export async function GET(
     }
     const response = await planPdfResponse({
       doc,
+      backHref: `/absences/${absenceId}/plans/${planId}`,
       plan: owned.plan,
       edits: owned.edits,
       ai: owned.ai,
@@ -60,6 +61,7 @@ export async function GET(
   if (!staff?.released || staff.absenceId !== absenceId || !staff.plan) return pdfNotFound();
   const response = await planPdfResponse({
     doc,
+    backHref: `/absences/${absenceId}/plans/${planId}`,
     plan: staff.plan,
     edits: staff.edits,
     ai: staff.ai,

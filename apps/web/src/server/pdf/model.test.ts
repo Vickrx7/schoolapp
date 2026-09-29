@@ -118,14 +118,14 @@ describe('buildPlanPdfModel', () => {
       // Windows line breaks are made plain.
       ['Matériel et où le trouver', 'Texte « Le huard »\nSurligneurs (bac vert)'],
       [
-        'Note de l’enseignant·e',
+        'Note de la leçon',
         'Les élèves du groupe débutant ont une version illustrée du texte (bac vert).',
       ],
       ['Contenu de la leçon', 'Lecture guidée, puis travail en dyades.'],
       ['Note de l’horaire', 'Les textes sont sur le bureau.'],
     ]);
     expect(texts(french.extras)).toEqual([
-      ['Note de l’enseignant·e', 'Les responsables de la semaine distribuent les textes.'],
+      ['Consigne pour aujourd’hui', 'Les responsables de la semaine distribuent les textes.'],
     ]);
     expect(m.stepsLabel).toBe('Déroulement');
   });
@@ -163,7 +163,7 @@ describe('buildPlanPdfModel', () => {
     expect(french.steps[0]).toEqual({ minutes: '10 min', text: FRENCH_TYPOGRAPHY, say: null });
     expect(texts(french.details)[0]).toEqual(['En bref', 'Lecture du huard et idée principale.']);
     expect(texts(french.extras)).toEqual([
-      ['Note de l’enseignant·e', 'Les responsables de la semaine distribuent les textes.'],
+      ['Consigne pour aujourd’hui', 'Les responsables de la semaine distribuent les textes.'],
       [
         'Consignes par groupe',
         'G1 · Débutant — Version illustrée du texte.',
@@ -210,7 +210,7 @@ describe('buildPlanPdfModel', () => {
       ],
     });
     expect(texts(m.intro)).toEqual([
-      ['Note de l’enseignant·e', 'Merci! Les cahiers sont dans le bac bleu.'],
+      ['Mot de l’enseignant·e', 'Merci! Les cahiers sont dans le bac bleu.'],
       ['Aperçu de la journée', 'Journée calme; les élèves connaissent la routine.'],
     ]);
     expect(texts(section(m, 'contacts')?.parts)).toEqual([
@@ -260,6 +260,8 @@ describe('buildPlanPdfModel', () => {
     );
     expect(section(m, 'schedule')!.title).toBe('Schedule');
     expect(block(m, BLOCK.french).steps[0]!.text).toBe(FRENCH_TYPOGRAPHY);
+    // The document's language is the plan's: French (WCAG 3.1.2).
+    expect(m.info.language).toBe('fr-CA');
     expect(m.alertsNotice).toBe('Safety or medical alerts: check the app or ask the principal.');
     // Level names in English when the board has them.
     const groups = section(m, 'groups')!.parts.filter((p) => p.kind === 'group');

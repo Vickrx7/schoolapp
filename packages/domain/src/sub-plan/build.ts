@@ -493,6 +493,8 @@ export function buildMinimalSubPlan(
  *   or a substitute signed in) are not rebuilt. Lessons they assigned count as done for later
  *   days until their report arrives (`reportStatus` none or draft); after that, the progress
  *   the report wrote applies.
+ * - The same goes for the teacher's other absence just before this one (`earlierPlans`), so
+ *   back-to-back absences continue the sequence instead of repeating the same lessons.
  * - Lessons continue across the days built (one sequence).
  * - A day whose build throws gets `buildMinimalSubPlan` instead; other days are unaffected.
  */
@@ -515,17 +517,21 @@ export function buildAbsencePlans(
     )
     .map(({ date }) => date);
   const lastDate = dates.at(-1);
-  const assumeDone = new Set(
-    sources.siblings
-      .filter(
-        (s) =>
-          !s.refreshable &&
-          lastDate !== undefined &&
-          s.planDate < lastDate &&
-          (s.reportStatus === 'none' || s.reportStatus === 'draft'),
-      )
+  const unreported = (s: { reportStatus: string }) =>
+    s.reportStatus === 'none' || s.reportStatus === 'draft';
+  const assumeDone = new Set([
+    ...sources.siblings
+      .filter((s) => !s.refreshable && lastDate !== undefined && s.planDate < lastDate)
+      .filter(unreported)
       .flatMap((s) => s.assignedLessonIds),
-  );
+    // The teacher's absence just before this one (another absence, built separately): its
+    // lessons are assumed taught as well. (A morning absence on this afternoon's day needs
+    // nothing: a half day already sequences the other half's blocks.)
+    ...sources.earlierPlans
+      .filter((e) => lastDate !== undefined && e.planDate < absence.startsOn)
+      .filter(unreported)
+      .flatMap((e) => e.assignedLessonIds),
+  ]);
 
   const failed = new Set<LocalDate>();
   const fail = (date: LocalDate, error: unknown) => {

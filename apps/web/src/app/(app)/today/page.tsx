@@ -6,7 +6,14 @@ import {
   localMinutesIn,
   timeToMinutes,
 } from '@lynx/domain';
-import { CalendarX, ChevronLeft, ChevronRight, ClipboardCheck, MapPin } from 'lucide-react';
+import {
+  CalendarX,
+  ChevronLeft,
+  ChevronRight,
+  ClipboardCheck,
+  ClipboardList,
+  MapPin,
+} from 'lucide-react';
 import type { Metadata } from 'next';
 import { getLocale, getTranslations } from 'next-intl/server';
 import Link from 'next/link';
@@ -21,7 +28,7 @@ import { cn } from '@/lib/utils';
 import { loadMyAbsences } from '@/server/queries/absences';
 import { loadPendingReports } from '@/server/queries/sub-reports';
 import { loadToday, type TodayBlock } from '@/server/queries/today';
-import { requireSession, teachingSchools } from '@/server/session';
+import { requireSession, substituteBoardSchools, teachingSchools } from '@/server/session';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('today');
@@ -46,6 +53,10 @@ export default async function TodayPage({
 
   const t = await getTranslations('today');
   const tAbsences = await getTranslations('absences');
+  const tNav = await getTranslations('nav');
+  // A teaching principal (or office staff who also teach): the phone bar has no room for
+  // « Suppléances » (components/app/nav-items.ts), so the board is linked from here.
+  const showBoard = substituteBoardSchools(session).length > 0;
   const locale = await getLocale();
   const timezone = schools[0]!.timezone;
   const today = localDateIn(timezone);
@@ -89,6 +100,14 @@ export default async function TodayPage({
                 {tAbsences('quick')}
               </Link>
             </Button>
+            {showBoard ? (
+              <Button asChild variant="secondary" className="mr-1 md:hidden">
+                <Link href="/absences">
+                  <ClipboardList aria-hidden />
+                  {tNav('substitutes')}
+                </Link>
+              </Button>
+            ) : null}
             <Button asChild variant="secondary" size="icon">
               <Link href={`/today?date=${stepWeekday(date, -1)}`} aria-label={t('previousDay')}>
                 <ChevronLeft />

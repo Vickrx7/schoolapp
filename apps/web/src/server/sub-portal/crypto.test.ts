@@ -43,14 +43,26 @@ describe('substitute code hashing', () => {
   it('turns the device cookie and the address into keys that do not contain them', () => {
     const ring = subCodeRing(spec([1, k1]))!;
     const cookie = randomBytes(32).toString('base64url');
-    const device = deviceKey(cookie, ring);
+    const device = deviceKey(cookie);
     const ip = ipKey('203.0.113.7', ring);
     for (const key of [device, ip]) expect(key).toMatch(/^[0-9a-f]{64}$/);
     expect(device).not.toContain(Buffer.from(cookie, 'base64url').toString('hex').slice(0, 16));
     expect(ip).not.toContain('203');
-    expect(deviceKey(cookie, ring)).toBe(device);
+    expect(deviceKey(cookie)).toBe(device);
     // Different purposes never collide, even for the same input.
-    expect(deviceKey('203.0.113.7', ring)).not.toBe(ip);
+    expect(deviceKey('203.0.113.7')).not.toBe(ip);
     expect(codeMac('203.0.113.7', ring)).not.toBe(ip);
+    // An address is guessable: its key depends on the secret.
+    expect(ipKey('203.0.113.7', subCodeRing(spec([1, k2]))!)).not.toBe(ip);
+  });
+
+  it('keeps a device the same device across a key rotation', () => {
+    const cookie = randomBytes(32).toString('base64url');
+    const before = subCodeRing(spec([1, k1]))!;
+    const after = subCodeRing(spec([1, k1], [2, k2]))!;
+    // The device key does not depend on the ring at all (a cut device stays cut).
+    expect(deviceKey(cookie)).toBe(deviceKey(cookie));
+    // The code MACs still find a code issued before the rotation.
+    expect(codeMacs('7KQ4M9TDXA', after)).toContain(codeMac('7KQ4M9TDXA', before));
   });
 });

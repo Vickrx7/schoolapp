@@ -83,7 +83,9 @@ the signed-in role gets explicit per-table (and often per-column) grants, so a n
 until a migration opens it. Helper functions used by policies live in a private `app` schema that
 the API does not expose. PUBLIC `EXECUTE` is revoked from functions. The web app always runs as
 the signed-in user; the service-role key is only used by admin tooling and the worker. Invariants
-are tested (`supabase/tests/00_schema_invariants.test.sql`).
+are tested (`supabase/tests/00_schema_invariants.test.sql`). _Amended in Phase 3:_ one more
+way in, for substitutes only: a private schema run by a dedicated database role that the API
+can never become (D-049).
 
 **D-013 — Who sees what (Assumption: to confirm with a board).**
 
@@ -96,7 +98,9 @@ are tested (`supabase/tests/00_schema_invariants.test.sql`).
 
 _Why:_ planning is the teacher's professional space; per-teacher progress visible to principals
 reads as monitoring and would hurt trust (and may concern the teachers' union). Principal
-oversight screens (absences, substitute-plan status) come in Phase 6.
+oversight screens (absences, substitute-plan status) come in Phase 6. _Amended in Phase 3:_ a
+released substitute plan is a hand-off document, which direction and office read (office sees
+first names, never « Gestion de classe »), every view audited (D-056).
 
 **D-014 — Students are stored by a single first-name/nickname field.** The column is
 `students.first_name` (max 40 characters). There is no last-name field anywhere. For two students
@@ -121,7 +125,9 @@ like more than a first name are flagged; empty, too-long and email-like values a
   approval, and toggling it is audited.
 - In the UI, alerts stay hidden until the teacher taps "Alerte de sécurité ou médicale", because
   classroom screens are often projected.
-- Visible to the class team and the school's direction. Substitute access arrives in Phase 3.
+- Visible to the class team and the school's direction. _Amended in Phase 3:_ a substitute with
+  a valid session sees the covered classes' alerts on screen, hidden until tapped, every reveal
+  audited, never on paper (D-056).
 
 **D-017 — Audit log is append-only.** No foreign keys (the record outlives what it describes), no
 updates, no truncation; deletes only when a retention job explicitly opts in. Audited in Phase 1:
@@ -136,7 +142,7 @@ deletion. Audit entries never contain student names or alert text.
 | Audit log                       | 2 years                                                                                        |
 | Dispatched outbox events        | 90 days                                                                                        |
 | Class-mode responses            | Deleted when the session ends (unless the teacher keeps aggregate results, then 1 year)        |
-| Substitute codes and sessions   | Expire the same day; deleted after 30 days                                                     |
+| Substitute codes and sessions   | Expire the same day; deleted after 30 days (implemented, D-059)                                |
 | AI usage ledger (metadata only) | 2 years                                                                                        |
 
 **D-019 — Login: 6-digit email code plus a "confirm" link.** The email contains both. The link
@@ -148,7 +154,7 @@ scanners don't press buttons. Unknown addresses get the same response as known o
 principal, vice_principal, office_admin, facilities, board_admin, parent). School-scoped roles
 require a school; board_admin is board-scoped. The substitute is deliberately **not** a user
 account: Phase 3 gives them a single-day code (tables `sub_access_codes`, `sub_sessions` exist and
-are closed to the API).
+are closed to the API). _Amended in Phase 3:_ implemented as D-049 to D-051.
 
 ## Architecture
 
@@ -194,9 +200,9 @@ the file and fails if it drifted from the migrations.
 without Docker. CI uses the Supabase CLI.
 
 **D-029 — Container-first build; hosting decided in Phase 6.** Next.js builds a standalone server
-for the board-hosted Docker image. Vercel now has a Montréal region, but the worker (and PDF
-rendering in Phase 3) needs a long-running process, so hosted mode will need at least one small
-container in a Canadian region anyway.
+for the board-hosted Docker image. Vercel now has a Montréal region, but the worker needs a long-running process, so hosted mode
+will need at least one small container in a Canadian region anyway. _Amended in Phase 3:_ PDFs
+are rendered on demand in the web server's Node runtime, never stored (D-053).
 
 ## Content and curriculum
 
@@ -279,7 +285,9 @@ before any call (`packages/ai/src/privacy.ts`):
   It normalizes its own copy and also looks for names split by punctuation.
 - Requests carry no user, school, board or account identifiers.
 - The teacher sees exactly what will be sent before sending (names highlighted), and can open
-  the exact text that was sent afterwards.
+  the exact text that was sent afterwards. _Amended in Phase 3:_ for a substitute plan, a field
+  holding a personal detail is left out and listed in the preview instead of blocking the whole
+  request (D-052).
 - Names come back only on our servers: students with the roster spelling, staff as the teacher
   wrote them. A name that could be several people, or a staff name written in lowercase, gets its
   own marker and comes back exactly as written. Marker-like text already in the teacher's input
@@ -353,10 +361,213 @@ language, whatever the interface language. A personal level used by a request or
 can't be deleted, only turned off; a result whose level was deleted since is saved without that
 version, with a warning.
 
+## Substitute hand-off (Phase 3)
+
+**D-047 — Plans are built in the publish request; the worker keeps them current; release is
+computed.** « Envoyer » reads the plan's sources as the teacher (`get_sub_plan_sources`, only
+what RLS already lets her read), builds every school day with the pure `buildAbsencePlans()`
+(`packages/domain`) and saves the absence and all its plans in one transaction
+(`publish_absence`). A day whose build throws gets a minimal plan (schedule, routines,
+contacts) with the warning `generation_failed`, so publishing never fails because of the
+builder and 6 a.m. never waits on a background job. Afterwards, row triggers on everything a
+plan is built from (progress, units, lessons, timetable, roster, calendar, rotation anchors,
+school settings, class team and teacher roles, the Fiche) mark the teacher's upcoming published
+absences (`absences.sources_changed_at`) and emit `absence.sources_changed` the first time; a
+later change moves the mark. The worker's `sub_plan_refresh` rebuilds with the same loader
+(`app.sub_plan_sources`) and builder and saves with compare-and-set (three tries, then the job
+is retried). The web server's own rebuilds (publish, « Modifier », « Mettre à jour le plan »)
+send back a fingerprint of the sources they read: if the sources changed in the meantime, the
+plans are saved all the same and the absence stays marked for the worker. A plan is
+_refreshable_ while its absence is published, no substitute has signed in, and its date is
+later, or today before release; after that it is a fixed snapshot. Multiple days continue one
+lesson sequence; lessons of fixed days, and of the teacher's other absence in the week before
+(back-to-back absences), count as taught until their report arrives. When the lessons an
+absence assigns change, the teacher's absences starting in the following week are woken with
+an event (`cause: 'earlier_absence'`) rather than marked, so a write never locks two absences.
+Confirming a report also rebuilds. A plan counts as released when released by hand or when
+`status = 'ready'` and `review_deadline` (the board's `subPlanAutoReleaseTime`, default 07:30,
+school-local) has passed: no job runs at 07:30. _Why:_ the flagship moment must not depend on a
+worker; plans must follow what the class actually did. The worker depends on `@lynx/domain`;
+the `pending`, `generating` and `failed` plan statuses stay unused (check constraint).
+
+**D-048 — A plan is three layers keyed by timetable block; the database never trusts ids in
+plan JSON.** `sub_plans.plan` is the generated layer (`subPlanV1Schema`), `edits` the teacher's
+overlay, `ai` the AI layer (3b). Blocks are keyed by `timetable_blocks.id` and each edit or AI
+entry records the lesson it was written for: `composeSubPlan()` applies teacher edits, then AI,
+then the template, per block and only while the block keeps that lesson. Edits that no longer
+match are shown to the owner as detached and hidden from everyone else; rebuilds never touch
+edits. Everything that grants access is derived by the database: the covered classes
+(`sub_plan_classes`, a subset of the teacher's classes), the roster (active students of those
+classes), the lessons a report may name, and the school, office phone and teacher name, read
+from tables when the plan is shown. _Why:_ JSON sent to a definer function must never make it
+return someone else's data.
+
+**D-049 — The substitute portal is a private schema run by a dedicated role (amends D-012).**
+Substitutes have no account and their browser never calls the API. The web server calls the
+five functions of schema `sub_portal` (`redeem`, `load`, `alerts`, `save_report`,
+`end_session`), which PostgREST does not expose, over its own connection
+(`SUB_PORTAL_DATABASE_URL`, a pool of at most 3) as the role `lynx_sub_portal`. The role can
+execute those functions and nothing else: no table privileges, no public or app function,
+`statement_timeout` 5 s, never granted to `authenticator`. The migration creates it `NOLOGIN`;
+the operator gives it `LOGIN` and a secret password (the seed sets a local-only one). Every call
+re-checks the session, its code, the day's window, revocation, the absence's status and the
+Teaching module. `anon` still executes nothing and `authenticated` cannot call the portal.
+_Why:_ anon-executable functions would let anyone with the public key call them and choose
+their own throttle keys; minting JWTs would put the JWT secret (which can mint `service_role`)
+in the web server; the service role would bypass RLS. One more secret and one more connection;
+on hosted Supabase the pooler user is `lynx_sub_portal.<project-ref>` (docs/phase-3.md).
+
+**D-050 — Access codes: 10 characters, a keyed hash, one day, 2 codes × 2 devices.** Ten
+Crockford Base32 characters (50 bits, `XXXXX-XXXXX`), typed as read over the phone (lowercase,
+spaces, hyphens, O for 0, I or L for 1). The web server sends `HMAC(SUB_CODE_HMAC_KEYS, code)`;
+the database stores its SHA-256, so a dump cannot be brute-forced without the key; a lookup
+sends one MAC per key of the ring (current and previous). A code works only on its plan date,
+within the school's access hours (`accessFrom`/`accessUntil`, default 05:00–18:00, computed in
+SQL in the school's time zone), at most 2 active codes per plan and 2 devices per code. A code
+typed before its window answers « Ce code sera valide le … à partir de … » and is not counted as
+a wrong guess. The day's access ends when the last code issued for it expires (or at the end of
+the access hours if none was issued), so a settings change during the day does not move it. A
+device is the SHA-256 of a random HttpOnly cookie, the same across key rotations; the network is
+an HMAC of the client address with the current key. Each code records who issued it and in what
+role. The plaintext exists only in the response to the person who issued it: nobody can look a
+code up later. _Why:_ typed from paper at the office door; even with no throttling, 1,000
+guesses a second for 13 hours against 50 active codes succeed with probability about 2·10⁻⁶.
+
+**D-051 — Throttling, revocation and audit for substitute access.** Each failed attempt is
+stored with the device and network keys only (no raw cookie or address). Delays instead of a
+lockout: per device after 5 failures in 15 minutes (30 s, doubling, at most 15 minutes); per
+network after 50 (5 s, doubling, at most 60 s, so one student cannot lock out the school's
+Wi-Fi); and, whatever the client sends, past 300 failures a minute across all devices and
+networks everyone waits a minute. Nothing is recorded while waiting, and `redeem` never raises
+after recording. The client address is the entry `TRUSTED_PROXY_HOPS` from the right of
+`CLIENT_IP_HEADER`: production must sit behind a reverse proxy that appends it
+(docs/phase-3.md); reached directly, a client can choose its address and drop its cookie, and
+only the global cap and the 50-bit code remain. Staff cut a code, one device, or all access;
+cancelling or shortening the absence cuts it too; every call re-checks, so it takes effect at
+once. A device that was cut stays out, and its code takes no new device (a private window or
+cleared cookies cannot take the free slot). Audited, with school and board: `sub_code.issued`,
+`sub_code.revoked`, `sub_session.revoked`, `sub_code.redeemed`, `sub_session.ended`,
+`sub_plan.viewed` (once per session per content version), `sub_plan.printed`,
+`sub_plan.released`, `student_alert.viewed` (every reveal, per class), `sub_report.submitted`,
+`sub_report.viewed`, `sub_report.confirmed`, `absence.published`/`updated`/`cancelled`. The
+substitute's entries name the code's issuer and the issuer's role. Throttling goes to the web
+server's warning log with a short prefix of the hashed keys; it belongs to no school.
+
+**D-052 — The deterministic plan comes first; AI is an optional, previewed step (amends
+D-038).** Without AI a plan has the day's schedule and routines, the next lessons from the
+teacher's planning, groups by level with each level's description, the Fiche, contacts, the
+end of day and a faith moment; it works with AI off. Deviation from SPEC §9.4.3–4: nothing
+comes from the library until Phase 4 (it is empty, D-031); « the matching version of each
+activity » is groups plus level descriptions now, AI instructions per group in 3b, library
+versions in Phase 4. « Consignes détaillées (IA) » is never automatic: the teacher opens a
+preview of exactly what would be sent; a text field holding a personal detail (phone, email,
+identifier...) is left out and listed as « Non envoyé » instead of blocking the whole request
+(the D-038 amendment); the editor's pending changes are saved before the preview, and a plan
+changed since the preview is refused (`LXS15`) and previewed again. Never sent: student names
+(groups go as sizes, per period), alerts, « Gestion de classe », the absence note, reports,
+class, school or staff names, and ids. The answer (`max_tokens` 64 000, D-045) is applied by a
+trigger when the worker records it, never once a substitute has opened the plan; the teacher
+can remove it at any time, even during the day.
+
+**D-053 — PDFs are rendered on demand, never stored, never with alerts (amends D-029).** The
+plan PDF (schedule, lessons and steps, groups with first names, contacts, end of day, faith
+moment; « Alertes : consultez l'application ou la direction » instead of alerts; never
+« Gestion de classe ») and, in 3b, « Activités pour les élèves »: one page per group per activity,
+only the group key in a corner, names and level names replaced by « … », always in French.
+Rendered with `@react-pdf/renderer` in the web server (`runtime = 'nodejs'`, `no-store`), in
+vendored Noto Sans (SIL OFL). Opened through plain links (never prefetched); `?download=1` asks
+for a download on success, never the `download` attribute, and a failure is a small page with a
+way back. Prints by anyone but the owner are audited as `sub_plan.printed`. The document
+language is French. _Why:_ no Storage in CI or the lite stack; stored PDFs go stale after
+edits; alerts on paper cannot be audited (SPEC §6).
+
+**D-054 — The end-of-day report writes pending progress; the teacher confirms through one
+path.** The report autosaves to the server during the day and to the browser tab
+(`sessionStorage`), tied to the device session that started it; the office can cut that session
+to let another device take over. Sending writes, for each lesson « Terminé »,
+`lesson_progress(pending_confirmation, substitute_report, taught_on = plan date)` without
+overwriting the teacher's own record; sending again replaces them. « En partie » and « Pas
+fait » write nothing, so those lessons stay next. Free text is encrypted by the web server with
+the alerts key ring, bound to the plan; outcomes and absent-student ids stay plain and are
+checked against the plan's classes. A report never sent becomes readable to the teacher once the
+day's access ends. Confirming goes only through `confirm_sub_report`, which is refused if the
+report changed since the page showed it (`LXS16`); « Pas terminée » removes the report's record
+of the lesson whatever its status. Aujourd'hui and Planification show pending lessons with a link
+to the report, never a check-off. No report at all: « Marquer les leçons prévues comme données ».
+Free text and the absent list are purged 60 days after confirmation (or after the plan date).
+
+**D-055 — What a plan covers.** Every date of the absence that is not a weekend, PA day or
+holiday; absences start today or later and last at most 14 days (Assumption: long-term
+assignments are out of scope). Covered blocks: the teacher's own, plus unassigned blocks of her
+homeroom classes (duty and prep included); blocks of her homeroom taught by someone else become
+a hand-over (« EPS avec M. Leblanc (Gymnase) »). Calendar effects follow D-008: a replaced block
+shows the event and gets no lesson, interrupted and shortened blocks keep the lesson, cancelled
+blocks go and the end of day moves. Rotating-day schools show « Jour N »; an unknown cycle day
+gives no blocks and a warning. Half days split at the school's `halfDaySplit`, else the first
+lunch, else the nutrition break nearest midday (flagged as guessed); the other half's blocks are
+still sequenced. Co-homeroom classes list the other homeroom teacher as a contact (Assumption).
+
+**D-056 — Who sees what for the substitute hand-off (amends D-013 and D-016).** A released plan
+is a hand-off document; the teacher's units and progress otherwise stay private.
+
+| Data                        | Absent teacher                  | Principal / VP            | Office                                           | Substitute (valid session, that day)                 |
+| --------------------------- | ------------------------------- | ------------------------- | ------------------------------------------------ | ---------------------------------------------------- |
+| Absence (dates, part, note) | read; changes through functions | read                      | read                                             | the note, in the released plan                       |
+| Plan status, codes, devices | read, issue, cut, release       | read, issue, cut, release | read, issue, cut, release                        | none                                                 |
+| Plan content, first names   | read and edit                   | released only, audited    | released only, audited, no « Gestion de classe » | released only, audited once per version              |
+| Alerts                      | `get_class_alerts` (audited)    | `get_class_alerts`        | never through their own screens                  | on screen, hidden until tapped, every reveal audited |
+| PDF                         | yes                             | released, audited         | released, audited                                | yes, audited                                         |
+| Report                      | read and confirm                | read, audited             | status only                                      | write their own, tied to one device                  |
+| « Fiche de suppléance »     | class team reads and writes     | through the plan          | through the plan                                 | through the plan                                     |
+
+Other staff and board admins see none of it. Office seeing first names in a released plan is a
+narrow, audited exception to « office: no rosters » (question 1 for Mike). A code is a bearer
+credential: whoever holds it, the staff member who issued it included, sees what a substitute
+sees, alerts included. Office staff could redeem a code they issued themselves; the audit trail
+names the issuer and the issuer's role on the redemption, every view and every alert reveal, so
+such a session is visible (the Phase 6 audit viewer should flag it). The absent teacher is the
+plan's owner only while she holds a teacher role at the school, and issues codes only for
+classes she still teaches; a change to her roles or classes rebuilds her refreshable plans.
+
+**D-057 — « Fiche de suppléance » per class.** `class_sub_profiles` holds arrival, routines,
+class management, dismissal, fallback activities and a neighbouring colleague (an active teacher
+at the school) with a note. Only the class team reads and writes it; « Gestion de classe » is
+left out of the office view and every PDF and is never sent to AI. No emergency field: school
+procedures live in `schools.settings.substitute.emergencyInfo` (the direction's « Suppléance »
+card, with access hours, arrival instructions and the half-day split), so there is no second,
+weaker store for medical information. _Why:_ SPEC §9.4.4 asks for routines, contacts and
+end-of-day instructions, and no table held them.
+
+**D-058 — Catholic connection in plans.** `absences.catholic_connection` (default on,
+remembered on the device) adds one « Moment de foi », picked deterministically from active
+`catholic_references` of the board (the board's own first): the grade range covers the classes,
+the season matches or is empty (Advent, Christmas, Lent, Easter by computus, ordinary time),
+tags overlap the day's lessons best, ties rotate by date. The teacher edits or removes it; AI
+(3b) may add one sentence linking it to the day's topic.
+
+**D-059 — Retention and deletion (amends D-018).** Codes and sessions are deleted 30 days
+after they expire, throttle attempts after 1 day, report free text and the absent list 60 days
+after confirmation (or after the plan date if never confirmed): the worker's daily
+`sub_access_maintenance`. Plans and structured reports are kept 1 year after the plan date
+(Assumption; the purge job comes in Phase 6). Deleting a class deletes every plan covering it,
+with its codes, sessions, report and the report's pending progress (audited
+`sub_plan.deleted`); deleting a teacher removes her absences. No phone number or email address
+of a substitute is ever stored: « Texto » and « Courriel » open the sender's own apps.
+
+**D-060 — Events, integrations and licensing.** Events carry ids, dates and the part of day
+only: `absence.published`/`updated`/`cancelled`/`sources_changed` (with `cause` when an earlier
+absence caused it), `sub_plan.ready` (on creation), `sub_plan.released` (by hand only),
+`sub_session.started`, `sub_report.submitted`/`confirmed`; 3b reuses `ai.job_requested`. The
+log-only `access_control_substitute_credential` handler on `absence.published` stays; Phase 3
+makes no integration calls. Everything belongs to the Teaching module: pages and actions check
+it in the app, and the portal, publishing and codes check it in the database too.
+
 ## Schema additions beyond SPEC section 8
 
 `school_years`, `rooms`, `class_grades`, `school_cycle_anchors`, `unit_lesson_expectations`,
 `library_item_grades`, `library_item_answer_keys` (answer keys in their own table so student-facing
 code never reads them), `sub_sessions`, `class_session_results`, `strands` shared across grades,
 `lesson_progress.taught_on` / `source` / `pending_confirmation`, `timetable_blocks.day_key` (instead
-of weekday), `kind`, `teacher_id`, `room_id`, `notes`, and `unit_lessons.sub_notes`.
+of weekday), `kind`, `teacher_id`, `room_id`, `notes`, and `unit_lessons.sub_notes`. Phase 3 adds
+`sub_plan_classes`, `sub_code_attempts`, `class_sub_profiles`, the plan layers and versions on
+`sub_plans`, and `lesson_progress.sub_report_id`.

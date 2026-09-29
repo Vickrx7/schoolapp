@@ -21,6 +21,7 @@ import {
 } from '@/server/actions/sub-plan-ai';
 import type { SubPlanAiState } from '@/server/queries/sub-plan-ai';
 import type { SubPlanAiNotSent } from '@/server/sub-plans/ai-preview';
+import { flushPlanEdits } from './plan-flush';
 
 /** The request's text with the replaced names highlighted. */
 function SentPreview({ preview }: { preview: SubPlanAiPreview }) {
@@ -157,7 +158,7 @@ function Progress({
       <Notice tone="warning" className="space-y-2">
         <p className="font-medium">{t('tooLong')}</p>
         <p>{t('tooLongHint')}</p>
-        <Button variant="secondary" size="sm" onClick={() => router.refresh()}>
+        <Button variant="secondary" onClick={() => router.refresh()}>
           {t('checkAgain')}
         </Button>
       </Notice>
@@ -206,6 +207,16 @@ export function SubPlanAiPanel({
       router.refresh();
     },
   });
+  // The preview is built from the saved plan: the editor's pending changes are saved first.
+  const openPreview = async () => {
+    await flushPlanEdits(planId);
+    await check.run(planId);
+  };
+  const sendPreviewed = async (version: number) => {
+    const result = await send.run(planId, version);
+    // The plan changed since the preview (an edit was saved): show the new preview in place.
+    if (result && !result.ok && result.error === 'subPlanAiStale') await openPreview();
+  };
 
   const job = state.job;
   const running = job && (job.status === 'queued' || job.status === 'running');
@@ -281,7 +292,7 @@ export function SubPlanAiPanel({
             {canAsk ? (
               <Button
                 variant={state.applied ? 'secondary' : 'primary'}
-                onClick={() => void check.run(planId)}
+                onClick={() => void openPreview()}
                 disabled={check.pending}
               >
                 <Sparkles aria-hidden />
@@ -331,8 +342,8 @@ export function SubPlanAiPanel({
                   {tCommon('cancel')}
                 </Button>
                 <Button
-                  onClick={() => void send.run(planId, preview.contentVersion)}
-                  disabled={send.pending}
+                  onClick={() => void sendPreviewed(preview.contentVersion)}
+                  disabled={send.pending || check.pending}
                 >
                   {send.pending ? t('sending') : t('send')}
                 </Button>

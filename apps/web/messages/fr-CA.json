@@ -113,7 +113,9 @@
     "subReportPending": "Le suivi peut encore arriver : attendez la fin de la journée de la personne suppléante.",
     "subReportExists": "Un suivi est arrivé pour cette journée : confirmez-le plutôt.",
     "subPlanAiStale": "Le plan a changé depuis l’aperçu. Vérifiez de nouveau avant d’envoyer.",
-    "subPlanAiNothing": "Ce plan n’a aucune période d’enseignement à détailler."
+    "subPlanAiNothing": "Ce plan n’a aucune période d’enseignement à détailler.",
+    "subReportChanged": "Le suivi a changé depuis que vous l’avez ouvert. La page montre maintenant la nouvelle version : vérifiez-la avant de confirmer.",
+    "absenceRequestReused": "Cet envoi a déjà servi pour une autre absence. Vérifiez vos absences, puis touchez « Envoyer » de nouveau."
   },
   "days": {
     "1": "lundi",
@@ -614,7 +616,11 @@
     },
     "chooseDate": "Choisissez la date de votre absence.",
     "blocksToCheck": "{count, plural, one {# période à vérifier.} other {# périodes à vérifier.}}",
-    "date": "Date"
+    "date": "Date",
+    "draftDateKept": "Ce brouillon était pour le {date} : cette date est gardée. Vérifiez-la avant d’envoyer.",
+    "draftDatePast": "Ce brouillon était pour le {date}, une date passée. Choisissez la date de l’absence.",
+    "editDraftOffered": "Des changements faits sur cet appareil n’ont pas été enregistrés, et l’absence a changé depuis.",
+    "editDraftRecover": "Reprendre mes changements"
   },
   "subPlan": {
     "title": "Plan de suppléance",
@@ -685,13 +691,13 @@
       "materials": "Matériel et où le trouver",
       "objectives": "Intention d’apprentissage",
       "content": "Contenu de la leçon",
-      "subNotes": "Note de l’enseignant·e",
+      "subNotes": "Note de la leçon",
       "lesson": "Leçon {n} · {unit}",
       "taught": "Déjà donnée",
       "gap": "Cette leçon avait été sautée : « {title} » est déjà faite.",
       "otherAdult": "Avec {name}",
       "notes": "Note de l’horaire",
-      "teacherNote": "Note de l’enseignant·e",
+      "teacherNote": "Consigne pour aujourd’hui",
       "noSteps": "Aucune étape.",
       "minutes": "{n} min"
     },
@@ -716,7 +722,7 @@
       "neighbour": "Collègue à côté",
       "arrival": "Arrivée à l’école",
       "emergency": "Mesures d’urgence",
-      "absenceNote": "Note de l’enseignant·e"
+      "absenceNote": "Mot de l’enseignant·e"
     },
     "classNotes": {
       "arrival": "À l’arrivée",
@@ -733,7 +739,9 @@
       "hint": "Affichées sur demande seulement. Chaque consultation est enregistrée.",
       "item": "{name} · {category} : {text}"
     },
-    "blockWarning": "{block} : {warning}"
+    "blockWarning": "{block} : {warning}",
+    "stepRemoved": "Étape retirée.",
+    "checklistItemRemoved": "Élément retiré."
   },
   "subPlanAi": {
     "title": "Consignes détaillées (IA)",
@@ -875,7 +883,7 @@
     "deviceEnded": "déconnecté",
     "cutDevice": "Couper",
     "cutDeviceLabel": "Couper l’appareil {n}",
-    "cutDeviceConfirm": "Couper l’accès de l’appareil {n}? Il ne pourra plus utiliser ce code.",
+    "cutDeviceConfirm": "Couper l’accès de l’appareil {n}? Il ne pourra plus utiliser ce code, et le code n’acceptera plus de nouvel appareil (les autres appareils gardent l’accès). Pour tout arrêter, coupez le code.",
     "cut": "Accès coupé.",
     "revokeAll": "Couper tout l’accès",
     "revokeAllConfirm": "Couper tous les codes et tous les appareils de cette journée? La personne suppléante aura besoin d’un nouveau code.",
@@ -930,7 +938,7 @@
     "codeHint": "10 caractères, par exemple 7KQ4M-9TDXA. Les majuscules et les tirets sont facultatifs.",
     "start": "Commencer",
     "starting": "Vérification…",
-    "invalid": "Ce code n’est pas valide.",
+    "invalid": "Ce code n’est pas valide. Vérifiez-le : un code fonctionne seulement le jour de la suppléance, aux heures indiquées.",
     "wait": "Trop d’essais. Réessayez dans {seconds, plural, one {# seconde} other {# secondes}}.",
     "usedUp": "Ce code est déjà utilisé sur deux appareils. Communiquez avec le secrétariat.",
     "revoked": "L’accès de cet appareil a été coupé. Communiquez avec le secrétariat pour obtenir un nouveau code.",
@@ -970,7 +978,12 @@
     "alertsItem": "{name} · {category} : {text}",
     "unreadable": "Ce plan ne peut pas être affiché. Communiquez avec le secrétariat.",
     "offline": "Vous êtes hors ligne. Le plan reste affiché ; il sera mis à jour au retour de la connexion.",
-    "teacherNote": "Mot de l’enseignant·e"
+    "teacherNote": "Mot de l’enseignant·e",
+    "closed": "Ce code n’accepte plus de nouvel appareil. Communiquez avec le secrétariat pour obtenir un nouveau code.",
+    "notYet": "Ce code sera valide le {date} à partir de {time}.",
+    "goToEndOfDay": "Aller à la fin de la journée",
+    "endDayUnsent": "Terminer sans envoyer le suivi? L’enseignant·e ne saura pas ce qui a été fait, et cet appareil aura besoin du code pour l’envoyer plus tard.",
+    "endDayAnyway": "Terminer sans envoyer"
   },
   "subPlanStaff": {
     "readOnly": "Lecture seule : seule la personne absente peut modifier ce plan. Chaque consultation est enregistrée.",
@@ -1075,7 +1088,8 @@
     "confidential": "Document confidentiel — à remettre au secrétariat à la fin de la journée",
     "page": "Page {page} sur {total}",
     "alertsElsewhere": "Alertes de sécurité ou médicales : consultez l’application ou la direction.",
-    "failed": "Le PDF n’a pas pu être créé. Le plan reste affiché dans l’application : réessayez dans un moment."
+    "failed": "Le PDF n’a pas pu être créé. Le plan reste affiché dans l’application : réessayez dans un moment.",
+    "failedBack": "Retour au plan"
   },
   "activitySheets": {
     "open": "Activités pour les élèves (PDF)",

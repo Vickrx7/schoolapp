@@ -39,8 +39,10 @@ import { parseInput } from './validation';
 /** What « Commencer » answers when the device is not signed in (it is redirected otherwise). */
 export type RedeemState =
   | null
-  | { outcome: 'invalid' | 'used_up' | 'revoked' }
+  | { outcome: 'invalid' | 'used_up' | 'revoked' | 'closed' }
   | { outcome: 'wait'; retryAfter: number }
+  /** A code typed before its day: when it opens (school-local date and 'HH:MM'). */
+  | { outcome: 'not_yet'; validOn: string; validFrom: string }
   /** A translation key under `errors` (this server's configuration, an unexpected failure). */
   | { error: string };
 
@@ -63,7 +65,7 @@ export async function redeemSubCode(_prev: RedeemState, form: FormData): Promise
   if (!code) return { outcome: 'invalid' };
 
   const env = serverEnv();
-  const device = deviceKey(await subDeviceId(), keys);
+  const device = deviceKey(await subDeviceId());
   const network = ipKey(
     clientIp(await headers(), env.CLIENT_IP_HEADER, env.TRUSTED_PROXY_HOPS),
     keys,
@@ -91,6 +93,10 @@ export async function redeemSubCode(_prev: RedeemState, form: FormData): Promise
         }),
       );
       return { outcome: 'wait', retryAfter: Math.max(1, result.retryAfter ?? 30) };
+    case 'not_yet':
+      return result.validOn && result.validFrom
+        ? { outcome: 'not_yet', validOn: result.validOn, validFrom: result.validFrom }
+        : { outcome: 'invalid' };
     default:
       return { outcome: result.outcome };
   }

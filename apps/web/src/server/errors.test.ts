@@ -14,10 +14,24 @@ describe('database errors shown to users', () => {
     expect(errorKey({ code: 'LXS20' })).toBe('absencePast');
     expect(errorKey({ code: 'LXS21' })).toBe('absenceTooLong');
     expect(errorKey({ code: 'LXS22' })).toBe('absenceOverlap');
+    expect(errorKey({ code: 'LXS15' })).toBe('subPlanAiStale');
+    expect(errorKey({ code: 'LXS16' })).toBe('subReportChanged');
+    expect(errorKey({ code: 'LXS23' })).toBe('absenceRequestReused');
   });
 
   it('has a message for every key', () => {
-    const codes = ['LXS10', 'LXS12', 'LXS13', 'LXS14', 'LXS20', 'LXS21', 'LXS22'];
+    const codes = [
+      'LXS10',
+      'LXS12',
+      'LXS13',
+      'LXS14',
+      'LXS15',
+      'LXS16',
+      'LXS20',
+      'LXS21',
+      'LXS22',
+      'LXS23',
+    ];
     for (const code of codes) {
       expect(fr.errors, code).toHaveProperty(errorKey({ code }));
     }

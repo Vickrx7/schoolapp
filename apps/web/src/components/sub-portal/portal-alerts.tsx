@@ -3,16 +3,18 @@
 import { Eye, EyeOff, ShieldAlert } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import type { RosterStudent } from '@/components/sub-plans/types';
 import { Button } from '@/components/ui/button';
 import { useAction } from '@/hooks/use-action';
+import { useHideWhenAway } from '@/hooks/use-hide-when-away';
 import { revealSubAlerts, type SubAlertView } from '@/server/actions/sub-portal';
 
 /**
  * « Alertes de sécurité ou médicales » for the substitute (DECISIONS D-056): hidden until
  * tapped (the plan may be on a projected screen), every tap audited per class by the database,
- * and cleared when hidden again or when the page is left or put away (`pagehide`).
+ * and cleared when hidden again, when the phone is locked or another tab or app comes to the
+ * front, and when the page is left (useHideWhenAway).
  */
 export function PortalAlerts({
   contentVersion,
@@ -36,11 +38,7 @@ export function PortalAlerts({
     },
   });
 
-  useEffect(() => {
-    const hide = () => setAlerts(null);
-    window.addEventListener('pagehide', hide);
-    return () => window.removeEventListener('pagehide', hide);
-  }, []);
+  useHideWhenAway(useCallback(() => setAlerts(null), []));
 
   const names = new Map(roster.map((s) => [s.id, s.firstName]));
   const multipleClasses = new Set(alerts?.map((a) => a.classId) ?? []).size > 1;

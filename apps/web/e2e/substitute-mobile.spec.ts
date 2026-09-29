@@ -117,7 +117,7 @@ test('a substitute signs in on a phone and finds what is happening now', async (
     await expectAccessible(sub);
 
     await sub.getByRole('tab', { name: 'Fin de journée' }).click();
-    await expect(sub.getByRole('link', { name: 'Terminer ma journée' })).toBeVisible();
+    await expect(sub.getByRole('link', { name: 'Aller à la fin de la journée' })).toBeVisible();
     await expectNoHorizontalScroll(sub);
 
     // « Suivi de la journée » on the phone: chips to tap, nothing to scroll sideways, and the

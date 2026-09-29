@@ -171,6 +171,18 @@ export const subPlanSourcesSchema = z.object({
       assignedLessonIds: list(uuid),
     }),
   ),
+  /**
+   * Days of the teacher's other absences in the week before this one starts, so back-to-back
+   * absences continue the sequence.
+   */
+  earlierPlans: list(
+    z.object({
+      planDate: localDateSchema,
+      part: z.enum(['full_day', 'am', 'pm']),
+      reportStatus: z.enum(['none', 'draft', 'submitted', 'confirmed']),
+      assignedLessonIds: list(uuid),
+    }),
+  ),
 });
 
 export type SubPlanSources = z.output<typeof subPlanSourcesSchema>;
@@ -184,3 +196,4 @@ export type SubPlanSourceProfile = SubPlanSources['profiles'][number];
 export type SubPlanSourceStudent = SubPlanSources['students'][number];
 export type SubPlanSourceLevel = SubPlanSources['levels'][number];
 export type SubPlanSourceSibling = SubPlanSources['siblings'][number];
+export type SubPlanSourceEarlierPlan = SubPlanSources['earlierPlans'][number];

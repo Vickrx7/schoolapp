@@ -48,16 +48,11 @@ export function DetachedEditsNotice({
             {d.teacherNote ? <p className="italic">{d.teacherNote}</p> : null}
             <div className="flex flex-wrap gap-2">
               {d.reason === 'lesson_changed' ? (
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  disabled={disabled}
-                  onClick={() => onApply(d)}
-                >
+                <Button variant="secondary" disabled={disabled} onClick={() => onApply(d)}>
                   {t('apply')}
                 </Button>
               ) : null}
-              <Button size="sm" variant="ghost" disabled={disabled} onClick={() => onDiscard(d)}>
+              <Button variant="ghost" disabled={disabled} onClick={() => onDiscard(d)}>
                 {t('discard')}
               </Button>
             </div>

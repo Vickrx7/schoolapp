@@ -27,6 +27,40 @@ export function pdfNotFound(): Response {
   });
 }
 
+/** `?download=1`: the PDF is saved rather than opened (the substitute's phone keeps a copy). */
+export function requestedPdfDisposition(request: Request): 'inline' | 'attachment' {
+  return new URL(request.url).searchParams.get('download') === '1' ? 'attachment' : 'inline';
+}
+
+const escapeHtml = (text: string) =>
+  text.replace(
+    /[&<>"']/g,
+    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!,
+  );
+
+/**
+ * A rendering failure as a small page with a way back, not a text file: the link that asked for
+ * the PDF may save whatever comes back.
+ */
+export function pdfFailedPage(
+  message: string,
+  back: { href: string; label: string },
+  lang: string,
+): Response {
+  const html = `<!doctype html>
+<html lang="${escapeHtml(lang)}">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>${escapeHtml(message)}</title></head>
+<body style="font-family: system-ui, sans-serif; max-width: 32rem; margin: 3rem auto; padding: 0 1rem; line-height: 1.5; color: #0f172a">
+<p>${escapeHtml(message)}</p>
+<p><a href="${escapeHtml(back.href)}" style="color: #1d4ed8">${escapeHtml(back.label)}</a></p>
+</body>
+</html>`;
+  return new Response(html, {
+    status: 500,
+    headers: { ...NO_STORE, 'Content-Type': 'text/html; charset=utf-8' },
+  });
+}
+
 /** What a plan's PDF route prints (`?doc=`): the plan, or the students' activity sheets. */
 export type PlanPdfDoc = 'plan' | 'activities';
 
@@ -43,6 +77,10 @@ export function requestedPdfDoc(request: Request): PlanPdfDoc | null {
  */
 export async function planPdfResponse(input: {
   doc: PlanPdfDoc;
+  /** 'attachment' saves the file; 'inline' (default) opens it. */
+  disposition?: 'inline' | 'attachment';
+  /** Where the failure page leads back to (the plan's page). */
+  backHref: string;
   plan: SubPlanV1;
   edits: SubPlanEdits | null;
   /** The AI layer (D-052), read leniently by composeSubPlan. */
@@ -81,7 +119,7 @@ export async function planPdfResponse(input: {
       headers: {
         ...NO_STORE,
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `inline; filename="${fileName}"`,
+        'Content-Disposition': `${input.disposition ?? 'inline'}; filename="${fileName}"`,
         'Content-Length': String(pdf.length),
       },
     });
@@ -91,9 +129,10 @@ export async function planPdfResponse(input: {
     reportError(input.doc === 'activities' ? 'activitiesPdf' : 'planPdf', {
       message: message.split('\n')[0]!.slice(0, 200),
     });
-    return new Response(labels.failed, {
-      status: 500,
-      headers: { ...NO_STORE, 'Content-Type': 'text/plain; charset=utf-8' },
-    });
+    return pdfFailedPage(
+      labels.failed,
+      { href: input.backHref, label: labels.failedBack },
+      labels.locale,
+    );
   }
 }

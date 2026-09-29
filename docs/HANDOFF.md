@@ -1,9 +1,10 @@
 # Handoff
 
-Written 2026-09-28 by the session that built Phases 1 and 2 (branch `claude/nifty-fermat-8hhl1l`),
-for the session continuing in the "School app" environment. Read `SPEC.md` and `DECISIONS.md` first;
-this file covers what they don't: the conversation with Mike, the current state, how to run things
-in these containers, and what's next.
+Written 2026-09-28 by the session that built Phases 1 and 2 (branch `claude/nifty-fermat-8hhl1l`);
+updated 2026-09-29 by the session that built Phase 3 (branch `claude/serene-ride-3n2fa1`). Read
+`SPEC.md` and `DECISIONS.md` first; this file covers what they don't: the conversation with Mike,
+the current state, how to run things in these containers, and what's next. Phase notes:
+`docs/phase-1.md`, `docs/phase-2.md`, `docs/phase-3.md`.
 
 ## 1. The brief
 
@@ -50,51 +51,59 @@ Ardoise). No availability or trademark check has been done yet.
 
 ## 2. Current state
 
-**Branch and PR.** Everything is on `claude/nifty-fermat-8hhl1l`, in draft PR
-[Vickrx7/schoolapp#1](https://github.com/Vickrx7/schoolapp/pull/1) (Phases 1 and 2). CI is green
-on `715de79` (the handoff commit) and on every commit before it. No reviews or review comments;
-Mike hasn't merged it. The new session's own branch is
-different (`claude/serene-ride-3n2fa1`), so it cannot push to PR #1 unless Mike allows it. Simplest:
-Mike merges PR #1 into `main` once he's happy, then new work branches from `main`. Otherwise, base
-the new branch on `claude/nifty-fermat-8hhl1l` and open a PR on top of it.
+**Branches and PRs.**
 
-**Commits:**
+- [Vickrx7/schoolapp#1](https://github.com/Vickrx7/schoolapp/pull/1) (draft, branch
+  `claude/nifty-fermat-8hhl1l`): Phases 1 and 2. Not merged; no reviews.
+- [Vickrx7/schoolapp#2](https://github.com/Vickrx7/schoolapp/pull/2) (draft, branch
+  `claude/serene-ride-3n2fa1`, stacked on #1): the Phase 2 hardening and Phase 3. Once #1 is
+  merged, retarget #2 to `main`. Phases 4 and 5 are planned to land on the same PR.
 
-| Commit    | What                                                                                        |
-| --------- | ------------------------------------------------------------------------------------------- |
-| `b9fb620` | Phase 1: schema (48 tables), RLS, planner, today view, worker, admin CLI, lite stack        |
-| `c427445` | Security review fixes (open redirect, deactivated users, parents, audit gaps, scope checks) |
-| `9dca5be` | CI: push builds on `main` only                                                              |
-| `42c142b` | English interface and language toggle                                                       |
-| `0d99491` | Email sign-in fix on the Supabase CLI stack (`[auth.email] enable_signup` must be true)     |
-| `3af4da0` | Phase 2: AI service (jobs, privacy layer, budgets, evaluation set)                          |
-| `b859fc6` | Phase 2: « Texte différencié » screens and the principal's AI switch                        |
-| `14762db` | CI race fix in the AI e2e test; class pages guard a missing class                           |
-| `715de79` | This handoff note and the promo video sources (`marketing/promo/`)                          |
+**Commits on #2:**
 
-**Verified (locally and in CI):** 113 unit tests, 217 pgTAP tests, 7 integration tests, 13
-Playwright tests (desktop + phone), lint, typecheck, format, generated DB types up to date.
+| Commit    | What                                                                                  |
+| --------- | ------------------------------------------------------------------------------------- |
+| `9bba837` | Phase 2 hardening: privacy layer, AI limits, the « Différencier » screens (41 fixes)  |
+| `25f9659` | Phase 3 groundwork: the plan builder (`packages/domain`) and the database behind it   |
+| `f6a6816` | Merge of the fact-checked handoff note from PR #1's branch                            |
+| `16cc8fa` | Absence form, absence page, plan review and editing, Fiche, worker refresh            |
+| `e46a56f` | Codes, the substitute portal, the office and direction board                          |
+| `9aa32d8` | CI prints the page snapshot of a failed browser test                                  |
+| `36c5b91` | Office account kept in French for the browser tests (CI fix)                          |
+| `21f9ba6` | The substitute's report, the teacher's confirmation, PDFs                             |
+| `edd830b` | Phase 3b: « Consignes détaillées (IA) » and the students' activity sheets             |
+| (latest)  | Phase 3 hardening (26 review findings) and the Phase 3 docs, decisions D-047 to D-060 |
 
-**Not verified:** nothing has been sent to the real Claude API yet. The Anthropic path
-(`packages/ai/src/providers.ts`: `messages.stream` + `finalMessage()` with `output_config.format`
-(JSON schema only), effort `medium`, no `thinking` param, `max_tokens` 64 000) is untested live.
-Everything runs on the fake provider. That's the first thing to do (section 6).
+**Verified (locally, from an empty database, and in CI on each pushed commit):** 407 unit tests,
+609 pgTAP tests, 34 integration tests, 43 Playwright tests (desktop and phone, axe on every
+Phase 3 page), lint, typecheck, format, generated DB types up to date, web build.
 
-**Half-built:** nothing is half-built in code. Tables for Phases 3–6 exist (substitutes, library,
-class mode) with RLS and tests, but no screens.
+**Phase 3 is complete** (3a and 3b; see `docs/phase-3.md`): absence button, plans built in the
+request and kept current by the worker, review and editing, release at 07:30, codes, the
+substitute's portal and report, the teacher's confirmation, the office and direction board,
+PDFs, the « Fiche de suppléance », AI detailed instructions and student activity sheets. A
+review of the build found 26 problems; all are fixed with tests in the latest commit (security:
+a cut device's code closes to new devices, a global cap on failed code attempts, the issuer of
+every code in the audit trail, the owner's rights ending with her teacher role; correctness:
+report confirmation against the version shown, request ids tied to their dates, back-to-back
+absences, plans rebuilt from stale sources, the day's access following the codes issued;
+screens: the phone bar, 44 px targets, drafts, French `lang` on plan content, and more).
+
+**Not verified:** nothing has been sent to the real Claude API (neither « Texte différencié » nor
+« Consignes détaillées »): `ANTHROPIC_API_KEY` is not set in this environment. No hosted
+deployment exists; the reverse proxy and the portal role's password are deployment steps
+written in `docs/phase-3.md`.
+
+**Half-built:** nothing. Phase 4 (library core) has not started; its tables exist (Phase 1).
 
 **Other deliverables:**
 
-- **Promo video:** a 60 s stop-motion commercial (English, Kokoro voice `af_heart`) and a 67 s French
-  version (voice `ff_siwis`, which has a France-French accent). Both MP4s were sent to Mike in the
-  chat. Their sources are now in `marketing/promo/` (rebuild steps in its README; models, venv and
-  videos are git-ignored).
-- **Screenshots:** the promo's app screenshots (Phase 1 screens, fictional demo data) are kept in
-  `marketing/promo/screens/`. The Phase 2 screenshots sent to Mike in the chat were only in the old
-  container and are gone; retake them from the running app if needed.
-
-**Watching.** The old session is still subscribed to PR #1 events and has a one-off check-in
-scheduled around 22:07 UTC today. If you take over the PR, tell Mike so only one session drives it.
+- **Promo video:** a 60 s stop-motion commercial (English, Kokoro voice `af_heart`) and a 67 s
+  French version (voice `ff_siwis`, which has a France-French accent). Sources in
+  `marketing/promo/` (rebuild steps in its README; models, venv and videos are git-ignored). The
+  sick-day plan is labelled « Bientôt » there: it now exists.
+- **Screenshots:** Phase 1 screens in `marketing/promo/screens/`. None of Phases 2 and 3 are kept;
+  retake them from the running app if needed.
 
 ## 3. How to run it (in these containers)
 
@@ -111,15 +120,19 @@ export DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:54322/postgres
 pnpm lint && pnpm typecheck && pnpm format:check
 pnpm test                                  # unit
 tools/lite-stack/stack.sh test             # pgTAP (needs pg_prove; was preinstalled here)
-pnpm test:int                              # integration (needs DATABASE_URL)
+SUB_PORTAL_DATABASE_URL=postgresql://lynx_sub_portal:lynx-sub-portal-local-only@127.0.0.1:54322/postgres \
+  pnpm test:int                            # integration (worker stopped; needs DATABASE_URL)
 pnpm db:types:direct                       # regenerate types (needs DATABASE_URL, else it tries :5432)
 
 pnpm --filter @lynx/web build
-(cd apps/web && nohup pnpm start --port 3000 > /tmp/next.log 2>&1 &)
-(cd apps/worker && AI_PROVIDER=fake AI_FAKE_DELAY_MS=300 nohup pnpm start > /tmp/worker.log 2>&1 &)
-cd apps/web && PLAYWRIGHT_CHROMIUM_EXECUTABLE=/opt/pw-browsers/chromium \
-  E2E_BASE_URL=http://localhost:3000 pnpm exec playwright test
+(cd apps/worker && set -a && . ../web/.env.local; set +a && \
+  AI_PROVIDER=fake AI_FAKE_DELAY_MS=300 nohup pnpm start > /tmp/worker.log 2>&1 &)
+cd apps/web && PLAYWRIGHT_CHROMIUM_EXECUTABLE=/opt/pw-browsers/chromium-1194/chrome-linux/chrome \
+  MAILPIT_URL=http://127.0.0.1:54324 pnpm exec playwright test   # starts `next start` itself
 ```
+
+(The Chromium path depends on the container image: `ls /opt/pw-browsers`. With a server already
+running, set `E2E_BASE_URL=http://localhost:3000` instead.)
 
 Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`, principal
 `sophie.lavoie@demo.lynx.test`). The 6-digit code arrives in Mailpit: `http://127.0.0.1:54324`.
@@ -148,7 +161,17 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   - New tables must `revoke all ... from anon, authenticated` explicitly.
   - `supabase/tests/00_schema_invariants.test.sql` catches most of this.
 - **Network:** GitHub Actions artifact downloads (`*.blob.core.windows.net`) are blocked by the
-  egress policy. Read CI failures from the job logs.
+  egress policy. Read CI failures from the job logs: a failed browser test prints its page
+  snapshot there (`e2e/failure-context-reporter.ts`).
+- **The portal role survives resets.** `lynx_sub_portal` is a cluster role: `stack.sh reset`
+  drops the database, not the role, so migrations create it only if missing and the seed sets its
+  local password again. `pnpm test:int` also needs `SUB_PORTAL_DATABASE_URL` (in `.env.example`).
+- **Migrations are applied once.** The lite stack does not re-apply an edited migration: after
+  editing one that is not committed yet, `stack.sh reset`. Never edit a committed migration; add
+  a new one (the latest is `20261003100000_substitute_hardening.sql`, pgTAP file `14`).
+- **Phase 3 browser tests** need the worker (`AI_PROVIDER=fake`) for the refresh and AI
+  scenarios, move code windows around the real clock (`e2e/db.ts` `openCodeWindow`) and clean up
+  after themselves; `e2e/mobile.spec.ts` briefly gives Isabelle a vice-principal role.
 - **Deletes:** `rm -rf *` style commands are refused by a safety check. Use explicit paths.
 - **Next warning:** "next start does not work with output: standalone" is harmless in tests. The
   standalone server is at `apps/web/.next/standalone/apps/web/server.js` (monorepo tracing root);
@@ -171,7 +194,10 @@ Everything else comes from `.env.example` (copy it to `apps/web/.env.local`). It
 keys, and none of it is secret:
 
 - **Web:** `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `APP_BASE_URL`,
-  `NEXT_PUBLIC_APP_NAME`, `ALERTS_ENCRYPTION_KEYS` (a dev-only key is included).
+  `NEXT_PUBLIC_APP_NAME`, `ALERTS_ENCRYPTION_KEYS` (a dev-only key is included), and for the
+  substitute portal `SUB_PORTAL_DATABASE_URL` (local-only password), `SUB_CODE_HMAC_KEYS`
+  (dev-only key), `CLIENT_IP_HEADER`, `TRUSTED_PROXY_HOPS` (production needs an appending reverse
+  proxy; `docs/phase-3.md`). The README has the full table.
 - **Admin CLI:** `SUPABASE_SERVICE_ROLE_KEY`.
 - **Worker:** `DATABASE_URL`, `WORKER_CONCURRENCY`, `OUTBOX_BATCH_SIZE`, `INTEGRATIONS_MODE`,
   `LOG_EVENTS`, `AI_PROVIDER` (`none` | `fake` | `anthropic`), `AI_MODEL` (default
@@ -230,67 +256,64 @@ Where an item is already in `DECISIONS.md`, the D-number is given. Don't add dup
 
 ## 6. Next steps (in order)
 
-1. **Real-API evaluation.** Run `pnpm ai:eval --yes` (11 fictional cases, about $1.60; the report
-   is written to `packages/ai/eval-results/`, which is git-ignored, so send it to Mike). Check that
-   the provider code works on Opus 5.5 (streamed structured output, effort, `max_tokens` with
-   thinking, and the time the largest case takes against the 13-minute limit), then review the
-   French. If the prompt needs changes, propose them to Mike first. Once he approves, add
-   `prompts/differentiate/v2.md` and bump `promptVersion`; never edit a version that has been
-   used.
-2. **Get PR #1 reviewed and merged** (see branch note in section 2).
-3. **Hosted beta**, once Mike agrees and provides the accounts. Present a short plan first. It
-   covers:
-   - a Supabase project in Canada Central;
-   - web and worker hosting in a Canadian region;
-   - real SMTP for login codes;
-   - secrets;
-   - a zero-data-retention request to Anthropic.
-
-   This pulls part of Phase 6 (`DEPLOYMENT.md`) forward.
-
-4. **Name.** Once chosen: check availability, then rename `NEXT_PUBLIC_APP_NAME`, the icon, the
+1. **Show Mike Phase 3** with a short summary and the three questions in `docs/phase-3.md` (we
+   built on the recommended answers: office prints plans with first names, substitutes see alerts
+   on screen, AI instructions are optional with a preview). Update PR #2's description.
+2. **Real-API evaluation**, once `ANTHROPIC_API_KEY` is set and Mike agrees: `pnpm ai:eval --yes`
+   (11 cases, about $1.60) and `pnpm ai:eval --feature sub_plan --yes` (11 cases, about $2).
+   Reports go to `packages/ai/eval-results/` (git-ignored): send them to Mike. Propose prompt
+   changes first; never edit a used prompt version (add `v2`).
+3. **Get PRs #1 and #2 reviewed and merged.**
+4. **Test with a real teacher and a real substitute** (`docs/phase-3.md`, « What to test »).
+5. **Phase 4 (library core).** Present a short plan and questions to Mike before building.
+   Library items then fill the gaps in substitute plans (D-052).
+6. **Hosted beta**, when Mike provides the accounts: Supabase in Canada Central, web and worker
+   in a Canadian region, real SMTP, secrets (including the portal role's password and the code
+   keys), a reverse proxy set up as `docs/phase-3.md` says, and a zero-data-retention request to
+   Anthropic. This pulls part of Phase 6 (`DEPLOYMENT.md`) forward.
+7. **Name.** Once chosen: check availability, then rename `NEXT_PUBLIC_APP_NAME`, the icon, the
    login email template and the promo.
-5. **Phase 3 (substitute hand-off).** Present a short plan and questions to Mike before building.
 
 **Known issues and risks:**
 
 - **Real API untested** (above).
+- **Substitute access codes are bearer credentials.** Whoever holds a code (the office staff
+  member who issued it included) sees the day's plan and alerts. It is audited with the issuer's
+  id and role; the Phase 6 audit viewer should flag office-issued sessions (D-056).
+- **Throttling needs the reverse proxy.** Reached directly, a client chooses its address and
+  drops its device cookie; the 50-bit code and the global cap of 300 failures a minute remain
+  (D-051).
+- **The worker must run** for plans to follow later changes; publishing does not need it.
+  Monitoring comes in Phase 6.
+- **Plans and structured reports are kept without a purge job yet** (1 year proposed; Phase 6).
 - **The preview can under-report replacements.** The worker de-identifies with at least everyone
   the preview knows, so the preview can under-report replacements but never over-promise.
-- **Unknown names** (a parent's, a student from a school where the teacher doesn't work) only get
+- **Unknown names** (a parent, a student from a school where the teacher doesn't work) only get
   caught by the teacher at the preview.
 - **Historical figures** who share a student's first name get replaced, then restored.
 - **Very short names** that match a French word once accents are removed (« Tú », « Lê », « An »)
   replace that word everywhere. A student named « Tú » would make the last check refuse every
   request for that school (the prompt begins with « Tu aides »). Fix: match such names only with
   their exact accents.
-- **Very short parts of staff names and particles** (« Lê », « Au », « Jo »; « De », « La ») are
-  replaced on their own only after an honorific (« Mme Lê »): alone they are everyday words. The
-  full name, and « De Grandpré » or « La Salle » capitalized, are still replaced.
+- **Very short parts of staff names and particles** are replaced on their own only after an
+  honorific (« Mme Lê »).
 - **The budget is a soft limit:** checked when a request is made and again when the worker starts
-  it, so calls already running can go slightly over.
-- **Fake-provider costs count toward budgets** in development.
-- **Other e2e tests could hit the pre-hydration click issue** on a slow CI runner.
-- **Deleting a level in use is refused** with a message suggesting to turn it off. A finished
-  request keeps its levels blocked until the teacher removes it (or 30 days).
+  it, so calls already running can go slightly over. Fake-provider costs count in development.
+- **Clicks before hydration** can be lost in browser tests on a slow CI runner; specs retry with
+  `expect(...).toPass()`.
+- **Deleting a level in use is refused** with a message suggesting to turn it off.
 
-**Waiting on Mike:** the product name; the hosted beta accounts; the zero-data-retention request;
-OK on the budget pooling nuance; whether the France-French promo voice is fine; go-ahead for the
-Phase 3 plan; whether to turn on the API's server-side refusal fallbacks (a beta; it brings in a
-second model and its price, D-045).
+**Waiting on Mike:** the three Phase 3 questions; the product name; the hosted beta accounts; the
+zero-data-retention request; OK on the budget pooling nuance; whether the France-French promo
+voice is fine; the real-API evaluation go-ahead; the Phase 4 plan; whether to turn on the API's
+server-side refusal fallbacks (a beta; it brings in a second model and its price, D-045).
 
-## 7. The paste message for the new session (verbatim)
+## 7. Starting a new session
+
+Paste something like this (adjust the task):
 
 ```
-Continue the school app project (Vickrx7/schoolapp) on branch claude/nifty-fermat-8hhl1l. Draft PR #1 has Phases 1 and 2. Read SPEC.md, DECISIONS.md and docs/phase-2.md first.
+Continue the school app project (Vickrx7/schoolapp) on branch claude/serene-ride-3n2fa1 (draft PR #2, stacked on #1). Read docs/HANDOFF.md, SPEC.md, DECISIONS.md and docs/phase-3.md first.
 
-Task: test Phase 2 against the real Claude API. ANTHROPIC_API_KEY is set in this environment. Never print it or commit it.
-1. Run `pnpm install`, then `pnpm ai:eval --yes` (10 fictional texts, about $1). Send me the report and a short summary: how many checks passed, cost per request, and how natural the Canadian French reads, quoting anything that sounds European, anglicized, or too hard for its level.
-2. If the API call fails, tell me the exact error before trying anything else.
-3. Don't change the prompt or code yet: propose changes first.
+Phase 3 (substitute hand-off) is done and CI is green. Next: present the Phase 4 (library core) plan and questions to me before building. Never print or commit ANTHROPIC_API_KEY.
 ```
-
-An earlier version (before the API-credential route failed) said the key was "set up as an API
-credential for api.anthropic.com, sent as the `x-api-key` header" and to use a placeholder key if
-the SDK needed one. That no longer applies: the key is meant to be a plain environment variable now
-(check that it is set before running the evaluation).

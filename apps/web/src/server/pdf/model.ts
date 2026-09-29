@@ -32,6 +32,8 @@ export interface PlanPdfLabels {
   alertsElsewhere: string;
   /** Shown instead of the PDF when it cannot be rendered. */
   failed: string;
+  /** The link back from the failure page. */
+  failedBack: string;
   classOf: (name: string) => string;
   dayOfCycle: (n: number) => string;
   part: Record<AbsencePart, string>;
@@ -110,6 +112,9 @@ export interface PlanPdfSection {
   /** The schedule section only. */
   blocks: PlanPdfBlock[];
 }
+
+/** The plan's own language (the builder and teachers write French; D-033). */
+const PLAN_CONTENT_LANG = 'fr-CA';
 
 export interface PlanPdfModel {
   /** Document properties: no names, only the date. */
@@ -398,7 +403,8 @@ export function buildPlanPdfModel(
   }
 
   return {
-    info: { title: labels.documentTitle(plan.date), language: locale },
+    // The plan itself is in French whatever the reader's language (only the labels follow it).
+    info: { title: labels.documentTitle(plan.date), language: PLAN_CONTENT_LANG },
     fileName: planPdfFileName(plan.date),
     header: {
       schoolName: context.schoolName,

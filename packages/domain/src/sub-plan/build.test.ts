@@ -345,4 +345,54 @@ describe('buildAbsencePlans', () => {
     const rebuilt = build(reported, { startsOn: WEEK.mon, endsOn: WEEK.nextMon }).plans;
     expect([first(rebuilt, '08:55'), first(rebuilt, '09:45')]).toEqual([5, 5]);
   });
+
+  it('continues after the teacher’s separate absence the day before', () => {
+    const tuesday = (raw: Raw) =>
+      build(raw, { startsOn: WEEK.tue, endsOn: WEEK.tue }).plans[0]!.plan.blocks.find(
+        (b) => b.start === '08:55',
+      )!.lesson?.sequenceNumber;
+    const monday = {
+      planDate: WEEK.mon,
+      part: 'full_day' as const,
+      reportStatus: 'none' as const,
+      // Monday's plan (another absence) assigned Français 4 and 5.
+      assignedLessonIds: [lesson('fra3', 4), lesson('fra3', 5)],
+    };
+    expect(tuesday(isabelleSources())).toBe(4);
+    // No report from Monday yet: its lessons count as taught.
+    expect(tuesday({ ...isabelleSources(), earlierPlans: [monday] })).toBe(6);
+    // Monday's report arrived: actual progress applies (Leçon 4 only was done).
+    expect(
+      tuesday({
+        ...isabelleSources(),
+        progress: [
+          ...isabelleSources().progress!,
+          { lessonId: lesson('fra3', 4), status: 'pending_confirmation', taughtOn: WEEK.mon },
+        ],
+        earlierPlans: [{ ...monday, reportStatus: 'submitted' }],
+      }),
+    ).toBe(5);
+  });
+
+  it('counts a morning absence on the same day once, and never the other way round', () => {
+    const french = (raw: Raw, part: 'am' | 'pm', start: string) =>
+      build(raw, { startsOn: WEEK.wed, endsOn: WEEK.wed, part }).plans[0]!.plan.blocks.find(
+        (b) => b.start === start,
+      )!.lesson?.sequenceNumber;
+    const earlier = (part: 'am' | 'pm') => ({
+      ...isabelleSources(),
+      earlierPlans: [
+        {
+          planDate: WEEK.wed,
+          part,
+          reportStatus: 'none' as const,
+          assignedLessonIds: [lesson('fra3', 4)],
+        },
+      ],
+    });
+    // The afternoon follows the morning's Français 4 (a half day sequences the other half).
+    expect(french(earlier('am'), 'pm', '13:35')).toBe(5);
+    // A morning absence does not assume the afternoon's lessons were taught.
+    expect(french(earlier('pm'), 'am', '08:55')).toBe(4);
+  });
 });

@@ -113,7 +113,9 @@
     "subReportPending": "The report can still arrive: wait until the substitute’s day is over.",
     "subReportExists": "A report arrived for this day: confirm it instead.",
     "subPlanAiStale": "The plan changed since the preview. Check again before sending.",
-    "subPlanAiNothing": "This plan has no teaching period to detail."
+    "subPlanAiNothing": "This plan has no teaching period to detail.",
+    "subReportChanged": "The report changed since you opened it. The page now shows the new version: check it before confirming.",
+    "absenceRequestReused": "This request was already used for another absence. Check your absences, then tap “Send” again."
   },
   "days": {
     "1": "Monday",
@@ -614,7 +616,11 @@
     },
     "chooseDate": "Choose the date of your absence.",
     "blocksToCheck": "{count, plural, one {# period to check.} other {# periods to check.}}",
-    "date": "Date"
+    "date": "Date",
+    "draftDateKept": "This draft was for {date}: that date is kept. Check it before sending.",
+    "draftDatePast": "This draft was for {date}, which has passed. Choose the date of the absence.",
+    "editDraftOffered": "Changes made on this device weren’t saved, and the absence has changed since.",
+    "editDraftRecover": "Recover my changes"
   },
   "subPlan": {
     "title": "Substitute plan",
@@ -685,13 +691,13 @@
       "materials": "Materials and where to find them",
       "objectives": "Learning goal",
       "content": "Lesson content",
-      "subNotes": "Teacher’s note",
+      "subNotes": "Lesson note",
       "lesson": "Lesson {n} · {unit}",
       "taught": "Already taught",
       "gap": "This lesson had been skipped: “{title}” is already done.",
       "otherAdult": "With {name}",
       "notes": "Timetable note",
-      "teacherNote": "Teacher’s note",
+      "teacherNote": "Instructions for today",
       "noSteps": "No steps.",
       "minutes": "{n} min"
     },
@@ -716,7 +722,7 @@
       "neighbour": "Colleague next door",
       "arrival": "Arriving at the school",
       "emergency": "Emergency procedures",
-      "absenceNote": "Teacher’s note"
+      "absenceNote": "A word from the teacher"
     },
     "classNotes": {
       "arrival": "On arrival",
@@ -733,7 +739,9 @@
       "hint": "Shown only on request. Every view is logged.",
       "item": "{name} · {category}: {text}"
     },
-    "blockWarning": "{block}: {warning}"
+    "blockWarning": "{block}: {warning}",
+    "stepRemoved": "Step removed.",
+    "checklistItemRemoved": "Item removed."
   },
   "subPlanAi": {
     "title": "Detailed instructions (AI)",
@@ -875,7 +883,7 @@
     "deviceEnded": "signed out",
     "cutDevice": "Cut",
     "cutDeviceLabel": "Cut device {n}",
-    "cutDeviceConfirm": "Cut access for device {n}? It won’t be able to use this code again.",
+    "cutDeviceConfirm": "Cut access for device {n}? It won’t be able to use this code again, and the code will no longer accept a new device (other devices keep their access). To stop everything, cut the code.",
     "cut": "Access cut.",
     "revokeAll": "Cut all access",
     "revokeAllConfirm": "Cut every code and every device for this day? The substitute will need a new code.",
@@ -930,7 +938,7 @@
     "codeHint": "10 characters, for example 7KQ4M-9TDXA. Capitals and dashes are optional.",
     "start": "Start",
     "starting": "Checking…",
-    "invalid": "This code isn’t valid.",
+    "invalid": "This code isn’t valid. Check it: a code works only on the day of the assignment, during the hours given.",
     "wait": "Too many attempts. Try again in {seconds, plural, one {# second} other {# seconds}}.",
     "usedUp": "This code is already used on two devices. Contact the office.",
     "revoked": "Access was cut for this device. Contact the office for a new code.",
@@ -970,7 +978,12 @@
     "alertsItem": "{name} · {category}: {text}",
     "unreadable": "This plan can’t be shown. Contact the office.",
     "offline": "You’re offline. The plan stays on screen; it will update when you’re back online.",
-    "teacherNote": "A word from the teacher"
+    "teacherNote": "A word from the teacher",
+    "closed": "This code no longer accepts a new device. Contact the office for a new code.",
+    "notYet": "This code will work on {date} from {time}.",
+    "goToEndOfDay": "Go to the end of the day",
+    "endDayUnsent": "End without sending the report? The teacher won’t know what was done, and this device will need the code to send it later.",
+    "endDayAnyway": "End without sending"
   },
   "subPlanStaff": {
     "readOnly": "Read only: only the absent teacher can change this plan. Every view is logged.",
@@ -1075,7 +1088,8 @@
     "confidential": "Confidential document — return it to the office at the end of the day",
     "page": "Page {page} of {total}",
     "alertsElsewhere": "Safety or medical alerts: check the app or ask the principal.",
-    "failed": "The PDF could not be created. The plan is still available in the app: try again in a moment."
+    "failed": "The PDF could not be created. The plan is still available in the app: try again in a moment.",
+    "failedBack": "Back to the plan"
   },
   "activitySheets": {
     "open": "Student activity sheets (PDF)",

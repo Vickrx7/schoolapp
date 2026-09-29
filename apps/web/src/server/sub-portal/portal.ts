@@ -18,7 +18,17 @@ import { portalQuery } from './db';
  * parsed here. Tokens, codes and keys are never logged.
  */
 
-export const redeemOutcomes = ['ok', 'invalid', 'wait', 'used_up', 'revoked'] as const;
+export const redeemOutcomes = [
+  'ok',
+  'invalid',
+  'wait',
+  'used_up',
+  'revoked',
+  /** Staff cut a device of this code: it takes no new device. */
+  'closed',
+  /** The code is right, but its day or hours have not started. */
+  'not_yet',
+] as const;
 export type RedeemOutcome = (typeof redeemOutcomes)[number];
 
 const redeemRowSchema = z.object({
@@ -26,6 +36,11 @@ const redeemRowSchema = z.object({
   session_token: z.string().nullable(),
   expires_at: z.coerce.date().nullable(),
   retry_after: z.number().int().nullable(),
+  valid_on: localDateSchema.nullable(),
+  valid_from_time: z
+    .string()
+    .regex(/^\d{2}:\d{2}$/)
+    .nullable(),
 });
 
 export interface RedeemResult {
@@ -35,6 +50,9 @@ export interface RedeemResult {
   expiresAt: Date | null;
   /** Seconds, for 'wait'. */
   retryAfter: number | null;
+  /** For 'not_yet': the code's day and its first minute, school-local ('HH:MM'). */
+  validOn: string | null;
+  validFrom: string | null;
 }
 
 export async function redeemCode(
@@ -43,7 +61,9 @@ export async function redeemCode(
   ipKey: string,
 ): Promise<RedeemResult> {
   const rows = await portalQuery(
-    'select outcome, session_token, expires_at, retry_after from sub_portal.redeem($1::text[], $2, $3)',
+    `select outcome, session_token, expires_at, retry_after, to_char(valid_on, 'YYYY-MM-DD') as valid_on,
+            valid_from_time
+       from sub_portal.redeem($1::text[], $2, $3)`,
     [codeMacs, deviceKey, ipKey],
   );
   const row = redeemRowSchema.parse(rows[0]);
@@ -52,6 +72,8 @@ export async function redeemCode(
     token: row.session_token,
     expiresAt: row.expires_at,
     retryAfter: row.retry_after,
+    validOn: row.valid_on,
+    validFrom: row.valid_from_time,
   };
 }
 

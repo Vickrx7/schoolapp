@@ -5,6 +5,7 @@ import {
   reattachEdit,
   resetBlock,
   resetChecklist,
+  restoreAt,
   samePayload,
   setBlockNote,
   setBlockSteps,
@@ -207,5 +208,19 @@ describe('plan editor overlay', () => {
     expect(parseMinutes('0')).toBeNull();
     expect(parseMinutes('12 min')).toBe(12);
     expect(parseMinutes('999')).toBe(240);
+  });
+});
+
+describe('undoing a removal', () => {
+  it('puts the item back where it was, keeping later changes', () => {
+    expect(restoreAt(['a', 'c'], 1, 'b', 12)).toEqual(['a', 'b', 'c']);
+    // Another item was removed meanwhile: at the end rather than out of range.
+    expect(restoreAt(['a'], 3, 'd', 12)).toEqual(['a', 'd']);
+    expect(restoreAt([], 0, 'a', 12)).toEqual(['a']);
+  });
+
+  it('never goes over the limit', () => {
+    const full = Array.from({ length: 12 }, (_, i) => String(i));
+    expect(restoreAt(full, 0, 'x', 12)).toEqual(full);
   });
 });

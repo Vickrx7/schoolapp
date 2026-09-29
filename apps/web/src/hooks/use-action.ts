@@ -48,6 +48,8 @@ const KNOWN_ERRORS = new Set([
   'subReportExists',
   'subPlanAiStale',
   'subPlanAiNothing',
+  'subReportChanged',
+  'absenceRequestReused',
 ]);
 
 /** Translates an error key from a server action; unknown keys fall back to a generic message. */

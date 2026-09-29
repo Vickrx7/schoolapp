@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useSyncExternalStore } from 'react';
 import { Card } from '@/components/ui/card';
 import { formatTime, formatTimeRange } from '@/lib/format';
+import { PLAN_CONTENT_LANG } from './block-card';
 import { timelineState, type TimelineBlock } from './timeline-state';
 
 const MINUTE = 60_000;
@@ -26,7 +27,7 @@ function BlockLine({ label, block }: { label: string; block: TimelineBlock }) {
       <p className="text-xs font-semibold tracking-wide text-brand-700 uppercase">{label}</p>
       <p className="font-medium text-slate-900">
         <span className="tabular-nums">{formatTimeRange(block.start, block.end, locale)}</span> ·{' '}
-        {block.title}
+        <span lang={PLAN_CONTENT_LANG}>{block.title}</span>
       </p>
       <a
         href={`#block-${block.key}`}

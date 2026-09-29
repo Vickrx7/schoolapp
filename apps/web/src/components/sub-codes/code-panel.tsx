@@ -76,6 +76,7 @@ export function CodePanel({
                   label={t('cutCode')}
                   message={t('cutCodeConfirm')}
                   confirmLabel={t('cutDevice')}
+                  size="md"
                   disabled={revokeCode.pending}
                   onConfirm={() => revokeCode.run(c.codeId)}
                 />

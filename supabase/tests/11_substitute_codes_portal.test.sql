@@ -364,8 +364,8 @@ insert into public.sub_access_codes (sub_plan_id, code_hash, valid_on, valid_fro
 select results_eq(
   $$select tests.redeem_as('bad', 'past', 'd5', 'i5') ->> 'outcome'
     union all select tests.redeem_as('bad', 'future', 'd5', 'i5') ->> 'outcome'$$,
-  $$values ('invalid'), ('invalid')$$,
-  'a code is refused outside its window'
+  $$values ('invalid'), ('not_yet')$$,
+  'a code is refused after its window, and answers « not yet » before it'
 );
 
 select tests.authenticate_as('teacher_a');

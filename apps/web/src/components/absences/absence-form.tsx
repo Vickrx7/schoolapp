@@ -4,7 +4,7 @@ import { ABSENCE_MAX_DAYS, addDays, type AbsencePart } from '@lynx/domain';
 import { CloudOff, Send } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Notice } from '@/components/ui/card';
 import { Chip } from '@/components/ui/chip';
@@ -17,7 +17,14 @@ import { cn } from '@/lib/utils';
 import { previewAbsence, publishAbsence } from '@/server/actions/absences';
 import type { AbsenceSummary } from '@/server/sub-plans/summary';
 import { AbsenceSummaryList, capitalize } from './absence-summary';
-import { absenceDates, initialChoice, type DateChoice, type DateFields } from './form-dates';
+import {
+  absenceDates,
+  initialChoice,
+  reconcileRestoredDates,
+  requestKey,
+  type DateChoice,
+  type DateFields,
+} from './form-dates';
 import { FAITH_COOKIE, type AbsenceFormSchool } from './types';
 
 interface AbsenceDraft extends DateFields {
@@ -26,6 +33,13 @@ interface AbsenceDraft extends DateFields {
   catholicConnection: boolean;
   /** Set on the first « Envoyer »: a retried tap publishes once. */
   clientRequestId: string;
+  /** The school, dates and part the request id was made for (requestKey): reused only for them. */
+  requestFor: string;
+  /**
+   * The first day the form stood for at its last change. The date chips are relative (« today »,
+   * the next school day), so a draft restored on a later day keeps this date instead.
+   */
+  forStartsOn: string;
 }
 
 /** A UUID for the request, also on plain-http origins where crypto.randomUUID is missing. */
@@ -76,13 +90,45 @@ export function AbsenceForm({
       note: '',
       catholicConnection: faithDefault,
       clientRequestId: '',
+      requestFor: '',
+      forStartsOn: '',
     }),
     [first, faithDefault],
   );
   const draft = useDraft(`absence:${userId}:new`, initial);
   const v = draft.value;
-  const { clear: clearDraft } = draft;
-  const school = schools.find((s) => s.id === v.schoolId) ?? first;
+  const { clear: clearDraft, setValue: setDraftValue } = draft;
+  const schoolOf = useCallback(
+    (schoolId: string) => schools.find((s) => s.id === schoolId) ?? first,
+    [schools, first],
+  );
+  const school = schoolOf(v.schoolId);
+
+  /** Every change goes through here, so the draft remembers the date it stands for. */
+  const edit = useCallback(
+    (patch: Partial<AbsenceDraft>) =>
+      setDraftValue((prev) => {
+        const next = { ...prev, ...patch };
+        return { ...next, forStartsOn: absenceDates(next, schoolOf(next.schoolId)).startsOn };
+      }),
+    [setDraftValue, schoolOf],
+  );
+
+  // A draft restored on a later day keeps its own date (the chips may now mean another one),
+  // and says so.
+  const [staleDraft, setStaleDraft] = useState<{ date: string; kept: boolean } | null>(null);
+  const reconciled = useRef(false);
+  useEffect(() => {
+    if (!draft.restored || reconciled.current) return;
+    reconciled.current = true;
+    const r = reconcileRestoredDates(v, v.forStartsOn, schoolOf(v.schoolId));
+    if (!r.stale) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- once, right after the restore
+    setStaleDraft(r.stale);
+    edit(r.fields);
+    // Once, when the draft is restored.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [draft.restored]);
 
   // The dates the form stands for, from the chips (a restored draft may be from another day).
   const { startsOn, endsOn, part, valid } = absenceDates(v, school);
@@ -95,6 +141,7 @@ export function AbsenceForm({
       router.push(`/absences/${absenceId}`);
     },
   });
+  const key = valid ? requestKey(school.id, { startsOn, endsOn, part }) : '';
 
   // ---- Live summary (debounced; stale answers are ignored) -----------------------------
   const previewKey = valid ? JSON.stringify([school.id, startsOn, endsOn, part]) : null;
@@ -137,25 +184,32 @@ export function AbsenceForm({
   const submit = (e: FormEvent) => {
     e.preventDefault();
     if (!valid || publish.pending) return;
-    const clientRequestId = v.clientRequestId || newRequestId();
-    if (!v.clientRequestId) draft.update('clientRequestId', clientRequestId);
+    // A retried tap for the same absence reuses its id (published once); anything else about
+    // the absence changed (school, dates, part) is a new absence with a new id.
+    const clientRequestId =
+      v.clientRequestId && v.requestFor === key ? v.clientRequestId : newRequestId();
+    if (clientRequestId !== v.clientRequestId) edit({ clientRequestId, requestFor: key });
     rememberFaith(v.catholicConnection);
-    void publish.run({
-      schoolId: school.id,
-      startsOn,
-      endsOn,
-      part,
-      note: v.note,
-      catholicConnection: v.catholicConnection,
-      clientRequestId,
-    });
+    void publish
+      .run({
+        schoolId: school.id,
+        startsOn,
+        endsOn,
+        part,
+        note: v.note,
+        catholicConnection: v.catholicConnection,
+        clientRequestId,
+      })
+      .then((result) => {
+        // The id was already used for another absence (a publish whose answer was lost): the
+        // next tap takes a new one.
+        if (result && !result.ok && result.error === 'absenceRequestReused') {
+          edit({ clientRequestId: '', requestFor: '' });
+        }
+      });
   };
 
-  const choose = (choice: DateChoice) => {
-    draft.update('choice', choice);
-    // A new date is a new absence: never reuse the id of one that may have been sent.
-    draft.update('clientRequestId', '');
-  };
+  const choose = (choice: DateChoice) => edit({ choice });
   const longDate = (date: string) =>
     capitalize(formatLocalDate(date, locale, { weekday: 'long', day: 'numeric', month: 'short' }));
 
@@ -164,9 +218,23 @@ export function AbsenceForm({
       {draft.restored ? (
         <Notice className="flex flex-wrap items-center justify-between gap-2">
           <span>{tCommon('draftRestored')}</span>
-          <Button variant="ghost" size="sm" onClick={draft.discard}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              setStaleDraft(null);
+              draft.discard();
+            }}
+          >
             {tCommon('discardDraft')}
           </Button>
+        </Notice>
+      ) : null}
+      {staleDraft ? (
+        <Notice tone="warning" data-testid="stale-draft-date">
+          {staleDraft.kept
+            ? t('draftDateKept', { date: longDate(staleDraft.date) })
+            : t('draftDatePast', { date: longDate(staleDraft.date) })}
         </Notice>
       ) : null}
       {!online ? (
@@ -185,7 +253,7 @@ export function AbsenceForm({
                 key={s.id}
                 name="school"
                 checked={s.id === school.id}
-                onChange={() => draft.update('schoolId', s.id)}
+                onChange={() => edit({ schoolId: s.id })}
               >
                 {s.name}
               </Chip>
@@ -216,10 +284,7 @@ export function AbsenceForm({
             type="checkbox"
             name="several"
             checked={v.several}
-            onChange={() => {
-              draft.update('several', !v.several);
-              draft.update('clientRequestId', '');
-            }}
+            onChange={() => edit({ several: !v.several })}
           >
             {t('severalDays')}
           </Chip>
@@ -238,10 +303,7 @@ export function AbsenceForm({
                   min={school.today}
                   max={addDays(school.today, 60)}
                   value={v.otherDate}
-                  onChange={(e) => {
-                    draft.update('otherDate', e.target.value);
-                    draft.update('clientRequestId', '');
-                  }}
+                  onChange={(e) => edit({ otherDate: e.target.value })}
                 />
               </Field>
             ) : null}
@@ -253,10 +315,7 @@ export function AbsenceForm({
                   min={startsOn || school.today}
                   max={startsOn ? addDays(startsOn, ABSENCE_MAX_DAYS - 1) : undefined}
                   value={v.endsOn}
-                  onChange={(e) => {
-                    draft.update('endsOn', e.target.value);
-                    draft.update('clientRequestId', '');
-                  }}
+                  onChange={(e) => edit({ endsOn: e.target.value })}
                 />
               </Field>
             ) : null}
@@ -281,10 +340,7 @@ export function AbsenceForm({
                 name="part"
                 className="sr-only"
                 checked={part === p}
-                onChange={() => {
-                  draft.update('part', p);
-                  draft.update('clientRequestId', '');
-                }}
+                onChange={() => edit({ part: p })}
               />
               {t(`part.${p}`)}
             </label>
@@ -315,7 +371,7 @@ export function AbsenceForm({
           value={v.note}
           maxLength={1000}
           className="min-h-20"
-          onChange={(e) => draft.update('note', e.target.value)}
+          onChange={(e) => edit({ note: e.target.value })}
         />
       </Field>
 
@@ -331,7 +387,7 @@ export function AbsenceForm({
           className="mt-1 size-6 shrink-0 accent-brand-600"
           checked={v.catholicConnection}
           onChange={(e) => {
-            draft.update('catholicConnection', e.target.checked);
+            edit({ catholicConnection: e.target.checked });
             rememberFaith(e.target.checked);
           }}
         />

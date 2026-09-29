@@ -12,7 +12,8 @@ export const buttonVariants = cva(
         secondary: 'bg-white text-slate-900 ring-1 ring-slate-300 ring-inset hover:bg-slate-50',
         ghost: 'text-slate-700 hover:bg-slate-100',
         danger: 'bg-red-600 text-white hover:bg-red-700',
-        success: 'bg-emerald-600 text-white hover:bg-emerald-700',
+        // emerald-700: white text on emerald-600 is below 4.5:1 (WCAG AA).
+        success: 'bg-emerald-700 text-white hover:bg-emerald-800',
       },
       size: {
         sm: 'min-h-9 px-3 text-sm',

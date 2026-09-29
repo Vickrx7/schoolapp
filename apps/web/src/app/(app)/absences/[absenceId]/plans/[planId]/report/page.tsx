@@ -174,7 +174,12 @@ export default async function SubReportPage({ params }: Params) {
           {report.status === 'confirmed' ? (
             <ReportLessonList lessons={report.lessons} locale={locale} showProgress />
           ) : (
-            <ConfirmReport reportId={report.reportId} lessons={report.lessons} />
+            <ConfirmReport
+              key={report.updatedAt}
+              reportId={report.reportId}
+              shownVersion={report.updatedAt}
+              lessons={report.lessons}
+            />
           )}
           {owned.unreported.length > 0 ? (
             <section className="space-y-2">

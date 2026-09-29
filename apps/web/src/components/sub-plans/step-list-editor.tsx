@@ -3,9 +3,11 @@
 import type { SubPlanStepEdit } from '@lynx/domain';
 import { ArrowDown, ArrowUp, Plus, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { useEffect, useRef } from 'react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input, Label, Textarea } from '@/components/ui/field';
-import { MAX_CHECKLIST, MAX_STEPS, parseMinutes } from './edits';
+import { MAX_CHECKLIST, MAX_STEPS, parseMinutes, restoreAt } from './edits';
 
 function move<T>(list: T[], from: number, to: number): T[] {
   if (to < 0 || to >= list.length) return list;
@@ -13,6 +15,37 @@ function move<T>(list: T[], from: number, to: number): T[] {
   const [item] = next.splice(from, 1);
   next.splice(to, 0, item!);
   return next;
+}
+
+/**
+ * Removing a list item in one tap, with « Annuler » in a toast (as for a lesson checked off):
+ * an item with something typed in it can be put back where it was. The undo applies to the
+ * list as it is by then, so changes made in the meantime are kept.
+ */
+function useUndoableRemove<T>(
+  list: T[],
+  onChange: (next: T[]) => void,
+  options: { max: number; message: string; blank: (item: T) => boolean },
+) {
+  const tCommon = useTranslations('common');
+  const latest = useRef({ list, onChange });
+  useEffect(() => {
+    latest.current = { list, onChange };
+  }, [list, onChange]);
+  return (i: number) => {
+    const removed = list[i];
+    if (removed === undefined) return;
+    onChange(list.filter((_, j) => j !== i));
+    if (options.blank(removed)) return;
+    toast(options.message, {
+      action: {
+        label: tCommon('undo'),
+        onClick: () =>
+          latest.current.onChange(restoreAt(latest.current.list, i, removed, options.max)),
+      },
+      duration: 6000,
+    });
+  };
 }
 
 /** A block's steps: minutes and text, reordered, added and removed. */
@@ -29,6 +62,11 @@ export function StepListEditor({
   const tCommon = useTranslations('common');
   const set = (i: number, patch: Partial<SubPlanStepEdit>) =>
     onChange(steps.map((s, j) => (j === i ? { ...s, ...patch } : s)));
+  const remove = useUndoableRemove(steps, onChange, {
+    max: MAX_STEPS,
+    message: t('stepRemoved'),
+    blank: (s) => s.text.trim() === '' && s.minutes === null,
+  });
 
   return (
     <div className="space-y-3">
@@ -71,7 +109,7 @@ export function StepListEditor({
                   variant="ghost"
                   size="icon"
                   aria-label={t('removeStep', { n: i + 1 })}
-                  onClick={() => onChange(steps.filter((_, j) => j !== i))}
+                  onClick={() => remove(i)}
                 >
                   <X />
                 </Button>
@@ -93,7 +131,6 @@ export function StepListEditor({
       {steps.length < MAX_STEPS ? (
         <Button
           variant="secondary"
-          size="sm"
           onClick={() => onChange([...steps, { minutes: null, text: '' }])}
         >
           <Plus aria-hidden />
@@ -115,6 +152,11 @@ export function ChecklistEditor({
   onChange: (items: string[]) => void;
 }) {
   const t = useTranslations('subPlan');
+  const remove = useUndoableRemove(items, onChange, {
+    max: MAX_CHECKLIST,
+    message: t('checklistItemRemoved'),
+    blank: (item) => item.trim() === '',
+  });
   return (
     <div className="space-y-2">
       <ul className="space-y-2">
@@ -133,7 +175,7 @@ export function ChecklistEditor({
               variant="ghost"
               size="icon"
               aria-label={t('removeChecklistItem', { n: i + 1 })}
-              onClick={() => onChange(items.filter((_, j) => j !== i))}
+              onClick={() => remove(i)}
             >
               <X />
             </Button>
@@ -141,7 +183,7 @@ export function ChecklistEditor({
         ))}
       </ul>
       {items.length < MAX_CHECKLIST ? (
-        <Button variant="secondary" size="sm" onClick={() => onChange([...items, ''])}>
+        <Button variant="secondary" onClick={() => onChange([...items, ''])}>
           <Plus aria-hidden />
           {t('addChecklistItem')}
         </Button>

@@ -75,12 +75,19 @@ async function clickUntil(
  * Downloads the PDF behind a link with the page's cookies (the link is a plain <a>, never
  * prefetched) and checks that it is a PDF that is never cached.
  */
-async function fetchPdf(page: Page, link: Locator) {
+async function fetchPdf(
+  page: Page,
+  link: Locator,
+  disposition: 'inline' | 'attachment' = 'inline',
+) {
   const href = await link.getAttribute('href');
-  expect(href).toMatch(/\/pdf$/);
+  expect(href).toMatch(disposition === 'inline' ? /\/pdf$/ : /\/pdf\?download=1$/);
+  // Never the `download` attribute: a browser would save an error page as the file.
+  await expect(link).not.toHaveAttribute('download');
   const response = await page.request.get(href!);
   expect(response.status()).toBe(200);
   expect(response.headers()['content-type']).toBe('application/pdf');
+  expect(response.headers()['content-disposition']).toMatch(new RegExp(`^${disposition};`));
   expect(response.headers()['cache-control']).toMatch(/\bno-store\b/);
   expect((await response.body()).subarray(0, 5).toString('latin1')).toBe('%PDF-');
 }
@@ -249,8 +256,7 @@ test('the substitute signs in with the code and reads the day', async ({ browser
   // « Télécharger le PDF »: saved on the phone; every download is audited (D-053).
   const since = await dbNow();
   const download = sub.getByRole('link', { name: 'Télécharger le PDF' });
-  await expect(download).toHaveAttribute('download', '');
-  await fetchPdf(sub, download);
+  await fetchPdf(sub, download, 'attachment');
   expect(await auditCount('sub_plan.printed', 'substitute', since)).toBe(1);
 
   // « Élèves »: groups with first names; alerts only on request, each reveal audited.
@@ -263,6 +269,20 @@ test('the substitute signs in with the code and reads the day', async ({ browser
   expect(await auditCount('student_alert.viewed', 'substitute', since)).toBe(1);
   await sub.getByRole('button', { name: 'Masquer les alertes' }).click();
   await expect(sub.getByText(ALERT)).toHaveCount(0);
+  // Put away (another app, the phone locked): gone when the page comes back.
+  await sub.getByRole('button', { name: 'Alertes de sécurité ou médicales' }).click();
+  await expect(sub.getByText(ALERT)).toBeVisible();
+  await sub.evaluate(() => {
+    Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => 'hidden' });
+    document.dispatchEvent(new Event('visibilitychange'));
+    Object.defineProperty(document, 'visibilityState', {
+      configurable: true,
+      get: () => 'visible',
+    });
+    document.dispatchEvent(new Event('visibilitychange'));
+  });
+  await expect(sub.getByText(ALERT)).toHaveCount(0);
+  expect(await auditCount('student_alert.viewed', 'substitute', since)).toBe(2);
 
   // The office sees the device.
   await office.goto(`/absences?date=${wednesday}`);
@@ -314,6 +334,11 @@ test('the substitute fills in the end-of-day report and sends it', async () => {
   expect(row!.notes_ciphertext).not.toContain('calme');
   expect(JSON.stringify(row!.content)).not.toContain('calme');
 
+  // Saved on the server: a reload shows it, without a « draft restored » notice.
+  await sub.reload();
+  await expect(lesson(french.title).getByRole('radio', { name: 'Terminé' })).toBeChecked();
+  await expect(sub.getByText('Brouillon non enregistré récupéré')).toHaveCount(0);
+
   // Without this tab's copy, a reload brings the server's draft back.
   await sub.evaluate(() => window.sessionStorage.clear());
   await sub.reload();
@@ -328,6 +353,7 @@ test('the substitute fills in the end-of-day report and sends it', async () => {
   await expect(sub.getByTestId('report-status')).toHaveText(
     'Votre suivi a été envoyé à l’enseignant·e.',
   );
+  await expectAccessible(sub);
   expect(await auditCount('sub_report.submitted', 'substitute', since)).toBe(1);
 
   // The office sees that it arrived, never what it says.
@@ -353,7 +379,7 @@ test('too many wrong codes make a device wait', async ({ browser }) => {
         ),
         start.click(),
       ]);
-      await expect(message).toHaveText('Ce code n’est pas valide.');
+      await expect(message).toHaveText(/^Ce code n’est pas valide\./);
     }
     await field.fill('ZZZZZ-ZZZ6Z');
     await start.click();
@@ -376,11 +402,19 @@ test('« Couper tout l’accès » ends the substitute’s access', async () => 
   await sub.waitForURL(/\/suppleance\?ended=1$/);
   await expect(sub.getByRole('heading', { name: 'Accès suppléance' })).toBeVisible();
   await expect(sub.getByText('Votre accès a pris fin.')).toBeVisible();
+  await expectAccessible(sub);
 });
 
 test('the teacher confirms the substitute’s report', async () => {
   const teacher = await teacherContext.newPage();
   try {
+    // Planification: the reported lesson waits for the report, it is not checked off there.
+    await teacher.goto(`/classes/${SEED.class3}/planning/${french.unitId}`);
+    const pendingItem = teacher.getByRole('listitem').filter({ hasText: french.title }).first();
+    await expect(pendingItem.getByTestId('pending-chip')).toBeVisible();
+    await expect(pendingItem.getByRole('button', { name: 'Leçon donnée' })).toHaveCount(0);
+    await expectAccessible(teacher);
+
     await teacher.goto('/today');
     const banner = teacher.getByTestId('report-banner');
     await expect(banner).toContainText('Le suivi de la suppléance du');

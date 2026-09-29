@@ -2035,6 +2035,7 @@ export type Database = {
           valid_from: string;
           max_devices: number;
           revoked_by: string | null;
+          issued_by_role: string | null;
         };
         Insert: {
           id?: string;
@@ -2049,6 +2050,7 @@ export type Database = {
           valid_from: string;
           max_devices?: number;
           revoked_by?: string | null;
+          issued_by_role?: string | null;
         };
         Update: {
           id?: string;
@@ -2063,6 +2065,7 @@ export type Database = {
           valid_from?: string;
           max_devices?: number;
           revoked_by?: string | null;
+          issued_by_role?: string | null;
         };
         Relationships: [
           {
@@ -2815,7 +2818,7 @@ export type Database = {
         Returns: undefined;
       };
       confirm_sub_report: {
-        Args: { p_report_id: string; p_decisions: Json };
+        Args: { p_report_id: string; p_decisions: Json; p_expected_updated_at?: string };
         Returns: undefined;
       };
       create_class: {
@@ -2907,11 +2910,12 @@ export type Database = {
           p_catholic_connection: boolean;
           p_client_request_id: string;
           p_plans: Json;
+          p_sources_fingerprint?: string;
         };
         Returns: string;
       };
       refresh_sub_plans: {
-        Args: { p_absence_id: string; p_plans: Json };
+        Args: { p_absence_id: string; p_plans: Json; p_sources_fingerprint?: string };
         Returns: undefined;
       };
       release_sub_plan: {
@@ -2987,6 +2991,7 @@ export type Database = {
           p_note: string;
           p_catholic_connection: boolean;
           p_plans: Json;
+          p_sources_fingerprint?: string;
         };
         Returns: undefined;
       };

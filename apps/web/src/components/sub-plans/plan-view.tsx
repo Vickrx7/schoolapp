@@ -4,7 +4,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
 import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatLocalDate, formatTime, formatTimeRange } from '@/lib/format';
-import { BlockCard, TypedText } from './block-card';
+import { BlockCard, PLAN_CONTENT_LANG, TypedText } from './block-card';
 import { GroupsPanel, groupLabels } from './groups-panel';
 import type { PlanContext, PlanLevel, RosterStudent } from './types';
 import { WarningsList } from './warnings-list';
@@ -157,7 +157,9 @@ export function PlanView({
           <ul className="space-y-1 text-sm">
             {plan.dayEvents.map((e, i) => (
               <li key={i} className="flex flex-wrap gap-x-2">
-                <span className="font-medium">{e.title}</span>
+                <span lang={PLAN_CONTENT_LANG} className="font-medium">
+                  {e.title}
+                </span>
                 {e.start ? (
                   <span className="text-slate-600">
                     {e.end ? formatTimeRange(e.start, e.end, locale) : formatTime(e.start, locale)}
@@ -236,7 +238,10 @@ export function PlanView({
         </p>
         {slots.endOfDay ??
           (plan.endOfDay.checklist.length > 0 ? (
-            <ul className="list-disc space-y-1 pl-5 text-sm text-slate-800">
+            <ul
+              lang={PLAN_CONTENT_LANG}
+              className="list-disc space-y-1 pl-5 text-sm text-slate-800"
+            >
               {plan.endOfDay.checklist.map((item, i) => (
                 <li key={i}>{item}</li>
               ))}
@@ -248,7 +253,9 @@ export function PlanView({
         (plan.faith ? (
           <PlanSection title={t('sections.faith')}>
             {plan.faith.title ? (
-              <p className="text-sm font-medium text-slate-800">{plan.faith.title}</p>
+              <p lang={PLAN_CONTENT_LANG} className="text-sm font-medium text-slate-800">
+                {plan.faith.title}
+              </p>
             ) : null}
             <TypedText text={plan.faith.text} className="text-sm text-slate-800" />
             {plan.faith.linkSentence ? (

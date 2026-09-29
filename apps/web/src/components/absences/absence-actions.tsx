@@ -4,13 +4,15 @@ import { ABSENCE_MAX_DAYS, addDays, type AbsencePart } from '@lynx/domain';
 import { Pencil, RefreshCw } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { useState, type FormEvent } from 'react';
+import { useMemo, useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 import { ConfirmButton } from '@/components/app/confirm-button';
 import { Button } from '@/components/ui/button';
+import { Notice } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Field, Input, Label, Textarea } from '@/components/ui/field';
 import { useAction } from '@/hooks/use-action';
+import { useDraft } from '@/hooks/use-draft';
 import { cn } from '@/lib/utils';
 import { cancelAbsence, refreshAbsencePlans, updateAbsence } from '@/server/actions/absences';
 
@@ -29,9 +31,12 @@ export interface EditableAbsence {
  * « Annuler l'absence ».
  */
 export function AbsenceActions({
+  userId,
   absence,
   canRefresh,
 }: {
+  /** The signed-in user: the edit form's draft is kept per user. */
+  userId: string;
   absence: EditableAbsence;
   canRefresh: boolean;
 }) {
@@ -47,7 +52,13 @@ export function AbsenceActions({
 
   return (
     <div className="flex flex-wrap gap-2">
-      <EditAbsenceDialog absence={absence} />
+      <EditAbsenceDialog
+        // Starts over from the saved absence when it changes (a draft made from the older one is
+        // then offered, not restored).
+        key={[absence.endsOn, absence.part, absence.note, absence.catholicConnection].join('|')}
+        userId={userId}
+        absence={absence}
+      />
       {canRefresh ? (
         <Button
           variant="secondary"
@@ -69,17 +80,36 @@ export function AbsenceActions({
   );
 }
 
-function EditAbsenceDialog({ absence }: { absence: EditableAbsence }) {
+/**
+ * « Modifier / Je reviens plus tôt ». What she types is kept on the device (D-035) until it is
+ * saved, so closing the dialog by accident (a tap outside it, Escape) loses nothing; « Annuler »
+ * drops it. A draft made from an absence changed since (another device) is offered, not restored.
+ */
+function EditAbsenceDialog({ userId, absence }: { userId: string; absence: EditableAbsence }) {
   const t = useTranslations('absences');
   const tCommon = useTranslations('common');
   const [open, setOpen] = useState(false);
-  const [endsOn, setEndsOn] = useState(absence.endsOn);
-  const [part, setPart] = useState<AbsencePart>(absence.part);
-  const [note, setNote] = useState(absence.note ?? '');
-  const [faith, setFaith] = useState(absence.catholicConnection);
+  const initial = useMemo(
+    () => ({
+      endsOn: absence.endsOn,
+      part: absence.part,
+      note: absence.note ?? '',
+      faith: absence.catholicConnection,
+    }),
+    [absence.endsOn, absence.part, absence.note, absence.catholicConnection],
+  );
+  const draft = useDraft(`absence-edit:${userId}:${absence.id}`, initial, {
+    // The saved absence the draft was made from.
+    version: JSON.stringify(initial),
+  });
+  const { endsOn, part, note, faith } = draft.value;
+  const { update, clear: clearDraft } = draft;
   const save = useAction(updateAbsence, {
     successMessage: t('updated'),
-    onSuccess: () => setOpen(false),
+    onSuccess: () => {
+      clearDraft();
+      setOpen(false);
+    },
   });
   const singleDay = endsOn === absence.startsOn;
 
@@ -94,19 +124,7 @@ function EditAbsenceDialog({ absence }: { absence: EditableAbsence }) {
   };
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(next) => {
-        setOpen(next);
-        if (next) {
-          // Start from the saved absence each time.
-          setEndsOn(absence.endsOn);
-          setPart(absence.part);
-          setNote(absence.note ?? '');
-          setFaith(absence.catholicConnection);
-        }
-      }}
-    >
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="secondary">
           <Pencil aria-hidden />
@@ -119,6 +137,15 @@ function EditAbsenceDialog({ absence }: { absence: EditableAbsence }) {
         closeLabel={tCommon('close')}
       >
         <form onSubmit={submit} className="space-y-4" noValidate>
+          {draft.restored ? <Notice>{tCommon('draftRestored')}</Notice> : null}
+          {draft.offered ? (
+            <Notice tone="warning" className="flex flex-wrap items-center justify-between gap-2">
+              <span>{t('editDraftOffered')}</span>
+              <Button variant="secondary" size="sm" onClick={draft.recover}>
+                {t('editDraftRecover')}
+              </Button>
+            </Notice>
+          ) : null}
           <Field label={t('endsOn')} htmlFor="edit-ends-on" error={save.fieldError('endsOn')}>
             <Input
               id="edit-ends-on"
@@ -126,7 +153,7 @@ function EditAbsenceDialog({ absence }: { absence: EditableAbsence }) {
               min={absence.startsOn}
               max={addDays(absence.startsOn, ABSENCE_MAX_DAYS - 1)}
               value={endsOn}
-              onChange={(e) => setEndsOn(e.target.value)}
+              onChange={(e) => update('endsOn', e.target.value)}
             />
           </Field>
           <fieldset className="space-y-2" disabled={!singleDay}>
@@ -148,7 +175,7 @@ function EditAbsenceDialog({ absence }: { absence: EditableAbsence }) {
                     name="edit-part"
                     className="sr-only"
                     checked={(singleDay ? part : 'full_day') === p}
-                    onChange={() => setPart(p)}
+                    onChange={() => update('part', p)}
                   />
                   {t(`part.${p}`)}
                 </label>
@@ -171,7 +198,7 @@ function EditAbsenceDialog({ absence }: { absence: EditableAbsence }) {
               value={note}
               maxLength={1000}
               className="min-h-20"
-              onChange={(e) => setNote(e.target.value)}
+              onChange={(e) => update('note', e.target.value)}
             />
           </Field>
           <div className="flex items-center justify-between gap-3">
@@ -182,11 +209,18 @@ function EditAbsenceDialog({ absence }: { absence: EditableAbsence }) {
               role="switch"
               className="size-6 shrink-0 accent-brand-600"
               checked={faith}
-              onChange={(e) => setFaith(e.target.checked)}
+              onChange={(e) => update('faith', e.target.checked)}
             />
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <Button variant="secondary" onClick={() => setOpen(false)}>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                // « Annuler »: back to the saved absence.
+                draft.discard();
+                setOpen(false);
+              }}
+            >
               {tCommon('cancel')}
             </Button>
             <Button type="submit" disabled={save.pending || !endsOn}>

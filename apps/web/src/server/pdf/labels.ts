@@ -19,6 +19,7 @@ export function planPdfLabels(locale: AppLocale, catalog: typeof messages): Plan
     page: (page, total) => t('pdf.page', { page, total }),
     alertsElsewhere: t('pdf.alertsElsewhere'),
     failed: t('pdf.failed'),
+    failedBack: t('pdf.failedBack'),
     classOf: (name) => t('subPlan.classOf', { name }),
     dayOfCycle: (n) => t('subPlan.dayOfCycle', { n }),
     part: {

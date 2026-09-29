@@ -59,7 +59,8 @@ export async function previewAbsence(
 /**
  * « Envoyer »: builds every school day's plan in this request and publishes the absence with
  * them in one transaction (D-047), so the plan exists before the page even loads. A retried tap
- * with the same request id returns the absence already published.
+ * with the same request id and the same dates returns the absence already published; the same
+ * id with other dates is refused (`absenceRequestReused`: the form then takes a new id).
  */
 export async function publishAbsence(
   input: AbsenceFormInput,
@@ -90,6 +91,7 @@ export async function publishAbsence(
     p_catholic_connection: v.catholicConnection,
     p_client_request_id: v.clientRequestId,
     p_plans: plansPayload(result),
+    ...(loaded.fingerprint ? { p_sources_fingerprint: loaded.fingerprint } : {}),
   });
   if (error || !data) return fail(reportError('publishAbsence', error));
   refreshPages(data);
@@ -201,6 +203,7 @@ export async function updateAbsence(
     p_note: v.note ?? '',
     p_catholic_connection: v.catholicConnection,
     p_plans: plansPayload(result),
+    ...(loaded.fingerprint ? { p_sources_fingerprint: loaded.fingerprint } : {}),
   });
   if (error) return fail(reportError('updateAbsence', error));
   refreshPages(absence.id);
@@ -236,6 +239,7 @@ export async function refreshAbsencePlans(absenceId: string): Promise<ActionResu
   const { error } = await supabase.rpc('refresh_sub_plans', {
     p_absence_id: absence.id,
     p_plans: plansPayload(result),
+    ...(loaded.fingerprint ? { p_sources_fingerprint: loaded.fingerprint } : {}),
   });
   if (error) return fail(reportError('refreshAbsencePlans', error));
   refreshPages(absence.id);

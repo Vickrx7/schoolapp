@@ -190,12 +190,18 @@ export function ReportForm({
     if (!unsaved.current || phase !== 'editing' || sentAt) return;
     markUnsaved(false);
     setSaveState({ kind: 'saving' });
+    const sent = value.current;
     const run = saveSubReport(payload())
       .then((result: ActionResult<SubReportSaveResult>) => {
         if (result.ok) {
           failures.current = 0;
           setFieldErrors({});
           settle(result.data);
+          // The server has exactly what the tab holds: the tab copy is no longer needed (and a
+          // reload shows the server's report, not a « draft restored » notice).
+          if (result.data.status === 'saved' && !unsaved.current && value.current === sent) {
+            clearDraft();
+          }
           return;
         }
         setFieldErrors(result.fieldErrors ?? {});
@@ -219,7 +225,7 @@ export function ReportForm({
     inFlight.current = null;
     // Changes made while this save was on its way go in the next one.
     if (unsaved.current) setSaveTick((n) => n + 1);
-  }, [markUnsaved, payload, phase, sentAt, settle]);
+  }, [clearDraft, markUnsaved, payload, phase, sentAt, settle]);
 
   useEffect(() => {
     // Offline, the tab keeps the changes until the connection is back.

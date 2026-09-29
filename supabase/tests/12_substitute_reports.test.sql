@@ -458,8 +458,12 @@ select throws_ok(
   '22023', null, 'a draft cannot be confirmed while the day''s access is open'
 );
 select tests.clear_authentication();
--- The day is over: the plan date moves into the past.
+-- The day is over: the plan date moves into the past, and so do its codes (the day's access
+-- ends when the last code issued for it expires).
 update public.sub_plans set plan_date = current_date - 1 where id = tests.id('plan_c');
+update public.sub_access_codes
+set valid_from = now() - interval '5 hours', expires_at = now() - interval '1 hour'
+where sub_plan_id = tests.id('plan_c');
 select tests.authenticate_as('teacher_a');
 select results_eq(
   $$select status::text, public.sub_plan_access_ended(sub_plan_id) from public.sub_reports

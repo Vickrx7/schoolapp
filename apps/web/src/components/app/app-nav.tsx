@@ -13,10 +13,11 @@ import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { phoneBarItems, type NavKey } from './nav-items';
 
 type Item = {
   href: string;
-  key: 'today' | 'classes' | 'substitutes' | 'differentiate' | 'calendar' | 'school' | 'profile';
+  key: NavKey;
   icon: typeof House;
 };
 
@@ -50,6 +51,7 @@ export function AppNav({
     .filter((i) => i.key !== 'substitutes' || showSubstitutes)
     .filter((i) => i.key !== 'differentiate' || showDifferentiate)
     .filter((i) => i.key !== 'school' || showSchool);
+  const phoneItems = phoneBarItems(items);
   const active = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
   return (
@@ -86,7 +88,7 @@ export function AppNav({
         className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white pb-[env(safe-area-inset-bottom)] md:hidden print:hidden"
       >
         <ul className="mx-auto flex max-w-md justify-around">
-          {items.map((item) => (
+          {phoneItems.map((item) => (
             <li key={item.href} className="flex-1">
               <Link
                 href={item.href}

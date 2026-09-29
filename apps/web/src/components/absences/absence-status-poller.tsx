@@ -64,7 +64,6 @@ export function AbsenceStatusPoller({ absenceId }: { absenceId: string }) {
       <p>{slow ? t('refreshSlow') : t('refreshingHint')}</p>
       {slow ? (
         <Button
-          size="sm"
           variant="secondary"
           disabled={refresh.pending}
           onClick={() => void refresh.run(absenceId)}

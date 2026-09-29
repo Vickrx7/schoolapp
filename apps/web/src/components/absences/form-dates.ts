@@ -54,3 +54,48 @@ export function absenceDates(
     daysBetween(startsOn, endsOn) < ABSENCE_MAX_DAYS;
   return { startsOn, endsOn, part, valid };
 }
+
+/**
+ * What a publish request stands for: a request id is reused only for the same school, dates and
+ * part (publish_absence refuses the same id for another absence).
+ */
+export function requestKey(
+  schoolId: string,
+  dates: { startsOn: string; endsOn: string; part: AbsencePart },
+): string {
+  return JSON.stringify([schoolId, dates.startsOn, dates.endsOn, dates.part]);
+}
+
+/**
+ * A draft restored on a later day: « Aujourd'hui » and the next-school-day chip are relative, so
+ * they may now mean another date than the one the draft was for (`forStartsOn`). The draft then
+ * keeps its own date: the chip that means it now, or « Autre date » with it. A date that is past
+ * (or today after dismissal) is not kept: the teacher chooses again. `stale` says which date the
+ * draft was for, when it had to change anything.
+ */
+export function reconcileRestoredDates(
+  fields: DateFields,
+  forStartsOn: string,
+  school: School,
+): { fields: DateFields; stale: { date: LocalDate; kept: boolean } | null } {
+  if (!isLocalDate(forStartsOn)) return { fields, stale: null };
+  const { startsOn } = absenceDates(fields, school);
+  if (startsOn === forStartsOn) return { fields, stale: null };
+  const gone = forStartsOn < school.today || (forStartsOn === school.today && !school.todayOpen);
+  if (gone) {
+    return {
+      fields: { ...fields, choice: 'other', otherDate: '' },
+      stale: { date: forStartsOn, kept: false },
+    };
+  }
+  const choice: DateChoice =
+    forStartsOn === school.today
+      ? 'today'
+      : forStartsOn === school.nextSchoolDay
+        ? 'next'
+        : 'other';
+  return {
+    fields: { ...fields, choice, otherDate: choice === 'other' ? forStartsOn : fields.otherDate },
+    stale: { date: forStartsOn, kept: true },
+  };
+}

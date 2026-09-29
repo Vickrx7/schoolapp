@@ -35,6 +35,11 @@ export function errorKey(error: PgLikeError | null | undefined): string {
     // « Consignes détaillées » (supabase/migrations/20261002100000_sub_plan_ai.sql).
     case 'LXS15':
       return 'subPlanAiStale';
+    // Hardening (supabase/migrations/20261003100000_substitute_hardening.sql).
+    case 'LXS16':
+      return 'subReportChanged';
+    case 'LXS23':
+      return 'absenceRequestReused';
     case 'LXS20':
       return 'absencePast';
     case 'LXS21':

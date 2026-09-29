@@ -138,3 +138,14 @@ export function parseMinutes(value: string): number | null {
   if (!Number.isFinite(n) || n < 1) return null;
   return Math.min(240, n);
 }
+
+/**
+ * « Annuler » after removing a step or a checklist item: puts `item` back where it was in the
+ * list as it is now (later changes kept), or at the end if the list got shorter; nothing when
+ * the list is full again.
+ */
+export function restoreAt<T>(list: readonly T[], index: number, item: T, max: number): T[] {
+  if (list.length >= max) return [...list];
+  const at = Math.min(Math.max(index, 0), list.length);
+  return [...list.slice(0, at), item, ...list.slice(at)];
+}

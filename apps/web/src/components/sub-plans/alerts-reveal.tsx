@@ -2,16 +2,18 @@
 
 import { Eye, EyeOff, ShieldAlert } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useAction } from '@/hooks/use-action';
+import { useHideWhenAway } from '@/hooks/use-hide-when-away';
 import { revealClassAlerts, type StudentAlertView } from '@/server/actions/students';
 import type { RosterStudent } from './types';
 
 /**
  * A class's safety and medical alerts, hidden until tapped (a plan may be on a projected
  * screen). Every reveal goes through get_class_alerts, which audits it. The alerts are cleared
- * when hidden again and when the page is left or put away (`pagehide`).
+ * when hidden again, when the phone is locked or another tab or app comes to the front, and when
+ * the page is left (useHideWhenAway).
  */
 export function AlertsReveal({
   classId,
@@ -29,11 +31,7 @@ export function AlertsReveal({
   const [alerts, setAlerts] = useState<StudentAlertView[] | null>(null);
   const reveal = useAction(revealClassAlerts, { onSuccess: (data) => setAlerts(data) });
 
-  useEffect(() => {
-    const hide = () => setAlerts(null);
-    window.addEventListener('pagehide', hide);
-    return () => window.removeEventListener('pagehide', hide);
-  }, []);
+  useHideWhenAway(useCallback(() => setAlerts(null), []));
 
   const names = new Map(roster.map((s) => [s.id, s.firstName]));
   const label = showClassName ? `${t('show')} · ${className}` : t('show');

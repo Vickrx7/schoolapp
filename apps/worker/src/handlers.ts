@@ -71,12 +71,15 @@ export function buildSubscriptions(options: { logEvents: boolean }): Subscriptio
   });
 
   // Substitute plans follow what they were built from until they are fixed (DECISIONS D-047).
-  // The absence's mark makes a repeated run a no-op.
+  // The absence's mark makes a repeated run a no-op; an event caused by the teacher's earlier
+  // absence (its lessons changed) rebuilds even without a mark.
   subs.push({
     handler: 'sub_plan_refresh',
     events: ['absence.sources_changed'],
     run: async (event, { pool, logger }) => {
-      if (event.aggregateId) await refreshAbsencePlans(event.aggregateId, { pool, logger });
+      if (!event.aggregateId) return;
+      const force = event.payload.cause === 'earlier_absence';
+      await refreshAbsencePlans(event.aggregateId, { pool, logger, force });
     },
   });
 

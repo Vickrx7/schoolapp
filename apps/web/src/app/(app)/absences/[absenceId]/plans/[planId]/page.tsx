@@ -221,8 +221,9 @@ export default async function PlanPage({ params }: Params) {
         <Notice tone="warning">{t('subPlan.notReadable')}</Notice>
       ) : owned.editable ? (
         <PlanEditor
-          // A new revision from the server (after « Prendre la plus récente ») starts over.
-          key={owned.editsRevision}
+          // One editor per plan. It starts over itself after « Prendre la plus récente »; other
+          // refreshes (its own saves, the AI request finishing) leave it as it is.
+          key={owned.id}
           userId={session.userId}
           planId={owned.id}
           plan={owned.plan}

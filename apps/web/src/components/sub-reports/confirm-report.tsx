@@ -18,13 +18,17 @@ const DECISIONS: ConfirmDecision[] = ['completed', 'not_completed', 'skipped'];
  * « Suivi de la suppléance » for the absent teacher (DECISIONS D-054): each lesson with what the
  * substitute said, and « Confirmer / Pas terminée / Sautée », preselected from the report. « Tout
  * confirmer » sets every lesson to « Confirmer »; « Confirmer le suivi » finishes. A lesson she
- * already checked off herself keeps her record and is not asked about.
+ * already checked off herself keeps her record and is not asked about. `shownVersion` is the
+ * report version on screen: if the substitute sent it again meanwhile, nothing is confirmed and
+ * the page reloads with the new version (keyed on it, so the choices start over).
  */
 export function ConfirmReport({
   reportId,
+  shownVersion,
   lessons,
 }: {
   reportId: string;
+  shownVersion: string;
   lessons: ReportLessonView[];
 }) {
   const t = useTranslations('subReport');
@@ -45,10 +49,15 @@ export function ConfirmReport({
       className="space-y-4"
       onSubmit={(e) => {
         e.preventDefault();
-        void confirm.run(
-          reportId,
-          asked.map((l) => ({ lessonId: l.lessonId, decision: decisions[l.lessonId]! })),
-        );
+        void confirm
+          .run(
+            reportId,
+            asked.map((l) => ({ lessonId: l.lessonId, decision: decisions[l.lessonId]! })),
+            shownVersion,
+          )
+          .then((result) => {
+            if (result && !result.ok && result.error === 'subReportChanged') router.refresh();
+          });
       }}
     >
       <p className="text-sm text-slate-600">{t('confirmHint')}</p>

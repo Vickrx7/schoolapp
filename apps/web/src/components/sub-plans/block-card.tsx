@@ -6,9 +6,20 @@ import { Badge, Card } from '@/components/ui/card';
 import { formatTime, formatTimeRange } from '@/lib/format';
 import { cn } from '@/lib/utils';
 
+/**
+ * The language of plan content: the plan is built in French, and teachers type in French,
+ * whatever the interface language (D-033). Marked on the content itself (WCAG 3.1.2), so a
+ * screen reader reads it in French when the interface is in English.
+ */
+export const PLAN_CONTENT_LANG = 'fr-CA';
+
 /** Teacher text shown as typed: line breaks kept, never translated. */
 export function TypedText({ text, className }: { text: string; className?: string }) {
-  return <p className={cn('whitespace-pre-line break-words', className)}>{text}</p>;
+  return (
+    <p lang={PLAN_CONTENT_LANG} className={cn('whitespace-pre-line break-words', className)}>
+      {text}
+    </p>
+  );
 }
 
 function Labelled({ label, children }: { label: string; children: ReactNode }) {
@@ -59,7 +70,9 @@ export function BlockCard({
           <span className="text-sm font-medium whitespace-nowrap text-slate-600 tabular-nums">
             {formatTimeRange(block.start, block.end, locale)}
           </span>
-          <h3 className="font-semibold text-slate-900">{block.title}</h3>
+          <h3 lang={PLAN_CONTENT_LANG} className="font-semibold text-slate-900">
+            {block.title}
+          </h3>
           {showClass ? <Badge>{block.className}</Badge> : null}
           {block.status !== 'normal' ? (
             <Badge tone="warning">{tRoot(`today.status.${block.status}`)}</Badge>
@@ -88,7 +101,7 @@ export function BlockCard({
         {block.event ? (
           <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
             <p className="font-medium">
-              {block.event.title}
+              <span lang={PLAN_CONTENT_LANG}>{block.event.title}</span>
               {block.event.start ? ` · ${formatTime(block.event.start, locale)}` : ''}
             </p>
             {block.event.notes ? <TypedText text={block.event.notes} /> : null}
@@ -101,7 +114,9 @@ export function BlockCard({
               {t('block.lesson', { n: lesson.sequenceNumber, unit: lesson.unitTitle })}
               {lesson.assignment === 'taught' ? ` · ${t('block.taught')}` : ''}
             </p>
-            <p className="font-medium text-slate-900">{lesson.title}</p>
+            <p lang={PLAN_CONTENT_LANG} className="font-medium text-slate-900">
+              {lesson.title}
+            </p>
             {lesson.gapBefore ? (
               <p className="text-sm text-amber-800">
                 {t('block.gap', { title: lesson.gapBefore })}
@@ -169,7 +184,7 @@ export function BlockCard({
                       <TypedText text={s.text} />
                       {s.say ? (
                         <span className="mt-0.5 block text-slate-600 italic">
-                          {t('block.say')} {s.say}
+                          {t('block.say')} <span lang={PLAN_CONTENT_LANG}>{s.say}</span>
                         </span>
                       ) : null}
                     </span>
@@ -204,7 +219,9 @@ export function BlockCard({
             data-testid="plan-ai-activity"
           >
             <p className="font-medium text-slate-700">{tAi('block.activity')}</p>
-            <p className="font-medium text-slate-900">{block.ai.activity.title}</p>
+            <p lang={PLAN_CONTENT_LANG} className="font-medium text-slate-900">
+              {block.ai.activity.title}
+            </p>
             <TypedText text={block.ai.activity.studentInstructions} className="text-slate-800" />
             {block.ai.activity.perGroup.length ? (
               <ul className="space-y-1.5">
@@ -223,7 +240,7 @@ export function BlockCard({
 
         {block.ai?.materialsChecklist.length ? (
           <Labelled label={t('block.materials')}>
-            <ul className="list-disc pl-5">
+            <ul lang={PLAN_CONTENT_LANG} className="list-disc pl-5">
               {block.ai.materialsChecklist.map((m, i) => (
                 <li key={i}>{m}</li>
               ))}

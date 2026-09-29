@@ -8,7 +8,7 @@ import { loadDay, type PortalDay, type PortalPurpose } from './portal';
 
 /**
  * The substitute's browser (DECISIONS D-050): an HttpOnly session cookie holding the token
- * from sub_portal.redeem, and a device cookie (32 random bytes, kept a year) whose HMAC is the
+ * from sub_portal.redeem, and a device cookie (32 random bytes, kept a year) whose hash is the
  * device for the two-device limit and throttling. Both are limited to /suppleance, SameSite=Lax,
  * and Secure with the __Secure- prefix when the app is served over https. Staff cookies are
  * never read on portal paths (proxy.ts), and these never reach staff pages.
