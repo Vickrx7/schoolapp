@@ -1,0 +1,225 @@
+{
+  "slug": "defi-garde-glacon",
+  "type": "stem_challenge",
+  "title": "Défi STIM : le garde-glaçon",
+  "summary": "Les équipes suivent le processus de design pour construire un contenant isolant qui ralentit la fonte d’un glaçon. Après 45 minutes, elles mesurent l’eau de fonte, la comparent à celle d’un glaçon témoin et relient leurs résultats aux isolants qui permettent d’économiser l’énergie à la maison.",
+  "source": "board_created",
+  "status": "board_approved",
+  "shareScope": "board",
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "gradeCodes": ["5"],
+  "subjectCode": "sci",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "C2.2"
+    },
+    {
+      "grade": "5",
+      "code": "A1.3"
+    },
+    {
+      "grade": "5",
+      "code": "E1.2"
+    }
+  ],
+  "durationMinutes": 90,
+  "materials": "Par équipe de 3 : 1 petit sac de plastique refermable, 1 m de ruban-cache, 1 paire de ciseaux à bouts ronds, 1 règle de 30 cm, 1 feuille de planification. Table de matériaux pour la classe : papier journal, carton, papier d’aluminium, retailles de feutrine ou de tissu, papier bulle, ouate de polyester, gobelets de papier et de plastique. Pour les tests : des glaçons de même taille faits la veille dans le même bac, 1 sac témoin (un glaçon dans un sac refermable, posé dans un gobelet sans isolant), 1 éprouvette graduée de 50 mL ou 1 tasse à mesurer graduée, 1 minuterie, des essuie-tout.",
+  "keywords": "isolant, chaleur, fusion, changement d’état, glaçon, économie d’énergie, maison, processus de design, ingénierie, défi",
+  "tags": ["stim", "sciences", "cooperation"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "safetyNotes": {
+    "ageSuitability": "Convient aux élèves de 5e année (de 9 à 11 ans).",
+    "allergyAwareMaterials": "Matériaux non alimentaires seulement : pas de noix, d’arachides ni de graines, et aucun emballage d’aliment qui en a contenu. Tout le matériel est sans latex; si vous ajoutez des élastiques, prenez-les sans latex. La ouate de polyester remplace la laine et le duvet pour les élèves allergiques.",
+    "supervision": "standard",
+    "hazards": [
+      "Ciseaux : on coupe assis et on passe les ciseaux lames fermées.",
+      "Le papier d’aluminium a parfois des bords coupants : on le plie ou on le coupe lentement.",
+      "L’eau de fonte renversée rend le plancher glissant : on l’essuie tout de suite.",
+      "On ne met jamais de glaçon dans sa bouche, et on ne le tient pas longtemps dans sa main nue."
+    ],
+    "notes": "Faites les glaçons la veille dans le même bac pour qu’ils aient la même taille. Gardez-les au congélateur jusqu’au début des tests. Démarrez tous les tests en même temps, avec le sac témoin placé au même endroit que les garde-glaçons, loin des fenêtres ensoleillées et des radiateurs."
+  },
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "J’explique comment la chaleur fait fondre un glaçon et comment un isolant ralentit ce changement d’état.",
+        "teacherNote": "Prévoyez deux périodes : définir, rechercher et planifier la première; construire, tester, améliorer et communiquer la deuxième. Pendant les 45 minutes du test, les équipes préparent leur présentation. Mesurez vous-même l’eau de fonte du sac témoin devant la classe. Pour que la comparaison soit juste, les glaçons doivent avoir la même taille et tous les tests doivent commencer en même temps. Idée fausse fréquente : « le froid sort du glaçon ». En fait, c’est la chaleur de l’air, plus chaud, qui passe dans le glaçon; un isolant ralentit ce passage. Faites le lien avec la maison : les murs isolés, les fenêtres à double vitrage et les coupe-froid ralentissent aussi le passage de la chaleur et permettent d’économiser l’énergie.",
+        "challenge": "Conçois et construis un garde-glaçon : un contenant qui empêche un glaçon de fondre le plus longtemps possible. Après 45 minutes, on mesurera l’eau de fonte dans le sac de ton glaçon. Moins il y en aura, mieux ton garde-glaçon aura ralenti le passage de la chaleur. Quels matériaux et quelle forme choisiras-tu?",
+        "constraints": [
+          "Tu peux utiliser seulement le matériel de la table de matériaux et 1 m de ruban-cache.",
+          "Le garde-glaçon doit tenir dans un cube de 20 cm de côté.",
+          "Le glaçon reste dans son sac refermable, et on doit pouvoir sortir le sac en moins de 30 secondes.",
+          "Aucune source de froid : pas de glace supplémentaire, de congélateur ni de réfrigérateur.",
+          "Vous avez 30 minutes pour construire votre garde-glaçon."
+        ],
+        "criteria": [
+          "Le sac et son glaçon entrent dans le garde-glaçon et en sortent facilement.",
+          "Après 45 minutes, le sac contient moins d’eau de fonte que le sac témoin.",
+          "L’équipe mesure l’eau de fonte en millilitres et compare son résultat à celui du sac témoin.",
+          "L’équipe explique, avec les mots chaleur et isolant, pourquoi ses matériaux ont protégé le glaçon.",
+          "L’équipe propose une amélioration appuyée sur ses résultats."
+        ],
+        "designStages": [
+          {
+            "stage": "definir",
+            "prompt": "Explique le défi dans tes mots. Qu’est-ce qui fait fondre le glaçon? Quelles sont les contraintes?"
+          },
+          {
+            "stage": "rechercher",
+            "prompt": "Pense aux objets qui gardent le froid ou le chaud : une boîte à lunch isolée, un manteau d’hiver, une bouteille isotherme. Touche les matériaux de la table. Lesquels emprisonnent de l’air?"
+          },
+          {
+            "stage": "planifier",
+            "prompt": "Dessine ton garde-glaçon en coupe, couche par couche. Nomme chaque matériau et explique pourquoi tu l’as choisi."
+          },
+          {
+            "stage": "construire",
+            "prompt": "Construis ton garde-glaçon en respectant les contraintes. Vérifie que le sac en sort facilement."
+          },
+          {
+            "stage": "tester",
+            "prompt": "Au signal, place le sac et son glaçon dans ton garde-glaçon. Après 45 minutes, sors le sac, verse l’eau de fonte dans l’éprouvette graduée et note le volume en millilitres. Note aussi le volume du sac témoin."
+          },
+          {
+            "stage": "ameliorer",
+            "prompt": "Compare ton résultat à ceux des autres équipes. Quel changement rendrait ton garde-glaçon plus efficace? Si le temps le permet, fais un deuxième essai."
+          },
+          {
+            "stage": "communiquer",
+            "prompt": "Présente ton garde-glaçon : ses couches, ton volume d’eau de fonte, celui du sac témoin et ton explication avec les mots chaleur et isolant."
+          }
+        ],
+        "reflectionQuestions": [
+          {
+            "id": "r1",
+            "kind": "multiple_choice",
+            "prompt": "Pourquoi le glaçon fond-il?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "Il reçoit de la chaleur de l’air plus chaud qui l’entoure."
+              },
+              {
+                "id": "b",
+                "text": "Le froid sort du glaçon et s’en va dans l’air."
+              },
+              {
+                "id": "c",
+                "text": "Le sac de plastique fait fondre la glace."
+              },
+              {
+                "id": "d",
+                "text": "Le glaçon perd de la chaleur."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "r2",
+            "kind": "short_answer",
+            "prompt": "Comment s’appelle le changement d’état d’un glaçon qui fond? Le glaçon gagne-t-il ou perd-il de la chaleur?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 2
+          },
+          {
+            "id": "r3",
+            "kind": "short_answer",
+            "prompt": "Le sac témoin contenait 18 mL d’eau de fonte, et le sac de ton équipe, 5 mL. Combien de millilitres d’eau de fonte de moins le sac de ton équipe contenait-il?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "r4",
+            "kind": "short_answer",
+            "prompt": "Quels matériaux ont le mieux protégé votre glaçon? Explique pourquoi, en t’appuyant sur tes résultats et sur ceux des autres équipes.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 4
+          },
+          {
+            "id": "r5",
+            "kind": "true_false",
+            "prompt": "Les matériaux qui emprisonnent beaucoup d’air, comme le papier bulle et la ouate, ralentissent le passage de la chaleur.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "r6",
+            "kind": "short_answer",
+            "prompt": "Nomme un endroit de la maison ou de l’école où on utilise un isolant pour économiser l’énergie. Explique à quoi il sert.",
+            "hint": "",
+            "points": 2,
+            "category": "communication",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "r1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "La chaleur passe toujours d’un objet plus chaud à un objet plus froid. L’air de la classe, plus chaud, donne de la chaleur au glaçon, qui fond. Le « froid » ne sort pas du glaçon."
+          },
+          {
+            "questionId": "r2",
+            "kind": "short_answer",
+            "sampleAnswer": "C’est la fusion : la glace passe de l’état solide à l’état liquide. Le glaçon gagne de la chaleur.",
+            "acceptableAnswers": [
+              "fusion, il gagne de la chaleur",
+              "la fusion, il gagne de la chaleur",
+              "la fusion; il gagne de la chaleur",
+              "fusion et il gagne de la chaleur"
+            ],
+            "explanation": ""
+          },
+          {
+            "questionId": "r3",
+            "kind": "short_answer",
+            "sampleAnswer": "13 mL de moins.",
+            "acceptableAnswers": ["13", "13 mL", "13 millilitres", "13 mL de moins"],
+            "explanation": "18 mL − 5 mL = 13 mL."
+          },
+          {
+            "questionId": "r4",
+            "kind": "short_answer",
+            "sampleAnswer": "Le papier bulle et la ouate ont le mieux protégé notre glaçon : notre sac contenait seulement 5 mL d’eau de fonte, contre 18 mL pour le sac témoin. L’équipe qui a utilisé seulement du papier d’aluminium en avait 14 mL. Ces matériaux emprisonnent de l’air, qui ralentit le passage de la chaleur.",
+            "acceptableAnswers": [],
+            "explanation": "Évaluer l’usage des résultats (volumes mesurés) pour justifier le choix des matériaux."
+          },
+          {
+            "questionId": "r5",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "L’air immobile, emprisonné dans de petites bulles ou entre des fibres, laisse mal passer la chaleur : c’est un bon isolant."
+          },
+          {
+            "questionId": "r6",
+            "kind": "short_answer",
+            "sampleAnswer": "Il y a de l’isolant dans les murs et le grenier d’une maison. En hiver, il garde la chaleur à l’intérieur, alors on chauffe moins et on économise l’énergie.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter aussi : les coupe-froid autour des portes, les fenêtres à double vitrage, une boîte à lunch ou une bouteille isotherme, un manteau d’hiver, avec une explication."
+          }
+        ],
+        "solution": "Les garde-glaçons les plus efficaces entourent le sac de plusieurs couches de matériaux qui emprisonnent de l’air (papier bulle, ouate de polyester, papier journal froissé, feutrine) et ferment bien toutes les ouvertures. Le papier d’aluminium seul, collé contre le sac, aide peu, car le métal laisse bien passer la chaleur; placé à l’extérieur, il peut réfléchir une partie de la chaleur du Soleil ou des lampes.\n\nOrdre de grandeur, à vérifier avec votre matériel : après 45 minutes, le sac témoin contient souvent deux fois plus d’eau de fonte, ou davantage, qu’un sac bien protégé.\n\nExplication : la chaleur de l’air de la classe passe vers le glaçon; l’isolant ralentit ce passage, donc la fusion est plus lente."
+      }
+    }
+  ]
+}

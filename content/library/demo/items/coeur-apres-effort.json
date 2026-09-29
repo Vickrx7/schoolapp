@@ -1,0 +1,221 @@
+{
+  "slug": "coeur-apres-effort",
+  "type": "experiment",
+  "title": "Mon cœur et mes poumons après l’effort",
+  "summary": "En dyades, les élèves mesurent leur pouls et leur respiration au repos, après une minute d’exercice sur place, puis après deux minutes de repos. Chaque élève compare ses mesures et explique comment les systèmes respiratoire et circulatoire travaillent ensemble pendant l’effort.",
+  "source": "teacher_created",
+  "author": "marc.gagnon@demo.lynx.test",
+  "school": "saint-exemple",
+  "status": "teacher_reviewed",
+  "shareScope": "school",
+  "reviewRequested": true,
+  "gradeCodes": ["5"],
+  "subjectCode": "sci",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "B2.2"
+    },
+    {
+      "grade": "5",
+      "code": "B2.1"
+    }
+  ],
+  "durationMinutes": 50,
+  "materials": "Par dyade : 1 minuterie ou 1 horloge avec une aiguille des secondes, 1 feuille d’observation et 1 crayon. Pour la classe : un espace dégagé (la classe, chaises rangées, ou le gymnase).",
+  "keywords": "pouls, fréquence cardiaque, respiration, système circulatoire, système respiratoire, cœur, poumons, oxygène, exercice, santé, expérience",
+  "tags": ["sciences", "mouvement"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "safetyNotes": {
+    "ageSuitability": "Convient aux élèves de 5e année (de 9 à 11 ans). L’effort demandé est court et modéré, et chaque élève bouge à son rythme.",
+    "allergyAwareMaterials": "Aucun aliment ni produit : pas de noix, d’arachides ni de graines, et aucun matériel en latex. Le seul matériel est une minuterie.",
+    "supervision": "standard",
+    "hazards": [
+      "Avant l’activité, l’adulte consulte les plans de soins de la classe (asthme, problème cardiaque, blessure). Ces élèves font la version adaptée : marche lente sur place ou mouvements des bras en position assise. Les pompes pour l’asthme restent à portée de main.",
+      "Un ou une élève qui a de la difficulté à respirer, des étourdissements ou une douleur arrête tout de suite et avertit l’adulte.",
+      "Pendant l’exercice, on garde un bras de distance avec les autres, et le plancher est dégagé (sacs, chaises, boîtes à lunch).",
+      "Pour prendre le pouls au cou, on appuie doucement d’un seul côté à la fois, jamais des deux côtés en même temps."
+    ],
+    "notes": "Ce n’est pas une compétition : chaque élève compare ses propres mesures avant et après l’effort. Personne n’a à dire ses résultats à voix haute."
+  },
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "J’explique comment les systèmes respiratoire et circulatoire travaillent ensemble quand mon corps fait un effort.",
+        "teacherNote": "Environ 50 minutes. Montrez d’abord comment trouver le pouls au poignet et au cou, puis faites un essai de 15 secondes avec toute la classe. On multiplie par 4 le nombre compté en 15 secondes pour obtenir un nombre par minute. Ordres de grandeur à vérifier avant d’en parler en classe : au repos, le cœur d’un enfant de cet âge bat souvent de 70 à 110 fois par minute environ, et un enfant respire de 15 à 25 fois par minute environ. Les mesures varient beaucoup d’un ou d’une élève à l’autre : l’important est la comparaison avant et après l’effort. Un ou une élève qui ne fait pas l’exercice peut chronométrer et analyser les résultats de sa dyade.",
+        "researchQuestion": "Comment l’activité physique change-t-elle le rythme de mon cœur et de ma respiration?",
+        "hypothesisPrompt": "Selon toi, que va-t-il arriver à ton pouls et à ta respiration après une minute d’exercice? Et après deux minutes de repos?",
+        "steps": [
+          "Assieds-toi calmement pendant 2 minutes, sans parler.",
+          "Trouve ton pouls : pose le bout de ton index et de ton majeur à l’intérieur de ton poignet, sous le pouce, ou sur le côté de ton cou, sous la mâchoire. Appuie doucement. N’utilise pas ton pouce.",
+          "Au signal de ta ou ton partenaire, compte tes battements pendant 15 secondes. Note le nombre dans la ligne « Au repos ».",
+          "Ta ou ton partenaire compte ensuite tes respirations pendant 15 secondes, en regardant ta poitrine monter et descendre. Une inspiration et une expiration comptent pour une respiration. Note le nombre.",
+          "Fais 1 minute d’exercice sur place, à ton rythme : des sauts en étoile ou de la marche rapide en levant les genoux.",
+          "Tout de suite après, compte ton pouls pendant 15 secondes, puis ta ou ton partenaire compte tes respirations pendant 15 secondes. Note les nombres dans la ligne « Après l’effort ».",
+          "Assieds-toi et repose-toi pendant 2 minutes. Mesure de nouveau ton pouls et tes respirations, et note-les dans la ligne « Après 2 minutes de repos ».",
+          "Multiplie chaque nombre par 4 pour obtenir les battements et les respirations par minute.",
+          "Échangez les rôles et recommencez."
+        ],
+        "observationTable": {
+          "columns": [
+            "Moment",
+            "Battements en 15 s",
+            "Battements par minute",
+            "Respirations en 15 s",
+            "Respirations par minute"
+          ],
+          "rows": 3
+        },
+        "conclusionQuestions": [
+          {
+            "id": "c1",
+            "kind": "short_answer",
+            "prompt": "Qu’est-il arrivé à ton pouls et à ta respiration après l’effort? Et après 2 minutes de repos? Utilise tes mesures.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          },
+          {
+            "id": "c2",
+            "kind": "short_answer",
+            "prompt": "Laurier a compté 23 battements en 15 secondes. Combien de battements par minute cela fait-il?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 1
+          },
+          {
+            "id": "c3",
+            "kind": "multiple_choice",
+            "prompt": "Pourquoi ton cœur bat-il plus vite pendant l’effort?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "Pour envoyer plus de sang, donc plus d’oxygène, aux muscles qui travaillent."
+              },
+              {
+                "id": "b",
+                "text": "Pour aider l’estomac à digérer plus vite."
+              },
+              {
+                "id": "c",
+                "text": "Parce que les os ont besoin de plus d’air."
+              },
+              {
+                "id": "d",
+                "text": "Pour refroidir le cerveau."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "c4",
+            "kind": "multiple_choice",
+            "prompt": "Dans quels organes l’oxygène de l’air passe-t-il dans le sang?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "Le cœur"
+              },
+              {
+                "id": "b",
+                "text": "Les poumons"
+              },
+              {
+                "id": "c",
+                "text": "L’estomac"
+              },
+              {
+                "id": "d",
+                "text": "Les muscles"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "c5",
+            "kind": "short_answer",
+            "prompt": "Explique comment les systèmes respiratoire et circulatoire travaillent ensemble quand tu cours. Utilise les mots poumons, cœur, sang et oxygène.",
+            "hint": "",
+            "points": 2,
+            "category": "communication",
+            "lines": 4
+          },
+          {
+            "id": "c6",
+            "kind": "short_answer",
+            "prompt": "Nomme une activité physique que tu aimes. Pourquoi est-elle bonne pour ton cœur et tes poumons?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 3
+          }
+        ],
+        "communication": "Fais un diagramme à bandes de tes battements par minute aux trois moments. Présente-le à une autre dyade et explique ce qu’il montre."
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "c1",
+            "kind": "short_answer",
+            "sampleAnswer": "Au repos, j’avais 84 battements et 20 respirations par minute. Après l’effort, j’avais 128 battements et 36 respirations par minute. Après 2 minutes de repos, mon pouls était redescendu à 96 et ma respiration à 24 : les deux ralentissent quand le corps se repose.",
+            "acceptableAnswers": [],
+            "explanation": "Les nombres varient. Vérifier que la réponse compare les trois moments à l’aide des mesures."
+          },
+          {
+            "questionId": "c2",
+            "kind": "short_answer",
+            "sampleAnswer": "92 battements par minute.",
+            "acceptableAnswers": [
+              "92",
+              "92 battements",
+              "92 battements par minute",
+              "92 par minute"
+            ],
+            "explanation": "23 × 4 = 92, car il y a quatre fois 15 secondes dans une minute."
+          },
+          {
+            "questionId": "c3",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Les muscles qui travaillent ont besoin de plus d’oxygène. Le cœur bat plus vite pour leur envoyer plus de sang, et c’est le sang qui transporte l’oxygène."
+          },
+          {
+            "questionId": "c4",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "Dans les poumons, l’oxygène de l’air passe dans le sang. Le cœur pompe ensuite ce sang vers tout le corps."
+          },
+          {
+            "questionId": "c5",
+            "kind": "short_answer",
+            "sampleAnswer": "Quand je cours, mes muscles ont besoin de plus d’oxygène. Je respire plus vite : mes poumons font entrer plus d’air, et l’oxygène passe dans le sang. Mon cœur bat plus vite pour pomper ce sang jusqu’aux muscles. Les deux systèmes travaillent en équipe.",
+            "acceptableAnswers": [],
+            "explanation": "Évaluer l’usage des quatre mots et l’explication du lien entre les deux systèmes."
+          },
+          {
+            "questionId": "c6",
+            "kind": "short_answer",
+            "sampleAnswer": "J’aime nager. Quand je nage, mon cœur et mes poumons travaillent plus fort. Si j’en fais souvent, ils deviennent plus forts.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter toute activité qui fait bouger le corps de façon soutenue, avec une explication liée au cœur ou aux poumons."
+          }
+        ],
+        "solution": "Résultats attendus : le pouls et la respiration augmentent nettement après une minute d’exercice, puis redescendent pendant le repos. Après 2 minutes, ils sont souvent encore un peu plus élevés qu’au départ.\n\nExplication : pendant l’effort, les muscles utilisent plus d’oxygène et produisent plus de dioxyde de carbone. On respire plus vite pour faire entrer plus d’oxygène dans les poumons et faire sortir le dioxyde de carbone. Le cœur bat plus vite pour transporter le sang plus rapidement entre les poumons et les muscles. Les systèmes respiratoire et circulatoire travaillent ensemble."
+      }
+    }
+  ]
+}

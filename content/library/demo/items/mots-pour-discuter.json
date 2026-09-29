@@ -1,0 +1,205 @@
+{
+  "slug": "mots-pour-discuter",
+  "type": "vocabulary_bank",
+  "title": "Banque de mots : discuter avec respect",
+  "summary": "Vingt mots et expressions pour participer à une discussion ou à un débat en classe : donner son opinion, être d’accord ou non, reformuler, demander une précision, nuancer et conclure, avec un exemple pour chacun.",
+  "source": "teacher_created",
+  "author": "marc.gagnon@demo.lynx.test",
+  "school": "saint-exemple",
+  "status": "teacher_reviewed",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": null,
+  "faithReviewed": false,
+  "gradeCodes": ["5"],
+  "subjectCode": "fra",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "B1.2"
+    },
+    {
+      "grade": "5",
+      "code": "B1.1"
+    }
+  ],
+  "durationMinutes": 20,
+  "materials": "Une copie par élève ou une projection au tableau. Facultatif : les expressions écrites sur des bandes de carton pour le coin de discussion.",
+  "keywords": "communication orale, discussion, débat, opinion, argument, reformuler, fait et opinion, tours de parole, expressions utiles",
+  "tags": ["vocabulaire", "cooperation"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": false,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "J’utilise des mots et des expressions précis pour donner mon opinion, réagir aux idées des autres et discuter avec respect.",
+        "teacherNote": "Banque préparée pour les cercles de discussion et pour l’unité sur le texte d’opinion. Présentez quatre ou cinq expressions à la fois, en commençant par celles qui servent à reformuler : c’est la compétence la plus difficile en 5e année. Pendant une discussion, notez au tableau les expressions que vous entendez; les élèves voient ainsi qu’ils et elles les utilisent vraiment. Les mots « fait » et « opinion » préparent aussi la lecture critique.",
+        "theme": "Discuter et débattre avec respect",
+        "words": [
+          {
+            "term": "une opinion",
+            "definition": "Ce qu’une personne pense d’un sujet. Une opinion peut être différente d’une personne à l’autre.",
+            "example": "Mon opinion, c’est que la récréation devrait durer plus longtemps.",
+            "wordClass": "nom",
+            "gender": "f"
+          },
+          {
+            "term": "un fait",
+            "definition": "Une information vraie qu’on peut vérifier.",
+            "example": "Notre école a une cour avec un terrain de soccer : c’est un fait.",
+            "wordClass": "nom",
+            "gender": "m"
+          },
+          {
+            "term": "un argument",
+            "definition": "Une raison qu’on donne pour appuyer son opinion.",
+            "example": "Mon meilleur argument, c’est que bouger dehors nous aide à nous concentrer.",
+            "wordClass": "nom",
+            "gender": "m"
+          },
+          {
+            "term": "un point de vue",
+            "definition": "La façon dont une personne voit une question, selon ce qu’elle vit et ce qu’elle sait.",
+            "example": "Du point de vue des plus jeunes, la cour est trop petite.",
+            "wordClass": "nom",
+            "gender": "m"
+          },
+          {
+            "term": "un consensus",
+            "definition": "Une décision avec laquelle tout le groupe est d’accord.",
+            "example": "Après la discussion, l’équipe est arrivée à un consensus.",
+            "wordClass": "nom",
+            "gender": "m"
+          },
+          {
+            "term": "justifier",
+            "definition": "Donner des raisons, des faits ou des exemples pour appuyer ce qu’on dit.",
+            "example": "Peux-tu justifier ta réponse avec un exemple?",
+            "wordClass": "verbe",
+            "gender": null
+          },
+          {
+            "term": "reformuler",
+            "definition": "Redire avec d’autres mots ce qu’une personne a dit, pour vérifier qu’on a bien compris.",
+            "example": "Avant de répondre, je reformule l’idée de ma partenaire.",
+            "wordClass": "verbe",
+            "gender": null
+          },
+          {
+            "term": "nuancer",
+            "definition": "Ajouter une précision pour montrer que ce n’est pas tout noir ou tout blanc.",
+            "example": "Je veux nuancer : les devoirs peuvent être utiles, mais pas tous les soirs.",
+            "wordClass": "verbe",
+            "gender": null
+          },
+          {
+            "term": "convaincre",
+            "definition": "Amener une personne à penser comme soi grâce à de bons arguments.",
+            "example": "Elle a réussi à me convaincre avec des exemples précis.",
+            "wordClass": "verbe",
+            "gender": null
+          },
+          {
+            "term": "À mon avis…",
+            "definition": "Pour donner son opinion.",
+            "example": "À mon avis, notre classe devrait adopter une plante.",
+            "wordClass": "expression",
+            "gender": null
+          },
+          {
+            "term": "Je suis d’accord avec toi, parce que…",
+            "definition": "Pour appuyer l’idée d’une autre personne en donnant une raison.",
+            "example": "Je suis d’accord avec toi, parce que j’ai vu la même chose à la bibliothèque.",
+            "wordClass": "expression",
+            "gender": null
+          },
+          {
+            "term": "Je ne suis pas tout à fait d’accord, car…",
+            "definition": "Pour dire poliment qu’on pense autrement, en donnant une raison.",
+            "example": "Je ne suis pas tout à fait d’accord, car certaines personnes n’aiment pas le bruit.",
+            "wordClass": "expression",
+            "gender": null
+          },
+          {
+            "term": "Si je comprends bien, tu dis que…",
+            "definition": "Pour reformuler l’idée d’une autre personne avant d’y répondre.",
+            "example": "Si je comprends bien, tu dis que le jardin demanderait trop de travail l’été.",
+            "wordClass": "expression",
+            "gender": null
+          },
+          {
+            "term": "Pourrais-tu donner un exemple?",
+            "definition": "Pour demander une précision à une autre personne.",
+            "example": "Tu dis que c’est dangereux. Pourrais-tu donner un exemple?",
+            "wordClass": "expression",
+            "gender": null
+          },
+          {
+            "term": "J’aimerais ajouter que…",
+            "definition": "Pour compléter l’idée d’une autre personne.",
+            "example": "J’aimerais ajouter que les élèves de 1re année aimeraient aussi ce projet.",
+            "wordClass": "expression",
+            "gender": null
+          },
+          {
+            "term": "D’un autre côté…",
+            "definition": "Pour présenter une autre façon de voir la question.",
+            "example": "D’un autre côté, un spectacle demande beaucoup de pratique.",
+            "wordClass": "expression",
+            "gender": null
+          },
+          {
+            "term": "Je comprends ton point de vue, mais…",
+            "definition": "Pour montrer qu’on a écouté avant de donner une idée différente.",
+            "example": "Je comprends ton point de vue, mais je pense qu’on peut trouver une autre solution.",
+            "wordClass": "expression",
+            "gender": null
+          },
+          {
+            "term": "Est-ce que je peux terminer mon idée?",
+            "definition": "Pour demander poliment de garder la parole quand on se fait interrompre.",
+            "example": "Est-ce que je peux terminer mon idée? Ensuite, ce sera ton tour.",
+            "wordClass": "expression",
+            "gender": null
+          },
+          {
+            "term": "Qu’en penses-tu?",
+            "definition": "Pour inviter une personne qui n’a pas encore parlé à donner son avis.",
+            "example": "Gaëlle, on ne t’a pas encore entendue. Qu’en penses-tu?",
+            "wordClass": "expression",
+            "gender": null
+          },
+          {
+            "term": "En résumé…",
+            "definition": "Pour rappeler les idées les plus importantes à la fin d’une discussion.",
+            "example": "En résumé, la plupart d’entre nous préfèrent la sortie au parc.",
+            "wordClass": "expression",
+            "gender": null
+          }
+        ],
+        "activityIdeas": [
+          "Tri en équipes : classer les expressions selon qu’elles servent à donner son opinion, à être d’accord, à ne pas être d’accord, à demander une précision ou à conclure.",
+          "Cercle de discussion : avant de donner son opinion, chaque élève reformule l’idée de la personne qui a parlé juste avant, avec « Si je comprends bien, tu dis que… ».",
+          "Fait ou opinion? Lire des phrases à voix haute; la classe lève une carte « fait » ou une carte « opinion », puis justifie son choix.",
+          "Afficher les expressions sur des bandes de carton près du coin de discussion, et cocher celles que la classe a utilisées pendant la semaine.",
+          "Avant d’écrire un texte d’opinion, chaque élève présente son plan à une ou un partenaire en utilisant au moins deux expressions de la banque."
+        ]
+      },
+      "answerKey": null
+    }
+  ]
+}

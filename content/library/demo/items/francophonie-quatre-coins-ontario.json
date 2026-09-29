@@ -1,0 +1,50 @@
+{
+  "slug": "francophonie-quatre-coins-ontario",
+  "type": "culture_hook",
+  "title": "Le 25 septembre : la francophonie aux quatre coins de l’Ontario",
+  "summary": "Une amorce pour le Jour des Franco-Ontariens et des Franco-Ontariennes : un voyage imaginaire à la découverte de communautés francophones de toutes les régions de l’Ontario, avec des questions sur la place du français dans sa communauté et une carte de la francophonie ontarienne à construire en classe.",
+  "source": "board_created",
+  "status": "board_approved",
+  "shareScope": "board",
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "gradeCodes": ["3", "4"],
+  "subjectCode": "fra",
+  "durationMinutes": 15,
+  "materials": "Une grande carte de l’Ontario affichée au tableau ou projetée. Pour l’activité : de petits drapeaux verts et blancs en papier, de la pâte adhésive, une feuille et un crayon par équipe.",
+  "keywords": "25 septembre, Jour des Franco-Ontariens et des Franco-Ontariennes, francophonie ontarienne, communautés francophones, régions de l’Ontario, carte, construction identitaire, fierté",
+  "tags": ["francophonie", "identite", "ontario"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je découvre des communautés francophones de différentes régions de l’Ontario et je réfléchis à la place du français dans ma communauté.",
+        "teacherNote": "Amorce de 15 minutes pour la 3e et la 4e année, à utiliser autour du 25 septembre. Elle complète l’amorce « Le drapeau franco-ontarien » (5e année). Lisez le texte à voix haute en montrant chaque ville sur la carte de l’Ontario. Accueillez toutes les réponses sur les langues et les origines des familles : les élèves qui parlent d’autres langues à la maison font aussi partie de la francophonie ontarienne. L’activité de la carte prend environ 30 minutes de plus. Vérifiez les faits de la liste avant de les présenter, et ajoutez votre propre communauté au voyage.",
+        "hook": "Imagine un grand voyage en autobus à travers l’Ontario, le 25 septembre. À Ottawa, tu vois des drapeaux verts et blancs devant les écoles. À Sudbury, tu chantes avec des élèves de ton âge. Plus au nord, à Hearst, on te salue en français presque partout. Tout au sud, à Windsor, tu rencontres des familles francophones dont les ancêtres vivaient déjà dans la région il y a plus de 250 ans. Partout, on fête la même chose. Que célèbre-t-on le 25 septembre? Et pourquoi y a-t-il des francophones aux quatre coins de l’Ontario?",
+        "context": "Le 25 septembre, c’est le Jour des Franco-Ontariens et des Franco-Ontariennes. Ce jour-là, on célèbre toutes les personnes qui vivent en français en Ontario. La date rappelle le 25 septembre 1975, jour où le drapeau franco-ontarien a flotté pour la première fois, à Sudbury.\n\nLes francophones de l’Ontario vivent dans toutes les régions de la province. Dans l’Est, il y a de grandes communautés francophones à Ottawa, la capitale du Canada, et à Hawkesbury, près de la frontière du Québec. Dans le Nord, on parle français à Sudbury, à Timmins, à Kapuskasing et à Hearst, des villes entourées de forêts et de lacs. Au centre, on trouve des francophones à Toronto, la plus grande ville de la province, et à Penetanguishene, au bord de la baie Georgienne. Dans le Sud-Ouest, des familles francophones vivent dans la région de Windsor depuis le milieu des années 1700.\n\nChaque communauté a son histoire. Certaines familles vivent en Ontario depuis des générations. D’autres sont arrivées plus récemment, du Québec, d’Haïti, du Liban, de pays d’Afrique et de partout dans le monde. Toutes font vivre le français en Ontario : à l’école, au travail, dans les fêtes et dans les festivals.\n\nAujourd’hui, plus d’un demi-million de Franco-Ontariens et de Franco-Ontariennes vivent dans la province. C’est la plus grande communauté francophone du Canada à l’extérieur du Québec. Le 25 septembre, dans les écoles de langue française, on lève le drapeau, on porte du vert et du blanc, et on célèbre la fierté de vivre en français.",
+        "discussionQuestions": [
+          "As-tu déjà visité une des villes du voyage? Qu’est-ce que tu y as vu ou entendu?",
+          "D’après toi, pourquoi y a-t-il des communautés francophones dans toutes les régions de l’Ontario?",
+          "Où entends-tu parler français dans ta communauté, en dehors de l’école?",
+          "Comment ta famille, ta classe ou ton école célèbre-t-elle le 25 septembre?",
+          "Si un ou une élève d’une autre ville francophone de l’Ontario venait te visiter, que lui ferais-tu découvrir dans ta communauté?"
+        ],
+        "activity": "La carte de la francophonie ontarienne. En équipes, cherchez sur la grande carte de l’Ontario une des villes nommées dans le texte et marquez-la d’un petit drapeau vert et blanc. Chaque équipe trouve ensuite un fait sur sa ville (sa région, un lac ou une rivière tout près, un festival ou un événement francophone) et le présente à la classe en deux ou trois phrases. Pour finir, la classe ajoute sa propre ville ou son village sur la carte.",
+        "factsToVerify": [
+          "Le 25 septembre est le Jour des Franco-Ontariens et des Franco-Ontariennes depuis 2010; la date rappelle le premier lever du drapeau franco-ontarien, le 25 septembre 1975, à Sudbury.",
+          "Plus d’un demi-million de Franco-Ontariens et de Franco-Ontariennes (environ 650 000 selon la définition inclusive de francophone; vérifier le chiffre du dernier recensement), la plus grande communauté francophone du Canada hors Québec.",
+          "Présence francophone dans la région de Windsor depuis le milieu des années 1700 (premières terres agricoles de la Petite Côte, vers 1749).",
+          "Hearst : une très grande majorité de la population a le français comme langue maternelle (pourcentage à vérifier).",
+          "Situation des villes : Ottawa et Hawkesbury dans l’Est; Sudbury, Timmins, Kapuskasing et Hearst dans le Nord; Toronto et Penetanguishene (baie Georgienne) au centre; Windsor dans le Sud-Ouest.",
+          "Origines des familles arrivées plus récemment (Québec, Haïti, Liban, pays d’Afrique…) : exemples à adapter à votre communauté."
+        ]
+      },
+      "answerKey": null
+    }
+  ]
+}

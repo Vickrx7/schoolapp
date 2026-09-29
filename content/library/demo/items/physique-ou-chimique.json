@@ -1,0 +1,214 @@
+{
+  "slug": "physique-ou-chimique",
+  "type": "experiment",
+  "title": "Changement physique ou changement chimique?",
+  "summary": "En rotation dans quatre stations (un glaçon qui fond, du sel dans l’eau, du bicarbonate de soude et du vinaigre, du jus de chou rouge), les élèves observent des changements de la matière et cherchent les indices qui distinguent un changement physique d’un changement chimique.",
+  "source": "board_created",
+  "status": "board_approved",
+  "shareScope": "board",
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "gradeCodes": ["5"],
+  "subjectCode": "sci",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "C2.3"
+    },
+    {
+      "grade": "5",
+      "code": "C2.4"
+    }
+  ],
+  "durationMinutes": 60,
+  "materials": "Station 1 : des glaçons et 1 sac de plastique refermable par équipe. Station 2 : du sel de table, de l’eau tiède, 1 gobelet transparent, 1 cuillère à mesurer de 5 mL, 1 bâtonnet pour brasser, 1 compte-gouttes et 1 carré de papier de bricolage noir par équipe. Station 3 : du bicarbonate de soude, du vinaigre blanc, 1 grand gobelet transparent par équipe, 1 cuillère à mesurer de 5 mL, 1 tasse à mesurer graduée, 1 plateau ou 1 bac peu profond. Station 4 : du jus de chou rouge préparé d’avance, 1 petite bouteille de vinaigre avec compte-gouttes, 1 petite bouteille de solution de bicarbonate avec compte-gouttes, 2 gobelets transparents par équipe. Pour chaque élève : des lunettes de protection et 1 feuille d’observation. Pour la classe : des essuie-tout et 1 seau pour vider les liquides.",
+  "keywords": "changement physique, changement chimique, réversible, nouvelle substance, indices, gaz, changement de couleur, dissolution, fusion, bicarbonate de soude, vinaigre, chou rouge, expérience",
+  "tags": ["sciences"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "safetyNotes": {
+    "ageSuitability": "Convient aux élèves de 5e année (de 9 à 11 ans), avec une supervision étroite aux stations 3 et 4.",
+    "allergyAwareMaterials": "On ne goûte à rien. Les produits sont courants : glaçons, sel, bicarbonate de soude, vinaigre blanc et jus de chou rouge; aucun ne contient de noix, d’arachides ni de graines. Si vous ajoutez un ballon pour recueillir le gaz à la station 3, prenez-le sans latex. Offrez des gants sans latex (nitrile) aux élèves qui ont la peau sensible ou des coupures aux mains.",
+    "supervision": "close",
+    "hazards": [
+      "Le vinaigre pique les yeux : tout le monde porte des lunettes de protection pendant toute l’activité et on ne se frotte pas les yeux. En cas d’éclaboussure dans l’œil, on le rince à l’eau tiède pendant au moins 15 minutes.",
+      "En sciences, on ne goûte jamais une substance, même du sel ou du vinaigre.",
+      "On ne ferme jamais un contenant dans lequel le bicarbonate et le vinaigre réagissent : le gaz produit pourrait le faire éclater.",
+      "Le jus de chou rouge tache : on porte un vieux chandail ou un tablier, et on essuie les dégâts tout de suite.",
+      "L’eau renversée rend le plancher glissant : on l’essuie tout de suite."
+    ],
+    "notes": "La veille, préparez le jus de chou rouge : hachez un quart de chou rouge, couvrez-le d’eau très chaude, laissez tremper 30 minutes, filtrez et gardez le jus au réfrigérateur. Seul l’adulte manipule l’eau très chaude. Préparez aussi la solution de bicarbonate : 5 mL de bicarbonate de soude dans 100 mL d’eau."
+  },
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je distingue un changement physique d’un changement chimique à l’aide d’indices observables.",
+        "teacherNote": "Prévoyez 10 minutes de présentation, quatre stations de 10 minutes et 10 minutes de retour. Montrez d’abord le port des lunettes et les règles de sécurité. À chaque station, rappelez les deux questions clés : « Une nouvelle substance s’est-elle formée? » et « Peut-on revenir en arrière? ». Les changements physiques sont souvent réversibles, mais pas toujours (déchirer du papier est un changement physique qu’on ne peut pas défaire) : le critère décisif est la formation d’une nouvelle substance. Le papier noir de la station 2 doit sécher jusqu’au lendemain. À la station 3, le gaz produit est du dioxyde de carbone. À la station 4, le jus de chou rouge change de couleur au contact d’un acide (le vinaigre) ou d’une base (le bicarbonate) : c’est un indice de changement chimique.",
+        "researchQuestion": "Comment peut-on savoir si un changement de la matière est physique ou chimique?",
+        "hypothesisPrompt": "Selon toi, lesquelles des quatre stations montreront un changement chimique? Pourquoi?",
+        "steps": [
+          "Mets tes lunettes de protection. Garde-les jusqu’à la fin de l’activité.",
+          "À chaque station, observe avant, pendant et après le changement. Note dans le tableau ce que tu vois, si une nouvelle substance s’est formée et si on peut revenir en arrière.",
+          "Station 1, la glace : mets un glaçon dans le sac refermable et ferme le sac. Tenez le sac dans vos mains pendant 3 minutes, en le passant d’une personne à l’autre. Observe.",
+          "Station 2, le sel : verse 100 mL d’eau tiède dans le gobelet. Ajoute 5 mL de sel et brasse pendant 1 minute. Observe.",
+          "Toujours à la station 2 : avec le compte-gouttes, dépose 5 gouttes d’eau salée sur le carré de papier noir. Écris au crayon le nom de ton équipe sur le papier et laisse-le sécher jusqu’à demain à l’endroit prévu.",
+          "Station 3, la mousse : pose le grand gobelet sur le plateau. Verse 30 mL de vinaigre dans le gobelet, puis ajoute 5 mL de bicarbonate de soude. Recule-toi et observe, sans toucher et sans approcher ton visage.",
+          "Station 4, le chou rouge : verse un peu de jus de chou rouge dans chaque gobelet (environ 2 cm de hauteur) et note sa couleur. Dans le premier gobelet, ajoute 10 gouttes de vinaigre. Dans le deuxième, ajoute 10 gouttes de solution de bicarbonate. Observe les couleurs.",
+          "Après chaque station, vide les liquides dans le seau prévu, essuie la table et laisse la station propre pour l’équipe suivante.",
+          "Le lendemain, observe le papier noir de la station 2 et note ce que tu vois.",
+          "Lave-toi les mains à la fin de l’activité."
+        ],
+        "observationTable": {
+          "columns": [
+            "Station",
+            "Ce que j’observe",
+            "Nouvelle substance? (oui ou non)",
+            "Retour en arrière possible? (oui ou non)",
+            "Physique ou chimique?"
+          ],
+          "rows": 4
+        },
+        "conclusionQuestions": [
+          {
+            "id": "c1",
+            "kind": "multiple_choice",
+            "prompt": "Quels indices montrent qu’un changement chimique s’est produit? Choisis toutes les bonnes réponses.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "Des bulles de gaz se forment quand on mélange deux substances."
+              },
+              {
+                "id": "b",
+                "text": "Un solide devient liquide quand on le chauffe."
+              },
+              {
+                "id": "c",
+                "text": "La couleur change quand on mélange deux substances."
+              },
+              {
+                "id": "d",
+                "text": "Une substance se dissout dans l’eau."
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "c2",
+            "kind": "short_answer",
+            "prompt": "À la station 2, le sel a-t-il vraiment disparu? Comment le papier noir le prouve-t-il?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          },
+          {
+            "id": "c3",
+            "kind": "true_false",
+            "prompt": "Quand un glaçon fond, il devient une nouvelle substance.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "c4",
+            "kind": "short_answer",
+            "prompt": "Le mélange de bicarbonate de soude et de vinaigre est-il un changement physique ou chimique? Donne deux preuves tirées de tes observations.",
+            "hint": "",
+            "points": 2,
+            "category": "habiletes",
+            "lines": 3
+          },
+          {
+            "id": "c5",
+            "kind": "multiple_choice",
+            "prompt": "Lequel de ces changements de la vie quotidienne est un changement chimique?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "choices": [
+              {
+                "id": "a",
+                "text": "Une flaque d’eau qui s’évapore au soleil"
+              },
+              {
+                "id": "b",
+                "text": "Un clou de fer qui rouille dehors"
+              },
+              {
+                "id": "c",
+                "text": "Une feuille de papier qu’on découpe"
+              },
+              {
+                "id": "d",
+                "text": "Un bonhomme de neige qui fond"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "c6",
+            "kind": "short_answer",
+            "prompt": "Explique à une personne de ta famille la différence entre un changement physique et un changement chimique. Donne un exemple de chaque, tiré des stations.",
+            "hint": "",
+            "points": 2,
+            "category": "communication",
+            "lines": 4
+          }
+        ],
+        "communication": "Avec ton équipe, préparez une courte présentation « Physique ou chimique? » sur la station de votre choix : ce que vous avez observé, votre conclusion et les indices qui la prouvent."
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "c1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "c"],
+            "explanation": "La formation d’un gaz et un changement de couleur sont des indices de changement chimique. La fusion et la dissolution sont des changements physiques."
+          },
+          {
+            "questionId": "c2",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. Le sel s’est dissous dans l’eau, mais il était toujours là. Le lendemain, quand l’eau s’est évaporée, de petits cristaux blancs de sel sont apparus sur le papier noir.",
+            "acceptableAnswers": [],
+            "explanation": ""
+          },
+          {
+            "questionId": "c3",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Le glaçon et l’eau liquide sont la même substance, de l’eau, dans deux états différents. On peut remettre l’eau au congélateur pour refaire un glaçon."
+          },
+          {
+            "questionId": "c4",
+            "kind": "short_answer",
+            "sampleAnswer": "C’est un changement chimique. Des bulles et de la mousse se sont formées : un gaz a été produit. À la fin, on ne peut pas retrouver le bicarbonate ni le vinaigre du départ.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter aussi : le mélange a produit une nouvelle substance, un gaz (le dioxyde de carbone)."
+          },
+          {
+            "questionId": "c5",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "La rouille est une nouvelle substance qui se forme quand le fer réagit avec l’eau et l’air. Les trois autres changements sont physiques."
+          },
+          {
+            "questionId": "c6",
+            "kind": "short_answer",
+            "sampleAnswer": "Dans un changement physique, la substance change de forme ou d’état, mais elle reste la même; souvent, on peut revenir en arrière, comme avec le glaçon qui fond. Dans un changement chimique, une nouvelle substance se forme, comme le gaz qui a fait mousser le vinaigre et le bicarbonate.",
+            "acceptableAnswers": [],
+            "explanation": "Évaluer la clarté de l’explication et la justesse des deux exemples."
+          }
+        ],
+        "solution": "Station 1 : le glaçon fond et devient de l’eau liquide. C’est toujours de l’eau, et on peut la faire geler de nouveau : changement physique (fusion).\n\nStation 2 : le sel se dissout et l’eau reste transparente. Le lendemain, de petits cristaux blancs de sel apparaissent sur le papier noir quand l’eau s’est évaporée : changement physique, réversible.\n\nStation 3 : des bulles et de la mousse apparaissent tout de suite, puis diminuent après quelques secondes ou quelques minutes. Le gaz produit, le dioxyde de carbone, est une nouvelle substance : changement chimique.\n\nStation 4 : le jus de chou rouge est violet. Avec le vinaigre, il devient rose ou rouge; avec la solution de bicarbonate, il devient bleu ou vert. Le changement de couleur est un indice de changement chimique."
+      }
+    }
+  ]
+}

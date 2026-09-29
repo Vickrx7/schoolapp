@@ -1,0 +1,68 @@
+{
+  "slug": "plantes-de-la-cour",
+  "type": "outdoor_activity",
+  "title": "Enquête sur les plantes de la cour",
+  "summary": "Dans la cour d’école, des équipes de trois réalisent cinq missions d’observation : trouver des plantes différentes, nommer leurs parties, repérer une plante qui pousse dans un endroit difficile, chercher des liens entre les plantes et les animaux, et proposer des façons de protéger les plantes.",
+  "source": "board_created",
+  "status": "board_approved",
+  "shareScope": "board",
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "gradeCodes": ["3"],
+  "subjectCode": "sci",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "B2.2"
+    },
+    {
+      "grade": "3",
+      "code": "B2.5"
+    },
+    {
+      "grade": "3",
+      "code": "B1.2"
+    }
+  ],
+  "durationMinutes": 45,
+  "materials": "Par équipe de 3 : 1 planchette à pince, 1 feuille d’enquête (cinq cases, une par mission), 1 crayon, 1 loupe (facultatif). Pour l’adulte : un sifflet, des cônes pour délimiter la zone, la trousse de premiers soins et les auto-injecteurs d’épinéphrine des élèves qui en ont.",
+  "keywords": "plantes, parties d’une plante, cour d’école, observation, besoins des plantes, pollinisation, plantes et animaux, protection des plantes, enquête, plein air",
+  "tags": ["sciences", "exterieur", "cooperation"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "J’observe les plantes de mon milieu, je nomme leurs parties et je propose des façons de les protéger.",
+        "teacherNote": "Sortie d’environ 30 minutes, puis 15 minutes de retour en classe. Faites le tour de la zone avant la sortie : vérifiez s’il y a de l’herbe à la puce (feuilles groupées par trois) ou des plantes épineuses, et tenez les élèves loin des nids de guêpes. Repérez les élèves qui ont une allergie grave aux piqûres d’insectes et apportez leurs auto-injecteurs. Les élèves n’arrachent et ne cueillent rien : l’enquête se fait avec les yeux et le crayon. Pour les élèves qui apprennent le français, affichez avant la sortie les mots racine, tige, tronc, feuille, fleur, fruit et graine, à côté d’une plante dessinée au tableau.",
+        "location": "La cour d’école, ses bordures gazonnées et ses arbres, dans une zone délimitée que l’adulte voit en entier.",
+        "setup": "Délimitez la zone avec des cônes et fixez un point de rencontre. Préparez une planchette par équipe avec la feuille d’enquête : cinq cases numérotées, une par mission, avec de la place pour dessiner et pour écrire. Formez les équipes d’avance. En classe, expliquez les missions avant de sortir et montrez comment observer une plante sans la toucher. Si la cour a peu de plantes, repérez d’avance quelques exemples : un arbre, le gazon, des pissenlits, une plante qui pousse dans une fente du trottoir.",
+        "steps": [
+          "Forme une équipe de trois avec les élèves que l’adulte nomme. Prends la planchette, la feuille d’enquête et le crayon de ton équipe.",
+          "Mission 1 : trouve trois plantes différentes, par exemple un arbre, une herbe et une plante à fleurs. Dessine chacune et écris où elle pousse.",
+          "Mission 2 : choisis une de ces plantes. Nomme le plus de parties possible : tige ou tronc, feuilles, fleurs, fruits ou graines. Où se trouvent ses racines?",
+          "Mission 3 : trouve une plante qui pousse dans un endroit difficile, comme une fente du trottoir ou un coin sans soleil. Comment trouve-t-elle l’eau, la lumière et l’espace dont elle a besoin?",
+          "Mission 4 : cherche un indice qu’un animal utilise une plante : un insecte sur une fleur, une feuille grignotée, un nid dans un arbre. Observe sans toucher et note ce que tu vois.",
+          "Mission 5 : trouve un endroit où des activités humaines abîment des plantes : du gazon piétiné, une branche cassée, des déchets. Propose une façon de protéger ces plantes.",
+          "Pendant toute l’enquête, observe avec tes yeux seulement : ne cueille rien, n’arrache rien et ne goûte à rien.",
+          "Au coup de sifflet, reviens au point de rencontre avec ta feuille.",
+          "En classe, chaque équipe présente une découverte et sa proposition pour protéger les plantes de la cour."
+        ],
+        "safetyReminders": [
+          "Reste dans la zone délimitée, avec ton équipe.",
+          "Ne touche pas aux plantes que tu ne connais pas, et ne mets jamais une feuille, une baie ou un champignon dans ta bouche.",
+          "Si tu vois une abeille ou une guêpe, reste calme et éloigne-toi lentement.",
+          "Au coup de sifflet, reviens tout de suite au point de rencontre.",
+          "En rentrant, lave-toi les mains à l’eau et au savon.",
+          "S’il fait chaud, porte ta casquette et bois de l’eau."
+        ],
+        "weatherAlternative": "Par temps de pluie ou de grand froid, faites l’enquête à l’intérieur : observez les plantes de la classe ou de la bibliothèque et, par la fenêtre, les arbres de la cour. Les missions 1 à 3 restent les mêmes; les missions 4 et 5 deviennent une discussion en classe."
+      },
+      "answerKey": null
+    }
+  ]
+}

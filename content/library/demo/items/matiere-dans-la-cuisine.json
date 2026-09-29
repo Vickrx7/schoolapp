@@ -1,0 +1,135 @@
+{
+  "slug": "matiere-dans-la-cuisine",
+  "type": "parent_guide",
+  "title": "La matière dans la cuisine / Matter in the kitchen",
+  "summary": "Un guide bilingue (français et anglais) pour aider les familles à explorer, dans la cuisine, les états de la matière et la différence entre un changement physique et un changement chimique en 5e année, avec des activités sécuritaires et les mots utilisés en classe.",
+  "source": "teacher_created",
+  "author": "marc.gagnon@demo.lynx.test",
+  "school": "saint-exemple",
+  "status": "draft",
+  "shareScope": "private",
+  "gradeCodes": ["5"],
+  "subjectCode": "sci",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "C2"
+    }
+  ],
+  "durationMinutes": 10,
+  "materials": "Une copie par famille : la partie en français, puis la partie en anglais.",
+  "keywords": "guide pour les familles, parents, maison, cuisine, matière, états de la matière, changements d’état, changement physique, changement chimique, bilingue, anglais",
+  "tags": ["famille", "sciences"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Démontrer une compréhension des propriétés de la matière, des changements d’état et des changements physiques et chimiques.",
+        "teacherNote": "Brouillon à relire avant l’envoi. Guide à remettre aux familles au début de l’unité sur la matière, dans l’agenda ou par courriel. La partie en anglais suit la partie en français point par point. Toutes les activités se font avec des produits courants; l’adulte s’occupe de la cuisinière, du four et de l’eau chaude. Les aliments nommés sont des exemples : chaque famille choisit selon ses habitudes et ses allergies.",
+        "fr": {
+          "intro": "En 5e année, en sciences et technologie, votre enfant étudie la matière : les solides, les liquides et les gaz, les changements d’état et la différence entre un changement physique et un changement chimique. La cuisine est un excellent laboratoire! Chaque jour, on y fait fondre, geler, bouillir, dissoudre et cuire. En observant ces changements avec votre enfant, en français ou dans la langue parlée à la maison, vous l’aidez à faire des liens entre la classe et la vie de tous les jours. Pour la sécurité, c’est toujours l’adulte qui s’occupe de la cuisinière, du four et de l’eau bouillante.",
+          "learning": [
+            "décrire les propriétés des solides, des liquides et des gaz (forme, volume, masse)",
+            "expliquer les changements d’état causés par un gain ou une perte de chaleur : fusion, solidification, évaporation, condensation et sublimation",
+            "distinguer un changement physique, souvent réversible, d’un changement chimique, qui produit une nouvelle substance",
+            "reconnaître les indices d’un changement chimique : un gaz qui se forme, un changement de couleur, un solide qui apparaît, de la chaleur ou de la lumière",
+            "réfléchir aux effets des matériaux sur l’environnement : réduire, réutiliser, recycler et composter"
+          ],
+          "atHome": [
+            "faire des glaçons, puis les laisser fondre dans un verre : demander à votre enfant de nommer chaque changement d’état et de dire s’il est réversible",
+            "observer les gouttelettes qui se forment sur un verre d’eau très froide ou sur le couvercle d’une casserole : c’est la condensation de la vapeur d’eau",
+            "dissoudre une cuillerée de sel dans un peu d’eau tiède, en verser quelques gouttes dans une assiette foncée et attendre quelques jours : le sel réapparaît quand l’eau s’évapore",
+            "couper une pomme en tranches (un changement physique), puis laisser une tranche à l’air pendant une heure : elle brunit, un indice de changement chimique",
+            "en cuisinant ensemble, chercher les changements chimiques : une pâte qui gonfle et dore au four, du pain qui grille, des bulles quand on verse du vinaigre sur du bicarbonate de soude dans l’évier",
+            "après le repas, trier les déchets ensemble : qu’est-ce qui va au recyclage, au compost ou aux ordures?"
+          ],
+          "words": [
+            {
+              "term": "fusion",
+              "definition": "Passage de l’état solide à l’état liquide quand la matière gagne de la chaleur (la glace qui fond)."
+            },
+            {
+              "term": "solidification",
+              "definition": "Passage de l’état liquide à l’état solide quand la matière perd de la chaleur (l’eau qui gèle)."
+            },
+            {
+              "term": "évaporation",
+              "definition": "Passage de l’état liquide à l’état gazeux (une flaque qui sèche)."
+            },
+            {
+              "term": "condensation",
+              "definition": "Passage de l’état gazeux à l’état liquide (la buée sur une vitre froide)."
+            },
+            {
+              "term": "sublimation",
+              "definition": "Passage direct de l’état solide à l’état gazeux (la neige qui disparaît sans fondre par une journée froide et ensoleillée)."
+            },
+            {
+              "term": "changement physique",
+              "definition": "Changement de forme ou d’état : la substance reste la même, et on peut souvent revenir en arrière."
+            },
+            {
+              "term": "changement chimique",
+              "definition": "Changement qui produit une ou plusieurs nouvelles substances : on ne peut habituellement pas revenir en arrière."
+            }
+          ]
+        },
+        "en": {
+          "intro": "In Grade 5 science and technology, your child is learning about matter: solids, liquids and gases, changes of state, and the difference between a physical change and a chemical change. The kitchen is a great lab! Every day, we melt, freeze, boil, dissolve and cook things there. When you look at these changes with your child, in French or in the language you speak at home, you help your child connect school and everyday life. For safety, an adult always handles the stove, the oven and boiling water. Lessons at school are in French: the words below will help you talk about matter with your child.",
+          "learning": [
+            "describe the properties of solids, liquids and gases (shape, volume, mass)",
+            "explain changes of state caused by gaining or losing heat: melting, freezing, evaporation, condensation and sublimation",
+            "tell a physical change, which can often be reversed, from a chemical change, which makes a new substance",
+            "recognize signs of a chemical change: a gas forming, a change of colour, a solid appearing, heat or light",
+            "think about how materials affect the environment: reduce, reuse, recycle and compost"
+          ],
+          "atHome": [
+            "make ice cubes, then let them melt in a glass: ask your child to name each change of state and to say whether it can be reversed",
+            "look at the droplets that form on a glass of very cold water or on a pot lid: that’s water vapour condensing",
+            "dissolve a spoonful of salt in a little warm water, pour a few drops onto a dark plate and wait a few days: the salt appears again when the water evaporates",
+            "slice an apple (a physical change), then leave one slice in the air for an hour: it turns brown, a sign of a chemical change",
+            "when you cook together, look for chemical changes: batter rising and browning in the oven, bread toasting, bubbles when you pour vinegar on baking soda in the sink",
+            "after a meal, sort the waste together: what goes in the recycling, the compost or the garbage?"
+          ],
+          "words": [
+            {
+              "term": "fusion",
+              "definition": "melting; a solid becomes a liquid when it gains heat (ice melting)"
+            },
+            {
+              "term": "solidification",
+              "definition": "freezing; a liquid becomes a solid when it loses heat (water turning into ice)"
+            },
+            {
+              "term": "évaporation",
+              "definition": "evaporation; a liquid becomes a gas (a puddle drying up)"
+            },
+            {
+              "term": "condensation",
+              "definition": "condensation; a gas becomes a liquid (fog on a cold window)"
+            },
+            {
+              "term": "sublimation",
+              "definition": "sublimation; a solid becomes a gas without melting first (snow disappearing on a cold, sunny day)"
+            },
+            {
+              "term": "changement physique",
+              "definition": "physical change; the shape or state changes, but the substance stays the same, and the change can often be reversed"
+            },
+            {
+              "term": "changement chimique",
+              "definition": "chemical change; one or more new substances form, and the change usually can’t be reversed"
+            }
+          ]
+        }
+      },
+      "answerKey": null
+    }
+  ]
+}

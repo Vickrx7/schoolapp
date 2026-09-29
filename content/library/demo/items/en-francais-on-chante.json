@@ -1,0 +1,135 @@
+{
+  "slug": "en-francais-on-chante",
+  "type": "song",
+  "title": "En français, on chante",
+  "summary": "Une chanson originale sur l’air de « Au clair de la lune » qui célèbre la vie en français en Ontario : la cour d’école, la communauté, tous les accents qui s’y rencontrent et les couleurs du drapeau franco-ontarien, avec des gestes.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["3", "5"],
+  "subjectCode": "fra",
+  "expectations": [],
+  "durationMinutes": 10,
+  "materials": "Aucun matériel particulier. Facultatif : les paroles écrites au tableau ou projetées, et un drapeau franco-ontarien.",
+  "keywords": "chanson, Au clair de la lune, fierté, francophonie ontarienne, construction identitaire, 25 septembre, drapeau franco-ontarien, accents, communauté",
+  "tags": ["chanson", "francophonie", "identite"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": false,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je chante en français avec fierté et je nomme ce qui fait vivre le français dans ma communauté.",
+        "teacherNote": "Paroles originales sur l’air de « Au clair de la lune », une mélodie traditionnelle française du domaine public. Chaque couplet a huit vers qui suivent les huit phrases de la mélodie (6, 5, 6, 5, 6, 5, 6 et 5 syllabes chantées). Chantez d’abord le refrain, puis ajoutez un couplet par jour. La chanson convient bien au 25 septembre, à une assemblée ou au début de la journée. Le couplet 3 reprend les symboles du drapeau franco-ontarien (le vert de l’été, le blanc de l’hiver, le lys et le trille). Après le couplet 2, demandez aux élèves où ils et elles entendent le français dans leur communauté, et d’où viennent les accents de la classe : toutes les réponses font partie de la chanson. Pour prolonger, la classe peut écrire un nouveau couplet sur un lieu de sa communauté, en gardant le rythme.",
+        "tune": "Au clair de la lune",
+        "verses": [
+          {
+            "label": "Couplet 1",
+            "lines": [
+              "Dans ma cour d’école,",
+              "On rit en français,",
+              "On joue, on se parle",
+              "Et on se connaît.",
+              "Dans le Nord, en ville,",
+              "Au bord des grands lacs,",
+              "Notre langue brille",
+              "Comme un feu de camp."
+            ]
+          },
+          {
+            "label": "Refrain",
+            "lines": [
+              "En français, on chante,",
+              "En français, on vit,",
+              "Tous les accents dansent,",
+              "Ici, c’est chez nous!",
+              "Toutes nos histoires",
+              "Font un grand pays,",
+              "Chantons tous et toutes",
+              "En français d’ici!"
+            ]
+          },
+          {
+            "label": "Couplet 2",
+            "lines": [
+              "Sur la patinoire,",
+              "Au parc, au marché,",
+              "Le français résonne",
+              "Comme une chanson.",
+              "Mes amies, mes amis",
+              "Viennent de partout,",
+              "Chaque voix raconte",
+              "Un bout de chez nous."
+            ]
+          },
+          {
+            "label": "Refrain",
+            "lines": [
+              "En français, on chante,",
+              "En français, on vit,",
+              "Tous les accents dansent,",
+              "Ici, c’est chez nous!",
+              "Toutes nos histoires",
+              "Font un grand pays,",
+              "Chantons tous et toutes",
+              "En français d’ici!"
+            ]
+          },
+          {
+            "label": "Couplet 3",
+            "lines": [
+              "Vert comme les feuilles",
+              "Des grands bois d’été,",
+              "Blanc comme la neige",
+              "Des longs mois d’hiver,",
+              "Le lys et le trille",
+              "Sur notre drapeau",
+              "Flottent dans la brise",
+              "Du matin au soir."
+            ]
+          },
+          {
+            "label": "Refrain",
+            "lines": [
+              "En français, on chante,",
+              "En français, on vit,",
+              "Tous les accents dansent,",
+              "Ici, c’est chez nous!",
+              "Toutes nos histoires",
+              "Font un grand pays,",
+              "Chantons tous et toutes",
+              "En français d’ici!"
+            ]
+          }
+        ],
+        "gestures": [
+          "« En français, on chante » : les mains en porte-voix autour de la bouche.",
+          "« Tous les accents dansent » : on se balance doucement de gauche à droite.",
+          "« Ici, c’est chez nous! » : les deux mains sur le cœur.",
+          "« Font un grand pays » : les bras s’ouvrent bien grands.",
+          "« Comme un feu de camp » : les doigts bougent vers le haut, comme des flammes.",
+          "Couplet 3 : les bras ondulent au-dessus de la tête, comme un drapeau dans la brise."
+        ]
+      },
+      "answerKey": null
+    }
+  ]
+}

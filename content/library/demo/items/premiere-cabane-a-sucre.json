@@ -1,0 +1,905 @@
+{
+  "slug": "premiere-cabane-a-sucre",
+  "type": "reading_passage",
+  "title": "Ma première cabane à sucre",
+  "summary": "Récit de cinq paragraphes : Laurier découvre l’érablière de sa grand-mère, dans l’Est ontarien, et une tradition de famille. Des questions pour faire des inférences sur ce que ressent le personnage. Quatre versions selon le niveau de langue, avec la même histoire.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["3"],
+  "subjectCode": "fra",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "C2.3"
+    }
+  ],
+  "durationMinutes": 30,
+  "materials": "Une copie du texte par élève, dans la version prévue pour son groupe; un crayon.",
+  "keywords": "cabane à sucre, érablière, sirop d’érable, tire sur la neige, printemps, récit, inférence, sentiments, tradition familiale, Est ontarien",
+  "tags": ["lecture", "francophonie", "ontario", "identite"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je fais des inférences à partir d’indices du texte pour comprendre ce que ressent un personnage.",
+        "teacherNote": "Les quatre versions racontent la même histoire en cinq paragraphes, ce qui permet de discuter des inférences avec toute la classe. Le texte ne nomme jamais les émotions de Laurier : les élèves doivent les déduire de ses gestes et de ses paroles. Modelez d’abord la question 1 à voix haute (« Le texte ne dit pas que Laurier a hâte, mais il bouge sur son siège… »). « Chaudière » (seau) et « chalumeau » (petit tube planté dans l’érable) sont des mots d’usage courant au Canada français. Faits à vérifier avant l’utilisation en classe : l’eau d’érable coule au printemps, quand les nuits sont sous zéro et les journées au-dessus de zéro; il faut environ 40 litres d’eau d’érable pour faire 1 litre de sirop (la proportion varie selon le taux de sucre); la tire s’obtient en faisant bouillir le sirop plus longtemps avant de le verser sur la neige.",
+        "text": "1. Un samedi matin de mars, grand-maman est venue nous chercher, ma cousine Capucine et moi. Il faisait encore froid, mais le soleil brillait fort sur la neige. Dans l’auto, je bougeais sur mon siège et je regardais par la fenêtre sans arrêt. Capucine a éclaté de rire : « Laurier, on vient juste de partir! » C’était la première fois que j’allais à la cabane à sucre de grand-maman, dans l’Est ontarien.\n\n2. L’érablière de grand-maman est une petite forêt d’érables à sucre. Sur chaque tronc, il y avait un petit tube de métal, un chalumeau, avec une chaudière accrochée juste en dessous. Grand-maman m’a montré une goutte claire qui tombait dans la chaudière. « C’est de l’eau d’érable, m’a-t-elle expliqué. Elle coule seulement au printemps, quand les nuits sont froides et que les journées sont plus douces. » J’ai goûté. C’était à peine sucré, presque comme de l’eau.\n\n3. Dans la cabane, nous avons versé l’eau d’érable dans l’évaporateur, un grand bac de métal chauffé par un feu de bois. L’eau s’est mise à bouillir, et une vapeur blanche au parfum sucré a rempli la cabane. Il fallait attendre longtemps, très longtemps. Grand-maman m’a dit qu’il faut environ 40 litres d’eau d’érable pour faire un seul litre de sirop. J’ai regardé toutes les chaudières dehors, puis le petit pot de sirop sur la tablette, et j’ai ouvert de grands yeux.\n\n4. À la fin de l’après-midi, grand-maman a fait bouillir un peu de sirop encore plus longtemps. Ensuite, elle l’a versé en longues bandes sur de la neige bien tassée. Le sirop est devenu épais et collant. Avec un bâtonnet de bois, j’ai enroulé ma première tire. Capucine, elle, avait déjà de la tire jusque sur ses mitaines! J’ai ri si fort que grand-maman s’est mise à rire avec moi.\n\n5. Au retour, je tenais sur mes genoux un pot de sirop que j’avais aidé à faire. Grand-maman m’a regardé dans le rétroviseur. « L’an prochain, tu m’aideras à poser les chalumeaux, a-t-elle dit. Quand j’étais petite, c’est ma mère qui m’a appris. » J’ai serré mon pot très fort contre moi. J’avais déjà hâte de revenir au printemps.",
+        "glossary": [
+          {
+            "term": "une érablière",
+            "definition": "Une forêt où poussent surtout des érables à sucre."
+          },
+          {
+            "term": "un chalumeau",
+            "definition": "Un petit tube qu’on plante dans le tronc de l’érable pour faire couler l’eau d’érable."
+          },
+          {
+            "term": "une chaudière",
+            "definition": "Un seau. Au Canada, on dit souvent « chaudière »."
+          },
+          {
+            "term": "l’évaporateur",
+            "definition": "Un grand bac de métal où l’on fait bouillir l’eau d’érable pour la transformer en sirop."
+          },
+          {
+            "term": "la tire",
+            "definition": "Du sirop d’érable très épais, versé sur la neige, qu’on enroule sur un bâtonnet."
+          },
+          {
+            "term": "le rétroviseur",
+            "definition": "Le petit miroir de l’auto qui permet de voir ce qui se passe derrière."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Au paragraphe 1, comment Laurier se sent-il dans l’auto?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "c",
+                "text": "Il est fâché contre sa cousine."
+              },
+              {
+                "id": "a",
+                "text": "Il a très hâte d’arriver."
+              },
+              {
+                "id": "d",
+                "text": "Il s’ennuie et veut dormir."
+              },
+              {
+                "id": "b",
+                "text": "Il a peur d’aller à la cabane à sucre."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Quels indices du paragraphe 1 t’aident à répondre à la question 1? Nomme-en deux.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "true_false",
+            "prompt": "L’eau d’érable qui coule de l’arbre est très sucrée.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q4",
+            "kind": "short_answer",
+            "prompt": "À la fin du paragraphe 3, Laurier ouvre de grands yeux. Pourquoi, selon toi? Appuie ta réponse sur un indice du texte.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Au paragraphe 5, Laurier serre son pot très fort contre lui. Qu’est-ce que ce geste nous apprend sur ce qu’il ressent?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Grand-maman dit : « Quand j’étais petite, c’est ma mère qui m’a appris. » Qu’est-ce que cette phrase nous apprend sur la cabane à sucre dans cette famille?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Une photo d’une érablière au printemps, avec des chaudières accrochées aux érables.",
+          "Un chalumeau et une chaudière, ou leur photo, à montrer avant la lecture.",
+          "Une photo d’un évaporateur qui fume dans une cabane à sucre.",
+          "Un petit pot de sirop d’érable d’un litre à côté d’une grosse chaudière, pour faire sentir la différence entre 1 litre et 40 litres."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Le texte ne le dit pas directement : Laurier bouge sur son siège et regarde sans arrêt par la fenêtre, et sa cousine rit parce qu’ils viennent juste de partir. Rien ne montre qu’il a peur, qu’il est fâché ou qu’il s’ennuie."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "Il bouge sur son siège et il regarde par la fenêtre sans arrêt. Capucine rit parce qu’ils viennent juste de partir.",
+            "acceptableAnswers": [],
+            "explanation": "Indices possibles : il bouge sur son siège; il regarde par la fenêtre sans arrêt; Capucine rit et dit qu’ils viennent juste de partir; c’est sa première visite. Deux indices sont attendus."
+          },
+          {
+            "questionId": "q3",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : au paragraphe 2, Laurier goûte l’eau d’érable et dit : « C’était à peine sucré, presque comme de l’eau. »"
+          },
+          {
+            "questionId": "q4",
+            "kind": "short_answer",
+            "sampleAnswer": "Il est très surpris : il faut environ 40 litres d’eau d’érable pour faire un seul petit litre de sirop.",
+            "acceptableAnswers": [],
+            "explanation": "Inférence : ouvrir de grands yeux montre la surprise. L’indice est la phrase de grand-maman sur les 40 litres, et Laurier compare toutes les chaudières au petit pot. Accepter aussi « il est étonné » ou « il n’en revient pas », si l’élève nomme l’indice."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "Il est fier du sirop qu’il a aidé à faire, et ce pot est précieux pour lui.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter : fier, content, heureux, il tient à son pot ou à ce souvenir. La fin du paragraphe (il a déjà hâte de revenir) confirme qu’il a aimé sa journée."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "C’est une tradition de famille : on l’apprend des plus vieux, d’une génération à l’autre, et maintenant c’est au tour de Laurier.",
+            "acceptableAnswers": [],
+            "explanation": "L’élève doit comprendre que le savoir passe de l’arrière-grand-mère à la grand-mère, puis à Laurier. Profitez-en pour demander quelles traditions les familles de la classe se transmettent."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "debutant",
+      "content": {
+        "title": "",
+        "objective": "Je fais des inférences à partir d’indices du texte pour comprendre ce que ressent un personnage.",
+        "teacherNote": "Version Débutant : phrases courtes au présent, une idée par phrase, glossaire plus complet. Les questions 1, 2 et 5 sont des choix multiples; la question 4 a un indice. Les quatre versions racontent la même histoire en cinq paragraphes. Lisez le texte une première fois à voix haute avec les élèves avant de les laisser répondre.",
+        "text": "1. C’est un samedi de mars. Grand-maman vient nous chercher, ma cousine Capucine et moi. Il fait froid, mais le soleil brille. Dans l’auto, je bouge sur mon siège. Je regarde par la fenêtre sans arrêt. Capucine rit : « Laurier, on vient juste de partir! » Aujourd’hui, je vais pour la première fois à la cabane à sucre de grand-maman.\n\n2. Grand-maman a une érablière. C’est une petite forêt d’érables. Sur chaque arbre, il y a un petit tube. C’est un chalumeau. Sous le chalumeau, il y a une chaudière. Une goutte claire tombe dans la chaudière. Grand-maman dit : « C’est de l’eau d’érable. Elle coule au printemps. » Je goûte. Ce n’est presque pas sucré!\n\n3. Dans la cabane, on met l’eau d’érable dans un grand bac de métal. C’est l’évaporateur. Un feu chauffe le bac. L’eau bout très longtemps. La cabane sent bon le sucre. Grand-maman dit : « Il faut environ 40 litres d’eau d’érable pour faire 1 litre de sirop. » Je regarde toutes les chaudières. Puis je regarde le petit pot de sirop. J’ouvre de grands yeux!\n\n4. À la fin de la journée, grand-maman fait de la tire. Elle verse du sirop très chaud sur la neige. Le sirop devient épais et collant. Avec un bâtonnet, j’enroule ma première tire. Capucine a de la tire sur ses mitaines! Je ris très fort. Grand-maman rit avec moi.\n\n5. Dans l’auto, je tiens un pot de sirop. J’ai aidé à le faire! Grand-maman me dit : « L’an prochain, tu vas m’aider à poser les chalumeaux. Quand j’étais petite, c’est ma mère qui m’a appris. » Je serre mon pot très fort. J’ai déjà hâte de revenir au printemps.",
+        "glossary": [
+          {
+            "term": "une érablière",
+            "definition": "Une forêt d’érables."
+          },
+          {
+            "term": "un chalumeau",
+            "definition": "Un petit tube planté dans l’arbre. L’eau d’érable coule par ce tube."
+          },
+          {
+            "term": "une chaudière",
+            "definition": "Un seau."
+          },
+          {
+            "term": "l’évaporateur",
+            "definition": "Un grand bac où l’eau d’érable bout et devient du sirop."
+          },
+          {
+            "term": "la tire",
+            "definition": "Du sirop très épais qu’on mange sur un bâtonnet."
+          },
+          {
+            "term": "collant",
+            "definition": "Qui colle aux doigts."
+          },
+          {
+            "term": "avoir hâte",
+            "definition": "Vouloir très fort que quelque chose arrive vite."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Dans l’auto, comment Laurier se sent-il?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "c",
+                "text": "Il est fâché."
+              },
+              {
+                "id": "a",
+                "text": "Il a hâte d’arriver."
+              },
+              {
+                "id": "b",
+                "text": "Il a peur."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "multiple_choice",
+            "prompt": "Quel indice t’aide à répondre à la question 1?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "b",
+                "text": "Le soleil brille."
+              },
+              {
+                "id": "c",
+                "text": "C’est un samedi de mars."
+              },
+              {
+                "id": "a",
+                "text": "Il bouge sur son siège et regarde par la fenêtre sans arrêt."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q3",
+            "kind": "true_false",
+            "prompt": "L’eau d’érable qui coule de l’arbre est très sucrée.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q4",
+            "kind": "short_answer",
+            "prompt": "Au paragraphe 3, Laurier ouvre de grands yeux. Pourquoi?",
+            "hint": "Relis ce que dit grand-maman sur les 40 litres.",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q5",
+            "kind": "multiple_choice",
+            "prompt": "À la fin, Laurier serre son pot très fort. Comment se sent-il?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "b",
+                "text": "Il est triste de partir pour toujours."
+              },
+              {
+                "id": "a",
+                "text": "Il est fier de son sirop."
+              },
+              {
+                "id": "c",
+                "text": "Il a froid aux mains."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Qui a appris à grand-maman à faire du sirop quand elle était petite?",
+            "hint": "Relis ce que dit grand-maman au paragraphe 5.",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          }
+        ],
+        "visualSupports": [
+          "Une photo d’une érablière au printemps, avec des chaudières accrochées aux érables.",
+          "Un chalumeau et une chaudière, ou leur photo, à montrer avant la lecture.",
+          "Une photo d’un évaporateur qui fume dans une cabane à sucre.",
+          "Un petit pot de sirop d’érable d’un litre à côté d’une grosse chaudière, pour faire sentir la différence entre 1 litre et 40 litres."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Le texte ne dit pas « il a hâte », mais ses gestes le montrent."
+          },
+          {
+            "questionId": "q2",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Bouger sur son siège et regarder sans arrêt par la fenêtre, c’est ce qu’on fait quand on a hâte. Les autres phrases sont vraies, mais elles ne disent rien de ce que ressent Laurier."
+          },
+          {
+            "questionId": "q3",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : Laurier goûte et dit que ce n’est presque pas sucré."
+          },
+          {
+            "questionId": "q4",
+            "kind": "short_answer",
+            "sampleAnswer": "Il est surpris : il faut beaucoup d’eau d’érable pour faire un petit pot de sirop.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter toute réponse qui parle de surprise et qui fait le lien entre les 40 litres (ou « beaucoup d’eau d’érable ») et le petit pot."
+          },
+          {
+            "questionId": "q5",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Il a aidé à faire ce sirop, et il a déjà hâte de revenir : il est fier et content."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Sa mère.",
+            "acceptableAnswers": [
+              "sa mère",
+              "sa maman",
+              "la mère de grand-maman",
+              "la maman de grand-maman",
+              "son arrière-grand-mère"
+            ],
+            "explanation": "Question de repérage qui prépare la discussion : faire remarquer que la cabane à sucre est une tradition qui passe d’une génération à l’autre."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "intermediaire",
+      "content": {
+        "title": "",
+        "objective": "Je fais des inférences à partir d’indices du texte pour comprendre ce que ressent un personnage.",
+        "teacherNote": "Version Intermédiaire : phrases simples ou composées, quelques mots nouveaux expliqués dans le glossaire, et des indices pour les questions d’inférence. Les quatre versions racontent la même histoire en cinq paragraphes.",
+        "text": "1. Un samedi matin de mars, grand-maman est venue nous chercher, ma cousine Capucine et moi. Il faisait encore froid, mais le soleil brillait fort. Dans l’auto, je bougeais sur mon siège. Je regardais par la fenêtre sans arrêt. Capucine a éclaté de rire : « Laurier, on vient juste de partir! » C’était la première fois que j’allais à la cabane à sucre de grand-maman, dans l’Est ontarien.\n\n2. L’érablière de grand-maman est une petite forêt d’érables à sucre. Sur chaque tronc, il y avait un petit tube de métal, un chalumeau. Une chaudière était accrochée juste en dessous. Grand-maman m’a montré une goutte claire qui tombait dans la chaudière. « C’est de l’eau d’érable, m’a-t-elle dit. Elle coule seulement au printemps, quand les nuits sont froides et que les journées sont plus douces. » J’ai goûté. C’était presque comme de l’eau, à peine sucré.\n\n3. Dans la cabane, nous avons versé l’eau d’érable dans l’évaporateur. C’est un grand bac de métal chauffé par un feu de bois. L’eau s’est mise à bouillir, et une vapeur blanche qui sentait le sucre a rempli la cabane. Il fallait attendre très longtemps. Grand-maman m’a dit qu’il faut environ 40 litres d’eau d’érable pour faire un seul litre de sirop. J’ai regardé toutes les chaudières dehors, puis le petit pot de sirop sur la tablette. J’ai ouvert de grands yeux.\n\n4. À la fin de l’après-midi, grand-maman a fait bouillir un peu de sirop encore plus longtemps. Ensuite, elle l’a versé en longues bandes sur de la neige bien tassée. Le sirop est devenu épais et collant. Avec un bâtonnet de bois, j’ai enroulé ma première tire. Capucine avait déjà de la tire jusque sur ses mitaines! J’ai ri si fort que grand-maman a ri avec moi.\n\n5. Au retour, je tenais sur mes genoux un pot de sirop que j’avais aidé à faire. Grand-maman m’a regardé dans le rétroviseur. « L’an prochain, tu m’aideras à poser les chalumeaux, a-t-elle dit. Quand j’étais petite, c’est ma mère qui m’a appris. » J’ai serré mon pot très fort contre moi. J’avais déjà hâte de revenir au printemps.",
+        "glossary": [
+          {
+            "term": "une érablière",
+            "definition": "Une forêt où poussent surtout des érables à sucre."
+          },
+          {
+            "term": "un chalumeau",
+            "definition": "Un petit tube qu’on plante dans le tronc de l’érable pour faire couler l’eau d’érable."
+          },
+          {
+            "term": "une chaudière",
+            "definition": "Un seau. Au Canada, on dit souvent « chaudière »."
+          },
+          {
+            "term": "l’évaporateur",
+            "definition": "Un grand bac de métal où l’on fait bouillir l’eau d’érable pour en faire du sirop."
+          },
+          {
+            "term": "la tire",
+            "definition": "Du sirop d’érable très épais, versé sur la neige, qu’on enroule sur un bâtonnet."
+          },
+          {
+            "term": "le rétroviseur",
+            "definition": "Le petit miroir de l’auto qui permet de voir derrière."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Au paragraphe 1, comment Laurier se sent-il dans l’auto?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "c",
+                "text": "Il est fâché contre sa cousine."
+              },
+              {
+                "id": "a",
+                "text": "Il a très hâte d’arriver."
+              },
+              {
+                "id": "d",
+                "text": "Il s’ennuie et veut dormir."
+              },
+              {
+                "id": "b",
+                "text": "Il a peur d’aller à la cabane à sucre."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Nomme deux indices du paragraphe 1 qui t’aident à répondre à la question 1.",
+            "hint": "Regarde ce que fait Laurier et ce que dit Capucine.",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "true_false",
+            "prompt": "L’eau d’érable qui coule de l’arbre est très sucrée.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q4",
+            "kind": "short_answer",
+            "prompt": "À la fin du paragraphe 3, Laurier ouvre de grands yeux. Pourquoi, selon toi?",
+            "hint": "Compare les 40 litres d’eau d’érable et le petit pot de sirop.",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Au paragraphe 5, Laurier serre son pot très fort contre lui. Comment se sent-il?",
+            "hint": "Pense à ce qu’il a fait pendant la journée.",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Grand-maman dit : « Quand j’étais petite, c’est ma mère qui m’a appris. » Qu’est-ce que cette phrase nous apprend sur la cabane à sucre dans cette famille?",
+            "hint": "Qui a appris à qui?",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Une photo d’une érablière au printemps, avec des chaudières accrochées aux érables.",
+          "Un chalumeau et une chaudière, ou leur photo, à montrer avant la lecture.",
+          "Une photo d’un évaporateur qui fume dans une cabane à sucre.",
+          "Un petit pot de sirop d’érable d’un litre à côté d’une grosse chaudière, pour faire sentir la différence entre 1 litre et 40 litres."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Laurier bouge sur son siège et regarde sans arrêt par la fenêtre, et sa cousine rit parce qu’ils viennent juste de partir. Rien ne montre qu’il a peur, qu’il est fâché ou qu’il s’ennuie."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "Il bouge sur son siège et il regarde par la fenêtre sans arrêt. Capucine rit parce qu’ils viennent juste de partir.",
+            "acceptableAnswers": [],
+            "explanation": "Indices possibles : il bouge sur son siège; il regarde par la fenêtre sans arrêt; Capucine rit et dit qu’ils viennent juste de partir; c’est sa première visite."
+          },
+          {
+            "questionId": "q3",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : au paragraphe 2, Laurier goûte l’eau d’érable et dit qu’elle est presque comme de l’eau, à peine sucrée."
+          },
+          {
+            "questionId": "q4",
+            "kind": "short_answer",
+            "sampleAnswer": "Il est très surpris : il faut environ 40 litres d’eau d’érable pour faire un seul petit litre de sirop.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter « surpris », « étonné » ou « il n’en revient pas », avec le lien entre les 40 litres et le petit pot."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "Il est fier parce qu’il a aidé à faire ce sirop.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter : fier, content, heureux, il tient à son pot ou à ce souvenir."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "C’est une tradition de famille : la mère de grand-maman lui a appris, et maintenant grand-maman l’apprend à Laurier.",
+            "acceptableAnswers": [],
+            "explanation": "L’élève doit voir que le savoir passe d’une génération à l’autre."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "avance",
+      "content": {
+        "title": "",
+        "objective": "Je fais des inférences à partir d’indices du texte pour comprendre ce que ressent un personnage.",
+        "teacherNote": "Version Avancé : même texte que la version de base, écrit dans le français attendu en 3e année. Les quatre versions racontent la même histoire en cinq paragraphes.",
+        "text": "1. Un samedi matin de mars, grand-maman est venue nous chercher, ma cousine Capucine et moi. Il faisait encore froid, mais le soleil brillait fort sur la neige. Dans l’auto, je bougeais sur mon siège et je regardais par la fenêtre sans arrêt. Capucine a éclaté de rire : « Laurier, on vient juste de partir! » C’était la première fois que j’allais à la cabane à sucre de grand-maman, dans l’Est ontarien.\n\n2. L’érablière de grand-maman est une petite forêt d’érables à sucre. Sur chaque tronc, il y avait un petit tube de métal, un chalumeau, avec une chaudière accrochée juste en dessous. Grand-maman m’a montré une goutte claire qui tombait dans la chaudière. « C’est de l’eau d’érable, m’a-t-elle expliqué. Elle coule seulement au printemps, quand les nuits sont froides et que les journées sont plus douces. » J’ai goûté. C’était à peine sucré, presque comme de l’eau.\n\n3. Dans la cabane, nous avons versé l’eau d’érable dans l’évaporateur, un grand bac de métal chauffé par un feu de bois. L’eau s’est mise à bouillir, et une vapeur blanche au parfum sucré a rempli la cabane. Il fallait attendre longtemps, très longtemps. Grand-maman m’a dit qu’il faut environ 40 litres d’eau d’érable pour faire un seul litre de sirop. J’ai regardé toutes les chaudières dehors, puis le petit pot de sirop sur la tablette, et j’ai ouvert de grands yeux.\n\n4. À la fin de l’après-midi, grand-maman a fait bouillir un peu de sirop encore plus longtemps. Ensuite, elle l’a versé en longues bandes sur de la neige bien tassée. Le sirop est devenu épais et collant. Avec un bâtonnet de bois, j’ai enroulé ma première tire. Capucine, elle, avait déjà de la tire jusque sur ses mitaines! J’ai ri si fort que grand-maman s’est mise à rire avec moi.\n\n5. Au retour, je tenais sur mes genoux un pot de sirop que j’avais aidé à faire. Grand-maman m’a regardé dans le rétroviseur. « L’an prochain, tu m’aideras à poser les chalumeaux, a-t-elle dit. Quand j’étais petite, c’est ma mère qui m’a appris. » J’ai serré mon pot très fort contre moi. J’avais déjà hâte de revenir au printemps.",
+        "glossary": [
+          {
+            "term": "une érablière",
+            "definition": "Une forêt où poussent surtout des érables à sucre."
+          },
+          {
+            "term": "un chalumeau",
+            "definition": "Un petit tube qu’on plante dans le tronc de l’érable pour faire couler l’eau d’érable."
+          },
+          {
+            "term": "une chaudière",
+            "definition": "Un seau. Au Canada, on dit souvent « chaudière »."
+          },
+          {
+            "term": "l’évaporateur",
+            "definition": "Un grand bac de métal où l’on fait bouillir l’eau d’érable pour la transformer en sirop."
+          },
+          {
+            "term": "la tire",
+            "definition": "Du sirop d’érable très épais, versé sur la neige, qu’on enroule sur un bâtonnet."
+          },
+          {
+            "term": "le rétroviseur",
+            "definition": "Le petit miroir de l’auto qui permet de voir ce qui se passe derrière."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Au paragraphe 1, comment Laurier se sent-il dans l’auto?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "c",
+                "text": "Il est fâché contre sa cousine."
+              },
+              {
+                "id": "a",
+                "text": "Il a très hâte d’arriver."
+              },
+              {
+                "id": "d",
+                "text": "Il s’ennuie et veut dormir."
+              },
+              {
+                "id": "b",
+                "text": "Il a peur d’aller à la cabane à sucre."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Quels indices du paragraphe 1 t’aident à répondre à la question 1? Nomme-en deux.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "true_false",
+            "prompt": "L’eau d’érable qui coule de l’arbre est très sucrée.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q4",
+            "kind": "short_answer",
+            "prompt": "À la fin du paragraphe 3, Laurier ouvre de grands yeux. Pourquoi, selon toi? Appuie ta réponse sur un indice du texte.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Au paragraphe 5, Laurier serre son pot très fort contre lui. Qu’est-ce que ce geste nous apprend sur ce qu’il ressent?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Grand-maman dit : « Quand j’étais petite, c’est ma mère qui m’a appris. » Qu’est-ce que cette phrase nous apprend sur la cabane à sucre dans cette famille?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Une photo d’une érablière au printemps, avec des chaudières accrochées aux érables.",
+          "Un chalumeau et une chaudière, ou leur photo, à montrer avant la lecture.",
+          "Une photo d’un évaporateur qui fume dans une cabane à sucre.",
+          "Un petit pot de sirop d’érable d’un litre à côté d’une grosse chaudière, pour faire sentir la différence entre 1 litre et 40 litres."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Le texte ne le dit pas directement : Laurier bouge sur son siège et regarde sans arrêt par la fenêtre, et sa cousine rit parce qu’ils viennent juste de partir. Rien ne montre qu’il a peur, qu’il est fâché ou qu’il s’ennuie."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "Il bouge sur son siège et il regarde par la fenêtre sans arrêt. Capucine rit parce qu’ils viennent juste de partir.",
+            "acceptableAnswers": [],
+            "explanation": "Indices possibles : il bouge sur son siège; il regarde par la fenêtre sans arrêt; Capucine rit et dit qu’ils viennent juste de partir; c’est sa première visite. Deux indices sont attendus."
+          },
+          {
+            "questionId": "q3",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : au paragraphe 2, Laurier goûte l’eau d’érable et dit : « C’était à peine sucré, presque comme de l’eau. »"
+          },
+          {
+            "questionId": "q4",
+            "kind": "short_answer",
+            "sampleAnswer": "Il est très surpris : il faut environ 40 litres d’eau d’érable pour faire un seul petit litre de sirop.",
+            "acceptableAnswers": [],
+            "explanation": "Inférence : ouvrir de grands yeux montre la surprise. L’indice est la phrase de grand-maman sur les 40 litres, et Laurier compare toutes les chaudières au petit pot."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "Il est fier du sirop qu’il a aidé à faire, et ce pot est précieux pour lui.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter : fier, content, heureux, il tient à son pot ou à ce souvenir. La fin du paragraphe (il a déjà hâte de revenir) confirme qu’il a aimé sa journée."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "C’est une tradition de famille : on l’apprend des plus vieux, d’une génération à l’autre, et maintenant c’est au tour de Laurier.",
+            "acceptableAnswers": [],
+            "explanation": "L’élève doit comprendre que le savoir passe de l’arrière-grand-mère à la grand-mère, puis à Laurier."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "enrichi",
+      "content": {
+        "title": "",
+        "objective": "Je fais des inférences à partir d’indices du texte pour comprendre ce que ressent un personnage.",
+        "teacherNote": "Version Enrichi : vocabulaire plus riche et plus précis, phrases plus variées, et deux questions d’approfondissement (questions 7 et 8). La question 8 fait écrire une courte suite qui montre une émotion sans la nommer, comme le fait l’autrice ou l’auteur du récit. Les quatre versions racontent la même histoire en cinq paragraphes.",
+        "text": "1. Un samedi matin de mars, grand-maman est passée nous prendre, ma cousine Capucine et moi. L’air piquait encore les joues, mais le soleil faisait scintiller la neige. Sur la banquette arrière, je gigotais sans arrêt, le nez collé à la fenêtre. Capucine a pouffé de rire : « Laurier, on vient à peine de quitter la maison! » Pour la première fois, j’allais visiter la cabane à sucre de grand-maman, au cœur de l’Est ontarien.\n\n2. L’érablière de grand-maman est un petit boisé d’érables à sucre. Sur chaque tronc, un chalumeau de métal laissait s’écouler l’eau d’érable dans une chaudière suspendue juste en dessous. Grand-maman m’a fait observer une goutte limpide qui y tombait. « C’est de l’eau d’érable, m’a-t-elle expliqué. Elle ne coule qu’au printemps, lorsque les nuits sont glaciales et que les journées se réchauffent. » J’y ai goûté du bout de la langue : c’était à peine sucré, presque comme de l’eau.\n\n3. Dans la cabane, nous avons transvidé l’eau d’érable dans l’évaporateur, un long bac de métal chauffé par un feu de bois. Bientôt, l’eau s’est mise à bouillonner, et une épaisse vapeur au parfum sucré a envahi la cabane. Il fallait s’armer de patience. Grand-maman m’a appris qu’il faut environ 40 litres d’eau d’érable pour obtenir un seul litre de sirop. Mon regard est allé des dizaines de chaudières alignées dehors jusqu’au petit pot de sirop posé sur la tablette, et j’ai ouvert de grands yeux.\n\n4. En fin d’après-midi, grand-maman a laissé bouillir un peu de sirop encore plus longtemps. Puis, elle l’a versé en longs rubans dorés sur de la neige bien tassée. Au contact du froid, le sirop s’est figé en une pâte épaisse et collante. À l’aide d’un bâtonnet de bois, j’ai enroulé ma toute première tire. Capucine, elle, en avait déjà jusque sur ses mitaines! J’ai ri de si bon cœur que grand-maman a éclaté de rire à son tour.\n\n5. Sur le chemin du retour, je gardais sur mes genoux un pot de sirop que j’avais aidé à préparer. Grand-maman m’a lancé un regard dans le rétroviseur. « L’an prochain, c’est toi qui m’aideras à poser les chalumeaux, a-t-elle déclaré. Quand j’avais ton âge, c’est ma mère qui me l’a enseigné. » J’ai serré mon pot contre moi de toutes mes forces. Le printemps suivant me semblait déjà bien trop loin.",
+        "glossary": [
+          {
+            "term": "gigoter",
+            "definition": "Bouger sans arrêt, surtout les bras et les jambes."
+          },
+          {
+            "term": "une érablière",
+            "definition": "Un boisé où poussent surtout des érables à sucre, qu’on exploite pour leur eau."
+          },
+          {
+            "term": "un chalumeau",
+            "definition": "Un petit tube qu’on plante dans le tronc de l’érable pour recueillir l’eau d’érable."
+          },
+          {
+            "term": "une chaudière",
+            "definition": "Un seau, en français d’ici."
+          },
+          {
+            "term": "limpide",
+            "definition": "Très clair et transparent."
+          },
+          {
+            "term": "transvider",
+            "definition": "Verser un liquide d’un contenant dans un autre."
+          },
+          {
+            "term": "se figer",
+            "definition": "Devenir épais ou solide en refroidissant."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Au paragraphe 1, quel sentiment Laurier éprouve-t-il sur la banquette arrière?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "c",
+                "text": "De la colère contre sa cousine."
+              },
+              {
+                "id": "a",
+                "text": "Une grande impatience d’arriver."
+              },
+              {
+                "id": "d",
+                "text": "De l’ennui et de la fatigue."
+              },
+              {
+                "id": "b",
+                "text": "De la crainte à l’idée de visiter la cabane."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Relève deux indices du paragraphe 1 qui justifient ta réponse à la question 1.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "true_false",
+            "prompt": "L’eau d’érable qui s’écoule de l’arbre est très sucrée.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q4",
+            "kind": "short_answer",
+            "prompt": "À la fin du paragraphe 3, Laurier ouvre de grands yeux. Qu’est-ce qui provoque cette réaction? Appuie ta réponse sur deux indices du paragraphe.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Au paragraphe 5, Laurier serre son pot contre lui de toutes ses forces. Que révèle ce geste sur ce qu’il ressent?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Grand-maman déclare : « Quand j’avais ton âge, c’est ma mère qui me l’a enseigné. » Qu’est-ce que cette phrase nous apprend sur la cabane à sucre dans cette famille?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "La dernière phrase dit que le printemps suivant semble « bien trop loin » à Laurier. Explique dans tes mots ce que cette phrase veut dire.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Imagine la prochaine visite de Laurier à la cabane à sucre. Écris trois phrases qui montrent ce qu’il ressent, sans jamais nommer l’émotion.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 5
+          }
+        ],
+        "visualSupports": [
+          "Une photo d’une érablière au printemps, avec des chaudières accrochées aux érables.",
+          "Un chalumeau et une chaudière, ou leur photo, à montrer avant la lecture.",
+          "Une photo d’un évaporateur qui fume dans une cabane à sucre.",
+          "Un petit pot de sirop d’érable d’un litre à côté d’une grosse chaudière, pour faire sentir la différence entre 1 litre et 40 litres."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Laurier gigote sans arrêt, le nez collé à la fenêtre, alors qu’ils viennent à peine de partir : il est impatient d’arriver."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "Il gigote sans arrêt et il a le nez collé à la fenêtre. Capucine rit parce qu’ils viennent à peine de partir.",
+            "acceptableAnswers": [],
+            "explanation": "Indices possibles : il gigote sans arrêt; il a le nez collé à la fenêtre; Capucine pouffe de rire; c’est sa première visite."
+          },
+          {
+            "questionId": "q3",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : au paragraphe 2, Laurier y goûte et trouve que c’est à peine sucré, presque comme de l’eau."
+          },
+          {
+            "questionId": "q4",
+            "kind": "short_answer",
+            "sampleAnswer": "Il est stupéfait : grand-maman lui apprend qu’il faut environ 40 litres d’eau d’érable pour un seul litre de sirop, et il compare les dizaines de chaudières au petit pot.",
+            "acceptableAnswers": [],
+            "explanation": "Deux indices attendus : les 40 litres pour 1 litre, et le regard qui va des chaudières au petit pot."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "Il est fier de ce qu’il a fait, et ce pot est un souvenir précieux qu’il ne veut pas lâcher.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter : fierté, bonheur, attachement au souvenir ou à sa grand-mère."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "La cabane à sucre est une tradition familiale qui se transmet d’une génération à l’autre : de l’arrière-grand-mère à la grand-mère, puis à Laurier.",
+            "acceptableAnswers": [],
+            "explanation": "L’élève doit nommer la transmission entre les générations."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "Laurier a tellement aimé sa journée qu’il trouve que l’attente jusqu’au prochain printemps sera très longue : il a déjà hâte de revenir.",
+            "acceptableAnswers": [],
+            "explanation": "Question d’approfondissement sur une expression imagée : accepter toute reformulation qui parle de l’impatience de revenir."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "Dès que l’auto s’arrête, Laurier ouvre la portière et court vers les érables. Il attrape un chalumeau et le montre fièrement à grand-maman. Ses joues sont rouges et il ne peut pas s’empêcher de sourire.",
+            "acceptableAnswers": [],
+            "explanation": "Question d’approfondissement : les phrases montrent une émotion (joie, fierté, impatience) par des gestes, des paroles ou des expressions du visage, sans la nommer."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

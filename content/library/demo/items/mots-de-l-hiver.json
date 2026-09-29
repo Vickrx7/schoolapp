@@ -1,0 +1,215 @@
+{
+  "slug": "mots-de-l-hiver",
+  "type": "vocabulary_bank",
+  "title": "Banque de mots : l’hiver chez nous",
+  "summary": "Vingt-deux mots de l’hiver en français d’ici : vêtements (tuque, mitaines, habit de neige), météo (poudrerie, verglas), jeux et travaux d’hiver (patinoire, pelleter, déneiger), avec une définition et un exemple.",
+  "source": "teacher_created",
+  "author": "isabelle.tremblay@demo.lynx.test",
+  "school": "saint-exemple",
+  "status": "teacher_reviewed",
+  "shareScope": "school",
+  "reviewRequested": false,
+  "approvedBy": null,
+  "faithReviewed": false,
+  "gradeCodes": ["3"],
+  "subjectCode": "fra",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "B2.2"
+    }
+  ],
+  "durationMinutes": 20,
+  "materials": "Une copie par élève ou une projection au tableau. Facultatif : une tuque, une mitaine et un cache-cou à montrer.",
+  "keywords": "vocabulaire, hiver, neige, vêtements d’hiver, français canadien, tuque, mitaine, poudrerie, patinoire",
+  "tags": ["vocabulaire", "francophonie"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": false,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "J’apprends des mots précis pour parler et écrire de l’hiver, et je les utilise dans mes phrases.",
+        "teacherNote": "Banque préparée pour accompagner le texte « Le premier hiver d’Inès » et les écrits de l’hiver. Plusieurs mots sont propres au français du Canada (tuque, mitaine, cache-cou, habit de neige, poudrerie, banc de neige, souffleuse); quand un autre mot existe ailleurs dans la francophonie, on peut le nommer aussi (un bonnet, une moufle), sans dire qu’un des deux est meilleur. Invitez les élèves à ajouter les mots de l’hiver qu’on utilise dans leur famille, dans toutes les langues.",
+        "theme": "L’hiver chez nous",
+        "words": [
+          {
+            "term": "la tuque",
+            "definition": "Un bonnet chaud, souvent en laine, qui couvre la tête et les oreilles.",
+            "example": "Ma tuque a un gros pompon rouge.",
+            "wordClass": "nom",
+            "gender": "f"
+          },
+          {
+            "term": "la mitaine",
+            "definition": "Un gant chaud qui a une place pour le pouce et une seule place pour les quatre autres doigts.",
+            "example": "J’ai perdu une mitaine dans la neige.",
+            "wordClass": "nom",
+            "gender": "f"
+          },
+          {
+            "term": "le cache-cou",
+            "definition": "Un tube de tissu chaud qu’on enfile autour du cou.",
+            "example": "Je remonte mon cache-cou jusqu’au nez quand il vente.",
+            "wordClass": "nom",
+            "gender": "m"
+          },
+          {
+            "term": "l’habit de neige",
+            "definition": "Un vêtement chaud qui ne laisse pas passer l’eau : un manteau et un pantalon qu’on porte pour jouer dehors.",
+            "example": "Avant la récréation, j’enfile mon habit de neige.",
+            "wordClass": "nom",
+            "gender": "m"
+          },
+          {
+            "term": "les bottes d’hiver",
+            "definition": "Des bottes chaudes et imperméables pour marcher dans la neige.",
+            "example": "Je laisse mes bottes d’hiver sur le tapis de l’entrée.",
+            "wordClass": "nom",
+            "gender": "f"
+          },
+          {
+            "term": "le flocon",
+            "definition": "Un petit morceau de neige qui tombe du ciel.",
+            "example": "Un flocon s’est posé sur ma mitaine.",
+            "wordClass": "nom",
+            "gender": "m"
+          },
+          {
+            "term": "la tempête de neige",
+            "definition": "Beaucoup de neige qui tombe en même temps que souffle un vent fort.",
+            "example": "À cause de la tempête de neige, les autobus scolaires ne roulent pas aujourd’hui.",
+            "wordClass": "nom",
+            "gender": "f"
+          },
+          {
+            "term": "la poudrerie",
+            "definition": "De la neige que le vent soulève et fait tourbillonner.",
+            "example": "Avec la poudrerie, on voyait à peine la maison d’en face.",
+            "wordClass": "nom",
+            "gender": "f"
+          },
+          {
+            "term": "le verglas",
+            "definition": "Une couche de glace très glissante, faite par une pluie qui gèle en tombant.",
+            "example": "Attention, il y a du verglas sur le trottoir!",
+            "wordClass": "nom",
+            "gender": "m"
+          },
+          {
+            "term": "le banc de neige",
+            "definition": "Un gros tas de neige, souvent poussé au bord de la rue ou de la cour.",
+            "example": "Nous avons creusé un tunnel dans le banc de neige.",
+            "wordClass": "nom",
+            "gender": "m"
+          },
+          {
+            "term": "le bonhomme de neige",
+            "definition": "Un personnage fait de grosses boules de neige empilées.",
+            "example": "Notre bonhomme de neige porte une vieille tuque.",
+            "wordClass": "nom",
+            "gender": "m"
+          },
+          {
+            "term": "le fort",
+            "definition": "Un abri qu’on construit avec des blocs ou des murs de neige pour jouer.",
+            "example": "Pendant la récréation, nous avons bâti un fort près de la clôture.",
+            "wordClass": "nom",
+            "gender": "m"
+          },
+          {
+            "term": "la patinoire",
+            "definition": "Un endroit couvert de glace où l’on patine.",
+            "example": "La patinoire du parc ouvre quand il fait assez froid.",
+            "wordClass": "nom",
+            "gender": "f"
+          },
+          {
+            "term": "la glissade",
+            "definition": "Une pente de neige ou de glace où l’on glisse.",
+            "example": "La glissade derrière l’école est bien glacée ce matin.",
+            "wordClass": "nom",
+            "gender": "f"
+          },
+          {
+            "term": "le traîneau",
+            "definition": "Un objet qui glisse sur la neige, pour transporter des personnes ou des choses.",
+            "example": "Je tire mon amie sur le traîneau jusqu’en haut de la côte.",
+            "wordClass": "nom",
+            "gender": "m"
+          },
+          {
+            "term": "la souffleuse",
+            "definition": "Une machine qui enlève la neige en la soufflant plus loin.",
+            "example": "La souffleuse lance la neige par-dessus la clôture.",
+            "wordClass": "nom",
+            "gender": "f"
+          },
+          {
+            "term": "le chasse-neige",
+            "definition": "Un gros camion qui pousse la neige hors des rues.",
+            "example": "Le chasse-neige est passé très tôt dans notre rue.",
+            "wordClass": "nom",
+            "gender": "m"
+          },
+          {
+            "term": "pelleter",
+            "definition": "Enlever la neige avec une pelle.",
+            "example": "Nous pelletons l’entrée avant de partir pour l’école.",
+            "wordClass": "verbe",
+            "gender": null
+          },
+          {
+            "term": "déneiger",
+            "definition": "Enlever la neige d’un endroit.",
+            "example": "Il faut déneiger l’auto avant de partir.",
+            "wordClass": "verbe",
+            "gender": null
+          },
+          {
+            "term": "grelotter",
+            "definition": "Trembler parce qu’on a froid.",
+            "example": "Sans ma tuque, je grelottais à l’arrêt d’autobus.",
+            "wordClass": "verbe",
+            "gender": null
+          },
+          {
+            "term": "glacial",
+            "definition": "Très, très froid.",
+            "example": "Ce matin, le vent était glacial.",
+            "wordClass": "adjectif",
+            "gender": null
+          },
+          {
+            "term": "enneigé",
+            "definition": "Couvert de neige.",
+            "example": "Les sapins enneigés brillent au soleil.",
+            "wordClass": "adjectif",
+            "gender": null
+          }
+        ],
+        "activityIdeas": [
+          "Trier les mots en quatre groupes : ce qu’on porte, la météo, ce qu’on fait dehors, les machines et les travaux.",
+          "Jeu « Qui suis-je? » : lire une définition à voix haute; la classe trouve le mot.",
+          "Après la lecture de « Le premier hiver d’Inès », chaque élève écrit trois phrases sur sa journée d’hiver idéale avec au moins trois mots de la banque.",
+          "Mur de mots de la classe : ajouter les mots de l’hiver que les familles utilisent, dans toutes les langues, avec un petit dessin.",
+          "Mime : un ou une élève mime un mot (pelleter, grelotter, glisser); les autres le devinent."
+        ]
+      },
+      "answerKey": null
+    }
+  ]
+}
