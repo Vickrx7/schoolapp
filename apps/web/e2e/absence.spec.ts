@@ -130,11 +130,26 @@ test('a teacher reports an absence and reviews, edits and releases the plan', as
   await expect(page.getByTestId('plan-save-status')).toContainText('Enregistré à', {
     timeout: 15_000,
   });
-  await page.reload();
-  await expect(page.getByText(text)).toBeVisible();
 
+  // Releasing refreshes the page; the open editor stays as it is (it is not started over).
   await page.getByRole('button', { name: 'Publier maintenant' }).click();
   await expect(page.getByTestId('plan-status')).toHaveText('Publié');
+  await expect(firstStep).toHaveValue(text);
+
+  // Removing a step can be undone from the toast.
+  const secondStep = frenchBlock.getByLabel('Étape 2', { exact: true });
+  const second = await secondStep.inputValue();
+  await frenchBlock.getByRole('button', { name: 'Retirer l’étape 2' }).click();
+  await expect(secondStep).not.toHaveValue(second);
+  await page
+    .locator('[data-sonner-toast]')
+    .filter({ hasText: 'Étape retirée.' })
+    .getByRole('button', { name: 'Annuler' })
+    .click();
+  await expect(secondStep).toHaveValue(second);
+
+  await page.reload();
+  await expect(page.getByText(text)).toBeVisible();
 });
 
 test('a draft restored on a later day keeps the date it was for', async ({ page }) => {

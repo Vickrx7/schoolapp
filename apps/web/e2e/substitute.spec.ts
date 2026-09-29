@@ -347,6 +347,24 @@ test('the substitute fills in the end-of-day report and sends it', async () => {
   await expect(sub.getByRole('checkbox', { name: 'Liam' })).toBeChecked();
   await expect(sub.getByLabel('Comportement et événements')).toHaveValue(BEHAVIOUR);
 
+  // Before it is sent, the end of the day leads back to the report and asks before ending.
+  await sub.goto('/suppleance/done');
+  await expect(sub.getByTestId('report-status')).toHaveText(
+    'Vous n’avez pas encore envoyé le suivi de la journée.',
+  );
+  const endDialog = sub.getByRole('dialog');
+  await expect(async () => {
+    if (!(await endDialog.isVisible())) {
+      await sub.getByRole('button', { name: 'Terminer ma journée' }).click();
+    }
+    await expect(endDialog).toBeVisible({ timeout: 1000 });
+  }).toPass();
+  await expect(endDialog).toContainText('Terminer sans envoyer le suivi?');
+  await endDialog.getByRole('button', { name: 'Annuler' }).click();
+  await sub.getByRole('link', { name: 'Remplir le suivi de la journée' }).click();
+  await sub.waitForURL(/\/suppleance\/report$/);
+  await expect(lesson(french.title).getByRole('radio', { name: 'Terminé' })).toBeChecked();
+
   await sub.getByRole('button', { name: 'Envoyer le suivi' }).click();
   await sub.waitForURL(/\/suppleance\/done$/);
   await expect(sub.getByRole('heading', { name: 'Merci!' })).toBeVisible();
