@@ -9,6 +9,7 @@ import {
   deleteAlertsFor,
   openCodeWindow,
   planIdOn,
+  resetLanguage,
   SEED,
 } from './db';
 import { DEMO, expectAccessible, login, reportAbsence, schoolDay } from './helpers';
@@ -63,6 +64,8 @@ test.beforeAll(async ({ browser }) => {
   await cleanupAbsences(DEMO.teacher3);
   await clearAttempts();
   await deleteAlertsFor('Samuel', SEED.class3);
+  // This spec reads the French screens; language.spec.ts changes the office's saved language.
+  await resetLanguage(DEMO.office);
 
   // Isabelle records an alert for Samuel (encrypted by the web server), then reports an absence
   // three weeks ahead and releases its plan.

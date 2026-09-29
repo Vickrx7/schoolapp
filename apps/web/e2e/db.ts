@@ -199,6 +199,14 @@ export async function clearAttempts(): Promise<void> {
   await query('delete from public.sub_code_attempts');
 }
 
+/**
+ * Puts an account's saved interface language back to the seed's French (language.spec.ts
+ * changes the office account's; specs that use French copy must not depend on its outcome).
+ */
+export async function resetLanguage(email: string): Promise<void> {
+  await query(`update public.users set preferred_locale = 'fr-CA' where email = $1`, [email]);
+}
+
 export async function deleteAlertsFor(studentName: string, classId: string): Promise<void> {
   await query(
     `delete from public.student_alerts sa using public.students s
