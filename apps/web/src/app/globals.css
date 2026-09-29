@@ -13,6 +13,17 @@
   --color-brand-700: #1d43b0;
   --color-brand-800: #1c3a8c;
   --color-brand-900: #1b326d;
+  /*
+   * Class mode teams and answer choices (DECISIONS D-090; `CLASS_TEAMS` in @lynx/content, in
+   * order: huards, castors, orignaux, ours, loups, renards). Always paired with a shape and a
+   * letter; white text on each is at least 7:1 for a washed-out projector.
+   */
+  --color-team-blue: #1e40af;
+  --color-team-orange: #9a3412;
+  --color-team-green: #166534;
+  --color-team-purple: #6b21a8;
+  --color-team-slate: #334155;
+  --color-team-red: #991b1b;
 }
 
 @layer base {

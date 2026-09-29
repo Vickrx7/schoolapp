@@ -229,7 +229,11 @@ const revealAnswerSchema = z.object({
 
 export const liveStateSchema = z
   .object({
+    /** `closed` once the session ended (its answers and devices are deleted). */
+    status: z.enum(['open', 'closed']).default('open'),
     version: z.number().int(),
+    /** The resource's title when the session started. */
+    title: orNull(z.string().max(200)),
     phase,
     index: z
       .number()
@@ -238,6 +242,12 @@ export const liveStateSchema = z
       .max(MAX_CLASS_QUESTIONS - 1),
     total: z.number().int().min(0).max(MAX_CLASS_QUESTIONS),
     mode: z.enum(['teams', 'solo']),
+    /** Team mode: the session's teams, in list order. */
+    teams: orNull(z.array(teamKey).max(CLASS_TEAM_KEYS.length)),
+    /** « Les élèves choisissent leur équipe » (`device`) or balanced at random. */
+    teamChoice: z.enum(['random', 'device']).default('random'),
+    /** « Minuterie »: null without a timer. */
+    secondsPerQuestion: orNull(z.number().int().min(10).max(300)),
     lang: z.enum(['fr-CA', 'en-CA']),
     /** `class_sessions.join_code`'s own check. */
     joinCode: z.string().regex(/^[A-Z0-9]{4,8}$/),

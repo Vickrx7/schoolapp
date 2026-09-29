@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import { SURFACE_HEADER, surfaceOf, type Surface } from './lib/surface';
 
 const PUBLIC_PATHS = ['/login', '/auth/confirm', '/auth/no-access'];
 
@@ -12,15 +13,28 @@ const PORTAL_PATHS = ['/suppleance', '/s'];
 const under = (path: string, prefix: string) => path === prefix || path.startsWith(`${prefix}/`);
 
 /**
+ * Continues with the request's (possibly updated) headers and the surface header set, whatever
+ * the client sent in it (lib/surface.ts).
+ */
+function forward(request: NextRequest, surface: Surface): NextResponse {
+  const headers = new Headers(request.headers);
+  headers.set(SURFACE_HEADER, surface);
+  return NextResponse.next({ request: { headers } });
+}
+
+/**
  * Refreshes the Supabase session cookie on every request and sends signed-out visitors to
  * the login page. This is only an optimistic check: pages and server actions verify the
  * session again, and Row Level Security enforces access in the database.
  */
 export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
-  if (PORTAL_PATHS.some((p) => under(path, p))) return NextResponse.next();
+  // Class devices (« Quiz sur les appareils », no account; DECISIONS D-083, D-090): public, and
+  // handled before the Supabase client exists, like the substitute portal.
+  if (surfaceOf(path) === 'jouer') return forward(request, 'jouer');
+  if (PORTAL_PATHS.some((p) => under(path, p))) return forward(request, 'app');
 
-  let response = NextResponse.next({ request });
+  let response = forward(request, 'app');
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -32,7 +46,7 @@ export async function proxy(request: NextRequest) {
         },
         setAll(cookiesToSet) {
           for (const { name, value } of cookiesToSet) request.cookies.set(name, value);
-          response = NextResponse.next({ request });
+          response = forward(request, 'app');
           for (const { name, value, options } of cookiesToSet)
             response.cookies.set(name, value, options);
         },

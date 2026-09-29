@@ -23,7 +23,8 @@ export const CHOICE_MARKS: readonly { shape: TeamShape; fill: string }[] = [
   { shape: 'hexagon', fill: 'fill-red-700' },
 ];
 
-const PATHS: Record<TeamShape, string> = {
+/** The shapes' outlines (24 × 24), shared with the quiz on devices (`../team-mark.tsx`). */
+export const SHAPE_PATHS: Record<TeamShape, string> = {
   circle: 'M12 2a10 10 0 1 0 0 20a10 10 0 1 0 0-20Z',
   triangle: 'M12 2.5 22.5 21h-21Z',
   square: 'M3 3h18v18H3Z',
@@ -42,7 +43,7 @@ export function ChoiceShape({ index, className }: { index: number; className?: s
       data-shape={mark.shape}
       className={cn('size-[1.1em] shrink-0', mark.fill, className)}
     >
-      <path d={PATHS[mark.shape]} />
+      <path d={SHAPE_PATHS[mark.shape]} />
     </svg>
   );
 }

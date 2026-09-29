@@ -6,17 +6,30 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 const TABS = ['students', 'timetable', 'planning', 'substitute', 'settings'] as const;
+type Tab = (typeof TABS)[number] | 'class-mode';
 
-export function ClassTabs({ classId }: { classId: string }) {
+/**
+ * The class's tabs. « Mode classe » (quizzes on devices, DECISIONS D-090) comes after
+ * « Planification » when the school has the Library module; the row scrolls sideways on phones.
+ */
+export function ClassTabs({
+  classId,
+  classMode = false,
+}: {
+  classId: string;
+  classMode?: boolean;
+}) {
   const t = useTranslations('classes.tabs');
+  const tClassMode = useTranslations('classMode');
   const pathname = usePathname();
+  const tabs: Tab[] = classMode ? [...TABS.slice(0, 3), 'class-mode', ...TABS.slice(3)] : [...TABS];
   return (
     <nav
       className="-mx-4 overflow-x-auto border-b border-slate-200 px-4"
       aria-label={t('overview')}
     >
       <ul className="flex gap-1">
-        {TABS.map((tab) => {
+        {tabs.map((tab) => {
           const href = `/classes/${classId}/${tab}`;
           const active = pathname === href || pathname.startsWith(`${href}/`);
           return (
@@ -29,7 +42,7 @@ export function ClassTabs({ classId }: { classId: string }) {
                   active && 'border-brand-600 text-brand-700',
                 )}
               >
-                {t(tab)}
+                {tab === 'class-mode' ? tClassMode('tab') : t(tab)}
               </Link>
             </li>
           );

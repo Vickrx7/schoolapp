@@ -30,11 +30,19 @@ const nextConfig: NextConfig = {
   // The PDF routes read the vendored fonts from disk: copy them into the standalone build.
   outputFileTracingIncludes: { '/**/pdf': ['./assets/fonts/**'] },
   poweredByHeader: false,
+  // `next dev` would otherwise write AGENTS.md and CLAUDE.md into apps/web; the repo keeps its
+  // own contributor notes (docs/HANDOFF.md).
+  agentRules: false,
   async headers() {
     return [
       { source: '/:path*', headers: securityHeaders },
       { source: '/suppleance/:path*', headers: portalHeaders },
       { source: '/s', headers: portalHeaders },
+      // Class devices (« Quiz sur les appareils », DECISIONS D-083 to D-090): the same rules. A
+      // class link's token travels in the fragment (`/jouer#k=…`), which never reaches the
+      // server, and the pages and the device API are never cached or indexed.
+      { source: '/jouer', headers: portalHeaders },
+      { source: '/jouer/:path*', headers: portalHeaders },
     ];
   },
 };

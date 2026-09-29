@@ -14,6 +14,7 @@
  * Pure so it is unit-tested; loaded by `server/queries/library-coverage.ts`.
  */
 import type { LibraryItemType } from '@lynx/content';
+import { subjectsForGrade } from './search-params';
 
 /** « Seuil » : an attente with fewer approved resources has « Peu de ressources ». */
 export const COVERAGE_MIN_DEFAULT = 2;
@@ -198,4 +199,111 @@ export function groupCoverage(
       );
     });
   return { groups: ordered, counts: total };
+}
+
+/** The number of units with at least one approved resource (« 14 attentes sur 22 »). */
+export const withAnyApproved = (counts: CoverageCounts) => counts.few + counts.covered;
+
+/**
+ * The page's address (`/library/coverage?grade=3&subject=<id>&show=none&min=3`), leaving out the
+ * defaults (« Toutes », threshold 2) so a plain link stays short.
+ */
+export function coverageHref({
+  grade = null,
+  subject = null,
+  show = 'all',
+  min = COVERAGE_MIN_DEFAULT,
+}: {
+  grade?: string | null;
+  subject?: string | null;
+  show?: CoverageFilter;
+  min?: number;
+}): string {
+  const params = new URLSearchParams();
+  if (grade) params.set('grade', grade);
+  if (subject) params.set('subject', subject);
+  if (show !== 'all') params.set('show', show);
+  if (min !== COVERAGE_MIN_DEFAULT) params.set('min', String(min));
+  const query = params.toString();
+  return query ? `/library/coverage?${query}` : '/library/coverage';
+}
+
+// ---------------------------------------------------------------------------------------
+// « Vue d’ensemble »: grades × subjects
+// ---------------------------------------------------------------------------------------
+
+/** A row of `public.library_coverage_summary`, as the query maps it. */
+export interface CoverageSummaryRow {
+  gradeCode: string;
+  subjectId: string;
+  units: number;
+  none: number;
+  few: number;
+  covered: number;
+}
+
+export interface SummaryGrade {
+  code: string;
+  label: string;
+  /** K1 = -1, K2 = 0, 1re…8e = 1…8. */
+  ordinal: number;
+}
+
+export interface SummarySubject {
+  id: string;
+  code: string;
+  label: string;
+  gradeMin: number;
+  gradeMax: number;
+}
+
+export interface CoverageSummaryCell extends CoverageCounts {
+  subjectId: string;
+}
+
+export interface CoverageSummaryView<
+  G extends SummaryGrade = SummaryGrade,
+  S extends SummarySubject = SummarySubject,
+> {
+  /** The columns: the subjects that have attentes in at least one listed grade, in order. */
+  subjects: S[];
+  /** The grades that have attentes, in order; a cell is null where the subject has none. */
+  grades: { grade: G; cells: (CoverageSummaryCell | null)[] }[];
+}
+
+/**
+ * The summary table: one row per grade and one column per subject that has attentes, following
+ * the same rules as the list's choices (no kindergarten in the pilot, D-008; each subject within
+ * its grades, Anglais from the board's start grade, D-069). Rows for a grade or subject the user
+ * cannot see (another board's, or no longer offered) are left out.
+ */
+export function buildCoverageSummary<G extends SummaryGrade, S extends SummarySubject>(
+  rows: readonly CoverageSummaryRow[],
+  options: { grades: readonly G[]; subjects: readonly S[]; anglaisStartGrade: number },
+): CoverageSummaryView<G, S> {
+  const cells = new Map<string, CoverageSummaryCell>();
+  for (const grade of options.grades) {
+    if (grade.ordinal < 1) continue;
+    const offered = new Set(subjectsForGrade(options, grade.ordinal).map((s) => s.id));
+    for (const row of rows) {
+      if (row.gradeCode !== grade.code || !offered.has(row.subjectId) || row.units <= 0) continue;
+      cells.set(`${grade.code}|${row.subjectId}`, {
+        subjectId: row.subjectId,
+        units: row.units,
+        none: row.none,
+        few: row.few,
+        covered: row.covered,
+      });
+    }
+  }
+  const has = (gradeCode: string, subjectId: string) => cells.has(`${gradeCode}|${subjectId}`);
+  const grades = options.grades.filter((g) => options.subjects.some((s) => has(g.code, s.id)));
+  const subjects = options.subjects.filter((s) => grades.some((g) => has(g.code, s.id)));
+  return {
+    subjects,
+    grades: grades.map((grade) => ({
+      grade,
+      cells: subjects.map((s) => cells.get(`${grade.code}|${s.id}`) ?? null),
+    })),
+  };
 }

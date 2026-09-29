@@ -3197,6 +3197,35 @@ export type Database = {
         Args: { p_item_id: string };
         Returns: undefined;
       };
+      library_coverage: {
+        Args: { p_board_id: string; p_grade_code: string; p_subject_id: string };
+        Returns: {
+          expectation_id: string;
+          parent_id: string;
+          strand_id: string;
+          kind: Database['public']['Enums']['expectation_kind'];
+          code: string;
+          text_fr: string;
+          text_en: string;
+          is_verified: boolean;
+          sort_order: number;
+          has_children: boolean;
+          approved_count: number;
+          in_review_count: number;
+          approved_types: string[];
+        }[];
+      };
+      library_coverage_summary: {
+        Args: { p_board_id: string; p_min_approved?: number };
+        Returns: {
+          grade_code: string;
+          subject_id: string;
+          unit_count: number;
+          none_count: number;
+          few_count: number;
+          covered_count: number;
+        }[];
+      };
       library_decide: {
         Args: {
           p_item_id: string;

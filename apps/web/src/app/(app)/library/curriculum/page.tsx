@@ -1,4 +1,4 @@
-import { ChevronLeft } from 'lucide-react';
+import { ChartColumn, ChevronLeft } from 'lucide-react';
 import type { Metadata } from 'next';
 import { getLocale, getTranslations } from 'next-intl/server';
 import Link from 'next/link';
@@ -7,6 +7,7 @@ import { CurriculumTree } from '@/components/library/curriculum-tree';
 import { GradeChips } from '@/components/library/grade-chips';
 import { Notice } from '@/components/ui/card';
 import { EmptyState, PageHeader } from '@/components/ui/page';
+import { coverageHref } from '@/server/library/coverage-view';
 import { loadCurriculumTree } from '@/server/queries/library-search';
 import { requireSession, showLibrary } from '@/server/session';
 
@@ -30,9 +31,10 @@ export default async function CurriculumPage({ searchParams }: { searchParams: S
   const session = await requireSession();
   if (!showLibrary(session)) notFound();
   const params = await searchParams;
-  const [t, tl, locale] = await Promise.all([
+  const [t, tl, tc, locale] = await Promise.all([
     getTranslations('library.curriculum'),
     getTranslations('library'),
+    getTranslations('libraryCoverage'),
     getLocale(),
   ]);
   const browse = await loadCurriculumTree(
@@ -100,6 +102,14 @@ export default async function CurriculumPage({ searchParams }: { searchParams: S
               <h2 id="curriculum-expectations" className="text-lg font-semibold text-slate-900">
                 {subject.label} · {grade.label}
               </h2>
+              {/* « Couverture du curriculum » of the same grade and subject (Phase 5, D-094). */}
+              <Link
+                href={coverageHref({ grade: grade.code, subject: subject.id })}
+                className="inline-flex min-h-11 items-center gap-2 text-sm font-medium text-brand-700 hover:underline"
+              >
+                <ChartColumn className="size-5" aria-hidden />
+                {tc('curriculumLink')}
+              </Link>
               <Notice>{t('toVerifyHint')}</Notice>
               <CurriculumTree
                 strands={browse.strands}

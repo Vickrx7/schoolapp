@@ -3,7 +3,11 @@ node_modules/
 .next/
 out/
 dist/
-coverage/
+# Test coverage reports only: the library's « Couverture du curriculum » lives in source
+# directories named coverage (apps/web/src/app/(app)/library/coverage, components/library/coverage).
+/coverage/
+apps/*/coverage/
+packages/*/coverage/
 *.tsbuildinfo
 next-env.d.ts
 

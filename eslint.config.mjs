@@ -13,7 +13,11 @@ export default defineConfig([
     '**/node_modules/**',
     '**/.next/**',
     '**/dist/**',
-    '**/coverage/**',
+    // Test coverage reports only: « Couverture du curriculum » has source directories named
+    // coverage (apps/web/src/app/(app)/library/coverage, components/library/coverage).
+    'coverage/**',
+    'apps/*/coverage/**',
+    'packages/*/coverage/**',
     '**/next-env.d.ts',
     'packages/db/src/database.types.ts',
     'tools/lite-stack/.data/**',
@@ -46,6 +50,48 @@ export default defineConfig([
   {
     files: webFiles,
     languageOptions: { globals: { ...globals.browser } },
+  },
+  // Student devices (« Quiz sur les appareils », DECISIONS D-083, D-086): the device pages, their
+  // components and the class portal's server code reach the database only through the portal
+  // role. They may not import a Supabase client, the staff session, the library's queries or
+  // actions, or the AI package (students never use AI, D-039), so no answer key or staff data
+  // can be read on their path, whatever a later change does.
+  {
+    files: [
+      'apps/web/src/app/jouer/**/*.{ts,tsx}',
+      'apps/web/src/components/class-portal/**/*.{ts,tsx}',
+      'apps/web/src/server/class-portal/**/*.{ts,tsx}',
+    ],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            { name: '@supabase/ssr', message: 'Class devices use the class portal role only.' },
+            {
+              name: '@supabase/supabase-js',
+              message: 'Class devices use the class portal role only.',
+            },
+          ],
+          patterns: [
+            {
+              regex: '^@lynx/ai(/.*)?$',
+              message: 'Class mode never uses AI (D-082).',
+            },
+            {
+              regex: '(^@/|/)server/(supabase|session|queries|actions)(/.*)?$',
+              message:
+                'Class device code reaches the database only through server/class-portal (D-083).',
+            },
+            {
+              regex: '^\\.\\./(supabase|session|queries|actions)(/.*)?$',
+              message:
+                'Class device code reaches the database only through server/class-portal (D-083).',
+            },
+          ],
+        },
+      ],
+    },
   },
   prettier,
 ]);

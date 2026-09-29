@@ -991,7 +991,14 @@ substitute portal works. Without the URL or the key, quizzes on devices are off 
 still works. _Why:_ functions executable by `anon` could be called by anyone holding the public key;
 minting JWTs would put the JWT secret in the web server; the service role bypasses row level
 security. One more role, password and pool: on hosted Supabase the pooler user is
-`lynx_class_portal.<project-ref>`.
+`lynx_class_portal.<project-ref>`. As built (slice S3): the device API is `POST /jouer/api/join`,
+`GET /jouer/api/state`, `POST /jouer/api/answer`, `/team` and `/leave`
+(`apps/web/src/server/class-portal/`); the pool's limits are in `pool-options.ts`, which the
+integration test opens with both logins (password, and `postgres` with `-c role=`); the negative
+cache holds the SHA-256 of tokens (never a token) and answers `state`, `answer` and `team` alike;
+a failed portal call is logged with its SQLSTATE only, never its message (it could quote what a
+device sent). A unit test runs ESLint on the three guarded paths so the import guard (D-086,
+guard 3) cannot be switched off unnoticed.
 
 **D-084 — Joining: the class link first, a short code as a fallback, joining open only in the lobby
 (Assumption on the numbers).** « Lien de la classe »: each class gets a random 32-byte token (43
@@ -1027,7 +1034,14 @@ team name or nickname »): devices get generated numbers and fixed team names (D
 class devices use the unguessable link. As built (slice S1): a device that joins the same session
 again (same device key, for example after « Quitter ») gets its number, team and answers back
 instead of a new number, so re-joining cannot fill the session; joining an expired session closes
-it and answers « locked » (code) or « waiting » (link).
+it and answers « locked » (code) or « waiting » (link). As built (slice S3): the class link's
+fragment stays in the address until the device joins, so the teacher can bookmark the page on each
+device, as the « Lien de la classe » card says (a `#code=` fragment is removed at once); a device on
+the class link tries again every 5 s while no lobby is open or joining is closed, so « Rouvrir les
+inscriptions » lets it in; a code or link of the wrong shape is refused by the web server and
+records no failure. Over https both device cookies take the `__Secure-` prefix, as the substitute
+portal's. Starting a session checks the title, prompts, hints and options devices will show against
+the class's students (`findPersonalInfo`).
 
 **D-085 — Live updates by short polling, not Server-Sent Events or Realtime.** Devices call `GET
 /jouer/api/state?v=<stateVersion>` every 1.5 s ± 250 ms while the page is visible, and back off to 5
@@ -1040,7 +1054,16 @@ polling is stateless and easy to test; scoring ignores speed (D-087), so 1–2 s
 everyone. About 20 small requests a second per class. As built (slice S1): only the teacher's
 actions change `state_version` (and so wake the devices); a device joining, leaving, choosing its
 team or answering does not, so a device can never make the projector's next action fail as stale
-(LXC02). A device gets its own changes in the reply to its call.
+(LXC02). A device gets its own changes in the reply to its call. As built (slice S3): a busy answer
+(503) waits what `Retry-After` says; the projector takes the state each action returns at once and
+still polls every second for the answer count; an answer lost to the network is sent again with the
+same payload while the question is on screen (the database answers `already`). One run of
+`tools/load/class-mode-load.ts` (30 devices, 5 questions, against `next dev` in the shared
+container) gave p50/p95 17/56 ms for the poll and 21/88 ms for answers, 22 requests a second, no
+503; with 60 devices, p95 656 ms and no 503 (recorded, not a gate). Against the production build
+(`next start`, same container): 30 devices and 5 questions, poll p50/p95/p99 7/13/84 ms, answers
+9/13 ms, 23 requests a second; 60 devices and 3 questions, poll 5/12/221 ms, answers 7/11 ms, 43
+requests a second; every device joined and answered, no 503, nothing left after the end.
 
 **D-086 — Answer keys never reach devices; a device sees only its own result, only after the
 question closes, and only when answers are shown (Assumption on the device feedback).** At start,
@@ -1126,7 +1149,12 @@ everything else `fr-CA`. For a noisy classroom and a washed-out projector: targe
 on devices, text of at least 22 px on devices and 40 px on the projector, colour always paired with
 a shape and a letter (team colours `--color-team-blue`, `-orange`, `-green`, `-purple`, `-slate` and
 `-red`), no sounds, and `prefers-reduced-motion` respected. The projector needs 768 px of width in
-landscape; below, it says « Ouvrez cette page sur l'ordinateur branché au projecteur. »
+landscape; below, it says « Ouvrez cette page sur l'ordinateur branché au projecteur. » As built
+(slice S3): the request header is `x-lynx-surface` (`jouer` or `app`, `apps/web/src/lib/surface.ts`);
+the class tab shows for a class team member with a teacher role at a school with the Library
+module; team names come from both `classMode.teams` and `classPortal.teams` (a unit test pins them
+to `CLASS_TEAMS`), and answer choices take the team colours and shapes in order (choice A is the
+blue circle on the projector and the devices).
 
 **D-091 — Board items: `board_owned` replaces « board_created with no author » (amends D-065).**
 `library_items.board_owned` is set at creation for the seed's board items, bulk drafts and pack
@@ -1202,7 +1230,20 @@ only shared are not counted, so no other school's school-scoped item is revealed
 approved; « Peu » is fewer than the threshold (default 2; 1 to 5). The board's content reviewers
 also see « en révision » (requested items and non-archived board drafts). Everyone with the Library
 module sees the page; the operator gets the same data from the CLI (the service role may call the
-function).
+function). As built (slice S5, `20261101090200_library_coverage.sql`): `public.library_coverage` and
+`public.library_coverage_summary` answer the board's staff (42501 otherwise, 22023 for a subject
+that is neither standard nor the board's) and the operator, recognized by the database role
+PostgREST switches to for the service key (not by the token's claim); the counting rule
+(`app.library_coverage_rows`) stays internal (the definer functions call it, as can the bulk
+planner's `--from-coverage`, D-097). The page is also open to the board's designated reviewers who
+work at no school (as the hub, D-078), so a board admin who approves content sees « en révision ».
+« Vue d'ensemble » is a table of grades and subjects (the subjects each grade offers, Anglais from
+the board's start grade, active subjects only), each cell « 14 sur 22 » (attentes with at least one
+approved resource) and how many have none; the list filters and the threshold (1 to 5) live in the
+address. « Créer une ressource » (a library school) and « Créer avec l'IA pour cette attente » (AI
+on) are offered for attentes below the threshold; « Voir les ressources approuvées » opens the
+search for that attente, whose count can be higher (D-069). `pnpm admin coverage` without `--grade`
+and `--subject` prints the summary; `--csv` writes RFC 4180 CSV.
 
 **D-095 — Bulk generation is an operator tool that writes board drafts through the Message Batches
 API (Assumption on who runs it).** Only the operator launches it (`pnpm admin bulk-plan`,

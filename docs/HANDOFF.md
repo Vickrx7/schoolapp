@@ -87,11 +87,12 @@ Ardoise). No availability or trademark check has been done yet.
 | `d37bbb6` | Phase 5 head start: class portal codes and gate, coverage and lineage views (pure)       |
 | `219d5bb` | Library expansion: 49 more demo resources (78) and the curriculum sample, « À vérifier » |
 | `a01e06d` | Phase 5 foundation: D-082 to D-101, settings, messages, empty hooks, admin, worker tasks |
-| (latest)  | Phase 5: class-mode database, « Présenter à la classe », « Adapter », « Votre avis »     |
+| `d76f084` | Phase 5: class-mode database, « Présenter à la classe », « Adapter », « Votre avis »     |
+| (latest)  | Phase 5: quizzes on class devices (`/jouer`) and « Couverture du curriculum »            |
 
-**Verified (locally, from an empty database, and in CI on each pushed commit):** 869 unit tests
-(none skipped), 1155 pgTAP tests, 57 integration tests, 80 Playwright tests (desktop and phone,
-axe on every Phase 3 and Phase 4 page), lint, typecheck, format, generated DB types up to date,
+**Verified (locally, from an empty database, and in CI on each pushed commit):** 932 unit tests
+(none skipped), 1184 pgTAP tests, 61 integration tests, 89 Playwright tests (desktop, phone and
+tablet, axe on every Phase 3 and Phase 4 page and the new Phase 5 pages), lint, typecheck, format, generated DB types up to date,
 the demo curriculum and library seeds up to date (`pnpm library:seed:check`), web build.
 
 **Phase 3 is complete** (3a and 3b; see `docs/phase-3.md`): absence button, plans built in the
@@ -135,22 +136,34 @@ message namespace; empty slots wired into the library pages (`components/library
 admin CLI split into `apps/admin/src/commands/`, where the Phase 5 commands answer « pas encore
 disponible »; the worker tasks `class_mode_maintenance` (now filled), `library_bulk_tick` (also
 woken by the `library_bulk_kick` handler) and `library_maintenance` (both still empty); a `tablet`
-Playwright project with no specs yet; and `findPersonalInfo` moved to `@lynx/ai/privacy`. Built
-since (wave 1):
+Playwright project for class devices; and `findPersonalInfo` moved to `@lynx/ai/privacy`. Built
+since (waves 1 and 2):
 
 - **Class-mode database** (`20261101090000_class_mode.sql`, pgTAP 20 and 21, seed
   `45_class_mode_demo.sql`): sessions, devices, answers graded in the database, keys in a table
   no API role or portal role reads, the `lynx_class_portal` role and its five `class_portal`
   functions (its local password is in `seed.sql`), the class link, kept class results, and the
-  worker's clean-up. No screen uses it yet (the quiz on devices is the next wave).
+  worker's clean-up.
 - **« Présenter à la classe »** (`/projector/items/<id>`): slides built on the server from the
   student content, a timer, and « Afficher la réponse » one question at a time.
 - **Board items, « Adapter » and « Votre avis »** (`20261101090100_library_growth.sql`, pgTAP 22,
   seed `40_library_growth_demo.sql`): items kept by the board's reviewers (`board_owned`), a
   private copy with credit and a sharing cap, anonymous stars, usage on the cards.
+- **Quizzes on class devices** (« Lancer un quiz sur les appareils » on a quiz's page; the class
+  tab `/classes/<id>/class-mode`; the projector `/projector/sessions/<id>`; the devices'
+  `/jouer`, with no account, in French only and with the `classPortal` messages only): the class
+  link (bookmark it on each device) or a 6-character code, numbered devices and fixed team names,
+  every question kind, « Afficher la réponse », the ranking, « Terminer la séance » deleting
+  answers and devices, and kept class results without names. Devices reach the database only
+  through `lynx_class_portal` (`apps/web/src/server/class-portal/`, fenced by an ESLint rule and
+  its unit test); no key, explanation or teacher note reaches a device. Load record:
+  `tools/load/class-mode-load.ts` (D-085).
+- **« Couverture du curriculum »** (`/library/coverage`, `20261101090200_library_coverage.sql`,
+  pgTAP 23, `pnpm admin coverage [--csv]`): per grade and subject, each attente with the board's
+  approved resources, « en révision » for content reviewers, and an overview table.
 
-Still to build: the quiz on devices, curriculum coverage, bulk generation, content packs, then
-the Phase 5 hardening and `docs/phase-5.md`. Phase 4 left its hooks (D-081).
+Still to build: bulk generation, content packs, then the Phase 5 hardening and
+`docs/phase-5.md`. Phase 4 left its hooks (D-081).
 
 **Other deliverables:**
 
@@ -213,6 +226,14 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
 - **Login codes:** Auth allows one code per address per second. The e2e login helper retries.
 - **Clicks can happen before hydration** in e2e, and are then lost. Wait for a state or use
   `expect(...).toPass()` (see `e2e/differentiate.spec.ts`).
+- **`getByLabel` reads the whole `<label>`,** `aria-hidden` parts included (« 1. cent »). When a
+  label carries a hidden number or icon text, use `getByRole(..., { name, exact: true })`.
+- **Screen-reader text inside a sideways-scrolling box** (`sr-only` is absolutely placed) needs a
+  `relative` box, or it pushes the whole phone page sideways (the coverage overview).
+- **Directories named `coverage`** are source code (`/library/coverage`): `.gitignore` and ESLint
+  skip only the test-report folders (`/coverage/`, `apps/*/coverage/`, `packages/*/coverage/`).
+- **`next dev` writes `AGENTS.md` and `CLAUDE.md`** into `apps/web` unless `agentRules: false`
+  (set in `next.config.ts`).
 - **Lite stack vs CLI drift found so far:**
   - `[auth.email] enable_signup = false` turns email login off entirely in the CLI (fixed in
     `supabase/config.toml`; the lite stack now reads it).
@@ -229,7 +250,7 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   `SUB_PORTAL_DATABASE_URL` (in `.env.example`).
 - **Migrations are applied once.** The lite stack does not re-apply an edited migration: after
   editing one that is not committed yet, `stack.sh reset`. Never edit a committed migration; add
-  a new one (the latest is `20261101090100_library_growth.sql`, pgTAP file `22`).
+  a new one (the latest is `20261101090200_library_coverage.sql`, pgTAP file `23`).
 - **Seeds come in two parts.** `supabase/seed.sql`, then `supabase/seeds/*.sql` by name
   (`config.toml` `sql_paths` for the CLI, `cmd_seed` in `stack.sh`). `seeds/20_library_demo.sql`
   is generated from `content/library/demo`: after changing the pack, run `pnpm library:seed`

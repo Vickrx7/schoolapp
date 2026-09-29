@@ -15,6 +15,9 @@ const PHASE_5 = [
   'list-packs',
 ];
 
+/** Phase 5 commands whose slice has landed (each tested in its own module). */
+const AVAILABLE = new Set(['coverage']);
+
 describe('admin commands', () => {
   it('lists the Phase 1–4 commands and the Phase 5 ones', () => {
     expect(Object.keys(commands)).toEqual(
@@ -42,7 +45,7 @@ describe('admin commands', () => {
     expect(Object.keys(commands)).toHaveLength(names.length);
   });
 
-  it.each(PHASE_5)(
+  it.each(PHASE_5.filter((name) => !AVAILABLE.has(name)))(
     '%s says it is not available yet, without reading the settings or the database',
     async (name) => {
       // No environment is needed: the context reads it only when a command uses it.

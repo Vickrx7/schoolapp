@@ -6,7 +6,7 @@ import type { ReactNode } from 'react';
 import { ClassTabs } from '@/components/classes/class-tabs';
 import { PageHeader } from '@/components/ui/page';
 import { loadClass } from '@/server/queries/classes';
-import { findSchool, hasModule, requireSession } from '@/server/session';
+import { findSchool, hasModule, hasRole, requireSession } from '@/server/session';
 
 export default async function ClassLayout({
   children,
@@ -38,7 +38,11 @@ export default async function ClassLayout({
         title={cls.name}
         subtitle={cls.myRole ? t(`classes.role.${cls.myRole}`) : undefined}
       />
-      <ClassTabs classId={classId} />
+      {/* « Mode classe »: the class team with a teacher role, with the Library module (D-090). */}
+      <ClassTabs
+        classId={classId}
+        classMode={hasModule(school, 'library') && hasRole(school, 'teacher')}
+      />
       <div className="mt-5">{children}</div>
     </div>
   );

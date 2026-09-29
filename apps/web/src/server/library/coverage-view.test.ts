@@ -1,11 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import {
+  buildCoverageSummary,
   coverageFilter,
+  coverageHref,
   coverageLevel,
   coverageMin,
   groupCoverage,
+  withAnyApproved,
   type CoverageRow,
   type CoverageStrand,
+  type CoverageSummaryRow,
 } from './coverage-view';
 
 const row = (
@@ -201,5 +205,106 @@ describe('groupCoverage (W6)', () => {
       groups: [],
       counts: { units: 0, none: 0, few: 0, covered: 0 },
     });
+  });
+});
+
+describe('coverage links', () => {
+  it('leave out the defaults', () => {
+    expect(coverageHref({})).toBe('/library/coverage');
+    expect(coverageHref({ grade: '3' })).toBe('/library/coverage?grade=3');
+    expect(coverageHref({ grade: '3', subject: 's1', show: 'all', min: 2 })).toBe(
+      '/library/coverage?grade=3&subject=s1',
+    );
+    expect(coverageHref({ grade: '3', subject: 's1', show: 'none', min: 3 })).toBe(
+      '/library/coverage?grade=3&subject=s1&show=none&min=3',
+    );
+    expect(coverageHref({ subject: 's1', show: 'few' })).toBe(
+      '/library/coverage?subject=s1&show=few',
+    );
+  });
+
+  it('read back what they write', () => {
+    const href = coverageHref({ grade: '5', subject: 's2', show: 'few', min: 4 });
+    const params = new URL(href, 'https://lynx.test').searchParams;
+    expect(coverageFilter(params.get('show'))).toBe('few');
+    expect(coverageMin(params.get('min'))).toBe(4);
+  });
+
+  it('count the units with at least one approved resource', () => {
+    expect(withAnyApproved({ units: 22, none: 8, few: 5, covered: 9 })).toBe(14);
+    expect(withAnyApproved(groupCoverage(rows, strands).counts)).toBe(4);
+  });
+});
+
+describe('buildCoverageSummary (Vue d’ensemble)', () => {
+  const grades = [
+    { code: 'K2', label: 'Jardin', ordinal: 0 },
+    { code: '1', label: '1re année', ordinal: 1 },
+    { code: '3', label: '3e année', ordinal: 3 },
+    { code: '5', label: '5e année', ordinal: 5 },
+  ];
+  const subjects = [
+    { id: 'fra', code: 'fra', label: 'Français', gradeMin: -1, gradeMax: 8 },
+    { id: 'ang', code: 'ang', label: 'Anglais', gradeMin: 1, gradeMax: 8 },
+    { id: 'mat', code: 'mat', label: 'Mathématiques', gradeMin: -1, gradeMax: 8 },
+    { id: 'sci', code: 'sci', label: 'Sciences', gradeMin: 1, gradeMax: 8 },
+  ];
+  const summary = (
+    gradeCode: string,
+    subjectId: string,
+    none: number,
+    few: number,
+    covered: number,
+  ): CoverageSummaryRow => ({
+    gradeCode,
+    subjectId,
+    units: none + few + covered,
+    none,
+    few,
+    covered,
+  });
+  const rows = [
+    summary('5', 'mat', 21, 14, 0),
+    summary('3', 'fra', 23, 7, 2),
+    summary('3', 'mat', 25, 8, 3),
+    summary('5', 'fra', 26, 4, 2),
+    // Anglais before the board's start grade, kindergarten, an unknown subject: left out.
+    summary('3', 'ang', 5, 0, 0),
+    summary('K2', 'fra', 3, 0, 0),
+    summary('3', 'other-board', 4, 0, 0),
+    summary('5', 'ang', 2, 1, 0),
+  ];
+
+  it('makes one row per grade and one column per subject that has attentes, in order', () => {
+    const view = buildCoverageSummary(rows, { grades, subjects, anglaisStartGrade: 4 });
+    expect(view.subjects.map((s) => s.id)).toEqual(['fra', 'ang', 'mat']);
+    expect(view.grades.map((g) => g.grade.code)).toEqual(['3', '5']);
+    expect(view.grades[0]!.cells).toEqual([
+      { subjectId: 'fra', units: 32, none: 23, few: 7, covered: 2 },
+      null,
+      { subjectId: 'mat', units: 36, none: 25, few: 8, covered: 3 },
+    ]);
+    expect(view.grades[1]!.cells.map((c) => c?.subjectId ?? null)).toEqual(['fra', 'ang', 'mat']);
+  });
+
+  it('follows the board’s start grade for Anglais', () => {
+    const early = buildCoverageSummary(rows, { grades, subjects, anglaisStartGrade: 1 });
+    expect(early.grades[0]!.cells.map((c) => c?.subjectId ?? null)).toEqual(['fra', 'ang', 'mat']);
+    const late = buildCoverageSummary(rows, { grades, subjects, anglaisStartGrade: 6 });
+    expect(late.subjects.map((s) => s.id)).toEqual(['fra', 'mat']);
+  });
+
+  it('is empty without attentes', () => {
+    expect(buildCoverageSummary([], { grades, subjects, anglaisStartGrade: 4 })).toEqual({
+      subjects: [],
+      grades: [],
+    });
+    expect(
+      buildCoverageSummary([summary('3', 'fra', 0, 0, 0)], {
+        grades,
+        subjects,
+        anglaisStartGrade: 4,
+      }).grades,
+    ).toEqual([]);
   });
 });
