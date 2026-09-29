@@ -36,7 +36,7 @@ Before changing any claim, check it against `docs/HANDOFF.md` §2, the phase not
 | Path                   | What                                                                                                                                                 |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `site/index.html`      | Bilingual landing page for pilot teachers and school-board decision makers. FR/EN toggle (remembered in the browser), pilot form that sends nothing. |
-| `one-pager/index.html` | Board fact sheet: French, then English. Print styles for a letter-size PDF later.                                                                    |
+| `one-pager/index.html` | Board fact sheet: French, then English. Print styles for a letter-size PDF later; despite the folder name, it prints to 7 letter pages.              |
 | `promo/script-v2.md`   | 60-second promo script, French and English, scene by scene. Replaces the v1 story.                                                                   |
 | `promo/`               | v1 stop-motion promo sources (Phase 1 claims; its sick-day scene is out of date, see its README).                                                    |
 
@@ -54,4 +54,11 @@ Before changing any claim, check it against `docs/HANDOFF.md` §2, the phase not
   - To rename the product, change `APP_NAME` in `site/index.html` (every `[data-app-name]`
     follows) and the name in `one-pager/index.html`.
 - Both files pass `prettier --check`. French text uses non-breaking spaces inside « » and before
-  « : », and in times (« 8 h 45 »). Keep them when editing.
+  « : », in times (« 8 h 45 ») and in markers (« Élève A »). Keep them when editing.
+- Wording traps found in review:
+  - « Activités pour les élèves » exists only when « Consignes détaillées (IA) » add an activity.
+  - Only alerts and report notes are encrypted by the app, and a code works for whoever holds it,
+    alerts included. Keep both next to any encryption or alert claim.
+  - Only known names become markers; the detectors block emails, phone numbers, identification
+    numbers, addresses and a child’s birth date, not "any personal detail".
+  - In English, write "the principal" (or "principal or vice-principal"), not "the direction".

@@ -20,7 +20,7 @@ run a few seconds longer, as in v1 (scene lengths follow the voice).
   style as in v1.
 - **On screen:** FR « 6 h 05 » / EN « 6:05 a.m. »
 - **VO FR:** « 6 h 05. Vous êtes malade, et votre classe vous attend quand même. »
-- **VO EN:** "6:05 a.m. You’re sick, and your class still needs you."
+- **VO EN:** "6:05 a.m. You’re sick, and your class is still waiting for you."
 - **Claim:** none (scene setting).
 
 ### 2. Deux touches (0:06–0:13)
@@ -40,10 +40,10 @@ run a few seconds longer, as in v1 (scene lengths follow the voice).
   « Réviser le plan » scrolling through the day: the Français period and its next lesson, the
   school mass in the afternoon, the groups.
 - **On screen:** FR « Complet sans IA » / EN « Complete without AI ».
-- **VO FR:** « Votre plan de suppléance est prêt, là où chaque classe est rendue : prochaines
-  leçons, horaire, messe, groupes par niveau de langue. Sans IA. »
-- **VO EN:** "Your substitute plan is ready, right where each class left off: next lessons,
-  timetable, the school mass, groups by language level. No AI needed."
+- **VO FR:** « Votre plan de suppléance est prêt. Il reprend là où chaque classe en est :
+  prochaines leçons, horaire, messe, groupes par niveau de langue. Complet, sans IA. »
+- **VO EN:** "Your substitute plan is ready. It picks up where each class left off: next lessons,
+  timetable, the school mass, groups by language level. Complete, without AI."
 - **Claims:** plan built at once from each class’s progress, timetable, calendar and groups by
   language level; complete without AI (D-047, D-052; `packages/domain/src/sub-plan/build.ts`).
 
@@ -53,8 +53,8 @@ run a few seconds longer, as in v1 (scene lengths follow the voice).
   printed « Feuille d’accueil ». Use the demo school; blur nothing that is fictional anyway.
 - **On screen:** FR « Un code d’une journée, affiché une seule fois » / EN « A one-day code,
   shown once ».
-- **VO FR:** « À 7 h 30, le secrétariat génère un code d’une journée, affiché une seule fois. Pas
-  de compte à créer. »
+- **VO FR:** « À 7 h 30, le secrétariat génère un code d’une journée, affiché une seule fois.
+  Aucun compte à créer. »
 - **VO EN:** "At 7:30, the office generates a one-day code, shown once. No account to create."
 - **Claims:** release at 7 h 30 by default, a board setting (D-047); codes last one day and are
   shown once (D-050); the substitute has no account (D-020, D-049).
@@ -64,11 +64,12 @@ run a few seconds longer, as in v1 (scene lengths follow the voice).
 - **Picture:** the substitute’s phone: `…/s`, the code typed in lowercase, then « Plan de la
   journée » with « Maintenant » and « Ensuite ». A finger hovers over « Alertes de sécurité ou
   médicales »: show the button, not the alert text.
-- **On screen:** FR « Alertes cachées jusqu’à ce qu’on touche » / EN « Alerts hidden until
+- **On screen:** FR « Alertes cachées jusqu’à ce qu’on les affiche » / EN « Alerts hidden until
   tapped ».
-- **VO FR:** « La personne suppléante voit « Maintenant » et « Ensuite ». Les alertes médicales
-  restent cachées jusqu’à ce qu’elle touche l’écran. »
-- **VO EN:** "The substitute sees Now and Next. Medical alerts stay hidden until they tap."
+- **VO FR:** « La personne suppléante voit « Maintenant » et « Ensuite ». Les alertes restent
+  cachées jusqu’à ce qu’elle les affiche, et chaque affichage est enregistré. »
+- **VO EN:** "The substitute sees Now and Next. Alerts stay hidden until they tap, and every view
+  is logged."
 - **Claims:** « Maintenant » / « Ensuite » (D-056; `docs/phase-3.md`); alerts on screen only
   after a tap, every view logged, never printed (D-016 amended, D-056).
 
@@ -76,12 +77,12 @@ run a few seconds longer, as in v1 (scene lengths follow the voice).
 
 - **Picture:** « Suivi de la journée » (Terminé / En partie / Pas fait), « Envoyer le suivi »;
   cut to the next morning, « Suivi de la suppléance » with « Confirmer ».
-- **On screen:** FR « Rien n’est marqué fait sans vous » / EN « Nothing is marked done without
-  you ».
+- **On screen:** FR « Rien n’est marqué comme fait sans vous » / EN « Nothing is marked done
+  without you ».
 - **VO FR:** « En fin de journée, elle envoie son suivi. Le lendemain, vous confirmez chaque
-  leçon : rien n’est marqué fait sans vous. »
-- **VO EN:** "At the end of the day, the substitute sends a report. The next morning, you confirm
-  each lesson. Nothing is marked done without you."
+  leçon : rien n’est marqué comme fait sans vous. »
+- **VO EN:** "At the end of the day, the substitute sends a report. The next day, you confirm each
+  lesson. Nothing is marked done without you."
 - **Claims:** end-of-day report and the teacher’s confirmation (D-054;
   `e2e/substitute-mobile.spec.ts`).
 
@@ -123,6 +124,10 @@ run a few seconds longer, as in v1 (scene lengths follow the voice).
   time-saved figure.
 - **Voice:** Kokoro’s only French voice (`ff_siwis`) has a European accent. For a Franco-Ontarian
   audience, record a human voice, or credit the synthetic voice as v1 does.
+- **French typography:** the quotes above use plain spaces for readability. In captions and
+  on-screen text, use non-breaking spaces inside « » and before « : », and in times (« 7 h 30 »).
+- **English wording:** English-language Ontario boards say "occasional teacher"; the app and this
+  script say "substitute". Keep "substitute" on screen to match the app.
 - **Music, style and captions:** reuse the v1 pipeline (`make_promo.py`, `promo_art.py`,
   `promo_audio.py`); only the scene list and the lines change.
 
