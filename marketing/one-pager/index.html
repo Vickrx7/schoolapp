@@ -1,0 +1,1152 @@
+<title>Fiche d’information Lynx École</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Lexend:wght@400..700&family=Zilla+Slab:wght@500;700&display=swap"
+/>
+<style>
+  /* Layout: one sheet per language, like a board briefing note. French first, English below
+     (a page break before it in print). Rows of label + content instead of wide tables, so it
+     reads on a phone and prints on letter paper. */
+  :root {
+    --bg: #eef2ec;
+    --sheet: #ffffff;
+    --ink: #14231a;
+    --ink-2: #4a5a4f;
+    --line: #cbd6cd;
+    --soft: #eaf1e7;
+    --green: #0a7a3d;
+    --green-ink: #086332;
+    --on-green: #ffffff;
+    --margin: #c5443a;
+    --build: #6b4f00;
+    --build-line: #c9a633;
+    --soon: #33537a;
+    --later: #5b665e;
+    --focus: #1a5fcc;
+    --board: #1e3a2e;
+    --frame: #9b7648;
+    --chalk: #eef2ea;
+    --display: 'Zilla Slab', Rockwell, 'Roboto Slab', Georgia, serif;
+    --body: Lexend, 'Segoe UI', system-ui, -apple-system, sans-serif;
+    --gutter: clamp(16px, 4vw, 40px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --bg: #0c1511;
+      --sheet: #15221b;
+      --ink: #e5eee6;
+      --ink-2: #a6b6ab;
+      --line: #2d4136;
+      --soft: #1b2d23;
+      --green: #3fbf78;
+      --green-ink: #62d493;
+      --on-green: #06150d;
+      --margin: #e0776c;
+      --build: #ecce63;
+      --build-line: #8c7424;
+      --soon: #a2bde2;
+      --later: #a3b0a7;
+      --focus: #8ab8ff;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme='dark'] {
+    --bg: #0c1511;
+    --sheet: #15221b;
+    --ink: #e5eee6;
+    --ink-2: #a6b6ab;
+    --line: #2d4136;
+    --soft: #1b2d23;
+    --green: #3fbf78;
+    --green-ink: #62d493;
+    --on-green: #06150d;
+    --margin: #e0776c;
+    --build: #ecce63;
+    --build-line: #8c7424;
+    --soon: #a2bde2;
+    --later: #a3b0a7;
+    --focus: #8ab8ff;
+    color-scheme: dark;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    padding-inline: var(--gutter);
+    padding-block: 24px 48px;
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 0.9375rem/1.55 var(--body);
+    -webkit-text-size-adjust: 100%;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--display);
+    font-weight: 700;
+    line-height: 1.15;
+    margin: 0;
+    text-wrap: balance;
+  }
+  p,
+  ul {
+    margin: 0;
+  }
+  ul {
+    padding-inline-start: 1.1em;
+    display: grid;
+    gap: 4px;
+  }
+  a {
+    color: var(--green-ink);
+    text-underline-offset: 0.18em;
+  }
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  .sheet {
+    max-width: 860px;
+    margin-inline: auto;
+    background: var(--sheet);
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--green);
+    padding: clamp(20px, 4vw, 44px);
+    display: grid;
+    gap: 26px;
+  }
+  .sheet + .sheet {
+    margin-top: 32px;
+  }
+  .head {
+    display: grid;
+    gap: 8px;
+  }
+  .brandline {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font: 700 1.125rem/1 var(--display);
+  }
+  .brandline svg {
+    flex: none;
+  }
+  .brand-board {
+    fill: var(--board);
+    stroke: var(--frame);
+    stroke-width: 2;
+  }
+  .brand-chalk {
+    fill: var(--chalk);
+    font-family: var(--display);
+    font-weight: 700;
+  }
+  h1 {
+    font-size: clamp(1.7rem, 4vw, 2.3rem);
+  }
+  .meta {
+    color: var(--ink-2);
+    font-size: 0.875rem;
+  }
+  .jump {
+    font-size: 0.875rem;
+  }
+  .brief {
+    display: grid;
+    gap: 6px;
+    padding: 14px 18px;
+    background: var(--soft);
+    border-inline-start: 4px solid var(--margin);
+  }
+  .brief h2 {
+    font-size: 1.05rem;
+  }
+  section {
+    display: grid;
+    gap: 12px;
+  }
+  section > h2 {
+    font-size: 1.35rem;
+    padding-bottom: 6px;
+    border-bottom: 1.5px solid var(--ink);
+  }
+  h3 {
+    font-size: 1.05rem;
+  }
+  .rows {
+    display: grid;
+  }
+  .row {
+    display: grid;
+    gap: 4px 20px;
+    padding-block: 10px;
+    border-top: 1px solid var(--line);
+  }
+  .row:first-child {
+    border-top: 0;
+  }
+  @media (min-width: 640px) {
+    .row {
+      grid-template-columns: 10.5rem minmax(0, 1fr);
+    }
+  }
+  .row > :first-child {
+    font-weight: 700;
+  }
+  .row > * {
+    min-width: 0;
+  }
+  .row .stamp {
+    white-space: normal;
+  }
+  .cols {
+    display: grid;
+    gap: 16px 28px;
+  }
+  @media (min-width: 700px) {
+    .cols {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+  }
+  .group {
+    display: grid;
+    gap: 6px;
+    align-content: start;
+  }
+  .stamp {
+    display: inline-block;
+    padding: 0.2em 0.5em;
+    border: 1.5px solid currentColor;
+    border-radius: 3px;
+    font: 700 0.6875rem/1.3 var(--body);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .stamp--ok {
+    background: var(--green);
+    border-color: var(--green);
+    color: var(--on-green);
+  }
+  .stamp--build {
+    color: var(--build);
+    border-color: var(--build-line);
+    border-style: dashed;
+  }
+  .stamp--soon {
+    color: var(--soon);
+    border-style: dotted;
+    border-width: 2px;
+  }
+  .stamp--later {
+    color: var(--later);
+    border-style: dashed;
+  }
+  .opt {
+    display: grid;
+    gap: 8px;
+    align-content: start;
+    padding: 14px 16px;
+    border: 1.5px dotted var(--soon);
+  }
+  .note {
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+  .contact {
+    font-weight: 700;
+    user-select: all;
+    -webkit-user-select: all;
+  }
+  .foot {
+    font-size: 0.8125rem;
+    color: var(--ink-2);
+    border-top: 1px solid var(--line);
+    padding-top: 12px;
+  }
+
+  @media print {
+    :root:not([data-print-x]) {
+      --bg: #ffffff;
+      --sheet: #ffffff;
+      --ink: #000000;
+      --ink-2: #333333;
+      --line: #bbbbbb;
+      --soft: #f2f5f1;
+      --green: #0a7a3d;
+      --green-ink: #0a6b36;
+      --on-green: #ffffff;
+      --margin: #c5443a;
+      --build: #5a4300;
+      --build-line: #8c7424;
+      --soon: #1f3d63;
+      --later: #444444;
+      color-scheme: light;
+      font-size: 12px;
+    }
+    @page {
+      size: letter;
+      margin: 12mm 14mm;
+    }
+    body {
+      padding: 0;
+      font-size: 1rem;
+      line-height: 1.38;
+    }
+    ul {
+      gap: 1pt;
+    }
+    .sheet {
+      max-width: none;
+      border: 0;
+      border-top: 3pt solid var(--green);
+      padding: 6pt 0 0;
+      gap: 9pt;
+    }
+    section {
+      gap: 6pt;
+    }
+    .cols {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 8pt 18pt;
+    }
+    h3 {
+      break-after: avoid;
+    }
+    li {
+      break-inside: avoid;
+    }
+    .sheet + .sheet {
+      margin-top: 0;
+      break-before: page;
+    }
+    .jump {
+      display: none;
+    }
+    h1 {
+      font-size: 17pt;
+    }
+    section > h2 {
+      font-size: 12pt;
+      padding-bottom: 3pt;
+    }
+    .row {
+      grid-template-columns: 9.5rem minmax(0, 1fr);
+      padding-block: 4pt;
+    }
+    .row,
+    .opt,
+    .brief {
+      break-inside: avoid;
+    }
+    section > h2 {
+      break-after: avoid;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+  }
+</style>
+
+<main>
+  <!-- ============================ FRANÇAIS ============================ -->
+  <article class="sheet" id="fr" lang="fr-CA" aria-labelledby="fr-title">
+    <header class="head">
+      <p class="brandline">
+        <svg width="30" height="24" viewBox="0 0 34 28" aria-hidden="true">
+          <rect class="brand-board" x="1" y="1" width="32" height="24" rx="3" />
+          <text class="brand-chalk" x="11" y="20" font-size="19">é</text>
+        </svg>
+        <span>Lynx École</span>
+      </p>
+      <h1 id="fr-title">Fiche d’information pour les conseils scolaires</h1>
+      <p class="meta">
+        État au 29 septembre 2026 · En développement · Projet pilote gratuit prévu · IP Lynx Inc.,
+        intégrateur ontarien en sécurité et en télécommunications
+      </p>
+      <p class="jump"><a href="#en" lang="en-CA">English version below</a></p>
+    </header>
+
+    <div class="brief">
+      <h2>En bref</h2>
+      <ul>
+        <li>
+          Une plateforme pour les écoles élémentaires catholiques de langue française de l’Ontario,
+          pensée d’abord pour le personnel enseignant.
+        </li>
+        <li>
+          Elle est en développement : aucun service en ligne, aucun conseil scolaire client, et le
+          projet pilote n’a pas commencé.
+        </li>
+        <li>
+          Le vrai modèle d’IA n’a pas encore été mis à l’essai : les démonstrations utilisent un
+          faux fournisseur qui ne fait que tronquer le texte.
+        </li>
+        <li>« Lynx École » est un nom de travail qui peut changer.</li>
+      </ul>
+    </div>
+
+    <section aria-labelledby="fr-pb">
+      <h2 id="fr-pb">Le problème</h2>
+      <ul>
+        <li>
+          Les personnes suppléantes arrivent souvent sans savoir où en est la classe, qui a besoin
+          d’appui en français, ni qui a une alerte de sécurité ou médicale.
+        </li>
+        <li>
+          Dans une même classe, des élèves francophones côtoient des élèves qui apprennent encore le
+          français, dont certains suivent les programmes ALF ou PANA.
+        </li>
+        <li>
+          Le personnel enseignant prépare une bonne partie de son matériel le soir et la fin de
+          semaine.
+        </li>
+        <li>
+          L’identité catholique et la construction identitaire franco-ontarienne font partie de
+          l’enseignement.
+        </li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="fr-today">
+      <h2 id="fr-today">Ce que la version pilote fait déjà</h2>
+      <p>
+        <span class="stamp stamp--ok">Disponible (version pilote)</span>
+        <span class="note">
+          Construit et couvert par des tests automatisés dans la version de développement. Ce n’est
+          pas un service en ligne, et aucun membre du personnel enseignant ne l’a encore utilisé en
+          classe.</span
+        >
+      </p>
+      <div class="rows">
+        <div class="row">
+          <p>Personnel enseignant</p>
+          <p>
+            « Aujourd’hui » : les périodes du jour avec le calendrier appliqué et la prochaine leçon
+            de chaque matière. « Leçon donnée » en une touche, avec « Annuler ». Horaire
+            hebdomadaire ou par jours en rotation (Jour 1 à N), enseignement en rotation.
+            Planification par unités et leçons, avec attentes marquées « à vérifier ». Élèves par
+            prénom seulement. « Texte différencié » de 2 à 6 niveaux de langue, si l’école active
+            l’IA.
+          </p>
+        </div>
+        <div class="row">
+          <p>Plan de suppléance</p>
+          <p>
+            « Je suis absent·e », puis « Envoyer » : deux touches. Le plan est construit aussitôt, à
+            partir de là où chaque classe en est, et il est complet sans IA. Il suit la
+            planification jusqu’à sa publication, à 7 h 30 par défaut. Le lendemain, l’enseignant·e
+            confirme chaque leçon que la personne suppléante a signalée.
+          </p>
+        </div>
+        <div class="row">
+          <p>Personne suppléante, sans compte</p>
+          <p>
+            Un code de 10 caractères, valide une seule journée pendant les heures d’accès. « Plan de
+            la journée » : « Maintenant », « Ensuite », groupes avec prénoms, contacts, PDF. Les
+            alertes s’affichent seulement sur demande, et chaque affichage est journalisé. « Suivi
+            de la journée » en fin de journée.
+          </p>
+        </div>
+        <div class="row">
+          <p>Secrétariat</p>
+          <p>
+            Tableau « Suppléances ». « Générer un code » : affiché une fois, avec une feuille
+            d’accueil; « Texto » et « Courriel » passent par les propres applications du
+            secrétariat, et aucun numéro ni aucune adresse n’est conservé. « Couper » un appareil,
+            un code ou tout l’accès. Le secrétariat voit et imprime le plan publié, sans alertes ni
+            « Gestion de classe », et chaque consultation et impression est journalisée. Il ne peut
+            pas signaler une absence pour un membre du personnel enseignant.
+          </p>
+        </div>
+        <div class="row">
+          <p>Direction</p>
+          <p>
+            Le même tableau, plus l’affichage des alertes et la lecture du suivi, tous deux
+            journalisés. Réglages de l’école : horaire, alertes, IA (avec l’utilisation du mois),
+            carte « Suppléance ». La direction ne voit pas la planification ni la progression du
+            personnel enseignant.
+          </p>
+        </div>
+        <div class="row">
+          <p>Conseil scolaire</p>
+          <p>
+            L’administration du conseil voit « Calendrier » et « Profil », et aucune donnée d’élève.
+            Les choix du conseil (interdire l’IA, mise en commun du budget d’IA, niveaux de langue,
+            année de début de l’anglais, heure de publication des plans) existent dans les données
+            et sont appliqués par l’exploitant. Aucun écran pour le conseil pour l’instant.
+          </p>
+        </div>
+        <div class="row">
+          <p>Exploitant (IP Lynx)</p>
+          <p>
+            Outils d’administration : création des conseils, des écoles et des années scolaires,
+            invitations, modules sous licence par école, budgets d’IA et rapport d’utilisation
+            mensuel. Nettoyages automatiques chaque nuit.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="fr-priv">
+      <h2 id="fr-priv">Vie privée et sécurité : les faits</h2>
+      <div class="cols">
+        <div class="group">
+          <h3>Élèves</h3>
+          <ul>
+            <li>
+              Un prénom ou un surnom par élève (40 caractères au plus). Aucun champ pour un nom de
+              famille, un NISO, une date de naissance ou une adresse. S’y ajoutent notamment un
+              niveau de langue par défaut et, si l’école les active, des alertes chiffrées.
+            </li>
+            <li>
+              Une liste de classe est lue sur l’appareil : seule la colonne des prénoms est envoyée;
+              les colonnes qui semblent sensibles ne peuvent pas être choisies.
+            </li>
+            <li>Aucun compte ni écran pour les élèves dans la version actuelle.</li>
+            <li>
+              Les niveaux de langue aident à former des groupes; ce n’est pas une échelle
+              officielle. Les documents imprimés pour les élèves n’affichent jamais un nom de
+              niveau.
+            </li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Alertes de sécurité ou médicales</h3>
+          <ul>
+            <li>
+              Désactivées dans chaque école jusqu’à ce que la direction les active, après
+              approbation du conseil; ce changement est journalisé.
+            </li>
+            <li>
+              Le serveur chiffre le texte (AES-256-GCM) avant la base de données. Seules des
+              fonctions de la base de données qui vérifient qui demande peuvent les lire, et chaque
+              lecture est journalisée.
+            </li>
+            <li>
+              Visibles par l’équipe de la classe, la direction et, à l’écran seulement après une
+              touche, la personne suppléante du jour. Jamais dans les propres écrans du secrétariat,
+              jamais imprimées.
+            </li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Accès</h3>
+          <ul>
+            <li>Comptes sur invitation, sans mot de passe : un code à 6 chiffres par courriel.</li>
+            <li>
+              Sécurité au niveau des lignes sur chaque table; une requête sans connexion n’obtient
+              rien et une nouvelle table est fermée par défaut. Des tests automatisés le vérifient.
+            </li>
+            <li>Les règles d’accès par rôle sont des hypothèses à confirmer avec un conseil.</li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Accès de la personne suppléante</h3>
+          <ul>
+            <li>
+              Code de 10 caractères, une journée, pendant les heures d’accès de l’école (5 h à 18 h
+              par défaut). Affiché une fois, conservé seulement sous forme de hachage à clé :
+              personne ne peut le retrouver plus tard. Au plus 2 codes par plan et 2 appareils par
+              code.
+            </li>
+            <li>
+              Couper un appareil, un code ou tout l’accès prend effet immédiatement; annuler
+              l’absence coupe aussi l’accès.
+            </li>
+            <li>
+              Chaque utilisation de code, consultation, impression, affichage d’alerte et suivi est
+              journalisé, avec la personne qui a émis le code.
+            </li>
+            <li>
+              Le navigateur de la personne suppléante n’atteint jamais l’API de la base de données :
+              il passe par un canal privé limité à 5 fonctions. Aucun numéro ni courriel de personne
+              suppléante n’est conservé.
+            </li>
+            <li>
+              Les PDF des plans sont produits sur demande et jamais conservés par l’application. Les
+              notes libres des suivis sont chiffrées et supprimées 60 jours après la confirmation.
+            </li>
+            <li>
+              Limite : un code fonctionne pour quiconque le détient, alertes comprises; cette
+              utilisation est journalisée.
+            </li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Intelligence artificielle</h3>
+          <ul>
+            <li>
+              Désactivée dans chaque école jusqu’à ce que la direction l’active; un conseil peut
+              l’interdire dans toutes ses écoles. Seuls le personnel enseignant et la direction
+              l’utilisent, jamais les élèves, et elle est facultative.
+            </li>
+            <li>
+              Avant l’envoi, les noms connus deviennent des marqueurs (« Élève A »); un courriel, un
+              numéro de téléphone, un numéro d’identification, une adresse ou la date de naissance
+              d’un enfant bloquent la demande (ou, pour un plan de suppléance, le champ est laissé
+              de côté); une dernière vérification porte sur le texte exact. La personne qui fait la
+              demande voit exactement ce qui sera envoyé.
+            </li>
+            <li>
+              Jamais envoyés : identifiants d’utilisateur, d’école, de conseil ou de compte,
+              alertes, « Gestion de classe », note d’absence et suivis. Les groupes ne sont envoyés
+              que sous forme de nombres d’élèves.
+            </li>
+            <li>
+              Les appels partent seulement du serveur en arrière-plan, qui détient seul la clé. Le
+              fournisseur est Claude, d’Anthropic, par HTTPS. Le texte dépersonnalisé peut être
+              traité hors du Canada et est conservé selon les conditions commerciales d’Anthropic.
+              Aucune entente de non-conservation des données n’existe encore, et Anthropic est le
+              seul fournisseur offert.
+            </li>
+            <li>
+              Demandes d’IA supprimées après 30 jours. Budget mensuel par école; au plus 3 demandes
+              à la fois et 40 par heure par personne.
+            </li>
+            <li>
+              Limite : un nom inconnu de l’application (un parent, une sœur) ne peut être repéré que
+              par la personne, à l’aperçu.
+            </li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Audit, conservation et suppression</h3>
+          <ul>
+            <li>
+              Journal d’audit auquel on ne peut qu’ajouter des entrées, sans noms d’élèves ni texte
+              d’alerte. Pas encore d’écran pour le consulter.
+            </li>
+            <li>L’enseignant·e peut supprimer une classe et toutes ses données d’un coup.</li>
+            <li>
+              Suppressions automatiques déjà construites : demandes d’IA après 30 jours, registre
+              des demandes après 1 jour, codes 30 jours après leur expiration, tentatives de code
+              échouées après 1 jour, notes des suivis après 60 jours.
+            </li>
+            <li>
+              Proposé, pas encore automatisé : données de classe jusqu’à la fin de l’année scolaire
+              plus un an, journal d’audit 2 ans, plans de suppléance 1 an.
+            </li>
+            <li>Les événements internes ne portent que des identifiants, jamais de noms.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="fr-dep">
+      <h2 id="fr-dep">Résidence des données et déploiement</h2>
+      <div class="cols">
+        <div class="opt">
+          <p><span class="stamp stamp--soon">Bientôt</span></p>
+          <h3>Hébergement au Canada</h3>
+          <p>
+            Règle de conception : dans la version hébergée, la base de données, le serveur web et le
+            serveur de traitement en arrière-plan fonctionneront tous dans une région infonuagique
+            au Canada. Rien n’est encore hébergé; la version bêta hébergée et la documentation de
+            déploiement sont à venir.
+          </p>
+        </div>
+        <div class="opt">
+          <p><span class="stamp stamp--soon">Bientôt</span></p>
+          <h3>Installation sur les serveurs du conseil, avec Docker</h3>
+          <p>
+            L’architecture garde cette option possible : tâches en arrière-plan dans Postgres
+            seulement, aucun service propre à un hébergeur, un serveur web autonome. L’installation
+            Docker n’existe pas encore.
+          </p>
+        </div>
+      </div>
+      <p class="note">
+        Dans les deux cas, le texte dépersonnalisé envoyé à l’IA peut être traité hors du Canada par
+        le fournisseur.
+      </p>
+    </section>
+
+    <section aria-labelledby="fr-road">
+      <h2 id="fr-road">Modules et feuille de route</h2>
+      <p>
+        Les modules sous licence s’activent école par école (par exemple l’enseignement et la banque
+        de ressources). Aucun prix n’est encore fixé.
+      </p>
+      <div class="rows">
+        <div class="row">
+          <p><span class="stamp stamp--ok">Disponible (version pilote)</span></p>
+          <p>
+            Enseignement (« Aujourd’hui », horaire, planification, calendrier, élèves), plan de
+            suppléance de bout en bout, « Texte différencié ».
+          </p>
+        </div>
+        <div class="row">
+          <p><span class="stamp stamp--build">En construction</span></p>
+          <p>
+            « Banque de ressources » : parcours par attente, recherche en français, versions par
+            niveau, corrigés séparés, ajout à la planification, création avec l’IA, révision avec
+            approbation par des personnes désignées par le conseil et révision distincte du contenu
+            de foi. 29 ressources de démonstration, « à valider en classe ».
+          </p>
+        </div>
+        <div class="row">
+          <p><span class="stamp stamp--soon">Bientôt</span></p>
+          <p>
+            « Mode classe » (projection et quiz sur les tablettes de la classe, sans compte d’élève;
+            réponses effacées à la fin de la séance), adaptation, avis anonymes, couverture du
+            curriculum, génération en lot et paquets de contenu. Puis la préparation du projet
+            pilote : écran du journal d’audit, document de confidentialité, déploiement, sauvegarde
+            et restauration, surveillance des erreurs, accueil du personnel enseignant du projet
+            pilote, purges automatiques, facturation.
+          </p>
+        </div>
+        <div class="row">
+          <p><span class="stamp stamp--later">Vision</span></p>
+          <p>
+            Sans date : secrétariat (présences, visiteurs), liens avec les systèmes du bâtiment,
+            connexion Microsoft ou Google, parents, analyses pour le conseil, commentaires de
+            bulletin et journal du PEI.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="fr-not">
+      <h2 id="fr-not">Ce que nous ne prétendons pas</h2>
+      <ul>
+        <li>Aucun conseil client, partenaire, témoignage ni résultat de projet pilote.</li>
+        <li>
+          Aucune certification (SOC 2, ISO 27001), aucune évaluation des facteurs relatifs à la vie
+          privée (EFVP), aucun test d’intrusion, aucune approbation du Ministère ou d’un conseil.
+          L’accessibilité vise WCAG 2.0 AA (LAPHO), avec des vérifications automatiques : c’est une
+          cible, pas une certification.
+        </li>
+        <li>
+          L’application chiffre elle-même deux choses : le texte des alertes et les notes libres des
+          suivis.
+        </li>
+        <li>
+          Le curriculum intégré compte 22 résumés d’attentes (3e et 5e année; français,
+          mathématiques, sciences), non officiels, marqués « à vérifier », licence non confirmée.
+          Les 7 textes de foi sont des textes de démonstration qu’aucune autorité catholique n’a
+          révisés.
+        </li>
+        <li>
+          Aucun lien avec la sonorisation, les portes, les interphones ou les caméras. L’application
+          n’envoie aucun texto. Pas de connexion unique, de portail parents, de présences ni de
+          bulletins.
+        </li>
+        <li>
+          Pas d’application native ni de mode hors ligne : elle s’installe sur l’écran d’accueil.
+          Pas encore de structure pour la maternelle et le jardin d’enfants.
+        </li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="fr-pilot">
+      <h2 id="fr-pilot">L’offre pilote</h2>
+      <p>
+        Un projet pilote gratuit est prévu avec des membres du personnel enseignant. Il n’a pas
+        commencé. Nous leur demanderons d’essayer la plateforme sur leur propre téléphone et de nous
+        dire ce qui manque, par exemple le temps qu’il faut pour signaler une absence à 6 h
+        (objectif : moins de 60 secondes, pas encore mesuré).
+      </p>
+      <p>
+        Un conseil peut nous aider dès maintenant : nous faire part de ses exigences de
+        confidentialité, et confirmer ou corriger les règles d’accès par rôle, qui sont encore des
+        hypothèses.
+      </p>
+      <p>Pour en parler : <span class="contact">pilote@iplynx.ca</span></p>
+    </section>
+
+    <p class="foot">
+      Cette fiche décrit l’état du projet au 29 septembre 2026 et sera mise à jour.
+    </p>
+  </article>
+
+  <!-- ============================ ENGLISH ============================ -->
+  <article class="sheet" id="en" lang="en-CA" aria-labelledby="en-title">
+    <header class="head">
+      <p class="brandline">
+        <svg width="30" height="24" viewBox="0 0 34 28" aria-hidden="true">
+          <rect class="brand-board" x="1" y="1" width="32" height="24" rx="3" />
+          <text class="brand-chalk" x="11" y="20" font-size="19">é</text>
+        </svg>
+        <span>Lynx École</span>
+      </p>
+      <h1 id="en-title">Fact sheet for school boards</h1>
+      <p class="meta">
+        Status as of September 29, 2026 · In development · Free pilot planned · IP Lynx Inc., an
+        Ontario security and telecom integrator
+      </p>
+      <p class="jump"><a href="#fr" lang="fr-CA">Version française ci-dessus</a></p>
+    </header>
+
+    <div class="brief">
+      <h2>In brief</h2>
+      <ul>
+        <li>
+          A platform for Ontario’s French-language Catholic elementary schools, built for teachers
+          first.
+        </li>
+        <li>
+          It is in development: no live service, no school-board clients, and the pilot has not
+          started.
+        </li>
+        <li>
+          The real AI model has not been tried yet: demos use a fake provider that only truncates
+          the text.
+        </li>
+        <li>“Lynx École” is a working name that may change.</li>
+      </ul>
+    </div>
+
+    <section aria-labelledby="en-pb">
+      <h2 id="en-pb">The problem</h2>
+      <ul>
+        <li>
+          Substitutes (occasional teachers) often walk in without knowing where the class left off,
+          who needs French-language support, or who has a safety or medical alert.
+        </li>
+        <li>
+          In one class, francophone students sit next to students who are still learning French (ALF
+          and PANA programs).
+        </li>
+        <li>Teachers build much of their own material on evenings and weekends.</li>
+        <li>Catholic identity and Franco-Ontarian identity-building are part of teaching.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="en-today">
+      <h2 id="en-today">What the pilot build already does</h2>
+      <p>
+        <span class="stamp stamp--ok">Available (pilot build)</span>
+        <span class="note">
+          Built and covered by automated tests in the development build. Not a live service, and no
+          teacher has used it in class yet.</span
+        >
+      </p>
+      <div class="rows">
+        <div class="row">
+          <p>Teachers</p>
+          <p>
+            “Today”: the day’s periods with the calendar applied and the next lesson in each
+            subject. “Lesson taught” in one tap, with “Undo”. Weekly or rotating timetables (Day 1
+            to N), rotary teaching. Planning by units and lessons, with expectations marked “à
+            vérifier” (to verify). Students by first name only. “Differentiated text” in 2 to 6
+            language levels, if the school turns AI on.
+          </p>
+        </div>
+        <div class="row">
+          <p>Substitute plan</p>
+          <p>
+            “I’m absent”, then “Send”: two taps. The plan is built at once from where each class
+            left off, and it is complete without AI. It follows the teacher’s planning until it is
+            released, at 7:30 a.m. by default. The next day, the teacher confirms each lesson the
+            substitute reported.
+          </p>
+        </div>
+        <div class="row">
+          <p>Substitute, no account</p>
+          <p>
+            A 10-character code, valid for one day during access hours. “The day’s plan”: “Now”,
+            “Next”, groups with first names, contacts, PDF. Alerts appear only on request, and every
+            reveal is logged. An end-of-day report.
+          </p>
+        </div>
+        <div class="row">
+          <p>Office</p>
+          <p>
+            A “Substitutes” board. “Generate a code”: shown once, with a welcome sheet; “Text” and
+            “Email” use the office’s own apps, and no number or address is stored. “Cut” a device, a
+            code or all access. The office views and prints the released plan without alerts or
+            “Classroom management”, and every view and print is logged. It cannot report an absence
+            on a teacher’s behalf.
+          </p>
+        </div>
+        <div class="row">
+          <p>Principal and VP</p>
+          <p>
+            The same board, plus revealing alerts and reading the report, both logged. School
+            settings: schedule, alerts, AI (with the month’s use), the “Substitute” card. The
+            principal or VP does not see teachers’ planning or progress.
+          </p>
+        </div>
+        <div class="row">
+          <p>School board</p>
+          <p>
+            The board admin sees “Calendar” and “Profile”, and no student data. Board choices
+            (forbidding AI, pooling the AI budget, language levels, the grade where English starts,
+            the plans’ release time) exist as data and are applied by the operator. No board screens
+            yet.
+          </p>
+        </div>
+        <div class="row">
+          <p>Operator (IP Lynx)</p>
+          <p>
+            Admin tools: creating boards, schools and school years, invitations, licensed modules
+            per school, AI budgets and a monthly usage report. Automatic clean-up every night.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="en-priv">
+      <h2 id="en-priv">Privacy and security: the facts</h2>
+      <div class="cols">
+        <div class="group">
+          <h3>Students</h3>
+          <ul>
+            <li>
+              One first name or nickname per student (40 characters at most). No field for a last
+              name, an OEN, a birthdate or an address. Alongside it, the app keeps for example a
+              default language level and, if the school turns them on, encrypted alerts.
+            </li>
+            <li>
+              A class list file is read on the device: only the first-name column is sent; columns
+              that look sensitive cannot be selected.
+            </li>
+            <li>No student accounts or screens in the current version.</li>
+            <li>
+              Language levels help form groups; they are not an official scale. Student printouts
+              never show a level name.
+            </li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Safety and medical alerts</h3>
+          <ul>
+            <li>
+              Off in each school until the principal turns them on, after board approval; the switch
+              is logged.
+            </li>
+            <li>
+              The server encrypts the text (AES-256-GCM) before the database. Only database
+              functions that check who is asking can read them, and every read is logged.
+            </li>
+            <li>
+              Visible to the class team, the principal or VP and, on screen only after a tap, the
+              day’s substitute. Never on the office’s own screens, never printed.
+            </li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Access</h3>
+          <ul>
+            <li>Invite-only accounts, no passwords: a 6-digit code by email.</li>
+            <li>
+              Row Level Security on every table; a signed-out request gets nothing and a new table
+              is closed by default. Automated tests check it.
+            </li>
+            <li>The access rules by role are assumptions to confirm with a board.</li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Substitute access</h3>
+          <ul>
+            <li>
+              A 10-character code, one day, during the school’s access hours (5 a.m. to 6 p.m. by
+              default). Shown once, stored only as a keyed hash: nobody can look it up later. At
+              most 2 codes per plan and 2 devices per code.
+            </li>
+            <li>
+              Cutting a device, a code or all access takes effect at once; cancelling the absence
+              cuts access too.
+            </li>
+            <li>
+              Every code use, view, print, alert reveal and report is logged, with who issued the
+              code.
+            </li>
+            <li>
+              The substitute’s browser never reaches the database API: it goes through a private
+              channel limited to 5 functions. No substitute phone number or email is stored.
+            </li>
+            <li>
+              Plan PDFs are generated on demand and never stored by the app. Report notes are
+              encrypted and deleted 60 days after confirmation.
+            </li>
+            <li>Limit: a code works for whoever holds it, alerts included; that use is logged.</li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Artificial intelligence</h3>
+          <ul>
+            <li>
+              Off in each school until the principal turns it on; a board can forbid it in all its
+              schools. Only teachers and principals use it, never students, and it is optional.
+            </li>
+            <li>
+              Before sending, known names become markers (“Élève A”); an email, a phone number, an
+              identification number, an address or a child’s birth date blocks the request (or, for
+              a substitute plan, the field is left out); a last check runs on the exact text. The
+              person asking sees exactly what will be sent.
+            </li>
+            <li>
+              Never sent: user, school, board or account identifiers, alerts, “Classroom
+              management”, the absence note and reports. Groups are sent only as student counts.
+            </li>
+            <li>
+              Calls go out only from the background server, which alone holds the key. The provider
+              is Claude, by Anthropic, over HTTPS. The de-identified text may be processed outside
+              Canada and is kept under Anthropic’s commercial terms. There is no zero-data-retention
+              agreement yet, and Anthropic is the only provider offered.
+            </li>
+            <li>
+              AI requests deleted after 30 days. A monthly budget per school; at most 3 requests at
+              a time and 40 per hour per person.
+            </li>
+            <li>
+              Limit: a name the app doesn’t know (a parent, a sibling) can only be caught by the
+              person, at the preview.
+            </li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Audit, retention and deletion</h3>
+          <ul>
+            <li>
+              Append-only audit log, with no student names or alert text. No screen to read it yet.
+            </li>
+            <li>A teacher can delete a class and all its data at once.</li>
+            <li>
+              Automatic deletions already built: AI requests after 30 days, the request log after 1
+              day, codes 30 days after they expire, failed code attempts after 1 day, report notes
+              after 60 days.
+            </li>
+            <li>
+              Proposed, not automated yet: class data until the end of the school year plus one
+              year, the audit log 2 years, substitute plans 1 year.
+            </li>
+            <li>Internal events carry ids only, never names.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="en-dep">
+      <h2 id="en-dep">Data residency and deployment</h2>
+      <div class="cols">
+        <div class="opt">
+          <p><span class="stamp stamp--soon">Coming soon</span></p>
+          <h3>Hosting in Canada</h3>
+          <p>
+            Design rule: in the hosted version, the database, the web server and the background
+            worker will all run in a Canadian cloud region. Nothing is hosted yet; the hosted beta
+            and the deployment guide are still to come.
+          </p>
+        </div>
+        <div class="opt">
+          <p><span class="stamp stamp--soon">Coming soon</span></p>
+          <h3>Install on the board’s servers, with Docker</h3>
+          <p>
+            The architecture keeps this option possible: background jobs in Postgres only, no
+            host-only services, a standalone web server build. The Docker install does not exist
+            yet.
+          </p>
+        </div>
+      </div>
+      <p class="note">
+        Either way, the de-identified text sent to the AI may be processed outside Canada by the
+        provider.
+      </p>
+    </section>
+
+    <section aria-labelledby="en-road">
+      <h2 id="en-road">Modules and roadmap</h2>
+      <p>
+        Licensed modules are turned on school by school (for example teaching and the resource
+        bank). No pricing is set yet.
+      </p>
+      <div class="rows">
+        <div class="row">
+          <p><span class="stamp stamp--ok">Available (pilot build)</span></p>
+          <p>
+            Teaching (“Today”, timetable, planning, calendar, students), the substitute hand-off end
+            to end, “Differentiated text”.
+          </p>
+        </div>
+        <div class="row">
+          <p><span class="stamp stamp--build">In construction</span></p>
+          <p>
+            “Banque de ressources” (resource bank): browsing by expectation, French search, versions
+            per level, separate answer keys, adding to planning, creating with AI, and review with
+            approval by reviewers the board designates plus a separate faith review. 29 demo
+            resources, “à valider en classe” (to be tried in class).
+          </p>
+        </div>
+        <div class="row">
+          <p><span class="stamp stamp--soon">Coming soon</span></p>
+          <p>
+            “Mode classe” (class mode: projection and quizzes on class tablets, no student accounts;
+            responses erased when the session ends), remixing, anonymous ratings, curriculum
+            coverage, bulk generation and content packs. Then pilot readiness: an audit log viewer,
+            the privacy document, deployment, backup and restore, error monitoring, onboarding for
+            pilot teachers, automated purges, billing.
+          </p>
+        </div>
+        <div class="row">
+          <p><span class="stamp stamp--later">Later</span></p>
+          <p>
+            No date: office (attendance, visitors), links with building systems, Microsoft or Google
+            sign-in, parents, board analytics, report-card comments and an IEP log.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="en-not">
+      <h2 id="en-not">What we do not claim</h2>
+      <ul>
+        <li>No board clients, partners, testimonials or pilot results.</li>
+        <li>
+          No certification (SOC 2, ISO 27001), no privacy impact assessment (PIA), no penetration
+          test, no Ministry or board approval. Accessibility targets WCAG 2.0 AA (AODA), with
+          automated checks: a target, not a certification.
+        </li>
+        <li>The app itself encrypts two things: alert text and the free-text notes of reports.</li>
+        <li>
+          The curriculum included is 22 paraphrased expectations (Grades 3 and 5; Français, Math,
+          Science), unofficial, marked “à vérifier” (to verify), licensing unconfirmed. The 7 faith
+          texts are demo texts that no Catholic authority has reviewed.
+        </li>
+        <li>
+          No link with PA, doors, intercoms or cameras. The app sends no text messages. No single
+          sign-on, parent portal, attendance or report cards.
+        </li>
+        <li>
+          No native app and no offline mode: it installs on the home screen. No structure for
+          Kindergarten yet.
+        </li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="en-pilot">
+      <h2 id="en-pilot">The pilot offer</h2>
+      <p>
+        A free pilot is planned with teachers. It has not started. We will ask them to try the
+        platform on their own phone and tell us what is missing, for example how long it takes to
+        report an absence at 6 a.m. (goal: under 60 seconds, not measured yet).
+      </p>
+      <p>
+        A board can help now: tell us its privacy requirements, and confirm or correct the access
+        rules by role, which are still assumptions.
+      </p>
+      <p>To talk about it: <span class="contact">pilote@iplynx.ca</span></p>
+    </section>
+
+    <p class="foot">
+      This sheet describes the project as of September 29, 2026 and will be updated.
+    </p>
+  </article>
+</main>
+
+<script>
+  document.documentElement.lang = 'fr-CA';
+</script>
