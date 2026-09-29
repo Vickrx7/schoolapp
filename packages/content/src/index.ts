@@ -36,3 +36,5 @@ export * from './curriculum-import';
 export * from './uuid';
 export * from './seed-pack';
 export * from './seed-sql';
+export * from './class-mode';
+export * from './pack-format';
