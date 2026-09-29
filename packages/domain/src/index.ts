@@ -6,3 +6,4 @@ export * from './lessons';
 export * from './roster';
 export * from './settings';
 export * from './forms';
+export * from './sub-plan';

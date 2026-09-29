@@ -167,3 +167,46 @@ export const studentAlertFormSchema = z.object({
   category: z.enum(alertCategories),
   text: trimmed(500),
 });
+
+/**
+ * « Fiche de suppléance » of a class (DECISIONS D-057). No medical details or difficulties tied
+ * to a named student: those belong in alerts. The neighbour must be an active teacher at the
+ * class's school (checked by the database).
+ */
+export const classSubProfileSchema = z.object({
+  classId: uuid,
+  arrivalNotes: optionalText(2000),
+  routinesNotes: optionalText(2000),
+  classroomManagementNotes: optionalText(2000),
+  dismissalNotes: optionalText(2000),
+  fallbackActivities: optionalText(2000),
+  neighbourTeacherId: uuid
+    .nullable()
+    .optional()
+    .transform((v) => v ?? null),
+  neighbourNote: optionalText(200),
+});
+
+/** A blank time field means "not set". */
+const optionalLocalTime = z.preprocess(
+  (v) => (typeof v === 'string' && v.trim() === '' ? null : v),
+  localTimeSchema
+    .nullable()
+    .optional()
+    .transform((v) => v ?? null),
+);
+
+/** The direction's « Suppléance » card on the École page (schools.settings.substitute). */
+export const substituteSettingsFormSchema = z
+  .object({
+    schoolId: uuid,
+    accessFrom: localTimeSchema,
+    accessUntil: localTimeSchema,
+    halfDaySplit: optionalLocalTime,
+    arrivalInstructions: optionalText(500),
+    emergencyInfo: optionalText(500),
+  })
+  .refine((s) => timeToMinutes(s.accessUntil) > timeToMinutes(s.accessFrom), {
+    message: 'endBeforeStart',
+    path: ['accessUntil'],
+  });

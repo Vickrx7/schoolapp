@@ -34,10 +34,17 @@ values (
   'America/Toronto',
   'weekly',
   true,
-  '{"contact": {"officePhone": "555-0100", "officeEmail": "secretariat@demo.lynx.test"}}'
+  '{"contact": {"officePhone": "555-0100", "officeEmail": "secretariat@demo.lynx.test"},
+    "substitute": {"accessFrom": "05:00", "accessUntil": "18:00",
+      "arrivalInstructions": "Présentez-vous au secrétariat (local 100) à votre arrivée.",
+      "emergencyInfo": "Sortie de secours : porte est. Point de rassemblement : terrain de soccer."}}'
 );
 
 select public.provision_school_defaults('c0000000-0000-4000-8000-000000000001');
+-- Valid from yesterday: in the evening the server's date (UTC) is already the school's tomorrow,
+-- and the modules are checked against the school's local date.
+update public.module_entitlements set valid_from = current_date - 1
+where school_id = 'c0000000-0000-4000-8000-000000000001';
 
 insert into public.school_years (id, board_id, name, starts_on, ends_on) values (
   'a0000000-0000-4000-8000-000000000001',
@@ -115,6 +122,29 @@ insert into public.class_teachers (class_id, user_id, role) values
   ('e0000000-0000-4000-8000-000000000003', 'd0000000-0000-4000-8000-000000000003', 'subject'),
   ('e0000000-0000-4000-8000-000000000005', 'd0000000-0000-4000-8000-000000000002', 'homeroom'),
   ('e0000000-0000-4000-8000-000000000005', 'd0000000-0000-4000-8000-000000000003', 'subject');
+
+-- « Fiche de suppléance » for each class (DECISIONS D-057): what a substitute needs to know,
+-- with no student names and nothing medical (alerts have their own store).
+insert into public.class_sub_profiles (class_id, arrival_notes, routines_notes,
+  classroom_management_notes, dismissal_notes, fallback_activities, neighbour_teacher_id,
+  neighbour_note, updated_by)
+values
+  ('e0000000-0000-4000-8000-000000000003',
+   'Les élèves entrent à 8 h 45 par la porte de la cour. Accueillez-les à la porte du local 101 : ils accrochent leur sac et s''assoient à leur place. Le plan de classe est dans la pochette rouge sur le bureau.',
+   'Prière du matin et O Canada à l''interphone à 8 h 50. Prenez les présences sur la feuille de la pochette rouge et envoyez-la au secrétariat avant 9 h 15. Les élèves mangent leur collation à leur place pendant les pauses santé. Le responsable du jour distribue le matériel.',
+   'Signal de silence : levez la main et comptez jusqu''à trois. Le tableau des étoiles est au fond de la classe : ajoutez une étoile à l''équipe qui travaille bien. Faites les rappels calmement et en privé plutôt que devant le groupe.',
+   'À 15 h 15 : rangement du local, prière de fin de journée et distribution des agendas. Les marcheurs sortent par la porte de la cour ; les élèves de l''autobus attendent au gymnase avec la surveillante.',
+   'Lecture libre (bac de livres près de la fenêtre), cahier de calcul mental (tablette du fond) ou jeu « Qui suis-je? » sur les animaux de l''Ontario.',
+   'd0000000-0000-4000-8000-000000000002', 'Local 104, juste à côté',
+   'd0000000-0000-4000-8000-000000000001'),
+  ('e0000000-0000-4000-8000-000000000005',
+   'Les élèves entrent à 8 h 45 par la porte est. Ils déposent leur agenda ouvert sur le coin du pupitre. Le plan de classe et la liste des présences sont dans le cartable vert sur le bureau.',
+   'Prière et O Canada à 8 h 50. Envoyez les présences au secrétariat avant 9 h 15. Collation pendant les pauses santé. Les responsables de la semaine sont affichés près de la porte.',
+   'Les élèves connaissent le signal « Classe, classe! – Oui, oui! ». Le travail en dyades est permis à voix basse. Notez tout conflit dans le cahier de bord sur le bureau et informez la direction au besoin.',
+   'À 15 h 15 : rangement, prière et vérification des agendas. Les élèves de l''autobus partent à 15 h 20 par la porte est avec la surveillante.',
+   'Défi de fractions (feuilles dans le bac bleu), lecture silencieuse ou journal de bord en sciences.',
+   'd0000000-0000-4000-8000-000000000001', 'Local 101, au bout du couloir',
+   'd0000000-0000-4000-8000-000000000002');
 
 -- ---------------------------------------------------------------------------------------
 -- Students: first names only. Default language levels for a mixed-proficiency class.

@@ -84,6 +84,55 @@ begin
 end;
 $$;
 
+-- The first weekday (Monday to Friday) on or after current_date + p_offset.
+create function tests.school_day(p_offset integer)
+returns date
+language sql
+as $$
+  select current_date + p_offset + i
+  from generate_series(0, 6) as i
+  where extract(isodow from current_date + p_offset + i) < 6
+  order by i
+  limit 1;
+$$;
+
+-- A minimal plan the database accepts (schemaVersion 1 and its date). The database never reads
+-- anything else in it (D-048).
+create function tests.plan_json(p_date date)
+returns jsonb
+language sql
+as $$
+  select jsonb_build_object(
+    'schemaVersion', 1, 'date', p_date, 'part', 'full_day',
+    'classes', '[]'::jsonb, 'groups', '[]'::jsonb, 'dayEvents', '[]'::jsonb, 'blocks', '[]'::jsonb,
+    'classNotes', '[]'::jsonb, 'warnings', '[]'::jsonb
+  );
+$$;
+
+-- The `p_plans` argument of publish_absence and friends: one minimal plan per date, each
+-- covering the given classes.
+create function tests.plan_items(p_dates date[], p_class_ids uuid[])
+returns jsonb
+language sql
+as $$
+  select coalesce(jsonb_agg(jsonb_build_object(
+      'date', d, 'classIds', to_jsonb(coalesce(p_class_ids, '{}')), 'plan', tests.plan_json(d))
+    order by d), '[]'::jsonb)
+  from unnest(p_dates) as d;
+$$;
+
+-- The substitute portal's database role (it has no JWT claims).
+create function tests.as_portal()
+returns void
+language plpgsql
+as $$
+begin
+  perform set_config('request.jwt.claims', '', true);
+  perform set_config('request.jwt.claim.sub', '', true);
+  perform set_config('role', 'lynx_sub_portal', true);
+end;
+$$;
+
 grant execute on all functions in schema tests to anon, authenticated;
 
 -- Standard fixture: two boards, three schools, one person per role, three classes.
@@ -110,6 +159,13 @@ begin
     (tests.id('school_a1'), tests.id('board_a'), 'School A1', 'a1', true),
     (tests.id('school_a2'), tests.id('board_a'), 'School A2', 'a2', false),
     (tests.id('school_b1'), tests.id('board_b'), 'School B1', 'b1', true);
+  -- Pilot modules (core, teaching, library), as for a real school. Valid from yesterday: the
+  -- server's date can be a day ahead of the schools' local date in the evening.
+  perform public.provision_school_defaults(tests.id('school_a1'));
+  perform public.provision_school_defaults(tests.id('school_a2'));
+  perform public.provision_school_defaults(tests.id('school_b1'));
+  update public.module_entitlements set valid_from = current_date - 1
+  where school_id in (tests.id('school_a1'), tests.id('school_a2'), tests.id('school_b1'));
 
   perform tests.remember('year_a', gen_random_uuid());
   perform tests.remember('year_b', gen_random_uuid());

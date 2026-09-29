@@ -73,14 +73,15 @@ select throws_ok(
 );
 select tests.clear_authentication();
 
--- Substitute hand-off: codes are never readable; absences visible to the right people.
+-- Substitute hand-off: codes are never readable; absences are written only through functions
+-- (publish_absence, tested in 10_substitute_plans) and visible to the right people.
 select tests.authenticate_as('teacher_a');
 select throws_ok($$select count(*) from public.sub_access_codes$$, '42501', null,
   'substitute codes are not readable through the API');
-select lives_ok(
+select throws_ok(
   $$insert into public.absences (teacher_id, school_id, starts_on, ends_on) values
     (tests.id('teacher_a'), tests.id('school_a1'), '2026-10-01', '2026-10-01')$$,
-  'a teacher can record their own absence'
+  '42501', null, 'a teacher cannot insert an absence directly'
 );
 select throws_ok(
   $$insert into public.absences (teacher_id, school_id, starts_on, ends_on) values
@@ -88,6 +89,9 @@ select throws_ok(
   '42501', null, 'a teacher cannot record an absence for someone else'
 );
 select tests.clear_authentication();
+
+insert into public.absences (teacher_id, school_id, starts_on, ends_on) values
+  (tests.id('teacher_a'), tests.id('school_a1'), '2026-10-01', '2026-10-01');
 
 select tests.authenticate_as('office_a');
 select is((select count(*)::int from public.absences where teacher_id = tests.id('teacher_a')), 1,

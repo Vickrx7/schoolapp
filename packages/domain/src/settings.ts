@@ -36,6 +36,23 @@ export const boardSettingsSchema = z.object({
 
 export type BoardSettings = z.infer<typeof boardSettingsSchema>;
 
+/** Optional text shown to substitutes; blank means "not set". */
+const substituteText = z
+  .string()
+  .trim()
+  .max(500)
+  .transform((v) => (v.length === 0 ? null : v))
+  .nullable()
+  .catch(null);
+
+export const SUBSTITUTE_SETTINGS_DEFAULTS = {
+  accessFrom: '05:00',
+  accessUntil: '18:00',
+  halfDaySplit: null,
+  arrivalInstructions: null,
+  emergencyInfo: null,
+} as const;
+
 export const schoolSettingsSchema = z.object({
   contact: z
     .object({
@@ -46,6 +63,24 @@ export const schoolSettingsSchema = z.object({
   /** Typical first bell and dismissal, used to prefill new timetables. */
   dayStart: hhmm.catch('08:45'),
   dayEnd: hhmm.catch('15:20'),
+  /**
+   * Substitute hand-off (DECISIONS D-050, D-055). The code window and the half-day split are
+   * school-local times; SQL reads accessFrom/accessUntil too (app.sub_access_window).
+   */
+  substitute: z
+    .object({
+      /** A substitute's code works on the plan date from this time... */
+      accessFrom: hhmm.catch(SUBSTITUTE_SETTINGS_DEFAULTS.accessFrom),
+      /** ...until this time. */
+      accessUntil: hhmm.catch(SUBSTITUTE_SETTINGS_DEFAULTS.accessUntil),
+      /** Where morning ends for half-day absences. Null: derived from the bell schedule. */
+      halfDaySplit: hhmm.nullable().catch(null),
+      /** « Présentez-vous au secrétariat... » */
+      arrivalInstructions: substituteText,
+      /** Exits and assembly point. Never medical information about a student (use alerts). */
+      emergencyInfo: substituteText,
+    })
+    .catch({ ...SUBSTITUTE_SETTINGS_DEFAULTS }),
 });
 
 export type SchoolSettings = z.infer<typeof schoolSettingsSchema>;

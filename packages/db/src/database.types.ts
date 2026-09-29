@@ -20,6 +20,10 @@ export type Database = {
           published_at: string | null;
           created_at: string;
           updated_at: string;
+          catholic_connection: boolean;
+          client_request_id: string;
+          cancelled_at: string | null;
+          sources_changed_at: string | null;
         };
         Insert: {
           id?: string;
@@ -33,6 +37,10 @@ export type Database = {
           published_at?: string | null;
           created_at?: string;
           updated_at?: string;
+          catholic_connection?: boolean;
+          client_request_id?: string;
+          cancelled_at?: string | null;
+          sources_changed_at?: string | null;
         };
         Update: {
           id?: string;
@@ -46,6 +54,10 @@ export type Database = {
           published_at?: string | null;
           created_at?: string;
           updated_at?: string;
+          catholic_connection?: boolean;
+          client_request_id?: string;
+          cancelled_at?: string | null;
+          sources_changed_at?: string | null;
         };
         Relationships: [
           {
@@ -545,6 +557,67 @@ export type Database = {
           },
         ];
       };
+      class_sub_profiles: {
+        Row: {
+          class_id: string;
+          arrival_notes: string | null;
+          routines_notes: string | null;
+          classroom_management_notes: string | null;
+          dismissal_notes: string | null;
+          fallback_activities: string | null;
+          neighbour_teacher_id: string | null;
+          neighbour_note: string | null;
+          updated_by: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          class_id: string;
+          arrival_notes?: string | null;
+          routines_notes?: string | null;
+          classroom_management_notes?: string | null;
+          dismissal_notes?: string | null;
+          fallback_activities?: string | null;
+          neighbour_teacher_id?: string | null;
+          neighbour_note?: string | null;
+          updated_by?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          class_id?: string;
+          arrival_notes?: string | null;
+          routines_notes?: string | null;
+          classroom_management_notes?: string | null;
+          dismissal_notes?: string | null;
+          fallback_activities?: string | null;
+          neighbour_teacher_id?: string | null;
+          neighbour_note?: string | null;
+          updated_by?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'class_sub_profiles_class_id_fkey';
+            columns: ['class_id'];
+            isOneToOne: true;
+            referencedRelation: 'classes';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'class_sub_profiles_neighbour_teacher_id_fkey';
+            columns: ['neighbour_teacher_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'class_sub_profiles_updated_by_fkey';
+            columns: ['updated_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       class_teachers: {
         Row: {
           class_id: string;
@@ -1011,6 +1084,7 @@ export type Database = {
           note: string | null;
           created_at: string;
           updated_at: string;
+          sub_report_id: string | null;
         };
         Insert: {
           id?: string;
@@ -1024,6 +1098,7 @@ export type Database = {
           note?: string | null;
           created_at?: string;
           updated_at?: string;
+          sub_report_id?: string | null;
         };
         Update: {
           id?: string;
@@ -1037,6 +1112,7 @@ export type Database = {
           note?: string | null;
           created_at?: string;
           updated_at?: string;
+          sub_report_id?: string | null;
         };
         Relationships: [
           {
@@ -1058,6 +1134,13 @@ export type Database = {
             columns: ['lesson_id'];
             isOneToOne: true;
             referencedRelation: 'unit_lessons';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'lesson_progress_sub_report_id_fkey';
+            columns: ['sub_report_id'];
+            isOneToOne: false;
+            referencedRelation: 'sub_reports';
             referencedColumns: ['id'];
           },
         ];
@@ -1946,11 +2029,12 @@ export type Database = {
           valid_on: string;
           expires_at: string;
           revoked_at: string | null;
-          failed_attempts: number;
-          locked_until: string | null;
           last_used_at: string | null;
           created_by: string | null;
           created_at: string;
+          valid_from: string;
+          max_devices: number;
+          revoked_by: string | null;
         };
         Insert: {
           id?: string;
@@ -1959,11 +2043,12 @@ export type Database = {
           valid_on: string;
           expires_at: string;
           revoked_at?: string | null;
-          failed_attempts?: number;
-          locked_until?: string | null;
           last_used_at?: string | null;
           created_by?: string | null;
           created_at?: string;
+          valid_from: string;
+          max_devices?: number;
+          revoked_by?: string | null;
         };
         Update: {
           id?: string;
@@ -1972,16 +2057,24 @@ export type Database = {
           valid_on?: string;
           expires_at?: string;
           revoked_at?: string | null;
-          failed_attempts?: number;
-          locked_until?: string | null;
           last_used_at?: string | null;
           created_by?: string | null;
           created_at?: string;
+          valid_from?: string;
+          max_devices?: number;
+          revoked_by?: string | null;
         };
         Relationships: [
           {
             foreignKeyName: 'sub_access_codes_created_by_fkey';
             columns: ['created_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'sub_access_codes_revoked_by_fkey';
+            columns: ['revoked_by'];
             isOneToOne: false;
             referencedRelation: 'users';
             referencedColumns: ['id'];
@@ -1995,48 +2088,123 @@ export type Database = {
           },
         ];
       };
+      sub_code_attempts: {
+        Row: {
+          id: number;
+          device_key: string;
+          ip_key: string;
+          succeeded: boolean;
+          attempted_at: string;
+        };
+        Insert: {
+          id?: never;
+          device_key: string;
+          ip_key: string;
+          succeeded: boolean;
+          attempted_at?: string;
+        };
+        Update: {
+          id?: never;
+          device_key?: string;
+          ip_key?: string;
+          succeeded?: boolean;
+          attempted_at?: string;
+        };
+        Relationships: [];
+      };
+      sub_plan_classes: {
+        Row: {
+          sub_plan_id: string;
+          class_id: string;
+        };
+        Insert: {
+          sub_plan_id: string;
+          class_id: string;
+        };
+        Update: {
+          sub_plan_id?: string;
+          class_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'sub_plan_classes_class_id_fkey';
+            columns: ['class_id'];
+            isOneToOne: false;
+            referencedRelation: 'classes';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'sub_plan_classes_sub_plan_id_fkey';
+            columns: ['sub_plan_id'];
+            isOneToOne: false;
+            referencedRelation: 'sub_plans';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       sub_plans: {
         Row: {
           id: string;
           absence_id: string;
           plan_date: string;
-          plan: Json | null;
+          plan: Json;
           pdf_path: string | null;
           status: Database['public']['Enums']['sub_plan_status'];
-          review_deadline: string | null;
+          review_deadline: string;
           reviewed_by: string | null;
           reviewed_at: string | null;
           released_at: string | null;
           created_at: string;
           updated_at: string;
+          generated_at: string;
+          content_version: number;
+          edits: Json | null;
+          edits_revision: number;
+          edited_by: string | null;
+          edited_at: string | null;
+          released_by: string | null;
         };
         Insert: {
           id?: string;
           absence_id: string;
           plan_date: string;
-          plan?: Json | null;
+          plan: Json;
           pdf_path?: string | null;
           status?: Database['public']['Enums']['sub_plan_status'];
-          review_deadline?: string | null;
+          review_deadline: string;
           reviewed_by?: string | null;
           reviewed_at?: string | null;
           released_at?: string | null;
           created_at?: string;
           updated_at?: string;
+          generated_at?: string;
+          content_version?: number;
+          edits?: Json | null;
+          edits_revision?: number;
+          edited_by?: string | null;
+          edited_at?: string | null;
+          released_by?: string | null;
         };
         Update: {
           id?: string;
           absence_id?: string;
           plan_date?: string;
-          plan?: Json | null;
+          plan?: Json;
           pdf_path?: string | null;
           status?: Database['public']['Enums']['sub_plan_status'];
-          review_deadline?: string | null;
+          review_deadline?: string;
           reviewed_by?: string | null;
           reviewed_at?: string | null;
           released_at?: string | null;
           created_at?: string;
           updated_at?: string;
+          generated_at?: string;
+          content_version?: number;
+          edits?: Json | null;
+          edits_revision?: number;
+          edited_by?: string | null;
+          edited_at?: string | null;
+          released_by?: string | null;
         };
         Relationships: [
           {
@@ -2044,6 +2212,20 @@ export type Database = {
             columns: ['absence_id'];
             isOneToOne: false;
             referencedRelation: 'absences';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'sub_plans_edited_by_fkey';
+            columns: ['edited_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'sub_plans_released_by_fkey';
+            columns: ['released_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
             referencedColumns: ['id'];
           },
           {
@@ -2061,27 +2243,45 @@ export type Database = {
           sub_plan_id: string;
           content: Json;
           status: Database['public']['Enums']['sub_report_status'];
-          submitted_at: string;
+          submitted_at: string | null;
           confirmed_by: string | null;
           confirmed_at: string | null;
+          session_id: string | null;
+          notes_ciphertext: string | null;
+          notes_key_version: number | null;
+          notes_purged_at: string | null;
+          created_at: string;
+          updated_at: string;
         };
         Insert: {
           id?: string;
           sub_plan_id: string;
           content: Json;
           status?: Database['public']['Enums']['sub_report_status'];
-          submitted_at?: string;
+          submitted_at?: string | null;
           confirmed_by?: string | null;
           confirmed_at?: string | null;
+          session_id?: string | null;
+          notes_ciphertext?: string | null;
+          notes_key_version?: number | null;
+          notes_purged_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
         };
         Update: {
           id?: string;
           sub_plan_id?: string;
           content?: Json;
           status?: Database['public']['Enums']['sub_report_status'];
-          submitted_at?: string;
+          submitted_at?: string | null;
           confirmed_by?: string | null;
           confirmed_at?: string | null;
+          session_id?: string | null;
+          notes_ciphertext?: string | null;
+          notes_key_version?: number | null;
+          notes_purged_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
         };
         Relationships: [
           {
@@ -2089,6 +2289,13 @@ export type Database = {
             columns: ['confirmed_by'];
             isOneToOne: false;
             referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'sub_reports_session_id_fkey';
+            columns: ['session_id'];
+            isOneToOne: false;
+            referencedRelation: 'sub_sessions';
             referencedColumns: ['id'];
           },
           {
@@ -2108,6 +2315,11 @@ export type Database = {
           created_at: string;
           expires_at: string;
           revoked_at: string | null;
+          sub_plan_id: string;
+          device_key: string;
+          last_seen_at: string | null;
+          last_viewed_version: number | null;
+          revoked_by: string | null;
         };
         Insert: {
           id?: string;
@@ -2116,6 +2328,11 @@ export type Database = {
           created_at?: string;
           expires_at: string;
           revoked_at?: string | null;
+          sub_plan_id: string;
+          device_key: string;
+          last_seen_at?: string | null;
+          last_viewed_version?: number | null;
+          revoked_by?: string | null;
         };
         Update: {
           id?: string;
@@ -2124,6 +2341,11 @@ export type Database = {
           created_at?: string;
           expires_at?: string;
           revoked_at?: string | null;
+          sub_plan_id?: string;
+          device_key?: string;
+          last_seen_at?: string | null;
+          last_viewed_version?: number | null;
+          revoked_by?: string | null;
         };
         Relationships: [
           {
@@ -2131,6 +2353,20 @@ export type Database = {
             columns: ['access_code_id'];
             isOneToOne: false;
             referencedRelation: 'sub_access_codes';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'sub_sessions_revoked_by_fkey';
+            columns: ['revoked_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'sub_sessions_sub_plan_id_fkey';
+            columns: ['sub_plan_id'];
+            isOneToOne: false;
+            referencedRelation: 'sub_plans';
             referencedColumns: ['id'];
           },
         ];
@@ -2557,6 +2793,10 @@ export type Database = {
           requests_this_month: number;
         }[];
       };
+      cancel_absence: {
+        Args: { p_absence_id: string };
+        Returns: undefined;
+      };
       create_class: {
         Args: {
           p_school_id: string;
@@ -2582,6 +2822,36 @@ export type Database = {
           updated_at: string;
         }[];
       };
+      get_sub_plan_for_staff: {
+        Args: { p_plan_id: string; p_purpose?: string };
+        Returns: Json;
+      };
+      get_sub_plan_sources: {
+        Args: { p_school_id: string; p_from: string; p_to: string; p_absence_id?: string };
+        Returns: Json;
+      };
+      list_school_sub_days: {
+        Args: { p_school_id: string; p_from: string; p_to: string };
+        Returns: {
+          absence_id: string;
+          plan_id: string;
+          plan_date: string;
+          part: Database['public']['Enums']['absence_part'];
+          note: string;
+          teacher_name: string;
+          class_names: string[];
+          room_names: string[];
+          released: boolean;
+          release_at: string;
+          released_by_name: string;
+          refreshing: boolean;
+          active_codes: number;
+          devices: number;
+          first_session_at: string;
+          last_seen_at: string;
+          report_status: string;
+        }[];
+      };
       mark_lesson_taught: {
         Args: { p_lesson_id: string; p_taught_on: string };
         Returns: undefined;
@@ -2592,6 +2862,27 @@ export type Database = {
       };
       provision_school_defaults: {
         Args: { p_school_id: string };
+        Returns: undefined;
+      };
+      publish_absence: {
+        Args: {
+          p_school_id: string;
+          p_starts_on: string;
+          p_ends_on: string;
+          p_part: Database['public']['Enums']['absence_part'];
+          p_note: string;
+          p_catholic_connection: boolean;
+          p_client_request_id: string;
+          p_plans: Json;
+        };
+        Returns: string;
+      };
+      refresh_sub_plans: {
+        Args: { p_absence_id: string; p_plans: Json };
+        Returns: undefined;
+      };
+      release_sub_plan: {
+        Args: { p_plan_id: string };
         Returns: undefined;
       };
       reorder_unit_lessons: {
@@ -2623,12 +2914,27 @@ export type Database = {
         };
         Returns: string;
       };
+      save_sub_plan_edits: {
+        Args: { p_plan_id: string; p_edits: Json; p_expected_revision: number };
+        Returns: number;
+      };
       set_active_unit: {
         Args: { p_unit_id: string };
         Returns: undefined;
       };
       unmark_lesson: {
         Args: { p_lesson_id: string };
+        Returns: undefined;
+      };
+      update_absence: {
+        Args: {
+          p_absence_id: string;
+          p_ends_on: string;
+          p_part: Database['public']['Enums']['absence_part'];
+          p_note: string;
+          p_catholic_connection: boolean;
+          p_plans: Json;
+        };
         Returns: undefined;
       };
     };
@@ -2702,7 +3008,7 @@ export type Database = {
       schedule_type: 'weekly' | 'cycle';
       share_scope: 'private' | 'school' | 'board';
       sub_plan_status: 'pending' | 'generating' | 'ready' | 'released' | 'failed';
-      sub_report_status: 'submitted' | 'confirmed';
+      sub_report_status: 'draft' | 'submitted' | 'confirmed';
       unit_status: 'planned' | 'active' | 'completed' | 'archived';
     };
     CompositeTypes: { [_ in never]: never };
@@ -2890,7 +3196,7 @@ export const Constants = {
       schedule_type: ['weekly', 'cycle'],
       share_scope: ['private', 'school', 'board'],
       sub_plan_status: ['pending', 'generating', 'ready', 'released', 'failed'],
-      sub_report_status: ['submitted', 'confirmed'],
+      sub_report_status: ['draft', 'submitted', 'confirmed'],
       unit_status: ['planned', 'active', 'completed', 'archived'],
     },
   },

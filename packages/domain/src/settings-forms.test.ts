@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
   calendarEventFormSchema,
+  classSubProfileSchema,
   firstNameSchema,
   lessonFormSchema,
+  substituteSettingsFormSchema,
   timetableBlockSchema,
 } from './forms';
 import { parseBoardSettings, parseSchoolSettings } from './settings';
@@ -15,7 +17,18 @@ describe('board and school settings', () => {
       ai: { allowed: true, defaultMonthlyAllowanceUsd: 50, ceilingMultiplier: 2, pooling: true },
       classModeResultsRetentionDays: 365,
     });
-    expect(parseSchoolSettings(null)).toEqual({ contact: {}, dayStart: '08:45', dayEnd: '15:20' });
+    expect(parseSchoolSettings(null)).toEqual({
+      contact: {},
+      dayStart: '08:45',
+      dayEnd: '15:20',
+      substitute: {
+        accessFrom: '05:00',
+        accessUntil: '18:00',
+        halfDaySplit: null,
+        arrivalInstructions: null,
+        emergencyInfo: null,
+      },
+    });
   });
 
   it('keeps valid values and replaces invalid ones with defaults', () => {
@@ -27,6 +40,31 @@ describe('board and school settings', () => {
     expect(s.anglaisStartGrade).toBe(1);
     expect(s.subPlanAutoReleaseTime).toBe('07:30');
     expect(s).not.toHaveProperty('unknownKey');
+  });
+
+  it('falls back field by field in the substitute settings', () => {
+    expect(
+      parseSchoolSettings({
+        substitute: {
+          accessFrom: '5h',
+          accessUntil: '17:30',
+          halfDaySplit: '25:00',
+          arrivalInstructions: '  Présentez-vous au secrétariat.  ',
+          emergencyInfo: 'x'.repeat(501),
+        },
+      }).substitute,
+    ).toEqual({
+      accessFrom: '05:00',
+      accessUntil: '17:30',
+      halfDaySplit: null,
+      arrivalInstructions: 'Présentez-vous au secrétariat.',
+      emergencyInfo: null,
+    });
+    expect(parseSchoolSettings({ substitute: 'oui' }).substitute.accessFrom).toBe('05:00');
+    expect(
+      parseSchoolSettings({ substitute: { halfDaySplit: '12:55', arrivalInstructions: ' ' } })
+        .substitute,
+    ).toMatchObject({ halfDaySplit: '12:55', arrivalInstructions: null, accessUntil: '18:00' });
   });
 
   it('drops an invalid office email instead of failing', () => {
@@ -91,6 +129,58 @@ describe('form schemas', () => {
     );
     expect(
       calendarEventFormSchema.safeParse({ ...base, startTime: '10:00', endTime: '09:00' }).success,
+    ).toBe(false);
+  });
+
+  it('validates the « Fiche de suppléance »', () => {
+    const fiche = classSubProfileSchema.parse({
+      classId,
+      arrivalNotes: '  Porte 3.  ',
+      routinesNotes: '',
+      neighbourTeacherId: null,
+    });
+    expect(fiche).toEqual({
+      classId,
+      arrivalNotes: 'Porte 3.',
+      routinesNotes: null,
+      classroomManagementNotes: null,
+      dismissalNotes: null,
+      fallbackActivities: null,
+      neighbourTeacherId: null,
+      neighbourNote: null,
+    });
+    expect(
+      classSubProfileSchema.safeParse({ classId, dismissalNotes: 'x'.repeat(2001) }).error
+        ?.issues[0]?.message,
+    ).toBe('tooLong');
+    expect(
+      classSubProfileSchema.safeParse({ classId, neighbourNote: 'x'.repeat(201) }).success,
+    ).toBe(false);
+    expect(classSubProfileSchema.safeParse({ classId, neighbourTeacherId: 'marc' }).success).toBe(
+      false,
+    );
+  });
+
+  it('validates the direction’s substitute settings', () => {
+    const base = { schoolId: classId, accessFrom: '05:00', accessUntil: '18:00' };
+    expect(substituteSettingsFormSchema.parse({ ...base, halfDaySplit: '' })).toEqual({
+      ...base,
+      halfDaySplit: null,
+      arrivalInstructions: null,
+      emergencyInfo: null,
+    });
+    expect(
+      substituteSettingsFormSchema.parse({ ...base, halfDaySplit: '12:55:00' }).halfDaySplit,
+    ).toBe('12:55');
+    expect(
+      substituteSettingsFormSchema.safeParse({ ...base, accessUntil: '05:00' }).error?.issues[0]
+        ?.message,
+    ).toBe('endBeforeStart');
+    expect(substituteSettingsFormSchema.safeParse({ ...base, halfDaySplit: '13h' }).success).toBe(
+      false,
+    );
+    expect(
+      substituteSettingsFormSchema.safeParse({ ...base, emergencyInfo: 'x'.repeat(501) }).success,
     ).toBe(false);
   });
 });
