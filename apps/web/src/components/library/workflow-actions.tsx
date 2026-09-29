@@ -42,6 +42,13 @@ export interface WorkflowState {
   readyForReview: boolean;
   /** « Avant de proposer au conseil » is complete. */
   readyForApproval: boolean;
+  /**
+   * An adaptation of a resource shared with one school: shared at most with that school, never
+   * proposed to the board (D-092). Null otherwise.
+   */
+  shareCapSchoolId: string | null;
+  /** An adaptation's credit line, shown when sharing (D-092). */
+  credit: string | null;
 }
 
 /**
@@ -52,6 +59,7 @@ export interface WorkflowState {
  */
 export function WorkflowActions({ state }: { state: WorkflowState }) {
   const t = useTranslations('libraryEdit.workflow');
+  const tGrowth = useTranslations('libraryGrowth');
   const tCommon = useTranslations('common');
   const errorText = useErrorText();
   const router = useRouter();
@@ -74,6 +82,7 @@ export function WorkflowActions({ state }: { state: WorkflowState }) {
   const [names, setNames] = useState<NamesCheckState | null>(null);
   const { itemId, status } = state;
   const draftLike = status === 'draft' || status === 'rejected';
+  const capped = state.shareCapSchoolId !== null;
 
   const propose = async (confirmed: string[]) => {
     const result = await request.run(itemId, confirmed);
@@ -111,15 +120,19 @@ export function WorkflowActions({ state }: { state: WorkflowState }) {
             schools={state.schools}
             faithBlocksBoard={state.faithBlocksBoard}
             personalLevels={state.personalLevels}
+            capSchoolId={state.shareCapSchoolId}
+            credit={state.credit}
           />
         ) : null}
 
         {status === 'teacher_reviewed' && state.canEdit && !state.requested ? (
           <Button
             variant="secondary"
-            disabled={!state.readyForApproval || state.personalLevels || request.pending}
+            disabled={!state.readyForApproval || state.personalLevels || capped || request.pending}
             aria-describedby={
-              state.readyForApproval && !state.personalLevels ? undefined : 'workflow-approval-hint'
+              state.readyForApproval && !state.personalLevels && !capped
+                ? undefined
+                : 'workflow-approval-hint'
             }
             onClick={() => void propose([])}
           >
@@ -193,7 +206,11 @@ export function WorkflowActions({ state }: { state: WorkflowState }) {
         </p>
       ) : null}
       {status === 'teacher_reviewed' && state.canEdit && !state.requested ? (
-        state.personalLevels ? (
+        capped ? (
+          <p id="workflow-approval-hint" className="text-sm text-slate-600">
+            {tGrowth('shareCapApproval')}
+          </p>
+        ) : state.personalLevels ? (
           <p id="workflow-approval-hint" className="text-sm text-slate-600">
             {t('personalLevelsHint')}
           </p>

@@ -302,7 +302,10 @@ export async function lessonsWithProgress(classId: string): Promise<string[]> {
 const SEED_EXPECTATION_3_MAT_B12 = '20000000-0000-4000-8000-000000030b12';
 
 export interface ReadyItemOptions {
-  /** A demo account's e-mail, or null for one of the board's own items (`board_created`). */
+  /**
+   * A demo account's e-mail, or null for one of the board's own items (`board_created`,
+   * `board_owned`: kept by the board's content reviewers, D-091).
+   */
   author: string | null;
   type: LibraryItemType;
   /** Start it with « E2E- » so `deleteLibraryItems({ titlePrefix: 'E2E-' })` finds it. */
@@ -340,14 +343,14 @@ export async function insertReadyItem(options: ReadyItemOptions): Promise<string
       rows: [item],
     } = await client.query<{ id: string }>(
       `insert into public.library_items (board_id, school_id, type, title, summary, status,
-         share_scope, source, author_id, subject_id, duration_minutes, materials, keywords,
-         sub_friendly, safety_notes, faith_content, approved_at, approved_by, faith_reviewed_at,
-         faith_reviewed_by)
+         share_scope, source, author_id, board_owned, subject_id, duration_minutes, materials,
+         keywords, sub_friendly, safety_notes, faith_content, approved_at, approved_by,
+         faith_reviewed_at, faith_reviewed_by)
        select $1::uuid,
          case when $2::text is not null or $6::public.share_scope = 'school' then $3::uuid end,
          $4::public.library_item_type, $5::text,
          'Une ressource créée pour les tests de bout en bout.', $7::public.library_item_status,
-         $6::public.share_scope, $8::public.library_source, author.id,
+         $6::public.share_scope, $8::public.library_source, author.id, $2::text is null,
          (select id from public.subjects where code = 'mat' and board_id is null), 30,
          'Crayons et feuilles', 'e2e nombres', $9::boolean, $10::jsonb, $11::boolean,
          case when $7::public.library_item_status = 'board_approved' then now() end,

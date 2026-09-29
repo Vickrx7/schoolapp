@@ -470,6 +470,86 @@ export type Database = {
           },
         ];
       };
+      class_join_failures: {
+        Row: {
+          id: number;
+          device_key: string;
+          network_key: string | null;
+          failed_at: string;
+        };
+        Insert: {
+          id?: never;
+          device_key: string;
+          network_key?: string | null;
+          failed_at?: string;
+        };
+        Update: {
+          id?: never;
+          device_key?: string;
+          network_key?: string | null;
+          failed_at?: string;
+        };
+        Relationships: [];
+      };
+      class_mode_links: {
+        Row: {
+          class_id: string;
+          token: string;
+          created_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          class_id: string;
+          token: string;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          class_id?: string;
+          token?: string;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'class_mode_links_class_id_fkey';
+            columns: ['class_id'];
+            isOneToOne: true;
+            referencedRelation: 'classes';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'class_mode_links_created_by_fkey';
+            columns: ['created_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      class_session_keys: {
+        Row: {
+          session_id: string;
+          answers: Json;
+        };
+        Insert: {
+          session_id: string;
+          answers: Json;
+        };
+        Update: {
+          session_id?: string;
+          answers?: Json;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'class_session_keys_session_id_fkey';
+            columns: ['session_id'];
+            isOneToOne: true;
+            referencedRelation: 'class_sessions';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       class_session_results: {
         Row: {
           session_id: string;
@@ -508,6 +588,23 @@ export type Database = {
           expires_at: string;
           ended_at: string | null;
           keep_aggregate_results: boolean;
+          version_id: string | null;
+          item_title: string | null;
+          content_lang: string;
+          mode: string;
+          team_count: number | null;
+          team_choice: string;
+          seconds_per_question: number | null;
+          reveal_answers: boolean;
+          score_short_answers: boolean;
+          questions: Json;
+          phase: string;
+          question_index: number;
+          question_closes_at: string | null;
+          joining_open: boolean;
+          joining_closes_at: string | null;
+          state_version: number;
+          device_seq: number;
         };
         Insert: {
           id?: string;
@@ -520,6 +617,23 @@ export type Database = {
           expires_at: string;
           ended_at?: string | null;
           keep_aggregate_results?: boolean;
+          version_id?: string | null;
+          item_title?: string | null;
+          content_lang?: string;
+          mode?: string;
+          team_count?: number | null;
+          team_choice?: string;
+          seconds_per_question?: number | null;
+          reveal_answers?: boolean;
+          score_short_answers?: boolean;
+          questions?: Json;
+          phase?: string;
+          question_index?: number;
+          question_closes_at?: string | null;
+          joining_open?: boolean;
+          joining_closes_at?: string | null;
+          state_version?: number;
+          device_seq?: number;
         };
         Update: {
           id?: string;
@@ -532,6 +646,23 @@ export type Database = {
           expires_at?: string;
           ended_at?: string | null;
           keep_aggregate_results?: boolean;
+          version_id?: string | null;
+          item_title?: string | null;
+          content_lang?: string;
+          mode?: string;
+          team_count?: number | null;
+          team_choice?: string;
+          seconds_per_question?: number | null;
+          reveal_answers?: boolean;
+          score_short_answers?: boolean;
+          questions?: Json;
+          phase?: string;
+          question_index?: number;
+          question_closes_at?: string | null;
+          joining_open?: boolean;
+          joining_closes_at?: string | null;
+          state_version?: number;
+          device_seq?: number;
         };
         Relationships: [
           {
@@ -553,6 +684,13 @@ export type Database = {
             columns: ['library_item_id'];
             isOneToOne: false;
             referencedRelation: 'library_items';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'class_sessions_version_id_fkey';
+            columns: ['version_id'];
+            isOneToOne: false;
+            referencedRelation: 'library_item_versions';
             referencedColumns: ['id'];
           },
         ];
@@ -1237,18 +1375,21 @@ export type Database = {
           rater_id: string;
           rating: number;
           created_at: string;
+          updated_at: string;
         };
         Insert: {
           item_id: string;
           rater_id: string;
           rating: number;
           created_at?: string;
+          updated_at?: string;
         };
         Update: {
           item_id?: string;
           rater_id?: string;
           rating?: number;
           created_at?: string;
+          updated_at?: string;
         };
         Relationships: [
           {
@@ -1388,6 +1529,11 @@ export type Database = {
           faith_reviewed_by: string | null;
           review_note: string | null;
           search_document: string;
+          board_owned: boolean;
+          parent_title: string | null;
+          share_cap: Database['public']['Enums']['share_scope'] | null;
+          share_cap_school_id: string | null;
+          no_derivatives: boolean;
         };
         Insert: {
           id?: string;
@@ -1434,6 +1580,11 @@ export type Database = {
           faith_reviewed_by?: string | null;
           review_note?: string | null;
           search_document?: string;
+          board_owned?: boolean;
+          parent_title?: string | null;
+          share_cap?: Database['public']['Enums']['share_scope'] | null;
+          share_cap_school_id?: string | null;
+          no_derivatives?: boolean;
         };
         Update: {
           id?: string;
@@ -1480,6 +1631,11 @@ export type Database = {
           faith_reviewed_by?: string | null;
           review_note?: string | null;
           search_document?: string;
+          board_owned?: boolean;
+          parent_title?: string | null;
+          share_cap?: Database['public']['Enums']['share_scope'] | null;
+          share_cap_school_id?: string | null;
+          no_derivatives?: boolean;
         };
         Relationships: [
           {
@@ -1906,6 +2062,11 @@ export type Database = {
           nickname: string;
           team: string | null;
           joined_at: string;
+          device_number: number;
+          token_hash: string | null;
+          device_key: string;
+          last_seen_at: string;
+          left_at: string | null;
         };
         Insert: {
           id?: string;
@@ -1913,6 +2074,11 @@ export type Database = {
           nickname: string;
           team?: string | null;
           joined_at?: string;
+          device_number: number;
+          token_hash?: string | null;
+          device_key: string;
+          last_seen_at?: string;
+          left_at?: string | null;
         };
         Update: {
           id?: string;
@@ -1920,6 +2086,11 @@ export type Database = {
           nickname?: string;
           team?: string | null;
           joined_at?: string;
+          device_number?: number;
+          token_hash?: string | null;
+          device_key?: string;
+          last_seen_at?: string;
+          left_at?: string | null;
         };
         Relationships: [
           {
@@ -1940,6 +2111,8 @@ export type Database = {
           response: Json;
           is_correct: boolean | null;
           created_at: string;
+          question_index: number;
+          score: number | null;
         };
         Insert: {
           id?: string;
@@ -1949,6 +2122,8 @@ export type Database = {
           response: Json;
           is_correct?: boolean | null;
           created_at?: string;
+          question_index: number;
+          score?: number | null;
         };
         Update: {
           id?: string;
@@ -1958,6 +2133,8 @@ export type Database = {
           response?: Json;
           is_correct?: boolean | null;
           created_at?: string;
+          question_index?: number;
+          score?: number | null;
         };
         Relationships: [
           {
@@ -2933,6 +3110,28 @@ export type Database = {
         Args: { p_absence_id: string };
         Returns: undefined;
       };
+      class_mode_link: {
+        Args: { p_class_id: string; p_replace?: boolean };
+        Returns: string;
+      };
+      class_mode_overview: {
+        Args: { p_class_id: string };
+        Returns: Json;
+      };
+      class_session_control: {
+        Args: {
+          p_session_id: string;
+          p_action: string;
+          p_expected_version: number;
+          p_participant_id?: string;
+          p_team?: string;
+        };
+        Returns: Json;
+      };
+      class_session_live: {
+        Args: { p_session_id: string };
+        Returns: Json;
+      };
       clear_sub_plan_ai: {
         Args: { p_plan_id: string };
         Returns: undefined;
@@ -2954,6 +3153,10 @@ export type Database = {
       delete_student_alert: {
         Args: { p_alert_id: string };
         Returns: undefined;
+      };
+      end_class_session: {
+        Args: { p_session_id: string; p_keep: boolean };
+        Returns: Json;
       };
       get_class_alerts: {
         Args: { p_class_id: string };
@@ -3023,6 +3226,28 @@ export type Database = {
       library_item_ai_preview: {
         Args: { p_school_id: string; p_request: Json };
         Returns: Json;
+      };
+      library_item_lineage: {
+        Args: { p_item_id: string };
+        Returns: {
+          parent_id: string;
+          title: string;
+          available: boolean;
+          credit_kind: string;
+          credit_name: string;
+          school_name: string;
+          pack_title: string;
+        }[];
+      };
+      library_item_stats: {
+        Args: { p_item_ids: string[] };
+        Returns: {
+          item_id: string;
+          rating_average: number;
+          rating_count: number;
+          my_rating: number;
+          usage_count: number;
+        }[];
       };
       library_levels_ai_preview: {
         Args: { p_item_id: string; p_school_id: string; p_level_ids: string[] };
@@ -3128,6 +3353,10 @@ export type Database = {
         };
         Returns: string;
       };
+      rate_library_item: {
+        Args: { p_item_id: string; p_rating: number };
+        Returns: undefined;
+      };
       refresh_sub_plans: {
         Args: { p_absence_id: string; p_plans: Json; p_sources_fingerprint?: string };
         Returns: undefined;
@@ -3135,6 +3364,10 @@ export type Database = {
       release_sub_plan: {
         Args: { p_plan_id: string };
         Returns: undefined;
+      };
+      remix_library_item: {
+        Args: { p_item_id: string; p_new_id: string };
+        Returns: string;
       };
       reorder_unit_lessons: {
         Args: { p_unit_id: string; p_lesson_ids: string[] };
@@ -3204,6 +3437,25 @@ export type Database = {
       set_active_unit: {
         Args: { p_unit_id: string };
         Returns: undefined;
+      };
+      set_class_session_keep: {
+        Args: { p_session_id: string; p_keep: boolean };
+        Returns: undefined;
+      };
+      start_class_session: {
+        Args: {
+          p_class_id: string;
+          p_item_id: string;
+          p_version_id: string;
+          p_mode: string;
+          p_team_count?: number;
+          p_team_choice?: string;
+          p_seconds_per_question?: number;
+          p_reveal_answers?: boolean;
+          p_score_short_answers?: boolean;
+          p_replace_open?: boolean;
+        };
+        Returns: { session_id: string; join_code: string }[];
       };
       sub_plan_access_ended: {
         Args: { p_plan_id: string };

@@ -58,6 +58,17 @@ describe('the first-name guard', () => {
     ).toEqual({ studentNames: ['Samuel', 'Aïcha'], blocked: [] });
   });
 
+  it('reads the original title an adaptation keeps (D-092), even after it is renamed', () => {
+    expect(
+      findPersonalInfo(
+        itemStrings(item({ title: 'Mon quiz', parentTitle: 'Quiz pour Samuel' })),
+        PEOPLE,
+      ),
+    ).toEqual({ studentNames: ['Samuel'], blocked: [] });
+    expect(itemStrings(item({ parentTitle: null }))).not.toContain(null);
+    expect(itemStrings(item({ parentTitle: 'Le huard' }))[1]).toBe('Le huard');
+  });
+
   it('uses the privacy package’s check (its own tests are in packages/ai privacy.test.ts)', () => {
     expect(findPersonalInfo).toBe(privacyFindPersonalInfo);
   });

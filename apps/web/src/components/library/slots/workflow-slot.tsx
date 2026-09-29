@@ -3,7 +3,9 @@ import { getTranslations } from 'next-intl/server';
 import type { LibraryItemView } from '@/server/library/view-model';
 import { loadItemKeys } from '@/server/queries/library';
 import { loadBoardLevelIds } from '@/server/queries/library-authoring';
+import { loadLineage } from '@/server/queries/library-growth';
 import { getSession, librarySchools } from '@/server/session';
+import { lineageText } from '../growth/lineage';
 import { ReadinessChecklist } from '../readiness-checklist';
 import { ReviewPanel } from '../review-panel';
 import { WorkflowActions } from '../workflow-actions';
@@ -19,18 +21,22 @@ import { WorkflowActions } from '../workflow-actions';
 export async function WorkflowSlot({ item }: { item: LibraryItemView }) {
   const session = await getSession();
   if (!session) return null;
-  const keeper =
-    item.mine || (item.source === 'board_created' && item.reviewerKinds.includes('content'));
+  const keeper = item.mine || (item.boardOwn && item.reviewerKinds.includes('content'));
   const reviewer = item.reviewerKinds.length > 0;
   if (!keeper && !reviewer) return null;
 
-  const [t, keys, boardLevelIds] = await Promise.all([
+  const [t, tGrowth, keys, boardLevelIds, lineage] = await Promise.all([
     getTranslations('libraryEdit.workflow'),
+    getTranslations('libraryGrowth'),
     loadItemKeys(
       item.id,
       item.versions.map((v) => v.id),
     ),
     loadBoardLevelIds(item.boardId),
+    // An adaptation's credit, shown when its author shares it (D-092).
+    item.mine && item.status === 'teacher_reviewed' && item.adaptation.isAdaptation
+      ? loadLineage(item.id)
+      : Promise.resolve(null),
   ]);
   const input = {
     item: {
@@ -90,6 +96,10 @@ export async function WorkflowSlot({ item }: { item: LibraryItemView }) {
               personalLevels: item.versions.some((v) => v.personalLevel),
               readyForReview: forReview.ready,
               readyForApproval: forApproval.ready,
+              shareCapSchoolId: item.adaptation.shareCapSchoolId,
+              credit: lineage
+                ? lineageText((key, values) => tGrowth(key, values as never), lineage)
+                : null,
             }}
           />
         </section>

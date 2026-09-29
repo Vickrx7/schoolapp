@@ -34,7 +34,7 @@ export function ItemDetails({ item }: { item: LibraryItemView }) {
     item.faith.requiresReview || item.faith.content || Boolean(item.faith.connection?.trim());
 
   const provenance = [
-    item.source === 'board_created'
+    item.boardOwn
       ? t('provenance.board')
       : item.authorName
         ? t('provenance.author', { name: item.authorName })

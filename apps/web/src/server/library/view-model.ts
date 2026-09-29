@@ -12,6 +12,7 @@ import {
   type LibraryItemType,
 } from '@lynx/content';
 import type { LibraryItemStatus, LibrarySource, ShareScope } from '@lynx/db';
+import type { ItemStats } from './growth';
 
 /** The user's own designation by a board (`library_reviewers`, D-064). */
 export interface LibraryReviewerRole {
@@ -70,7 +71,7 @@ export interface LibraryItemView {
   requested: boolean;
   /** The user wrote it. */
   mine: boolean;
-  /** The board's own item (`board_created`, no author), kept by its content reviewers. */
+  /** The board's own item (`board_owned`: no author), kept by its content reviewers (D-091). */
   boardOwn: boolean;
   /** « Mme Tremblay »; null for the board's own items and authors the user cannot see. */
   authorName: string | null;
@@ -129,6 +130,18 @@ export interface LibraryItemView {
   versions: LibraryVersionView[];
   /** Whether any version has an answer key (staff views only, D-062). */
   hasKeys: boolean;
+  /** « Adapter » (D-092). */
+  adaptation: {
+    /** Adapted from another resource (the credit line is loaded by the lineage slot). */
+    isAdaptation: boolean;
+    /**
+     * An adaptation of a resource shared with one school may be shared at most with that school
+     * (null: no cap).
+     */
+    shareCapSchoolId: string | null;
+    /** Its licence forbids adapting it (a content pack's choice). */
+    noDerivatives: boolean;
+  };
 }
 
 /** A search result (`public.search_library`, S4), as the cards show it. */
@@ -150,6 +163,8 @@ export interface LibraryCardView {
   /** Levels with a version (board levels and the user's own). */
   levelIds: string[];
   updatedAt: string;
+  /** Opinions and usage (D-093), loaded for the page of results; absent when they failed. */
+  stats?: ItemStats | null;
 }
 
 /**
@@ -209,7 +224,8 @@ export function versionOrder<T extends VersionOrderInput>(
 export interface AccessInput {
   boardId: string;
   authorId: string | null;
-  source: LibrarySource;
+  /** The board's own item (`board_owned`, D-091). */
+  boardOwned: boolean;
   status: LibraryItemStatus;
 }
 
@@ -238,8 +254,7 @@ export function libraryAccess(
     ...(role?.reviewsFaith ? (['faith'] as const) : []),
   ];
   const mine = item.authorId !== null && item.authorId === userId;
-  const boardOwn =
-    item.source === 'board_created' && item.authorId === null && reviewerKinds.includes('content');
+  const boardOwn = item.boardOwned && item.authorId === null && reviewerKinds.includes('content');
   const keeper = mine || boardOwn;
   return {
     mine,

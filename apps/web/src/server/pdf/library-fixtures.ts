@@ -83,6 +83,7 @@ export function libraryView(
     review: null,
     versions: [],
     hasKeys: true,
+    adaptation: { isAdaptation: false, shareCapSchoolId: null, noDerivatives: false },
     ...over,
   };
 }

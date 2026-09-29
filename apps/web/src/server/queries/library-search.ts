@@ -10,6 +10,7 @@ import { cache } from 'react';
 import { z } from 'zod';
 import { localized } from '@/i18n/config';
 import { reportError } from '../errors';
+import { MAX_STATS_ITEMS } from '../library/growth';
 import {
   buildCurriculumTree,
   type CurriculumStrandView,
@@ -29,6 +30,7 @@ import type { AttachTarget, LibraryCardView } from '../library/view-model';
 import { aiOn, librarySchools, type SessionContext } from '../session';
 import { createSupabaseServerClient } from '../supabase';
 import { loadLanguageLevels, type LevelOption } from './differentiate';
+import { loadCardStats } from './library-growth';
 
 /**
  * Searching and browsing the library (DECISIONS D-068, D-069): the hub, the results with their
@@ -204,8 +206,9 @@ const PAGES_PER_CALL = 2;
 
 /**
  * The results of a search: its first `search.page` pages (24 items each, « Afficher plus »),
- * the total and the facets, board-approved items first (D-068). Null when the search failed:
- * the page then says so and keeps the search field.
+ * the total and the facets, board-approved items first (D-068), each card with its opinions and
+ * usage (D-093; one call per 50 cards). Null when the search failed: the page then says so and
+ * keeps the search field.
  */
 export async function searchLibrary(search: LibrarySearch): Promise<LibrarySearchResult | null> {
   const supabase = await createSupabaseServerClient();
@@ -269,7 +272,16 @@ export async function searchLibrary(search: LibrarySearch): Promise<LibrarySearc
       updatedAt: item.updatedAt,
     });
   }
-  return { total: firstRow.total, cards: cards.slice(0, wanted), facets: firstRow.facets };
+  const shown = cards.slice(0, wanted);
+  // Opinions and usage: one call per 50 cards, in parallel. Cards keep no stats when they fail.
+  const chunks = Array.from({ length: Math.ceil(shown.length / MAX_STATS_ITEMS) }, (_, i) =>
+    shown.slice(i * MAX_STATS_ITEMS, (i + 1) * MAX_STATS_ITEMS).map((c) => c.id),
+  );
+  const stats = await Promise.all(chunks.map((ids) => loadCardStats(ids)));
+  for (const card of shown) {
+    card.stats = stats.find((m) => m.has(card.id))?.get(card.id) ?? null;
+  }
+  return { total: firstRow.total, cards: shown, facets: firstRow.facets };
 }
 
 /** What the domaine and attente filters name, for the chips above the results. */

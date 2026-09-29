@@ -69,6 +69,7 @@ function view(type: LibraryItemType, over: Partial<LibraryItemView> = {}): Libra
     review: null,
     versions: [],
     hasKeys: true,
+    adaptation: { isAdaptation: false, shareCapSchoolId: null, noDerivatives: false },
     ...over,
   };
 }

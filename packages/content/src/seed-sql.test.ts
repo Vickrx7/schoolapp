@@ -188,6 +188,18 @@ describe('seed-sql', () => {
     expect(sql).not.toContain('requires_faith_review');
   });
 
+  it('C5. writes whether each item is the board’s own (D-091)', () => {
+    const sql = packToSql(pack, items());
+    const inserts = sql.split('insert into public.library_items (').slice(1);
+    expect(inserts).toHaveLength(items().length);
+    for (const insert of inserts) expect(insert).toMatch(/^[^)]*\bboard_owned\b/);
+    // The board's item (no author) is its own; teachers' items are not.
+    expect(sql).toContain("'board_approved', 'board', 'board_created', null, true,");
+    expect(sql).toContain("'teacher_reviewed', 'school', 'teacher_created', r_user_2, false,");
+    expect(sql).toContain("'teacher_reviewed', 'private', 'teacher_created', r_user_3, false,");
+    expect(packToSql(pack, items())).toBe(sql);
+  });
+
   it('refuses what the database would refuse, or a quote tag in the text', () => {
     const [quiz, reflection, experiment] = items();
     expect(() => packToSql(pack, [quiz, reflection])).toThrow(/missing eponges/);

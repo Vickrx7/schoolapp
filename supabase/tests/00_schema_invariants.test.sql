@@ -1,7 +1,7 @@
 -- Schema-wide security invariants: RLS everywhere, nothing for anon, safe definer functions.
 begin;
 \ir _helpers.psql
-select plan(22);
+select plan(31);
 
 select is_empty(
   $$select c.relname from pg_class c join pg_namespace n on n.oid = c.relnamespace
@@ -23,7 +23,7 @@ select is_empty(
 
 select is_empty(
   $$select n.nspname || '.' || p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace
-    where n.nspname in ('public', 'app', 'sub_portal') and p.prosecdef
+    where n.nspname in ('public', 'app', 'sub_portal', 'class_portal') and p.prosecdef
       and not coalesce(array_to_string(p.proconfig, ',') like '%search_path=%', false)$$,
   'every security definer function pins search_path'
 );
@@ -138,7 +138,7 @@ select is_empty(
 -- The substitute portal's role (D-049): it runs the portal functions and nothing else.
 select set_eq(
   $$select p.oid::regprocedure::text from pg_proc p join pg_namespace n on n.oid = p.pronamespace
-    where n.nspname in ('public', 'app', 'sub_portal')
+    where n.nspname in ('public', 'app', 'sub_portal', 'class_portal')
       and has_function_privilege('lynx_sub_portal', p.oid, 'execute')$$,
   $$values ('sub_portal.redeem(text[],text,text)'), ('sub_portal.load(text,integer,text)'),
            ('sub_portal.alerts(text)'), ('sub_portal.end_session(text)'),
@@ -148,7 +148,7 @@ select set_eq(
 
 select is_empty(
   $$select c.oid::regclass::text from pg_class c join pg_namespace n on n.oid = c.relnamespace
-    where n.nspname in ('public', 'app', 'sub_portal') and c.relkind in ('r', 'p', 'v', 'm', 'S')
+    where n.nspname in ('public', 'app', 'sub_portal', 'class_portal') and c.relkind in ('r', 'p', 'v', 'm', 'S')
       and (has_table_privilege('lynx_sub_portal', c.oid, 'select')
         or has_table_privilege('lynx_sub_portal', c.oid, 'insert')
         or has_table_privilege('lynx_sub_portal', c.oid, 'update')
@@ -186,6 +186,99 @@ select is_empty(
       and (has_schema_privilege(r.rolname, 'sub_portal', 'usage')
         or has_function_privilege(r.rolname, p.oid, 'execute'))$$,
   'API roles can neither use the sub_portal schema nor execute its functions'
+);
+
+-- The class portal's role (D-083): student devices run the five portal functions and nothing
+-- else, and read no table.
+select set_eq(
+  $$select p.oid::regprocedure::text from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+    where n.nspname in ('public', 'app', 'sub_portal', 'class_portal')
+      and has_function_privilege('lynx_class_portal', p.oid, 'execute')$$,
+  $$values ('class_portal."join"(text,text,text,text)'), ('class_portal.state(text,integer)'),
+           ('class_portal.set_team(text,text)'), ('class_portal.answer(text,smallint,jsonb)'),
+           ('class_portal.leave(text)')$$,
+  'lynx_class_portal executes exactly the class portal functions, and no public or app function'
+);
+
+select is_empty(
+  $$select c.oid::regclass::text from pg_class c join pg_namespace n on n.oid = c.relnamespace
+    where n.nspname in ('public', 'app', 'sub_portal', 'class_portal') and c.relkind in ('r', 'p', 'v', 'm', 'S')
+      and (has_table_privilege('lynx_class_portal', c.oid, 'select')
+        or has_table_privilege('lynx_class_portal', c.oid, 'insert')
+        or has_table_privilege('lynx_class_portal', c.oid, 'update')
+        or has_table_privilege('lynx_class_portal', c.oid, 'delete'))$$,
+  'lynx_class_portal has no table privileges'
+);
+
+select results_eq(
+  $$select rolsuper, rolinherit, rolcreaterole, rolcreatedb, rolbypassrls, rolreplication
+    from pg_roles where rolname = 'lynx_class_portal'$$,
+  $$values (false, false, false, false, false, false)$$,
+  'lynx_class_portal is a plain role: no inheritance, no bypass of row level security'
+);
+
+select ok(
+  exists (select 1 from pg_db_role_setting s
+          where s.setrole = 'lynx_class_portal'::regrole and s.setdatabase = 0
+            and 'statement_timeout=3s' = any (s.setconfig)),
+  'class portal calls are cut off after 3 seconds (password logins; the web pool sets it too)'
+);
+
+select ok(
+  not pg_has_role('authenticator', 'lynx_class_portal', 'member')
+  and not pg_has_role('anon', 'lynx_class_portal', 'member')
+  and not pg_has_role('authenticated', 'lynx_class_portal', 'member')
+  and not pg_has_role('service_role', 'lynx_class_portal', 'member')
+  and not pg_has_role('lynx_sub_portal', 'lynx_class_portal', 'member')
+  and not pg_has_role('lynx_class_portal', 'lynx_sub_portal', 'member'),
+  'no API role can become the class portal role, and the two portal roles stay apart'
+);
+
+select is_empty(
+  $$select r.rolname, p.proname
+    from unnest(array['anon', 'authenticated', 'service_role', 'lynx_sub_portal']) r (rolname)
+    cross join pg_proc p join pg_namespace n on n.oid = p.pronamespace
+    where n.nspname = 'class_portal'
+      and (has_schema_privilege(r.rolname, 'class_portal', 'usage')
+        or has_function_privilege(r.rolname, p.oid, 'execute'))$$,
+  'API roles and the substitute portal can neither use the class_portal schema nor execute its functions'
+);
+
+-- Class mode data (D-086, D-088, D-089): keys, devices, answers, join failures and class links
+-- are not readable through the API; sessions and kept results change only through functions.
+select is_empty(
+  $$select t.tbl || ' ' || p.priv
+    from unnest(array['public.class_session_keys', 'public.class_join_failures',
+      'public.class_mode_links', 'public.session_participants', 'public.session_responses']) t (tbl)
+    cross join unnest(array['select', 'insert', 'update', 'delete']) p (priv)
+    cross join unnest(array['anon', 'authenticated']) r (rolname)
+    where has_table_privilege(r.rolname, t.tbl, p.priv)
+      or (p.priv in ('select', 'insert', 'update') and has_any_column_privilege(r.rolname, t.tbl, p.priv))$$,
+  'API roles cannot touch session keys, join failures, class links, devices or answers'
+);
+
+select ok(
+  not has_table_privilege('authenticated', 'public.class_sessions', 'insert')
+  and not has_table_privilege('authenticated', 'public.class_sessions', 'update')
+  and not has_any_column_privilege('authenticated', 'public.class_sessions', 'insert')
+  and not has_any_column_privilege('authenticated', 'public.class_sessions', 'update')
+  and not has_column_privilege('authenticated', 'public.class_sessions', 'status', 'update')
+  and not has_table_privilege('authenticated', 'public.class_session_results', 'insert')
+  and not has_table_privilege('authenticated', 'public.class_session_results', 'update')
+  and not has_table_privilege('authenticated', 'public.class_session_results', 'delete')
+  and not has_any_column_privilege('authenticated', 'public.class_session_results', 'insert')
+  and not has_any_column_privilege('authenticated', 'public.class_session_results', 'update'),
+  'class sessions and kept results are written only through functions'
+);
+
+-- Opinions (D-093): written only through rate_library_item, which checks who may give one.
+select ok(
+  not has_table_privilege('authenticated', 'public.library_item_ratings', 'insert')
+  and not has_table_privilege('authenticated', 'public.library_item_ratings', 'update')
+  and not has_table_privilege('authenticated', 'public.library_item_ratings', 'delete')
+  and not has_any_column_privilege('authenticated', 'public.library_item_ratings', 'insert')
+  and not has_any_column_privilege('authenticated', 'public.library_item_ratings', 'update'),
+  'authenticated writes opinions only through rate_library_item'
 );
 
 select * from finish();

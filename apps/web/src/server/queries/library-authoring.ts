@@ -145,6 +145,8 @@ export interface MineItem {
   /** The reviewer's note (« À retravailler »). */
   reviewNote: string | null;
   source: 'teacher_created' | 'ai_generated' | 'board_created';
+  /** Adapted from another resource (« Adaptation », D-092). */
+  adaptation: boolean;
   gradeCodes: string[];
   updatedAt: string;
 }
@@ -187,7 +189,7 @@ export const loadMyLibrary = cache(async (session: SessionContext): Promise<MyLi
     supabase
       .from('library_items')
       .select(
-        'id, type, title, status, share_scope, review_requested_at, review_note, source, updated_at, library_item_grades(grade_code)',
+        'id, type, title, status, share_scope, review_requested_at, review_note, source, parent_item_id, parent_title, updated_at, library_item_grades(grade_code)',
       )
       .eq('author_id', session.userId)
       .order('updated_at', { ascending: false })
@@ -214,6 +216,7 @@ export const loadMyLibrary = cache(async (session: SessionContext): Promise<MyLi
         requested: i.review_requested_at !== null,
         reviewNote: i.review_note,
         source: i.source,
+        adaptation: i.parent_item_id !== null || i.parent_title !== null,
         gradeCodes: i.library_item_grades.map((g) => g.grade_code).sort(),
         updatedAt: i.updated_at,
       })),

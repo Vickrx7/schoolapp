@@ -957,7 +957,17 @@ purpose is to see who needs help tomorrow, which anonymous play cannot show). No
 imports `@lynx/ai`, and the portal role can execute no AI function (students never use AI, D-039).
 _Why:_ most classrooms will project without devices, and a presentation that holds nobody's data
 should leave nothing in the database; prayers, songs and riddles are projected every day. Deviation
-from SPEC §9.3 (« Class mode »): exit tickets are presented, not played on devices.
+from SPEC §9.3 (« Class mode »): exit tickets are presented, not played on devices. As built
+(slice S2): « Présenter » is offered to library users (teachers and direction at a school with the
+Library module) for items they can use in class, the rule of « Ajouter à ma planification » (their
+own items that are not archived, and reviewed or approved items shared with them), not every item
+they can read: a reviewer reading a colleague's item that waits for review does not project it. The
+page's loader reads only what the slides need (never the key table, the safety notes or a level's
+name), and « Afficher la réponse » answers only questions shown on a question slide. The labels
+projected on the slides (« Étape 2 sur 6 », « Sécurité », « Vrai »…) are in the content's language
+(D-090), like the content; the player's controls stay in the interface language. The button opens
+the projector as a new page load, not an in-app navigation, so the projector's tab never holds the
+item page's data (its « Guide et corrigé », the teacher's note, the safety notes).
 
 **D-083 — Student devices reach the database only through a private schema run by a dedicated role
 (amends D-012; the pattern of D-049).** The functions live in schema `class_portal`, which PostgREST
@@ -1014,7 +1024,10 @@ names (`findPersonalInfo`) and warns (« Lancer quand même »). Deviation from 
 team name or nickname »): devices get generated numbers and fixed team names (D-088). _Why:_ 22⁶ ≈
 1.1·10⁸ codes open a few minutes at a time: about 760 guesses an hour per network give about
 1.4·10⁻⁴ chance per hour of reaching one of 20 open lobbies, for an extra device the teacher sees;
-class devices use the unguessable link.
+class devices use the unguessable link. As built (slice S1): a device that joins the same session
+again (same device key, for example after « Quitter ») gets its number, team and answers back
+instead of a new number, so re-joining cannot fill the session; joining an expired session closes
+it and answers « locked » (code) or « waiting » (link).
 
 **D-085 — Live updates by short polling, not Server-Sent Events or Realtime.** Devices call `GET
 /jouer/api/state?v=<stateVersion>` every 1.5 s ± 250 ms while the page is visible, and back off to 5
@@ -1024,7 +1037,10 @@ touched at most every 10 s, and « connecté » means seen within 20 s. The proj
 `useProjectorState`, so it can move to Server-Sent Events without SQL changes. _Why:_ Realtime is
 not in CI and needs `anon` (D-012); school filtering proxies often buffer or cut long-lived streams;
 polling is stateless and easy to test; scoring ignores speed (D-087), so 1–2 s of latency is fair to
-everyone. About 20 small requests a second per class.
+everyone. About 20 small requests a second per class. As built (slice S1): only the teacher's
+actions change `state_version` (and so wake the devices); a device joining, leaving, choosing its
+team or answering does not, so a device can never make the projector's next action fail as stale
+(LXC02). A device gets its own changes in the reply to its call.
 
 **D-086 — Answer keys never reach devices; a device sees only its own result, only after the
 question closes, and only when answers are shown (Assumption on the device feedback).** At start,
@@ -1060,7 +1076,12 @@ and silent devices do not change it. A device that leaves keeps its answers unti
 a device the teacher removes loses them. Empty teams show « — » and rank last; ties share a rank. In
 « Chacun pour soi » the projector shows class figures only (« 74 % de bonnes réponses »), never
 device numbers, and each device sees only its own total. _Why:_ fair to classes of mixed language
-levels, and nobody is ranked in public.
+levels, and nobody is ranked in public. As built (slice S1): a question is scored only when its
+key entry is complete and fits the question (a single-answer question with one right choice, every
+left item of a matching paired once, an ordering that is a permutation of the items); otherwise its
+answers are recorded and not scored. An answer with any other field, or an id the question does not
+have, is refused as invalid. A team's `members` counts its devices, including one that left (its
+answers still count); team scores are rounded to whole points.
 
 **D-088 — Nothing a student types is stored (Assumption).** There are no free nicknames: devices are
 numbered (« Tu es l'appareil 7 »), and teams come from a fixed list (« Les Huards », « Les
@@ -1085,7 +1106,11 @@ down still deletes at the next class-mode call for that class. Each end is audit
 (`class_session.ended`, counts only). Kept results last `classModeResultsRetentionDays` (a board
 setting, default 365 days); closed sessions without results are deleted after 30 days and join
 failures after a day. Deleted rows survive in database backups and point-in-time recovery for the
-backup window, which `docs/phase-5.md` (and PRIVACY.md in Phase 6) says.
+backup window, which `docs/phase-5.md` (and PRIVACY.md in Phase 6) says. As built (slice S1): the
+projector's controls and « Garder les résultats » refuse an expired session with LXC05 without
+closing it (an error would undo the deletion); the projector's next poll closes it a second later.
+Only a closed session can be deleted through the API (« Supprimer » on kept results), so an open one
+always ends through `end_class_session`, with its answers deleted and the end audited.
 
 **D-090 — Who runs class mode, one version per session, French student screens (Assumption).** Class
 mode is part of the Library module; the class tab « Mode classe » also needs Teaching, as every
@@ -1110,7 +1135,11 @@ keep board items at any status, and may delete board drafts (draft, sent back or
 Approving a board-owned item makes it board-shared (`share_scope = 'board'`); before that it is
 private. An item whose author was deleted does not become board-owned and stays unreadable, so
 nobody reads a teacher's private drafts (D-065). `app.am_library_reviewer(board, kind)` (the current
-user) is added for policies; `app.library_reviewer(p_user, …)` stays service-role only.
+user) is added for policies; `app.library_reviewer(p_user, …)` stays service-role only. As built
+(slice S4, `20261101090100_library_growth.sql`): the flag never changes after creation (a trigger
+refuses it, 22023); the seed's and tests' board items were marked by the migration; the item page's
+« Ressource du conseil scolaire » and the reviewer's editing follow the flag, not the source (a
+board's AI draft is `ai_generated` and the board's).
 
 **D-092 — « Adapter » (remix): a private copy with lineage, credit and a sharing cap (uses the D-081
 hook; amends D-063).** `public.remix_library_item` copies any item the user can use (their own, or
@@ -1131,7 +1160,18 @@ school only for a school-scoped original), « (Conseil scolaire) » for board it
 « … ») » for pack items (Phase 4's word for content packs on the item page), or « (ressource
 d'origine non disponible) ». The first-name guard (D-066) also reads `parent_title`. Approved items
 stay read-only: to change one, even her own, a teacher adapts it. Audited as `library_item.remixed
-{parent_item_id}`.
+{parent_item_id}`. As built (slice S4): an original from a content pack credits the pack even when
+the board owns it (the demo resources credit « (ensemble « Ressources de démonstration (à valider
+en classe) ») », as their « Détails » already name the pack), then board items « (Conseil
+scolaire) », then the author; an original whose author was deleted names no one. The user must be
+staff of the original's board (as for any new resource). The copy's school is the cap's, else the
+original's when the user works there, else her only school in the board (none when she has several:
+she picks one when sharing). A capped adaptation cannot be proposed to the board either (`LXM03`
+from `library_request_approval`, since approval shares board-wide). « Adapter » is offered on the
+item page for resources the user can use, her own only once approved (she edits the others); a
+licence that forbids it shows « Cette ressource ne peut pas être adaptée (licence). » instead. The
+editor of an adaptation shows its credit line too, « Partager » shows the credit colleagues will
+see, and « Mes ressources » marks it « Adaptation ».
 
 **D-093 — Opinions (« Votre avis »): anonymous stars on board-approved items, an average from 5
 opinions, rounded to the half star (Assumption; deviation from SPEC §9.3).** A staff member who can
@@ -1144,7 +1184,13 @@ audited; nobody, reviewers and direction included, sees who rated. Cards and the
 4,5 sur 5 (7 avis) » from 5 opinions, and below that « 3 avis : pas encore assez pour une moyenne ».
 Usage is Phase 4's `usage_count` (« Utilisée dans 12 unités », D-076); class-mode plays are not
 counted. The label is « Votre avis », because « appréciation » evokes « appréciation du rendement »
-in Ontario schools.
+in Ontario schools. As built (slice S4): `public.library_item_stats` gives the average, the count,
+the user's own stars and the usage for up to 50 items she can use (one call per page of results);
+direct writes to `library_item_ratings` are closed. The stars are a radio group saved on each
+choice (the last one when the arrows move through several), with « Retirer mon avis »; with no
+opinion yet the item page says « Aucun avis pour l'instant » (cards show nothing), and an author
+sees « Avis des collègues » on her own approved resource, without stars. Every card shows its
+usage, « Pas encore utilisée dans une unité » at 0.
 
 **D-094 — Coverage counts board-approved items linked directly.** « Couverture du curriculum »
 (`/library/coverage`, and `pnpm admin coverage` from the same database function) lists, for a grade

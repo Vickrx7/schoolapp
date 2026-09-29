@@ -12,6 +12,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Field, Select } from '@/components/ui/field';
 import { useAction } from '@/hooks/use-action';
 import { shareItem } from '@/server/actions/library';
+import { allowedScopes } from '@/server/library/growth';
 import { NamesDialog, type NamesCheckState } from './names-dialog';
 
 /**
@@ -20,14 +21,20 @@ import { NamesDialog, type NamesCheckState } from './names-dialog';
  * faith-reviewed cannot go to the whole board (« proposez la ressource au conseil »). The
  * first-name guard runs before anything is shared: each student's name found is confirmed or
  * removed, and personal details always block.
+ *
+ * An adaptation (D-092) shows the credit its colleagues will see, and an adaptation of a resource
+ * shared with one school can go at most to that school (« Cette adaptation peut être partagée au
+ * plus avec votre école. »); the database refuses anything wider on every path (LXM03).
  */
 export function ShareDialog({
   itemId,
   current,
   schoolId,
-  schools,
+  schools: allSchools,
   faithBlocksBoard,
   personalLevels,
+  capSchoolId = null,
+  credit = null,
 }: {
   itemId: string;
   current: ShareScope;
@@ -37,10 +44,19 @@ export function ShareDialog({
   schools: { id: string; name: string }[];
   faithBlocksBoard: boolean;
   personalLevels: boolean;
+  /** The only school an adaptation may be shared with (null: no cap). */
+  capSchoolId?: string | null;
+  /** An adaptation's credit line (« Adaptée de « … » (Conseil scolaire) »). */
+  credit?: string | null;
 }) {
   const t = useTranslations('libraryEdit.share');
+  const tGrowth = useTranslations('libraryGrowth');
   const tCommon = useTranslations('common');
   const router = useRouter();
+  const allowed = allowedScopes(capSchoolId);
+  const schools = allowed.schoolIds
+    ? allSchools.filter((s) => allowed.schoolIds!.includes(s.id))
+    : allSchools;
   const [open, setOpen] = useState(false);
   const [scope, setScope] = useState<ShareScope>(current === 'private' ? 'school' : current);
   const [school, setSchool] = useState(
@@ -69,13 +85,18 @@ export function ShareDialog({
     router.refresh();
   };
 
+  const capped = !allowed.scopes.includes('board');
   const options: { value: ShareScope; disabled: boolean; hint?: string }[] = [
     { value: 'private', disabled: false },
     { value: 'school', disabled: personalLevels || !schools.length },
     {
       value: 'board',
-      disabled: personalLevels || faithBlocksBoard,
-      hint: faithBlocksBoard ? t('faithBoardHint') : undefined,
+      disabled: personalLevels || faithBlocksBoard || capped,
+      hint: capped
+        ? tGrowth('shareCap', { scope: 'school' })
+        : faithBlocksBoard
+          ? t('faithBoardHint')
+          : undefined,
     },
   ];
 
@@ -95,6 +116,9 @@ export function ShareDialog({
             }}
           >
             {personalLevels ? <Notice tone="warning">{t('personalLevels')}</Notice> : null}
+            {credit ? (
+              <p className="text-sm text-slate-700">{tGrowth('shareCredit', { credit })}</p>
+            ) : null}
             <fieldset className="space-y-1">
               <legend className="text-sm font-medium text-slate-700">{t('scope')}</legend>
               {options.map((o) => (

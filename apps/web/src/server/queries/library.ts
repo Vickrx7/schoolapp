@@ -25,6 +25,7 @@ const ITEM_COLUMNS = `id, board_id, school_id, type, bucket, title, summary, sta
   catholic_reference_id, faith_content, faith_flagged_by, faith_on_student_sheet,
   requires_faith_review, prompt_version, model, usage_count, content_revision,
   review_requested_at, approved_at, faith_reviewed_at, review_note, created_at, updated_at,
+  board_owned, parent_item_id, parent_title, share_cap_school_id, no_derivatives,
   subjects(id, code, label_fr, label_en),
   schools(name),
   catholic_references(title),
@@ -83,7 +84,12 @@ export const loadLibraryItem = cache(
     if (!row || !isLibraryItemType(row.type)) return null;
 
     const access = libraryAccess(
-      { boardId: row.board_id, authorId: row.author_id, source: row.source, status: row.status },
+      {
+        boardId: row.board_id,
+        authorId: row.author_id,
+        boardOwned: row.board_owned,
+        status: row.status,
+      },
       session.userId,
       session.libraryReviewer,
     );
@@ -129,7 +135,7 @@ export const loadLibraryItem = cache(
       source: row.source,
       requested: row.review_requested_at !== null,
       mine: access.mine,
-      boardOwn: row.source === 'board_created' && row.author_id === null,
+      boardOwn: row.board_owned,
       authorName: author ? formalStaffName(author.display_name, author.honorific) : null,
       subject: row.subjects
         ? {
@@ -209,6 +215,11 @@ export const loadLibraryItem = cache(
           : null,
       versions: versionViews,
       hasKeys: versionViews.some((v) => v.hasKey),
+      adaptation: {
+        isAdaptation: row.parent_item_id !== null || row.parent_title !== null,
+        shareCapSchoolId: row.share_cap_school_id,
+        noDerivatives: row.no_derivatives,
+      },
     };
   },
 );

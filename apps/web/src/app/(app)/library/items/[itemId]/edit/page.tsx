@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { z } from 'zod';
 import { ItemEditor } from '@/components/library/editor/item-editor';
+import { LineageSlot } from '@/components/library/slots/lineage-slot';
 import { PageHeader } from '@/components/ui/page';
 import { editorFormFromItem } from '@/server/library/editor-form';
 import { loadItemKeys, loadLibraryItem } from '@/server/queries/library';
@@ -60,6 +61,8 @@ export default async function EditLibraryItemPage({ params }: Props) {
         title={t('editTitle')}
         subtitle={item.title}
       />
+      {/* « Adaptée de « … » » for an adaptation (Phase 5, D-092). */}
+      <LineageSlot item={item} />
       <ItemEditor
         mode="edit"
         itemId={item.id}

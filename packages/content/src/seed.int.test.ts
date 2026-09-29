@@ -72,6 +72,7 @@ interface SeededItem {
   status: string;
   share_scope: string;
   source: string;
+  board_owned: boolean;
   author: string | null;
   school: string | null;
   subject: string | null;
@@ -97,7 +98,7 @@ interface SeededItem {
 async function seededItems(): Promise<Map<string, SeededItem>> {
   const { rows } = await pool.query<SeededItem>(
     `select i.id, i.type::text, i.bucket::text, i.title, i.status::text, i.share_scope::text,
-       i.source::text, au.email as author, sc.slug as school, su.code as subject,
+       i.source::text, i.board_owned, au.email as author, sc.slug as school, su.code as subject,
        i.duration_minutes, i.sub_friendly, i.faith_content, i.requires_faith_review,
        cr.title as catholic_reference, rq.email as review_requested_by,
        ap.email as approved_by, fr.email as faith_reviewed_by, i.prompt_version, i.model,
@@ -184,6 +185,7 @@ describe('the demo library seed (H3 2)', () => {
           status: row!.status,
           scope: row!.share_scope,
           source: row!.source,
+          boardOwned: row!.board_owned,
           author: row!.author,
           school: row!.school,
           subject: row!.subject,
@@ -210,6 +212,8 @@ describe('the demo library seed (H3 2)', () => {
         status: item.status,
         scope: item.shareScope,
         source: item.source,
+        // The board's own items (D-091): no author, kept by its content reviewers.
+        boardOwned: item.source === 'board_created',
         author: item.author,
         school: item.school,
         subject: item.subjectCode,
@@ -372,6 +376,52 @@ describe('the demo library seed (H3 2)', () => {
         is_verified: false,
       },
     ]);
+  });
+});
+
+describe('the library growth demo (40_library_growth_demo.sql)', () => {
+  const MARC = 'd0000000-0000-4000-8000-000000000002';
+  const PAUL = 'd0000000-0000-4000-8000-000000000003';
+  const ADAPTATION = '40000000-0000-4000-8000-000000000001';
+
+  it('gives « Le huard, oiseau des lacs » two opinions, too few for an average', async () => {
+    const { rows } = await pool.query<{ rater_id: string; rating: number }>(
+      `select rater_id, rating from public.library_item_ratings where item_id = $1 order by rating desc`,
+      [idOf('huard-oiseau-des-lacs')],
+    );
+    expect(rows).toEqual([
+      { rater_id: MARC, rating: 5 },
+      { rater_id: PAUL, rating: 4 },
+    ]);
+  });
+
+  it('holds Marc’s private adaptation of a board resource, credited to its original', async () => {
+    const original = idOf('moyenne-mediane-mode');
+    const { rows } = await pool.query(
+      `select i.status::text, i.share_scope::text, i.source::text, i.author_id, i.board_owned,
+         i.parent_item_id, i.parent_title, i.share_cap::text, i.sub_friendly,
+         (select count(*)::int from public.library_item_versions v where v.item_id = i.id) as versions,
+         (select count(*)::int from public.library_item_versions v where v.item_id = $2) as original_versions,
+         exists (select 1 from public.audit_log a where a.action = 'library_item.remixed'
+                 and a.entity_id = i.id and a.actor_user_id = $3) as audited
+       from public.library_items i where i.id = $1`,
+      [ADAPTATION, original, MARC],
+    );
+    expect(rows).toHaveLength(1);
+    const row = rows[0]!;
+    expect(row).toMatchObject({
+      status: 'draft',
+      share_scope: 'private',
+      source: 'teacher_created',
+      author_id: MARC,
+      board_owned: false,
+      parent_item_id: original,
+      parent_title: 'La moyenne, la médiane et le mode',
+      share_cap: null,
+      sub_friendly: false,
+      audited: true,
+    });
+    expect(row.versions).toBe(row.original_versions);
   });
 });
 

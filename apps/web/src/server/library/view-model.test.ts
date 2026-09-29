@@ -52,7 +52,7 @@ describe('what the screens offer', () => {
   const item = (over: Partial<Parameters<typeof libraryAccess>[0]> = {}) => ({
     boardId: BOARD,
     authorId: ME,
-    source: 'teacher_created' as const,
+    boardOwned: false,
     status: 'draft' as const,
     ...over,
   });
@@ -81,7 +81,7 @@ describe('what the screens offer', () => {
   });
 
   it('lets content reviewers keep the board’s own items, not faith reviewers', () => {
-    const board = item({ authorId: null, source: 'board_created' });
+    const board = item({ authorId: null, boardOwned: true });
     expect(libraryAccess(board, ME, contentReviewer).canEdit).toBe(true);
     const faithOnly = [{ boardId: BOARD, approvesContent: false, reviewsFaith: true }];
     expect(libraryAccess(board, ME, faithOnly)).toEqual({
@@ -94,6 +94,14 @@ describe('what the screens offer', () => {
     const elsewhere = [{ boardId: OTHER_BOARD, approvesContent: true, reviewsFaith: true }];
     expect(libraryAccess(board, ME, elsewhere).reviewerKinds).toEqual([]);
     expect(libraryAccess(board, ME, elsewhere).canEdit).toBe(false);
+  });
+
+  it('never gives a reviewer an item whose author was deleted (not the board’s, D-091)', () => {
+    const orphan = item({ authorId: null, boardOwned: false });
+    expect(libraryAccess(orphan, ME, contentReviewer)).toMatchObject({
+      keeper: false,
+      canEdit: false,
+    });
   });
 });
 

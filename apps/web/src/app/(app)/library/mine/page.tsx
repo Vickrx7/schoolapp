@@ -38,9 +38,10 @@ export default async function MyLibraryPage({
   const session = await requireSession();
   if (!librarySchools(session).length) notFound();
   const locale = await getLocale();
-  const [t, tc, format, library, options, query] = await Promise.all([
+  const [t, tc, tg, format, library, options, query] = await Promise.all([
     getTranslations('libraryEdit.mine'),
     getTranslations('libraryCommon'),
+    getTranslations('libraryGrowth'),
     getFormatter(),
     loadMyLibrary(session),
     loadLibrarySearchOptions(session, locale),
@@ -145,6 +146,7 @@ export default async function MyLibraryPage({
                       <span>{item.gradeCodes.map(gradeLabel).join(', ')}</span>
                     ) : null}
                     {item.source === 'ai_generated' ? <Badge>{tc('badges.ai')}</Badge> : null}
+                    {item.adaptation ? <Badge>{tg('badge')}</Badge> : null}
                     {item.requested ? <Badge tone="brand">{tc('requested')}</Badge> : null}
                     {tab === 'shared' ? <Badge>{tc(`scope.${item.shareScope}`)}</Badge> : null}
                   </p>

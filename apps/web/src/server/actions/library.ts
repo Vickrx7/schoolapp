@@ -71,6 +71,8 @@ interface StoredItem {
   status: string;
   shareScope: ShareScope;
   contentRevision: number;
+  /** An adaptation's original title as copied (D-092): colleagues see it, so the guard reads it. */
+  parentTitle: string | null;
   /** In the save payload's shape, so the guard and readiness read it like a new save. */
   payload: LibraryItemForm;
 }
@@ -82,7 +84,7 @@ async function loadStoredItem(
   const { data } = await supabase
     .from('library_items')
     .select(
-      'id, board_id, school_id, author_id, type, title, summary, licence, subject_id, duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive, sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection, catholic_reference_id, status, share_scope, content_revision, library_item_grades(grade_code), library_item_expectations(expectation_id), library_item_tags(tag_id), library_item_versions(language_level_id, content, library_item_answer_keys(answer_key))',
+      'id, board_id, school_id, author_id, parent_title, type, title, summary, licence, subject_id, duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive, sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection, catholic_reference_id, status, share_scope, content_revision, library_item_grades(grade_code), library_item_expectations(expectation_id), library_item_tags(tag_id), library_item_versions(language_level_id, content, library_item_answer_keys(answer_key))',
     )
     .eq('id', itemId)
     .maybeSingle();
@@ -96,6 +98,7 @@ async function loadStoredItem(
     status: data.status,
     shareScope: data.share_scope,
     contentRevision: data.content_revision,
+    parentTitle: data.parent_title,
     payload: {
       type: data.type,
       boardId: data.board_id,
@@ -129,16 +132,21 @@ async function loadStoredItem(
   };
 }
 
-/** The first-name guard (D-066) over a payload, with the students of the user's schools. */
+/**
+ * The first-name guard (D-066) over a payload, with the students of the user's schools; and an
+ * adaptation's original title as copied (`parentTitle`, D-092).
+ */
 async function runGuard(
   supabase: ServerSupabase,
   payload: LibraryItemForm,
   confirmedNames: readonly string[],
+  parentTitle: string | null,
 ): Promise<GuardVerdict> {
   const people = await visiblePeople(supabase);
   const findings = findPersonalInfo(
     itemStrings({
       title: payload.title,
+      parentTitle,
       summary: payload.summary,
       materials: payload.materials,
       keywords: payload.keywords,
@@ -214,7 +222,7 @@ export async function saveLibraryItem(
       if (Object.keys(errors).length) return fail('libraryNotReady', errors);
     }
     if (stored.shareScope !== 'private') {
-      const verdict = await runGuard(supabase, payload, parsedNames.data);
+      const verdict = await runGuard(supabase, payload, parsedNames.data, stored.parentTitle);
       if (!verdict.ok)
         return ok({ status: 'names', names: verdict.names, blocked: verdict.blocked });
     }
@@ -383,7 +391,7 @@ export async function shareItem(
   if (!stored) return fail('notFound');
   let namesConfirmed = 0;
   if (input.data.scope !== 'private') {
-    const verdict = await runGuard(supabase, stored.payload, input.data.names);
+    const verdict = await runGuard(supabase, stored.payload, input.data.names, stored.parentTitle);
     if (!verdict.ok) return ok({ done: false, names: verdict.names, blocked: verdict.blocked });
     namesConfirmed = verdict.namesConfirmed;
   }
@@ -428,7 +436,7 @@ export async function requestApproval(
     forApproval: true,
   });
   if (!readiness.ready) return fail('libraryNotReady', readinessKeys(readiness.blocking));
-  const verdict = await runGuard(supabase, stored.payload, names.data);
+  const verdict = await runGuard(supabase, stored.payload, names.data, stored.parentTitle);
   if (!verdict.ok) return ok({ done: false, names: verdict.names, blocked: verdict.blocked });
   const { error } = await supabase.rpc('library_request_approval', { p_item_id: itemId });
   if (error) return fail(reportError('requestApproval', error), readinessFieldErrors(error));

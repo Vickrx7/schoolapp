@@ -25,10 +25,9 @@ export function ItemHeader({
 }) {
   const t = useTranslations('libraryItem');
   const tc = useTranslations('libraryCommon');
-  const origin =
-    item.source === 'board_created'
-      ? t('provenance.board')
-      : [item.authorName, item.schoolName].filter(Boolean).join(' · ');
+  const origin = item.boardOwn
+    ? t('provenance.board')
+    : [item.authorName, item.schoolName].filter(Boolean).join(' · ');
 
   return (
     <div className="space-y-3">

@@ -473,5 +473,11 @@ insert into public.library_reviewers (board_id, user_id, approves_content, revie
 
 alter role lynx_sub_portal with login password 'lynx-sub-portal-local-only';
 
+-- The class portal's database login (DECISIONS D-083), for local development and CI ONLY: the
+-- web server connects with it through CLASS_PORTAL_DATABASE_URL (.env.example) for student
+-- devices. Never reuse this password: in production the operator sets a secret one
+-- (docs/phase-5.md).
+alter role lynx_class_portal with login password 'lynx-class-portal-local-only';
+
 -- The seed's own events are just noise for the worker.
 delete from public.event_outbox;

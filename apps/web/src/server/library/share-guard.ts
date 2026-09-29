@@ -31,6 +31,11 @@ export function proseStrings(value: unknown, out: string[] = []): string[] {
 
 export interface GuardedItem {
   title: string;
+  /**
+   * An adaptation's original title as copied (D-092): colleagues see it in the credit line, even
+   * after the adaptation is renamed.
+   */
+  parentTitle?: string | null;
   summary: string | null;
   materials: string | null;
   keywords: string | null;
@@ -44,6 +49,7 @@ export function itemStrings(item: GuardedItem): string[] {
   const out: string[] = [];
   for (const text of [
     item.title,
+    item.parentTitle,
     item.summary,
     item.materials,
     item.keywords,

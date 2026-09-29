@@ -1,7 +1,8 @@
 -- Baseline rules for tables whose features arrive in later phases.
 begin;
 \ir _helpers.psql
-select plan(23);
+\ir _class_mode_helpers.psql
+select plan(24);
 select tests.build_fixture();
 
 -- Library: private drafts, sharing only after review, safety notes for experiments. Content is
@@ -111,19 +112,26 @@ select is((select count(*)::int from public.absences where teacher_id = tests.id
   'colleagues do not see each other''s absences');
 select tests.clear_authentication();
 
--- Class mode: teachers run sessions; participants never come in through the teacher API.
+-- Class mode: teachers run sessions through functions (D-086, D-089); devices never come in
+-- through the teacher API. The rules themselves are in 20_class_mode and 21_class_mode_privacy.
+select tests.battle_quiz('battle', 'teacher_a');
 select tests.authenticate_as('teacher_a');
 select lives_ok(
-  $$insert into public.class_sessions (id, class_id, join_code, expires_at)
-    values (tests.remember('session', gen_random_uuid()), tests.id('class_a'), 'ABCD12', now() + interval '1 hour')$$,
+  $$select tests.remember('session', (select session_id from public.start_class_session(
+      tests.id('class_a'), tests.id('battle'), null, 'solo')))$$,
   'a teacher can open a class-mode session'
+);
+select throws_ok(
+  $$insert into public.class_sessions (class_id, join_code, expires_at)
+    values (tests.id('class_a'), 'ACDEFH', now() + interval '1 hour')$$,
+  '42501', null, 'sessions are not written directly'
 );
 select throws_ok(
   $$insert into public.session_participants (session_id, nickname) values (tests.id('session'), 'Les Castors')$$,
   '42501', null, 'participants cannot be added through the teacher API'
 );
 select throws_ok(
-  $$insert into public.class_sessions (class_id, join_code, expires_at) values (tests.id('class_b'), 'ZZZZ99', now())$$,
+  $$select public.start_class_session(tests.id('class_b'), tests.id('battle'), null, 'solo')$$,
   '42501', null, 'a teacher cannot open a session for another class'
 );
 select tests.clear_authentication();

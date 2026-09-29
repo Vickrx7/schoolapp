@@ -86,10 +86,11 @@ Ardoise). No availability or trademark check has been done yet.
 | `e0ab7de` | Phase 5 head start: class-mode slides and the content pack format (pure code, tests)     |
 | `d37bbb6` | Phase 5 head start: class portal codes and gate, coverage and lineage views (pure)       |
 | `219d5bb` | Library expansion: 49 more demo resources (78) and the curriculum sample, « À vérifier » |
-| (latest)  | Phase 5 foundation: D-082 to D-101, settings, messages, empty hooks, admin, worker tasks |
+| `a01e06d` | Phase 5 foundation: D-082 to D-101, settings, messages, empty hooks, admin, worker tasks |
+| (latest)  | Phase 5: class-mode database, « Présenter à la classe », « Adapter », « Votre avis »     |
 
-**Verified (locally, from an empty database, and in CI on each pushed commit):** 831 unit tests
-(none skipped), 904 pgTAP tests, 53 integration tests, 71 Playwright tests (desktop and phone,
+**Verified (locally, from an empty database, and in CI on each pushed commit):** 869 unit tests
+(none skipped), 1155 pgTAP tests, 57 integration tests, 80 Playwright tests (desktop and phone,
 axe on every Phase 3 and Phase 4 page), lint, typecheck, format, generated DB types up to date,
 the demo curriculum and library seeds up to date (`pnpm library:seed:check`), web build.
 
@@ -132,10 +133,24 @@ tests) and its foundation: decisions D-082 to D-101; the settings `CLASS_PORTAL_
 `CLASS_PORTAL_HMAC_KEY` and `BULK_MAX_RUN_USD`; the error messages and one anchor key per new
 message namespace; empty slots wired into the library pages (`components/library/slots/`); the
 admin CLI split into `apps/admin/src/commands/`, where the Phase 5 commands answer « pas encore
-disponible »; the worker tasks `class_mode_maintenance`, `library_bulk_tick` (also woken by the
-`library_bulk_kick` handler) and `library_maintenance`, scheduled but empty; a `tablet` Playwright
-project with no specs yet; and `findPersonalInfo` moved to `@lynx/ai/privacy`. No migration or
-screen yet. Phase 4 left its hooks (D-081).
+disponible »; the worker tasks `class_mode_maintenance` (now filled), `library_bulk_tick` (also
+woken by the `library_bulk_kick` handler) and `library_maintenance` (both still empty); a `tablet`
+Playwright project with no specs yet; and `findPersonalInfo` moved to `@lynx/ai/privacy`. Built
+since (wave 1):
+
+- **Class-mode database** (`20261101090000_class_mode.sql`, pgTAP 20 and 21, seed
+  `45_class_mode_demo.sql`): sessions, devices, answers graded in the database, keys in a table
+  no API role or portal role reads, the `lynx_class_portal` role and its five `class_portal`
+  functions (its local password is in `seed.sql`), the class link, kept class results, and the
+  worker's clean-up. No screen uses it yet (the quiz on devices is the next wave).
+- **« Présenter à la classe »** (`/projector/items/<id>`): slides built on the server from the
+  student content, a timer, and « Afficher la réponse » one question at a time.
+- **Board items, « Adapter » and « Votre avis »** (`20261101090100_library_growth.sql`, pgTAP 22,
+  seed `40_library_growth_demo.sql`): items kept by the board's reviewers (`board_owned`), a
+  private copy with credit and a sharing cap, anonymous stars, usage on the cards.
+
+Still to build: the quiz on devices, curriculum coverage, bulk generation, content packs, then
+the Phase 5 hardening and `docs/phase-5.md`. Phase 4 left its hooks (D-081).
 
 **Other deliverables:**
 
@@ -208,12 +223,13 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
 - **Network:** GitHub Actions artifact downloads (`*.blob.core.windows.net`) are blocked by the
   egress policy. Read CI failures from the job logs: a failed browser test prints its page
   snapshot there (`e2e/failure-context-reporter.ts`).
-- **The portal role survives resets.** `lynx_sub_portal` is a cluster role: `stack.sh reset`
-  drops the database, not the role, so migrations create it only if missing and the seed sets its
-  local password again. `pnpm test:int` also needs `SUB_PORTAL_DATABASE_URL` (in `.env.example`).
+- **The portal roles survive resets.** `lynx_sub_portal` and `lynx_class_portal` are cluster
+  roles: `stack.sh reset` drops the database, not the roles, so migrations create them only if
+  missing and the seed sets their local passwords again. `pnpm test:int` also needs
+  `SUB_PORTAL_DATABASE_URL` (in `.env.example`).
 - **Migrations are applied once.** The lite stack does not re-apply an edited migration: after
   editing one that is not committed yet, `stack.sh reset`. Never edit a committed migration; add
-  a new one (the latest is `20261015090400_library_review_fixes.sql`, pgTAP file `19`).
+  a new one (the latest is `20261101090100_library_growth.sql`, pgTAP file `22`).
 - **Seeds come in two parts.** `supabase/seed.sql`, then `supabase/seeds/*.sql` by name
   (`config.toml` `sql_paths` for the CLI, `cmd_seed` in `stack.sh`). `seeds/20_library_demo.sql`
   is generated from `content/library/demo`: after changing the pack, run `pnpm library:seed`

@@ -2,9 +2,9 @@
  * A content pack as SQL (DECISIONS D-071): one `DO` block that resolves every reference by code
  * and raises on anything missing, then inserts the pack, its tags and its items with UUIDv5
  * ids. Pure and deterministic: the same pack gives the same text, so CI can check the
- * generated seed for drift. The columns follow the Phase 4 library migration (C1): workflow
- * state is written directly (the seed runs as the database owner), and `requires_faith_review`
- * is left to the items trigger.
+ * generated seed for drift. The columns follow the Phase 4 library migration (C1) and Phase 5's
+ * `board_owned` (D-091): workflow state is written directly (the seed runs as the database
+ * owner), and `requires_faith_review` is left to the items trigger.
  */
 import { questionSchemas, type AnswerKey } from './questions';
 import { contentObject } from './schemas';
@@ -147,17 +147,20 @@ function itemSql(pack: SeedPack, item: SeedItem, index: number, refs: Refs): str
   const subject = refs.subject(item.subjectCode);
   const reference = item.catholicReference ? refs.reference(item.catholicReference) : 'null';
   const approved = item.status === 'board_approved';
+  // The board's own items (no author, D-091): its content reviewers keep them.
+  const boardOwned = item.source === 'board_created' && !item.author;
   const lines = [
     `  -- ${index + 1}. ${pack.slug}/${item.slug} (${item.type})`,
     '  insert into public.library_items (id, board_id, school_id, type, title, summary, status,',
-    '    share_scope, source, author_id, licence, content_pack_id, subject_id, duration_minutes,',
-    '    materials, keywords, is_printable, is_projectable, is_interactive, sub_friendly,',
-    '    safety_notes, faith_content, faith_on_student_sheet, catholic_connection,',
+    '    share_scope, source, author_id, board_owned, licence, content_pack_id, subject_id,',
+    '    duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive,',
+    '    sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection,',
     '    catholic_reference_id, prompt_version, model, review_requested_at, review_requested_by,',
     '    approved_at, approved_by, faith_reviewed_at, faith_reviewed_by)',
     `  values (${id}, v_board, ${school}, ${q(item.type)}, ${dq(item.title)}, ${dqOrNull(item.summary)},`,
-    `    ${q(item.status)}, ${q(item.shareScope)}, ${q(item.source)}, ${author}, ${dqOrNull(item.licence)},`,
-    `    v_pack, ${subject}, ${item.durationMinutes}, ${dq(item.materials)}, ${dqOrNull(item.keywords)},`,
+    `    ${q(item.status)}, ${q(item.shareScope)}, ${q(item.source)}, ${author}, ${boardOwned},`,
+    `    ${dqOrNull(item.licence)}, v_pack, ${subject}, ${item.durationMinutes}, ${dq(item.materials)},`,
+    `    ${dqOrNull(item.keywords)},`,
     `    ${item.formats.printable}, ${item.formats.projectable}, ${item.formats.interactive}, ${item.subFriendly},`,
     `    ${item.safetyNotes ? json(item.safetyNotes) : 'null'}, ${item.faithContent}, ${item.faithOnStudentSheet},`,
     `    ${dqOrNull(item.catholicConnection)}, ${reference}, ${dqOrNull(item.promptVersion)}, ${dqOrNull(item.model)},`,
