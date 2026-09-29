@@ -1,0 +1,59 @@
+{
+  "slug": "chasse-aux-nombres",
+  "type": "outdoor_activity",
+  "title": "Chasse aux nombres dans la cour",
+  "summary": "Dans la cour, des équipes de trois cherchent 12 cartes où un nombre jusqu’à 1 000 est représenté de différentes façons (en lettres, en centaines, dizaines et unités, en addition). Elles l’écrivent en chiffres, puis le représentent autrement.",
+  "source": "board_created",
+  "status": "board_approved",
+  "shareScope": "board",
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "gradeCodes": ["3"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "B1.1"
+    }
+  ],
+  "durationMinutes": 40,
+  "materials": "12 cartes de nombres préparées d’avance (voir la préparation), du ruban-cache ou des pinces à linge pour les fixer, un sifflet. Par équipe : une planchette à pince, une feuille de réponses et un crayon.",
+  "keywords": "valeur de position, centaines, dizaines, unités, nombres en lettres, décomposer, cour d’école",
+  "tags": ["nombres", "exterieur", "mouvement", "cooperation"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je lis et je représente des nombres jusqu’à 1 000 de différentes façons : en chiffres, en lettres, en centaines, dizaines et unités, ou avec une addition.",
+        "teacherNote": "Conçue pour une personne suppléante : demandez au secrétariat quelle zone de la cour est permise et comptez les élèves avant et après la sortie. Plastifiez les cartes pour les réutiliser. Pour les élèves qui apprennent le français, lisez à voix haute les cartes écrites en lettres. Le corrigé des cartes est dans la préparation.",
+        "location": "La cour d’école ou un terrain gazonné, dans une zone délimitée que l’adulte voit en entier.",
+        "setup": "Écrivez en gros une lettre et une représentation par carte. A : 4 centaines, 3 dizaines et 5 unités (435); B : 600 + 70 + 2 (672); C : deux cent huit (208); D : 9 centaines et 9 unités (909); E : 300 + 5 (305); F : cinq cent quarante (540); G : 7 centaines et 12 dizaines (820); H : 1 centaine, 0 dizaine et 6 unités (106); I : huit cent dix-sept (817); J : 200 + 90 + 9 (299); K : 6 centaines et 4 unités (604); L : 45 dizaines (450). Les nombres entre parenthèses sont les réponses : ne les écrivez pas sur les cartes. Fixez les cartes à hauteur d’enfant dans la zone. Sur la feuille de réponses, écrivez les lettres A à L et deux colonnes : « En chiffres » et « Autre façon ».",
+        "steps": [
+          "Forme une équipe de trois avec les élèves que l’adulte nomme.",
+          "Prends la planchette, la feuille et le crayon de ton équipe.",
+          "Au signal, cherchez ensemble les 12 cartes de nombres dans la zone. L’équipe se déplace toujours à trois.",
+          "Pour chaque carte, lisez le nombre et écrivez-le en chiffres à côté de la bonne lettre. Laissez la carte à sa place.",
+          "Dans la colonne « Autre façon », représentez le même nombre d’une autre manière : en lettres, en centaines, dizaines et unités, ou avec une addition.",
+          "Au coup de sifflet, revenez au point de rencontre avec votre feuille.",
+          "Avec l’adulte, vérifiez vos réponses. Pour chaque carte, une équipe explique comment elle a trouvé le nombre.",
+          "Défi : sur votre feuille, encerclez le plus grand et le plus petit nombre."
+        ],
+        "safetyReminders": [
+          "Reste dans la zone délimitée.",
+          "Marche rapidement, mais ne cours pas près des bancs, des clôtures et des modules de jeux.",
+          "Au coup de sifflet, reviens tout de suite au point de rencontre.",
+          "Ne ramasse pas les objets trouvés par terre : avertis l’adulte.",
+          "S’il fait chaud, porte ta casquette et bois de l’eau."
+        ],
+        "weatherAlternative": "En cas de pluie ou de grand froid, faites la chasse dans le gymnase ou dans la classe : fixez les cartes aux murs. Les consignes restent les mêmes."
+      },
+      "answerKey": null
+    }
+  ]
+}

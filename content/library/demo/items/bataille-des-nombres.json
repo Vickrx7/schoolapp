@@ -1,0 +1,226 @@
+{
+  "slug": "bataille-des-nombres",
+  "type": "game",
+  "title": "La bataille des nombres",
+  "summary": "Un jeu de cartes en équipes de deux : chaque personne forme le plus grand nombre possible avec trois cartes, le lit, puis le compare à celui de l’autre. Avec des variantes et une banque de questions pour le réchauffement.",
+  "source": "board_created",
+  "status": "board_approved",
+  "shareScope": "board",
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "gradeCodes": ["3"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "B1.2"
+    }
+  ],
+  "durationMinutes": 25,
+  "materials": "Par équipe : un jeu de cartes à jouer sans les figures (40 cartes; l’as vaut 1 et le 10 vaut 0) ou 40 cartes numérotées de 0 à 9 (quatre de chaque), une feuille et un crayon par personne.",
+  "keywords": "jeu de cartes, comparer, ordonner, valeur de position, plus grand que, plus petit que",
+  "tags": ["jeu", "nombres", "cooperation"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je compare et j’ordonne des nombres jusqu’à 1 000 en regardant la valeur de chaque chiffre.",
+        "teacherNote": "Conçu pour une personne suppléante : un jeu de cartes par équipe suffit. Les questions du jeu peuvent servir de réchauffement collectif au tableau avant les parties. Pour les élèves qui apprennent le français, affichez les phrases modèles « … est plus grand que … » et « … est plus petit que … ».",
+        "grouping": "En équipes de deux (ou de trois)",
+        "setup": "Retirez les figures (valets, dames, rois) de chaque jeu de cartes : il reste 40 cartes. L’as vaut 1 et le 10 vaut 0. Jouez une manche au tableau avec deux élèves avant de commencer. Rappelez que le chiffre placé à gauche indique les centaines.",
+        "rules": [
+          "Mélangez les cartes et placez-les face cachée en une pile au milieu.",
+          "Chaque personne pioche trois cartes.",
+          "Place tes trois cartes pour former le plus grand nombre possible. Attention : si tu mets le 0 à gauche, ton nombre n’a que deux chiffres.",
+          "Lis ton nombre à voix haute.",
+          "Comparez vos nombres avec une phrase complète, par exemple : « 853 est plus grand que 627. »",
+          "La personne qui a le plus grand nombre gagne la manche et marque un point.",
+          "En cas d’égalité, c’est la bataille : chaque personne pioche trois nouvelles cartes, et le plus grand nombre gagne deux points.",
+          "Chaque personne écrit la comparaison sur sa feuille avec le signe > ou <, par exemple : 853 > 627.",
+          "Placez les cartes utilisées sous la pile, puis jouez une autre manche."
+        ],
+        "howToWin": "La première personne qui marque 10 points gagne la partie.",
+        "variations": [
+          "Le plus petit : cette fois, c’est le plus petit nombre à trois chiffres qui gagne.",
+          "Le plus près de 500 : le nombre le plus proche de 500 gagne la manche.",
+          "Quatre cartes : on pioche quatre cartes et on en garde trois.",
+          "En ordre : à trois ou à quatre, placez tous vos nombres dans l’ordre croissant. La personne qui a le nombre le plus grand lit la suite à voix haute."
+        ],
+        "questions": [
+          {
+            "id": "g1",
+            "kind": "multiple_choice",
+            "prompt": "Avec les cartes 4, 9 et 2, quel est le plus grand nombre possible?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "choices": [
+              {
+                "id": "a",
+                "text": "924"
+              },
+              {
+                "id": "b",
+                "text": "942"
+              },
+              {
+                "id": "c",
+                "text": "492"
+              },
+              {
+                "id": "d",
+                "text": "249"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "g2",
+            "kind": "multiple_choice",
+            "prompt": "Avec les cartes 0, 7 et 5, quel est le plus petit nombre à trois chiffres possible?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "570"
+              },
+              {
+                "id": "b",
+                "text": "705"
+              },
+              {
+                "id": "c",
+                "text": "507"
+              },
+              {
+                "id": "d",
+                "text": "750"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "g3",
+            "kind": "true_false",
+            "prompt": "716 est plus petit que 761.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "g4",
+            "kind": "ordering",
+            "prompt": "Place ces nombres dans l’ordre décroissant, du plus grand au plus petit.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "items": [
+              {
+                "id": "i1",
+                "text": "389"
+              },
+              {
+                "id": "i2",
+                "text": "938"
+              },
+              {
+                "id": "i3",
+                "text": "893"
+              },
+              {
+                "id": "i4",
+                "text": "398"
+              }
+            ]
+          },
+          {
+            "id": "g5",
+            "kind": "multiple_choice",
+            "prompt": "Quel nombre est le plus près de 500?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "479"
+              },
+              {
+                "id": "b",
+                "text": "532"
+              },
+              {
+                "id": "c",
+                "text": "515"
+              },
+              {
+                "id": "d",
+                "text": "460"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "g6",
+            "kind": "short_answer",
+            "prompt": "Écris un nombre plus grand que 645 et plus petit que 650.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 1
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "g1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "On place le plus grand chiffre aux centaines, puis le suivant aux dizaines : 942."
+          },
+          {
+            "questionId": "g2",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "Le 0 ne peut pas être à gauche; on met le 5 aux centaines, puis le 0 aux dizaines : 507."
+          },
+          {
+            "questionId": "g3",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Même nombre de centaines (7); 1 dizaine, c’est moins que 6 dizaines."
+          },
+          {
+            "questionId": "g4",
+            "kind": "ordering",
+            "orderedIds": ["i2", "i3", "i4", "i1"],
+            "explanation": "938, 893, 398, 389."
+          },
+          {
+            "questionId": "g5",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "515 est à 15 de 500; 479 à 21, 532 à 32 et 460 à 40."
+          },
+          {
+            "questionId": "g6",
+            "kind": "short_answer",
+            "sampleAnswer": "647",
+            "acceptableAnswers": ["646", "647", "648", "649"],
+            "explanation": "Les réponses possibles sont 646, 647, 648 et 649."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}
