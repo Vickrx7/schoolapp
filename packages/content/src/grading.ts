@@ -1,5 +1,5 @@
 /**
- * Auto-grading where possible (SPEC 9.3, DECISIONS P-2): all or nothing for multiple choice,
+ * Auto-grading where possible (SPEC 9.3, DECISIONS D-062): all or nothing for multiple choice,
  * true/false and ordering, one point per pair for matching. A short answer is correct only
  * when it matches an accepted answer after normalization; otherwise it goes to the teacher
  * (`correct: null`, « Correction manuelle »). Used by class mode in Phase 5; keys never leave

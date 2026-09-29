@@ -1,5 +1,5 @@
 /**
- * Schema building blocks (DECISIONS P-1). Every content schema is written once, as a function
+ * Schema building blocks (DECISIONS D-061). Every content schema is written once, as a function
  * of a `Kit`, and built in three modes:
  *
  * - `draft`: maximum sizes, strict objects (unknown keys are rejected, so an answer can't slip

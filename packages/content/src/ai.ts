@@ -1,5 +1,5 @@
 /**
- * From `ai`-mode output to canonical content (DECISIONS P-1, P-20). These functions never
+ * From `ai`-mode output to canonical content (DECISIONS D-061, D-080). These functions never
  * throw. They fix form for free (flat questions, ids, enum spelling, typography, ordering left
  * in answer order) and keep every substantive problem (an unknown question kind, a missing
  * answer) so that `final` and `validateAnswerKey` report it with its path.

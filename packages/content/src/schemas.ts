@@ -1,5 +1,5 @@
 /**
- * One versioned content schema per item type (SPEC 9.3, DECISIONS P-1). Content is stored in
+ * One versioned content schema per item type (SPEC 9.3, DECISIONS D-061). Content is stored in
  * `library_item_versions.content` with `schema_version = CURRENT_SCHEMA_VERSION`; answer keys in
  * `library_item_answer_keys.answer_key`. A new field needs schema version 2 plus a conversion.
  */

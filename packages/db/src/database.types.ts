@@ -1374,6 +1374,20 @@ export type Database = {
           usage_count: number;
           created_at: string;
           updated_at: string;
+          content_revision: number;
+          keywords: string | null;
+          faith_content: boolean;
+          faith_flagged_by: string | null;
+          faith_on_student_sheet: boolean;
+          catholic_reference_id: string | null;
+          review_requested_at: string | null;
+          review_requested_by: string | null;
+          approved_at: string | null;
+          approved_by: string | null;
+          faith_reviewed_at: string | null;
+          faith_reviewed_by: string | null;
+          review_note: string | null;
+          search_document: string;
         };
         Insert: {
           id?: string;
@@ -1406,6 +1420,20 @@ export type Database = {
           usage_count?: number;
           created_at?: string;
           updated_at?: string;
+          content_revision?: number;
+          keywords?: string | null;
+          faith_content?: boolean;
+          faith_flagged_by?: string | null;
+          faith_on_student_sheet?: boolean;
+          catholic_reference_id?: string | null;
+          review_requested_at?: string | null;
+          review_requested_by?: string | null;
+          approved_at?: string | null;
+          approved_by?: string | null;
+          faith_reviewed_at?: string | null;
+          faith_reviewed_by?: string | null;
+          review_note?: string | null;
+          search_document?: string;
         };
         Update: {
           id?: string;
@@ -1438,6 +1466,20 @@ export type Database = {
           usage_count?: number;
           created_at?: string;
           updated_at?: string;
+          content_revision?: number;
+          keywords?: string | null;
+          faith_content?: boolean;
+          faith_flagged_by?: string | null;
+          faith_on_student_sheet?: boolean;
+          catholic_reference_id?: string | null;
+          review_requested_at?: string | null;
+          review_requested_by?: string | null;
+          approved_at?: string | null;
+          approved_by?: string | null;
+          faith_reviewed_at?: string | null;
+          faith_reviewed_by?: string | null;
+          review_note?: string | null;
+          search_document?: string;
         };
         Relationships: [
           {
@@ -1445,6 +1487,13 @@ export type Database = {
             columns: ['ai_generation_id'];
             isOneToOne: false;
             referencedRelation: 'ai_generations';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'library_items_approved_by_fkey';
+            columns: ['approved_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
             referencedColumns: ['id'];
           },
           {
@@ -1462,6 +1511,13 @@ export type Database = {
             referencedColumns: ['id'];
           },
           {
+            foreignKeyName: 'library_items_catholic_reference_id_fkey';
+            columns: ['catholic_reference_id'];
+            isOneToOne: false;
+            referencedRelation: 'catholic_references';
+            referencedColumns: ['id'];
+          },
+          {
             foreignKeyName: 'library_items_content_pack_id_fkey';
             columns: ['content_pack_id'];
             isOneToOne: false;
@@ -1469,10 +1525,31 @@ export type Database = {
             referencedColumns: ['id'];
           },
           {
+            foreignKeyName: 'library_items_faith_flagged_by_fkey';
+            columns: ['faith_flagged_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'library_items_faith_reviewed_by_fkey';
+            columns: ['faith_reviewed_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
             foreignKeyName: 'library_items_parent_item_id_fkey';
             columns: ['parent_item_id'];
             isOneToOne: false;
             referencedRelation: 'library_items';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'library_items_review_requested_by_fkey';
+            columns: ['review_requested_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
             referencedColumns: ['id'];
           },
           {
@@ -1487,6 +1564,45 @@ export type Database = {
             columns: ['subject_id'];
             isOneToOne: false;
             referencedRelation: 'subjects';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      library_reviewers: {
+        Row: {
+          board_id: string;
+          user_id: string;
+          approves_content: boolean;
+          reviews_faith: boolean;
+          created_at: string;
+        };
+        Insert: {
+          board_id: string;
+          user_id: string;
+          approves_content?: boolean;
+          reviews_faith?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          board_id?: string;
+          user_id?: string;
+          approves_content?: boolean;
+          reviews_faith?: boolean;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'library_reviewers_board_id_fkey';
+            columns: ['board_id'];
+            isOneToOne: false;
+            referencedRelation: 'boards';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'library_reviewers_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
             referencedColumns: ['id'];
           },
         ];
@@ -2796,6 +2912,10 @@ export type Database = {
     };
     Views: { [_ in never]: never };
     Functions: {
+      add_library_item_to_unit: {
+        Args: { p_item_id: string; p_unit_id: string; p_position: number; p_lesson: Json };
+        Returns: string;
+      };
       ai_usage_summary: {
         Args: { p_school_id: string };
         Returns: {
@@ -2861,6 +2981,84 @@ export type Database = {
       issue_sub_access_code: {
         Args: { p_plan_id: string; p_code_mac: string };
         Returns: { code_id: string; valid_from: string; expires_at: string }[];
+      };
+      library_archive: {
+        Args: { p_item_id: string };
+        Returns: undefined;
+      };
+      library_cancel_request: {
+        Args: { p_item_id: string };
+        Returns: undefined;
+      };
+      library_decide: {
+        Args: {
+          p_item_id: string;
+          p_decision: string;
+          p_note: string;
+          p_expected_revision: number;
+        };
+        Returns: undefined;
+      };
+      library_faith_decide: {
+        Args: {
+          p_item_id: string;
+          p_decision: string;
+          p_note: string;
+          p_expected_revision: number;
+        };
+        Returns: undefined;
+      };
+      library_flag_faith: {
+        Args: { p_item_id: string };
+        Returns: undefined;
+      };
+      library_mark_reviewed: {
+        Args: { p_item_id: string; p_originality_confirmed: boolean };
+        Returns: undefined;
+      };
+      library_refresh_search_all: {
+        Args: never;
+        Returns: number;
+      };
+      library_request_approval: {
+        Args: { p_item_id: string };
+        Returns: undefined;
+      };
+      library_restore: {
+        Args: { p_item_id: string };
+        Returns: undefined;
+      };
+      library_retract: {
+        Args: { p_item_id: string; p_note: string };
+        Returns: undefined;
+      };
+      library_return_to_draft: {
+        Args: { p_item_id: string };
+        Returns: undefined;
+      };
+      library_review_queue: {
+        Args: { p_kind: string };
+        Returns: {
+          item_id: string;
+          title: string;
+          type: Database['public']['Enums']['library_item_type'];
+          content_revision: number;
+          requested_at: string;
+          author_name: string;
+          school_name: string;
+          grade_codes: string[];
+          requires_faith_review: boolean;
+          faith_reviewed: boolean;
+        }[];
+      };
+      library_share: {
+        Args: {
+          p_item_id: string;
+          p_scope: Database['public']['Enums']['share_scope'];
+          p_school_id?: string;
+          p_names_confirmed?: number;
+        };
+        Returns: undefined;
       };
       list_school_sub_days: {
         Args: { p_school_id: string; p_from: string; p_to: string };
@@ -2956,6 +3154,10 @@ export type Database = {
           p_subject_id?: string;
         };
         Returns: string;
+      };
+      save_library_item: {
+        Args: { p_item_id: string; p_expected_revision: number; p_item: Json };
+        Returns: { item_id: string; content_revision: number }[];
       };
       save_student_alert: {
         Args: {

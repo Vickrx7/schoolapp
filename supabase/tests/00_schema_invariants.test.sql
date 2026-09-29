@@ -1,7 +1,7 @@
 -- Schema-wide security invariants: RLS everywhere, nothing for anon, safe definer functions.
 begin;
 \ir _helpers.psql
-select plan(19);
+select plan(22);
 
 select is_empty(
   $$select c.relname from pg_class c join pg_namespace n on n.oid = c.relnamespace
@@ -95,6 +95,44 @@ select ok(
   and not has_table_privilege('authenticated', 'public.audit_log', 'update')
   and not has_table_privilege('authenticated', 'public.audit_log', 'delete'),
   'authenticated cannot write the audit log'
+);
+
+-- Library content is written only through functions (D-063); the reviewers are designated by
+-- the operator (D-064).
+select is_empty(
+  $$select t.tbl || ' ' || p.priv
+    from unnest(array['public.library_items', 'public.library_item_versions',
+      'public.library_item_answer_keys', 'public.library_item_grades',
+      'public.library_item_expectations', 'public.library_item_tags',
+      'public.library_reviewers']) t (tbl)
+    cross join unnest(array['insert', 'update']) p (priv)
+    where has_table_privilege('authenticated', t.tbl, p.priv)
+      or has_any_column_privilege('authenticated', t.tbl, p.priv)$$,
+  'authenticated cannot insert or update library items, their versions, keys and links, or reviewers'
+);
+
+select ok(
+  not has_table_privilege('authenticated', 'public.library_item_versions', 'delete')
+  and not has_table_privilege('authenticated', 'public.library_item_answer_keys', 'delete')
+  and not has_table_privilege('authenticated', 'public.library_item_grades', 'delete')
+  and not has_table_privilege('authenticated', 'public.library_item_expectations', 'delete')
+  and not has_table_privilege('authenticated', 'public.library_item_tags', 'delete')
+  and not has_table_privilege('authenticated', 'public.library_reviewers', 'delete')
+  and not has_table_privilege('authenticated', 'public.tags', 'insert')
+  and not has_any_column_privilege('authenticated', 'public.tags', 'insert'),
+  'authenticated cannot delete versions, keys, links or reviewers, nor create tags'
+);
+
+select is_empty(
+  $$select f from unnest(array['app.library_item_usable_by(uuid,uuid)',
+      'app.library_item_readable_by(uuid,uuid)', 'app.library_item_editable_by(uuid,uuid)',
+      'app.library_reviewer(uuid,uuid,text)', 'app.library_refresh_search(uuid)',
+      'app.library_content_changed(uuid)', 'app.library_assert_ready(uuid,boolean)',
+      'app.flag_absences_for_library_item(uuid)', 'app.library_convert_legacy_texts()',
+      'app.library_item_keeper(uuid,public.library_items)', 'app.library_has_personal_levels(uuid)',
+      'app.library_recount_usage(uuid)', 'public.library_refresh_search_all()']) f
+    where has_function_privilege('authenticated', f, 'execute')$$,
+  'helpers that take a user, and search refreshes, are not executable by authenticated'
 );
 
 -- The substitute portal's role (D-049): it runs the portal functions and nothing else.

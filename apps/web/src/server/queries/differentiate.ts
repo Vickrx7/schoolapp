@@ -198,6 +198,21 @@ export type VersionContent = {
   teacherNote: string;
 };
 
+// Texts saved before Phase 4 were converted into reading passages and worksheets (D-073), whose
+// questions are objects with a prompt. Until the library editor replaces this one, it edits the
+// prompts as plain questions.
+function asVersionContent(content: unknown): VersionContent {
+  const c = content as Omit<VersionContent, 'questions'> & {
+    questions?: (string | { prompt?: unknown })[];
+  };
+  return {
+    ...c,
+    questions: (c.questions ?? []).map((q) =>
+      typeof q === 'string' ? q : typeof q?.prompt === 'string' ? q.prompt : '',
+    ),
+  };
+}
+
 export interface SavedDetail {
   id: string;
   title: string;
@@ -229,7 +244,7 @@ export async function loadSavedText(itemId: string, locale: string): Promise<Sav
     .map((v) => ({
       languageLevelId: v.language_level_id!,
       levelLabel: localized(locale, v.language_levels!.label_fr, v.language_levels!.label_en),
-      content: v.content as unknown as VersionContent,
+      content: asVersionContent(v.content),
     }));
   const version = data.library_item_versions
     .map((v) => v.updated_at)

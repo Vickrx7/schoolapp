@@ -1,5 +1,5 @@
 /**
- * Saved « Texte différencié » results as ordinary library content (DECISIONS P-13): the
+ * Saved « Texte différencié » results as ordinary library content (DECISIONS D-073): the
  * teacher's original text is the base version, each level a version with the same objective,
  * and questions become short answers whose keys wait for a sample answer. Limits follow
  * Phase 2: texts up to 40,000 characters, empty glossary definitions allowed.

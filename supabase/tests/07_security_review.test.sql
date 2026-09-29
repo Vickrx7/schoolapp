@@ -2,7 +2,7 @@
 -- (supabase/migrations/20260928170000_security_review_fixes.sql).
 begin;
 \ir _helpers.psql
-select plan(22);
+select plan(23);
 select tests.build_fixture();
 
 do $$
@@ -44,7 +44,11 @@ select tests.clear_authentication();
 
 -- 1. Deactivated users cannot write their own rows.
 select tests.authenticate_as('former_teacher');
-update public.library_items set status = 'teacher_reviewed', share_scope = 'board' where id = tests.id('former_draft');
+select throws_ok(
+  $$update public.library_items set status = 'teacher_reviewed', share_scope = 'board'
+    where id = tests.id('former_draft')$$,
+  '42501', null, 'a deactivated user cannot update library items (nobody can, directly)'
+);
 update public.users set display_name = 'Encore là' where id = tests.id('former_teacher');
 select throws_ok(
   $$insert into public.library_items (board_id, type, title, source, author_id)

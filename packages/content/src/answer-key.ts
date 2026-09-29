@@ -1,5 +1,5 @@
 /**
- * Consistency between a content's questions and its answer key (DECISIONS P-2): one entry per
+ * Consistency between a content's questions and its answer key (DECISIONS D-062): one entry per
  * question, of the same kind, pointing at choices that exist. Structural sizes are checked by
  * the schemas; this checks what the schemas cannot see. Only errors are reported here: a short
  * answer without a sample answer is a readiness warning (`readiness.ts`).

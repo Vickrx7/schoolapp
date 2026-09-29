@@ -1,5 +1,5 @@
 /**
- * The library catalogue (SPEC 9.3, DECISIONS P-1): 6 buckets and 25 item types, with the flags
+ * The library catalogue (SPEC 9.3, DECISIONS D-061): 6 buckets and 25 item types, with the flags
  * the rest of the package (and the database) rely on. The bucket of each type must match
  * `app.library_bucket_for` in `supabase/migrations/20260928160700_library.sql`.
  */
@@ -78,11 +78,11 @@ export interface TypeInfo {
   mayHaveQuestions: boolean;
   /** Versions per language level make sense for this type. */
   levelable: boolean;
-  /** Board approval needs a version for every active board level (P-7). */
+  /** Board approval needs a version for every active board level (D-067). */
   levelsForApproval: boolean;
   /** Structured safety notes are required to leave draft (SPEC 9.3). */
   needsSafety: boolean;
-  /** May be marked reviewed without a linked attente (P-7). */
+  /** May be marked reviewed without a linked attente (D-067). */
   expectationsOptional: boolean;
   /**
    * May be marked sub-friendly. Experiments and STEM challenges also need

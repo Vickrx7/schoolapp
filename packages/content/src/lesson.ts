@@ -1,5 +1,5 @@
 /**
- * A library item as a new lesson of a unit (DECISIONS P-16): `add_library_item_to_unit` copies
+ * A library item as a new lesson of a unit (DECISIONS D-076): `add_library_item_to_unit` copies
  * this outline once, keeps the link, and does not follow later changes to the item. Sizes match
  * the `unit_lessons` columns.
  */

@@ -291,22 +291,58 @@ export async function updateSavedDifferentiation(
   await requireSession();
   const parsed = parseInput(resultSchema, raw);
   if (!parsed.ok) return parsed.result;
+  if (!z.uuid().safeParse(itemId).success) return fail('notFound');
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
+  // Library content is written only through save_library_item (D-063), which replaces the whole
+  // item: what this editor does not show (other versions, keys, links, flags) is sent back as it is.
+  const { data: item, error: readError } = await supabase
     .from('library_items')
-    .update({ title: parsed.data.title })
+    .select(
+      'board_id, school_id, type, summary, licence, subject_id, duration_minutes, materials, keywords, is_printable, is_projectable, is_interactive, sub_friendly, safety_notes, faith_content, faith_on_student_sheet, catholic_connection, catholic_reference_id, content_revision, library_item_grades(grade_code), library_item_expectations(expectation_id), library_item_tags(tag_id), library_item_versions(language_level_id, content, library_item_answer_keys(answer_key))',
+    )
     .eq('id', itemId)
-    .select('id');
+    .eq('source', 'ai_generated')
+    .maybeSingle();
+  if (readError) return fail(reportError('updateSavedDifferentiation', readError));
+  if (!item) return fail('forbidden');
+  const edited = new Map(parsed.data.versions.map((v) => [v.languageLevelId, v]));
+  const { error } = await supabase.rpc('save_library_item', {
+    p_item_id: itemId,
+    p_expected_revision: item.content_revision,
+    p_item: {
+      boardId: item.board_id,
+      schoolId: item.school_id,
+      type: item.type,
+      title: parsed.data.title,
+      summary: item.summary,
+      licence: item.licence,
+      subjectId: item.subject_id,
+      durationMinutes: item.duration_minutes,
+      materials: item.materials,
+      keywords: item.keywords,
+      isPrintable: item.is_printable,
+      isProjectable: item.is_projectable,
+      isInteractive: item.is_interactive,
+      subFriendly: item.sub_friendly,
+      safetyNotes: item.safety_notes,
+      faithContent: item.faith_content,
+      faithOnStudentSheet: item.faith_on_student_sheet,
+      catholicConnection: item.catholic_connection,
+      catholicReferenceId: item.catholic_reference_id,
+      gradeCodes: item.library_item_grades.map((g) => g.grade_code),
+      expectationIds: item.library_item_expectations.map((e) => e.expectation_id),
+      tagIds: item.library_item_tags.map((t) => t.tag_id),
+      versions: item.library_item_versions.map((v) => {
+        const change = v.language_level_id ? edited.get(v.language_level_id) : undefined;
+        return {
+          languageLevelId: v.language_level_id,
+          content: change ? toContent(parsed.data.objective, change) : v.content,
+          answerKey: v.library_item_answer_keys?.answer_key ?? null,
+        };
+      }),
+    },
+  });
   if (error) return fail(reportError('updateSavedDifferentiation', error));
-  if (!data?.length) return fail('forbidden');
-  for (const v of parsed.data.versions) {
-    const { error: versionError } = await supabase
-      .from('library_item_versions')
-      .update({ content: toContent(parsed.data.objective, v) })
-      .eq('item_id', itemId)
-      .eq('language_level_id', v.languageLevelId);
-    if (versionError) return fail(reportError('updateSavedDifferentiation', versionError));
-  }
   revalidatePath(`/differentiate/saved/${itemId}`);
   return okVoid();
 }

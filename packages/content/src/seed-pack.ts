@@ -1,5 +1,5 @@
 /**
- * The content-pack format (DECISIONS P-11, P-21): `content/library/<pack>/pack.json` plus one
+ * The content-pack format (DECISIONS D-071, D-081): `content/library/<pack>/pack.json` plus one
  * JSON file per item in `items/` (`seedItemFile`). It is the demo seed today and the
  * export/import format later. References to the database are by code (board and school slugs,
  * user e-mails, subject, grade and attente codes, level codes, Catholic reference titles, tag
@@ -163,7 +163,7 @@ export const seedItemSchema = z
       issue(['reviewRequested'], 'requestNeedsReview');
     }
     if (item.faithReviewed && !item.approvedBy) issue(['faithReviewed'], 'faithReviewerRequired');
-    // Faith content reaches the whole board only once faith-reviewed (P-4).
+    // Faith content reaches the whole board only once faith-reviewed (D-064).
     if (item.shareScope === 'board' && seedItemRequiresFaithReview(item) && !item.faithReviewed) {
       issue(['faithReviewed'], 'faithReviewRequired');
     }

@@ -246,3 +246,216 @@ begin
   delete from public.event_outbox;
 end;
 $$;
+
+-- Library fixture (Phase 4), on top of build_fixture(): reviewers designated by board A, test
+-- attentes, tags, Catholic references and a personal level.
+--   board_admin_a     content reviewer of board A (only content)
+--   faith_reviewer_a  teacher at school_a2, faith reviewer of board A (only faith)
+--   exp_a_parent      Français, 3e, overall (T1); exp_a its specific attente (T1.2)
+--   exp_other         Mathématiques, 5e (T9)
+--   tag_global (every board), tag_b (board B); ref_a (board A), ref_b (board B)
+--   level_personal_a  teacher_a's own language level
+create function tests.build_library_fixture()
+returns void
+language plpgsql
+as $$
+declare
+  v_fra uuid := (select id from public.subjects where code = 'fra' and board_id is null);
+  v_mat uuid := (select id from public.subjects where code = 'mat' and board_id is null);
+begin
+  insert into public.library_reviewers (board_id, user_id, approves_content, reviews_faith)
+  values (tests.id('board_a'), tests.id('board_admin_a'), true, false);
+  perform tests.create_user('faith_reviewer_a');
+  insert into public.user_roles (user_id, role, board_id, school_id)
+  values (tests.id('faith_reviewer_a'), 'teacher', tests.id('board_a'), tests.id('school_a2'));
+  insert into public.library_reviewers (board_id, user_id, approves_content, reviews_faith)
+  values (tests.id('board_a'), tests.id('faith_reviewer_a'), false, true);
+
+  insert into public.curriculum_expectations (id, subject_id, grade_code, parent_id, kind, code,
+    text_fr, curriculum_version) values
+    (tests.remember('exp_a_parent', gen_random_uuid()), v_fra, '3', null, 'overall', 'T1',
+     'Lire des textes variés pour s''informer.', 'test');
+  insert into public.curriculum_expectations (id, subject_id, grade_code, parent_id, kind, code,
+    text_fr, curriculum_version) values
+    (tests.remember('exp_a', gen_random_uuid()), v_fra, '3', tests.id('exp_a_parent'), 'specific',
+     'T1.2', 'Dégager l''idée principale d''un texte informatif.', 'test'),
+    (tests.remember('exp_other', gen_random_uuid()), v_mat, '5', null, 'overall', 'T9',
+     'Comparer des fractions.', 'test');
+
+  insert into public.tags (id, board_id, slug, label_fr) values
+    (tests.remember('tag_global', gen_random_uuid()), null, 'test-global-' || substr(md5(random()::text), 1, 8), 'Étiquette de test'),
+    (tests.remember('tag_b', gen_random_uuid()), tests.id('board_b'), 'test-b', 'Étiquette B');
+
+  insert into public.catholic_references (id, board_id, type, title, text_fr) values
+    (tests.remember('ref_a', gen_random_uuid()), tests.id('board_a'), 'virtue', 'Le respect',
+     'Respecter chaque personne.'),
+    (tests.remember('ref_b', gen_random_uuid()), tests.id('board_b'), 'virtue', 'La paix',
+     'Chercher la paix.');
+
+  insert into public.language_levels (id, board_id, owner_user_id, code, label_fr)
+  values (tests.remember('level_personal_a', gen_random_uuid()), tests.id('board_a'),
+    tests.id('teacher_a'), 'perso_test', 'Mon niveau');
+end;
+$$;
+
+-- An active board level of a board, by code (debutant, intermediaire, avance, enrichi).
+create function tests.board_level(p_board text, p_code text)
+returns uuid
+language sql
+as $$
+  select id from public.language_levels
+  where board_id = tests.id(p_board) and owner_user_id is null and code = p_code;
+$$;
+
+-- A save_library_item payload for a ready item of board A (school_a1): 3e année, Français,
+-- exp_a, materials, a keyword, a base version, and an empty key for types that need one. Tests
+-- change it with ||, jsonb_set or `- key`.
+create function tests.library_payload(
+  p_type text,
+  p_title text,
+  p_board text default 'board_a',
+  p_school text default 'school_a1'
+)
+returns jsonb
+language sql
+as $$
+  select jsonb_build_object(
+    'boardId', tests.id(p_board), 'schoolId', tests.id(p_school), 'type', p_type,
+    'title', p_title, 'summary', 'Une ressource de test.', 'licence', null,
+    'subjectId', (select id from public.subjects where code = 'fra' and board_id is null),
+    'durationMinutes', 30, 'materials', 'Crayons et feuilles', 'keywords', 'lecture huard',
+    'isPrintable', true, 'isProjectable', false, 'isInteractive', false, 'subFriendly', false,
+    'safetyNotes', null, 'faithContent', false, 'faithOnStudentSheet', false,
+    'catholicConnection', '', 'catholicReferenceId', null,
+    'gradeCodes', jsonb_build_array('3'), 'expectationIds', jsonb_build_array(tests.id('exp_a')),
+    'tagIds', jsonb_build_array(tests.id('tag_global')),
+    'versions', jsonb_build_array(jsonb_build_object(
+      'languageLevelId', null,
+      'content', jsonb_build_object('title', '', 'objective', 'Trouver l’idée principale.',
+        'teacherNote', '', 'text', 'Le huard vit sur les lacs de l’Ontario.'),
+      'answerKey', case when p_type in ('quiz', 'unit_test', 'diagnostic', 'exit_ticket', 'riddle')
+        then '{"answers": [], "solution": ""}'::jsonb end)));
+$$;
+
+-- Complete safety notes (D-067).
+create function tests.safety_notes(p_supervision text default 'standard')
+returns jsonb
+language sql
+as $$
+  select jsonb_build_object('ageSuitability', 'De 9 à 11 ans',
+    'allergyAwareMaterials', 'Élastiques sans latex', 'supervision', p_supervision,
+    'hazards', jsonb_build_array('Ne jamais lancer un élastique'), 'notes', '');
+$$;
+
+-- A ready item written directly (as superuser), with the given author (null: a board item),
+-- status, scope and school: 3e année, Français, exp_a, materials, a keyword, a base version, a
+-- key for keyed types, every board level for the types that need them for approval, safety
+-- notes for experiments and STEM challenges. Its title is « Ressource <key> ».
+create function tests.library_item(
+  p_key text,
+  p_author text,
+  p_type public.library_item_type,
+  p_status public.library_item_status default 'draft',
+  p_scope public.share_scope default 'private',
+  p_school text default null,
+  p_board text default 'board_a'
+)
+returns uuid
+language plpgsql
+as $$
+declare
+  v_id uuid := tests.remember(p_key, gen_random_uuid());
+  v_keyed boolean := p_type in ('quiz', 'unit_test', 'diagnostic', 'exit_ticket', 'riddle');
+  v_version uuid;
+  v_level uuid;
+begin
+  insert into public.library_items (id, board_id, school_id, type, title, status, share_scope,
+    source, author_id, subject_id, duration_minutes, materials, keywords, safety_notes,
+    approved_at)
+  values (v_id, tests.id(p_board), case when p_school is not null then tests.id(p_school) end,
+    p_type, 'Ressource ' || p_key, p_status, p_scope,
+    case when p_author is null then 'board_created' else 'teacher_created' end::public.library_source,
+    case when p_author is not null then tests.id(p_author) end,
+    (select id from public.subjects where code = 'fra' and board_id is null), 30,
+    'Crayons et feuilles', 'lecture',
+    case when p_type in ('experiment', 'stem_challenge') then tests.safety_notes() end,
+    case when p_status = 'board_approved' then now() end);
+  insert into public.library_item_grades (item_id, grade_code) values (v_id, '3');
+  insert into public.library_item_expectations (item_id, expectation_id) values (v_id, tests.id('exp_a'));
+  insert into public.library_item_versions (item_id, language_level_id, content)
+  values (v_id, null, jsonb_build_object('title', '', 'objective', 'Trouver l’idée principale.',
+    'teacherNote', '', 'text', 'Le huard vit sur les lacs de l’Ontario.'))
+  returning id into v_version;
+  if v_keyed then
+    insert into public.library_item_answer_keys (version_id, answer_key)
+    values (v_version, '{"answers": [], "solution": ""}');
+  end if;
+  if p_type in ('reading_passage', 'worksheet', 'exit_ticket', 'quiz') then
+    for v_level in
+      select id from public.language_levels
+      where board_id = tests.id(p_board) and owner_user_id is null and active
+    loop
+      insert into public.library_item_versions (item_id, language_level_id, content)
+      values (v_id, v_level, jsonb_build_object('title', '', 'objective', 'Trouver l’idée principale.',
+        'teacherNote', '', 'text', 'Le huard vit sur les lacs.'))
+      returning id into v_version;
+      if v_keyed then
+        insert into public.library_item_answer_keys (version_id, answer_key)
+        values (v_version, '{"answers": [], "solution": ""}');
+      end if;
+    end loop;
+  end if;
+  perform app.library_refresh_search(v_id);
+  return v_id;
+end;
+$$;
+
+-- Puts an item in the approval queue, as its author asked (superuser).
+create function tests.library_request(p_key text)
+returns void
+language sql
+as $$
+  update public.library_items
+  set review_requested_at = now(), review_requested_by = author_id
+  where id = tests.id(p_key);
+$$;
+
+-- The SQLSTATE of a statement run as the current role, followed by the error's detail when it
+-- has one (« LXL01 expectations »); null when it succeeds. Its changes are rolled back either way
+-- when it fails.
+create function tests.error_of(p_sql text)
+returns text
+language plpgsql
+as $$
+declare
+  v_state text;
+  v_detail text;
+begin
+  execute p_sql;
+  return null;
+exception when others then
+  get stacked diagnostics v_state = returned_sqlstate, v_detail = pg_exception_detail;
+  return v_state || coalesce(' ' || nullif(v_detail, ''), '');
+end;
+$$;
+
+-- A save_library_item payload with one more version, for a level, copied from the base version.
+create function tests.with_version(p_payload jsonb, p_level uuid)
+returns jsonb
+language sql
+as $$
+  select jsonb_set(p_payload, '{versions}', (p_payload -> 'versions')
+    || jsonb_build_array((p_payload -> 'versions' -> 0) || jsonb_build_object('languageLevelId', p_level)));
+$$;
+
+-- A save_library_item payload with a version for every active level of a board.
+create function tests.with_board_levels(p_payload jsonb, p_board text default 'board_a')
+returns jsonb
+language sql
+as $$
+  select jsonb_set(p_payload, '{versions}', (p_payload -> 'versions') || coalesce((
+    select jsonb_agg((p_payload -> 'versions' -> 0) || jsonb_build_object('languageLevelId', ll.id)
+      order by ll.sort_order)
+    from public.language_levels ll
+    where ll.board_id = tests.id(p_board) and ll.owner_user_id is null and ll.active), '[]'::jsonb));
+$$;

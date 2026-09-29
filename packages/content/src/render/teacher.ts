@@ -1,7 +1,7 @@
 /**
- * The teacher copy (« Guide et corrigé ») and the answer key (DECISIONS P-2, P-15). The teacher
- * document holds every field, the attentes (« à vérifier » while unverified, D-030), safety and
- * faith callouts; the answer key is a separate document so printing can keep it apart.
+ * The teacher copy (« Guide et corrigé ») and the answer key (DECISIONS D-062, D-075). The
+ * teacher document holds every field, the attentes (« à vérifier » while unverified, D-030),
+ * safety and faith callouts; the answer key is a separate document so printing can keep it apart.
  */
 import { TYPE_INFO, type LibraryItemType } from '../catalog';
 import { answerFor } from '../answer-key';

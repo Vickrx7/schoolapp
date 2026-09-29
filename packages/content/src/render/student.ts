@@ -1,5 +1,5 @@
 /**
- * The student sheet (DECISIONS P-2, P-15). It takes no answer key, renders from
+ * The student sheet (DECISIONS D-062, D-075). It takes no answer key, renders from
  * `studentContent` (no teacher-only field can reach it) and never shows a level name: only the
  * small version number (D-042).
  */

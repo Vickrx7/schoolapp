@@ -1,6 +1,6 @@
 /**
  * @lynx/content: the library's item types, schemas, answer keys, rendering and content packs
- * (DECISIONS P-1). Pure TypeScript that depends on Zod only; safe in the browser, the web
+ * (DECISIONS D-061). Pure TypeScript that depends on Zod only; safe in the browser, the web
  * server, the worker and the admin CLI. Nothing here reads a database.
  */
 export * from './catalog';

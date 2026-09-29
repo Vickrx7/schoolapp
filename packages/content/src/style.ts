@@ -1,5 +1,5 @@
 /**
- * Canadian French style (SPEC 10, DECISIONS P-20): typographic apostrophes, non-breaking spaces
+ * Canadian French style (SPEC 10, DECISIONS D-080): typographic apostrophes, non-breaking spaces
  * inside « » and before `:`, « 3e année » rather than « 3ème », no European grade names
  * (CP, CE1…) or expressions (« week-end »). Normalizing typography is free; the word-level
  * problems need a person (or a retry).

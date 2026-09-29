@@ -1,5 +1,5 @@
 /**
- * The demo content pack in `content/library/demo` (DECISIONS P-11; plan tests 49–55). The files
+ * The demo content pack in `content/library/demo` (DECISIONS D-071; plan tests 49–55). The files
  * are checked the way a reviewer would check them, so an item cannot reach the seed with
  * content that fails `final`, a broken answer key, European French, a seed student's first name,
  * missing level versions, missing safety notes or faith content that nobody reviewed. A teacher
@@ -262,7 +262,7 @@ describe('seed pack (content/library/demo)', () => {
           problems.push(`${at}: not a board level`);
         }
         // Language levels keep the same learning objective (SPEC 10), and assessments keep
-        // the same questions and kinds (P-13).
+        // the same questions and kinds (D-073).
         const content = version.content as { objective?: string };
         if (content.objective !== baseContent.objective) problems.push(`${at}: other objective`);
         if (TYPE_INFO[item.type].keyed) {
@@ -355,7 +355,7 @@ describe('seed pack (content/library/demo)', () => {
     expect(problems).toEqual([]);
   });
 
-  it('reviewed and approved items are ready for review, and approved ones for approval (P-7)', () => {
+  it('reviewed and approved items are ready for review, and approved ones for approval (D-067)', () => {
     const boardLevelIds = BOARD_LEVELS.map((l) => l.code);
     const problems: string[] = [];
     for (const item of items.filter((i) => i.status !== 'draft')) {

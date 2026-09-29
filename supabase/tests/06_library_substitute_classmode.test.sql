@@ -1,14 +1,16 @@
 -- Baseline rules for tables whose features arrive in later phases.
 begin;
 \ir _helpers.psql
-select plan(22);
+select plan(23);
 select tests.build_fixture();
 
--- Library: private drafts, sharing only after review, safety notes for experiments.
+-- Library: private drafts, sharing only after review, safety notes for experiments. Content is
+-- written only through functions (D-063); the workflow itself is tested in 15_library_workflow.
+select tests.build_library_fixture();
 select tests.authenticate_as('teacher_a');
 select lives_ok(
-  $$insert into public.library_items (id, board_id, type, title, source, author_id)
-    values (tests.remember('item', gen_random_uuid()), tests.id('board_a'), 'worksheet', 'Fiche', 'teacher_created', tests.id('teacher_a'))$$,
+  $$select public.save_library_item(tests.remember('item', gen_random_uuid()), null,
+    tests.library_payload('worksheet', 'Fiche'))$$,
   'a teacher can create a private draft'
 );
 select is((select bucket::text from public.library_items where id = tests.id('item')), 'pratiquer',
@@ -27,8 +29,8 @@ select tests.clear_authentication();
 
 select tests.authenticate_as('teacher_a');
 select lives_ok(
-  $$update public.library_items set status = 'teacher_reviewed', share_scope = 'school', school_id = tests.id('school_a1')
-    where id = tests.id('item')$$,
+  $$select public.library_mark_reviewed(tests.id('item'), true);
+    select public.library_share(tests.id('item'), 'school', tests.id('school_a1'))$$,
   'the author can mark an item reviewed and share it with the school'
 );
 select throws_ok(
@@ -66,12 +68,18 @@ select tests.clear_authentication();
 
 select tests.authenticate_as('teacher_a');
 select throws_ok(
-  $$insert into public.library_items (board_id, type, title, source, author_id, status)
-    values (tests.id('board_a'), 'experiment', 'Volcan', 'teacher_created', tests.id('teacher_a'), 'draft');
-    update public.library_items set status = 'teacher_reviewed' where title = 'Volcan'$$,
-  '23514', null, 'an experiment cannot leave draft without safety notes'
+  $$select public.save_library_item(tests.remember('volcan', gen_random_uuid()), null,
+      tests.library_payload('experiment', 'Volcan'));
+    select public.library_mark_reviewed(tests.id('volcan'), true)$$,
+  'LXL02', null, 'an experiment cannot be marked reviewed without safety notes'
 );
 select tests.clear_authentication();
+select tests.library_item('volcan_db', 'teacher_a', 'experiment');
+update public.library_items set safety_notes = null where id = tests.id('volcan_db');
+select throws_ok(
+  $$update public.library_items set status = 'teacher_reviewed' where id = tests.id('volcan_db')$$,
+  '23514', null, 'even the database owner cannot leave an experiment''s draft without safety notes'
+);
 
 -- Substitute hand-off: codes are never readable; absences are written only through functions
 -- (publish_absence, tested in 10_substitute_plans) and visible to the right people.

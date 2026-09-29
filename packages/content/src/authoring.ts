@@ -1,5 +1,5 @@
 /**
- * The editor's model (DECISIONS P-2): the author writes each answer next to its question
+ * The editor's model (DECISIONS D-062): the author writes each answer next to its question
  * (« Écrivez les éléments dans le bon ordre : ils seront mélangés pour les élèves. »), and
  * `fromAuthoring` splits it into content (display order, no answers) and an answer key.
  * `toAuthoring` joins them back for editing.

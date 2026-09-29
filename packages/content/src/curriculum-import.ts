@@ -1,5 +1,5 @@
 /**
- * The curriculum import file (DECISIONS P-10, D-030): JSON only, validated here and applied by
+ * The curriculum import file (DECISIONS D-070, D-030): JSON only, validated here and applied by
  * `pnpm admin import-curriculum` (a dry run unless `--apply`). Strands are upserted by
  * (subject, version, code), then overall attentes and specific ones by (subject, grade,
  * version, code), parents resolved by code within the file. A file that says it holds the

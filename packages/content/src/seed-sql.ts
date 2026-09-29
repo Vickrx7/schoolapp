@@ -1,5 +1,5 @@
 /**
- * A content pack as SQL (DECISIONS P-11): one `DO` block that resolves every reference by code
+ * A content pack as SQL (DECISIONS D-071): one `DO` block that resolves every reference by code
  * and raises on anything missing, then inserts the pack, its tags and its items with UUIDv5
  * ids. Pure and deterministic: the same pack gives the same text, so CI can check the
  * generated seed for drift. The columns follow the Phase 4 library migration (C1): workflow

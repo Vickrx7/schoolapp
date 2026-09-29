@@ -1,5 +1,5 @@
 /**
- * Deterministic scrambling (DECISIONS P-2). Ordering items and matching right columns are
+ * Deterministic scrambling (DECISIONS D-062). Ordering items and matching right columns are
  * stored in display order, which must never give the answer away. The order depends only on
  * the question id and the number of items, so saving again gives the same sheet, and the
  * editor can recover the author's order.

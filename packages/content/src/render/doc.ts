@@ -1,5 +1,5 @@
 /**
- * One document model for screen, print and PDF (DECISIONS P-15). The web app draws it as HTML
+ * One document model for screen, print and PDF (DECISIONS D-075). The web app draws it as HTML
  * (`DocView`) and with react-pdf (`DocBlocks`); substitute plans store it in their snapshots,
  * so it has a strict schema. Student documents and teacher documents are separate documents,
  * and answer keys are a third one.

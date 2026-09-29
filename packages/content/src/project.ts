@@ -1,5 +1,5 @@
 /**
- * What students may see of a content (SPEC 9.3, DECISIONS P-2). Driven by `EDITOR_SPEC`: only
+ * What students may see of a content (SPEC 9.3, DECISIONS D-062). Driven by `EDITOR_SPEC`: only
  * fields listed there for students are copied (an allowlist, so an unknown key never reaches a
  * student), teacher-only fields are left out, and question categories (teacher copy only) are
  * removed. Answer keys are never an argument.

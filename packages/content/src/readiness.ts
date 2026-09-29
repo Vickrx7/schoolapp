@@ -1,5 +1,5 @@
 /**
- * « Avant de marquer comme révisée » (DECISIONS P-7): what an item needs before it can be
+ * « Avant de marquer comme révisée » (DECISIONS D-067): what an item needs before it can be
  * marked reviewed, and before board approval. SQL checks the same metadata
  * (`app.library_assert_ready`, `LXL01`/`LXL02`); the `final` schemas and key completeness are
  * checked here only, since SQL cannot run Zod. Every problem is listed, not just the first.

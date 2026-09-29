@@ -1,5 +1,5 @@
 /**
- * Structured safety notes for experiments and STEM challenges (SPEC 9.3, DECISIONS P-7).
+ * Structured safety notes for experiments and STEM challenges (SPEC 9.3, DECISIONS D-067).
  * `final` mirrors `app.library_safety_notes_valid`: an age suitability (1–300 characters), the
  * allergy-aware materials (1–600, e.g. nut-free and latex-free alternatives) and a supervision
  * level; `hazards`, when present, is a list. The app is stricter in two ways: unknown keys are

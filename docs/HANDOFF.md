@@ -168,7 +168,7 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   local password again. `pnpm test:int` also needs `SUB_PORTAL_DATABASE_URL` (in `.env.example`).
 - **Migrations are applied once.** The lite stack does not re-apply an edited migration: after
   editing one that is not committed yet, `stack.sh reset`. Never edit a committed migration; add
-  a new one (the latest is `20261003100000_substitute_hardening.sql`, pgTAP file `14`).
+  a new one (the latest is `20261015090000_library_core.sql`, pgTAP file `16`).
 - **Phase 3 browser tests** need the worker (`AI_PROVIDER=fake`) for the refresh and AI
   scenarios, move code windows around the real clock (`e2e/db.ts` `openCodeWindow`) and clean up
   after themselves; `e2e/mobile.spec.ts` briefly gives Isabelle a vice-principal role.

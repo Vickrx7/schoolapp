@@ -3,7 +3,7 @@
  */
 import { common, glossaryEntry, type SchemaContext } from './shared';
 
-/** Saved « Texte différencié » results are worksheets or reading passages (P-13). */
+/** Saved « Texte différencié » results are worksheets or reading passages (D-073). */
 export function worksheet({ k, q }: SchemaContext) {
   const schema = k.obj({
     ...common(k),

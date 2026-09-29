@@ -14,6 +14,12 @@
  *   pnpm admin set-ai-budget --school csc-exemple/ecole-a --allowance 100 [--ceiling 200] [--plan plus]
  *   pnpm admin set-ai-board --board csc-exemple [--allowed true] [--default-allowance 50] [--ceiling-multiplier 2] [--pooling true]
  *   pnpm admin ai-usage --board csc-exemple [--month 2026-10] [--csv]
+ *
+ * Library reviewers designated by the board (see DECISIONS.md, D-064). --content approves
+ * resources for the board, --faith reviews faith content; an omitted flag keeps its current value
+ * (true and false for a new reviewer), and both false removes the designation:
+ *   pnpm admin set-library-reviewer --board csc-exemple --email conseillere@conseil.ca --content true --faith true
+ *   pnpm admin list-library-reviewers --board csc-exemple
  */
 import { loadEnv } from '@lynx/config';
 import { Constants, type Database, type Json } from '@lynx/db';
@@ -59,6 +65,8 @@ const { values } = parseArgs({
     pooling: { type: 'string' },
     month: { type: 'string' },
     csv: { type: 'boolean' },
+    content: { type: 'string' },
+    faith: { type: 'string' },
   },
 });
 
@@ -424,6 +432,81 @@ const commands: Record<string, () => Promise<string>> = {
           `  ${l.school}: ${l.requests} requests, ${money(l.costUsd)}${l.aiEnabled ? '' : ' (AI off)'}`,
       ),
       `  Total: ${money(total)}`,
+    ].join('\n');
+  },
+
+  async 'set-library-reviewer'() {
+    const board = await boardBySlug(need('board'));
+    const email = need('email').toLowerCase();
+    const user = check(
+      await db.from('users').select('id, display_name').eq('email', email).maybeSingle(),
+      `user ${email}`,
+    );
+    const { data: current, error: readError } = await db
+      .from('library_reviewers')
+      .select('approves_content, reviews_faith')
+      .eq('board_id', board.id)
+      .eq('user_id', user.id)
+      .maybeSingle();
+    if (readError) throw new CliError(`library reviewers: ${readError.message}`);
+    const approvesContent = bool('content') ?? current?.approves_content ?? true;
+    const reviewsFaith = bool('faith') ?? current?.reviews_faith ?? false;
+
+    if (!approvesContent && !reviewsFaith) {
+      if (!current)
+        return `${email} is not a library reviewer for ${board.name}: nothing to remove.`;
+      const { error } = await db
+        .from('library_reviewers')
+        .delete()
+        .eq('board_id', board.id)
+        .eq('user_id', user.id);
+      if (error) throw new CliError(`remove reviewer: ${error.message}`);
+      return `${email} no longer reviews library resources for ${board.name}.`;
+    }
+    const roles = [approvesContent && 'content', reviewsFaith && 'faith content']
+      .filter(Boolean)
+      .join(' and ');
+    if (
+      current &&
+      current.approves_content === approvesContent &&
+      current.reviews_faith === reviewsFaith
+    ) {
+      return `${email} already reviews ${roles} for ${board.name}.`;
+    }
+    const { error } = await db.from('library_reviewers').upsert(
+      {
+        board_id: board.id,
+        user_id: user.id,
+        approves_content: approvesContent,
+        reviews_faith: reviewsFaith,
+      },
+      { onConflict: 'board_id,user_id' },
+    );
+    // The database's guard: a reviewer is active staff of the board (any role but parent).
+    if (error?.code === '22023')
+      throw new CliError(`${email} is not active staff of ${board.name}: invite them first.`);
+    if (error) throw new CliError(`designate reviewer: ${error.message}`);
+    return `${email} now reviews ${roles} for ${board.name}.`;
+  },
+
+  async 'list-library-reviewers'() {
+    const board = await boardBySlug(need('board'));
+    const { data, error } = await db
+      .from('library_reviewers')
+      .select('approves_content, reviews_faith, users!inner(email, display_name, deactivated_at)')
+      .eq('board_id', board.id);
+    if (error) throw new CliError(`library reviewers: ${error.message}`);
+    const rows = (data ?? []).sort((a, b) => a.users.email.localeCompare(b.users.email));
+    if (!rows.length) return `${board.name}: no library reviewers yet.`;
+    return [
+      `${board.name}: ${rows.length} library reviewer${rows.length > 1 ? 's' : ''}`,
+      ...rows.map((r) => {
+        const kinds = [r.approves_content && 'content', r.reviews_faith && 'faith']
+          .filter(Boolean)
+          .join(', ');
+        const inactive = r.users.deactivated_at ? ' (deactivated: no access)' : '';
+        return `  ${r.users.email} (${r.users.display_name}): ${kinds}${inactive}`;
+      }),
     ].join('\n');
   },
 };

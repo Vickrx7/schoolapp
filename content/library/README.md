@@ -1,6 +1,6 @@
 # Library content packs
 
-This folder holds library content packs (DECISIONS P-11 and P-21 in the Phase 4 plan). A pack is a
+This folder holds library content packs (DECISIONS D-071 and D-081). A pack is a
 folder with a `pack.json` manifest and one JSON file per item in `items/`. Today there is one pack,
 `demo`. In Phase 4 it becomes the demo library seed (D-031), and later it will be the format for
 exporting and importing packs for board-hosted installs (SPEC §9.3).
@@ -213,7 +213,7 @@ notes, answer keys, materials and summaries.
 - Prayers are original.
 - Set `faithContent` whenever an item contains prayer or religious text.
 - Tie a Catholic reflection to a seeded `catholic_references` title (`catholicReference`).
-- Faith content shared with the whole board must be faith-reviewed (`faithReviewed`, P-4).
+- Faith content shared with the whole board must be faith-reviewed (`faithReviewed`, D-064).
 
 ### Metadata
 

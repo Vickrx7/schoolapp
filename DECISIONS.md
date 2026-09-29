@@ -85,7 +85,8 @@ the API does not expose. PUBLIC `EXECUTE` is revoked from functions. The web app
 the signed-in user; the service-role key is only used by admin tooling and the worker. Invariants
 are tested (`supabase/tests/00_schema_invariants.test.sql`). _Amended in Phase 3:_ one more
 way in, for substitutes only: a private schema run by a dedicated database role that the API
-can never become (D-049).
+can never become (D-049). _Amended in Phase 4:_ library content is written only through
+database functions (D-063).
 
 **D-013 — Who sees what (Assumption: to confirm with a board).**
 
@@ -100,7 +101,9 @@ _Why:_ planning is the teacher's professional space; per-teacher progress visibl
 reads as monitoring and would hurt trust (and may concern the teachers' union). Principal
 oversight screens (absences, substitute-plan status) come in Phase 6. _Amended in Phase 3:_ a
 released substitute plan is a hand-off document, which direction and office read (office sees
-first names, never « Gestion de classe »), every view audited (D-056).
+first names, never « Gestion de classe »), every view audited (D-056). _Amended in Phase 4:_
+board admins have no special access to the library and no longer read teachers' private
+library drafts; office staff have no library screens (D-065, D-078).
 
 **D-014 — Students are stored by a single first-name/nickname field.** The column is
 `students.first_name` (max 40 characters). There is no last-name field anywhere. For two students
@@ -210,11 +213,13 @@ are rendered on demand in the web server's Node runtime, never stored (D-053).
 summaries (not official text) with `is_verified = false`, shown as "à vérifier" in the UI.
 Licensing must be confirmed before loading official Ministry curriculum text into a commercial
 product; the Catholic graduate expectations and the religion curriculum belong to Catholic
-education bodies and need separate permission.
+education bodies and need separate permission. _Amended in Phase 4:_ the JSON import tool
+exists, with a licensing gate (D-070).
 
 **D-031 — Library seed items move to Phase 4 (deviation).** The spec asked for 20–30 library items
 in the Phase 1 seed. The item types' schemas are defined in Phase 4, so items written now would have
 to be rewritten. All library tables, the review workflow statuses and access rules exist now.
+_Delivered in Phase 4:_ 29 original items as a content pack (D-071).
 
 **D-032 — Language levels are configurable and not an official scale.** Each board gets
 Débutant, Intermédiaire, Avancé, Enrichi by default; boards can edit them and teachers can add
@@ -295,6 +300,8 @@ before any call (`packages/ai/src/privacy.ts`):
   the app doesn't know (a parent, a sibling, a student from a school where the teacher doesn't
   work) can only be caught by the teacher at the preview; a historical figure who shares a
   student's first name (« Samuel de Champlain ») is replaced too, then restored.
+- _Amended in Phase 4:_ library requests are built by the database from ids, and reusable
+  library content may contain no marker, so no name can come back into it (D-072).
 
 **D-039 — AI is off until the direction turns it on, and a board can forbid it.** Per-school
 switch on the École page (principal or vice-principal, audited). `boards.settings.ai.allowed =
@@ -323,6 +330,8 @@ retried. `pnpm ai:eval` runs 10 fictional cases with automatic checks and writes
 teacher to read; run it before any prompt change. A fake provider answers locally for
 development, CI and demos. Other providers (a board's own cloud account, a local model) plug into
 the same `AiProvider` interface when a board asks; only Anthropic and the fake exist now.
+_Amended in Phase 4:_ a feature may choose its output schema per input, normalize form before
+validating, and send only its section of a prompt (D-080).
 
 **D-042 — Texte différencié.** The teacher pastes a text, instructions or an activity, picks the
 grade, subject and levels (2 to 6), checks the preview and sends. Every version is editable (title,
@@ -330,7 +339,8 @@ text, glossary, questions, visual supports, teacher note). Printouts put each le
 with no level name on it, only a small number for the teacher, so no student sees themselves
 labelled « Débutant ». Results are saved as private library drafts (source `ai_generated`, prompt
 version, model), one version per level plus the original text as the base version. Teachers can add
-levels of their own; board levels are changed by the operator for now.
+levels of their own; board levels are changed by the operator for now. _Amended in Phase 4:_
+saved texts are ordinary library items (D-073).
 
 **D-043 — AI data retention.** `ai_jobs` (the teacher's input, the answer and the exact text sent)
 are deleted after 30 days (`AI_JOB_RETENTION_DAYS`); saved drafts stay in the library. Usage
@@ -359,7 +369,9 @@ refusal fallbacks (a beta) stay off: they would bring in another model and its p
 turned off by the board when the board forbids it. Student copies are in French, the content's
 language, whatever the interface language. A personal level used by a request or a saved text
 can't be deleted, only turned off; a result whose level was deleted since is saved without that
-version, with a warning.
+version, with a warning. _Amended in Phase 4:_ no level that a library version uses can be
+deleted, board levels included (it used to become a second base version); a level removed with
+its owner or its board takes those versions with it (D-063).
 
 ## Substitute hand-off (Phase 3)
 
@@ -400,7 +412,8 @@ edits. Everything that grants access is derived by the database: the covered cla
 (`sub_plan_classes`, a subset of the teacher's classes), the roster (active students of those
 classes), the lessons a report may name, and the school, office phone and teacher name, read
 from tables when the plan is shown. _Why:_ JSON sent to a definer function must never make it
-return someone else's data.
+return someone else's data. _Amended in Phase 4:_ a block may carry a snapshot of a library
+resource, never its key (D-077).
 
 **D-049 — The substitute portal is a private schema run by a dedicated role (amends D-012).**
 Substitutes have no account and their browser never calls the API. The web server calls the
@@ -467,7 +480,8 @@ changed since the preview is refused (`LXS15`) and previewed again. Never sent: 
 (groups go as sizes, per period), alerts, « Gestion de classe », the absence note, reports,
 class, school or staff names, and ids. The answer (`max_tokens` 64 000, D-045) is applied by a
 trigger when the worker records it, never once a substitute has opened the plan; the teacher
-can remove it at any time, even during the day.
+can remove it at any time, even during the day. _Amended in Phase 4:_ plans use reviewed,
+sub-friendly library resources, with each group's version (D-077).
 
 **D-053 — PDFs are rendered on demand, never stored, never with alerts (amends D-029).** The
 plan PDF (schedule, lessons and steps, groups with first names, contacts, end of day, faith
@@ -543,7 +557,8 @@ remembered on the device) adds one « Moment de foi », picked deterministically
 `catholic_references` of the board (the board's own first): the grade range covers the classes,
 the season matches or is empty (Advent, Christmas, Lent, Easter by computus, ordinary time),
 tags overlap the day's lessons best, ties rotate by date. The teacher edits or removes it; AI
-(3b) may add one sentence linking it to the day's topic.
+(3b) may add one sentence linking it to the day's topic. _Amended in Phase 4:_ the ranking is
+shared with library generation (D-074).
 
 **D-059 — Retention and deletion (amends D-018).** Codes and sessions are deleted 30 days
 after they expire, throttle attempts after 1 day, report free text and the absent list 60 days
@@ -562,6 +577,315 @@ log-only `access_control_substitute_credential` handler on `absence.published` s
 makes no integration calls. Everything belongs to the Teaching module: pages and actions check
 it in the app, and the portal, publishing and codes check it in the database too.
 
+## Content library (Phase 4)
+
+**D-061 — One versioned Zod schema per item type, in the pure package `@lynx/content`
+(Assumption on the field choices).** `packages/content` (Zod only) holds the catalogue (6 buckets,
+25 types and each type's flags), one content schema per type built from shared blocks, answer
+keys, the student projection, grading, the document model, readiness, the conversion of AI
+output, French typography checks, the seed pack format and curriculum-import validation. Content
+is stored in `library_item_versions.content` with `schema_version = 1`. Each schema is written
+once and built in three modes: `draft` (maximum lengths, strict objects that refuse unknown keys,
+empty values allowed; used on every save), `final` (minimums, maximums and cross-field rules;
+needed to mark an item reviewed) and `ai` (the same fields with no enum, literal, pattern or size
+constraint, one flat question object with nullable per-kind fields, everything required but
+nullable). Every version also has a `title` (empty: the item's), an `objective` (« Intention
+d'apprentissage ») and a `teacherNote`. _Why:_ one definition gives the same rendering, editing,
+AI validation and seed checks; strict objects stop answers from slipping into student content;
+draft mode keeps unfinished work (D-035); the API's structured outputs do not enforce enums or
+sizes, and a violation would fail with no path and cost a paid retry, so the `ai` mode leaves
+them to `normalizeAiContent` and to `validate`, which reports paths. A new field needs schema
+version 2 and a conversion. `@lynx/ai`, `@lynx/domain` and the apps depend on `@lynx/content`,
+never the reverse.
+
+**D-062 — Answer keys stay in their own table and reach staff views only.** Every question has
+an id (`^[a-z][a-z0-9]{0,7}$`) and its answer lives in `library_item_answer_keys.answer_key`
+(`{answers: [{questionId, kind, …}], solution}`). Question kinds: multiple choice (one or several
+correct choices), true or false, matching (extra right-hand items allowed), ordering and short
+answer (a sample answer and accepted answers). Ordering items and matching right-hand columns are
+stored in display order, scrambled deterministically, so the stored order never gives the answer
+away. `gradeQuestion` scores all or nothing for multiple choice, true or false and ordering, and
+one point per pair for matching; a short answer is correct only when it matches an accepted answer
+after normalization, otherwise it is left to the teacher (« Correction manuelle »). Student
+loaders, `renderStudentDoc` and `studentContent` take no key and never read the key table.
+Substitute plans never carry keys (Assumption): their snapshots hold none and the owner's plan
+links to the item, so office staff and substitutes never receive one. Staff who can read an item
+can read its keys through the API (they are not personal data). _Why:_ SPEC §9.3 and §11; a rule
+enforced by table and by function signature can be tested.
+
+**D-063 — Library content is written only through database functions (amends D-012).**
+`authenticated` keeps `select` on the library tables and the author's `delete` of drafts,
+sent-back and archived items; it has no `insert` or `update` on `library_items` and no write on
+versions, answer keys, grades, attentes, item tags, tags or reviewer designations
+(`00_schema_invariants` checks it). The writers are `save_library_item`, the workflow functions
+below, `add_library_item_to_unit`, `save_ai_job_to_library`, the AI result trigger and the seed.
+`save_library_item(item, expected_revision, item_json)` checks everything itself: a new item's id
+is picked by the client and kept in its device draft, so a create sent again returns the same
+item; later saves send the revision they were edited from and are refused when it moved on
+(`LXL07`); every version the item keeps is sent with its key; links (subject, grades, attentes,
+tags, Catholic reference, levels) must be in the item's board, attentes of its subject and grades.
+Every content change goes through `app.library_content_changed`: the revision goes up, a pending
+approval request is cancelled, an earlier faith review no longer counts, the search document is
+rebuilt, and the upcoming absences whose plans may use a reviewed item are marked out of date.
+Status changes:
+
+| From                                 | Function                                                            | To                                                  | Who                                       |
+| ------------------------------------ | ------------------------------------------------------------------- | --------------------------------------------------- | ----------------------------------------- |
+| draft, sent back                     | `library_mark_reviewed(item, originality_confirmed)`                | reviewed                                            | editor¹                                   |
+| reviewed                             | `library_return_to_draft(item)`                                     | draft, private, request cleared                     | editor                                    |
+| reviewed                             | `library_share(item, scope, school, names_confirmed)`               | private, school or board                            | author                                    |
+| reviewed                             | `library_request_approval(item)`, `library_cancel_request(item)`    | sets or clears the request                          | editor                                    |
+| reviewed and requested               | `library_decide(item, 'approve' or 'reject', note, revision)`       | approved (board-wide), or sent back (private, note) | content reviewer, never on their own item |
+| reviewed and requested, faith review | `library_faith_decide(item, 'approve' or 'reject', note, revision)` | faith-reviewed, or sent back                        | faith reviewer, never on their own item   |
+| any but approved or archived         | `library_flag_faith(item)`                                          | faith content flagged                               | a reviewer who can read the item          |
+| shared or approved                   | `library_retract(item, note)`                                       | sent back, private, approval cleared                | content reviewer of the board             |
+| any but archived                     | `library_archive(item)`                                             | archived, private, approval cleared                 | keeper²                                   |
+| archived                             | `library_restore(item)`                                             | draft                                               | keeper²                                   |
+
+¹ The author; for the board's own items (`board_created`, no author), a content reviewer of the
+board, while the item is a draft, reviewed or sent back. ² The same people whatever the status.
+
+Approved items are read-only for everyone (`LXL06` for their author): to change one, a reviewer
+withdraws it or its keeper archives it (remix comes in Phase 5). « rejected » is shown as
+« À retravailler ». Structured safety notes replace the Phase 1 check (D-067). Errors the app
+translates: `LXL01` not ready (the detail names what is missing), `LXL02` safety notes, `LXL03`
+faith review first, `LXL04` wrong status, `LXL05` own item, `LXL06` approved items are read-only,
+`LXL07` changed since it was opened, `LXL10` versions for personal levels (`LXL08` and `LXL09` are
+the AI's, D-072, D-073). _Why:_ status and content rules are enforced and audited in one place
+(SPEC §6, content approvals); direct writes would go around them.
+
+**D-064 — Reviewers are designated by the board; faith content has its own review before it
+reaches the whole board (Assumption).** `library_reviewers (board, user, approves_content,
+reviews_faith)`, set by the operator with `pnpm admin set-library-reviewer` (and listed with
+`list-library-reviewers`); the database refuses anyone who is not active staff of the board
+(parents included) and audits every change. A board admin is not a reviewer unless designated.
+Faith review applies (`requires_faith_review`, computed by the items trigger) to a
+« Réflexion catholique », to an item whose author ticked « Contient du contenu de foi » (suggested
+by a list of faith words), to an item with a faith link (text or Catholic reference) and to any
+Enseignement religieux item. A reviewer can flag faith content the author did not tick
+(`library_flag_faith`); the author cannot clear that flag, and an item already shared with the
+whole board goes back to its school (or private) until its faith review. The faith review is
+required for board approval and for sharing with the whole board; sharing with the school and
+using it in one's own class stay under the teacher's authority (SPEC §9.5). Nobody approves their
+own item; the board's own items have no author and are kept by its content reviewers, the audit
+showing who did what. _Why:_ SPEC §9.3 (« someone the board designates »); the richer board
+workflow of §12 comes later.
+
+**D-065 — Who can see library items (amends D-013).** Three rules, each with a form that takes
+the user (service role only) and a form for the current user:
+
+- _usable_ (`app.library_item_usable_by`; browsing, search, printing, planning, substitute
+  plans): the author (while active), or a reviewed or approved item shared with a school or a
+  board where the user holds any role but parent;
+- _readable_ (`app.library_item_readable_by`; row level security on items, versions, keys and
+  links): usable, or a content reviewer of the board for requested, shared or approved items and
+  the board's own items, or a faith reviewer of the board for requested items that need a faith
+  review;
+- _editable_ (`app.library_item_editable_by`): the author, or a content reviewer for the board's
+  own items, while the item is a draft, reviewed or sent back.
+
+| Item                                 | Author        | Staff of its school | Other staff of the board | Content reviewer              | Faith reviewer                 |
+| ------------------------------------ | ------------- | ------------------- | ------------------------ | ----------------------------- | ------------------------------ |
+| private (draft, reviewed, sent back) | read, edit    | —                   | —                        | if requested, or a board item | if requested and faith-flagged |
+| reviewed, shared with the school     | read, edit    | read, use           | —                        | read, withdraw                | if requested and faith-flagged |
+| reviewed, shared with the board      | read, edit    | read, use           | read, use                | read, withdraw                | if requested and faith-flagged |
+| approved                             | read          | read, use           | read, use                | read, withdraw                | —                              |
+| archived                             | read, restore | —                   | —                        | board items only              | —                              |
+
+Board admins get no special library access and no longer read teachers' private drafts, which can
+hold students' names restored after AI (D-013: no student data). Office staff can read shared
+items through the API, as school staff, but have no library screens (D-078). Search and planning
+use « usable » only, so items waiting for review never appear in a reviewer's own browsing and
+cannot be put into a lesson or a plan (a lesson, class session or parent item may only point at a
+usable item). _Why:_ reviewers see what they are asked to review and nothing else.
+
+**D-066 — Sharing: reviewed items only, a first-name guard with a confirmation per name, board
+levels only (Assumption).** Only reviewed items are shared. Before sharing, proposing to the board
+or saving an item that is already shared, the web server runs the first names of the students of
+the teacher's schools through the AI privacy tools (`Redactor`, students only, and
+`findBlockedDetails`) over every string of the item and its keys. A student's first name is
+listed, and the teacher may confirm each one as « Ce n'est pas un nom d'élève » (a saint, a
+historical figure); only the count is audited (`names_confirmed`). E-mail addresses, phone numbers
+and other blocked details always block. The guard catches accidents only; the database cannot run
+it; staff names are allowed. Versions for a teacher's personal levels keep an item private and
+cannot be proposed (`LXL10`), since colleagues cannot read those levels.
+
+**D-067 — Required metadata and readiness (Assumption on the exemptions).** To be marked reviewed
+an item needs at least one grade, a subject, a duration, materials (« Aucun matériel
+particulier » is offered), a tag or a keyword (tags are a curated list, from content packs and
+the operator; teachers add free keywords), a base version that passes `final`, at least one
+attente (except pauses actives, réflexions catholiques, amorces culturelles and chansons), a
+complete key for types with questions, and, for experiments and STEM challenges, structured
+safety notes `{ageSuitability, allergyAwareMaterials, supervision: standard|close|adult_only,
+hazards, notes}` (`LXL02`; the database refuses such an item outside draft, sent back or archived
+without them). For board approval, reading passages, worksheets, exit tickets and quizzes also
+need a version for every active board level; other types with levels show « Version de base
+seulement ». A short answer without a sample answer is only a warning. Originality is confirmed
+with a checkbox when marking reviewed, and audited. The database checks grades, subject,
+duration, materials, tags, base version, attentes, the key's presence, levels and safety
+(`app.library_assert_ready`, `LXL01` with the missing part in `detail`); the content schema and
+the key's completeness are checked by the app (`reviewReadiness`), since SQL cannot run Zod, and
+the renderer copes with content that fails them. A reviewed item must stay ready when saved
+(« Remettez-la en brouillon pour l'enregistrer incomplète »). No images in Phase 4: « appuis
+visuels » are text suggestions.
+
+**D-068 — Search: Postgres full-text search with a French configuration without accents, in one
+function with the visibility rule written in.** `app.french_unaccent` copies `french` and removes
+accents before stemming (the stemmer alone turns « idée » and « idee » into different words).
+`library_items.search_document` is rebuilt by `app.library_refresh_search`, which every writer
+calls: A the title; B the summary, keywords, tag labels and French names of the type (« billet
+de sortie »); C the attentes' codes (as written and split into words) and texts; D the materials
+and the strings of the base version without machine keys (ids, kinds, enumerated values). Answer
+keys are never indexed. A GIN index covers it. The query keeps letters and digits only (so
+« défi-STIM », quotes and operators split into words), requires up to 8 words and matches the
+last one as a prefix. `public.search_library` is one definer function that computes the usable
+set once, pinned to `app.library_item_usable_by` by a test, and returns the items and facet
+counts, each facet ignoring its own filter. Order: approved first, then rank, then the title in
+French order (`fr-CA-x-icu`), then id. Items waiting for review never appear in search.
+
+**D-069 — Browsing follows the curriculum tables; anything unverified says « À vérifier »
+(D-030).** Grade → subjects (standard or the board's own, by grade range, Anglais from the board's
+`anglaisStartGrade`) → domaines → attentes (overall, then specific). Maternelle and Jardin use
+`pmje`; there is no kindergarten content in the pilot (D-008), and an empty state says so. An
+attente filter matches items linked to the attente, to its specific attentes (for an overall one)
+or to its overall attente (for a specific one); counts follow the same rule.
+
+**D-070 — Curriculum import tool, JSON only, with a licensing gate (amends D-030).**
+`pnpm admin import-curriculum --file x.json [--apply] [--confirm-licence]` validates the file
+(`curriculumFileSchema`) and is a dry run by default. It upserts strands by subject, version and
+code, then overall and specific attentes by subject, grade, version and code (parents by code),
+then rebuilds every search document (`library_refresh_search_all`, service role only). A file that
+says `"official": true` or `"verified": true` is refused without `--confirm-licence`, which prints
+the licensing warning.
+
+**D-071 — The demo library is a versioned content pack of 29 original items (fulfils D-031;
+Assumption on authorship).** `content/library/demo` (`pack.json` and one file per item) is
+written for this purpose in Canadian French, validated in `final` mode, with fictional
+characters and never a seed student's name. `pnpm library:seed` generates
+`supabase/seeds/20_library_demo.sql`, one block that finds every reference by code and stops on
+anything missing; CI fails on drift. The items belong to the content pack « Ressources de
+démonstration (à valider en classe) » (`2026.1`); most are the board's own, approved by the demo
+board's reviewer (faith items faith-reviewed by her), and a few belong to two teachers to show
+the workflow. Ids are UUIDv5 of `demo/<slug>` under a fixed namespace. The reading passages,
+worksheets, exit tickets and the quiz have the four board levels. The seed curriculum gains four
+5e Français attentes with the same meaning as the 3e ones (C1, C1.2, D1, D1.1, unverified); no
+other code is invented. A short list of global tags is seeded. Who owns what teachers share is
+still open (licence left empty).
+
+**D-072 — On-demand generation: the database builds the request, and the result is a private
+draft (amends D-038).** The AI feature `library_item` is requested with
+`public.request_library_item(school, request)`; the request holds ids and choices only. The
+database checks the role, the Library module, each id and its scope, builds the input with French
+labels read from its tables (grades, subject, domaine, attente codes and texts, levels, the
+Catholic reference) and queues it (`app.enqueue_ai_job`); `library_item_ai_preview` returns the
+same input without queueing, so the preview is exactly what is sent. The output schema is chosen
+per type. When the worker records a success, a trigger turns the result into a private draft of
+the requester, with its provenance (prompt version, model, usage row, `ai_generated`), and writes
+the item's id into the job's result; an unusable result fails the job (`invalidOutput`). Library
+content is reusable, so the output may contain no person marker (« Élève A »): characters take
+names from the prompt's fictional list. Never automatic, always previewed; the generic
+`request_ai_job` stays limited to « Texte différencié ».
+
+**D-073 — Versions per language level, and Phase 2 saved texts (amends D-042).** The AI feature
+`library_levels` writes 1 to 6 missing level versions from an item's base version, with the same
+objective and, for assessments, the same questions and kinds. The request stores the item's
+revision; a result that arrives after the item changed fails the job (`libraryChanged`); asking
+for a level the item already has gives `LXL09`, an input too large `LXL08`. Texts saved from
+« Texte différencié » are ordinary library items: the page sends canonical reading passages or
+worksheets (`fromDifferentiation`) with short-answer keys, `save_ai_job_to_library` (for
+« Texte différencié » results only) writes the keys, the schema version and the search document,
+and texts saved in Phase 2 (`differentiated_text/v1`) are converted once by the library migration
+(nothing is hosted, so there is no read-time upgrade). `/differentiate/saved/[id]` opens the
+library item. Phase 2's limits stay: text up to 40,000 characters, empty glossary definitions,
+objective up to 1,000, and a worksheet may have no questions when it has instructions or text.
+
+**D-074 — Catholic connection toggle (amends D-058: the ranking is shared).** When generating,
+« Ajouter un lien avec la foi » is off by default and forced on for a « Réflexion catholique ».
+The suggestion comes from `rankCatholicReferences`, next to Phase 3's `pickCatholicReference`
+(which becomes its first result): grade range, liturgical season, overlap with the attente,
+subject and note, then the board's own, rotating by date; the teacher can pick another. The AI
+writes one or two sentences tied to that reference only (a biblical reference, never a
+quotation). The link is stored as `catholic_connection` and `catholic_reference_id`, always
+editable, shown on the teacher copy and, with « Afficher le lien sur la feuille de l'élève », on
+the student sheet. Setting it makes a faith review necessary before the item reaches the whole
+board (D-064).
+
+**D-075 — One document model for the screen, printing and PDFs; content stays in its own
+language.** `RenderedDoc` blocks (heading, paragraph, list, steps, glossary, question, table,
+lines, callout, rubric, answer, poem and `section {lang}`) are built by `renderStudentDoc`,
+`renderTeacherDoc` and `renderAnswerKeyDoc` and drawn by `DocView` (HTML, also for printing) and by
+the PDF renderer; PDFs are rendered on demand, never stored (D-053). The student sheet and the
+teacher copy (« Guide et corrigé ») are separate documents. Printouts put one version per page
+with a small number and never a level name (D-042). Content carries `lang="fr-CA"`; the English
+half of a family guide carries `lang="en-CA"` (D-033).
+
+**D-076 — Planning: attach a resource to a lesson, or add it as a new lesson (Assumption on the
+defaults).** Material types are attached to an existing lesson (`unit_lessons.library_item_id`,
+checked by row level security and the lessons trigger): nothing is copied and the lessons keep
+their order. A lesson plan or a project can become a new lesson (`add_library_item_to_unit`), at
+the end of the unit by default; the lesson copies the title, objective, materials, duration, a
+plain-text outline and the attentes, keeps the link, and does not follow later changes to the
+item. Only usable items can be linked. `usage_count` is the number of distinct units whose
+lessons link the item (« Utilisée dans 3 unités »), recounted by a trigger so adding and removing
+a link never inflates it; substitute plans and printouts are not counted. _Why:_ a worksheet is
+material for a lesson, not a lesson of its own, and inserting lessons shifts « Aujourd'hui » and
+substitute plans (D-010).
+
+**D-077 — Substitute plans use library items (amends D-048 and D-052).** A separate loader,
+`app.sub_plan_library_sources(teacher, school)` (the teacher calls
+`get_sub_plan_library_sources`), gives candidates for the open lessons; the web server and the
+worker merge it into the Phase 3 sources, whose functions do not change. The candidates are the
+lesson's own linked item when it is reviewed or approved, sub-friendly and usable by the teacher,
+then approved, sub-friendly items of the board and subject that share a grade with the class and
+an attente with the lesson. Assessments, rubrics, guides, projects and family guides are never
+sub-friendly (a constraint); experiments and STEM challenges only under standard supervision.
+Ties: a student sheet, then attente overlap, then fitting the block (at most 10 minutes over),
+then the closest duration, then usage, then id; each item is used once per absence. The plan
+stores a snapshot in the block: the teacher document (no key) and one student document per set
+of groups (the version of the group's level, else the base version); these fields are optional
+and old plans still parse. The owner can hide the resource. A plan's JSON over 200 KB loses
+snapshots from its last blocks first (`library_trimmed`). Sending an item back, withdrawing,
+archiving, returning it to draft, sharing it more narrowly or editing a reviewed item marks the
+upcoming absences whose plans name it or whose lessons link it out of date, as does any change to
+a lesson's attentes; a new approval does not (Assumption): the next rebuild picks it up.
+
+**D-078 — Licensing, roles and navigation (Assumption).** Library pages, navigation and actions
+need a school with the Library module where the user is a teacher, principal or vice-principal,
+or a reviewer designation. `request_library_item` and `request_library_levels` also check the
+module in the database, because they spend money; everything else is checked in the app
+(D-026). Office staff have no library screens. « Ressources » replaces « Différencier » as a
+top-level item when it is shown: the hub links to « Texte différencié », and « Ressources » stays
+highlighted on `/differentiate/*`. The phone's bottom bar keeps Phase 3's limit of six places
+(`PHONE_BAR_MAX`); with more items, it shows the first five and « Plus », a sheet with the rest.
+
+**D-079 — Library events and audit.** Events carry `{itemId}` (and `scope` for sharing) and
+nothing else: `library_item.review_requested`, `.approved` (SPEC §7), `.rejected`, `.retracted`,
+`.shared` and `.archived`; generation reuses `ai.job_requested`. Audit entries: for the workflow
+`library_item.reviewed` (originality confirmed, revision), `.returned_to_draft`, `.shared`
+(scope, names confirmed), `.review_requested`, `.review_cancelled`, `.approved` (type, revision,
+whether faith review applied), `.rejected`, `.faith_approved`, `.faith_rejected`,
+`.faith_flagged`, `.retracted`, `.archived` and `.restored`; for AI `.generated` (job, author) and
+`.levels_generated` (job, count); for designations `library_reviewer.designated`, `.changed` and
+`.removed` (both flags). Notes, titles and names are never audited.
+
+**D-080 — AI output quality without paid retries for form (amends D-041).** A feature may choose
+its output schema from its input, normalize the answer before it is validated, and keep only the
+common part of its prompt plus the section for the requested type. Normalizing converts the `ai`
+shape to canonical content and fixes typography in French strings only (`'` between letters
+becomes `’`, spaces inside « », a non-breaking space before `:`, « 3ème » becomes « 3e »,
+« 1ère » « 1re »), scrambles ordering questions left in answer order and sets `faithContent` when
+faith words appear. Substantive problems are still retried: missing keys, the wrong set of
+levels, a level name shown to students, person markers, `NOT_CANADIAN` words, « CP/CE/CM »,
+invented dotted attente codes, quotations over 40 words and third-party sources.
+
+**D-081 — Hooks for Phase 5 only.** `questions` on games (quiz battles), `studentContent`,
+`gradeAll`, the content pack provenance and seed pack format (future export and import), and
+`usage_count` with `library_expectation_counts` (the future coverage report). Class mode, trying a
+resource as the students, remix, ratings, bulk generation, the coverage page, pack export and
+import, images and math drawings, e-mail notifications, a board admin screen for reviewers and
+tags, kindergarten content, keys in substitute plans and CSV import are not in Phase 4;
+`ai_generations.batch_id` stays unused.
+
 ## Schema additions beyond SPEC section 8
 
 `school_years`, `rooms`, `class_grades`, `school_cycle_anchors`, `unit_lesson_expectations`,
@@ -570,4 +894,6 @@ code never reads them), `sub_sessions`, `class_session_results`, `strands` share
 `lesson_progress.taught_on` / `source` / `pending_confirmation`, `timetable_blocks.day_key` (instead
 of weekday), `kind`, `teacher_id`, `room_id`, `notes`, and `unit_lessons.sub_notes`. Phase 3 adds
 `sub_plan_classes`, `sub_code_attempts`, `class_sub_profiles`, the plan layers and versions on
-`sub_plans`, and `lesson_progress.sub_report_id`.
+`sub_plans`, and `lesson_progress.sub_report_id`. Phase 4 adds `library_reviewers`, and on
+`library_items` the review state (`content_revision`, request, approval, faith review, reviewer's
+note), the faith flags, the Catholic reference, keywords and the search document.

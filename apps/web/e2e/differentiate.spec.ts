@@ -227,6 +227,16 @@ test('saving a result says what to fix instead of doing nothing', async ({ page 
   await page.getByRole('button', { name: 'Enregistrer', exact: true }).click();
   await page.waitForURL(/\/differentiate\/saved\/[0-9a-f-]{36}$/);
 
+  // Changes to the saved text are kept: the title and a level's glossary, read back from the
+  // database (library content is written only through its save function, D-063).
+  await page.getByLabel('Titre', { exact: true }).first().fill(`${title} révisé`);
+  await glossary.fill('castor : rongeur qui construit des barrages');
+  await page.getByRole('button', { name: 'Enregistrer les changements' }).click();
+  await expect(page.getByText('Changements enregistrés.')).toBeVisible();
+  await page.reload();
+  await expect(page.getByRole('heading', { name: `${title} révisé` })).toBeVisible();
+  await expect(glossary).toHaveValue('castor : rongeur qui construit des barrages');
+
   await confirm(page, page.getByRole('button', { name: 'Supprimer ce texte' }), 'Supprimer');
   await page.waitForURL(/\/differentiate$/);
   await discardRequest(page, title);
