@@ -1028,6 +1028,35 @@ export type Database = {
           },
         ];
       };
+      content_pack_removed_items: {
+        Row: {
+          board_id: string;
+          pack_slug: string;
+          pack_item_key: string;
+          removed_at: string;
+        };
+        Insert: {
+          board_id: string;
+          pack_slug: string;
+          pack_item_key: string;
+          removed_at?: string;
+        };
+        Update: {
+          board_id?: string;
+          pack_slug?: string;
+          pack_item_key?: string;
+          removed_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'content_pack_removed_items_board_id_fkey';
+            columns: ['board_id'];
+            isOneToOne: false;
+            referencedRelation: 'boards';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       content_packs: {
         Row: {
           id: string;

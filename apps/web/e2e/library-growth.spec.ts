@@ -6,6 +6,7 @@ import {
   clearOpinion,
   deleteAdaptations,
   opinionCount,
+  visibleOpinionCount,
 } from './db-library-growth';
 import { DEMO, e2ePrefix, expectAccessible, login } from './helpers';
 
@@ -13,7 +14,8 @@ import { DEMO, e2ePrefix, expectAccessible, login } from './helpers';
  * Library growth (Phase 5, DECISIONS D-092, D-093): « Adapter cette ressource » makes a private
  * copy that opens in the editor with its credit line and shows as « Adaptation » in « Mes
  * ressources »; « Votre avis » gives anonymous stars on a board-approved resource, with « N avis :
- * pas encore assez pour une moyenne » below 5 opinions; an author gets no stars on her own
+ * pas encore assez pour une moyenne » below 5 of her colleagues' opinions (never her own); an
+ * author gets no stars on her own
  * resource; result cards show opinions and usage. On the demo resources of the seed; the
  * adaptations, opinions and « E2E-… » resources made here are deleted afterwards.
  */
@@ -104,11 +106,13 @@ test('a teacher adapts a board resource: a private copy, credited, in the editor
 test('a teacher gives her opinion on a board-approved resource, then takes it back', async ({
   page,
 }) => {
-  const others = await opinionCount(huard.id, DEMO.teacher3);
+  const all = await opinionCount(huard.id);
+  const others = await visibleOpinionCount(huard.id, DEMO.teacher3);
   await login(page, DEMO.teacher3);
   await page.goto(`/library/items/${huard.id}`);
   const section = page.getByRole('region', { name: 'Votre avis' });
   await expect(section.getByText(opinionLine(others))).toBeVisible();
+  await expect(section.getByText(/jamais le vôtre\.$/)).toBeVisible();
   await expectAccessible(page);
 
   const four = section.getByRole('radio', { name: '4 étoiles sur 5' });
@@ -117,7 +121,9 @@ test('a teacher gives her opinion on a board-approved resource, then takes it ba
     await expect(four).toBeChecked({ timeout: 1000 });
   }).toPass();
   await expect(section.getByText('Votre avis est enregistré.')).toBeVisible();
-  await expect(section.getByText(opinionLine(others + 1))).toBeVisible();
+  expect(await opinionCount(huard.id)).toBe(all + 1);
+  // Her own opinion never counts in what she sees (changing it tells her nothing, D-093).
+  await expect(section.getByText(opinionLine(others))).toBeVisible();
 
   // It is kept: after a reload, her four stars are still chosen.
   await page.reload();
@@ -128,7 +134,7 @@ test('a teacher gives her opinion on a board-approved resource, then takes it ba
   await section.getByRole('button', { name: 'Retirer mon avis' }).click();
   await expect(section.getByText('Votre avis est retiré.')).toBeVisible();
   await expect(section.getByText(opinionLine(others))).toBeVisible();
-  expect(await opinionCount(huard.id)).toBe(others);
+  expect(await opinionCount(huard.id)).toBe(all);
 });
 
 test('an author gets no stars on her own resource; cards show opinions and usage', async ({

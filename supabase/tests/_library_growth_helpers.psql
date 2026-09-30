@@ -50,7 +50,8 @@ begin
 end;
 $$;
 
--- An opinion given through rate_library_item as a user; the role is back to the superuser after.
+-- An opinion given through rate_library_item as a user, a day ago or more (an opinion counts in
+-- the average once unchanged for a day, D-093); the role is back to the superuser after.
 create function tests.growth_rate(p_user text, p_item text, p_rating smallint)
 returns void
 language plpgsql
@@ -59,7 +60,18 @@ begin
   perform tests.authenticate_as(p_user);
   perform public.rate_library_item(tests.id(p_item), p_rating);
   perform tests.clear_authentication();
+  update public.library_item_ratings set updated_at = now() - interval '2 days'
+  where item_id = tests.id(p_item) and rater_id = tests.id(p_user);
 end;
+$$;
+
+-- A day passes for every opinion on an item (they were given or changed more than a day ago).
+create function tests.settle_opinions(p_item text)
+returns void
+language sql
+as $$
+  update public.library_item_ratings set updated_at = now() - interval '2 days'
+  where item_id = tests.id(p_item);
 $$;
 
 -- How many rows a delete of an item removes as the current role (row level security decides).

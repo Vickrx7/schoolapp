@@ -4,7 +4,7 @@
 begin;
 \ir _helpers.psql
 \ir _library_growth_helpers.psql
-select plan(64);
+select plan(65);
 select tests.build_fixture();
 select tests.build_library_fixture();
 
@@ -344,6 +344,7 @@ select tests.clear_authentication();
 
 select tests.library_item('shared_b', 'teacher_a', 'worksheet', 'teacher_reviewed', 'school', 'school_a1');
 select tests.growth_teacher('rater_1');
+select tests.growth_teacher('rater_2');
 
 select tests.authenticate_as('teacher_a');
 select throws_ok(
@@ -396,20 +397,23 @@ select results_eq(
   $$select item_id, rating_average, rating_count, my_rating, usage_count
     from public.library_item_stats(array[tests.id('board_ok'), tests.id('shared_b'), tests.id('board_draft')])$$,
   $$select * from (values
-      (tests.id('board_ok'), null::numeric, 4, 4::smallint, 0),
+      (tests.id('board_ok'), null::numeric, 2, 4::smallint, 0),
       (tests.id('shared_b'), null, null, null, 0)) t
     order by 1$$,
-  'four opinions give no average yet; a resource not approved has no opinions; unusable items are left out'
+  'what she sees counts neither her own opinion nor one changed less than a day ago (two); a resource not approved has no opinions; unusable items are left out'
 );
 select tests.clear_authentication();
 
 select tests.growth_rate('rater_1', 'board_ok', 4::smallint);
+select tests.growth_rate('rater_2', 'board_ok', 4::smallint);
+-- A day later: the opinion teacher_a_other changed counts too.
+select tests.settle_opinions('board_ok');
 select tests.authenticate_as('teacher_a');
 select results_eq(
   $$select rating_average, rating_count, my_rating
     from public.library_item_stats(array[tests.id('board_ok')])$$,
   $$values (4.5::numeric, 5, 4::smallint)$$,
-  'five opinions (4, 4, 5, 5, 4 = 4.4) show 4.5, rounded to the half star'
+  'five colleagues'' opinions (4, 5, 5, 4, 4 = 4.4) show 4.5, rounded to the half star'
 );
 select lives_ok(
   $$select public.rate_library_item(tests.id('board_ok'), null)$$,
@@ -418,9 +422,19 @@ select lives_ok(
 select results_eq(
   $$select rating_average, rating_count, my_rating
     from public.library_item_stats(array[tests.id('board_ok')])$$,
-  $$values (null::numeric, 4, null::smallint)$$,
-  'the average waits for a fifth opinion again'
+  $$values (4.5::numeric, 5, null::smallint)$$,
+  '… which changes nothing in what she sees: her own opinion never counts there'
 );
+select tests.clear_authentication();
+select tests.authenticate_as('rater_1');
+select results_eq(
+  $$select rating_average, rating_count, my_rating
+    from public.library_item_stats(array[tests.id('board_ok')])$$,
+  $$values (null::numeric, 4, 4::smallint)$$,
+  'a colleague sees the others'' opinions: four since hers is left out, not enough for an average'
+);
+select tests.clear_authentication();
+select tests.authenticate_as('teacher_a');
 select throws_ok(
   format('select * from public.library_item_stats(%L::uuid[])',
     (select array_agg(gen_random_uuid()) from generate_series(1, 51))),

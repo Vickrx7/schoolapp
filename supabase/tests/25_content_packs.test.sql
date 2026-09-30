@@ -578,7 +578,7 @@ select is(
    where id = (tests.report('apply-3') ->> 'packId')::uuid)
     - 'queued' - 'drafts' - 'approved',
   '{"created": 0, "updated": 1, "unchanged": 3, "changedNotApplied": 1, "skippedModifiedLocally": 1,
-    "skippedUnresolved": 0, "notInPack": 4}'::jsonb,
+    "skippedDeletedLocally": 0, "skippedUnresolved": 0, "notInPack": 4}'::jsonb,
   'the pack row keeps the counts'
 );
 

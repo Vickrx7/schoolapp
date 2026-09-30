@@ -305,7 +305,7 @@ export function Game({ initial }: { initial: DeviceOkState | null }) {
     <div className="space-y-6">
       <OfflineBanner offline={offline} />
       {session.phase !== 'lobby' && me.team ? (
-        <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[20px] text-slate-800">
+        <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[24px] text-slate-800">
           <span>{t('you', { n: me.device })}</span>
           <TeamLabel team={me.team} name={t(`teams.${me.team}`)} />
         </p>
@@ -316,7 +316,7 @@ export function Game({ initial }: { initial: DeviceOkState | null }) {
           <button
             type="button"
             onClick={() => void leave()}
-            className="inline-flex min-h-16 items-center gap-2 rounded-2xl px-4 text-[20px] font-semibold text-slate-800 underline underline-offset-4 focus-visible:outline-4 focus-visible:outline-slate-950"
+            className="inline-flex min-h-16 items-center gap-2 rounded-2xl px-4 text-[22px] font-semibold text-slate-800 underline underline-offset-4 focus-visible:outline-4 focus-visible:outline-slate-950"
           >
             <LogOut aria-hidden className="size-6" />
             {t('leave')}

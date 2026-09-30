@@ -135,7 +135,8 @@ export function TeamLabel({
   return (
     <span className={cn('inline-flex items-center gap-[0.35em] font-bold', style.text, className)}>
       <Shape shape={style.shape} className={style.fill} />
-      <span>{name}</span>
+      {/* A long name wraps rather than spilling out of a narrow tile. */}
+      <span className="min-w-0 break-words">{name}</span>
     </span>
   );
 }

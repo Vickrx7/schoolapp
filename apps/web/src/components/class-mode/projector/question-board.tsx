@@ -3,6 +3,7 @@
 import { Check } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
+import { aroundValue } from '../../../lib/around-value';
 import { SLIDE_TYPE } from '../presenter/slide-view';
 import { Shape, answerLetter, answerStyle } from '../team-mark';
 import { cn } from '../../../lib/utils';
@@ -13,9 +14,18 @@ import type { DeviceQuestion, LiveState } from '../../../server/class-portal/sch
  * projector seen from the back of the room (40 px and more at 1920 px wide). Choices carry their
  * letter, shape and colour, as on the devices. From « Afficher la réponse » on it shows how the
  * class answered (bars with the numbers written out) and, only when the teacher shows answers,
- * the right answer and its explanation: `reveal` is null before the reveal, and its `answer`
- * null when answers are hidden, whatever this component does.
+ * the right answer, how many found it and its explanation: `reveal` is null before the reveal,
+ * and its `answer` null when answers are hidden, whatever this component does (with answers
+ * hidden, « 3 bonnes réponses sur 4 » beside the counts would name the right choice).
+ *
+ * A choice's text takes the width it needs: « Bonne réponse » and the count follow it on the
+ * same line when they fit, else on the next one, so the text never shrinks to a narrow column on
+ * a 1366 × 768 or 1024 × 768 projector. The content keeps its own
+ * language (`lang`); the words around it (« Indice : », « Explication : », « Vrai ») are in the
+ * interface's. `REVEAL_SUMMARY_ID` marks what the projector scrolls into view at the reveal.
  */
+
+export const REVEAL_SUMMARY_ID = 'class-reveal-summary';
 
 type Reveal = NonNullable<LiveState['reveal']>;
 
@@ -36,15 +46,19 @@ export function QuestionBoard({
   const count = (key: string) => reveal?.distribution[key] ?? 0;
 
   return (
-    <div className="space-y-[3vh]">
-      <div lang={lang} className="space-y-[1.5vh]">
-        <p className={cn(SLIDE_TYPE.body, 'font-semibold whitespace-pre-line')}>
+    <div className="space-y-[2.5vh]">
+      <div className="space-y-[1.5vh]">
+        <p lang={lang} className={cn(SLIDE_TYPE.body, 'font-semibold whitespace-pre-line')}>
           {question.prompt}
         </p>
         {question.hint && !reveal ? (
-          <p className={cn(SLIDE_TYPE.small, 'text-slate-700')}>
-            {t('question.hint', { text: question.hint })}
-          </p>
+          <LabelledText
+            className={cn(SLIDE_TYPE.small, 'text-slate-700')}
+            label={aroundValue((text) => t('question.hint', { text }))}
+            lang={lang}
+          >
+            {question.hint}
+          </LabelledText>
         ) : null}
       </div>
 
@@ -53,7 +67,7 @@ export function QuestionBoard({
           {question.multipleAnswers ? (
             <p className={cn(SLIDE_TYPE.small, 'text-slate-700 italic')}>{t('question.several')}</p>
           ) : null}
-          <ul className="grid grid-cols-2 gap-[1.5vw]">
+          <ul className="grid grid-cols-2 gap-x-[1.5vw] gap-y-[1.5vh]">
             {(question.choices ?? []).map((choice, i) => (
               <Choice
                 key={choice.id}
@@ -71,12 +85,12 @@ export function QuestionBoard({
       ) : null}
 
       {question.kind === 'true_false' ? (
-        <ul className="grid grid-cols-2 gap-[1.5vw]">
+        <ul className="grid grid-cols-2 gap-x-[1.5vw] gap-y-[1.5vh]">
           {([true, false] as const).map((value, i) => (
+            // « Vrai » and « Faux » are the interface's words, in its language.
             <Choice
               key={String(value)}
               index={i}
-              lang="fr-CA"
               correct={answer?.value === value}
               bar={reveal ? { count: count(String(value)), total: answered } : null}
             >
@@ -148,8 +162,31 @@ export function QuestionBoard({
         </>
       ) : null}
 
-      {reveal ? <RevealSummary reveal={reveal} answered={answered} question={question} /> : null}
+      {reveal ? (
+        <RevealSummary reveal={reveal} answered={answered} question={question} lang={lang} />
+      ) : null}
     </div>
+  );
+}
+
+/** « Indice : … », « Explication : … »: the words in the interface's language, the value in the content's. */
+function LabelledText({
+  label,
+  lang,
+  className,
+  children,
+}: {
+  label: { before: string; after: string };
+  lang: LiveState['lang'];
+  className?: string;
+  children: ReactNode;
+}) {
+  return (
+    <p className={cn('whitespace-pre-line', className)}>
+      {label.before}
+      <span lang={lang}>{children}</span>
+      {label.after}
+    </p>
   );
 }
 
@@ -164,7 +201,8 @@ function Choice({
   index: number;
   /** The letter; true / false show the shape and the word only. */
   mark?: string;
-  lang: LiveState['lang'];
+  /** The content's language; none for the interface's own words (« Vrai »). */
+  lang?: LiveState['lang'];
   correct: boolean;
   bar: { count: number; total: number } | null;
   children: ReactNode;
@@ -176,11 +214,16 @@ function Choice({
     <li
       data-correct={correct || undefined}
       className={cn(
-        'overflow-hidden rounded-2xl border-[3px] bg-white',
+        'flex flex-col overflow-hidden rounded-2xl border-[3px] bg-white',
         correct ? 'border-emerald-800 ring-4 ring-emerald-800' : 'border-slate-300',
       )}
     >
-      <div className={cn(SLIDE_TYPE.doc, 'flex items-center gap-[0.5em] px-[0.5em] py-[0.35em]')}>
+      <div
+        className={cn(
+          SLIDE_TYPE.doc,
+          'flex flex-1 items-start gap-x-[0.5em] px-[0.5em] py-[0.3em]',
+        )}
+      >
         <span
           className={cn(
             'inline-flex shrink-0 items-center gap-[0.25em] rounded-xl px-[0.35em] py-[0.1em] font-bold text-white',
@@ -190,29 +233,34 @@ function Choice({
           <Shape shape={style.shape} className="fill-white" />
           {mark ? <span>{mark}</span> : null}
         </span>
-        <span lang={lang} className="min-w-0 flex-1 break-words">
-          {children}
-        </span>
-        {correct ? (
-          <span
-            className={cn(
-              SLIDE_TYPE.small,
-              'inline-flex shrink-0 items-center gap-[0.3em] rounded-full bg-emerald-800 px-[0.6em] py-[0.15em] font-semibold text-white',
-            )}
-          >
-            <Check aria-hidden className="size-[1em]" strokeWidth={3} />
-            {t('reveal.correct')}
+        {/* The text first, as wide as it needs: when « Bonne réponse » or the count does not fit
+            beside it, they go on the next line, never the text squeezed into a narrow column. */}
+        <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-[0.5em] gap-y-[0.2em]">
+          <span lang={lang} className="min-w-0 flex-auto break-words">
+            {children}
           </span>
-        ) : null}
+          {correct ? (
+            <span
+              className={cn(
+                SLIDE_TYPE.small,
+                'inline-flex max-w-full shrink-0 items-center gap-[0.3em] rounded-full bg-emerald-800 px-[0.6em] py-[0.1em] font-semibold text-white',
+              )}
+            >
+              <Check aria-hidden className="size-[1em] shrink-0" strokeWidth={3} />
+              {t('reveal.correct')}
+            </span>
+          ) : null}
+          {bar ? (
+            <span className={cn(SLIDE_TYPE.small, 'ml-auto shrink-0 font-semibold tabular-nums')}>
+              {t('reveal.count', { count: bar.count })}
+            </span>
+          ) : null}
+        </div>
       </div>
       {bar ? (
-        <div className="flex items-center gap-[1vw] border-t border-slate-200 px-[0.8vw] py-[0.8vh]">
-          <div className="h-[2.2vh] min-h-3 flex-1 overflow-hidden rounded-full bg-slate-100">
-            <div className={cn('h-full rounded-full', style.bg)} style={{ width: `${share}%` }} />
-          </div>
-          <span className={cn(SLIDE_TYPE.small, 'shrink-0 font-semibold tabular-nums')}>
-            {t('reveal.count', { count: bar.count })}
-          </span>
+        // The share as a strip along the card (the number is written above).
+        <div aria-hidden className="h-[1.4vh] min-h-2 bg-slate-100">
+          <div className={cn('h-full', style.bg)} style={{ width: `${share}%` }} />
         </div>
       ) : null}
     </li>
@@ -279,21 +327,27 @@ function AnswerPanel({ title, children }: { title: string; children: ReactNode }
   );
 }
 
-/** How many got it right, the explanation, or why no answer is shown. */
+/**
+ * How many got it right and the explanation when answers are shown, or why no answer is shown.
+ * With answers hidden, only that: the count of right answers beside the per-choice counts would
+ * name the right choice.
+ */
 function RevealSummary({
   reveal,
   answered,
   question,
+  lang,
 }: {
   reveal: Reveal;
   answered: number;
   question: DeviceQuestion;
+  lang: LiveState['lang'];
 }) {
   const t = useTranslations('classMode');
   const answer = reveal.answer;
   return (
-    <div className={cn(SLIDE_TYPE.small, 'space-y-[1vh]')}>
-      {reveal.correctCount !== null ? (
+    <div id={REVEAL_SUMMARY_ID} className={cn(SLIDE_TYPE.small, 'space-y-[1vh]')}>
+      {answer !== null && reveal.correctCount !== null ? (
         <p className="font-semibold tabular-nums">
           {t('reveal.correctCount', { count: reveal.correctCount, total: answered })}
         </p>
@@ -301,9 +355,13 @@ function RevealSummary({
       {answer === null ? (
         <p className="text-slate-700">{t('reveal.hidden')}</p>
       ) : answer.display?.explanation ? (
-        <p className="whitespace-pre-line text-slate-900">
-          {t('reveal.explanationText', { text: answer.display.explanation })}
-        </p>
+        <LabelledText
+          className="text-slate-900"
+          label={aroundValue((text) => t('reveal.explanationText', { text }))}
+          lang={lang}
+        >
+          {answer.display.explanation}
+        </LabelledText>
       ) : !hasShownAnswer(question, answer) ? (
         <p className="text-slate-700">{t('reveal.noKey')}</p>
       ) : null}

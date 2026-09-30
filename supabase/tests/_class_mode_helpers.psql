@@ -328,18 +328,21 @@ begin
 end;
 $$;
 
--- A right and a wrong answer to each battle quiz question, by question id.
+-- A right and a wrong answer to each battle quiz question, by question id, with the session's
+-- option ids (D-086: an option is named by its list and its place on screen, not by the content's
+-- id): q1's choices c1…c4 are a…d; q3's right column ra, rb, rc, rd is r1…r4; items keep i1…i3
+-- (they are listed in that order).
 create function tests.battle_answer(p_question text, p_right boolean)
 returns jsonb
 language sql
 immutable
 as $$
   select case p_question
-    when 'q1' then jsonb_build_object('choiceIds', jsonb_build_array(case when p_right then 'c2' else 'c3' end))
+    when 'q1' then jsonb_build_object('choiceIds', jsonb_build_array(case when p_right then 'b' else 'c' end))
     when 'q2' then jsonb_build_object('value', p_right)
     when 'q3' then case when p_right
-      then '{"pairs": {"l1": "rc", "l2": "ra", "l3": "rb"}}'::jsonb
-      else '{"pairs": {"l1": "rc", "l2": "rb", "l3": "ra"}}'::jsonb end
+      then '{"pairs": {"l1": "r3", "l2": "r1", "l3": "r2"}}'::jsonb
+      else '{"pairs": {"l1": "r3", "l2": "r2", "l3": "r1"}}'::jsonb end
     when 'q4' then case when p_right
       then '{"orderedIds": ["i3", "i1", "i2"]}'::jsonb
       else '{"orderedIds": ["i1", "i2", "i3"]}'::jsonb end

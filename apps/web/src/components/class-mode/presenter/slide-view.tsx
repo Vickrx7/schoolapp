@@ -83,15 +83,16 @@ function BulletList({ items, className }: { items: readonly string[]; className:
 // Questions
 // ---------------------------------------------------------------------------------------
 
+/** « Bonne réponse », after the choice's text, or under it when it does not fit beside it. */
 function CorrectBadge({ t }: { t: SlideText }) {
   return (
     <span
       className={cn(
         SLIDE_TYPE.small,
-        'ml-auto inline-flex shrink-0 items-center gap-[0.3em] rounded-full bg-emerald-800 px-[0.6em] py-[0.15em] font-semibold text-white',
+        'inline-flex max-w-full shrink-0 items-center gap-[0.3em] rounded-full bg-emerald-800 px-[0.6em] py-[0.1em] font-semibold text-white',
       )}
     >
-      <Check aria-hidden className="size-[1em]" strokeWidth={3} />
+      <Check aria-hidden className="size-[1em] shrink-0" strokeWidth={3} />
       {t('correct')}
     </span>
   );
@@ -115,14 +116,18 @@ function ChoiceCard({
     <li
       className={cn(
         SLIDE_TYPE.doc,
-        'flex items-center gap-[0.5em] rounded-2xl border-[3px] px-[0.6em] py-[0.4em]',
+        'flex items-start gap-x-[0.5em] rounded-2xl border-[3px] px-[0.6em] py-[0.4em]',
         correct ? 'border-emerald-800 bg-emerald-50 ring-4 ring-emerald-800' : 'border-slate-300',
       )}
       data-correct={correct || undefined}
     >
       {mark === 'letter' ? <ChoiceMark index={index} /> : <ChoiceShape index={index} />}
-      <span className="min-w-0 break-words">{children}</span>
-      {correct ? <CorrectBadge t={t} /> : null}
+      {/* The text as wide as it needs; « Bonne réponse » beside it, or under it when it does not
+          fit (never the text squeezed into a narrow column on a 1366 × 768 screen). */}
+      <span className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-[0.5em] gap-y-[0.2em]">
+        <span className="min-w-0 flex-auto break-words">{children}</span>
+        {correct ? <CorrectBadge t={t} /> : null}
+      </span>
     </li>
   );
 }

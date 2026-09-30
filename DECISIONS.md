@@ -86,7 +86,9 @@ the signed-in user; the service-role key is only used by admin tooling and the w
 are tested (`supabase/tests/00_schema_invariants.test.sql`). _Amended in Phase 3:_ one more
 way in, for substitutes only: a private schema run by a dedicated database role that the API
 can never become (D-049). _Amended in Phase 4:_ library content is written only through
-database functions (D-063).
+database functions (D-063). _Amended in Phase 5:_ a second private schema and role, for class
+devices only: `class_portal`, run by `lynx_class_portal`, which executes five functions, reads no
+table and is kept apart from the substitute portal's role (D-083); `anon` still executes nothing.
 
 **D-013 — Who sees what (Assumption: to confirm with a board).**
 
@@ -103,7 +105,11 @@ oversight screens (absences, substitute-plan status) come in Phase 6. _Amended i
 released substitute plan is a hand-off document, which direction and office read (office sees
 first names, never « Gestion de classe »), every view audited (D-056). _Amended in Phase 4:_
 board admins have no special access to the library and no longer read teachers' private
-library drafts; office staff have no library screens (D-065, D-078).
+library drafts; office staff have no library screens (D-065, D-078). _Amended in Phase 5:_
+class mode belongs to the class team with a teacher role: principals and office staff never see
+a teacher's sessions or kept class results (D-090), and the future audit viewer must not give the
+direction a per-teacher view of `class_session.ended` (D-101). Opinions on resources are
+anonymous to everyone, reviewers and the direction included (D-093).
 
 **D-014 — Students are stored by a single first-name/nickname field.** The column is
 `students.first_name` (max 40 characters). There is no last-name field anywhere. For two students
@@ -147,6 +153,14 @@ deletion. Audit entries never contain student names or alert text.
 | Class-mode responses            | Deleted when the session ends (unless the teacher keeps aggregate results, then 1 year)        |
 | Substitute codes and sessions   | Expire the same day; deleted after 30 days (implemented, D-059)                                |
 | AI usage ledger (metadata only) | 2 years                                                                                        |
+
+_Amended in Phase 5_ (implemented now, in the worker, not in Phase 6; D-089, D-101): class-mode
+answers and devices until the session ends (at most 2 hours, plus 5 minutes if nobody calls), join
+failures a day, closed sessions without kept results 30 days, kept class aggregates
+`classModeResultsRetentionDays` (365 by default); bulk runs and requests a year, what was sent 30
+days (then only its SHA-256), runs planned but never started a day; staged pack imports a day;
+opinions until the rater or the item is deleted; the keys of pack items deleted here as long as
+the board. Deleted rows remain in database backups for the backup window (`docs/phase-5.md`).
 
 **D-019 — Login: 6-digit email code plus a "confirm" link.** The email contains both. The link
 opens a page with a button that completes sign-in. _Why:_ board email security scanners
@@ -263,7 +277,10 @@ key, and is the only writer of `ai_generations` (tokens, cost, latency, prompt v
 provider request id: the API's `request-id`). The page polls the job less often as time passes (up
 to every 10 s), pauses in hidden tabs, keeps trying after errors and stops after 15 minutes with a
 message. Long calls never block a web request, and usage records cannot be forged or deleted
-through the API.
+through the API. _Amended in Phase 5:_ bulk generation runs in the worker too
+(`library_bulk_tick`), one Message Batches API batch per run the operator plans; its requests
+live in `library_bulk_requests`, not `ai_jobs`, outside school budgets and per-person limits, under
+a hard cost cap per run (D-095, D-096, D-098). Class mode never uses AI (D-082).
 
 **D-038 — Nothing personal leaves Canada.** Every request is treated as leaving the country, so
 before any call (`packages/ai/src/privacy.ts`):
@@ -333,7 +350,10 @@ teacher to read; run it before any prompt change. A fake provider answers locall
 development, CI and demos. Other providers (a board's own cloud account, a local model) plug into
 the same `AiProvider` interface when a board asks; only Anthropic and the fake exist now.
 _Amended in Phase 4:_ a feature may choose its output schema per input, normalize form before
-validating, and send only its section of a prompt (D-080).
+validating, and send only its section of a prompt (D-080). _Amended in Phase 5:_ the batch path
+uses the same feature, prompt version, schemas, checks and `max_tokens` as on-demand generation,
+priced at the batch rate (half); `pnpm ai:eval --batch` runs the cases as one batch; no system
+prompt may hold a fixed first name, which a test checks with the demo people (D-098).
 
 **D-042 — Texte différencié.** The teacher pastes a text, instructions or an activity, picks the
 grade, subject and levels (2 to 6), checks the preview and sends. Every version is editable (title,
@@ -660,7 +680,12 @@ translates: `LXL01` not ready (the detail names what is missing), `LXL02` safety
 faith review first, `LXL04` wrong status, `LXL05` own item, `LXL06` approved items are read-only,
 `LXL07` changed since it was opened, `LXL10` versions for personal levels (`LXL08` and `LXL09` are
 the AI's, D-072, D-073). _Why:_ status and content rules are enforced and audited in one place
-(SPEC §6, content approvals); direct writes would go around them.
+(SPEC §6, content approvals); direct writes would go around them. _Amended in Phase 5:_ more
+writers, each a database function: `remix_library_item` (« Adapter », D-092; the way a teacher
+changes an approved item, her own included), the bulk worker's `app.library_item_from_bulk` and
+the reviewers' `library_approve_board_draft` (D-095), and the pack import `content_pack_apply`
+(D-100). Deleting a board item is audited by a trigger, whoever deletes it
+(`library_item.deleted`, D-091).
 
 **D-064 — Reviewers are designated by the board; faith content has its own review before it
 reaches the whole board (Assumption).** `library_reviewers (board, user, approves_content,
@@ -708,7 +733,11 @@ hold students' names restored after AI (D-013: no student data). Office staff ca
 items through the API, as school staff, but have no library screens (D-078). Search and planning
 use « usable » only, so items waiting for review never appear in a reviewer's own browsing and
 cannot be put into a lesson or a plan (a lesson, class session or parent item may only point at a
-usable item). _Why:_ reviewers see what they are asked to review and nothing else.
+usable item). _Why:_ reviewers see what they are asked to review and nothing else. _Amended in
+Phase 5:_ the board's own items are those marked `board_owned` (the seed's board items, bulk
+drafts and pack imports), which its content reviewers read, edit and keep at any status;
+approving one makes it board-shared, and until then it is private; an item whose author was
+deleted is not the board's and stays unreadable (D-091).
 
 **D-066 — Sharing: reviewed items only, a first-name guard with a confirmation per name, board
 levels only (Assumption).** Only reviewed items are shared. Before sharing, proposing to the board
@@ -916,7 +945,11 @@ whether faith review applied), `.rejected`, `.faith_approved`, `.faith_rejected`
 the whole board), `.retracted`, `.archived` and `.restored` (`.returned_to_draft` also gives a
 reason when AI versions caused it); for AI `.generated` (job, author) and
 `.levels_generated` (job, count); for designations `library_reviewer.designated`, `.changed` and
-`.removed` (both flags). Notes, titles and names are never audited.
+`.removed` (both flags). Notes, titles and names are never audited. _Amended in Phase 5:_
+`library_item.remixed {parent_item_id}`, `.generated {bulk_run_id}`, `.approved {…, via}`
+(`board_draft`, `content_pack`), `.deleted` for the board's items (status, type, pack key, bulk
+run, usage and whether it was ever approved), and the bulk run and content pack entries of D-101;
+opinions are never audited.
 
 **D-080 — AI output quality without paid retries for form (amends D-041).** A feature may choose
 its output schema from its input, normalize the answer before it is validated, and keep only the
@@ -934,7 +967,12 @@ invented dotted attente codes, quotations over 40 words and third-party sources.
 resource as the students, remix, ratings, bulk generation, the coverage page, pack export and
 import, images and math drawings, e-mail notifications, a board admin screen for reviewers and
 tags, kindergarten content, keys in substitute plans and CSV import are not in Phase 4;
-`ai_generations.batch_id` stays unused.
+`ai_generations.batch_id` stays unused. _Amended in Phase 5:_ the hooks are used: games'
+`questions` and `studentContent` feed « Présenter » and the quizzes on devices (D-082), the pack
+provenance and seed format became content pack format v1 (D-099, D-100), `usage_count` shows on
+every card (D-093), `parent_item_id` holds an adaptation's original (D-092), and
+`ai_generations.batch_id` the bulk runs' batches (D-095). `gradeAll` stays unused (class mode
+grades in the database, D-087), and « Essayer comme les élèves » is not built.
 
 ## Library growth and class mode (Phase 5)
 
@@ -1083,7 +1121,15 @@ sessions with sentinels planted in every key field; the portal role cannot selec
 forbids portal code from importing library queries, Supabase clients and `@lynx/ai`; the web
 server's Zod parsers strip unknown keys; Playwright scans every `/jouer/api/*` body for sentinels
 and key names, and the HTML and RSC payloads for the sentinel values. _Why:_ SPEC §9.3 and §11
-(« answer keys never reaching student devices »).
+(« answer keys never reaching student devices »). As built (Phase 5 hardening,
+`20261101090500_phase5_review_fixes.sql`): the snapshot names each option by its list and its
+place on screen only (choices `a`, `b`, `c`…, matching columns `l1`…, `r1`…, ordering items `i1`…)
+and the session's key is written with those ids. The content's own ids could carry the answer: the
+Phase 4 editor and the AI path number ordering items and matching pairs in the answer's order and
+scramble only their positions, so sorting the ids gave the order and `l1` paired with `r1`. With
+answers hidden, the projector gets neither the answer nor how many answered right: beside the
+per-choice counts, that number named the right choice (SQL, `liveStateSchema` and the screen each
+drop it).
 
 **D-087 — Scoring: accuracy only; a team's score is the sum of its per-question averages
 (Assumption).** A question is worth 100 points. Matching earns round(100 × correct pairs ÷ pairs);
@@ -1154,7 +1200,18 @@ landscape; below, it says « Ouvrez cette page sur l'ordinateur branché au proj
 the class tab shows for a class team member with a teacher role at a school with the Library
 module; team names come from both `classMode.teams` and `classPortal.teams` (a unit test pins them
 to `CLASS_TEAMS`), and answer choices take the team colours and shapes in order (choice A is the
-blue circle on the projector and the devices).
+blue circle on the projector and the devices). As built (Phase 5 hardening): classroom screens are
+often 1366 × 768, 1280 × 720 or 4:3, so the lobby puts the teams in a row of tiles under
+« Rejoignez la partie », sized by the screen's height as well as its width (six teams fit at
+1920 × 1080, 1366 × 768, 1280 × 800, 1280 × 720 and 1024 × 768); a choice's « Bonne réponse » and
+count follow its text or go under it, never squeezing it; a screen still too tall scrolls in its
+own region, which the keyboard reaches, and « Afficher la réponse » brings the right choice and
+the explanation into view; « 18 réponses sur 27 » sits beside « Question 3 sur 10 » in projector
+type; the presenter's slide keeps clear of its countdown. Device text is at least 22 px
+everywhere. Content keeps its language in accessible names too: a choice's button is named from
+its parts (`aria-labelledby`), so « Réponse B : » stays French and the choice's text English in
+an Anglais quiz, and so do the arrows' labels, the projector's hints and explanations, and the
+kept results.
 
 **D-091 — Board items: `board_owned` replaces « board_created with no author » (amends D-065).**
 `library_items.board_owned` is set at creation for the seed's board items, bulk drafts and pack
@@ -1167,7 +1224,11 @@ user) is added for policies; `app.library_reviewer(p_user, …)` stays service-r
 (slice S4, `20261101090100_library_growth.sql`): the flag never changes after creation (a trigger
 refuses it, 22023); the seed's and tests' board items were marked by the migration; the item page's
 « Ressource du conseil scolaire » and the reviewer's editing follow the flag, not the source (a
-board's AI draft is `ai_generated` and the board's).
+board's AI draft is `ai_generated` and the board's). As built (Phase 5 hardening): deleting a
+board item is audited (`library_item.deleted`, with its status, type, pack key, bulk run, usage
+and whether it was ever approved, which archiving hides) by a trigger, so the reviewer's
+« Supprimer le brouillon », an operator's delete and any other path are covered; deletions that
+cascade from a board or a school are not.
 
 **D-092 — « Adapter » (remix): a private copy with lineage, credit and a sharing cap (uses the D-081
 hook; amends D-063).** `public.remix_library_item` copies any item the user can use (their own, or
@@ -1218,7 +1279,12 @@ direct writes to `library_item_ratings` are closed. The stars are a radio group 
 choice (the last one when the arrows move through several), with « Retirer mon avis »; with no
 opinion yet the item page says « Aucun avis pour l'instant » (cards show nothing), and an author
 sees « Avis des collègues » on her own approved resource, without stars. Every card shows its
-usage, « Pas encore utilisée dans une unité » at 0.
+usage, « Pas encore utilisée dans une unité » at 0. As built (Phase 5 hardening): the average
+and count a person sees leave out her own opinion and count an opinion once it has been unchanged
+for a day (the hint under the stars says so). Changing one's own stars and watching the rounded
+average let anyone work out the others' exact stars from 5 opinions on; now her own changes show
+her nothing, and two colleagues acting together learn at most one value a day (a residual risk
+in `docs/phase-5.md`). Two colleagues can therefore see counts that differ by one.
 
 **D-094 — Coverage counts board-approved items linked directly.** « Couverture du curriculum »
 (`/library/coverage`, and `pnpm admin coverage` from the same database function) lists, for a grade
@@ -1412,7 +1478,11 @@ audit action and event as `library_decide`, audited as the operator's (`service`
 and « Détails » the declared publisher, the import date and the fingerprint (none for a seed pack).
 `list-packs` prints each pack's report (counts and the keys changed but not applied). Staged imports
 are deleted after a day by `content_pack_stage` and `app.content_pack_maintenance` (called by the
-daily `library_maintenance`).
+daily `library_maintenance`). As built (Phase 5 hardening): local deletions win too. Deleting an
+item a pack wrote leaves its key in `content_pack_removed_items` (board, slug, key: no content, no
+person), and later versions report it as `skipped_deleted_locally` (« deleted here, not
+re-created ») instead of creating it again; the operator removes that row to get it back from the
+next version (`docs/content-packs.md`).
 
 **D-101 — Events, audit and retention for Phase 5 (amends D-018 and D-079).** Events carry ids only:
 `library_bulk_run.started {runId}` and `library_bulk_run.cancel_requested {runId}` (the worker's
@@ -1451,4 +1521,12 @@ of weekday), `kind`, `teacher_id`, `room_id`, `notes`, and `unit_lessons.sub_not
 `sub_plan_classes`, `sub_code_attempts`, `class_sub_profiles`, the plan layers and versions on
 `sub_plans`, and `lesson_progress.sub_report_id`. Phase 4 adds `library_reviewers`, and on
 `library_items` the review state (`content_revision`, request, approval, faith review, reviewer's
-note), the faith flags, the Catholic reference, keywords and the search document.
+note), the faith flags, the Catholic reference, keywords and the search document. Phase 5 adds
+`class_mode_links`, `class_session_keys` and `class_join_failures`; on `class_sessions` the
+session's options, phase, question snapshot and version; on `session_participants` the device
+number, token hash and last seen; on `session_responses` the question index and score;
+`library_bulk_runs` and `library_bulk_requests`; `content_pack_imports`,
+`content_pack_import_items` and `content_pack_removed_items`; on `content_packs` the file
+fingerprint, licence and report; on `library_items` `board_owned`, `parent_title`, the sharing
+cap, `no_derivatives`, `bulk_run_id` and the pack columns (`pack_slug`, `pack_item_key`,
+`pack_content_hash`, `pack_revision`); and `library_item_ratings.updated_at`.

@@ -111,7 +111,11 @@ export async function approveBoardDraft(
   return ok(data === 'faith_review' ? 'faith_review' : 'approved');
 }
 
-/** « Supprimer le brouillon »: a board draft (draft, sent back or archived), with its versions. */
+/**
+ * « Supprimer le brouillon »: a board draft (draft, sent back or archived), with its versions.
+ * The database audits it (`library_item.deleted`, D-091) and remembers a pack item's key so a
+ * later version of its pack does not bring it back (D-100).
+ */
 export async function deleteBoardDraft(itemId: string): Promise<ActionResult> {
   if (!(await contentReviewer())) return fail('forbidden');
   if (!idSchema.safeParse(itemId).success) return fail('invalid');

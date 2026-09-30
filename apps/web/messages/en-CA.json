@@ -2523,7 +2523,8 @@
       "ended": "This session has ended.",
       "endedBody": "The students’ answers were deleted.",
       "backToClass": "Back to class mode",
-      "changed": "The session changed in another tab: the screen is up to date."
+      "changed": "The session changed in another tab: the screen is up to date.",
+      "screen": "Class screen"
     },
     "join": {
       "title": "Join the game",
@@ -2766,7 +2767,7 @@
     "opinion": {
       "title": "Your opinion",
       "colleagues": "Colleagues’ opinions",
-      "hint": "From 1 to 5 stars. Your opinion is anonymous: nobody sees who gave it.",
+      "hint": "From 1 to 5 stars. Your opinion is anonymous: nobody sees who gave it. The average shown counts your colleagues’ opinions given at least a day ago, never yours.",
       "star": "{n, plural, one {# star} other {# stars}} out of 5",
       "clear": "Remove my opinion",
       "saved": "Your opinion is saved.",

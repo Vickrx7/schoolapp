@@ -15,6 +15,7 @@ import {
   cleanupSessions,
   clearJoinFailures,
   closeClassModeDb,
+  controlAs,
   insertBattleQuiz,
   openSession,
   startSessionAs,
@@ -270,6 +271,7 @@ test('a team quiz on two tablets: join, play every kind, answers shown, end dele
     const end = page.getByRole('dialog', { name: 'Terminer la séance' });
     await expect(end.getByText('Les réponses des élèves seront effacées.')).toBeVisible();
     await expect(end.getByLabel('Garder les résultats de la classe (sans noms)')).not.toBeChecked();
+    await expectAccessible(page);
     await end.getByRole('button', { name: 'Terminer la séance' }).click();
     await page.waitForURL(new RegExp(`/classes/${SEED.class3}/class-mode$`));
     for (const device of [a!, b!]) {
@@ -327,12 +329,15 @@ test('answers hidden: devices learn nothing until the end; kept class results', 
       .click();
     await expect(page.getByText('1 réponse sur 1')).toBeVisible();
     await page.getByRole('button', { name: 'Afficher la réponse' }).click();
-    // Only « Réponse enregistrée »; the projector shows the answers but not which is right.
+    // Only « Réponse enregistrée »; the projector shows the answers but not which is right,
+    // nor how many were right (beside the per-choice counts, that would name it).
     await expect(device.getByText('Réponse enregistrée')).toBeVisible();
     await expect(device.getByText('Bonne réponse!')).toHaveCount(0);
     await expect(
       page.getByText('Les bonnes réponses ne sont pas montrées pendant cette séance.'),
     ).toBeVisible();
+    await expect(page.getByText(/bonnes? réponses? sur/)).toHaveCount(0);
+    await expect(page.locator('[data-correct]')).toHaveCount(0);
     // The ranking waits for the last question.
     await expect(page.getByRole('button', { name: 'Classement' })).toBeDisabled();
     for (let n = 2; n <= 5; n++) {
@@ -371,6 +376,89 @@ test('answers hidden: devices learn nothing until the end; kept class results', 
   } finally {
     await context.close();
   }
+});
+
+/** Common classroom screens: projectors and laptops (16:9, 16:10 and 4:3). */
+const SCREENS = [
+  { width: 1920, height: 1080 },
+  { width: 1366, height: 768 },
+  { width: 1280, height: 800 },
+  { width: 1280, height: 720 },
+  { width: 1024, height: 768 },
+];
+
+test('the projector fits common classroom screens: six teams, and the right answer readable', async ({
+  page,
+}) => {
+  test.setTimeout(120_000);
+  const { sessionId } = await startSessionAs(DEMO.teacher3, { itemId: quizId, teams: 6 });
+  madeSessions.push(sessionId);
+  await login(page, DEMO.teacher3);
+  const region = page.getByRole('region', { name: 'Écran de la classe' });
+
+  // The lobby: six team tiles, each name inside its tile, all of them on screen.
+  for (const screen of SCREENS) {
+    await page.setViewportSize(screen);
+    await page.goto(`/projector/sessions/${sessionId}`);
+    await expect(page.getByRole('heading', { name: 'Rejoignez la partie' })).toBeVisible();
+    await expect(page.getByText('Les Renards', { exact: true })).toBeVisible();
+    const fit = await page.evaluate(() => {
+      const scroller = document.querySelector('[role="region"][tabindex="0"]')!;
+      const bottom = scroller.getBoundingClientRect().bottom;
+      const tiles = [...scroller.querySelectorAll('li')];
+      return {
+        tiles: tiles.length,
+        spilling: tiles.filter((li) => li.scrollWidth > li.clientWidth + 1).length,
+        below: tiles.filter((li) => li.getBoundingClientRect().bottom > bottom + 1).length,
+        pageScroll: document.documentElement.scrollWidth > window.innerWidth,
+      };
+    });
+    expect(fit, `${screen.width}×${screen.height}`).toEqual({
+      tiles: 6,
+      spilling: 0,
+      below: 0,
+      pageScroll: false,
+    });
+  }
+  await expectAccessible(page);
+
+  // « Appareils »: the teacher's list (projected only when she opens it), « 0 connecté sur 0 ».
+  const panel = page.getByRole('dialog', { name: 'Appareils' });
+  await expect(async () => {
+    if (!(await panel.isVisible())) {
+      await page.getByRole('button', { name: 'Appareils (0)' }).click();
+    }
+    await expect(panel).toBeVisible({ timeout: 1000 });
+  }).toPass();
+  await expect(panel.getByText('0 connecté sur 0', { exact: true })).toBeVisible();
+  await expectAccessible(page);
+  await page.keyboard.press('Escape');
+  await expect(panel).toHaveCount(0);
+
+  // « Afficher la réponse »: the right choice's text keeps a readable width, on screen, with its
+  // « Bonne réponse » on its own line.
+  await controlAs(DEMO.teacher3, sessionId, 'next');
+  await controlAs(DEMO.teacher3, sessionId, 'reveal');
+  for (const screen of SCREENS) {
+    await page.setViewportSize(screen);
+    await page.goto(`/projector/sessions/${sessionId}`);
+    const correct = page.locator('[data-correct]');
+    await expect(correct).toContainText('Bonne réponse');
+    // « 1 000 » on one line (squeezed beside the label, it once broke into a letter a line).
+    const lines = await correct.locator('span[lang]').evaluate((span) => {
+      const box = span.getBoundingClientRect();
+      return box.height / parseFloat(getComputedStyle(span).lineHeight);
+    });
+    expect(lines, `${screen.width}×${screen.height}`).toBeLessThan(1.5);
+    await expect(correct).toBeInViewport();
+    // The answer count is projector type (40 px at 1920 × 1080), beside « Question 1 sur 5 ».
+    const counter = page.getByText('0 réponse sur 0', { exact: true });
+    await expect(counter).toBeVisible();
+    if (screen.width === 1920) await expect(counter).toHaveCSS('font-size', '40px');
+  }
+  // The screen's scrolling region is reachable from the keyboard.
+  await expect(region).toHaveAttribute('tabindex', '0');
+  await expectAccessible(page);
 });
 
 test('a colleague’s open session can be ended and replaced', async ({ page }) => {

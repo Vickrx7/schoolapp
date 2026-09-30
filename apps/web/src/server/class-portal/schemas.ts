@@ -10,7 +10,8 @@
  * or a record of unknown values). This is one of the guards that keep answer keys off student
  * devices (D-086, guard 4): even if a database function one day returned `accepted`, `answer` or
  * `explanation`, the web server would drop it. The projector receives the current answer only in
- * the reveal phases, and `liveStateSchema` drops `reveal` in any other phase.
+ * the reveal phases, and `liveStateSchema` drops `reveal` in any other phase, and the answer and
+ * the number of right answers when answers are hidden.
  *
  * Sizes mirror the snapshot rules of `app.class_mode_question` (options of at most 8, 300
  * characters each; prompts of 1000; hints of 300) and the grading rules of `app.class_grade`.
@@ -290,8 +291,16 @@ export const liveStateSchema = z
     leaderboard: orNull(z.array(teamScoreSchema).max(CLASS_TEAM_KEYS.length)),
     classStats: orNull(z.object({ percentCorrect: orNull(z.number().min(0).max(100)) })),
   })
-  // There is never a key before the reveal: whatever arrives, the projector gets none.
-  .transform((state) => (REVEAL_PHASES.includes(state.phase) ? state : { ...state, reveal: null }));
+  // There is never a key before the reveal: whatever arrives, the projector gets none. With
+  // answers hidden, neither the answer nor how many found it (beside the per-choice counts, that
+  // number would name the right choice).
+  .transform((state) => {
+    if (!REVEAL_PHASES.includes(state.phase)) return { ...state, reveal: null };
+    if (!state.revealAnswers && state.reveal) {
+      return { ...state, reveal: { ...state.reveal, answer: null, correctCount: null } };
+    }
+    return state;
+  });
 export type LiveState = z.output<typeof liveStateSchema>;
 
 // ---------------------------------------------------------------------------------------

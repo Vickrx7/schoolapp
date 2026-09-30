@@ -15,10 +15,11 @@ import {
 } from 'react';
 import { Button } from '@/components/ui/button';
 import { useAction } from '@/hooks/use-action';
+import { cn } from '@/lib/utils';
 import { revealPresenterAnswer } from '@/server/actions/class-mode-present';
 import type { PresenterAnswer } from '@/server/class-mode/presenter';
 import { SlideView, type SlideMessages, type SlideText } from './slide-view';
-import { TimerControls, TimerDisplay, usePresenterTimer } from './timer';
+import { TIMER_SPACE, TimerControls, TimerDisplay, usePresenterTimer } from './timer';
 
 /**
  * « Présenter à la classe » (DECISIONS D-082, D-086, D-090): the projector player. It receives
@@ -228,7 +229,11 @@ export function SlidesPlayer({
           aria-label={position}
           // Long slides (a game's rules) scroll; the keyboard can reach and scroll them.
           tabIndex={0}
-          className="h-full overflow-y-auto px-[5vw] py-[4vh] focus-visible:outline-offset-[-4px]"
+          className={cn(
+            'h-full overflow-y-auto px-[5vw] py-[4vh] focus-visible:outline-offset-[-4px]',
+            // While the timer runs, the slide keeps clear of it (TIMER_SPACE).
+            timer.running && TIMER_SPACE,
+          )}
           data-slide-kind={slide.kind}
         >
           <SlideView slide={slide} t={slideText} answer={answer} answerId={answerId} />

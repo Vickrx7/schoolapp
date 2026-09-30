@@ -298,7 +298,7 @@ select is(tests.portal_answer('c1', 0, tests.battle_answer('q1', true)) ->> 'out
 select results_eq(
   $$select r.score::integer, r.is_correct, r.response, r.question_key
     from public.session_responses r where r.participant_id = tests.participant('c1')$$,
-  $$values (100, true, '{"choiceIds": ["c2"]}'::jsonb, 'q1')$$,
+  $$values (100, true, '{"choiceIds": ["b"]}'::jsonb, 'q1')$$,
   'the right choice earns 100 points'
 );
 select is(tests.portal_answer('c1', 0, tests.battle_answer('q1', false)) ->> 'outcome', 'already',
@@ -326,7 +326,7 @@ select results_eq(
        l -> 'reveal' -> 'answer' -> 'choiceIds', l -> 'reveal' -> 'answer' -> 'display' ? 'explanation',
        (l ->> 'answered')::integer
     from public.class_session_live(tests.id('s3')) l$$,
-  $$values ('{"c1": 0, "c2": 1, "c3": 1, "c4": 0}'::jsonb, 1, '["c2"]'::jsonb, true, 2)$$,
+  $$values ('{"a": 0, "b": 1, "c": 1, "d": 0}'::jsonb, 1, '["b"]'::jsonb, true, 2)$$,
   'after the reveal the projector gets the answers per choice, the right count and the answer'
 );
 select tests.clear_authentication();
@@ -445,8 +445,9 @@ select tests.portal_answer('h2', 0, tests.battle_answer('q1', false));
 select tests.portal_answer('k1', 0, tests.battle_answer('q1', true));
 select tests.authenticate_as('teacher_a_other');
 select ok(tests.control('s4', 'reveal') -> 'reveal' ? 'distribution'
-    and not (public.class_session_live(tests.id('s4')) -> 'reveal' ? 'answer'),
-  'with answers hidden, the projector shows the distribution but not the answer');
+    and not (public.class_session_live(tests.id('s4')) -> 'reveal' ? 'answer')
+    and not (public.class_session_live(tests.id('s4')) -> 'reveal' ? 'correctCount'),
+  'with answers hidden, the projector shows the distribution but neither the answer nor how many were right');
 select throws_ok($$select tests.control('s4', 'leaderboard')$$, 'LXC02', null,
   'with answers hidden, no ranking before the last question');
 select tests.clear_authentication();

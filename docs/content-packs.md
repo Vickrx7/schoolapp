@@ -166,20 +166,37 @@ exit ticket or quiz then misses a level and stays a draft until someone adds it.
 Import `2026.3` the same way. Each resource of the new version is compared with the one the pack
 created before (by key):
 
-| Report (CLI)         | In French                | What happens                                                                                                                                                                                                                                                                                                            |
-| -------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| new                  | nouvelle                 | Created, as above.                                                                                                                                                                                                                                                                                                      |
-| updated              | mise à jour              | Not approved yet and not edited here since the import: replaced, and back in the approval queue (or a draft).                                                                                                                                                                                                           |
-| unchanged            | inchangée                | The same content as the version imported before: nothing to do.                                                                                                                                                                                                                                                         |
-| changed, not applied | changée, non appliquée   | The pack changed it, but here it is **approved** (or archived). Approved resources are never replaced by a pack. A reviewer compares the two; to take the change, « Retirer de la banque » sends the resource back to be reworked (then edit it), and a withdrawn resource is replaced by the next version of the pack. |
-| modified here, kept  | modifiée localement      | Someone here edited it since it was imported. **Local edits win**: the pack's change is not applied.                                                                                                                                                                                                                    |
-| skipped              | ignorée                  | An unknown subject or type, or no base version: see the warning.                                                                                                                                                                                                                                                        |
-| not in this version  | absente de cette version | The new version no longer has it. It stays as it is; archive it in the app if it should go.                                                                                                                                                                                                                             |
+| Report (CLI)                 | In French                | What happens                                                                                                                                                                                                                                                                                                            |
+| ---------------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| new                          | nouvelle                 | Created, as above.                                                                                                                                                                                                                                                                                                      |
+| updated                      | mise à jour              | Not approved yet and not edited here since the import: replaced, and back in the approval queue (or a draft).                                                                                                                                                                                                           |
+| unchanged                    | inchangée                | The same content as the version imported before: nothing to do.                                                                                                                                                                                                                                                         |
+| changed, not applied         | changée, non appliquée   | The pack changed it, but here it is **approved** (or archived). Approved resources are never replaced by a pack. A reviewer compares the two; to take the change, « Retirer de la banque » sends the resource back to be reworked (then edit it), and a withdrawn resource is replaced by the next version of the pack. |
+| modified here, kept          | modifiée localement      | Someone here edited it since it was imported. **Local edits win**: the pack's change is not applied.                                                                                                                                                                                                                    |
+| deleted here, not re-created | supprimée localement     | A reviewer deleted it here after an earlier version imported it. **Local deletions win too**: it is not created again (see « Getting a deleted resource back » below).                                                                                                                                                  |
+| skipped                      | ignorée                  | An unknown subject or type, or no base version: see the warning.                                                                                                                                                                                                                                                        |
+| not in this version          | absente de cette version | The new version no longer has it. It stays as it is; archive it in the app if it should go.                                                                                                                                                                                                                             |
 
 - Importing a version that is already applied is refused (`LXP01`); so is a version **older** than
   one already applied (`LXP02`).
 - `pnpm admin list-packs --board <board-slug>` lists the packs applied to the board, with their
   fingerprint, counts and the resources « changed, not applied ».
+
+### Getting a deleted resource back
+
+When a resource a pack created is deleted here, the database keeps its pack's name and its key in
+`content_pack_removed_items` (the board, the pack's slug and the key: no content, no name), so
+the next versions skip it. To take it again from the next version, someone with database access
+removes that row, for example:
+
+```sql
+delete from public.content_pack_removed_items
+where board_id = (select id from public.boards where slug = 'csc-demo')
+  and pack_slug = 'lynx-fra-3e' and pack_item_key = 'la-cabane-a-sucre';
+```
+
+Each deletion of the board's own resources is also in the audit log (`library_item.deleted`, with
+the pack and key).
 
 ## Undoing an import
 
@@ -188,7 +205,9 @@ units or used in substitute plans. To withdraw them, a content reviewer opens ea
 the approval queue, or from the search once approved) and uses « Archiver »: archived resources
 leave every list and are never touched by a later version of the pack. (« Retirer de la banque »
 also takes an approved resource away from teachers, but sends it back to be reworked, and the
-next version of the pack would replace it.) A resource that was never approved can be deleted.
+next version of the pack would replace it.) A resource that was never approved can be deleted
+(« Supprimer le brouillon », once it is a draft, sent back or archived); the deletion is audited
+and later versions of the pack do not bring it back.
 
 ## Errors
 
@@ -213,6 +232,7 @@ next version of the pack would replace it.) A resource that was never approved c
   cannot, through the app or its API.
 - A very large pack could hit the API gateway's time limit on `--apply`. The same functions can
   then be called over a direct database connection by someone with database access.
-- Audit log: `content_pack.imported` (the slug, version and counts) and each approval
-  (`library_item.approved` with `via: content_pack`); the event `content_pack.imported` carries the
-  pack's id only.
+- Audit log: `content_pack.imported` (the slug, version and counts, deleted-here resources among
+  the skipped ones), each approval (`library_item.approved` with `via: content_pack`) and each
+  deletion of the board's resources (`library_item.deleted`); the event `content_pack.imported`
+  carries the pack's id only.

@@ -38,6 +38,22 @@ const text = (html: string) =>
     .replace(/&amp;/g, '&')
     .replace(/[\s\u00a0]+/g, ' ');
 
+/**
+ * The names of the controls named with `aria-labelledby`: their parts' text, joined by a space
+ * (as browsers do), in order.
+ */
+function labelledNames(html: string): string[] {
+  const parts = new Map<string, string>();
+  for (const m of html.matchAll(/<span id="([^"]+)"[^>]*>([^<]*)<\/span>/g))
+    parts.set(m[1]!, m[2]!);
+  return [...html.matchAll(/aria-labelledby="([^"]+)"/g)].map((m) =>
+    m[1]!
+      .split(' ')
+      .map((id) => parts.get(id) ?? '?')
+      .join(' '),
+  );
+}
+
 const LEAKS = {
   explanation: SENTINEL,
   correctChoiceIds: ['c2'],
@@ -132,8 +148,10 @@ describe('a class device', () => {
     );
     expect(text(html)).toContain('Question 1 sur 5');
     expect(text(html)).toContain('Quel nombre vient juste après 999?');
-    expect(html).toContain('aria-label="Réponse A : 990"');
-    expect(html).toContain('aria-label="Réponse B : 1 000"');
+    expect(labelledNames(html).slice(0, 2)).toEqual(['Réponse A : 990', 'Réponse B : 1 000']);
+    // The choice's text carries the content's language; the words around it do not.
+    expect(html).toMatch(/<span id="[^"]+-text" lang="fr-CA"[^>]*>990<\/span>/);
+    expect(html).toMatch(/<span id="[^"]+-before" hidden="">Réponse A :<\/span>/);
     expect(html).toContain('min-h-24');
     // The countdown uses the device's clock: drawn once the page is interactive, never in the
     // server's HTML (which would not match the first client render).
@@ -233,8 +251,29 @@ describe('a class device', () => {
         { id: 'i3', text: '100' },
       ],
     });
-    expect(ordering).toContain('aria-label="Monter « 100 »"');
-    expect(ordering).toMatch(/disabled="" title="Monter" aria-label="Monter « 500 »"/);
+    expect(labelledNames(ordering)).toContain('Monter « 100 »');
+    expect(labelledNames(ordering)[0]).toBe('Monter « 500 »');
+    expect(ordering).toMatch(/disabled="" title="Monter" aria-labelledby=/);
+
+    // An Anglais quiz: the item and the choice are English, the words around them French.
+    const english = q(
+      {
+        id: 'q6',
+        kind: 'ordering',
+        prompt: 'Put them in order.',
+        items: [
+          { id: 'i1', text: 'first' },
+          { id: 'i2', text: 'second' },
+        ],
+      },
+      'en-CA',
+    );
+    expect(english).toMatch(/<span id="[^"]+-text" lang="en-CA"[^>]*>first<\/span>/);
+    expect(english).toMatch(/<span id="[^"]+-down-before" hidden="">Descendre «<\/span>/);
+    expect(labelledNames(english)).toContain('Descendre « first »');
+    const englishChoices = q({ ...mc, prompt: 'Which one?' }, 'en-CA');
+    expect(englishChoices).toMatch(/<span id="[^"]+-text" lang="en-CA"[^>]*>990<\/span>/);
+    expect(labelledNames(englishChoices)[0]).toBe('Réponse A : 990');
 
     const short = q({ id: 'q5', kind: 'short_answer', prompt: 'Write one thousand.' }, 'en-CA');
     expect(short).toMatch(/<input[^>]*lang="en-CA"/);

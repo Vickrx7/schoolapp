@@ -175,6 +175,14 @@ test('a teacher writes a quiz with every question kind, marks it reviewed and sh
   await dialog.getByRole('radio', { name: 'Avec mon école' }).check();
   await dialog.getByRole('button', { name: 'Partager', exact: true }).click();
   await expect(page.getByText('Ressource partagée avec votre école.')).toBeVisible();
+  // The page refreshes after the message: « Détails » then says « Partagée avec l’école », and axe
+  // checks the refreshed page, not one whose head is being replaced.
+  await page.getByRole('tab', { name: 'Détails' }).click();
+  await expect(
+    page
+      .getByRole('tabpanel', { name: 'Détails' })
+      .getByText('Partagée avec l’école', { exact: true }),
+  ).toBeVisible();
   await expectAccessible(page);
 });
 

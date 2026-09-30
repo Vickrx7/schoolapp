@@ -150,6 +150,8 @@ export interface SessionResults {
   sessionId: string;
   classId: string;
   itemTitle: string | null;
+  /** The content's language (`ang` → en-CA), for the prompts and choices shown. */
+  lang: 'fr-CA' | 'en-CA';
   savedAt: string;
   /** Null when the stored results cannot be shown (another version, a damaged row). */
   aggregate: SessionAggregate | null;
@@ -163,7 +165,9 @@ export async function loadSessionResults(
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from('class_sessions')
-    .select('id, class_id, item_title, class_session_results!inner(aggregate, saved_at)')
+    .select(
+      'id, class_id, item_title, content_lang, class_session_results!inner(aggregate, saved_at)',
+    )
     .eq('id', sessionId)
     .eq('class_id', classId)
     .eq('status', 'closed')
@@ -179,6 +183,7 @@ export async function loadSessionResults(
     sessionId: data.id,
     classId: data.class_id,
     itemTitle: data.item_title,
+    lang: data.content_lang === 'en-CA' ? 'en-CA' : 'fr-CA',
     savedAt: kept.saved_at,
     aggregate: parseSessionAggregate(kept.aggregate),
   };

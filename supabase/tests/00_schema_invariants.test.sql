@@ -314,12 +314,13 @@ select is_empty(
 -- Content packs (D-099, D-100): staged imports and every pack function are the operator's only.
 select is_empty(
   $$select t.tbl || ' ' || p.priv
-    from unnest(array['public.content_pack_imports', 'public.content_pack_import_items']) t (tbl)
+    from unnest(array['public.content_pack_imports', 'public.content_pack_import_items',
+      'public.content_pack_removed_items']) t (tbl)
     cross join unnest(array['select', 'insert', 'update', 'delete']) p (priv)
     cross join unnest(array['anon', 'authenticated']) r (rolname)
     where has_table_privilege(r.rolname, t.tbl, p.priv)
       or (p.priv <> 'delete' and has_any_column_privilege(r.rolname, t.tbl, p.priv))$$,
-  'API roles cannot touch staged pack imports'
+  'API roles cannot touch staged pack imports or the keys of pack items deleted here'
 );
 
 select is_empty(

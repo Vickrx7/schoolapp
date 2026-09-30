@@ -30,6 +30,20 @@ export async function opinionCount(itemId: string, exceptEmail: string | null = 
   return row!.n;
 }
 
+/**
+ * The opinions a person sees counted on a resource (D-093): her colleagues', unchanged for a day
+ * (never her own).
+ */
+export async function visibleOpinionCount(itemId: string, viewerEmail: string) {
+  const [row] = await query<{ n: number }>(
+    `select count(*)::int as n from public.library_item_ratings r
+     join public.users u on u.id = r.rater_id
+     where r.item_id = $1 and u.email <> $2 and r.updated_at <= now() - interval '1 day'`,
+    [itemId, viewerEmail],
+  );
+  return row!.n;
+}
+
 /** Takes a person's opinion on a resource back (before and after a spec). */
 export async function clearOpinion(itemId: string, email: string) {
   await query(

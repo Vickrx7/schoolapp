@@ -44,7 +44,7 @@ export function DeviceLeaderboard({
               <span className="min-w-0 flex-1 text-[24px]">
                 <TeamLabel team={row.team} name={t(`teams.${row.team}`)} />
                 {mine ? (
-                  <span className="ml-3 text-[20px] font-semibold text-slate-700">
+                  <span className="ml-3 text-[22px] font-semibold text-slate-700">
                     {t('yourTeam')}
                   </span>
                 ) : null}

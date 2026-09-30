@@ -114,11 +114,59 @@ describe('the projector (D-086, D-087)', () => {
     expect(html).toContain(`Explication : ${EXPLANATION}`);
   });
 
-  it('with answers hidden: the bars only', () => {
-    const html = text(board(live({ phase: 'reveal', revealAnswers: false, reveal: reveal(null) })));
+  it('with answers hidden: the bars only, never how many were right', () => {
+    const hidden = live({ phase: 'reveal', revealAnswers: false, reveal: reveal(null) });
+    // The schema drops the count the database would send…
+    expect(hidden.reveal).toEqual({
+      distribution: { c1: 1, c2: 3, c3: 0 },
+      correctCount: null,
+      answer: null,
+    });
+    const html = text(board(hidden));
     expect(html).toMatch(/1 000 3 réponses/);
     expect(html).not.toContain('Bonne réponse ');
+    expect(html).not.toMatch(/bonnes? réponses? sur/);
     expect(html).toContain('Les bonnes réponses ne sont pas montrées pendant cette séance.');
+    // …and the board draws none even if one reached it.
+    const leaked = text(
+      render(
+        createElement(QuestionBoard, {
+          question: hidden.question!,
+          lang: 'fr-CA',
+          reveal: { distribution: { c1: 1, c2: 3, c3: 0 }, correctCount: 3, answer: null },
+          answered: 4,
+        }),
+      ),
+    );
+    expect(leaked).not.toMatch(/bonnes? réponses? sur/);
+  });
+
+  it('keeps the content’s language on the content only (an Anglais quiz)', () => {
+    const english = live({
+      phase: 'reveal',
+      lang: 'en-CA',
+      question: {
+        id: 'q2',
+        kind: 'true_false',
+        prompt: '500 is more than 499.',
+        hint: 'Look.',
+        scorable: true,
+      },
+      reveal: {
+        distribution: { true: 3, false: 1 },
+        correctCount: 3,
+        answer: { kind: 'true_false', value: true, display: { explanation: 'Five hundreds.' } },
+      },
+    });
+    const html = board(english);
+    expect(html).toContain('<p lang="en-CA"');
+    expect(html).toMatch(/Explication : <span lang="en-CA">Five hundreds\.<\/span>/);
+    // « Vrai » and « Faux » are the interface's words: no language of their own.
+    expect(html).not.toContain('lang="fr-CA"');
+    expect(text(html)).toMatch(/Vrai Bonne réponse 3 réponses/);
+
+    const hint = board(live({ lang: 'en-CA', question: { ...question, hint: 'Count on.' } }));
+    expect(hint).toMatch(/Indice : <span lang="en-CA">Count on\.<\/span>/);
   });
 
   it('ranks teams with ties sharing a rank, and shows class figures in « Chacun pour soi »', () => {

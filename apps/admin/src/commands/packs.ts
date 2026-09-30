@@ -234,6 +234,7 @@ const reportItemSchema = z.object({
     'unchanged',
     'changed_not_applied',
     'skipped_modified_locally',
+    'skipped_deleted_locally',
     'skipped_unresolved',
   ]),
   status: z.string().nullable(),
@@ -258,6 +259,8 @@ export const importReportSchema = z.object({
     unchanged: z.number(),
     changedNotApplied: z.number(),
     skippedModifiedLocally: z.number(),
+    /** Reports written before the Phase 5 hardening have no such count. */
+    skippedDeletedLocally: z.number().default(0),
     skippedUnresolved: z.number(),
     queued: z.number(),
     approved: z.number(),
@@ -277,6 +280,7 @@ const OUTCOME_LABELS: Record<ImportReport['items'][number]['outcome'], string> =
   unchanged: 'unchanged',
   changed_not_applied: 'changed, not applied',
   skipped_modified_locally: 'modified here, kept',
+  skipped_deleted_locally: 'deleted here, not re-created',
   skipped_unresolved: 'skipped',
 };
 
@@ -328,6 +332,7 @@ export function importText(r: ImportReport, file: string): string {
       `fingerprint ${r.fileSha256.slice(0, 12)}.`,
     `${r.items.length} resources: ${c.created} new, ${c.updated} updated, ${c.unchanged} unchanged, ` +
       `${c.changedNotApplied} changed but not applied, ${c.skippedModifiedLocally} modified here and kept, ` +
+      `${c.skippedDeletedLocally ? `${c.skippedDeletedLocally} deleted here and not re-created, ` : ''}` +
       `${c.skippedUnresolved} skipped.`,
     `Waiting for approval: ${c.queued}${c.approved ? ` (approved: ${c.approved})` : ''}; drafts: ${c.drafts}.`,
   ];
@@ -378,6 +383,13 @@ export function importText(r: ImportReport, file: string): string {
       '« Modified here, kept »: someone edited the resource since it was imported; local edits win.',
     );
   }
+  if (c.skippedDeletedLocally) {
+    out.push(
+      '',
+      '« Deleted here, not re-created »: a reviewer deleted the resource after an earlier version ' +
+        'imported it; later versions never bring it back (docs/content-packs.md says how to).',
+    );
+  }
   if (r.dryRun) out.push('', 'Run the same command with --apply to import it.');
   return out.join('\n');
 }
@@ -418,6 +430,7 @@ export function listText(board: string, packs: PackListing): string {
       out.push(
         `    ${counts.created ?? 0} new, ${counts.updated ?? 0} updated, ${counts.unchanged ?? 0} unchanged, ` +
           `${counts.changedNotApplied ?? 0} changed but not applied, ${counts.skippedModifiedLocally ?? 0} modified here, ` +
+          `${counts.skippedDeletedLocally ? `${counts.skippedDeletedLocally} deleted here, ` : ''}` +
           `${counts.skippedUnresolved ?? 0} skipped${p.approvedBy ? `; approved by ${p.approvedBy}` : ''}`,
       );
     }

@@ -14,9 +14,16 @@ import {
  * « Résultats gardés » of one session (DECISIONS D-089): class counts only, kept when the teacher
  * ticked « Garder les résultats de la classe (sans noms) ». For each question played, the share
  * of correct answers and, for choices, how many picked each (bars with the numbers written out);
- * the team scores. Never a device, never what a student typed.
+ * the team scores. Never a device, never what a student typed. Prompts and choices keep the
+ * content's language (`lang`).
  */
-export async function SessionResults({ aggregate }: { aggregate: SessionAggregate }) {
+export async function SessionResults({
+  aggregate,
+  lang,
+}: {
+  aggregate: SessionAggregate;
+  lang: 'fr-CA' | 'en-CA';
+}) {
   const t = await getTranslations('classMode');
   const overall = classPercentCorrect(aggregate);
   const ranks = aggregate.teams ? rankTeams(aggregate.teams) : [];
@@ -75,7 +82,7 @@ export async function SessionResults({ aggregate }: { aggregate: SessionAggregat
                     <div className="flex flex-wrap items-start justify-between gap-2">
                       <p className="min-w-0 flex-1 font-medium whitespace-pre-line text-slate-900">
                         <span className="mr-2 text-slate-600 tabular-nums">{q.index + 1}.</span>
-                        {q.prompt}
+                        <span lang={lang}>{q.prompt}</span>
                       </p>
                       {percent !== null ? (
                         <Badge tone="brand" className="text-sm">
@@ -108,7 +115,9 @@ export async function SessionResults({ aggregate }: { aggregate: SessionAggregat
                                 >
                                   {answerLetter(i)}
                                 </span>
-                                <span className="min-w-0 flex-1 text-slate-900">{choice.text}</span>
+                                <span lang={lang} className="min-w-0 flex-1 text-slate-900">
+                                  {choice.text}
+                                </span>
                                 {choice.correct ? (
                                   <span className="inline-flex items-center gap-1 font-semibold text-emerald-800">
                                     <Check aria-hidden className="size-4" strokeWidth={3} />

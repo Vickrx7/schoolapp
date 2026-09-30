@@ -93,6 +93,13 @@ export function TimerControls({ timer }: { timer: PresenterTimer }) {
   );
 }
 
+/**
+ * The room the slide leaves on its right while the countdown shows: the countdown's width and
+ * its margin (`TimerDisplay`: 2vw from the edge), and 2vw between them, so no word of the slide
+ * hides under it.
+ */
+export const TIMER_SPACE = 'pr-[calc(min(18rem,24vw)_+_4vw)]';
+
 /** The countdown over the slide, large enough to read from the back of the room. */
 export function TimerDisplay({ timer }: { timer: PresenterTimer }) {
   const t = useTranslations('classPresenter.timer');

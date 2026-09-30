@@ -50,7 +50,6 @@ export function MatchingInput({
             </label>
             <select
               id={`${id}-${item.id}`}
-              lang={lang}
               disabled={disabled}
               value={pairs[item.id] ?? ''}
               onChange={(e) => {
@@ -65,8 +64,9 @@ export function MatchingInput({
               className="block min-h-16 w-full rounded-xl border-2 border-slate-400 bg-white px-4 text-[24px] text-slate-950 focus:border-slate-950 focus:outline-4 focus:outline-offset-2 focus:outline-slate-950"
             >
               <option value="">{t('matching.choose')}</option>
+              {/* « Choisis… » is in the interface's language, the choices in the content's. */}
               {right.map((option) => (
-                <option key={option.id} value={option.id}>
+                <option key={option.id} value={option.id} lang={lang}>
                   {option.text}
                 </option>
               ))}

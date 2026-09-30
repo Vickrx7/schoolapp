@@ -9,7 +9,7 @@
 -- Both go through the real functions (rate_library_item, remix_library_item) as each teacher, so
 -- the demo holds only what the app itself could have written; the adaptation is audited like any
 -- other (actor: Marc). Loading it again changes nothing: the copy's id is fixed and opinions are
--- one per person.
+-- one per person. The opinions are dated a week back.
 
 do $$
 declare
@@ -41,5 +41,11 @@ begin
 
   perform set_config('request.jwt.claims', '', true);
   perform set_config('request.jwt.claim.sub', '', true);
+
+  -- The opinions were given a week before the seed ran: an opinion counts in what colleagues
+  -- see once unchanged for a day (D-093).
+  update public.library_item_ratings
+  set created_at = now() - interval '7 days', updated_at = now() - interval '7 days'
+  where item_id = v_huard and rater_id in (v_marc, v_paul);
 end;
 $$;

@@ -78,6 +78,9 @@ export function nextSchoolMonday(): string {
 
 /** Fails on serious or critical WCAG 2 A/AA violations. */
 export async function expectAccessible(page: Page) {
+  // A client refresh (after a server action) replaces the page's head: wait until it has its
+  // title again, so axe checks a settled page (axe checks the title too).
+  await expect(page).toHaveTitle(/\S/);
   const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
   expect(
     results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical'),

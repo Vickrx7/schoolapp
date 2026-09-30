@@ -254,6 +254,32 @@ describe('pack reports', () => {
     expect(applied).not.toContain('--apply');
   });
 
+  it('an item deleted here is reported, never re-created, and older reports still parse', () => {
+    const report = importReportSchema.parse({
+      ...REPORT,
+      counts: { ...REPORT.counts, created: 0, skippedDeletedLocally: 1 },
+      items: [
+        {
+          key: 'jetee',
+          type: 'worksheet',
+          title: 'Fiche jetée',
+          outcome: 'skipped_deleted_locally',
+          status: null,
+          queued: false,
+          approved: false,
+          warnings: [],
+        },
+      ],
+    });
+    const text = importText(report, 'pack.json');
+    expect(text).toContain('1 deleted here and not re-created, ');
+    expect(text).toMatch(/jetee\s+deleted here, not re-created\s+« Fiche jetée »/);
+    expect(text).toContain('« Deleted here, not re-created »');
+    // A report without the count (written before it existed) reads as none.
+    expect(REPORT.counts.skippedDeletedLocally).toBe(0);
+    expect(importText(REPORT, 'pack.json')).not.toContain('deleted here');
+  });
+
   it('every warning of the database reads as a sentence', () => {
     for (const code of [
       'levelSkipped:x',

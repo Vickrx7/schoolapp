@@ -196,6 +196,14 @@ test('a brain break shows one step per slide, and the slide is kept in the addre
   // A visual timer, no sound: 30 s, then stopped.
   await page.getByRole('button', { name: 'Minuterie de 30 s' }).click();
   await expect(page.getByRole('timer', { name: 'Temps restant' })).toBeVisible();
+  // The slide keeps clear of the countdown: no word hides under it (a 1366 × 768 laptop).
+  await page.setViewportSize({ width: 1366, height: 768 });
+  const countdown = (await page.getByRole('timer').locator('..').boundingBox())!;
+  const slideEnd = await page.locator('section[data-slide-kind]').evaluate((section) => {
+    const box = section.getBoundingClientRect();
+    return box.right - parseFloat(getComputedStyle(section).paddingRight);
+  });
+  expect(slideEnd).toBeLessThanOrEqual(countdown.x);
   await expectAccessible(page);
   await page.getByRole('button', { name: 'Arrêter la minuterie' }).click();
   await expect(page.getByRole('timer')).toHaveCount(0);
@@ -283,6 +291,15 @@ test('a quiz shows one answer when asked, and never ships the key or a level nam
     'Bonne réponse',
   );
   await expect(page.getByText(EXPLANATION)).toBeVisible();
+  // « Bonne réponse » never squeezes the choice's text: « 893 » stays on one line.
+  const lines = await page
+    .getByRole('listitem')
+    .filter({ hasText: '893' })
+    .evaluate((card) => {
+      const text = card.querySelector('span.break-words')!;
+      return text.getBoundingClientRect().height / parseFloat(getComputedStyle(text).lineHeight);
+    });
+  expect(lines).toBeLessThan(1.5);
   await expectAccessible(page);
 
   await hide.click();

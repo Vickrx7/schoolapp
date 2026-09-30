@@ -43,13 +43,19 @@ export default async function SessionResultsPage({ params }: Props) {
       </Link>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <h2 className="text-xl font-bold text-slate-900">{results.itemTitle ?? t('untitled')}</h2>
+          <h2 className="text-xl font-bold text-slate-900">
+            {results.itemTitle ? (
+              <span lang={results.lang}>{results.itemTitle}</span>
+            ) : (
+              t('untitled')
+            )}
+          </h2>
           <p className="text-slate-600">{t('playedOn', { date })}</p>
         </div>
         <DeleteResultsButton sessionId={results.sessionId} classId={results.classId} />
       </div>
       {results.aggregate ? (
-        <SessionResults aggregate={results.aggregate} />
+        <SessionResults aggregate={results.aggregate} lang={results.lang} />
       ) : (
         <Notice tone="warning">{t('unreadable')}</Notice>
       )}

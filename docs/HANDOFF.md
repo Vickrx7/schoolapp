@@ -1,10 +1,11 @@
 # Handoff
 
 Written 2026-09-28 by the session that built Phases 1 and 2 (branch `claude/nifty-fermat-8hhl1l`);
-updated 2026-09-29 by the session that built Phases 3 and 4 (branch `claude/serene-ride-3n2fa1`).
+updated 2026-09-30 by the session that built Phases 3, 4 and 5 (branch `claude/serene-ride-3n2fa1`).
 Read `SPEC.md` and `DECISIONS.md` first; this file covers what they don't: the conversation with
 Mike, the current state, how to run things in these containers, and what's next. Phase notes:
-`docs/phase-1.md`, `docs/phase-2.md`, `docs/phase-3.md`, `docs/phase-4.md`.
+`docs/phase-1.md`, `docs/phase-2.md`, `docs/phase-3.md`, `docs/phase-4.md`, `docs/phase-5.md`
+(and `docs/content-packs.md` for a board's IT).
 
 ## 1. The brief
 
@@ -56,8 +57,8 @@ Ardoise). No availability or trademark check has been done yet.
 - [Vickrx7/schoolapp#1](https://github.com/Vickrx7/schoolapp/pull/1) (draft, branch
   `claude/nifty-fermat-8hhl1l`): Phases 1 and 2. Not merged; no reviews.
 - [Vickrx7/schoolapp#2](https://github.com/Vickrx7/schoolapp/pull/2) (draft, branch
-  `claude/serene-ride-3n2fa1`, stacked on #1): the Phase 2 hardening, Phase 3 and Phase 4. Once
-  #1 is merged, retarget #2 to `main`. Phase 5 is planned to land on the same PR.
+  `claude/serene-ride-3n2fa1`, stacked on #1): the Phase 2 hardening, Phases 3, 4 and 5. Once
+  #1 is merged, retarget #2 to `main`.
 
 **Commits on #2:**
 
@@ -89,12 +90,13 @@ Ardoise). No availability or trademark check has been done yet.
 | `a01e06d` | Phase 5 foundation: D-082 to D-101, settings, messages, empty hooks, admin, worker tasks |
 | `d76f084` | Phase 5: class-mode database, « Présenter à la classe », « Adapter », « Votre avis »     |
 | `f7a0ce6` | Phase 5: quizzes on class devices (`/jouer`) and « Couverture du curriculum »            |
-| (latest)  | Phase 5: bulk generation of board drafts and content packs (admin CLI)                   |
+| `587a0e1` | Phase 5: bulk generation of board drafts and content packs (admin CLI)                   |
+| (latest)  | Phase 5 hardening (14 review findings) and the Phase 5 docs                              |
 
-**Verified (locally, from an empty database, and in CI on each pushed commit):** 999 unit tests
-(none skipped), 1322 pgTAP tests, 75 integration tests, 92 Playwright tests (desktop, phone and
-tablet, axe on every Phase 3 and Phase 4 page and the new Phase 5 pages), lint, typecheck, format, generated DB types up to date,
-the demo curriculum and library seeds up to date (`pnpm library:seed:check`), web build.
+**Verified (locally, from an empty database, and in CI on each pushed commit):** 1004 unit tests
+(none skipped), 1346 pgTAP tests, 75 integration tests, 93 Playwright tests (desktop, phone and
+tablet, axe on every Phase 3, 4 and 5 page), lint, typecheck, format, generated DB types up to
+date, the demo curriculum and library seeds up to date (`pnpm library:seed:check`), web build.
 
 **Phase 3 is complete** (3a and 3b; see `docs/phase-3.md`): absence button, plans built in the
 request and kept current by the worker, review and editing, release at 07:30, codes, the
@@ -128,56 +130,27 @@ focus, `lang` on English labels, 44 px targets, English and French copy, and mor
 `ANTHROPIC_API_KEY` is not set in this environment. No hosted deployment exists; the reverse
 proxy and the portal role's password are deployment steps written in `docs/phase-3.md`.
 
-**Half-built:** Phase 5 (class mode and library growth) has its pure head start merged
-(`packages/content/src/class-mode.ts`, `pack-format.ts`; `apps/web/src/server/class-portal/*`,
-`server/class-mode/aggregate.ts`, `server/library/{coverage-view,lineage-view}.ts`, all with
-tests) and its foundation: decisions D-082 to D-101; the settings `CLASS_PORTAL_DATABASE_URL`,
-`CLASS_PORTAL_HMAC_KEY` and `BULK_MAX_RUN_USD`; the error messages and one anchor key per new
-message namespace; empty slots wired into the library pages (`components/library/slots/`); the
-admin CLI split into `apps/admin/src/commands/`, where the Phase 5 commands answer « pas encore
-disponible »; the worker tasks `class_mode_maintenance`, `library_bulk_tick` (also woken by the
-`library_bulk_kick` handler) and `library_maintenance` (all filled since); a `tablet`
-Playwright project for class devices; and `findPersonalInfo` moved to `@lynx/ai/privacy`. Built
-since (waves 1 and 2):
-
-- **Class-mode database** (`20261101090000_class_mode.sql`, pgTAP 20 and 21, seed
-  `45_class_mode_demo.sql`): sessions, devices, answers graded in the database, keys in a table
-  no API role or portal role reads, the `lynx_class_portal` role and its five `class_portal`
-  functions (its local password is in `seed.sql`), the class link, kept class results, and the
-  worker's clean-up.
-- **« Présenter à la classe »** (`/projector/items/<id>`): slides built on the server from the
-  student content, a timer, and « Afficher la réponse » one question at a time.
-- **Board items, « Adapter » and « Votre avis »** (`20261101090100_library_growth.sql`, pgTAP 22,
-  seed `40_library_growth_demo.sql`): items kept by the board's reviewers (`board_owned`), a
-  private copy with credit and a sharing cap, anonymous stars, usage on the cards.
-- **Quizzes on class devices** (« Lancer un quiz sur les appareils » on a quiz's page; the class
-  tab `/classes/<id>/class-mode`; the projector `/projector/sessions/<id>`; the devices'
-  `/jouer`, with no account, in French only and with the `classPortal` messages only): the class
-  link (bookmark it on each device) or a 6-character code, numbered devices and fixed team names,
-  every question kind, « Afficher la réponse », the ranking, « Terminer la séance » deleting
-  answers and devices, and kept class results without names. Devices reach the database only
-  through `lynx_class_portal` (`apps/web/src/server/class-portal/`, fenced by an ESLint rule and
-  its unit test); no key, explanation or teacher note reaches a device. Load record:
-  `tools/load/class-mode-load.ts` (D-085).
-- **« Couverture du curriculum »** (`/library/coverage`, `20261101090200_library_coverage.sql`,
-  pgTAP 23, `pnpm admin coverage [--csv]`): per grade and subject, each attente with the board's
-  approved resources, « en révision » for content reviewers, and an overview table.
-
-- **Bulk generation** (`20261101090300_library_bulk.sql`, pgTAP 24, `pnpm admin bulk-plan`,
-  `bulk-start`, `bulk-status`, `bulk-cancel`, `bulk-report`): the operator plans a run for one
-  board (attentes × types, leaving out what the board already has) under a hard cost cap; the
-  worker sends it as one Message Batches API batch (fake provider only here) and turns each answer
-  into a private board draft. The board's content reviewers find them in « Brouillons du conseil »
-  (« Approbation des ressources »), grouped by run, with « Titre semblable » and « Prénom d'élève
-  possible » flags, and « Approuver pour le conseil » in one step. `pnpm ai:eval --batch`.
-- **Content packs** (`20261101090400_content_packs.sql`, pgTAP 25, `pnpm admin export-pack`,
-  `import-pack`, `list-packs`, `pnpm library:pack`; `docs/content-packs.md` for a board's IT): a
-  board's approved resources as one JSON file (never a name of the board's people), staged,
-  previewed (a real dry run) and applied in one transaction; imported resources wait for the
-  board's reviewers, those not ready under « Autres brouillons du conseil ». Local edits win over
-  later versions.
-
-Still to build: the Phase 5 hardening and `docs/phase-5.md`. Phase 4 left its hooks (D-081).
+**Phase 5 is complete** (see `docs/phase-5.md`): « Présenter à la classe » (a projector player
+for quizzes, games, brain breaks, experiments and any projectable resource, with no database
+session); « Quiz sur les appareils » (students join from class tablets or Chromebooks with the
+bookmarked class link or a 6-character code, no accounts, numbered devices and fixed team names,
+every question kind, team or solo play, answers graded in the database, answer keys never on a
+device, answers and devices deleted when the session ends, class results kept only if the teacher
+asks); « Adapter » (a private copy with credit and a sharing cap); « Votre avis » (anonymous stars
+on board-approved resources) and usage on every card; « Couverture du curriculum » (page and CLI);
+bulk generation of board drafts through the Message Batches API with a hard cost cap (operator
+CLI, fake provider only here); content packs (export, a real dry run, import into the board's
+approval queue; `docs/content-packs.md`). Devices reach the database only through
+`lynx_class_portal` (`apps/web/src/server/class-portal/`, fenced by an ESLint rule and its unit
+test); its local password is in `seed.sql`, and production needs the deployment step in
+`docs/phase-5.md`. A review of the build found 14 problems; all are fixed with tests in the
+latest commit (keys: the option ids sent to devices could give away ordering and matching
+answers, and with answers hidden the projector showed how many were right; screens: the right
+answer's text squeezed to a letter a line at 1366 × 768, a lobby that did not fit 4:3 and 16:9
+laptops, a reveal that did not scroll to the answer, a small answer count, the presenter's timer
+over the slide, 20 px device text, content language in accessible names, a French plural;
+opinions that could reveal colleagues' stars; unaudited deletion of board resources; deleted pack
+resources coming back with the next version).
 
 **Other deliverables:**
 
@@ -264,7 +237,7 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   `SUB_PORTAL_DATABASE_URL` (in `.env.example`).
 - **Migrations are applied once.** The lite stack does not re-apply an edited migration: after
   editing one that is not committed yet, `stack.sh reset`. Never edit a committed migration; add
-  a new one (the latest is `20261101090200_library_coverage.sql`, pgTAP file `23`).
+  a new one (the latest is `20261101090500_phase5_review_fixes.sql`, pgTAP file `26`).
 - **Seeds come in two parts.** `supabase/seed.sql`, then `supabase/seeds/*.sql` by name
   (`config.toml` `sql_paths` for the CLI, `cmd_seed` in `stack.sh`). `seeds/20_library_demo.sql`
   is generated from `content/library/demo`: after changing the pack, run `pnpm library:seed`
@@ -277,6 +250,20 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   `differentiate.spec.ts` briefly turns the school's Library module off, `library-ai.spec.ts`
   turns AI on and puts it back. A result's link carries the search (`?q=…`), so wait for item
   URLs with the query.
+- **Phase 5 browser tests** end any open session of Isabelle's 3e année before and after, clear
+  the join failures (every test device comes from 127.0.0.1), and play on a `Galaxy Tab S4`
+  context (Chromium only here; iPads are checked by hand). The projector test walks through the
+  classroom screen sizes (1920 × 1080 down to 1024 × 768). Opinions count for colleagues once a
+  day old (D-093): the demo seed dates its two opinions a week back, and pgTAP's
+  `tests.growth_rate` backdates the ones it gives.
+- **axe after a server action:** `router.refresh()` replaces the page's head, and axe run at that
+  instant finds no `<title>`. `expectAccessible` waits for the title; a spec that checks right
+  after a toast should also wait for something the refresh changes (`library-authoring.spec.ts`
+  opens « Détails » and waits for « Partagée avec l’école »).
+- **Watching the class portal locally:** `CLASS_PORTAL_DATABASE_URL` in `.env.example` logs in
+  as `lynx_class_portal` with its local-only password (set by `seed.sql`; the role survives
+  resets). `tools/load/class-mode-load.ts` plays a class of 30 simulated devices against a
+  running server.
 - **Library reviewers** come from `seed.sql` (Nathalie Roy, content and faith); on a real board
   nobody reviews until `pnpm admin set-library-reviewer` (docs/phase-4.md).
 - **PDF fonts are warmed once per server process.** The PDF library keeps one glyph per letter
@@ -367,33 +354,46 @@ Where an item is already in `DECISIONS.md`, the D-number is given. Don't add dup
 
 ## 6. Next steps (in order)
 
-1. **Show Mike Phases 3 and 4** with a short summary each: the three questions in
-   `docs/phase-3.md` and the six in `docs/phase-4.md` (we built on the recommended answers:
+1. **Show Mike Phases 3, 4 and 5** with a short summary each: the three questions in
+   `docs/phase-3.md`, the six in `docs/phase-4.md` (we built on the recommended answers:
    reviewers named by the board, school and board sharing before approval with faith content
    faith-reviewed first, AI may draft faith reflections, AI level versions by default, the 78 demo
-   resources shown to pilot teachers; who owns shared content is still open). Update PR #2's
-   description.
+   resources shown to pilot teachers; who owns shared content is still open) and the six in
+   `docs/phase-5.md` (devices optional, answers shown by default, device numbers instead of
+   nicknames, IP Lynx runs bulk generation with a cap per run, teachers' resources out of packs by
+   default, principals may give opinions). Update PR #2's description.
 2. **Real-API evaluation**, once `ANTHROPIC_API_KEY` is set and Mike agrees: `pnpm ai:eval --yes`
    (11 cases, about $1.60), `pnpm ai:eval --feature sub_plan --yes` (11 cases, about $2), then
    one library case alone (`pnpm ai:eval --feature library_item --case quiz-5e --yes`, under $1)
-   before `--feature library_item` and `--feature library_levels` (about $3–5 together). Reports
-   go to `packages/ai/eval-results/` (git-ignored): send them to Mike. Propose prompt changes
-   first; never edit a used prompt version (add `v2`).
+   before `--feature library_item` and `--feature library_levels` (about $3–5 together), and one
+   batch case (`pnpm ai:eval --feature library_item --case quiz-5e --batch --yes`, a worst case of
+   about $0.70) before any real bulk run. Reports go to `packages/ai/eval-results/` (git-ignored):
+   send them to Mike. Propose prompt changes first; never edit a used prompt version (add `v2`).
 3. **Get PRs #1 and #2 reviewed and merged.**
-4. **Test with real teachers and a real substitute** (`docs/phase-3.md` and `docs/phase-4.md`,
-   « What to test »), including a teacher reading five demo resources for Ontario French.
-5. **Phase 5 (class mode, quiz battles, « Essayer comme les élèves », remix, ratings).** Present a
-   short plan and questions to Mike before building; Phase 4 left the hooks (D-081).
-6. **Hosted beta**, when Mike provides the accounts: Supabase in Canada Central, web and worker
-   in a Canadian region, real SMTP, secrets (including the portal role's password and the code
-   keys), a reverse proxy set up as `docs/phase-3.md` says, and a zero-data-retention request to
-   Anthropic. This pulls part of Phase 6 (`DEPLOYMENT.md`) forward.
+4. **Test with real teachers and a real substitute** (`docs/phase-3.md`, `docs/phase-4.md` and
+   `docs/phase-5.md`, « What to test »), including a teacher reading five demo resources for
+   Ontario French and a class playing a quiz on its own tablets and projector.
+5. **Hosted beta**, when Mike provides the accounts: Supabase in Canada Central, web and worker
+   in a Canadian region, real SMTP, secrets (including both portal roles' passwords, the code
+   keys and the class portal key), a reverse proxy set up as `docs/phase-3.md` says, and a
+   zero-data-retention request to Anthropic (ask whether batches are covered). This pulls part of
+   Phase 6 (`DEPLOYMENT.md`) forward.
+6. **Phase 6** (SPEC §13): present a short plan and questions to Mike before building.
+   « Essayer comme les élèves » (a Phase 4 hook, D-081) was not built in Phase 5.
 7. **Name.** Once chosen: check availability, then rename `NEXT_PUBLIC_APP_NAME`, the icon, the
    login email template and the promo.
 
 **Known issues and risks:**
 
-- **Real API untested** (above).
+- **Real API untested** (above), batches included.
+- **Class mode on real classroom hardware** is untested: projectors at their real resolution,
+  school Wi-Fi filters, managed Chromebooks keeping the class link bookmark, iPads (no WebKit
+  here). The projector layout is checked from 1024 × 768 to 1920 × 1080 in the browser tests.
+- **The class link is stored in plain text** (the teacher shows it again); a leaked dump lets
+  someone into that class's lobby while it is open, nothing more (« Remplacer le lien », D-084).
+- **Opinions and collusion:** two colleagues acting together can learn one value a day about
+  the others' stars from the rounded average (D-093).
+- **Pack files hold answer keys** and a checksum is not a signature (D-099, D-100).
 - **Substitute access codes are bearer credentials.** Whoever holds a code (the office staff
   member who issued it included) sees the day's plan and alerts. It is audited with the issuer's
   id and role; the Phase 6 audit viewer should flag office-issued sessions (D-056).
@@ -431,15 +431,17 @@ Where an item is already in `DECISIONS.md`, the D-number is given. Don't add dup
 **Waiting on Mike:** the three Phase 3 questions; the six Phase 4 questions (above all who owns
 shared content, and who reviews for a pilot board); the product name; the hosted beta accounts;
 the zero-data-retention request; OK on the budget pooling nuance; whether the France-French promo
-voice is fine; the real-API evaluation go-ahead; the Phase 5 plan; whether to turn on the API's
-server-side refusal fallbacks (a beta; it brings in a second model and its price, D-045).
+voice is fine; the real-API evaluation go-ahead (batches included); the six Phase 5 questions
+(above all whether pilot classes have student devices, and whether to bill boards for bulk
+generation); whether to turn on the API's server-side refusal fallbacks (a beta; it brings in a
+second model and its price, D-045).
 
 ## 7. Starting a new session
 
 Paste something like this (adjust the task):
 
 ```
-Continue the school app project (Vickrx7/schoolapp) on branch claude/serene-ride-3n2fa1 (draft PR #2, stacked on #1). Read docs/HANDOFF.md, SPEC.md, DECISIONS.md, docs/phase-3.md and docs/phase-4.md first.
+Continue the school app project (Vickrx7/schoolapp) on branch claude/serene-ride-3n2fa1 (draft PR #2, stacked on #1). Read docs/HANDOFF.md, SPEC.md, DECISIONS.md, docs/phase-3.md, docs/phase-4.md and docs/phase-5.md first.
 
-Phases 3 (substitute hand-off) and 4 (library core) are done and CI is green. Next: present the Phase 5 (class mode) plan and questions to me before building. Never print or commit ANTHROPIC_API_KEY.
+Phases 3 (substitute hand-off), 4 (library core) and 5 (library growth and class mode) are done and CI is green. Next: present the Phase 6 plan and questions to me before building. Never print or commit ANTHROPIC_API_KEY.
 ```

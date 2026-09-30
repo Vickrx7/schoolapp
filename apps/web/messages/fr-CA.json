@@ -2523,7 +2523,8 @@
       "ended": "Cette séance est terminée.",
       "endedBody": "Les réponses des élèves ont été effacées.",
       "backToClass": "Retour au mode classe",
-      "changed": "La séance a changé dans un autre onglet : l’écran est à jour."
+      "changed": "La séance a changé dans un autre onglet : l’écran est à jour.",
+      "screen": "Écran de la classe"
     },
     "join": {
       "title": "Rejoignez la partie",
@@ -2604,7 +2605,7 @@
     "devices": {
       "title": "Appareils",
       "open": "Appareils ({count})",
-      "connected": "{connected} sur {count} connectés",
+      "connected": "{connected, plural, one {# connecté} other {# connectés}} sur {count}",
       "device": "Appareil {n}",
       "move": "Changer d’équipe",
       "moveLabel": "Changer l’équipe de l’appareil {n}",
@@ -2766,7 +2767,7 @@
     "opinion": {
       "title": "Votre avis",
       "colleagues": "Avis des collègues",
-      "hint": "De 1 à 5 étoiles. Votre avis est anonyme : personne ne voit qui l’a donné.",
+      "hint": "De 1 à 5 étoiles. Votre avis est anonyme : personne ne voit qui l’a donné. La moyenne affichée compte les avis de vos collègues donnés depuis au moins un jour, jamais le vôtre.",
       "star": "{n, plural, one {# étoile} other {# étoiles}} sur 5",
       "clear": "Retirer mon avis",
       "saved": "Votre avis est enregistré.",
