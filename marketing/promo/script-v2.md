@@ -1,5 +1,8 @@
 # Promo script v2: « Deux touches » (60 s, French and English)
 
+**Superseded by `script-v3.md`** (2026-10-01), which adds the library and class mode. Kept for
+its « Texte différencié » scene.
+
 Replaces the v1 story (`voiceover-script-fr.txt`, `voiceover-script.txt`), whose last scene
 labels the sick-day plan « Bientôt » and says « une seule touche ». The sick-day plan has shipped
 (`docs/HANDOFF.md` §2), and reporting an absence takes **two taps**.
