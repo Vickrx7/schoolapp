@@ -9,7 +9,7 @@ How to install and run the app (« Lynx École » for now) in production, in one
 
 Both run the same two images, built from a tagged checkout and configured only through the
 environment. `PRIVACY.md` describes what each component holds; the decisions behind this document
-are D-111 to D-115 and D-119 in `DECISIONS.md`. Every `docker compose` command below runs from
+are D-111 to D-115, D-119, D-121 and D-122 in `DECISIONS.md`. Every `docker compose` command below runs from
 `deploy/docker`.
 
 **Status (release 0.6):** the board-hosted install is tested in CI on every change (the
@@ -76,9 +76,10 @@ upload and external monitors are untested, which is why section 3 ends with go-l
 
 ## 2. Configuration reference
 
-`node generate-secrets.mjs --hosted|--board` writes `.env` with every value below, generating the
-secrets and leaving blank what you fill in. "Generated" means the script made it; never reuse a
-value from another install or from this repository.
+`node generate-secrets.mjs --hosted|--board` writes `.env` with the values below that need one,
+generating the secrets and leaving blank what you fill in; the others have defaults (add a line
+to `.env` to change one). "Generated" means the script made it; never reuse a value from another
+install or from this repository.
 
 **proxy**
 
@@ -108,18 +109,19 @@ value from another install or from this repository.
 
 **worker**
 
-| Variable                    | Secret       | Default            | What it is                                                                                                                               |
-| --------------------------- | ------------ | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `DATABASE_URL`              | **yes**      | board: generated   | The database as its owner (`postgres`), in session mode (the worker listens for events)                                                  |
-| `SUPABASE_URL`              | no           | as web             | For Auth's admin API (staff accounts)                                                                                                    |
-| `SUPABASE_SERVICE_ROLE_KEY` | **yes**      | board: generated   | Creates, bans and unbans staff sign-in accounts. Without it, invitations say « Les invitations ne sont pas configurées sur ce serveur. » |
-| `AI_PROVIDER`               | no           | `none`             | `none`, `fake` (answers made locally, for tests) or `anthropic`                                                                          |
-| `ANTHROPIC_API_KEY`         | **yes**      | empty              | With `AI_PROVIDER=anthropic`                                                                                                             |
-| `AI_MODEL`, `AI_EFFORT`     | no           | the app's defaults | `DECISIONS.md` D-041                                                                                                                     |
-| `BULK_MAX_RUN_USD`          | no           | 100                | The most one bulk generation run may cost (at most 1,000)                                                                                |
-| `WORKER_CONCURRENCY`        | no           | 4                  | Jobs at once                                                                                                                             |
-| `WORKER_HEALTH_PORT`        | no           | 8081               | Set by `compose.yml`: the container's health check                                                                                       |
-| `HEARTBEAT_URL_WORKER`      | keep private | empty              | A monitor's URL, pinged after each successful heartbeat (every minute); it receives no data                                              |
+| Variable                                              | Secret       | Default            | What it is                                                                                                                                                     |
+| ----------------------------------------------------- | ------------ | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`                                        | **yes**      | board: generated   | The database as its owner (`postgres`), in session mode (the worker listens for events)                                                                        |
+| `SUPABASE_URL`                                        | no           | as web             | For Auth's admin API (staff accounts)                                                                                                                          |
+| `SUPABASE_SERVICE_ROLE_KEY`                           | **yes**      | board: generated   | Creates, bans and unbans staff sign-in accounts. Without it, invitations say « Les invitations ne sont pas configurées sur ce serveur. »                       |
+| `AI_PROVIDER`                                         | no           | `none`             | `none`, `fake` (answers made locally, for tests) or `anthropic`                                                                                                |
+| `ANTHROPIC_API_KEY`                                   | **yes**      | empty              | With `AI_PROVIDER=anthropic`                                                                                                                                   |
+| `AI_MODEL`, `AI_EFFORT`                               | no           | the app's defaults | `DECISIONS.md` D-041. `AI_MODEL` must have a price in `packages/ai/src/pricing.ts`; for any other model, set both `AI_PRICE_*`, or the worker refuses to start |
+| `AI_PRICE_INPUT_PER_MTOK`, `AI_PRICE_OUTPUT_PER_MTOK` | no           | empty              | US dollars per million tokens, for a model the app has no price for (worker and admin)                                                                         |
+| `BULK_MAX_RUN_USD`                                    | no           | 100                | The most one bulk generation run may cost (at most 1,000)                                                                                                      |
+| `WORKER_CONCURRENCY`                                  | no           | 4                  | Jobs at once                                                                                                                                                   |
+| `WORKER_HEALTH_PORT`                                  | no           | 8081               | Set by `compose.yml`: the container's health check                                                                                                             |
+| `HEARTBEAT_URL_WORKER`                                | keep private | empty              | A monitor's URL, pinged after each successful heartbeat (every minute); it receives no data                                                                    |
 
 **migrate** (also takes the `backup` settings, because it backs up before migrating)
 
@@ -131,33 +133,35 @@ value from another install or from this repository.
 
 **backup**
 
-| Variable                                                 | Secret       | Default          | What it is                                                               |
-| -------------------------------------------------------- | ------------ | ---------------- | ------------------------------------------------------------------------ |
-| `BACKUP_DATABASE_URL`                                    | **yes**      | board: generated | The database as its owner, in session mode                               |
-| `BACKUP_AGE_RECIPIENT`                                   | no           | empty            | The **public** key from `age-keygen` (`age1…`); several, space-separated |
-| `BACKUP_SIGNING_KEY`                                     | **yes**      | generated        | Signs every backup (64 hex digits). Keep a copy with the age key (3.7)   |
-| `BACKUP_S3_BUCKET`, `BACKUP_S3_PREFIX`                   | no           | empty            | Optional copy to S3                                                      |
-| `BACKUP_S3_REGION`                                       | no           | `ca-central-1`   |                                                                          |
-| `BACKUP_S3_ACCESS_KEY_ID`, `BACKUP_S3_SECRET_ACCESS_KEY` | **yes**      | empty            | A key that may only put objects in the bucket                            |
-| `BACKUP_KEEP_DAYS`                                       | no           | 30               | Local backups older than this are deleted                                |
-| `HEARTBEAT_URL_BACKUP`                                   | keep private | empty            | A monitor's URL, pinged after each successful backup                     |
+| Variable                                                 | Secret       | Default          | What it is                                                                                                                             |
+| -------------------------------------------------------- | ------------ | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `BACKUP_DATABASE_URL`                                    | **yes**      | board: generated | The database as its owner, in session mode                                                                                             |
+| `BACKUP_AGE_RECIPIENT`                                   | no           | empty            | The **public** key from `age-keygen` (`age1…`); several, space-separated                                                               |
+| `BACKUP_SIGNING_KEY`                                     | **yes**      | generated        | Signs every backup (64 hex digits). Keep a copy with the age key (3.7)                                                                 |
+| `BACKUP_S3_BUCKET`, `BACKUP_S3_PREFIX`                   | no           | empty            | Optional copy to S3                                                                                                                    |
+| `BACKUP_S3_ENDPOINT`                                     | no           | empty            | Empty: Amazon S3. Otherwise any S3-compatible storage (MinIO, Ceph, a NAS), such as `https://s3.conseil.ca`, with path-style addresses |
+| `BACKUP_S3_REGION`                                       | no           | `ca-central-1`   | The region the signature names (S3-compatible storage often expects `us-east-1`)                                                       |
+| `BACKUP_S3_ACCESS_KEY_ID`, `BACKUP_S3_SECRET_ACCESS_KEY` | **yes**      | empty            | A key that may only put objects in the bucket                                                                                          |
+| `BACKUP_KEEP_DAYS`                                       | no           | 30               | Local backups older than this are deleted                                                                                              |
+| `HEARTBEAT_URL_BACKUP`                                   | keep private | empty            | A monitor's URL, pinged after each successful backup                                                                                   |
 
-**admin:** `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `AI_PROVIDER`, `AI_MODEL`,
-`BULK_MAX_RUN_USD`, as above.
+**admin:** `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `AI_PROVIDER`, `AI_MODEL`, `AI_PRICE_*`,
+`BULK_MAX_RUN_USD`, as above. Its replies are shown to the operator and never kept in the journal.
 
 **Self-hosted Supabase** (board-hosted only)
 
-| Variable                                                        | Secret  | Default       | What it is                                                                            |
-| --------------------------------------------------------------- | ------- | ------------- | ------------------------------------------------------------------------------------- |
-| `POSTGRES_PASSWORD`                                             | **yes** | generated     | The database owner's password; also Auth's and PostgREST's logins at first start      |
-| `JWT_SECRET`                                                    | **yes** | generated     | Signs the API keys and sessions. Changing it changes both keys and signs everyone out |
-| `SMTP_HOST`, `SMTP_PORT`                                        | no      | port 587      | The board's mail relay                                                                |
-| `SMTP_USER`, `SMTP_PASS`                                        | **yes** | empty         | Only over STARTTLS: Supabase Auth sends a login only on an encrypted connection       |
-| `SMTP_ADMIN_EMAIL`, `SMTP_SENDER_NAME`                          | no      | `Lynx École`  | The sign-in e-mail's sender                                                           |
-| `AUTH_EMAIL_MAX_FREQUENCY`                                      | no      | `60s`         | One code per address per interval                                                     |
-| `AUTH_EMAIL_RATE_LIMIT`                                         | no      | 100           | Sign-in e-mails per hour, for the whole install                                       |
-| `AUTH_RATE_LIMIT_OTP`, `AUTH_RATE_LIMIT_VERIFY`                 | no      | 60, 60        | Code requests and code checks per client address per 5 minutes (a school shares one)  |
-| `GOTRUE_SESSIONS_TIMEBOX`, `GOTRUE_SESSIONS_INACTIVITY_TIMEOUT` | no      | `168h`, `12h` | Sessions end after 7 days, or 12 hours without activity                               |
+| Variable                                                        | Secret  | Default       | What it is                                                                                                                                      |
+| --------------------------------------------------------------- | ------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `POSTGRES_PASSWORD`                                             | **yes** | generated     | The database owner's password; also Auth's and PostgREST's logins at first start                                                                |
+| `JWT_SECRET`                                                    | **yes** | generated     | Signs the API keys and sessions. Changing it changes both keys and signs everyone out                                                           |
+| `SMTP_HOST`, `SMTP_PORT`                                        | no      | port 587      | The board's mail relay                                                                                                                          |
+| `SMTP_USER`, `SMTP_PASS`                                        | **yes** | empty         | Only over STARTTLS: Supabase Auth sends a login only on an encrypted connection                                                                 |
+| `SMTP_ADMIN_EMAIL`, `SMTP_SENDER_NAME`                          | no      | `Lynx École`  | The sign-in e-mail's sender                                                                                                                     |
+| `AUTH_EMAIL_MAX_FREQUENCY`                                      | no      | `60s`         | One code per address per interval                                                                                                               |
+| `AUTH_EMAIL_RATE_LIMIT`                                         | no      | 100           | Sign-in e-mails per hour, for the whole install                                                                                                 |
+| `AUTH_RATE_LIMIT_OTP`, `AUTH_RATE_LIMIT_VERIFY`                 | no      | 60, 60        | Code requests and code checks per client address per 5 minutes (a school shares one)                                                            |
+| `GOTRUE_SESSIONS_TIMEBOX`, `GOTRUE_SESSIONS_INACTIVITY_TIMEOUT` | no      | `168h`, `12h` | Sessions end after 7 days, or 12 hours without activity                                                                                         |
+| `AUTH_LOG_LEVEL`                                                | no      | `warn`        | Auth's own log: warnings and errors. `info` writes the address of every sign-in to the journal: set it only while investigating, then remove it |
 
 **Compose itself:** `COMPOSE_FILE` (which files), `LOG_DRIVER` (`journald`), and in CI only
 `COMPOSE_PROFILES=mail-catcher`.
@@ -180,7 +184,8 @@ Monthly cost before AI: about 55 USD (Supabase 25, Lightsail 24, S3 and SES abou
 ### 3.2 Supabase project
 
 1. Create the project in **Canada (Central)**, Pro plan. Keep the database password in the
-   operator's password manager.
+   operator's password manager. Only named operators are members of the organization, each with
+   two-factor sign-in: the dashboard's table and SQL editors read every row.
 2. Database settings: turn on **SSL enforcement**; add **network restrictions** so only the
    server's IPv4 and IPv6 addresses can connect.
 3. Auth settings:
@@ -194,7 +199,8 @@ Monthly cost before AI: about 55 USD (Supabase 25, Lightsail 24, S3 and SES abou
    - Sessions: time-box 7 days, inactivity timeout 12 hours (Pro plan settings).
 4. Note the project's API URL, its anonymous key and its service role key (Project Settings,
    API), and the **session pooler** connection string (Connect, Session pooler). The session pooler
-   (port 5432) is needed: the worker listens for notifications and `pg_dump` needs a session.
+   (port 5432) is needed: the worker listens for notifications and `pg_dump` needs a session. Once
+   a board's data is in, opening it in the dashboard counts as access (section 10).
 5. Download the project's **SSL certificate** (Database settings). Supabase signs its database
    certificates with its own authority.
 
@@ -205,17 +211,27 @@ the anonymous and service role keys.
 
 1. Lightsail, `ca-central-1`, Ubuntu 24.04, 4 GB, with IPv4 and IPv6. SSH only from known
    addresses; unattended upgrades on.
-2. Docker Engine and the Compose plugin from Docker's repository.
+2. Docker Engine and the Compose plugin from Docker's repository, and Node.js 22, only to run
+   `generate-secrets.mjs` once (3.4; Ubuntu has no `node`).
 3. The journal: `deploy/host/journald-lynx.conf` to `/etc/systemd/journald.conf.d/lynx.conf`, then
-   `systemctl restart systemd-journald` (containers' logs kept 14 days, 1 GB at most).
+   `systemctl restart systemd-journald` (containers' logs kept 14 days, a new file each day, 1 GB
+   at most).
 4. The checkout: `git clone https://github.com/Vickrx7/schoolapp /opt/lynx-ecole`, then
-   `git -C /opt/lynx-ecole checkout v0.6.0`.
+   `git -C /opt/lynx-ecole checkout v0.6.0`. IP Lynx tags each release before it is installed
+   (`git tag v0.6.0`, then `git push origin v0.6.0`); no release is tagged yet.
 
 ### 3.4 Settings
 
 ```bash
 cd /opt/lynx-ecole/deploy/docker
 node generate-secrets.mjs --hosted      # writes .env (mode 0600) and lists the blanks to fill in
+```
+
+Without Node on the server, run the script in a container instead:
+
+```bash
+docker run --rm -u "$(id -u):$(id -g)" -v "$PWD:/w" -w /w node:22.23.3-bookworm-slim \
+  node generate-secrets.mjs --hosted
 ```
 
 Never write `.env` with a shell redirection (`> .env`): the script refuses to overwrite a file and
@@ -320,9 +336,11 @@ owner, recording the access first.
 ### 3.10 AI
 
 `AI_PROVIDER=anthropic` and `ANTHROPIC_API_KEY` in `.env` (the worker only). Set a monthly spending
-limit in Anthropic's console and send the zero-data-retention request before real data. AI stays
-off at each school until its principal turns it on, and budgets are the operator's
-(`pnpm admin set-ai-budget`).
+limit in Anthropic's console and send the zero-data-retention request before real data (not sent
+yet; until it is in place, Anthropic keeps API inputs and outputs for a limited period under its
+commercial terms). AI stays off at each school until its principal turns it on, and budgets are
+the operator's (`pnpm admin set-ai-budget`). A model other than the default needs a price
+(`AI_PRICE_*`, section 2).
 
 ### 3.11 Go-live gates
 
@@ -332,7 +350,7 @@ Before real student data:
   and the portals' TLS connections.
 - Supabase's written answer: where backups and all platform logs are kept, and where TLS to
   `*.supabase.co` terminates.
-- Anthropic's answer on zero data retention.
+- The zero-data-retention request sent to Anthropic, and its answer.
 - An Ontario privacy lawyer's review of the pilot terms, the notice and the minimum retention
   periods.
 - `docs/PILOT.md` § 1 done.
@@ -340,7 +358,8 @@ Before real student data:
 ## 4. Board-hosted
 
 **Server:** 4 vCPU, 8 GB of memory, 100 GB SSD; Linux with Docker 24 or later and the Compose
-plugin. Only ports 80 and 443 open to the users' networks.
+plugin, and Node.js 22 to run `generate-secrets.mjs` once (or the container command of 3.3). Only
+ports 80 and 443 open to the users' networks. The release's tag must exist (3.3).
 
 **Setup:**
 
@@ -356,13 +375,19 @@ docker compose run --rm admin create-board …     # then create-school, create-
 docker compose run --rm admin invite --role board_admin …   # as in 3.6
 ```
 
-- **After the first start, clear the journal once:** the database image logs the statements of
-  its first start, its own `ALTER USER supabase_admin WITH PASSWORD …` included. Run
-  `sudo journalctl --rotate && sudo journalctl --vacuum-time=1s` (this removes the server's older
-  logs too), or limit who can read the journal to the people who already hold `.env`.
+- **The journal:** `deploy/host/journald-lynx.conf` as in 3.3. The database writes no statements
+  and no error details there (`compose.supabase.yml`), so its first start no longer logs its own
+  `ALTER USER supabase_admin WITH PASSWORD …`, and Auth writes warnings and errors only; the
+  `docker-smoke` CI job checks that the journal holds no e-mail address and no password. An
+  install first started without these settings logged that statement: run
+  `sudo journalctl --rotate && sudo journalctl --vacuum-time=1s` once (this removes the server's
+  older logs too).
 - **Mail relay:** Supabase Auth sends a login to the relay only over STARTTLS (or to localhost).
   A relay without TLS must accept mail from the server without a login.
-- **Backups:** as 3.7, with the board's own storage; the cron line from `deploy/host`.
+- **Backups:** as 3.7, with the cron line from `deploy/host`. The nightly file stays in the
+  `backups` volume on this server, next to the database: copy it off the server, to the board's
+  S3-compatible storage (`BACKUP_S3_ENDPOINT`), to Amazon S3, or with the board's own tools (the
+  file is encrypted and signed).
 - **Starter content:** as 3.8.
 - **Outbound connections:** the mail relay; `api.anthropic.com` only if AI is on; Let's Encrypt
   (unless `CADDY_TLS=internal` or the board's certificates); package and image downloads at build
@@ -391,23 +416,32 @@ proxies from the right; throttling of substitute codes and class devices depends
 
 ## 6. Backups and restore
 
-**What a backup is.** `lynx-backup-<UTC time>.tar` in the `backups` volume (and S3), holding the
-data of the `public` and `auth` schemas (without sessions, sign-in tokens and Auth's log) and a
-manifest (release, migrations, row counts), both encrypted with `age`, and a `signature`
+**What a backup is.** `lynx-backup-<UTC time>.tar` in the `backups` volume (and S3 or
+S3-compatible storage), holding the data of the `public` and `auth` schemas (without sessions,
+sign-in tokens and Auth's log) and a manifest (release, migrations, row counts), both encrypted
+with `age`, and a `signature`
 (HMAC-SHA256 with `BACKUP_SIGNING_KEY`). The dump is never written unencrypted. Keys and `.env`
 are never in a backup.
 
 **Taking one by hand:** `docker compose run --rm backup`.
 
-**Restoring** (on the operator's workstation, which holds the private key; RPO 24 hours, RTO 4
-hours):
+**Restoring** (on the operator's workstation, which holds the private key, never the server; RPO
+24 hours, RTO 4 hours). The workstation needs the PostgreSQL 17 client, `age` and `jq`, and a way
+to the database, which is not reachable from outside:
 
-1. Record the access: `docker compose run --rm admin log-operator-access --board <slug> --reason restore`
-   (for each board, once the database is back).
-2. Stop web and worker: `docker compose stop web worker`.
-3. Prepare an empty database at the backup's migrations: a fresh install (`up` with a new `db-data`
+- **Board-hosted:** an SSH tunnel to the `db` container's address on the Compose network. On the
+  server, `docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' lynx-db-1`
+  gives it; on the workstation, `ssh -N -L 5433:<that address>:5432 <operator>@<server>`. The owner
+  URL is then `postgresql://postgres:<POSTGRES_PASSWORD>@127.0.0.1:5433/postgres`. Close the tunnel
+  afterwards; never publish the `db` port.
+- **Hosted:** add the workstation's address to the project's network restrictions for the restore
+  only, and use the session pooler's URL with `sslmode=verify-full` and Supabase's certificate
+  (3.4). Remove the address afterwards.
+
+1. Stop web and worker: `docker compose stop web worker`.
+2. Prepare an empty database at the backup's migrations: a fresh install (`up` with a new `db-data`
    volume, board-hosted) or a new Supabase project, then `migrate`.
-4. Restore:
+3. Restore:
    `deploy/backup/restore.sh lynx-backup-….tar --identity lynx-backup.key --signing-key lynx-backup-signing.key --db-url <owner URL>`.
    It checks the signature before decrypting anything and refuses an unsigned or altered backup,
    a manifest whose counts are not tables and numbers, and a dump holding anything but what
@@ -416,6 +450,8 @@ hours):
    everything in one transaction (`--single-transaction`, stopping at the first error), bans again
    everyone whose access was removed, compares every table's row count with the manifest, and
    hands recent events back to the worker.
+4. Record the access for each board, now that the database (and its audit log) is back:
+   `docker compose run --rm admin log-operator-access --board <slug> --reason restore`.
 5. Do what it prints: re-apply access removals made after the backup's time (from the board's
    records and the audit log), and tell staff to sign in again (sessions are not restored).
 6. Start web and worker (`docker compose up -d --wait`), then check `/api/health/ready` and
@@ -424,9 +460,19 @@ hours):
 **Hosted:** restore with Supabase's dashboard first; use our backup when Supabase's is not
 available, or for the off-platform copy.
 
-**Monthly drill:** restore last night's backup on the operator's workstation into a fresh local
-stack (`tools/lite-stack/stack.sh fresh`, Postgres 16) or a throw-away Compose install, and check
-that the counts match the manifest (`docs/HANDOFF.md` § 3 has the commands).
+**Monthly drill:** a restore that works is the only proof that backups work. It copies every
+board's data, so it is an access like any other:
+
+1. Record the access for each board (`--reason restore`).
+2. Restore last night's backup into a throw-away copy: board-hosted, a fresh Compose install on the
+   operator's workstation, on an encrypted disk (the same pinned versions as the server, so
+   `restore.sh` accepts the backup's Auth migrations); hosted, a staging Supabase project in
+   Canada (hosted Auth is newer than any local one). Never the lite stack: its Auth (v2.177.0)
+   lacks 21 of the migrations of production's (v2.197.0), so `restore.sh` refuses the backup.
+3. Check that `restore.sh` reports every count equal to the manifest.
+4. Destroy the copy: `docker compose down -v` (the volumes go too), or delete the staging data.
+
+`docs/HANDOFF.md` § 3 has a local drill with the demo data, for development.
 
 **Keys:** losing `ALERTS_ENCRYPTION_KEYS` makes alerts and report notes unreadable, even from a
 backup. Keep a copy with the backup key, offline.
@@ -442,30 +488,34 @@ first, which takes a backup when migrations are pending) and checks that the web
 
 - Evenings or weekends only, **never 05:30 to 09:00 on a school day** (absences are reported then).
 - Rolling back means the previous tag plus a restore of the backup `migrate` took.
-- Rebuild monthly even without a new release, for the base images' security updates
-  (`docker compose build --pull` then `docker compose up -d --wait`).
-- **Upgrading an install made before backups were signed:** add `BACKUP_SIGNING_KEY` (`openssl
-rand -hex 32`) to `.env` under the backup settings, and copy it next to the age key, before the
-  upgrade: `migrate` takes a signed backup, and `backup.sh` refuses to run without the key. Older
-  backups have no signature and `restore.sh` refuses them; keep the previous release's
-  `restore.sh` for them until they age out (30 days). Board-hosted, also add `AUTH_RATE_LIMIT_OTP=60`
-  and `AUTH_RATE_LIMIT_VERIFY=60` (or leave them out: those are the defaults).
+- Security updates of the images come as releases. Every image is pinned by digest (the
+  Dockerfile's base, `compose.yml`, `compose.supabase.yml`), so rebuilding without a release
+  fetches the same bytes: IP Lynx updates the pinned versions in a release, and the operator
+  installs it with `./upgrade.sh <tag>`. IP Lynx plans to review the pinned versions monthly; no
+  automation does it yet. The server's own system updates itself (unattended upgrades).
+- **Upgrading an install made before backups were signed:** add `BACKUP_SIGNING_KEY`
+  (`openssl rand -hex 32`) to `.env` under the backup settings, and copy it next to the age key,
+  before the upgrade: `migrate` takes a signed backup, and `backup.sh` refuses to run without the
+  key. Older backups have no signature and `restore.sh` refuses them; keep the previous release's
+  `restore.sh` for them until they age out (30 days). Board-hosted, also add
+  `AUTH_RATE_LIMIT_OTP=60` and `AUTH_RATE_LIMIT_VERIFY=60` (or leave them out: those are the
+  defaults).
 - Record the access first (`--reason migration`).
 
 ## 8. Secrets and rotation
 
-| Secret                                                            | How to rotate                                                                                                                                                                                                        |
-| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `JWT_SECRET` (board-hosted)                                       | Generate a new one, compute new anonymous and service keys (as `generate-secrets.mjs` does), update `.env`, `docker compose up -d`. Everyone signs in again                                                          |
-| Supabase API keys (hosted)                                        | In Supabase's dashboard, then `.env`, then `docker compose up -d`                                                                                                                                                    |
-| `ALERTS_ENCRYPTION_KEYS`                                          | Add `2:<new key>` after `1:…` (comma-separated), restart web: new text uses the highest version, older text stays readable. Keep version 1 while text encrypted with it exists (there is no re-encryption command)   |
-| `SUB_CODE_HMAC_KEYS`                                              | Add `2:<new>` next to `1:<old>`, restart web, remove `1:` a day later (codes last one day). Outside school hours                                                                                                     |
-| `CLASS_PORTAL_HMAC_KEY`                                           | Replace and restart web, outside class time                                                                                                                                                                          |
-| Portal passwords (`SUB_PORTAL_PASSWORD`, `CLASS_PORTAL_PASSWORD`) | Change them in `.env` and in the two portal URLs, then `docker compose up -d` (`migrate` sets them)                                                                                                                  |
-| `POSTGRES_PASSWORD` (board-hosted)                                | `docker compose exec db psql -U supabase_admin -d postgres` then `alter role postgres`, `authenticator` and `supabase_auth_admin` `with password '…'`; update `.env` (and the database URLs); `docker compose up -d` |
-| SMTP, Anthropic, S3 keys                                          | At the provider, then `.env`, then `docker compose up -d`                                                                                                                                                            |
-| The backup key                                                    | `age-keygen` a new one, put both public keys in `BACKUP_AGE_RECIPIENT` for 30 days, then only the new one                                                                                                            |
-| `BACKUP_SIGNING_KEY`                                              | `openssl rand -hex 32` into `.env` and next to the age key; keep the old one with it for 30 days (older backups need it to restore)                                                                                  |
+| Secret                                                            | How to rotate                                                                                                                                                                                                                                                                                                                                        |
+| ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `JWT_SECRET` (board-hosted)                                       | Generate a new one, compute new anonymous and service keys (as `generate-secrets.mjs` does), update `.env`, `docker compose up -d`. Everyone signs in again                                                                                                                                                                                          |
+| Supabase API keys (hosted)                                        | In Supabase's dashboard, then `.env`, then `docker compose up -d`                                                                                                                                                                                                                                                                                    |
+| `ALERTS_ENCRYPTION_KEYS`                                          | Add `2:<new key>` after `1:…` (comma-separated), then `docker compose up -d web` (a restart does not read `.env` again): new text uses the highest version, older text stays readable. Keep version 1 while text encrypted with it exists (there is no re-encryption command, so after a leak, alerts already stored stay readable with the old key) |
+| `SUB_CODE_HMAC_KEYS`                                              | Add `2:<new>` next to `1:<old>`, `docker compose up -d web`, remove `1:` a day later (codes last one day), `docker compose up -d web` again. Outside school hours                                                                                                                                                                                    |
+| `CLASS_PORTAL_HMAC_KEY`                                           | Replace it, then `docker compose up -d web`, outside class time                                                                                                                                                                                                                                                                                      |
+| Portal passwords (`SUB_PORTAL_PASSWORD`, `CLASS_PORTAL_PASSWORD`) | Change them in `.env` and in the two portal URLs, then `docker compose up -d` (`migrate` sets them)                                                                                                                                                                                                                                                  |
+| `POSTGRES_PASSWORD` (board-hosted)                                | `docker compose exec db psql -U supabase_admin -d postgres`, then `alter role postgres`, `supabase_admin`, `authenticator` and `supabase_auth_admin` `with password '…'` (the superuser `supabase_admin` too: it got the first password at the first start); update `.env` (and the database URLs); `docker compose up -d`                           |
+| SMTP, Anthropic, S3 keys                                          | At the provider, then `.env`, then `docker compose up -d`                                                                                                                                                                                                                                                                                            |
+| The backup key                                                    | `age-keygen` a new one, put both public keys in `BACKUP_AGE_RECIPIENT` for 30 days, then only the new one                                                                                                                                                                                                                                            |
+| `BACKUP_SIGNING_KEY`                                              | `openssl rand -hex 32` into `.env` and next to the age key; keep the old one with it for 30 days (older backups need it to restore)                                                                                                                                                                                                                  |
 
 Generate a key: `node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`.
 
@@ -478,8 +528,10 @@ Generate a key: `node -e "console.log(require('crypto').randomBytes(32).toString
   and the last clean-up, and when they last ran. No counts.
 - **`docker compose run --rm admin status`:** the operator's view with counts (outbox, AI jobs,
   invitations, heartbeats).
-- **Logs** go to the server's journal, one JSON line per event, scrubbed of personal details
-  (`PRIVACY.md` § 8), kept 14 days:
+- **Logs** go to the server's journal, kept 14 days. The web server and the worker write one JSON
+  line per event, scrubbed of personal details (`PRIVACY.md` § 8). Board-hosted, Auth (warnings
+  and errors; `AUTH_LOG_LEVEL`) and the database (no statements, errors without their detail)
+  write their own lines, which are not scrubbed. The admin command line's replies are never kept.
 
   ```bash
   journalctl CONTAINER_NAME=lynx-web-1 --since -24h -o cat | jq 'select(.level == "error")'
@@ -494,18 +546,33 @@ Generate a key: `node -e "console.log(require('crypto').randomBytes(32).toString
 - **Record every access to production data before it happens:**
   `docker compose run --rm admin log-operator-access --board <slug> --reason support|incident|restore|migration`.
   The board's admins read these entries in their audit log. Running a command that reads or
-  changes a board's data, or connecting to its database, counts as access.
+  changes a board's data, connecting to its database, or opening its data in Supabase's dashboard
+  (the table or SQL editor) counts as access. After a restore, record it once the database is
+  back (section 6).
 - The service key and the database password stay on the server and in the operator's password
   manager. Never paste them in a chat, an e-mail or a ticket.
 - Only named operators have SSH access; remove an operator's access the day they leave.
 - Account deletions and board deletions are done on the board's written request
   (`delete-user`, `delete-board`), and confirmed in writing.
+- **Before a board is deleted, export its whole audit log** (every entry, of every audience and
+  date; `delete-board` refuses without an export of the last 7 days) and give the file to the
+  board's privacy office. It names staff and holds the entries the app shows to nobody: keep it
+  off the server and delete your copy once the board has it.
+
+  ```bash
+  docker compose run --rm admin log-operator-access --board csc-exemple --reason support
+  mkdir -p exports && docker compose run --rm --user "$(id -u):$(id -g)" -v "$PWD/exports:/out" \
+    admin export-audit --board csc-exemple --out /out/journal-csc-exemple.csv
+  docker compose run --rm admin delete-board --board csc-exemple --confirm csc-exemple --exported --yes
+  ```
 
 ## 11. Troubleshooting
 
 - **Sign-in codes do not arrive:** check the mail relay or SES (SPF, DKIM, DMARC for the sending
   domain), the rate limit, and the board's mail filtering. A code is valid one hour; Auth sends one
-  per address per interval (`AUTH_EMAIL_MAX_FREQUENCY`).
+  per address per interval (`AUTH_EMAIL_MAX_FREQUENCY`). Board-hosted, Auth logs a refused e-mail
+  as an error; `AUTH_LOG_LEVEL=info` (then `docker compose up -d auth`) shows every request, with
+  the addresses, until you remove it again.
 - **« Trop de codes erronés » / « Trop de tentatives de connexion »:** the sign-in throttle (D-121):
   five wrong codes need a new code, and limits per address and per network wait for minutes (or,
   after twenty wrong codes in a day, hours). The link in the code's e-mail always works. A whole

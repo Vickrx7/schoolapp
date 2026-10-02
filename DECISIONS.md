@@ -361,6 +361,14 @@ before any call (`packages/ai/src/privacy.ts`):
   student's first name (« Samuel de Champlain ») is replaced too, then restored.
 - _Amended in Phase 4:_ library requests are built by the database from ids, and reusable
   library content may contain no marker, so no name can come back into it (D-072).
+- _Amended in Phase 6 review (2026-10-02):_ the rule stays the goal, and every text now states its
+  limit instead of "every name": `PRIVACY.md`, the README, the demo script, the AI annex
+  (`docs/ai-data-flow.md`) and the texts teachers accept (« Bienvenue », the notice's « L'intelligence
+  artificielle ») say that the app replaces the names it knows (the students and staff of the
+  teacher's schools, the staff of their boards) and that a name it does not know must be removed by
+  the teacher at the preview. A unit test pins the limit (`packages/ai/src/privacy.test.ts`: a
+  parent's and a sibling's names go out unchanged, with nothing blocked), so no text can promise more
+  again without someone noticing.
 
 **D-039 — AI is off until the direction turns it on, and a board can forbid it.** Per-school
 switch on the École page (principal or vice-principal, audited). `boards.settings.ai.allowed =
@@ -1890,6 +1898,11 @@ job (and a restore's hand-back repairs it too). `app.complete_staff_invitation` 
 admin boards from active roles only: an invitation left pending by someone who no longer administers
 its board is cancelled (`staff.invitation_cancelled`, actor system). `pnpm admin delete-user` also
 deletes the person's invitations, in every board, by account and by address.
+_Amended in Phase 6 review, round B (2026-10-02):_ the board's pages no longer name IP Lynx as the
+one who deletes accounts, adds schools, sets budgets or retention: board-hosted, the board's IT runs
+the command line. They say « la personne qui gère le serveur », and the person's page links to
+`SUPPORT_EMAIL` (« Demander la suppression ») only when it is set. The words match « État du
+système » (S7).
 
 **D-108 — What board admins may change on a school (amends D-039).** Allowed: contact details and
 bell times, through `public.merge_school_settings`, which merges keys atomically (no
@@ -1990,6 +2003,16 @@ changé : … »): each version has a key in `TERMS_CHANGES` (`packages/domain/s
 line under `welcome.changes` in both catalogues (unit tests check both). The newer-terms page has «
 Plus tard », back to the page the person came from with the banner still shown: it never blocks,
 even in the installed app, which has no Back button.
+_Amended in Phase 6 review, round B (2026-10-02):_ new terms, `2026-10-pilote-2`, because the notice
+and « Bienvenue » change meaning: the AI paragraph states the limit (D-038) and that Anthropic may
+keep the text for a limited time; « Où sont les données » says the AI text is the only thing
+processed outside Canada; « Qui y a accès » says recording each access is IP Lynx's commitment and
+that IP Lynx may hold the board administrator role during the pilot; « Combien de temps » gives the
+defaults (« Par défaut », and the board may ask for others); the feedback term names the readers
+(D-116). « Bienvenue »: « La protection des renseignements et le projet pilote », the AI point
+with its limit, and « Les données sont conservées au Canada. Seul le texte envoyé à l'intelligence
+artificielle est traité aux États-Unis. » The seed's accounts accept the new version; everyone
+else sees the banner and « Ce qui a changé » (`welcome.changes.pilote2`).
 
 **D-111 — Error monitoring for the pilot: scrubbed structured logs and error references; no
 third-party error service.** `@lynx/observability` gives `createLogger` (JSON lines on stdout),
@@ -2034,6 +2057,9 @@ against error texts captured from the local stack (PostgreSQL's DETAIL lines wit
 whole failing row, PostgREST and Auth error bodies, a sign-in link with its token, a Zod error with
 its input; `packages/observability/src/real-samples.test.ts`); a first name in free text is still
 not recognized, which is why errors never carry what people typed.
+_Amended in Phase 6 review (2026-10-02):_ `ERROR_REPORTING_DSN` was never added anywhere; a later
+error service would bring its own setting. Board-hosted, Auth and the database write their own,
+unscrubbed lines to the same journal: D-119 as amended says what they hold.
 
 **D-112 — Health, heartbeats, external checks and « État du système ».** `/api/health` is liveness
 only; `/api/health/ready` checks Auth (`/auth/v1/health`), PostgREST and the portals' pools when
@@ -2196,6 +2222,14 @@ writes for data (comments, SET, the search path, sequence values, COPY blocks, p
 `\restrict`/`\unrestrict`): a psql command or another statement never runs on the operator's
 machine. The load runs with `--single-transaction` and `ON_ERROR_STOP`.
 `deploy/ci/restore-refusals.sh` checks the refusals in the backup CI job.
+_Amended in Phase 6 review, round B (2026-10-02):_ `BACKUP_S3_ENDPOINT` sends the copy to any
+S3-compatible storage (path-style, the same signature) instead of Amazon S3 only, so a board can
+keep it on its own storage; the backup CI job uploads to a stand-in that checks the signature
+(`deploy/ci/s3-fake.mjs`). `DEPLOYMENT.md` § 6 gives the restore's route to the database (an SSH
+tunnel board-hosted, the workstation's address allowed for the restore hosted) and records the
+access once the database is back. The monthly drill is an access: recorded for each board, into a
+throw-away copy (a Compose install on an encrypted disk board-hosted, a staging project hosted;
+never the lite stack, whose Auth lacks 21 of production's migrations), destroyed afterwards.
 
 **D-116 — Pilot feedback in the app (Assumption on who reads it).** « Commentaires » records a kind
 (problem, idea, question), up to 2,000 characters, the route's template, the error reference, the
@@ -2222,6 +2256,10 @@ stored, the web server replaces the first names of the students of the sender's 
 `feedback_student_names(text)` (a definer function: office staff, who cannot read students, are
 covered; it returns only names whose letters are in the text). Other personal details still block
 sending. The dialog says names are replaced; there is nothing to confirm.
+_Amended in Phase 6 review, round B (2026-10-02):_ who reads feedback, said the same everywhere: the
+people with the « Administration du conseil » role, which IP Lynx may hold during the pilot if the
+board asks (`PRIVACY.md` § 2). The terms and the dialog no longer promise that IP Lynx reads every
+message: on a board's own servers it reads nothing unless the board shares it.
 
 **D-117 — « Nouveautés » and the version.** `APP_RELEASE` is set when the image is built and shown
 in the footer, in `/api/health` and in logs and heartbeats. `/nouveautes` is a static page of
@@ -2282,6 +2320,20 @@ As built (slice S7): an ESLint rule (every app and package) refuses a PostgREST 
 log also drops the `q` parameter (the words searched in « Ressources ») and the `Referer` header.
 The CSP check of `e2e/operations.spec.ts` now covers the projector, the public privacy page and the
 Phase 6 teacher pages too.
+_Amended in Phase 6 review, round B (2026-10-02):_ what reaches the journal, board-hosted. Auth logs
+at `warn` (`AUTH_LOG_LEVEL`; at `info` it writes the address of every code request, sign-in and
+sign-out). The database runs with `log_statement=none`, `log_error_verbosity=terse` and
+`log_min_error_statement=panic`: the image's `log_statement = 'ddl'` wrote role passwords, its own
+first-start `ALTER USER supabase_admin WITH PASSWORD` included (the options reach the initializing
+server too), and an error's DETAIL and statement quote values (« Key (email)=(…) already exists »).
+Checked on the lite stack (the same Auth binary at both levels; PostgreSQL 16 with each setting),
+and in the `docker-smoke` CI job, which fails if the install's journal holds an e-mail address or a
+password statement. An error's own message can still quote a value (« invalid input syntax for
+type uuid: "…" »), and Auth's errors can name an address a mail relay refused: `PRIVACY.md` § 8
+says so. The admin CLI's replies name people: its container logs nothing (`driver: none`), so they
+reach the operator's terminal only. The journal starts a new file each day (`MaxFileSec=1day`), so
+the 14 days hold (a month-long file would outlive them). The 14 days stay: the app's own lines are
+scrubbed, the others now hold no addresses in normal use, and incidents need them.
 
 **D-120 — The demo is scripted and tested; a hosted demo site is deferred.** `docs/demo-script.md`
 is the script (15 and 5 minutes); `e2e/demo.spec.ts` clicks through it on the lite stack with the
@@ -2312,29 +2364,58 @@ server sets on its sign-in calls; Auth is reachable only from inside, so nobody 
 morning). Hosted Supabase cannot be given the header; there the app's throttle is what counts, and
 Supabase's per-address limits apply to the web server's address (docs/phase-6.md, S7).
 
+**D-122 — The end of a contract: the operator exports a board's whole audit log, and a board is
+deleted only after such an export (Phase 6 review, round B; amends D-106, D-107).** A board admin's
+« Journal d'audit » holds the administrative entries only, a year per file (D-103), and each
+principal's only the school's; `delete-board` deletes every entry. `pnpm admin export-audit --board
+<slug> --out <file>` writes every entry of the board and its schools, of every audience and date,
+oldest first, as one CSV file (UTF-8 with a byte order mark, comma-separated; the school's and the
+acting person's names, the details as stored; a typed name that starts like a formula is kept as
+text), with mode 0600 and never over an existing file. It reads `operator_export_audit(board,
+after_id, limit)` a page at a time (the API returns 1,000 rows at most), then records the export
+with `operator_log_audit_export(board, last_id, rows)`, which refuses a count that does not match
+the board's entries up to `last_id` (`audit_log.operator_exported {rows, last_id}`, audience
+`board`, actor `service`). `operator_delete_board` refuses (`LXB01`) unless such an export was
+recorded in the last 7 days, and returns `auditRowsSinceExport` (the entries written after it,
+which the file lacks; the CLI prints the number). The file includes the operator-only entries
+(teachers' private activity, D-103), so it goes to the board's privacy office, not to its admins,
+and IP Lynx deletes its copy once the board has it. _Why:_ the board is responsible for the
+records (MFIPPA); deleting them must not depend on someone remembering a download. Tests: pgTAP
+`33_board_audit_export`, `apps/admin/src/commands/staff.test.ts`, and the `docker-smoke` CI job
+(refused before the export, then the export from the image and the deletion).
+
 **Amendments to existing decisions** (slice S7 wrote each one into its entry, as « Amended in Phase 6 »):
 
 | Decision     | Amendment                                                                                     |
 | ------------ | --------------------------------------------------------------------------------------------- |
 | D-002        | the name is `APP_NAME`, read at run time (D-113)                                              |
 | D-004        | a web interface exists for board admins to manage their own board's staff (D-107)             |
+| D-012        | the raw audit table is closed to the API; operator functions run with the service role only   |
 | D-013, D-036 | the direction's dashboard; board admins' audit scope (D-102, D-103)                           |
 | D-017        | catalogue, closed table, guard trigger, viewer, purge (D-103, D-105)                          |
 | D-018, D-059 | the retention jobs exist; the class purge keeps planning; bounds of at least 365 days (D-105) |
 | D-029        | hosting decided (D-114)                                                                       |
 | D-039        | board admins may switch AI (D-108)                                                            |
 | D-040        | usage totals in the web, rows the author's only; payment collection still later (D-104)       |
+| D-043        | usage records are deleted after `aiUsageDays` (D-105)                                         |
 | D-046        | per-person usage is never shown (D-104)                                                       |
 | D-055        | sample classes are left out of plans (D-109)                                                  |
 | D-056        | the office-issued flag exists; board admins see no substitute audit (D-103)                   |
+| D-064        | board admins designate the board's reviewers in « Conseil » (D-107)                           |
 | D-078        | navigation (D-118)                                                                            |
-| SPEC §5      | deviation: no Vercel (D-114)                                                                  |
+| SPEC §5      | deviation: no Vercel (D-114); not amended in `SPEC.md`, which keeps the brief as written      |
 
 **Amended in the Phase 6 review (round A):** D-055 (classes of the plan's year), D-105 (the class
 purge keeps to its year; 60 days of notice whatever the dates), D-107 (one connection per job, the
 unban retried, inviters who left, deleted accounts' invitations), D-110 (what changed; « Plus tard
 »), D-112 (« prévu »), D-115 (signed backups, checked restores), D-116 (no first names in feedback),
 D-118 (the direction's phone bar; « Journal d'audit »); new D-121 (the sign-in throttle).
+
+**Amended in the Phase 6 review (round B, the privacy wording):** D-038 (texts state the AI limit),
+D-107 (the board's pages name « la personne qui gère le serveur »), D-110 (terms
+`2026-10-pilote-2`), D-111 (no `ERROR_REPORTING_DSN`; the journal), D-115 (S3-compatible storage,
+the restore's route, the drill), D-116 (who reads feedback), D-119 (what Auth and the database
+write to the journal); new D-122 (the whole audit log exported before a board is deleted).
 
 ## Schema additions beyond SPEC section 8
 

@@ -27,7 +27,11 @@ need your decision or your account; the others are ours.
 6. **Our checks** (us): a test restore of a backup, Supabase's written answer on where its logs
    and backups are kept, and the external monitors. `DEPLOYMENT.md` § 3.11 lists them.
 7. **Each pilot board** (us): we create the board, its schools and school year, and your
-   administrator account. You receive a sign-in message like your teachers will.
+   administrator account, if the board asks you to administer it. You receive a sign-in message
+   like your teachers will. As « Administration du conseil » you see the staff list (names and
+   e-mail addresses), invitations, feedback and the board's administrative audit entries,
+   including IP Lynx's own access entries. Ask each board to name one of its own staff as a second
+   administrator, so that someone at the board reads those entries (`PRIVACY.md` § 2).
 8. **Your first sign-in:** open the app's address, type your e-mail, type the 6-digit code from the
    e-mail. « Bienvenue » asks you to accept the pilot terms. You land on « Conseil », where « Pour
    bien démarrer le conseil » lists what is left to set up:
@@ -49,8 +53,9 @@ need your decision or your account; the others are ours.
    person the app's address, the e-mail to type, and that a 6-digit code will arrive.
 
 Other things you can do on a person's page (« Personnel », then their name): add or remove a role,
-« Retirer l'accès » (they can no longer sign in, at once) and « Rétablir l'accès ». To delete
-someone's account and data, write to IP Lynx (the link is on the page).
+« Retirer l'accès » (they can no longer sign in, at once) and « Rétablir l'accès ». Deleting someone's
+account and data is ours: the page says so, and « Demander la suppression » writes to the support
+address (`SUPPORT_EMAIL`) once it is set.
 
 If the page says « Cette adresse est déjà utilisée ailleurs dans l'application », the person
 already works for another board in the app: write to us and we sort it out.
@@ -64,9 +69,11 @@ Tell each teacher, in the message or in person:
 - **« Essayer avec une classe exemple »** on « Aujourd'hui » builds a sample class with 20 made-up
   names, a timetable and two units, to try everything. It is never in a substitute plan and is
   deleted after 60 days.
-- **Alerts stay off** during the pilot (the principal's switch in « École »).
-- **« Commentaires »**, at the top of every page, sends you a problem, an idea or a question.
-  The app checks the message for students' first names and asks before sending one.
+- **We recommend that alerts stay off** during the pilot (the principal's switch in « École »);
+  nothing locks them off.
+- **« Commentaires »**, at the top of every page, sends a problem, an idea or a question to the
+  board's administrators (you, as one of them). Before a message is stored, the app replaces the
+  first names of the students of their schools with « [élève] ».
 - **« Pour bien commencer »** (four steps) is on « Aujourd'hui »: create the class, add the
   students (first names only), enter the timetable, create a unit with lessons.
 
@@ -81,9 +88,9 @@ how students address them (Mme, M., Mx), used in substitute plans.
 - **« État du système »** (« Conseil »): « Tout fonctionne normalement » is what you want. If it
   says a problem was detected for more than a day, tell us.
 - **« Utilisation de l'IA »:** the month's requests and cost per school (no per-person figures).
-- **« Journal d'audit »** (« Conseil », last tab): administrative changes, approvals, and every time
-  IP Lynx accessed the board's data and why. You never see sick days or alert reads there: those
-  are the principals'.
+- **« Journal d'audit »** (« Conseil », last tab): administrative changes, approvals, and each
+  access IP Lynx recorded, with its reason (recording first is our rule; the database cannot force
+  it). You never see sick days or alert reads there: those are the principals'.
 
 ## 5. What to test with the pilot teachers
 
@@ -95,7 +102,8 @@ how students address them (Mme, M., Mx), used in substitute plans.
    minutes on a laptop). Where does she stop?
 4. **The sample class.** Does it help her understand « Aujourd'hui » and « Planification »? Does the
    notice that it is left out of substitute plans make sense? Does she delete it herself?
-5. **« Commentaires ».** Does she find it and use it? Is the first-name check helpful or annoying?
+5. **« Commentaires ».** Does she find it and use it? Does she notice that students' first names
+   are replaced?
 6. **With a principal:** is « Tableau de bord de la direction » useful at 7:45? Is anything missing,
    or does anything feel like monitoring teachers? Does she understand « Journal d'audit » and
    « Code émis par le secrétariat »? Would she export it?
@@ -111,9 +119,11 @@ how students address them (Mme, M., Mx), used in substitute plans.
 
 - **A person leaves:** « Retirer l'accès » on their page, then, if they want their data deleted,
   write to us: we delete the account (their private resources and classes they alone led go too).
-- **A board stops:** export « Journal d'audit » (CSV) first; ask us for the library as a file if
-  you want to keep it. We then delete the board and everything in it within 30 days, and confirm
-  in writing. Backups that still hold it expire within 30 days more.
+- **A board stops:** we export the board's whole audit log (every entry, as one CSV file; your
+  own « Journal d'audit » download holds only part of it) and send it to the board's privacy
+  office, and the library as a file if the board wants it. We then delete the board and
+  everything in it within 30 days (the deletion is refused without that export), and confirm in
+  writing. Backups that still hold it expire within 30 days more.
 
 ## 7. Later
 

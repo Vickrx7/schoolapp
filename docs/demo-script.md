@@ -32,11 +32,14 @@ no account.
 
 ### 1. The privacy promise (1 min)
 
-**Say:** "Before features: students are first names only, nothing personal leaves Canada, and the
-AI never sees a name. This page is what every teacher reads before they start."
+**Say:** "Before features: students are first names only, and the data is stored in Canada. Before
+anything goes to the AI, the app replaces the names of the school's students and staff. A name it
+doesn't know, a parent's for example, the teacher removes herself: she sees exactly what is sent.
+This page is what every teacher reads before they start."
 
 **Click:** the login page → « Confidentialité et conditions ». Show « Ce que l'application
-recueille », « L'intelligence artificielle » and « Où sont les données ».
+recueille », « L'intelligence artificielle » (with its limit: « Elle ne reconnaît pas les autres
+noms ») and « Où sont les données ».
 
 ### 2. Isabelle's « Aujourd'hui » (1 min)
 
@@ -83,7 +86,7 @@ est arrivé. » → « Voir le suivi » → « Confirmer le suivi » is hers to 
 ### 6. « Ressources » and « Texte différencié » (2 min)
 
 **Say:** "The board's resource bank, reviewed by people the board designates. And AI that adapts a
-text to each language level, without ever seeing a name."
+text to each language level: the names of the school's students go out as markers."
 
 **Click:** Isabelle → « Ressources » → search « nombres 1000 » → « Quiz : les nombres jusqu'à 1 000 ».
 Back on « Ressources », « Texte différencié »: a title, a text with « Zoé » in it → « Vérifier avant
@@ -138,9 +141,11 @@ sera supprimée le … ».
 
 ### 11. Hosting and residency (1 min, a slide)
 
-**Say:** "Hosted by IP Lynx in Canada: the database and sign-in in Montréal, the app's server in
-Montréal, backups encrypted in Montréal. Only de-identified text goes to the AI provider in the
-United States. Or the board runs the same thing on its own servers."
+**Say:** "Planned hosting by IP Lynx in Canada, not live yet: the database and sign-in in Montréal,
+the app's server in Montréal, and our own backups, encrypted, in Montréal. Before go-live we get
+Supabase's written answer on where its own backups and logs are kept. Only the text a teacher sends
+to the AI goes to the United States, with the names the app knows replaced. Or the board runs the
+same thing on its own servers."
 
 **Show:** the residency table of `PRIVACY.md` § 6 and the diagram of `DEPLOYMENT.md` § 1.
 

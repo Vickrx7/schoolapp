@@ -13,8 +13,11 @@ the two differ, tell us and we fix both.
 not yet been reviewed by an Ontario privacy lawyer. That review is planned before real student
 data is entered (`docs/PILOT.md`).
 
-**One rule shapes everything below: if information leaves Canada, it holds no personal data.**
-Section 6 lists every place data goes and what it holds.
+**The rule we design to: information that leaves Canada must hold no personal data.** Section 6
+lists every place data goes and what it holds. One limit remains, in the text sent to the AI
+provider: the app replaces the names it knows (the students and staff of the teacher's schools),
+but it cannot recognize a name it does not know, such as a parent's or a sibling's. The teacher
+sees the exact text before it is sent and must remove such a name (section 5).
 
 ## Contents
 
@@ -37,18 +40,18 @@ Section 6 lists every place data goes and what it holds.
 
 ## 1. Quick answers
 
-| Question                                                 | Short answer                                                                                                                                                                                                                                                       | Section |
-| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------- |
-| Where is the data stored?                                | In Canada. Hosted: the database, sign-in service and backups at Supabase in AWS `ca-central-1` (Montréal), and the app's server at AWS in `ca-central-1`. Board-hosted: on the board's own servers.                                                                | 6       |
-| What does the app collect about students?                | A first name or nickname, the class, an optional language level, and, only if the principal turns them on, encrypted safety or medical alerts. No last name, Ontario Education Number, birth date, address, photo or e-mail. Students have no accounts.            | 3, 4    |
-| Is data sold, used for advertising, or used to train AI? | No, no and no. The AI provider receives text with every name replaced, under commercial API terms that do not allow training on it by default.                                                                                                                     | 5       |
-| Who are the subprocessors?                               | Hosted: Supabase (database, sign-in), Amazon Web Services (server, sign-in e-mails, backup storage), Anthropic (AI, de-identified text only), an uptime monitor (no personal data). Board-hosted: the board's own infrastructure, plus Anthropic only if AI is on. | 6       |
-| How are we told about a breach?                          | IP Lynx tells the board within 24 hours of confirming it (an Assumption to agree in the contract). The board notifies the Information and Privacy Commissioner and the people affected.                                                                            | 12      |
-| What happens at the end of the contract?                 | The board exports its audit log and its library; on request IP Lynx prepares an extract of the board's data; then IP Lynx deletes the board within 30 days and confirms in writing. Backups age out within 30 days.                                                | 10      |
-| Can IP Lynx staff see our data?                          | Only named operators, only for support or maintenance, and each access is first recorded in the board's own audit log, which the board's administrators read.                                                                                                      | 7       |
-| Do students use AI?                                      | No. Only teachers, principals and vice-principals, at schools where the principal turned AI on and the board allows it.                                                                                                                                            | 5, 13   |
-| How do people sign in?                                   | With a 6-digit code sent by e-mail; there are no passwords. Sessions end after 7 days, or after 12 hours without activity.                                                                                                                                         | 7       |
-| Are there cookies, trackers or analytics?                | Only the cookies the app needs to keep a person signed in, the chosen language, and a substitute's or class device's session. No analytics, no advertising, no third-party scripts.                                                                                | 8       |
+| Question                                                 | Short answer                                                                                                                                                                                                                                                                                                                                                       | Section |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------- |
+| Where is the data stored?                                | In Canada, by design. Hosted (not live yet): the database and the sign-in service at Supabase in AWS `ca-central-1` (Montréal), and the app's server at AWS in `ca-central-1`; where Supabase keeps its own backups and logs is to be confirmed in writing before go-live. Board-hosted: on the board's own servers.                                               | 6       |
+| What does the app collect about students?                | A first name or nickname, the class, an optional language level, and, only if the principal turns them on, encrypted safety or medical alerts. No last name, Ontario Education Number, birth date, address, photo or e-mail. Students have no accounts.                                                                                                            | 3, 4    |
+| Is data sold, used for advertising, or used to train AI? | No, no and no. The AI provider receives the text after the names of the students and staff of the teacher's schools are replaced and the personal details the app detects are refused; another name (a parent's) must be removed by the teacher, who sees the exact text first. It is sent under commercial API terms that do not allow training on it by default. | 5       |
+| Who are the subprocessors?                               | Hosted: Supabase (database, sign-in), Amazon Web Services (server, sign-in e-mails, backup storage), Anthropic (AI: the text a teacher sends, with known names replaced), an uptime monitor (no personal data). Board-hosted: the board's own infrastructure, plus Anthropic only if AI is on.                                                                     | 6       |
+| How are we told about a breach?                          | IP Lynx tells the board within 24 hours of confirming it (an Assumption to agree in the contract). The board notifies the Information and Privacy Commissioner and the people affected.                                                                                                                                                                            | 12      |
+| What happens at the end of the contract?                 | IP Lynx exports the board's whole audit log for it (CSV) and, if the board wants it, its library; on request IP Lynx prepares an extract of the board's data; then IP Lynx deletes the board within 30 days and confirms in writing. Backups age out within 30 days.                                                                                               | 10      |
+| Can IP Lynx staff see our data?                          | Only named operators, only for support or maintenance, and our rule is to record each access in the board's own audit log first (a rule, not a technical lock: section 7). During the pilot, IP Lynx may also hold the board administrator role, if the board asks (section 2).                                                                                    | 7       |
+| Do students use AI?                                      | No. Only teachers, principals and vice-principals, at schools where the principal turned AI on and the board allows it.                                                                                                                                                                                                                                            | 5, 13   |
+| How do people sign in?                                   | With a 6-digit code sent by e-mail; there are no passwords. Sessions end after 7 days, or after 12 hours without activity.                                                                                                                                                                                                                                         | 7       |
+| Are there cookies, trackers or analytics?                | Only the cookies the app needs to keep a person signed in, the chosen language and a substitute's or class device's session, plus one preference (the « Moment de foi » choice on the absence form). Unsent drafts stay in the browser until they are sent or the person signs out. No analytics, no advertising, no third-party scripts.                          | 8       |
 
 ## 2. Roles
 
@@ -58,8 +61,15 @@ Section 6 lists every place data goes and what it holds.
 - **IP Lynx Inc.** provides the app and, for the hosted install, operates it. It acts on the
   board's instructions and uses the data only to provide the service.
 - **Board-hosted installs:** the board's IT runs the app on the board's servers. IP Lynx has no
-  access unless the board grants it, and every such access is recorded in the board's audit log
-  (`operator.access`, section 14).
+  access unless the board grants it, and our rule is to record every such access in the board's
+  audit log first (`operator.access`, section 14).
+- **During the pilot, IP Lynx may hold the board administrator role** (« Administration du
+  conseil ») for a pilot board, if the board asks: Mike McLeod, for IP Lynx. It then sees what
+  section 7 lists for board admins: the staff list (names, e-mail addresses, roles, access),
+  invitations, feedback (students' first names replaced), the AI totals per school and the
+  administrative part of the audit log, its own access entries included. We recommend that the
+  board also name one of its own staff as an administrator, so that someone at the board reads
+  IP Lynx's access entries.
 
 ## 3. What we never collect
 
@@ -85,17 +95,17 @@ board can change.
 
 ### Staff accounts and sign-in
 
-| Data                                                                                                                          | Purpose                                       | Who sees it                                                                                                             | Kept                                                                      |
-| ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| Profile: name, e-mail, title (Mme, M., Mx), language, access removed or not (`users`)                                         | Sign-in, display names in plans and the app   | The person; colleagues at the same schools and the board's admins (name, e-mail, title, language and access state only) | Until IP Lynx deletes the account on the board's request                  |
-| Roles: teacher, principal, vice-principal, office, board admin, with school (`user_roles`)                                    | Access control                                | The person; the school's direction; the board's admins                                                                  | With the account                                                          |
-| Pilot terms: version and time accepted; checklist hidden or not (`users`)                                                     | Proof of acceptance; the onboarding checklist | The person only (and IP Lynx)                                                                                           | With the account                                                          |
-| Invitations: e-mail, name, title, role, school, status, who invited (`staff_invitations`)                                     | Creating an account                           | The board's admins                                                                                                      | Pending ones fail after 14 days; processed ones are deleted after 90 days |
-| Sign-in service (Supabase Auth): e-mail, account creation and last sign-in times, ban state (`auth.users`, `auth.identities`) | Sign-in                                       | Nobody through the app; board admins see only whether a person ever signed in, never when                               | With the account                                                          |
-| Sessions: IP address, browser (user agent), times (`auth.sessions`, `auth.refresh_tokens`)                                    | Keeping a person signed in                    | Nobody through the app                                                                                                  | Ended after 7 days, or 12 hours without activity; never in our backups    |
-| Sign-in service log: e-mail, IP address, action (`auth.audit_log_entries`)                                                    | Investigating sign-in problems                | Nobody through the app                                                                                                  | 90 days; never in our backups                                             |
-| Sign-in codes (`auth.one_time_tokens`)                                                                                        | The 6-digit code                              | Nobody                                                                                                                  | Valid one hour, used once; never in our backups                           |
-| Sign-in attempts: keyed hashes of the address and of the network, never in clear (`sign_in_attempts`)                         | Throttling code guessing (D-121)              | Nobody                                                                                                                  | 2 days                                                                    |
+| Data                                                                                                                                                                                          | Purpose                                       | Who sees it                                                                                                             | Kept                                                                      |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Profile: name, e-mail, title (Mme, M., Mx), language, access removed or not (`users`)                                                                                                         | Sign-in, display names in plans and the app   | The person; colleagues at the same schools and the board's admins (name, e-mail, title, language and access state only) | Until IP Lynx deletes the account on the board's request                  |
+| Roles: teacher, principal, vice-principal, office, board admin, with school (`user_roles`)                                                                                                    | Access control                                | The person; the school's direction; the board's admins                                                                  | With the account                                                          |
+| Pilot terms: version and time accepted; checklist hidden or not (`users`)                                                                                                                     | Proof of acceptance; the onboarding checklist | The person only (and IP Lynx)                                                                                           | With the account                                                          |
+| Invitations: e-mail, name, title, role, school, status, who invited (`staff_invitations`)                                                                                                     | Creating an account                           | The board's admins                                                                                                      | Pending ones fail after 14 days; processed ones are deleted after 90 days |
+| Sign-in service (Supabase Auth): e-mail, account creation and last sign-in times, ban state (`auth.users`, `auth.identities`)                                                                 | Sign-in                                       | Nobody through the app; board admins see only whether a person ever signed in, never when                               | With the account                                                          |
+| Sessions: the address and software of the app's server, which makes every call to the sign-in service, never a person's IP address or browser; times (`auth.sessions`, `auth.refresh_tokens`) | Keeping a person signed in                    | Nobody through the app                                                                                                  | Ended after 7 days, or 12 hours without activity; never in our backups    |
+| Sign-in service log: e-mail, action, time; no IP address (the app's server makes the calls) (`auth.audit_log_entries`)                                                                        | Investigating sign-in problems                | Nobody through the app                                                                                                  | 90 days; never in our backups                                             |
+| Sign-in codes (`auth.one_time_tokens`)                                                                                                                                                        | The 6-digit code                              | Nobody                                                                                                                  | Valid one hour, used once; never in our backups                           |
+| Sign-in attempts: keyed hashes of the address and of the network, never in clear (`sign_in_attempts`)                                                                                         | Throttling code guessing (D-121)              | Nobody                                                                                                                  | 2 days                                                                    |
 
 ### Classes, students and teaching
 
@@ -148,15 +158,15 @@ shown 60 days before the purge says so.
 
 ### Pilot and operations
 
-| Data                                                                                                                           | Who sees it                                                                          | Kept                                    |
-| ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | --------------------------------------- |
-| Feedback: kind, message (up to 2,000 characters), page template, error reference, release, device class, language (`feedback`) | The board's admins; the sender's name and e-mail only if they agreed to be contacted | 365 days                                |
-| Audit log: who did what to which record, ids and short codes only (`audit_log`)                                                | Section 14                                                                           | 730 days                                |
-| Event outbox: event type and ids, never names (`event_outbox`)                                                                 | Nobody                                                                               | 90 days after it is handled             |
-| Heartbeats: last run of the worker, the backup and the clean-up, with counts (`system_heartbeats`)                             | Board admins see « normal » or « à vérifier » and times only                         | One row per service, replaced each time |
-| Server logs: scrubbed JSON lines (section 8)                                                                                   | IP Lynx (or the board's IT, board-hosted)                                            | 14 days                                 |
-| Proxy access logs: time, page address without codes, tokens or search words, status, masked IP address                         | IP Lynx (or the board's IT)                                                          | 14 days                                 |
-| Backups: the database's data, encrypted (section 8)                                                                            | Nobody without the private key, kept offline                                         | 30 days                                 |
+| Data                                                                                                                                                           | Who sees it                                                                                                                                  | Kept                                    |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| Feedback: kind, message (up to 2,000 characters), page template, error reference, release, device class, language (`feedback`)                                 | The board's admins (IP Lynx too, when it holds that role during the pilot); the sender's name and e-mail only if they agreed to be contacted | 365 days                                |
+| Audit log: who did what to which record, ids and short codes only (`audit_log`)                                                                                | Section 14                                                                                                                                   | 730 days                                |
+| Event outbox: event type and ids, never names (`event_outbox`)                                                                                                 | Nobody                                                                                                                                       | 90 days after it is handled             |
+| Heartbeats: last run of the worker, the backup and the clean-up, with counts (`system_heartbeats`)                                                             | Board admins see « normal » or « à vérifier » and times only                                                                                 | One row per service, replaced each time |
+| Server logs: the app's own are scrubbed JSON lines; board-hosted, the sign-in service and the database add warnings and errors in their own format (section 8) | IP Lynx (or the board's IT, board-hosted)                                                                                                    | 14 days                                 |
+| Proxy access logs: time, page address without codes, tokens or search words, status, masked IP address                                                         | IP Lynx (or the board's IT)                                                                                                                  | 14 days                                 |
+| Backups: the database's data, encrypted (section 8)                                                                                                            | Nobody without the private key, kept offline                                                                                                 | 30 days                                 |
 
 Before feedback is stored, the server replaces the first names of the students of the sender's
 schools with « [élève] » (« [student] » in English), and other personal details must be removed
@@ -170,8 +180,8 @@ before sending. A name the app does not know (a parent's, a sibling's) cannot be
                                                 │
                                               worker ──▶ database (Canada)
                                                 │
-                                                └──HTTPS──▶ Anthropic API (US): de-identified text only,
-                                                            only when a teacher asks for AI help
+                                                └──HTTPS──▶ Anthropic API (US): the text sent, known names
+                                                            replaced, only when a teacher asks for AI help
 
  Supabase Auth ──▶ e-mail service (Amazon SES ca-central-1, or the board's relay) ──▶ the person's mailbox
                    the 6-digit sign-in code
@@ -182,7 +192,7 @@ before sending. A name the app does not know (a parent's, a sibling's) cannot be
  Substitute's phone ──HTTPS──▶ Caddy ──▶ web server (a dedicated database role, the day's plan only)
  Class devices (tablets) ──HTTPS──▶ Caddy ──▶ web server (a second dedicated role, no table access)
 
- backup job (on the server) ──▶ encrypted file ──▶ Amazon S3 ca-central-1 (or the board's storage)
+ backup job (on the server) ──▶ encrypted file ──▶ Amazon S3 ca-central-1 (or the board's S3-compatible storage)
  worker and backup ──▶ uptime monitor: a ping to a URL, no data
  uptime monitor ──▶ /api/health/ready: answers « ok » or « unavailable », nothing else
 ```
@@ -191,26 +201,31 @@ before sending. A name the app does not know (a parent's, a sibling's) cannot be
   to the app's own server (Content Security Policy `connect-src 'self'`).
 - **No invitation e-mail leaves our servers.** The board admin's page prepares the message and the
   admin sends it from their own e-mail or texting app. Our only outgoing e-mail is the sign-in code.
-- **AI:** the worker replaces every name of the people the teacher works with by a marker
-  (« Élève A », « Adulte B »), refuses personal details, checks the exact outbound text once more,
-  and sends no user, school or board identifier. Names are put back only on our server. The teacher
-  sees the exact text before and after sending. `docs/ai-data-flow.md` has the details.
+- **AI:** the worker replaces the names of the people the app knows (every student and staff
+  member of the teacher's schools, and the staff of their boards) with a marker (« Élève A »,
+  « Adulte B »), refuses the personal details it detects (e-mail addresses, phone numbers,
+  identification numbers, postal codes, street addresses, a child's birth date), checks the exact
+  outbound text once more, and sends no user, school or board identifier. Names are put back only
+  on our server. **A name the app does not know** (a parent's, a sibling's, a student of another
+  school) is not recognized: the teacher sees the exact text before sending, and the preview asks
+  her to remove any such name. `docs/ai-data-flow.md` has the details.
 
 ## 6. Residency and jurisdiction
 
 **Hosted by IP Lynx** (no hosted install is live yet; this is the design `DEPLOYMENT.md` sets up):
 
-| Component                                                       | Location                                               | Personal data                                                                                                |
-| --------------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
-| Supabase: database, sign-in service, Supabase's daily backups   | AWS `ca-central-1` (Montréal)                          | Yes                                                                                                          |
-| Supabase platform logs (API gateway, database, sign-in service) | **To confirm in writing with Supabase before go-live** | May include e-mail addresses in sign-in logs and error text; no personal value is ever put in an API address |
-| The app's server: proxy, web server, worker                     | AWS Lightsail `ca-central-1`                           | Yes, while processing; logs kept 14 days on the server                                                       |
-| Sign-in e-mails                                                 | Amazon SES `ca-central-1`                              | Staff e-mail addresses and the code                                                                          |
-| Our backup copies                                               | Amazon S3 `ca-central-1`, encrypted before upload      | Yes, encrypted                                                                                               |
-| Anthropic API                                                   | United States                                          | De-identified text only (no names, no identifiers). Zero data retention requested, not yet in place          |
-| Uptime and heartbeat monitor                                    | Outside Canada possibly                                | None: URLs and pings only                                                                                    |
-| GitHub (source code)                                            | United States                                          | None: code only                                                                                              |
-| Let's Encrypt (TLS certificates)                                | United States                                          | None: the app's domain name only                                                                             |
+| Component                                                       | Location                                               | Personal data                                                                                                                                                                                                                                                                                                                                   |
+| --------------------------------------------------------------- | ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Supabase: database, sign-in service                             | AWS `ca-central-1` (Montréal)                          | Yes                                                                                                                                                                                                                                                                                                                                             |
+| Supabase's daily backups                                        | **To confirm in writing with Supabase before go-live** | Yes                                                                                                                                                                                                                                                                                                                                             |
+| Supabase platform logs (API gateway, database, sign-in service) | **To confirm in writing with Supabase before go-live** | May include e-mail addresses in sign-in logs and error text; no personal value is ever put in an API address                                                                                                                                                                                                                                    |
+| The app's server: proxy, web server, worker                     | AWS Lightsail `ca-central-1`                           | Yes, while processing; logs kept 14 days on the server                                                                                                                                                                                                                                                                                          |
+| Sign-in e-mails                                                 | Amazon SES `ca-central-1`                              | Staff e-mail addresses and the code                                                                                                                                                                                                                                                                                                             |
+| Our backup copies                                               | Amazon S3 `ca-central-1`, encrypted before upload      | Yes, encrypted                                                                                                                                                                                                                                                                                                                                  |
+| Anthropic API                                                   | United States                                          | The text a teacher sends: names the app knows replaced and the details it detects refused; a name it does not know is removed by the teacher at the preview. Zero data retention: to be requested before real data (not sent yet); until it is in place, Anthropic keeps API inputs and outputs for a limited period under its commercial terms |
+| Uptime and heartbeat monitor                                    | Outside Canada possibly                                | None: URLs and pings only                                                                                                                                                                                                                                                                                                                       |
+| GitHub (source code)                                            | United States                                          | None: code only                                                                                                                                                                                                                                                                                                                                 |
+| Let's Encrypt (TLS certificates)                                | United States                                          | None: the app's domain name only                                                                                                                                                                                                                                                                                                                |
 
 **Board-hosted:** everything above runs on the board's servers, with the board's mail relay and
 storage. Only the Anthropic API (if AI is on), Let's Encrypt (unless the board uses its own
@@ -221,28 +236,28 @@ outside the board.
 
 - Supabase, Amazon and Anthropic are US companies. US law (the CLOUD Act) can require a US company
   to produce data it controls, even when that data is stored in Canada. Storing in Canada and
-  sending only de-identified text abroad limits what such a request could reach.
+  sending only text with known names replaced abroad limits what such a request could reach.
 - Supabase staff can access a project for support under Supabase's terms. Our requests to Supabase
   are encrypted (TLS); where that TLS connection is terminated for `*.supabase.co` addresses is
   among the questions we put to Supabase in writing before go-live.
-- No hosted install is live yet. Before real data is entered, IP Lynx will have Supabase's written
+- No hosted install is live yet. Before real data is entered, IP Lynx needs Supabase's written
   answer on where platform logs and backups are kept and where TLS terminates, and Anthropic's
-  decision on zero data retention.
+  decision on zero data retention. Neither request has been sent yet (`docs/PILOT.md` § 1).
 
 ## 7. Access controls
 
 **Roles.** Each person sees only what their role allows. Row level security on every table enforces
-this in the database, and about 1,650 automated database tests check it.
+this in the database, and about 1,700 automated database tests check it.
 
-| Role                      | Sees                                                                                                                                                                                                                                                |
-| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Teacher                   | Their classes: students, alerts (hidden until tapped, each read logged), timetable, planning, progress. Their own absences and plans. The library by sharing. Their own AI usage.                                                                   |
-| Principal, vice-principal | Their school's classes, rosters and schedules, and alerts (read-only, logged); released substitute plans and reports (logged); « Tableau de bord de la direction »; the school's audit log. **Never** a teacher's units, lessons or progress.       |
-| Office staff              | Their school's classes and schedules, no rosters; released substitute plans with first names (logged, without « Gestion de classe »); codes. No alerts, no audit log.                                                                               |
-| Board admin               | The board's schools and settings, staff list (name, e-mail, roles, access state, whether they ever signed in), invitations, school years, reviewers, AI totals per school, feedback, and the administrative part of the audit log. No student data. |
-| Substitute (no account)   | With a one-day code: that day's released plan for the classes covered, alerts on screen when tapped (each reveal logged), the end-of-day report.                                                                                                    |
-| Students (no account)     | On a class device during a quiz: the questions, never the answers or anyone's name.                                                                                                                                                                 |
-| IP Lynx operator          | The service key, on servers only, through the admin command line. No web console.                                                                                                                                                                   |
+| Role                      | Sees                                                                                                                                                                                                                                                                                                                                                                     |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Teacher                   | Their classes: students, alerts (hidden until tapped, each read logged), timetable, planning, progress. Their own absences and plans. The library by sharing. Their own AI usage.                                                                                                                                                                                        |
+| Principal, vice-principal | Their school's classes, rosters and schedules, and alerts (read-only, logged); released substitute plans and reports (logged); « Tableau de bord de la direction »; the school's audit log. **Never** a teacher's units, lessons or progress.                                                                                                                            |
+| Office staff              | Their school's classes and schedules, no rosters; released substitute plans with first names (logged, without « Gestion de classe »); codes. No alerts, no audit log.                                                                                                                                                                                                    |
+| Board admin               | The board's schools and settings, staff list (name, e-mail, roles, access state, whether they ever signed in), invitations, school years, reviewers, AI totals per school, feedback, and the administrative part of the audit log. No student data. During the pilot, IP Lynx may hold this role (section 2).                                                            |
+| Substitute (no account)   | With a one-day code: that day's released plan for the classes covered, alerts on screen when tapped (each reveal logged), the end-of-day report.                                                                                                                                                                                                                         |
+| Students (no account)     | On a class device during a quiz: the questions, never the answers or anyone's name.                                                                                                                                                                                                                                                                                      |
+| IP Lynx operator          | Hosted: the service key and the database password (on the server and in the operator's password manager), the admin command line, `psql` as the database owner, and Supabase's dashboard, whose table and SQL editors read every row (our rule: named operators only, with two-factor sign-in). No operator screen in the app. Board-hosted: only what the board grants. |
 
 **Sign-in.** A 6-digit code sent by e-mail, valid one hour; no passwords. Accounts exist only by
 invitation (self sign-up is off). A session ends after 7 days, or after 12 hours without activity,
@@ -258,13 +273,15 @@ audit log flags codes the office issued (section 14).
 reads no table. Answer keys never reach a device.
 
 **IP Lynx's access.** Named operators only. The service key is held on the server (the worker and
-the admin command line), never in the web server and never in a browser. Before any access to
-production data for support, an incident, a restore or an upgrade, the operator records it
-(`pnpm admin log-operator-access --board … --reason …`); the board's admins see each entry in their
-audit log. Changes the operator makes to a board's settings, modules, AI budgets or retention, and
-to a person's access, are logged for the board the same way. This recording is an operating rule
-that `DEPLOYMENT.md` makes mandatory; the database cannot force someone who holds the service key
-to record their access first.
+the admin command line) and in the operator's password manager; it never reaches the web server
+or the app's pages. Hosted, Supabase's dashboard also shows it, and every row, in a browser:
+opening a board's data there counts as access. Before any access to production data for support,
+an incident, a restore or an upgrade, the operator records it
+(`pnpm admin log-operator-access --board … --reason …`); the board's admins see each entry in
+their audit log. Changes the operator makes to a board's settings, modules, AI budgets or
+retention, and to a person's access, are logged for the board the same way. This recording is an operating rule that `DEPLOYMENT.md` makes
+mandatory; the database cannot force someone who holds the service key to record their access
+first.
 
 ## 8. Security measures
 
@@ -278,20 +295,32 @@ to record their access first.
   are encrypted with `age` before they leave the server; the private key is kept offline by the
   operator (and, board-hosted, in the board's vault), never on the server. Each backup is also
   signed (HMAC-SHA256 with a key generated per install); the restore refuses an unsigned or
-  altered file, and a dump holding anything but data, before loading anything.
+  altered file, and a dump holding anything but data, before loading anything. Once a month a
+  backup is restored to test it (board-hosted, into a throw-away install on the operator's
+  encrypted workstation; hosted, into a staging Supabase project in Canada); the access is
+  recorded for each board and the copy is destroyed afterwards.
 - **Keys:** generated per install (`generate-secrets.mjs`, file mode 0600), never in the code, the
-  images, the backups or the logs. Alert keys and code keys rotate with a version number
-  (`DEPLOYMENT.md`).
+  images or the backups. Board-hosted, the database's statement logging is off, so its first start
+  no longer writes the administrator's password to the journal (checked in CI). Alert keys and
+  code keys rotate with a version number (`DEPLOYMENT.md`).
 - **Browser:** a Content Security Policy allows only the app's own scripts, styles, fonts and
   connections, and forbids framing. No third-party scripts, fonts, trackers or analytics.
   `X-Robots-Tag: noindex, nofollow` on every page.
-- **Logs:** every log line is JSON, and every text in it is scrubbed: e-mail addresses, phone
-  numbers, postal codes, long numbers (OEN, health cards), tokens, keys, quoted values and the
-  values the database echoes back in its errors are removed. An error is reduced to its name,
-  code, reference and scrubbed message, never its other fields. Browsers report errors as a name,
-  a reference, the page template and a hash of the message. A first name in free text cannot be
-  recognized automatically, which is why logs never record what people typed. Logs stay on the
-  server for 14 days. No third-party error service.
+- **Logs:** the app's own logs (web server and worker) are JSON lines in which every text is
+  scrubbed: e-mail addresses, phone numbers, postal codes, long numbers (OEN, health cards),
+  tokens, keys, quoted values and the values the database echoes back in its errors are removed.
+  An error is reduced to its name, code, reference and scrubbed message, never its other fields.
+  Browsers report errors as a name, a reference, the page template and a hash of the message. A
+  first name in free text cannot be recognized automatically, which is why logs never record what
+  people typed. Board-hosted, the sign-in service and the database also write to the server's
+  journal, in their own format and **not scrubbed**: the sign-in service only its warnings and
+  errors, the database no statements and its errors without their detail. CI checks that after a
+  test install has run, the journal holds no e-mail address and no password. Even so, an error
+  can quote a value it refused, and a mail relay's refusal can name the address it refused. The
+  admin command line's replies, which name the people a command acted on, are shown to the
+  operator and never kept. Logs stay on the server for 14 days, readable only by its
+  administrators. Hosted, Supabase keeps its own logs of the database, the API gateway and the
+  sign-in service, which may hold e-mail addresses (section 6). No third-party error service.
 - **Proxy logs:** client IP addresses are masked (/24 for IPv4, /64 for IPv6); cookies,
   authorization headers, sign-in tokens, substitute codes, search words and the previous page's
   address are removed.
@@ -302,16 +331,19 @@ to record their access first.
 - **Least privilege:** every new table starts closed; signed-in users get explicit grants, often
   per column; database functions that can act for others check the caller; operator functions run
   only with the service key. Each service in Docker Compose receives only its own settings.
-- **Updates:** dependency versions are pinned (lockfile, images pinned by digest). Every change
-  runs the full automated test suite in CI (section 15). `DEPLOYMENT.md` asks for a monthly
-  rebuild of the images, for the base images' security updates.
+- **Updates:** dependency versions are pinned (lockfile, images pinned by digest), so the images'
+  security updates arrive only with a release: IP Lynx updates the pinned versions, and the
+  operator installs the release (`DEPLOYMENT.md` § 7). Rebuilding without a release changes
+  nothing. Hosted, the server's own system updates itself (unattended upgrades). Every change runs
+  the full automated test suite in CI (section 15).
 
 ## 9. Retention schedule
 
 Deletions run every night (the worker's clean-up). Settings marked "per board" can be changed by
 IP Lynx at the board's request, within the bounds shown. **The minimums are under legal review:**
 MFIPPA Regulation 823 may require keeping personal information for a year after its last use,
-which is why no per-board setting goes below 365 days.
+which is why no per-board setting of personal data goes below 365 days (kept class results hold
+counts only, and may be kept less).
 
 | Data                                                                           | Kept by default                                        | Per board (bounds) |
 | ------------------------------------------------------------------------------ | ------------------------------------------------------ | ------------------ |
@@ -328,7 +360,7 @@ which is why no per-board setting goes below 365 days.
 | Feedback                                                                       | 365 days                                               | 365 to 1,095 days  |
 | Invitations                                                                    | pending: 14 days; processed: 90 days                   | no                 |
 | Event outbox                                                                   | 90 days after handling                                 | no                 |
-| Sign-in service log (e-mails, IP addresses)                                    | 90 days                                                | no                 |
+| Sign-in service log (e-mails, actions)                                         | 90 days                                                | no                 |
 | Class mode answers and devices                                                 | until the session ends (at most 2 h 5 min)             | no                 |
 | Kept class results (counts only)                                               | 365 days                                               | 1 to 3,650 days    |
 | Bulk generation runs; the text they sent                                       | 1 year; the text 30 days                               | no                 |
@@ -362,13 +394,22 @@ approved resources stay, without an author.
 
 **At the end of a contract:**
 
-1. The board exports its audit log (CSV, from « Journal d'audit ») and its library (a content pack,
-   prepared by IP Lynx with `pnpm admin export-pack`).
-2. On request, IP Lynx prepares an extract of the board's data (manual during the pilot).
-3. IP Lynx runs `pnpm admin delete-board` within 30 days: the board's schools, classes, students,
-   plans, resources, audit log, and the accounts of people who worked only for that board. IP Lynx
-   confirms the deletion in writing.
-4. Backups that still hold the board's data expire within 30 days.
+1. IP Lynx exports the board's whole audit log (`pnpm admin export-audit`): every entry, of every
+   audience and date, as one CSV file with the names of the people who acted, and gives it to the
+   board (its privacy office: the file includes the entries the app shows to nobody, such as
+   teachers' AI requests). The export is itself in the board's log. A board admin's « Journal
+   d'audit » download is not enough: it holds the administrative entries only, a year at a time,
+   and each principal's holds only the school's. IP Lynx deletes its copy once the board has the
+   file.
+2. The board can also take its library (a content pack, prepared by IP Lynx with
+   `pnpm admin export-pack`).
+3. On request, IP Lynx prepares an extract of the board's data (manual during the pilot).
+4. IP Lynx runs `pnpm admin delete-board` within 30 days. It refuses unless the whole audit log
+   was exported in the 7 days before. It deletes the board's schools, classes, students, plans,
+   resources, audit log, and the accounts of people who worked only for that board; the few
+   entries written after the export (the operator's access record, for example) are not in the
+   file, and the command says how many. IP Lynx confirms the deletion in writing.
+5. Backups that still hold the board's data expire within 30 days.
 
 ## 11. Access and correction requests
 
@@ -384,7 +425,10 @@ class, alerts).
 2. **Notify the board** within 24 hours of confirming a breach that affects its data (an
    **Assumption** to agree in the contract), with what is known and what is being done.
 3. **Contain:** remove access, rotate keys (sign-in, alert, code, database), restore from backup if
-   needed, and record each step in the board's audit log (`operator.access`, reason `incident`).
+   needed. IP Lynx records its access in the board's audit log (`operator.access`, reason
+   `incident`) and lists each step in the written report. A new alert key protects new alerts only:
+   there is no re-encryption yet, so alerts already stored stay readable with a leaked key in a
+   leaked copy of the database.
 4. **The board notifies** the Information and Privacy Commissioner of Ontario and the people
    affected, as MFIPPA requires; IP Lynx provides the facts.
 5. **Report:** a written post-incident report with the cause and the changes made.
@@ -398,7 +442,8 @@ class, alerts).
 - A teacher may keep class results: counts per question and team scores, with no device and no
   name, for a year.
 - During the pilot, the terms ask teachers to use invented first names or initials, or the sample
-  class, until their principal agrees in writing; alerts stay off.
+  class, until their principal agrees in writing. We recommend that principals keep alerts off
+  (their switch in « École »); nothing locks them off.
 
 ## 14. The audit log
 
@@ -408,7 +453,8 @@ class team changes and class deletions; roles granted and revoked; access remove
 invitations; AI and alert switches; library approvals and reviewers; the operator's access and
 settings changes; retention runs (counts); exports of the log itself. An entry holds who, when,
 what, and ids and short codes. **Never** a student's name, an alert's text, a note or a title: a
-database check refuses free text in new entries.
+database check refuses the usual free-text fields (names, notes, titles, messages) and long
+strings in new entries. A deleted class's entry keeps the class's name as the teacher typed it.
 
 **Who reads it.** Nobody reads the table directly. One database function serves it, and each kind
 of entry has an audience:
@@ -422,16 +468,19 @@ of entry has an audience:
 
 So a board admin never sees sick days, substitute activity or alert reads. Labels follow the same
 rules: a student appears only as their class (« Élève · 3e année »). A substitute's entry whose
-code the office issued carries the flag « Code émis par le secrétariat ». The log can be exported
-as CSV (at most 10,000 entries); each export is itself logged. Entries are kept 730 days.
+code the office issued carries the flag « Code émis par le secrétariat ». Each reader can export
+what they read as CSV (at most 10,000 entries and a year per file); each export is itself logged.
+At the end of a contract IP Lynx exports the whole log for the board (section 10). Entries are
+kept 730 days.
 
 ## 15. Assurance
 
-- **Automated tests**, run on every change in CI (GitHub Actions) and on a fresh database: 1,274
-  unit tests, 1,647 database tests (row level security, audit, retention, access), 90 integration
-  tests, and 128 browser tests on desktop, phone and tablet, with automated accessibility checks
+- **Automated tests**, run on every change in CI (GitHub Actions) and on a fresh database: 1,302
+  unit tests, 1,715 database tests (row level security, audit, retention, access), 93 integration
+  tests, and 130 browser tests on desktop, phone and tablet, with automated accessibility checks
   (axe, WCAG 2 A and AA) on the main pages. CI also restores a backup into an empty database and
-  checks it, and starts the board-hosted install from the Docker images.
+  checks it, and starts the board-hosted install from the Docker images, then checks that its
+  journal holds no e-mail address and no password.
 - **Subprocessors:** Supabase and AWS publish their security certifications (Supabase: SOC 2 Type 2;
   AWS: SOC 1, 2 and 3, ISO 27001 and others). Boards can request the reports from them.
 - **Not done yet:** an independent penetration test (recommended before paid boards), a formal
@@ -443,8 +492,9 @@ as CSV (at most 10,000 entries); each export is itself logged. Entries are kept 
   (`PRIVACY_CONTACT_EMAIL`), or the board's own privacy office.
 - **Support:** the address shown in the app (`SUPPORT_EMAIL`).
 - **Decisions behind this document:** `DECISIONS.md` (D-012 to D-019, D-037 to D-046, D-049 to
-  D-059, D-065, D-083 to D-093, D-102 to D-120).
+  D-059, D-065, D-083 to D-093, D-102 to D-122).
 
-| Date       | Release | Change                                                                   |
-| ---------- | ------- | ------------------------------------------------------------------------ |
-| 2026-10-02 | 0.6     | First version, written for the pilot. Pending a privacy lawyer's review. |
+| Date       | Release | Change                                                                                                                                                                                                                                                                                                                                                             |
+| ---------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 2026-10-02 | 0.6     | First version, written for the pilot. Pending a privacy lawyer's review.                                                                                                                                                                                                                                                                                           |
+| 2026-10-02 | 0.6     | After the final review: the AI limit (names the app does not know), what the sign-in service and the database write to the journal, the hosting facts still to confirm, IP Lynx as a pilot board's administrator, the full audit export before a board is deleted, the monthly restore test. The in-app notice changed with it (terms version `2026-10-pilote-2`). |

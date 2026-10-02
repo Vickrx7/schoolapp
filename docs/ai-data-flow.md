@@ -1,13 +1,16 @@
 # What the AI sees: data flow for AI features
 
 This page describes exactly what goes to the AI provider, written to help answer a school board's
-privacy questionnaire. It will become part of `PRIVACY.md` in Phase 6. Decisions: DECISIONS.md,
+privacy questionnaire. `PRIVACY.md` (Phase 6) points here as its annex. Decisions: DECISIONS.md,
 D-037 to D-046, D-052 for the substitute plan, and D-072 to D-074 for the resource bank.
 
 ## The rule
 
-Nothing personal leaves Canada. Everything the app stores stays in the Canadian database. Only
-de-identified text is sent to the AI provider, and that text may be processed outside Canada.
+The rule we design to: nothing personal leaves Canada. Everything the app stores stays in the
+Canadian database. Only text the app has de-identified is sent to the AI provider, and it may be
+processed outside Canada. The app replaces the names it knows (below); a name it does not know (a
+parent's, a sibling's) can only be removed by the teacher, who sees the exact text before it is
+sent (« Known limits »).
 
 ## Who uses AI
 
@@ -35,8 +38,9 @@ on and whose board allows it. Students never use AI features and never send anyt
    - the grade (« 3e année »), the subject name and the names and descriptions of the language
      levels chosen.
 
-   It sends **no** student or staff names, no email addresses, no user, school, board or account
-   identifiers, and no alerts.
+   It sends **no** names of the students and staff the app knows, no email addresses or other
+   details it detects, no user, school, board or account identifiers, and no alerts. A name it
+   does not know goes out unless the teacher removed it at the preview.
 
 5. **The answer comes back** to the worker in Canada, which puts the real names back in place of
    the markers and stores the result for the teacher.
@@ -187,8 +191,8 @@ the board's own private drafts, which the board's designated reviewers read, edi
    (leaving out every name the board knows), and the de-identified note. Each request carries a
    random id (`custom_id`, a request uuid) and nothing else about the board.
 
-   It sends **no** ids of the board, schools, classes or people, no names of staff or students, no
-   alerts and no teacher's text.
+   It sends **no** ids of the board, schools, classes or people, no names of the board's staff or
+   students, no alerts and no teacher's text.
 
 5. **At the provider.** A batch is processed within 24 hours (usually within the hour). The worker
    reads the answers as soon as the batch has ended, then **deletes the batch and its results from
@@ -204,8 +208,8 @@ the board's own private drafts, which the board's designated reviewers read, edi
    reviewer; only the flag is stored, never the name.
 7. **Cost.** A run has a hard cap: requests are sent only while the sum of their worst cases (the
    counted input and the most the answer may be) stays within it, at batch prices (half). Costs are
-   recorded per board, outside every school's budget, and the operator sees them in `pnpm admin
-ai-usage`.
+   recorded per board, outside every school's budget, and the operator sees them in
+   `pnpm admin ai-usage`.
 
 ## How names are found
 
@@ -255,24 +259,25 @@ of the text.
 
 ## What is kept, where and for how long
 
-| Data                                                                                                | Where             | Kept                                                 |
-| --------------------------------------------------------------------------------------------------- | ----------------- | ---------------------------------------------------- |
-| The teacher's text, the answer, and the exact de-identified text sent (`ai_jobs`)                   | Canadian database | 30 days, then deleted                                |
-| Saved differentiated texts (library drafts)                                                         | Canadian database | Until the teacher deletes them                       |
-| Resources written with the AI, and versions added by it (library items, private drafts)             | Canadian database | Until the teacher deletes them                       |
-| Bulk runs and their requests: the de-identified text sent (`library_bulk_requests.sent_text`)       | Canadian database | 30 days, then only its SHA-256 (runs: 1 year)        |
-| The board's drafts from bulk generation (library items, private until approved)                     | Canadian database | Until a reviewer deletes them                        |
-| A bulk batch and its answers                                                                        | The AI provider   | Deleted as soon as read (otherwise at most 29 days)  |
-| A substitute plan's AI layer (`sub_plans.ai`: the answer with names back, and block and lesson ids) | Canadian database | With the plan (1 year, D-059), or until removed      |
-| Usage records: date, feature, prompt version, model, token counts, cost, status (`ai_generations`)  | Canadian database | Kept (no text)                                       |
-| Request log for the hourly limit: job id, user id, time (`ai_request_log`)                          | Canadian database | 1 day (no text)                                      |
-| What the provider receives                                                                          | The AI provider   | Under the provider's own retention terms (see below) |
+| Data                                                                                                | Where             | Kept                                                   |
+| --------------------------------------------------------------------------------------------------- | ----------------- | ------------------------------------------------------ |
+| The teacher's text, the answer, and the exact de-identified text sent (`ai_jobs`)                   | Canadian database | 30 days, then deleted                                  |
+| Saved differentiated texts (library drafts)                                                         | Canadian database | Until the teacher deletes them                         |
+| Resources written with the AI, and versions added by it (library items, private drafts)             | Canadian database | Until the teacher deletes them                         |
+| Bulk runs and their requests: the de-identified text sent (`library_bulk_requests.sent_text`)       | Canadian database | 30 days, then only its SHA-256 (runs: 1 year)          |
+| The board's drafts from bulk generation (library items, private until approved)                     | Canadian database | Until a reviewer deletes them                          |
+| A bulk batch and its answers                                                                        | The AI provider   | Deleted as soon as read (otherwise at most 29 days)    |
+| A substitute plan's AI layer (`sub_plans.ai`: the answer with names back, and block and lesson ids) | Canadian database | With the plan (1 year, D-059), or until removed        |
+| Usage records: date, feature, prompt version, model, token counts, cost, status (`ai_generations`)  | Canadian database | 730 days by default (per board, 365 to 3,650); no text |
+| Request log for the hourly limit: job id, user id, time (`ai_request_log`)                          | Canadian database | 1 day (no text)                                        |
+| What the provider receives                                                                          | The AI provider   | Under the provider's own retention terms (see below)   |
 
 ## The provider
 
 Claude, by Anthropic, through the Anthropic API. By default Anthropic retains API inputs and
 outputs for a limited period under its commercial terms; a zero-data-retention arrangement can be
-requested from Anthropic before production use. The provider is set by configuration, so a board
+requested from Anthropic before production use. That request has not been sent yet: it is a
+go-live gate (`DEPLOYMENT.md` § 3.11). The provider is set by configuration, so a board
 can require its own approved cloud account or a model hosted in Canada instead (see D-041).
 
 ## Controls
@@ -283,7 +288,9 @@ can require its own approved cloud account or a model hosted in Canada instead (
   (boards cannot change them). They are checked when a request is made and again just before it
   is sent.
 - Limits per person: 3 requests at a time and 40 per hour.
-- Every request's usage is logged; the principal sees the month's usage on the École page.
+- Every request's usage is logged; the direction sees the month's totals per school on
+  « Tableau de bord de la direction » and the École page, board admins on « Utilisation de
+  l'IA ». Nobody sees per-person figures (D-104).
 
 ## Known limits
 

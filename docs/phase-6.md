@@ -1,6 +1,6 @@
 # Phase 6: pilot readiness (« Prêt pour le projet pilote »)
 
-Decisions: `DECISIONS.md` D-102 to D-120, and the Phase 6 amendments written into D-002, D-004,
+Decisions: `DECISIONS.md` D-102 to D-122, and the Phase 6 amendments written into D-002, D-004,
 D-012, D-013, D-017, D-018, D-029, D-036, D-039, D-040, D-043, D-046, D-055, D-056, D-059, D-064
 and D-078. The documents this phase adds: `PRIVACY.md` (for a board's privacy officer),
 `DEPLOYMENT.md` (hosted and board-hosted installs), `docs/PILOT.md` (running the pilot, for Mike)
@@ -44,7 +44,8 @@ and `docs/demo-script.md` (the board demo, kept true by `apps/web/e2e/demo.spec.
   timetable, a Français and a Mathématiques unit of 8 lessons (3 done), marked « Exemple », never in
   a substitute plan, deleted after 60 days.
 - **« Commentaires »** at the top of every page (and `/commentaires`): a problem, an idea or a
-  question, with each student's first name found in the message confirmed before sending.
+  question; students' first names are replaced with « [élève] » before it is stored (final
+  review).
 - « Confidentialité », « Nouveautés » and the version in every page's footer; « Signaler ce
   problème » and « Référence : … » on every error page; a notice 60 days before a class's first
   names are erased.
@@ -53,8 +54,8 @@ and `docs/demo-script.md` (the board demo, kept true by `apps/web/e2e/demo.spec.
 « Confidentialité » in the portal's footer.
 
 **For the operator (IP Lynx, or a board's IT):** `pnpm admin set-retention`, `status`,
-`log-operator-access`, `delete-user` and `delete-board`; `invite` and `deactivate` now audited for
-the board.
+`log-operator-access`, `delete-user`, `export-audit` (final review) and `delete-board`; `invite`
+and `deactivate` now audited for the board.
 
 **Under the hood**
 
@@ -74,17 +75,19 @@ the board.
 
 ### Slices
 
-| Slice | Commits                                    | What                                                                                                  |
-| ----- | ------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
-| S0    | `3e3f1bb`                                  | Foundation: D-102 to D-120, shared schema, settings, navigation, stubs                                |
-| S1    | `ca21d2c`                                  | Accounts, roles, access, deletions, sample classes, school settings, feedback (database)              |
-| S2    | `0d85e15`                                  | Audit viewer, AI usage totals, retention, heartbeats (database, worker, CLI)                          |
-| S3a   | `598ee7b`                                  | Scrubbed logs, error references, health checks, security headers                                      |
-| S3b   | `8010537`, `bf70481`, `756f435`, `b161445` | Docker images, Compose installs, backups and restores, CI jobs                                        |
-| S4    | `4612c53`, `81da4cf`                       | « Conseil » and the worker's staff accounts                                                           |
-| S5    | `8a5356a`, `3ba74ac`                       | « Tableau de bord de la direction » and « Journal d'audit »                                           |
-| S6    | `2c0abb2`                                  | « Bienvenue », the checklist, the sample class, « Commentaires », « Confidentialité », « Nouveautés » |
-| S7    | the latest commits                         | These documents, the demo spec, the security review and its fixes                                     |
+| Slice    | Commits                                    | What                                                                                                  |
+| -------- | ------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| S0       | `3e3f1bb`                                  | Foundation: D-102 to D-120, shared schema, settings, navigation, stubs                                |
+| S1       | `ca21d2c`                                  | Accounts, roles, access, deletions, sample classes, school settings, feedback (database)              |
+| S2       | `0d85e15`                                  | Audit viewer, AI usage totals, retention, heartbeats (database, worker, CLI)                          |
+| S3a      | `598ee7b`                                  | Scrubbed logs, error references, health checks, security headers                                      |
+| S3b      | `8010537`, `bf70481`, `756f435`, `b161445` | Docker images, Compose installs, backups and restores, CI jobs                                        |
+| S4       | `4612c53`, `81da4cf`                       | « Conseil » and the worker's staff accounts                                                           |
+| S5       | `8a5356a`, `3ba74ac`                       | « Tableau de bord de la direction » and « Journal d'audit »                                           |
+| S6       | `2c0abb2`                                  | « Bienvenue », the checklist, the sample class, « Commentaires », « Confidentialité », « Nouveautés » |
+| S7       | `76203a4`, `da31b87`                       | These documents, the demo spec, the security review and its fixes                                     |
+| Review A | `d460555`, `ae0ca87`, `6915404`, `de7b798` | The final review's code and data fixes                                                                |
+| Review B | the latest commits                         | The final review's privacy wording, the whole audit export, the journal                               |
 
 ## How to run it
 
@@ -108,7 +111,8 @@ pnpm admin set-retention --board csc-demo --audit-days 1095    # within the boun
 pnpm admin log-operator-access --board csc-demo --reason support   # before any access to a board's data
 pnpm admin deactivate --email prof@conseil.ca                  # as « Retirer l'accès », audited for the board
 pnpm admin delete-user --email prof@conseil.ca --yes           # after the access was removed
-pnpm admin delete-board --board csc-exemple --confirm csc-exemple --exported --yes
+pnpm admin export-audit --board csc-exemple --out journal.csv    # the whole log, for the board
+pnpm admin delete-board --board csc-exemple --confirm csc-exemple --exported --yes   # within 7 days of it
 ```
 
 Settings this phase adds or renames (the README's table has them all):
@@ -124,19 +128,19 @@ Settings this phase adds or renames (the README's table has them all):
 
 ## Data inventory (additions)
 
-| Data                                                                  | Holds                                                                        | Who reads it                                     | Kept                                      |
-| --------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------ | ----------------------------------------- |
-| `staff_invitations`                                                   | e-mail, name, title, role, school, status, error code, inviter               | the board's admins                               | pending 14 days; processed 90 days        |
-| `users.terms_version`, `terms_accepted_at`, `onboarding_dismissed_at` | the pilot terms accepted, when; the checklist hidden                         | the person only (`my_onboarding_state`)          | with the account                          |
-| `classes.sample_owner_id`, `students_purged_at`                       | a sample class's owner; when a class's students were purged                  | the class team                                   | with the class                            |
-| `classes.students_purge_notice_on`                                    | the first night the year-end notice showed (review fix C4)                   | the class team                                   | with the class                            |
-| `sign_in_attempts`                                                    | keyed hashes of an address and a network, kind, time (D-121)                 | nobody through the API                           | 2 days                                    |
-| `app.install_secrets`                                                 | the install's random key for those hashes                                    | the database owner only; never in backups        | with the install                          |
-| `feedback`                                                            | kind, message, page template, error reference, release, device, language     | the board's admins (sender only if they agreed)  | 365 days                                  |
-| `audit_action_catalog`, `system_heartbeats`                           | who may read each action; the last run of each service with counts           | nobody through the API; board admins see a state | catalogue fixed; heartbeats replaced      |
-| Auth's own tables                                                     | e-mails, sign-in times, sessions' IP and browser, Auth's log                 | nobody through the app                           | sessions 7 days or 12 h idle; log 90 days |
-| Logs (web server, worker, proxy)                                      | scrubbed JSON lines; masked IP addresses                                     | the operator                                     | 14 days                                   |
-| Backups                                                               | the data of `public` and `auth` (no sessions, tokens or Auth log), encrypted | nobody without the offline key                   | 30 days                                   |
+| Data                                                                      | Holds                                                                                                             | Who reads it                                     | Kept                                      |
+| ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ | ----------------------------------------- |
+| `staff_invitations`                                                       | e-mail, name, title, role, school, status, error code, inviter                                                    | the board's admins                               | pending 14 days; processed 90 days        |
+| `users.terms_version`, `terms_accepted_at`, `onboarding_dismissed_at`     | the pilot terms accepted, when; the checklist hidden                                                              | the person only (`my_onboarding_state`)          | with the account                          |
+| `classes.sample_owner_id`, `students_purged_at`                           | a sample class's owner; when a class's students were purged                                                       | the class team                                   | with the class                            |
+| `classes.students_purge_notice_on`                                        | the first night the year-end notice showed (review fix C4)                                                        | the class team                                   | with the class                            |
+| `sign_in_attempts`                                                        | keyed hashes of an address and a network, kind, time (D-121)                                                      | nobody through the API                           | 2 days                                    |
+| `app.install_secrets`                                                     | the install's random key for those hashes                                                                         | the database owner only; never in backups        | with the install                          |
+| `feedback`                                                                | kind, message, page template, error reference, release, device, language                                          | the board's admins (sender only if they agreed)  | 365 days                                  |
+| `audit_action_catalog`, `system_heartbeats`                               | who may read each action; the last run of each service with counts                                                | nobody through the API; board admins see a state | catalogue fixed; heartbeats replaced      |
+| Auth's own tables                                                         | e-mails, sign-in times, sessions (the app server's address, never a person's), Auth's log (no IP address)         | nobody through the app                           | sessions 7 days or 12 h idle; log 90 days |
+| Logs (web server, worker, proxy; board-hosted also Auth and the database) | the app's: scrubbed JSON lines, masked IP addresses; Auth's and the database's: warnings and errors, not scrubbed | the operator                                     | 14 days                                   |
+| Backups                                                                   | the data of `public` and `auth` (no sessions, tokens or Auth log), encrypted                                      | nobody without the offline key                   | 30 days                                   |
 
 `PRIVACY.md` § 4 has the whole inventory.
 
@@ -228,7 +232,8 @@ The plan's checklist, plus every item the slices left for the review. Fixed item
   days), its `ALTER USER supabase_admin WITH PASSWORD …` included. The statement comes from the
   `supabase/postgres` image's own start-up script, which we do not control and cannot test without
   Docker here. `DEPLOYMENT.md` § 4 has the operator clear the journal after the first start; the
-  journal is readable only by administrators, who already hold `.env`.
+  journal is readable only by administrators, who already hold `.env`. (Fixed in the final review,
+  round B: statement logging is off, and CI checks the journal.)
 - **The operator's recording of support access is a rule, not a lock:** whoever holds the service
   key can read data without `log-operator-access` first. `PRIVACY.md` § 7 says so.
 - **`operator_delete_staff_account` and the class-delete trigger repeat `app.purge_sub_plan`'s
@@ -247,9 +252,19 @@ sender-confirmed first names (board admins only, 365 days); the end-of-year firs
 (domain unit tests only, not in a browser test); « Signaler ce problème » on an error page (its
 `/commentaires?ref=` target is tested).
 
-## Final review fixes, round A (code and data, 2026-10-02)
+## Final review (2026-10-02)
 
-The final review (correctness, security, UX) found what follows; round A fixed the code and data.
+Four reviewers read the whole phase against the running app and the code: correctness (4
+findings, C1 to C4), security (7, S1 to S7), product and UX (19, U1 to U19) and the documents (18,
+D1 to D18). Four were serious: the year-end purge deleting current plans (C1), staff sign-in codes
+not throttled on a board's own servers (S1), privacy texts promising that the AI never sees a name
+(D1), and "every log line is scrubbed" while the sign-in service and the database wrote e-mail
+addresses to the journal (D2). Round A fixed the code and data; round B made the documents and the
+texts teachers accept say exactly what the app does. Everything was fixed except what "What
+remains" lists.
+
+### Round A: code and data
+
 Migration `20261201090500_phase6_review_fixes.sql`, pgTAP `32_phase6_review_fixes`.
 
 - **C1 (high) — the class purge deleted current plans.** A teacher who kept last year's class had
@@ -295,7 +310,80 @@ Migration `20261201090500_phase6_review_fixes.sql`, pgTAP `32_phase6_review_fixe
   the future; the feedback page's error advice only with a reference, the board's feedback times
   as the log writes them; French spacing (`tools/i18n/typography.mjs`, checked by a unit test) and
   curly quotes in the English « Conseil »; the privacy page leads back to the substitute portal.
-- **Round B** (privacy wording, U1 and U14) follows.
+
+### Round B: privacy wording
+
+Migration `20261201090600_phase6_board_audit_export.sql`, pgTAP `33_board_audit_export`. The texts
+teachers accept changed, so the terms are now `2026-10-pilote-2`: everyone signed in before sees
+the banner and « Ce qui a changé » (D-110).
+
+- **D1 (high) and U1: "the AI never sees a name".** The app replaces the names it knows (the
+  students and staff of the teacher's schools); a parent's or a sibling's name goes out unless the
+  teacher removes it at the preview. `PRIVACY.md`, the README, the demo script, the AI annex,
+  « Bienvenue » and the notice now say exactly that, and « Bienvenue » says the data is stored in
+  Canada and only the text sent to the AI is processed in the United States (« La protection des
+  renseignements et le projet pilote »). A unit test pins the limit; the onboarding and demo
+  browser tests check the new wording.
+- **D2 (high): the journal.** Board-hosted, Auth now logs warnings and errors only
+  (`AUTH_LOG_LEVEL`, `warn`), and the database no statements and no error details. Checked on the
+  lite stack (at `info`, Auth wrote the address on 3 of 12 lines of one sign-in; at `warn`, on none;
+  PostgreSQL's DETAIL line with an address and the logged `create role … password` both vanish),
+  and in CI: the `docker-smoke` job now fails if the install's journal holds an e-mail address or a
+  password statement. The first-start password line goes with it. The admin CLI's replies are
+  no longer kept in the journal, and the journal starts a new file each day so its 14 days hold.
+  `PRIVACY.md` § 8 says what is still not scrubbed.
+- **D3: hosting stated as done.** Supabase's backups have their own row "to confirm in writing",
+  the zero-data-retention request is "to be sent" (and what Anthropic keeps meanwhile is said),
+  and the demo's hosting slide says "planned".
+- **D4, D5: IP Lynx's access.** The documents name the Supabase dashboard as access, recording
+  as a rule, and IP Lynx as a possible pilot board administrator, with what that role sees and the
+  advice that a board employee also hold it. Feedback readers are the same in the terms, the
+  dialog and `PRIVACY.md`.
+- **D6: the end of a contract.** `pnpm admin export-audit` writes the board's whole log (every
+  audience and date) for its privacy office, and is itself logged; `delete-board` refuses unless
+  such an export was made in the last 7 days (D-122). pgTAP 33, unit tests, and the Docker CI job
+  runs the refusal, the export and the deletion in the image.
+- **D7, D8: restores.** `DEPLOYMENT.md` § 6 gives the route to the database (an SSH tunnel, or
+  the workstation's address allowed for the restore), records the access after the restore, and
+  makes the monthly drill a recorded access into a throw-away copy that is destroyed afterwards
+  (never the lite stack: its Auth lacks 21 of production's migrations, checked).
+- **D9: monthly rebuilds** did nothing (pinned images). Security updates now come as releases.
+- **D10, key rotation:** `docker compose up -d web` (a restart does not read `.env`), and the
+  database password rotation includes `supabase_admin`.
+- **D11, backups on the board's storage:** `BACKUP_S3_ENDPOINT` (any S3-compatible storage). The
+  backup CI job uploads through a stand-in that checks the AWS signature, so the upload is tested
+  for the first time.
+- **D12, D13, installation:** Node.js or a container for `generate-secrets.mjs`, the release tag
+  to create, "the values that need one"; `AI_PRICE_*` reach the worker and the admin CLI, so a
+  model without a built-in price can be used.
+- **D14 to D18, smaller corrections:** kept class results (counts only) below a year, alerts as a
+  recommendation, the audit guard's real reach, retention « par défaut » in the notice, sessions and
+  Auth's log (the app server's address, never a person's: checked), the « Moment de foi » cookie
+  and drafts, the breach steps and the alert key, the AI annex's retention, the decisions table,
+  this file's question 4, and `docs/HANDOFF.md` (commits, stale sentences, the wrapped list).
+- **U14: « écrivez à IP Lynx ».** The board's pages say « la personne qui gère le serveur », and
+  the deletion link appears only with `SUPPORT_EMAIL`.
+
+### What remains, and why
+
+- **A name the app does not know** (a parent's, a sibling's) still goes to the AI if the teacher
+  leaves it in. Recognizing every unknown name would block most ordinary texts; the teacher's
+  check at the preview is the control, and every text now says so (question 6 below).
+- **Board-hosted logs of Auth and the database are not scrubbed.** They now hold no address in
+  normal use, but an error can still quote a value it refused, and a refused e-mail can name its
+  address. They are kept 14 days, readable by the server's administrators.
+- **Hosted Supabase keeps its own logs and backups**, whose location and contents we cannot set;
+  Supabase's written answer is a go-live gate (`DEPLOYMENT.md` § 3.11).
+- **The operator's recording of access is a rule, not a lock** (the security review's "Not
+  fixed"), and board-hosted installs label the operator's entries « IP Lynx » whoever runs the
+  command line (a setting for the operator's name would fix it; no board-hosted install exists
+  yet).
+- **S6 (`?next=` keeps its query string)** is unchanged, and **S7 (Supabase's per-address limits
+  count the web server's address, hosted)** stays covered by the app's own throttle (round A).
+- **Security updates of the images** arrive only when IP Lynx updates the pinned versions; no
+  automation does it yet.
+- **Untested here:** hosted Supabase, Amazon SES and S3 themselves (the upload is tested against a
+  stand-in), the real AI API, iPads.
 
 ## Deviations from the plan
 
@@ -320,8 +408,8 @@ Migration `20261201090500_phase6_review_fixes.sql`, pgTAP `32_phase6_review_fixe
 
 | Kind                     |                      Count | What Phase 6 added                                                                                                                                                                                                                      |
 | ------------------------ | -------------------------: | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Unit (`pnpm test`)       |                      1,292 | scrubbing (vectors and real error texts), logs, retention dates, sample classes, invitation messages, CSV, audit filters and labels, the audit catalogue against every migration, navigation, CLI commands and their URLs, ESLint rules |
-| Database (pgTAP)         |                      1,690 | files 27 to 32: accounts, audit viewer, retention, onboarding and feedback, the security review, the final review's fixes                                                                                                               |
+| Unit (`pnpm test`)       |                      1,302 | scrubbing (vectors and real error texts), logs, retention dates, sample classes, invitation messages, CSV, audit filters and labels, the audit catalogue against every migration, navigation, CLI commands and their URLs, ESLint rules |
+| Database (pgTAP)         |                      1,715 | files 27 to 33: accounts, audit viewer, retention, onboarding and feedback, the security review, the final review's fixes, the whole audit export                                                                                       |
 | Integration (`test:int`) | 93 (and 3 after a restore) | staff accounts against the stack's real Auth, retention, health, the schema guard, restore re-dispatch, a plan refresh whose absence is deleted mid-build                                                                               |
 | Browser (Playwright)     |                        130 | « Conseil » (desktop and phone), « Direction », « Journal d'audit » (desktop and phone), onboarding (desktop and phone), feedback, legal pages, operations, the Docker smoke test, the demo                                             |
 
@@ -343,29 +431,42 @@ from both images, with a browser smoke test, a backup and the upgrade script).
   lawyer's review.
 - **The worker must run** for invitations, access changes reaching sign-in, plan refreshes and
   the nightly clean-up; publishing a plan does not need it.
+- **What the final review left** is under « What remains » above.
 
 ## Questions for Mike (we built on the recommended answers)
 
 1. **May pilot teachers use their real students' first names before their principal agrees?**
    We recommend no: invented names or initials, or the sample class, until a principal agrees in
-   writing, and alerts stay off. Before real names, have an Ontario privacy lawyer spend one or two
-   hours on the pilot terms, a short notice to parents, and our minimum retention periods
-   (including the 60-day deletion of substitutes' notes).
+   writing, and we suggest principals keep alerts off. Before real names, have an Ontario privacy
+   lawyer spend one or two hours on the pilot terms, a short notice to parents, and our minimum
+   retention periods (including the 60-day deletion of substitutes' notes).
 2. **Hosting accounts and cost.** Supabase Pro in Canada (about 25 USD a month), an AWS server in
    Montréal (about 24 USD), Amazon's e-mail service in Canada for sign-in codes, backup storage in
    Canada (about 1 USD), a domain, and a free uptime monitor that receives no personal data. We
-   recommend yes, under IP Lynx's AWS account, once the name is chosen. At the same time: send
-   Anthropic the zero-data-retention request, and ask Supabase in writing that backups and all
-   logs stay in Canada.
-3. **Who administers the pilot boards?** We recommend you, as « Administration du conseil » for each
-   pilot board; feedback comes to you. We need a privacy contact address (for example
+   recommend yes, under IP Lynx's AWS account, once the name is chosen. Two letters go with it, and
+   neither is sent yet: ask Supabase in writing where it keeps its own backups and logs, and ask
+   Anthropic for zero data retention (until then, Anthropic keeps what the AI receives for a limited
+   time). We prepare both; you send them.
+3. **Who administers each pilot board?** If a board asks, you can hold « Administration du
+   conseil » for it. You would then see the staff list (names and e-mail addresses), invitations,
+   feedback (students' first names are replaced), the AI totals per school, and the board's
+   administrative audit entries, including our own access entries; feedback comes to you. We
+   recommend that each board also names one of its own staff as administrator, so that someone at
+   the board checks our access entries. We also need a privacy contact address (for example
    `confidentialite@iplynx.ca`) and the name of the technical person who gets outage alerts (not
    you).
 4. **Retention defaults.** Audit log 2 years; substitute plans 1 year after their date; students'
-   first names 1 year after the school year (plans and lessons kept); AI usage 2 years; feedback 1
-   year; backups 30 days. We recommend yes, pending the lawyer. Boards can ask for longer through
-   us.
+   first names 1 year after the school year (units and lessons stay; that year's substitute plans
+   go with the names); AI usage 2 years; feedback 1 year; backups 30 days. We recommend yes,
+   pending the lawyer. Boards can ask for longer through us.
 5. **The name.** Still « Lynx École » for now; it is one setting once you choose.
+6. **Names the app doesn't know, in AI requests.** Your rule is that nothing personal leaves
+   Canada. The app replaces the names it knows (every student and staff member of the teacher's
+   schools), but it cannot recognize a name it has never seen, such as a parent's or a brother's
+   typed into a text. The teacher sees the exact text before it is sent and is asked to remove such
+   a name; every privacy text now says so, and teachers accept the terms with that sentence. We
+   recommend keeping it this way. Blocking every capitalized word the app doesn't know would stop
+   most ordinary texts (titles, places, characters in a story).
 
 Assumptions that need no answer now (marked **Assumption** in DECISIONS): office staff have no
 audit log; contributions are listed without per-teacher counts; invitation messages are sent from

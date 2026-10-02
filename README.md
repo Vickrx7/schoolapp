@@ -140,7 +140,7 @@ Production installs run with Docker Compose, which gives each service only its o
 | `ANTHROPIC_API_KEY`                                     | worker, eval           | Provider key; never commit it                                                                            |
 | `AI_MODEL`, `AI_EFFORT`                                 | worker, eval           | Default `claude-opus-5-5`, `medium`                                                                      |
 | `AI_JOB_RETENTION_DAYS`                                 | worker                 | Days before AI requests are deleted (30)                                                                 |
-| `AI_PRICE_INPUT_PER_MTOK`, `AI_PRICE_OUTPUT_PER_MTOK`   | worker                 | Optional prices for a model the app does not know                                                        |
+| `AI_PRICE_INPUT_PER_MTOK`, `AI_PRICE_OUTPUT_PER_MTOK`   | worker, admin          | Prices (USD per million tokens) for a model the app does not know; without them such a model is refused  |
 | `AI_FAKE_DELAY_MS`                                      | worker                 | Optional latency of the fake provider (800)                                                              |
 | `BULK_MAX_RUN_USD`                                      | worker, admin          | The most one bulk generation run may cost at its worst case, in USD (100; at most 1000)                  |
 | `WORKER_HEALTH_PORT`                                    | worker                 | Port of the worker's `/healthz` (0 = off; D-112)                                                         |
@@ -151,8 +151,10 @@ Production installs run with Docker Compose, which gives each service only its o
 Students are stored by first name or nickname only. Safety/medical alerts are encrypted by the server,
 readable only by the class team and the school's direction, hidden on screen until revealed, and every
 read is audited. Row Level Security protects every table; logged-out requests get nothing. AI is off
-per school until the principal turns it on, and nothing personal is sent to the AI provider: names
-become markers and personal details block the request ([`docs/ai-data-flow.md`](docs/ai-data-flow.md)).
+per school until the principal turns it on. Before anything goes to the AI provider, the names the
+app knows (the students and staff of the teacher's schools) become markers and the personal details
+it detects block the request; a name it does not know (a parent's) must be removed by the teacher,
+who sees the exact text first ([`docs/ai-data-flow.md`](docs/ai-data-flow.md)).
 Substitutes have no account: a one-day code, hashed at rest, rate-limited and revocable, opens only
 that day's plan, and every view of a plan, print and alert reveal is audited. Details in
 `DECISIONS.md` (D-012 to D-019, D-037 to D-046, D-049 to D-056) and in [`PRIVACY.md`](PRIVACY.md),
@@ -164,5 +166,6 @@ session ends (only class counts survive if the teacher asks), and answer keys ne
 device (D-084 to D-089). Opinions on resources are anonymous (D-093). The audit log is read
 through one database function: principals see their school's sensitive entries, board admins
 administrative ones only, and nobody a student's name (D-103). Retention runs nightly (D-105);
-logs are scrubbed of personal details and stay on the server 14 days (D-111). If information
-leaves Canada, it holds no personal data.
+the app's own logs are scrubbed of personal details and stay on the server 14 days (D-111, D-119).
+The rule we design to: information that leaves Canada must hold no personal data. `PRIVACY.md` § 6
+lists every place data goes, and the one limit (a name the app does not know, in AI text).
