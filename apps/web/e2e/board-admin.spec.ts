@@ -136,10 +136,14 @@ test('a board admin invites a teacher, then removes and restores her access', as
       /^sms:\?&body=/,
     );
     await expect(page.getByRole('button', { name: 'Copier le message' })).toBeVisible();
-    // The English message, for an English-speaking colleague.
-    await page.getByRole('button', { name: 'English', exact: true }).click();
-    await expect(message).toContainText('Hello Isabelle Pilote,');
+    // Axe on the settled page: right after a tap, a button's colour transition is still running
+    // and axe would measure a blend of its two colours.
     await expectAccessible(page);
+    // The English message, for an English-speaking colleague.
+    const english = page.getByRole('button', { name: 'English', exact: true });
+    await english.click();
+    await expect(english).toHaveAttribute('aria-pressed', 'true');
+    await expect(message).toContainText('Hello Isabelle Pilote,');
 
     // She signs in with the code; the board sees her as active.
     await signInNewTeacher(inviteePage, email);
