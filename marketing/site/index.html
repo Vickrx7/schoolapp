@@ -1249,6 +1249,49 @@
     font-weight: 700;
   }
 
+  /* ---------- Principals and boards: grouped cards under one status ---------- */
+  .group-h {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    align-items: center;
+    margin-top: clamp(36px, 6vw, 56px);
+    margin-bottom: 18px;
+  }
+  .group-h h3 {
+    font-size: 1.4rem;
+  }
+  .sec-shots + .group-h {
+    margin-top: 0;
+  }
+
+  /* ---------- Pilot: the first sign-in, then the form ---------- */
+  .first {
+    display: grid;
+    gap: clamp(28px, 5vw, 48px);
+  }
+  @media (min-width: 980px) {
+    .first {
+      grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+      align-items: start;
+    }
+  }
+  .first-shots {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+    min-width: 0;
+    max-width: 560px;
+  }
+  .shot-wide {
+    margin-top: clamp(28px, 5vw, 44px);
+    max-width: 52rem;
+  }
+  .pilot-h {
+    font-size: 1.4rem;
+  }
+
   /* ---------- Footer ---------- */
   .foot {
     max-width: 1160px;
@@ -1290,6 +1333,7 @@
       <a href="#ressources" data-en="Resources">Ressources</a>
       <a href="#mode-classe" data-en="Class mode">Mode classe</a>
       <a href="#vie-privee" data-en="Privacy">Vie privée</a>
+      <a href="#direction" data-en="Principals">Direction</a>
       <a href="#conseils" data-en="School boards">Conseils scolaires</a>
       <a href="#pilote" data-en="Pilot">Projet pilote</a>
     </nav>
@@ -1313,7 +1357,7 @@
       </p>
       <h1 id="hero-title">
         <span data-l="fr" lang="fr-CA"
-          >Malade à 6 h? <em>Deux touches</em>, et votre plan de suppléance est prêt.</span
+          >Malade à 6 h ? <em>Deux touches</em>, et votre plan de suppléance est prêt.</span
         >
         <span data-l="en" lang="en-CA" hidden
           >Sick at 6 a.m.? <em>Two taps</em>, and your substitute plan is ready.</span
@@ -1331,14 +1375,17 @@
         substitute a one-day code, and the substitute sends you a report at the end of the day.
       </p>
       <p data-l="fr" lang="fr-CA">
-        Aussi dans la version pilote :une <a href="#ressources">banque de ressources</a> en
-        français, avec des versions par niveau de langue, et un
-        <a href="#mode-classe">mode classe</a> pour le projecteur et les tablettes de la classe.
+        Aussi dans la version pilote : une <a href="#ressources">banque de ressources</a> en
+        français, avec des versions par niveau de langue, un
+        <a href="#mode-classe">mode classe</a> pour le projecteur et les tablettes de la classe, un
+        <a href="#direction">tableau de bord pour la direction</a> et un espace
+        <a href="#conseils">« Conseil »</a> pour l’administration du conseil scolaire.
       </p>
       <p data-l="en" lang="en-CA" hidden>
-        Also in the pilot build:a French <a href="#ressources">resource bank</a> with versions by
-        language level, and a <a href="#mode-classe">class mode</a> for the classroom projector and
-        tablets.
+        Also in the pilot build: a French <a href="#ressources">resource bank</a> with versions by
+        language level, a <a href="#mode-classe">class mode</a> for the classroom projector and
+        tablets, a <a href="#direction">dashboard for principals</a>, and a
+        <a href="#conseils">“Conseil”</a> area for the school board’s administrators.
       </p>
       <div class="actions">
         <a class="btn btn--go" href="#suppleance" data-en="See the steps">Voir les étapes</a>
@@ -1350,8 +1397,9 @@
         <span class="stamp stamp--ok" data-en="Available (pilot build)"
           >Disponible (version pilote)</span
         >
-        <span data-en="In development. Nothing is online yet; a free pilot is planned."
-          >En développement. Rien n’est encore en ligne; un projet pilote gratuit est prévu.</span
+        <span data-en="In development. Nothing is online yet, and the free pilot has not started."
+          >En développement. Rien n’est encore en ligne, et le projet pilote gratuit n’a pas
+          commencé.</span
         >
       </p>
     </div>
@@ -1369,7 +1417,7 @@
           id="board-d"
           data-en="The board reads, in French: Tuesday, October 6, Day 3, Grade 3, room 104. 8:45 Morning prayer and O Canada. 9:00 Français, Lesson 7. 9:45 Math, Lesson 5. 10:30 Nutrition break. 11:20 Phys. ed. with Mr. Leblanc in the gym. 1:30 School mass, replaces Science. 2:40 Faith moment. 3:20 End of day, buses. The phone shows Today, then the button I’m absent (tap 1), then Send (tap 2)."
         >
-          Au tableau : Mardi 6 octobre, Jour 3, 3e année, local 104. 8 h 45 Prière du matin et Ô
+          Au tableau : Mardi 6 octobre, Jour 3, 3e année, local 104. 8 h 45 Prière du matin et Ô
           Canada. 9 h 00 Français, leçon 7. 9 h 45 Mathématiques, leçon 5. 10 h 30 Pause santé.
           11 h 20 EPS avec M. Leblanc au gymnase. 13 h 30 Messe de l’école, remplace Sciences.
           14 h 40 Moment de foi. 15 h 20 Fin de la journée, autobus. Le téléphone montre
@@ -1381,7 +1429,7 @@
         <ellipse class="sv-dust" cx="470" cy="330" rx="210" ry="60" />
         <ellipse class="sv-dust" cx="120" cy="380" rx="90" ry="30" />
         <text x="46" y="72" lang="fr-CA">
-          <tspan class="sv-chalk" font-size="36">Mardi 6 octobre</tspan>
+          <tspan class="sv-chalk" font-size="36">Mardi 6 octobre</tspan>
           <tspan class="sv-chalk-y" font-size="30" dx="12">· Jour 3</tspan>
         </text>
         <text class="sv-chalk-2" x="676" y="68" font-size="24" text-anchor="end" lang="fr-CA">
@@ -1459,7 +1507,7 @@
           <rect class="sv-p-soft" x="8" y="170" width="136" height="130" rx="0" />
           <rect class="sv-screen" x="8" y="176" width="136" height="124" rx="12" />
           <text class="sv-p-ink" x="20" y="198" font-size="10.5" data-l="fr" lang="fr-CA">
-            Mardi 6 octobre
+            Mardi 6 octobre
           </text>
           <text class="sv-p-ink" x="20" y="198" font-size="10.5" data-l="en" lang="en-CA" hidden>
             Tuesday, October 6
@@ -1527,20 +1575,20 @@
         ></span
       >
       <p
-        data-en="Built and covered by automated tests in the development build. It is not a live service, and no teacher has used it in class yet."
+        data-en="Built and covered by automated tests in the development build, from the teacher’s day to the board’s screens. It is not a live service, and nobody has used it in a real school yet."
       >
-        Construit et couvert par des tests automatisés dans la version de développement. Ce n’est
-        pas un service en ligne, et aucun membre du personnel enseignant ne l’a encore utilisé en
-        classe.
+        Construit et couvert par des tests automatisés dans la version de développement, de la
+        journée de l’enseignant·e aux écrans du conseil. Ce n’est pas un service en ligne, et
+        personne ne l’a encore utilisé dans une vraie école.
       </p>
     </div>
     <div class="legend-item">
       <span><span class="stamp stamp--soon" data-en="Coming soon">Bientôt</span></span>
       <p
-        data-en="Planned for the next phase, before the pilot: hosting, onboarding, the principal’s dashboard and the audit log viewer. Not built yet."
+        data-en="To do before the pilot: putting the hosting in Canada online, and the checks that go with it. Not done yet."
       >
-        Prévu pour la prochaine phase, avant le projet pilote : hébergement, accueil, tableau de
-        bord de la direction et écran du journal d’audit. Pas encore construit.
+        À faire avant le projet pilote : la mise en ligne de l’hébergement au Canada, et les
+        vérifications qui l’accompagnent. Pas encore fait.
       </p>
     </div>
     <div class="legend-item">
@@ -1621,7 +1669,7 @@
           <div class="day-b">
             <h3 data-en="The day adjusts itself">La journée s’ajuste toute seule</h3>
             <p data-l="fr" lang="fr-CA">
-              Messe de l’école cet après-midi? Une fois l’événement inscrit au calendrier, les
+              Messe de l’école cet après-midi ? Une fois l’événement inscrit au calendrier, les
               messes, les rassemblements et les départs hâtifs remplacent, interrompent ou
               raccourcissent les périodes touchées. Journée pédagogique ou congé : pas d’école ce
               jour-là.
@@ -1657,7 +1705,7 @@
           height="1212"
           loading="lazy"
           decoding="async"
-          alt="Capture d’écran sur téléphone : « Aujourd’hui », mardi 29 septembre 2026. Entrée, prière du matin et O Canada de 8 h 45 à 8 h 55, puis Français (leçon 3, Prédire avant de lire) et Mathématiques (leçon 4, Comparer des nombres), toutes deux marquées Donnée. Le bouton « Je suis absent·e » est en haut, la barre de navigation en bas."
+          alt="Capture d’écran sur téléphone : « Aujourd’hui », mardi 29 septembre 2026. Entrée, prière du matin et O Canada de 8 h 45 à 8 h 55, puis Français (leçon 3, Prédire avant de lire) et Mathématiques (leçon 4, Comparer des nombres), toutes deux marquées Donnée. Le bouton « Je suis absent·e » est en haut, la barre de navigation en bas."
           data-alt-en="Phone screenshot: “Today”, Tuesday, September 29, 2026. Entry, morning prayer and O Canada from 8:45 to 8:55, then Français (lesson 3) and Math (lesson 4), both marked taught. The “Je suis absent·e” (I’m absent) button is at the top, the navigation bar at the bottom."
         />
         <figcaption
@@ -1701,7 +1749,7 @@
       <div class="grid-item">
         <h3 data-en="“Timetable”">« Horaire »</h3>
         <p data-l="fr" lang="fr-CA">
-          Un horaire hebdomadaire ou par jours en rotation (Jour 1 à N). Ajoutez une période à
+          Un horaire hebdomadaire ou par jours en rotation (Jour 1 à N). Ajoutez une période à
           plusieurs jours d’un coup et indiquez qui l’enseigne et où (enseignement en rotation,
           couverture du temps de planification). Les chevauchements sont signalés.
         </p>
@@ -1724,12 +1772,12 @@
       <div class="grid-item">
         <h3 data-en="“Profile”">« Profil »</h3>
         <p data-l="fr" lang="fr-CA">
-          Votre nom affiché, votre titre (Mme, M.) utilisé dans les plans, et la langue de
+          Votre nom affiché, votre titre (Mme, M. ou Mx) utilisé dans les plans, et la langue de
           l’interface : français ou anglais.
         </p>
         <p data-l="en" lang="en-CA" hidden>
-          Your display name, your title (Mme, M.) used in plans, and the interface language: French
-          or English.
+          Your display name, your title (Mme, M. or Mx) used in plans, and the interface language:
+          French or English.
         </p>
       </div>
       <div class="grid-item">
@@ -1879,13 +1927,13 @@
           </p>
           <h3 data-en="“The day’s plan”">« Plan de la journée »</h3>
           <p data-l="fr" lang="fr-CA">
-            Elle ouvre …/s et tape le code de 10 caractères tel qu’on le lui a lu au téléphone; il
+            Elle ouvre …/s et tape le code de 10 caractères tel qu’on le lui a lu au téléphone ; il
             ne fonctionne que ce jour-là, pendant les heures d’accès de l’école. Elle voit
             « Maintenant », « Ensuite », les étapes de chaque période, les groupes avec les prénoms,
             les contacts et la fin de journée, et peut télécharger le PDF. Les alertes de sécurité
             ou médicales s’affichent seulement si elle touche le bouton des alertes. Chaque
-            affichage est journalisé; elles disparaissent quand le téléphone est rangé et ne sont
-            jamais imprimées. Les écrans passent au français ou à l’anglais; le plan reste en
+            affichage est journalisé ; elles disparaissent quand le téléphone est rangé et ne sont
+            jamais imprimées. Les écrans passent au français ou à l’anglais ; le plan reste en
             français.
           </p>
           <p data-l="en" lang="en-CA" hidden>
@@ -1905,7 +1953,7 @@
           <h3 data-en="“End-of-day report”">« Suivi de la journée »</h3>
           <p data-l="fr" lang="fr-CA">
             Terminé, En partie ou Pas fait pour chaque leçon, les élèves absents, le comportement et
-            des notes pour vous. Le suivi s’enregistre au fil de la journée; à la fin, elle touche
+            des notes pour vous. Le suivi s’enregistre au fil de la journée ; à la fin, elle touche
             « Envoyer le suivi ».
           </p>
           <p data-l="en" lang="en-CA" hidden>
@@ -2020,7 +2068,7 @@
               </text>
               <text class="sv-s-code" x="36" y="244" font-size="16">…/s</text>
               <text class="sv-s-ink" x="36" y="274" font-size="12" data-l="fr" lang="fr-CA">
-                Valide le mardi 6 octobre de 5 h à 18 h
+                Valide le mardi 6 octobre de 5 h à 18 h
               </text>
               <text class="sv-s-ink" x="36" y="274" font-size="12" data-l="en" lang="en-CA" hidden>
                 Valid Tue., Oct. 6, 5 a.m. to 6 p.m.
@@ -2032,7 +2080,7 @@
                 Office: 555-0100
               </text>
               <text class="sv-s-hand" x="36" y="334" font-size="19" data-l="fr" lang="fr-CA">
-                Gardez ce code sur vous;
+                Gardez ce code sur vous ;
               </text>
               <text class="sv-s-hand" x="36" y="356" font-size="19" data-l="fr" lang="fr-CA">
                 ne le laissez pas sur le bureau.
@@ -2100,13 +2148,13 @@
           height="1212"
           loading="lazy"
           decoding="async"
-          alt="Capture d’écran sur téléphone : « Signaler une absence ». La date est déjà choisie (mercredi 30 sept.), « Journée complète » est sélectionnée, la note est facultative, « Ajouter un moment de foi » est coché, le résumé indique « Mercredi 30 septembre · 6 périodes à couvrir », et le bouton « Envoyer » est en bas."
+          alt="Capture d’écran sur téléphone : « Signaler une absence ». La date est déjà choisie (mercredi 30 sept.), « Journée complète » est sélectionnée, la note est facultative, « Ajouter un moment de foi » est coché, le résumé indique « Mercredi 30 septembre · 6 périodes à couvrir », et le bouton « Envoyer » est en bas."
           data-alt-en="Phone screenshot: the absence form. The date is already chosen (Wednesday, Sept. 30), “Journée complète” (full day) is selected, the note is optional, “Ajouter un moment de foi” (add a faith moment) is checked, the summary reads “Wednesday, September 30 · 6 periods to cover”, and the “Envoyer” (Send) button is at the bottom."
         />
         <figcaption>
           <span class="cap-t" data-en="6:05 a.m.">6 h 05</span>
           <span data-en="Tap 1 opened the form; tap 2 is “Envoyer” (Send)."
-            >La touche 1 a ouvert le formulaire; la touche 2, c’est « Envoyer ».</span
+            >La touche 1 a ouvert le formulaire ; la touche 2, c’est « Envoyer ».</span
           >
         </figcaption>
       </figure>
@@ -2117,7 +2165,7 @@
           height="800"
           loading="lazy"
           decoding="async"
-          alt="Capture d’écran sur ordinateur : le plan de suppléance, période de Français de 8 h 55 à 9 h 45. Leçon 4, « Trouver l’idée principale », son matériel et son déroulement minuté, puis la ressource de la banque « Le huard, oiseau des lacs », approuvée par le conseil, avec le guide et une version pour chaque groupe (G1 Débutant, G2 Intermédiaire, G3 Avancé)."
+          alt="Capture d’écran sur ordinateur : le plan de suppléance, période de Français de 8 h 55 à 9 h 45. Leçon 4, « Trouver l’idée principale », son matériel et son déroulement minuté, puis la ressource de la banque « Le huard, oiseau des lacs », approuvée par le conseil, avec le guide et une version pour chaque groupe (G1 Débutant, G2 Intermédiaire, G3 Avancé)."
           data-alt-en="Computer screenshot: the substitute plan, the Français period from 8:55 to 9:45. Lesson 4, “Trouver l’idée principale” (find the main idea), its materials and timed steps, then the resource from the bank “Le huard, oiseau des lacs”, approved by the board, with the guide and one version per group (G1 Débutant, G2 Intermédiaire, G3 Avancé)."
         />
         <figcaption>
@@ -2136,7 +2184,7 @@
           height="680"
           loading="lazy"
           decoding="async"
-          alt="Capture d’écran sur ordinateur : « Suppléances du jour » au secrétariat, vendredi 2 octobre. L’absence de Mme Tremblay en 3e année, le plan publié, « Voir le plan » et « Imprimer le plan (PDF) », 1 code actif avec 1 appareil connecté, et les boutons « Générer un code », « Couper le code », « Couper » et « Couper tout l’accès »."
+          alt="Capture d’écran sur ordinateur : « Suppléances du jour » au secrétariat, vendredi 2 octobre. L’absence de Mme Tremblay en 3e année, le plan publié, « Voir le plan » et « Imprimer le plan (PDF) », 1 code actif avec 1 appareil connecté, et les boutons « Générer un code », « Couper le code », « Couper » et « Couper tout l’accès »."
           data-alt-en="Computer screenshot: the office’s “Suppléances du jour” (today’s substitutes) board, Friday, October 2. Mme Tremblay’s Grade 3 absence, the released plan, “view” and “print” buttons, 1 active code with 1 device connected, and the buttons to generate a code, cut the code, cut the device and cut all access."
         />
         <figcaption>
@@ -2153,7 +2201,7 @@
           height="1212"
           loading="lazy"
           decoding="async"
-          alt="Capture d’écran sur téléphone : le plan de la personne suppléante, 3e année, vendredi 2 octobre, valide jusqu’à 18 h. Onglets Horaire, Élèves, Contacts et Fin de journée. Maintenant : 11 h 15 à 12 h 05, Enseignement religieux. Ensuite : 12 h 05 à 12 h 55, Sciences et technologie."
+          alt="Capture d’écran sur téléphone : le plan de la personne suppléante, 3e année, vendredi 2 octobre, valide jusqu’à 18 h. Onglets Horaire, Élèves, Contacts et Fin de journée. Maintenant : 11 h 15 à 12 h 05, Enseignement religieux. Ensuite : 12 h 05 à 12 h 55, Sciences et technologie."
           data-alt-en="Phone screenshot: the substitute’s plan, Grade 3, Friday, October 2, valid until 6 p.m. Tabs for timetable, students, contacts and end of day. Now: 11:15 to 12:05, Religious education. Next: 12:05 to 12:55, Science and technology."
         />
         <figcaption>
@@ -2168,7 +2216,7 @@
         data-en="Screenshots of the pilot build with the demo data. The school, the people and the code are fictional; no alert is shown."
       >
         Captures de la version pilote avec les données de démonstration. L’école, les personnes et
-        le code sont fictifs; aucune alerte n’est affichée.
+        le code sont fictifs ; aucune alerte n’est affichée.
       </p>
     </div>
 
@@ -2193,7 +2241,7 @@
         <p data-l="fr" lang="fr-CA">
           Produit sur demande et jamais conservé par l’application. Il ne contient jamais les
           alertes ni la « Gestion de classe ». Le secrétariat peut voir et imprimer le plan publié,
-          toujours sans ces deux sections; chaque consultation et chaque impression sont
+          toujours sans ces deux sections ; chaque consultation et chaque impression sont
           journalisées.
         </p>
         <p data-l="en" lang="en-CA" hidden>
@@ -2250,7 +2298,7 @@
         <p data-l="fr" lang="fr-CA">
           Dans une même classe, des élèves francophones côtoient des élèves qui apprennent encore le
           français, dont certains suivent les programmes ALF ou PANA. Collez un texte, choisissez
-          l’année d’études, la matière et de 2 à 6 niveaux, vérifiez exactement ce qui sera envoyé,
+          l’année d’études, la matière et de 2 à 6 niveaux, vérifiez exactement ce qui sera envoyé,
           puis recevez une version modifiable par niveau, avec la même intention d’apprentissage.
         </p>
         <p data-l="en" lang="en-CA" hidden>
@@ -2271,9 +2319,11 @@
             permet d’ajouter les vôtres.
           </li>
           <li>
-            Avant l’envoi, les noms connus deviennent des marqueurs (« Élève A »), et un courriel,
-            un numéro de téléphone, un numéro d’identification, une adresse ou la date de naissance
-            d’un enfant bloquent la demande. Une dernière vérification porte sur le texte exact.
+            Avant l’envoi, les prénoms des élèves et les noms du personnel de vos écoles deviennent
+            des marqueurs (« Élève A »). Un autre nom, celui d’un parent par exemple, n’est pas
+            reconnu : vous le retirez vous-même, puisque vous voyez et modifiez le texte exact avant
+            l’envoi. Un courriel, un numéro de téléphone, un numéro d’identification, une adresse ou
+            la date de naissance d’un enfant bloquent la demande.
           </li>
         </ul>
         <ul class="ticks" data-l="en" lang="en-CA" hidden>
@@ -2284,9 +2334,11 @@
             not an official ALF, PANA or Ministry scale. “Manage levels” lets you add your own.
           </li>
           <li>
-            Before sending, known names become markers (“Élève A”), and an email, a phone number, an
-            identification number, an address or a child’s birth date blocks the request. A last
-            check runs on the exact text.
+            Before sending, the first names of students and the names of staff at your schools
+            become markers (“Élève A”). Another name, a parent’s for example, is not recognized: you
+            remove it yourself, since you see and edit the exact text before it is sent. An email, a
+            phone number, an identification number, an address or a child’s birth date blocks the
+            request.
           </li>
         </ul>
         <p class="caveat" data-l="fr" lang="fr-CA">
@@ -2305,14 +2357,14 @@
         <div class="pv-screen">
           <div class="pv-bar">
             <span data-en="Check before sending">Vérifier avant d’envoyer</span>
-            <span data-en="Grade 3 · Français · 3 levels">3e année · Français · 3 niveaux</span>
+            <span data-en="Grade 3 · Français · 3 levels">3e année · Français · 3 niveaux</span>
           </div>
           <div class="pv-body">
             <p class="pv-k" data-en="What will be sent">Ce qui sera envoyé</p>
             <p class="pv-text" lang="fr-CA">
               Au bord du lac, <mark>Élève A</mark> et <mark>Élève B</mark> observent un huard.
               L’oiseau plonge, puis reparaît plus loin. <mark>Élève A</mark> compte les secondes :
-              vingt-deux!
+              vingt-deux !
             </p>
             <p class="pv-small" data-l="fr" lang="fr-CA">
               <mark>Surligné</mark> : noms remplacés par des marqueurs.
@@ -2374,7 +2426,7 @@
             height="800"
             loading="lazy"
             decoding="async"
-            alt="Capture d’écran sur ordinateur : la banque de ressources, recherche « huard ». Des filtres à gauche (année d’études, matière, type, catégorie) et 5 résultats. Le premier, « Le huard, oiseau des lacs », texte de lecture de 3e année, 30 min, porte les étiquettes « Approuvée par le conseil », « Suppléance » et « 4 niveaux »."
+            alt="Capture d’écran sur ordinateur : la banque de ressources, recherche « huard ». Des filtres à gauche (année d’études, matière, type, catégorie) et 5 résultats. Le premier, « Le huard, oiseau des lacs », texte de lecture de 3e année, 30 min, porte les étiquettes « Approuvée par le conseil », « Suppléance » et « 4 niveaux »."
             data-alt-en="Computer screenshot: the resource bank, a search for “huard” (loon). Filters on the left (grade, subject, type, category) and 5 results. The first, “Le huard, oiseau des lacs”, a Grade 3 reading passage, 30 min, is tagged approved by the board, for substitutes, and 4 levels."
           />
           <figcaption
@@ -2397,7 +2449,7 @@
           <figcaption
             data-en="One resource, five versions. Level names stay on screen; printed sheets carry a small number."
           >
-            Une ressource, cinq versions. Les noms des niveaux restent à l’écran; les feuilles
+            Une ressource, cinq versions. Les noms des niveaux restent à l’écran ; les feuilles
             imprimées portent un petit numéro.
           </figcaption>
         </figure>
@@ -2424,7 +2476,7 @@
         <p data-l="fr" lang="fr-CA">
           Année d’études, matière, domaine, puis attente, avec le nombre de ressources et
           d’approuvées. Six catégories : Enseigner, Pratiquer, Explorer, Évaluer, Jouer et Relier,
-          et 25 types de ressources, du texte de lecture à la pause active.
+          et 25 types de ressources, du texte de lecture à la pause active.
         </p>
         <p data-l="en" lang="en-CA" hidden>
           Grade, subject, strand, then expectation, with how many resources there are and how many
@@ -2450,7 +2502,7 @@
         <p data-l="fr" lang="fr-CA">
           « Ajouter à ma planification » joint la ressource à la prochaine leçon qui partage son
           attente (« Joindre à la leçon 4 »), ou l’ajoute comme nouvelle leçon. Le plan de
-          suppléance choisit une ressource révisée et adaptée à la suppléance; vous pouvez la
+          suppléance choisit une ressource révisée et adaptée à la suppléance ; vous pouvez la
           retirer.
         </p>
         <p data-l="en" lang="en-CA" hidden>
@@ -2475,14 +2527,14 @@
       <div class="grid-item">
         <h3 data-en="Approved by the board">Approuvée par le conseil</h3>
         <p data-l="fr" lang="fr-CA">
-          Les personnes que le conseil désigne approuvent les ressources proposées. Le contenu de
-          foi a sa propre révision avant d’être offert à tout le conseil. Personne n’approuve sa
-          propre ressource, et une ressource peut être retirée de la banque.
+          Les personnes que le conseil désigne dans « Conseil » approuvent les ressources proposées.
+          Le contenu de foi a sa propre révision avant d’être offert à tout le conseil. Personne
+          n’approuve sa propre ressource, et une ressource peut être retirée de la banque.
         </p>
         <p data-l="en" lang="en-CA" hidden>
-          People the board designates approve the resources put forward. Faith content gets its own
-          review before it reaches the whole board. Nobody approves their own resource, and a
-          resource can be withdrawn from the bank.
+          People the board designates in “Conseil” approve the resources put forward. Faith content
+          gets its own review before it reaches the whole board. Nobody approves their own resource,
+          and a resource can be withdrawn from the bank.
         </p>
       </div>
     </div>
@@ -2506,8 +2558,8 @@
         <div class="grid-item">
           <h3 data-en="“Your opinion”">« Votre avis »</h3>
           <p data-l="fr" lang="fr-CA">
-            De 1 à 5 étoiles, anonymes, sur les ressources approuvées par le conseil que vous n’avez
-            pas écrites. La moyenne s’affiche à partir de 5 avis de collègues. Chaque fiche dit
+            De 1 à 5 étoiles, anonymes, sur les ressources approuvées par le conseil que vous n’avez
+            pas écrites. La moyenne s’affiche à partir de 5 avis de collègues. Chaque fiche dit
             aussi dans combien d’unités la ressource est utilisée.
           </p>
           <p data-l="en" lang="en-CA" hidden>
@@ -2534,13 +2586,13 @@
           height="800"
           loading="lazy"
           decoding="async"
-          alt="Capture d’écran sur ordinateur : « Couverture du curriculum », Mathématiques, 3e année. 11 attentes sur 36 ont au moins une ressource approuvée : 25 sans ressource approuvée, 8 avec peu de ressources, 3 avec au moins 2. Des filtres et un seuil, puis le domaine A : l’attente A1, marquée « À vérifier », n’a aucune ressource approuvée, avec le lien « Créer une ressource »."
-          data-alt-en="Computer screenshot: “Curriculum coverage”, Math, Grade 3. 11 of 36 expectations have at least one approved resource: 25 with none, 8 with few, 3 with at least 2. Filters and a threshold, then strand A: expectation A1, marked “À vérifier” (to verify), has no approved resource, with a “Create a resource” link."
+          alt="Capture d’écran sur ordinateur : « Couverture du curriculum », Mathématiques, 3e année. 11 attentes sur 36 ont au moins une ressource approuvée : 25 sans ressource approuvée, 8 avec peu de ressources, 3 avec au moins 2. Des filtres et un seuil, puis le domaine A : l’attente A1, marquée « À vérifier », n’a aucune ressource approuvée, avec le lien « Créer une ressource »."
+          data-alt-en="Computer screenshot: “Curriculum coverage”, Math, Grade 3. 11 of 36 expectations have at least one approved resource: 25 with none, 8 with few, 3 with at least 2. Filters and a threshold, then strand A: expectation A1, marked “À vérifier” (to verify), has no approved resource, with a “Create a resource” link."
         />
         <figcaption
-          data-en="Grade 3 Math in the demo: 11 of 36 expectations have an approved resource. Every expectation is a paraphrase marked “À vérifier” (to verify)."
+          data-en="Grade 3 Math in the demo: 11 of 36 expectations have an approved resource. Every expectation is a paraphrase marked “À vérifier” (to verify)."
         >
-          Mathématiques de 3e année dans la démonstration : 11 attentes sur 36 ont une ressource
+          Mathématiques de 3e année dans la démonstration : 11 attentes sur 36 ont une ressource
           approuvée. Chaque attente est un résumé marqué « À vérifier ».
         </figcaption>
       </figure>
@@ -2550,12 +2602,12 @@
       <h3 data-en="What is in it today">Ce qu’elle contient aujourd’hui</h3>
       <ul data-l="fr" lang="fr-CA">
         <li>
-          78 ressources originales écrites pour la démonstration, « à valider en classe » : surtout
-          en 3e et en 5e année, en français, en mathématiques et en sciences et technologie. 19
-          d’entre elles ont une version pour chacun des quatre niveaux.
+          78 ressources originales écrites pour la démonstration, « à valider en classe » : surtout
+          en 3e et en 5e année, en français, en mathématiques et en sciences et technologie.
+          19 d’entre elles ont une version pour chacun des quatre niveaux.
         </li>
         <li>
-          Le curriculum intégré est un échantillon de 265 attentes et contenus d’apprentissage
+          Le curriculum intégré est un échantillon de 265 attentes et contenus d’apprentissage
           résumés (3e et 5e année, trois matières). Ce n’est pas le texte du Ministère : chaque
           entrée est marquée « À vérifier ».
         </li>
@@ -2608,7 +2660,7 @@
       </div>
       <p class="intro" data-l="fr" lang="fr-CA">
         Projetez une ressource pour toute la classe, ou faites jouer un quiz sur les tablettes et
-        les Chromebooks de la classe. Un projecteur suffit; les appareils sont facultatifs.
+        les Chromebooks de la classe. Un projecteur suffit ; les appareils sont facultatifs.
       </p>
       <p class="intro" data-l="en" lang="en-CA" hidden>
         Project a resource for the whole class, or play a quiz on the class tablets and Chromebooks.
@@ -2625,7 +2677,7 @@
             height="800"
             loading="lazy"
             decoding="async"
-            alt="Capture d’écran du projecteur : « Quiz : les nombres jusqu’à 1 000 ». La question « Quel nombre a 4 centaines, 0 dizaine et 7 unités? » en gros caractères, quatre choix avec une lettre, une forme et une couleur (A 47, B 407, C 470, D 740), le nombre de réponses sous chaque choix, « Bonne réponse » sur 407, « 2 bonnes réponses sur 3 » et l’explication."
+            alt="Capture d’écran du projecteur : « Quiz : les nombres jusqu’à 1 000 ». La question « Quel nombre a 4 centaines, 0 dizaine et 7 unités ? » en gros caractères, quatre choix avec une lettre, une forme et une couleur (A 47, B 407, C 470, D 740), le nombre de réponses sous chaque choix, « Bonne réponse » sur 407, « 2 bonnes réponses sur 3 » et l’explication."
             data-alt-en="Projector screenshot: “Quiz: numbers to 1,000”. The question “Which number has 4 hundreds, 0 tens and 7 ones?” in large type, four choices each with a letter, a shape and a colour (A 47, B 407, C 470, D 740), the number of answers under each choice, “Right answer” on 407, “2 right answers out of 3” and the explanation."
           />
           <figcaption
@@ -2659,7 +2711,7 @@
               <li>Aucun compte d’élève, aucun nom, aucun surnom à taper.</li>
               <li>Le corrigé n’atteint jamais l’appareil.</li>
               <li>
-                Après la réponse : « Bonne réponse! » ou « Pas cette fois. », jamais la bonne
+                Après la réponse : « Bonne réponse ! » ou « Pas cette fois. », jamais la bonne
                 réponse.
               </li>
               <li>Pas de son, de grandes zones tactiles, du texte d’au moins 22 px.</li>
@@ -2681,7 +2733,7 @@
         <p data-l="fr" lang="fr-CA">
           Plein écran, sans le menu de l’application. Un quiz ou un jeu : une question par écran, et
           « Afficher la réponse » ne montre que celle-là. Une pause active ou une expérience : une
-          étape par écran en gros caractères; une expérience commence par « Sécurité ». Une prière
+          étape par écran en gros caractères ; une expérience commence par « Sécurité ». Une prière
           ou une chanson s’affiche en gros caractères. Minuterie visuelle de 30 s, 1 min ou 2 min,
           sans son. Rien n’est enregistré, et aucun nom de niveau n’est projeté.
         </p>
@@ -2696,7 +2748,7 @@
       <div class="grid-item">
         <h3 data-en="“Start a quiz on devices”">« Lancer un quiz sur les appareils »</h3>
         <p data-l="fr" lang="fr-CA">
-          Choisissez la classe, « En équipes » (de 2 à 6) ou « Chacun pour soi », une minuterie si
+          Choisissez la classe, « En équipes » (de 2 à 6) ou « Chacun pour soi », une minuterie si
           vous en voulez une, et si la bonne réponse s’affiche après chaque question. Avant le
           départ, le texte qui ira aux appareils est vérifié contre les prénoms de la classe.
         </p>
@@ -2709,9 +2761,10 @@
       <div class="grid-item">
         <h3 data-en="“Join the game”">« Rejoignez la partie »</h3>
         <p data-l="fr" lang="fr-CA">
-          Le projecteur affiche l’adresse, un code de 6 caractères et le code QR du lien de la
-          classe. Une tablette qui a gardé le lien en favori se joint toute seule; les autres tapent
-          le code. Choix multiples, vrai ou faux, associations, mise en ordre et réponse courte.
+          Le projecteur affiche l’adresse, un code de 6 caractères et le code QR du lien de la
+          classe. Une tablette qui a gardé le lien en favori se joint toute seule ; les autres
+          tapent le code. Choix multiples, vrai ou faux, associations, mise en ordre et réponse
+          courte.
         </p>
         <p data-l="en" lang="en-CA" hidden>
           The projector shows the address, a 6-character code and the class link’s QR code. A tablet
@@ -2783,7 +2836,7 @@
         <h3 data-en="Alerts encrypted and hidden">Des alertes chiffrées et cachées</h3>
         <p data-l="fr" lang="fr-CA">
           Les alertes de sécurité ou médicales sont désactivées dans chaque école jusqu’à ce que la
-          direction les active, après approbation du conseil; ce changement est journalisé. Le
+          direction les active, après approbation du conseil ; ce changement est journalisé. Le
           serveur chiffre leur texte (AES-256-GCM) avant qu’il n’atteigne la base de données. Seules
           l’équipe de la classe, la direction et la personne suppléante du jour peuvent les
           afficher. Elles restent cachées jusqu’à ce qu’on les affiche, et chaque consultation est
@@ -2797,44 +2850,85 @@
           day’s substitute can reveal them. They stay hidden until someone taps, and every view is
           logged. The office never sees them on its own screens, and they are never printed.
         </p>
+        <p class="limit" data-l="fr" lang="fr-CA">
+          Pendant le projet pilote, nous recommandons de les laisser désactivées. Rien ne les
+          verrouille.
+        </p>
+        <p class="limit" data-l="en" lang="en-CA" hidden>
+          During the pilot, we recommend leaving them off. Nothing locks them off.
+        </p>
       </article>
       <article class="card">
-        <h3 data-en="AI off by default, known names replaced before sending">
-          IA désactivée par défaut, noms connus remplacés avant l’envoi
+        <h3
+          data-en="AI off by default, your students’ and colleagues’ names replaced before sending"
+        >
+          IA désactivée par défaut, noms de vos élèves et collègues remplacés avant l’envoi
         </h3>
         <p data-l="fr" lang="fr-CA">
           L’IA est désactivée dans chaque école jusqu’à ce que la direction l’active, et un conseil
-          peut l’interdire dans toutes ses écoles.Dans les écoles, seuls le personnel enseignant et
-          la direction l’utilisent, jamais les élèves, et le plan de suppléance et tout le reste
-          fonctionnent sans elle. Avant l’envoi, les noms connus deviennent des marqueurs; un
-          courriel, un numéro de téléphone, un numéro d’identification, une adresse ou la date de
-          naissance d’un enfant bloquent la demande (dans un plan de suppléance, le champ est plutôt
-          laissé de côté); une dernière vérification porte sur le texte exact. Vous voyez exactement
-          ce qui sera envoyé. Les appels partent seulement du serveur de traitement en arrière-plan,
-          jamais du navigateur. Le texte dépersonnalisé est traité par Claude, d’Anthropic,
-          possiblement hors du Canada, et conservé selon les conditions commerciales d’Anthropic :
-          aucune entente de non-conservation des données n’existe encore. De notre côté, les
-          demandes d’IA sont supprimées après 30 jours.
+          peut l’interdire dans toutes ses écoles. Seuls le personnel enseignant et la direction
+          l’utilisent, jamais les élèves, et le plan de suppléance et tout le reste fonctionnent
+          sans elle. Avant l’envoi, l’application remplace par des marqueurs (« Élève A »,
+          « Adulte B ») les noms qu’elle connaît : les élèves et le personnel des écoles où vous
+          travaillez. Un courriel, un numéro de téléphone, un numéro d’identification, une adresse
+          ou la date de naissance d’un enfant bloquent la demande (dans un plan de suppléance, le
+          champ est plutôt laissé de côté). Vous voyez le texte exact avant l’envoi, et vous le
+          modifiez au besoin ; une dernière vérification porte sur ce texte. Les appels partent
+          seulement du serveur de traitement en arrière-plan, jamais du navigateur. Le texte envoyé
+          est traité aux États-Unis par Claude, d’Anthropic, qui le conserve pendant une période
+          limitée selon ses conditions commerciales. De notre côté, les demandes d’IA sont effacées
+          après 30 jours.
         </p>
         <p data-l="en" lang="en-CA" hidden>
           AI is off in each school until the principal turns it on, and a board can forbid it in all
-          its schools.In schools, only teachers and principals use it, never students, and the
-          substitute plan and everything else work without it. Before sending, known names become
-          markers; an email, a phone number, an identification number, an address or a child’s birth
-          date blocks the request (in a substitute plan, that field is left out instead); a last
-          check runs on the exact text. You see exactly what will be sent. Calls go out only from
-          the background server, never from the browser. The de-identified text is processed by
-          Claude, by Anthropic, possibly outside Canada, and kept under Anthropic’s commercial
-          terms: there is no zero-data-retention agreement yet. On our side, AI requests are deleted
-          after 30 days.
+          its schools. Only teachers and principals use it, never students, and the substitute plan
+          and everything else work without it. Before sending, the app replaces the names it knows
+          with markers (“Élève A”, “Adulte B”): the students and staff of the schools where you
+          work. An email, a phone number, an identification number, an address or a child’s birth
+          date blocks the request (in a substitute plan, that field is left out instead). You see
+          the exact text before it is sent, and you edit it if needed; a last check runs on that
+          text. Calls go out only from the background server, never from the browser. The text sent
+          is processed in the United States by Claude, by Anthropic, which keeps it for a limited
+          time under its commercial terms. On our side, AI requests are deleted after 30 days.
         </p>
         <p class="limit" data-l="fr" lang="fr-CA">
-          Limite : un nom que l’application ne connaît pas (un parent, une sœur) ne peut être repéré
-          que par vous, à l’aperçu.
+          Limite : l’application ne reconnaît pas les autres noms tapés dans un texte, celui d’un
+          parent ou d’une sœur par exemple. Vous les retirez vous-même, à l’aperçu.
         </p>
         <p class="limit" data-l="en" lang="en-CA" hidden>
-          Limit: a name the app doesn’t know (a parent, a sibling) can only be caught by you, at the
-          preview.
+          Limit: the app does not recognize other names typed in a text, a parent’s or a sister’s
+          for example. You remove them yourself, at the preview.
+        </p>
+      </article>
+      <article class="card">
+        <h3 data-en="Erased every night">Effacé chaque nuit</h3>
+        <div class="stamps">
+          <span class="stamp stamp--ok" data-en="Available (pilot build)"
+            >Disponible (version pilote)</span
+          >
+        </div>
+        <p data-l="fr" lang="fr-CA">
+          Chaque nuit, l’application efface ce qui a dépassé sa durée de conservation : les prénoms
+          des élèves un an après la fin de l’année scolaire (vos unités et vos leçons restent), les
+          plans de suppléance un an après leur date, les demandes d’IA après 30 jours, les
+          commentaires après un an et le journal d’audit après deux ans. Vous voyez un avis 60 jours
+          avant que les prénoms d’une classe soient effacés. Une donnée effacée reste au plus
+          30 jours dans les copies de sauvegarde.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          Every night, the app erases what has passed its retention period: students’ first names a
+          year after the school year ends (your units and lessons stay), substitute plans a year
+          after their date, AI requests after 30 days, feedback after a year and the audit log after
+          two years. You see a notice 60 days before a class’s first names are erased. Erased data
+          stays in the backups for 30 days at most.
+        </p>
+        <p class="limit" data-l="fr" lang="fr-CA">
+          Ce sont les durées par défaut. Un conseil peut demander d’en changer certaines, sans
+          descendre sous un an ; ces minimums attendent l’avis d’un ou d’une juriste.
+        </p>
+        <p class="limit" data-l="en" lang="en-CA" hidden>
+          These are the defaults. A board can ask to change some of them, never below a year; these
+          minimums are waiting for a lawyer’s review.
         </p>
       </article>
       <article class="card">
@@ -2843,17 +2937,45 @@
           <span class="stamp stamp--soon" data-en="Coming soon">Bientôt</span>
         </div>
         <p data-l="fr" lang="fr-CA">
-          C’est une règle de conception : dans la version hébergée, la base de données, le serveur
-          web et le serveur de traitement en arrière-plan fonctionneront tous dans une région
-          infonuagique au Canada. Seul le texte dépersonnalisé envoyé à l’IA peut être traité
-          ailleurs. Rien n’est encore hébergé. Une installation sur les serveurs du conseil, avec
-          Docker, est aussi prévue.
+          Notre version hébergée est conçue pour le Canada : la base de données et le service de
+          connexion chez Supabase, dans la région infonuagique de Montréal, et le serveur de
+          l’application et nos copies de sauvegarde chiffrées à Montréal aussi. Rien n’est encore
+          hébergé. Avant la mise en ligne, Supabase doit nous confirmer par écrit où il garde ses
+          propres journaux et ses propres copies de sauvegarde.
         </p>
         <p data-l="en" lang="en-CA" hidden>
-          It is a design rule: in the hosted version, the database, the web server and the
-          background worker will all run in a Canadian cloud region. Only the de-identified text
-          sent to the AI may be processed elsewhere. Nothing is hosted yet. An install on the
-          board’s own servers, with Docker, is also planned.
+          Our hosted version is designed for Canada: the database and the sign-in service at
+          Supabase, in the Montréal cloud region, and the app’s server and our encrypted backups in
+          Montréal too. Nothing is hosted yet. Before it goes online, Supabase has to confirm in
+          writing where it keeps its own logs and backups.
+        </p>
+      </article>
+      <article class="card">
+        <h3 data-en="Or on your board’s servers">Ou sur les serveurs de votre conseil</h3>
+        <div class="stamps">
+          <span class="stamp stamp--ok" data-en="Available (pilot build)"
+            >Disponible (version pilote)</span
+          >
+        </div>
+        <p data-l="fr" lang="fr-CA">
+          Le service informatique du conseil peut installer la même application sur ses propres
+          serveurs, avec Docker. Les données restent alors chez vous, et IP Lynx n’y a accès que si
+          vous le permettez. Des tests automatisés démarrent cette installation à chaque changement.
+          Aucun conseil ne l’a encore installée.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          The board’s IT staff can install the same app on the board’s own servers, with Docker. The
+          data then stays with you, and IP Lynx has access only if you allow it. Automated tests
+          start this install on every change. No board has installed it yet.
+        </p>
+        <p class="limit" data-l="fr" lang="fr-CA">
+          Sur vos serveurs, un seul service externe reçoit du contenu : l’IA, si elle est activée,
+          avec le texte que vous envoyez. Les certificats et la surveillance de la disponibilité ne
+          reçoivent aucun renseignement personnel.
+        </p>
+        <p class="limit" data-l="en" lang="en-CA" hidden>
+          On your servers, only one outside service receives content: the AI, if it is on, with the
+          text you send. Certificates and uptime monitoring receive no personal information.
         </p>
       </article>
     </div>
@@ -2864,7 +2986,8 @@
         <ul data-l="fr" lang="fr-CA">
           <li>
             Comptes sur invitation seulement, sans mot de passe : un code à 6 chiffres envoyé par
-            courriel.
+            courriel. Après cinq codes erronés, le code est bloqué. Une session se termine après
+            7 jours, ou après 12 heures sans activité.
           </li>
           <li>
             Chaque personne ne voit que ce que son rôle permet. La sécurité au niveau des lignes
@@ -2872,15 +2995,13 @@
             vérifient.
           </li>
           <li>
-            On ne peut qu’ajouter des entrées au journal d’audit, qui ne contient jamais de noms
-            d’élèves ni de texte d’alerte.
+            Le journal d’audit ne se modifie pas dans l’application : les entrées s’ajoutent, et les
+            plus anciennes s’effacent après deux ans. Il ne contient jamais de prénom d’élève ni de
+            texte d’alerte.
           </li>
-          <li>Vous pouvez supprimer une classe et toutes ses données d’un coup.</li>
           <li>
-            Suppressions automatiques déjà intégrées à l’application : demandes d’IA après 30 jours,
-            codes de suppléance 30 jours après leur expiration, notes des suivis 60 jours après la
-            confirmation, réponses et appareils du mode classe à la fin de la séance, résultats de
-            classe gardés après un an.
+            Le bouton « Commentaires » enregistre votre message sans les prénoms des élèves de vos
+            écoles, remplacés par « [élève] ».
           </li>
           <li>
             Avant tout partage d’une ressource, une vérification signale les prénoms de vos élèves
@@ -2888,79 +3009,109 @@
           </li>
           <li>
             L’application ne garde aucun numéro de téléphone ni aucun courriel de personne
-            suppléante.
+            suppléante, et vous pouvez supprimer une classe et toutes ses données d’un coup.
+          </li>
+          <li>
+            Aucun outil d’analyse, aucune publicité, aucun script ni aucune police de tiers dans
+            l’application.
+          </li>
+          <li>
+            « Confidentialité et conditions », en français et en anglais, se lit avant même de se
+            connecter. Pour le bureau de la protection de la vie privée d’un conseil, un document
+            détaillé, en anglais, décrit les données, leur emplacement, qui y a accès, leur
+            conservation et la réponse à un incident.
           </li>
         </ul>
         <ul data-l="en" lang="en-CA" hidden>
-          <li>Invite-only accounts, no passwords: a 6-digit code sent by email.</li>
+          <li>
+            Invite-only accounts, no passwords: a 6-digit code sent by email. After five wrong
+            codes, the code is locked. A session ends after 7 days, or after 12 hours without
+            activity.
+          </li>
           <li>
             Each person sees only what their role allows. Row Level Security is on for every table,
             and automated tests check it.
           </li>
           <li>
-            Entries can only be added to the audit log, which never contains student names or alert
-            text.
+            The audit log cannot be changed in the app: entries are added, and the oldest are erased
+            after two years. It never contains a student’s first name or alert text.
           </li>
-          <li>You can delete a class and all its data at once.</li>
           <li>
-            Automatic deletions already built into the app: AI requests after 30 days, substitute
-            codes 30 days after they expire, report notes 60 days after confirmation, class-mode
-            answers and devices when the session ends, kept class results after a year.
+            The “Commentaires” (feedback) button stores your message without the first names of your
+            schools’ students, which become “[élève]”.
           </li>
           <li>
             Before a resource is shared, a check flags your students’ first names (it knows only
             your students). Opinions on resources are anonymous.
           </li>
-          <li>The app keeps no substitute’s phone number or email.</li>
+          <li>
+            The app keeps no substitute’s phone number or email, and you can delete a class and all
+            its data at once.
+          </li>
+          <li>No analytics, no advertising, no third-party scripts or fonts in the app.</li>
+          <li>
+            “Confidentialité et conditions” (privacy and terms), in French and English, can be read
+            before signing in. For a board’s privacy office, a detailed document in English
+            describes the data, where it is, who can see it, how long it is kept and how an incident
+            is handled.
+          </li>
         </ul>
       </div>
       <div>
         <h3 data-en="Not done yet">Pas encore fait</h3>
         <ul data-l="fr" lang="fr-CA">
           <li>
-            Durées de conservation proposées, pas encore automatisées : données de classe jusqu’à la
-            fin de l’année scolaire plus un an, journal d’audit deux ans, plans de suppléance un an.
+            La version hébergée n’est pas en ligne, et nous attendons la réponse écrite de Supabase
+            sur ses journaux et ses copies de sauvegarde.
           </li>
           <li>
-            Qui voit quoi selon le rôle : ces règles par défaut sont des hypothèses à confirmer avec
-            un conseil.
+            La demande de non-conservation des données n’est pas encore envoyée à Anthropic. D’ici
+            là, Anthropic conserve ce qu’il reçoit pendant une période limitée.
           </li>
           <li>
-            Le document complet sur la protection des renseignements personnels est prévu. Une
-            description détaillée de ce que voit l’IA existe déjà, en anglais pour l’instant.
-          </li>
-          <li>
-            Les sauvegardes et la surveillance des erreurs viendront avec l’hébergement. Les données
-            supprimées resteront dans les sauvegardes pendant leur durée de conservation.
+            Aucun ou aucune juriste n’a encore revu les conditions du projet pilote, l’avis de
+            confidentialité ni les durées minimales de conservation.
           </li>
           <li>
             Il n’y a encore aucune certification, aucune évaluation des facteurs relatifs à la vie
             privée (EFVP) et aucun test d’intrusion.
           </li>
           <li>
-            L’application ne chiffre elle-même que deux choses : le texte des alertes et les notes
-            des suivis.
+            Dans la base de données, l’application ne chiffre elle-même que deux choses : le texte
+            des alertes et les notes des suivis. Les copies de sauvegarde sont chiffrées en entier
+            avant de quitter le serveur.
+          </li>
+          <li>
+            IP Lynx s’engage à inscrire chaque accès aux données d’un conseil dans son journal
+            d’audit, avant d’y accéder. C’est une règle d’exploitation : la base de données ne peut
+            pas l’imposer.
           </li>
         </ul>
         <ul data-l="en" lang="en-CA" hidden>
           <li>
-            Proposed retention periods, not automated yet: class data until the end of the school
-            year plus one year, the audit log two years, substitute plans one year.
-          </li>
-          <li>Who sees what by role: these defaults are assumptions to confirm with a board.</li>
-          <li>
-            The full privacy document is planned. A detailed description of what the AI sees already
-            exists, in English for now.
+            The hosted version is not online, and we are waiting for Supabase’s written answer about
+            its logs and backups.
           </li>
           <li>
-            Backups and error monitoring will come with hosting. Deleted data will remain in backups
-            for as long as they are kept.
+            The zero-data-retention request has not been sent to Anthropic yet. Until then,
+            Anthropic keeps what it receives for a limited time.
+          </li>
+          <li>
+            No lawyer has reviewed the pilot terms, the privacy notice or the minimum retention
+            periods yet.
           </li>
           <li>
             There is no certification, no privacy impact assessment (PIA) and no penetration test
             yet.
           </li>
-          <li>The app itself encrypts only two things: alert text and report notes.</li>
+          <li>
+            In the database, the app itself encrypts only two things: alert text and report notes.
+            Backups are encrypted in full before they leave the server.
+          </li>
+          <li>
+            IP Lynx commits to recording every access to a board’s data in the board’s audit log
+            before it happens. It is an operating rule: the database cannot enforce it.
+          </li>
         </ul>
       </div>
     </div>
@@ -3013,7 +3164,7 @@
           </li>
         </ul>
         <p class="caveat" data-l="fr" lang="fr-CA">
-          Les textes de foi actuels (les 7 moments de foi et les réflexions de la banque) ont été
+          Les textes de foi actuels (les 7 moments de foi et les réflexions de la banque) ont été
           écrits pour la démonstration. Aucune autorité catholique ne les a encore révisés, et le
           conseil ne peut pas encore modifier les moments de foi à l’écran.
         </p>
@@ -3063,10 +3214,10 @@
           <li>
             Une interface en français canadien d’abord, avec les mots de l’école : journée
             pédagogique, pause santé, départ hâtif, personne suppléante. L’anglais est offert à qui
-            le veut; ce que le personnel tape reste tel quel.
+            le veut ; ce que le personnel tape reste tel quel.
           </li>
           <li>
-            Les années d’études et les matières de l’Ontario, les jours en rotation (Jour 1 à N) et
+            Les années d’études et les matières de l’Ontario, les jours en rotation (Jour 1 à N) et
             l’enseignement en rotation.
           </li>
           <li>
@@ -3100,12 +3251,163 @@
           encore de structure qui leur est propre.
         </p>
         <p class="caveat" data-l="en" lang="en-CA" hidden>
-          The curriculum included is a paraphrased sample for Grades 3 and 5, marked “À vérifier”
+          The curriculum included is a paraphrased sample for Grades 3 and 5, marked “À vérifier”
           (to verify), not the official text. Kindergarten (Maternelle and Jardin d’enfants) has no
           structure of its own yet.
         </p>
       </div>
     </div>
+  </section>
+
+  <!-- ================= PRINCIPALS ================= -->
+  <section class="sec" id="direction" aria-labelledby="dir-title">
+    <div class="sec-head">
+      <p class="hand" data-en="7:45 a.m., at the office">7 h 45, au bureau</p>
+      <h2 id="dir-title" data-en="For principals: the school’s day at a glance">
+        Pour la direction : la journée de l’école d’un coup d’œil
+      </h2>
+      <div class="stamps">
+        <span class="stamp stamp--ok" data-en="Available (pilot build)"
+          >Disponible (version pilote)</span
+        >
+        <span class="tag" data-en="“Direction” in the menu">« Direction » dans le menu</span>
+      </div>
+      <p class="intro" data-l="fr" lang="fr-CA">
+        Le « Tableau de bord de la direction » est la page d’accueil de la direction qui n’enseigne
+        pas : les absences du jour et leurs plans, les consultations d’alertes, les ressources
+        partagées et l’utilisation de l’IA de l’école. La planification du personnel enseignant n’y
+        paraît jamais.
+      </p>
+      <p class="intro" data-l="en" lang="en-CA" hidden>
+        The “Tableau de bord de la direction” (principal’s dashboard) is the landing page for
+        principals and vice-principals who don’t teach: today’s absences and their plans, alert
+        reads, shared resources and the school’s AI use. Teachers’ planning never appears there.
+      </p>
+    </div>
+
+    <div class="sec-shots">
+      <div class="shots-two">
+        <figure class="shot">
+          <img
+            src="assets/direction-desktop.webp"
+            width="1280"
+            height="800"
+            loading="lazy"
+            decoding="async"
+            alt="Capture d’écran sur ordinateur : « Tableau de bord de la direction », École élémentaire catholique Saint-Exemple. « Absences aujourd’hui » : Mme Tremblay, journée complète, 3e année, local 101, avec les étiquettes « Publié à 11 h 36 », « 1 code actif », « 1 appareil » et « Suivi reçu », et le prochain jour d’école plié en dessous. « Accès aux alertes (7 derniers jours) » : en tête, une personne suppléante a consulté les alertes de la 3e année, code émis par Julie Bergeron, avec l’étiquette « Code émis par le secrétariat » ; puis les entrées d’Isabelle Tremblay."
+            data-alt-en="Computer screenshot: the principal’s dashboard for École élémentaire catholique Saint-Exemple. “Absences aujourd’hui” (today’s absences): Mme Tremblay, full day, Grade 3, room 101, tagged released at 11:36, 1 active code, 1 device and report received, with the next school day folded below. “Accès aux alertes (7 derniers jours)” (alert reads, last 7 days): at the top, a substitute read the Grade 3 alerts with a code issued by Julie Bergeron, tagged “Code émis par le secrétariat” (code issued by the office); then Isabelle Tremblay’s entries."
+          />
+          <figcaption
+            data-en="The dashboard on the day of an absence: the plan released, one code, one device, the report received, and who read alerts."
+          >
+            Le tableau de bord un jour d’absence : le plan publié, un code, un appareil, le suivi
+            reçu, et qui a consulté des alertes.
+          </figcaption>
+        </figure>
+        <figure class="shot">
+          <img
+            src="assets/audit-desktop.webp"
+            width="1280"
+            height="800"
+            loading="lazy"
+            decoding="async"
+            alt="Capture d’écran sur ordinateur : « Journal d’audit » de l’École élémentaire catholique Saint-Exemple, avec le bouton « Télécharger (CSV) » et des filtres : période du 3 septembre au 2 octobre 2026, catégorie « Alertes », personne, type de personne. Première entrée : 2 oct. 2026 à 11 h 37, Personne suppléante, code émis par Julie Bergeron, avec l’étiquette « Code émis par le secrétariat », « Alertes de sécurité ou médicales consultées (1 alerte) », élément « 3e année – Mme Tremblay », et le lien « Historique de cet élément ». Les entrées suivantes sont celles d’Isabelle Tremblay."
+            data-alt-en="Computer screenshot: the “Journal d’audit” (audit log) of École élémentaire catholique Saint-Exemple, with a “Télécharger (CSV)” (download) button and filters: period from September 3 to October 2, 2026, category “Alertes” (alerts), person, type of person. First entry: Oct. 2, 2026 at 11:37, a substitute, code issued by Julie Bergeron, tagged “Code émis par le secrétariat” (code issued by the office), safety or medical alerts read (1 alert), item “3e année – Mme Tremblay”, and a link to the item’s history. The next entries are Isabelle Tremblay’s."
+          />
+          <figcaption
+            data-en="“Journal d’audit”, alerts only: the substitute read the alerts with a code the office issued. No student’s first name, no alert text."
+          >
+            « Journal d’audit », alertes seulement : la personne suppléante a consulté les alertes
+            avec un code émis par le secrétariat. Aucun prénom d’élève, aucun texte d’alerte.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="grid-item">
+        <h3 data-en="“Today’s absences”">« Absences aujourd’hui »</h3>
+        <p data-l="fr" lang="fr-CA">
+          Chaque absence avec l’état de son plan, les codes actifs, les appareils connectés et le
+          suivi de fin de journée. Le prochain jour d’école est plié en dessous.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          Each absence with its plan’s status, the active codes, the connected devices and the
+          end-of-day report. The next school day is folded below.
+        </p>
+      </div>
+      <div class="grid-item">
+        <h3 data-en="“Alert reads”">« Accès aux alertes »</h3>
+        <p data-l="fr" lang="fr-CA">
+          Les entrées du journal sur les alertes des 7 derniers jours : qui les a consultées ou
+          modifiées, la personne suppléante comprise, avec la personne qui a émis son code.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          The log’s alert entries from the last 7 days: who read or changed alerts, the substitute
+          included, with who issued the substitute’s code.
+        </p>
+      </div>
+      <div class="grid-item">
+        <h3 data-en="Resource bank contributions">Contributions à la banque</h3>
+        <p data-l="fr" lang="fr-CA">
+          Le nombre de ressources partagées avec l’école ou le conseil et approuvées par le conseil
+          depuis le début de l’année scolaire, et les 10 plus récentes. Aucun total par personne.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          How many resources were shared with the school or the board, and approved by the board,
+          since the school year began, and the 10 latest. No totals per person.
+        </p>
+      </div>
+      <div class="grid-item">
+        <h3 data-en="AI this month">L’IA ce mois-ci</h3>
+        <p data-l="fr" lang="fr-CA">
+          Les demandes et le coût de l’école pour le mois, par rapport à son budget. Jamais de
+          chiffre par personne.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          The school’s requests and cost for the month, against its budget. Never a figure per
+          person.
+        </p>
+      </div>
+      <div class="grid-item">
+        <h3 data-en="“Journal d’audit” (audit log)">« Journal d’audit »</h3>
+        <p data-l="fr" lang="fr-CA">
+          Les entrées de l’école (alertes, suppléance, comptes et paramètres), filtrées par période,
+          catégorie, personne ou type de personne, avec « Historique de cet élément ». L’étiquette
+          « Code émis par le secrétariat » signale le code d’une personne suppléante émis par le
+          secrétariat, car quiconque détient un code voit le plan du jour. « Télécharger (CSV) »
+          exporte au plus 10 000 entrées et un an par fichier, et chaque téléchargement est inscrit
+          au journal.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          The school’s entries (alerts, substitute days, accounts and settings), filtered by period,
+          category, person or type of person, with each item’s history. The badge “Code émis par le
+          secrétariat” marks a substitute’s code that the office issued, because whoever holds a
+          code sees the day’s plan. “Télécharger (CSV)” exports at most 10,000 entries and one year
+          per file, and every download is itself logged.
+        </p>
+      </div>
+      <div class="grid-item">
+        <h3 data-en="What the principal doesn’t see">Ce que la direction ne voit pas</h3>
+        <p data-l="fr" lang="fr-CA">
+          Les unités, les leçons et la progression du personnel enseignant, et aucun chiffre par
+          personne. Dans le journal, un élève paraît par sa classe (« Élève · 3e année »), jamais
+          par son prénom.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          Teachers’ units, lessons and progress, and no figures per person. In the log, a student
+          appears as their class (“Élève · 3e année”), never by first name.
+        </p>
+      </div>
+    </div>
+    <p class="caveat extras" data-l="fr" lang="fr-CA">
+      Pas encore essayé avec une vraie direction d’école. Le journal existe aussi sur un téléphone,
+      avec les filtres dans un panneau.
+    </p>
+    <p class="caveat extras" data-l="en" lang="en-CA" hidden>
+      Not tried yet with a real principal. The log also works on a phone, with the filters in a
+      panel.
+    </p>
   </section>
 
   <!-- ================= SCHOOL BOARDS ================= -->
@@ -3114,13 +3416,157 @@
       <p class="hand" data-en="To inform your decision">Pour éclairer votre décision</p>
       <h2 id="brd-title" data-en="For school boards">Pour les conseils scolaires</h2>
       <p class="intro" data-l="fr" lang="fr-CA">
-        Aucun conseil scolaire n’est client, et le projet pilote n’a pas commencé. Voici ce qui est
-        construit pour vous, et ce qui est prévu.
+        Aucun conseil scolaire n’est client, et le projet pilote n’a pas commencé. Voici ce que la
+        version pilote offre à l’administration d’un conseil, et ce qui reste à faire.
       </p>
       <p class="intro" data-l="en" lang="en-CA" hidden>
-        No school board is a client, and the pilot has not started. Here is what is built for you,
-        and what is planned.
+        No school board is a client, and the pilot has not started. Here is what the pilot build
+        offers a board’s administrators, and what is left to do.
       </p>
+    </div>
+
+    <div class="sec-shots">
+      <div class="shots-two">
+        <figure class="shot">
+          <img
+            src="assets/board-desktop.webp"
+            width="1280"
+            height="800"
+            loading="lazy"
+            decoding="async"
+            alt="Capture d’écran sur ordinateur : « Administration du conseil », Conseil scolaire catholique Démo, avec les onglets Aperçu, Personnel, Écoles, Années scolaires, Approbation des ressources, Utilisation de l’IA, Commentaires et Journal d’audit. « Pour bien démarrer le conseil », 5 sur 5 : année scolaire créée, coordonnées et heures des écoles, personnel invité, journées pédagogiques et congés au calendrier, personnes qui approuvent les ressources. « État du système » : « Tout fonctionne normalement », le service en arrière-plan actif, la première sauvegarde et le premier nettoyage prévus cette nuit. « Conservation des données » : journal d’audit 730 jours, plans de suppléance et absences 365 jours, prénoms des élèves 365 jours après la fin de l’année scolaire, utilisation de l’IA 730 jours."
+            data-alt-en="Computer screenshot: “Administration du conseil” (board administration), Conseil scolaire catholique Démo, with tabs for the overview, staff, schools, school years, resource approval, AI use, feedback and the audit log. A setup checklist, 5 of 5: school year, schools’ contact details and hours, staff invited, PA days and holidays, resource approvers. “État du système” (system status): everything normal, the background service running, the first backup and the first clean-up planned for tonight. “Conservation des données” (retention): audit log 730 days, substitute plans and absences 365 days, students’ first names 365 days after the school year ends, AI use 730 days."
+          />
+          <figcaption
+            data-en="“Administration du conseil”: what is left to set up, the system’s state and the retention periods. On this demo install, the first backup is planned for the night."
+          >
+            « Administration du conseil » : ce qui reste à régler, l’état du système et les durées
+            de conservation. Sur cette installation de démonstration, la première sauvegarde est
+            prévue pour la nuit.
+          </figcaption>
+        </figure>
+        <figure class="shot">
+          <img
+            src="assets/staff-desktop.webp"
+            width="1280"
+            height="800"
+            loading="lazy"
+            decoding="async"
+            alt="Capture d’écran sur ordinateur : « Personnel » du Conseil scolaire catholique Démo, avec le bouton « Inviter une personne ». Un tableau de sept personnes, avec leur nom, leur courriel (brouillé sur cette capture), leurs rôles et leur état : Chantal Demers, enseignante, « Aucune connexion » ; Isabelle Tremblay, enseignante, « Accès actif » ; Julie Bergeron, secrétariat, « Accès actif » ; Marc Gagnon et Paul Leblanc, enseignants, « Aucune connexion » ; Nathalie Roy, administration du conseil, et Sophie Lavoie, direction, « Accès actif »."
+            data-alt-en="Computer screenshot: “Personnel” (staff) of Conseil scolaire catholique Démo, with an “Inviter une personne” (invite someone) button. A table of seven people with their name, email (blurred in this capture), roles and status: Chantal Demers, teacher, never signed in; Isabelle Tremblay, teacher, active; Julie Bergeron, office, active; Marc Gagnon and Paul Leblanc, teachers, never signed in; Nathalie Roy, board administration, and Sophie Lavoie, principal, active."
+          />
+          <figcaption
+            data-en="“Personnel”: each person’s roles and access. Emails are blurred in this capture."
+          >
+            « Personnel » : les rôles et l’accès de chaque personne. Les courriels sont brouillés
+            sur cette capture.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="group-h">
+      <span class="stamp stamp--ok" data-en="Available (pilot build)"
+        >Disponible (version pilote)</span
+      >
+      <h3 data-en="Board administration, on screen">L’administration du conseil, à l’écran</h3>
+    </div>
+    <div class="brds">
+      <div class="brd">
+        <h3 data-en="“Personnel” (staff)">« Personnel »</h3>
+        <p data-l="fr" lang="fr-CA">
+          « Inviter une personne » crée le compte et vous donne un message, en français ou en
+          anglais, à envoyer de votre courriel ou par texto : nos serveurs n’envoient aucun courriel
+          d’invitation. Sur la page de chaque personne : ajouter ou retirer un rôle, « Retirer
+          l’accès » et « Rétablir l’accès ». La suppression d’un compte et de ses données reste à la
+          personne qui gère le serveur, à la demande écrite du conseil.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          “Inviter une personne” (invite someone) creates the account and gives you a message, in
+          French or English, to send from your own email or by text: our servers send no invitation
+          email. On each person’s page: add or remove a role, remove access and restore it. Deleting
+          an account and its data stays with whoever runs the server, at the board’s written
+          request.
+        </p>
+      </div>
+      <div class="brd">
+        <h3 data-en="Schools, school years, calendar">Écoles, années scolaires, calendrier</h3>
+        <p data-l="fr" lang="fr-CA">
+          Les coordonnées et les heures de chaque école (le téléphone du secrétariat paraît dans les
+          plans), l’IA activée ou non par école, les années scolaires, et les journées pédagogiques
+          et congés de tout le conseil. Les alertes restent une décision de la direction de chaque
+          école. D’autres choix (modules, niveaux de langue, heure de publication des plans) sont
+          appliqués par la personne qui gère le serveur, à votre demande.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          Each school’s contact details and hours (the office phone appears in plans), AI on or off
+          per school, the school years, and PA days and holidays for the whole board. Alerts remain
+          each school principal’s decision. Other choices (modules, language levels, the plans’
+          release time) are applied by whoever runs the server, at your request.
+        </p>
+      </div>
+      <div class="brd">
+        <h3 data-en="“Approbation des ressources” (resource approval)">
+          « Approbation des ressources »
+        </h3>
+        <p data-l="fr" lang="fr-CA">
+          Vous désignez les personnes qui approuvent les ressources pour tout le conseil, et celles
+          qui révisent le contenu de foi. Tant que personne n’est désigné, aucune ressource ne peut
+          être approuvée pour le conseil. La « Couverture du curriculum » montre les attentes encore
+          sans ressource approuvée.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          You designate the people who approve resources for the whole board, and those who review
+          faith content. Until someone is designated, no resource can be approved for the board.
+          “Curriculum coverage” shows the expectations that still have no approved resource.
+        </p>
+      </div>
+      <div class="brd">
+        <h3 data-en="“Utilisation de l’IA” (AI use)">« Utilisation de l’IA »</h3>
+        <p data-l="fr" lang="fr-CA">
+          Les demandes, les échecs et le coût du mois par école, avec un fichier CSV, sans aucun
+          chiffre par personne. Chaque personne a au plus 3 demandes à la fois et 40 par heure. Les
+          budgets mensuels sont réglés par la personne qui gère le serveur, et l’IA peut être
+          interdite dans toutes vos écoles. Aucun prix n’est encore fixé.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          The month’s requests, failures and cost per school, with a CSV file and no figures per
+          person. Each person has at most 3 requests at a time and 40 per hour. Monthly budgets are
+          set by whoever runs the server, and AI can be forbidden in all your schools. No pricing is
+          set yet.
+        </p>
+      </div>
+      <div class="brd">
+        <h3 data-en="“Commentaires reçus” (feedback)">« Commentaires reçus »</h3>
+        <p data-l="fr" lang="fr-CA">
+          Ce que le personnel envoie avec le bouton « Commentaires » : un problème, une idée ou une
+          question, à marquer « Lu » ou « Traité ». Les prénoms des élèves des écoles de la personne
+          sont remplacés par « [élève] » avant l’enregistrement, et son nom ne paraît que si elle
+          accepte d’être contactée.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          What staff send with the “Commentaires” button: a problem, an idea or a question, to mark
+          as read or done. The first names of the students at the sender’s schools become “[élève]”
+          before it is stored, and the sender’s name shows only if they agree to be contacted.
+        </p>
+      </div>
+      <div class="brd">
+        <h3 data-en="The board’s audit log">Le journal d’audit du conseil</h3>
+        <p data-l="fr" lang="fr-CA">
+          Les entrées administratives : rôles, accès, invitations, réglages, approbations de
+          ressources, et chaque accès d’IP Lynx avec sa raison. Jamais les absences, la suppléance
+          ni les consultations d’alertes, qui restent à la direction de chaque école.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          The administrative entries: roles, access, invitations, settings, resource approvals, and
+          each access by IP Lynx with its reason. Never absences, substitute days or alert reads,
+          which stay with each school’s principal.
+        </p>
+      </div>
+    </div>
+
+    <div class="group-h">
+      <h3 data-en="Your data and your server">Vos données et votre serveur</h3>
     </div>
     <div class="brds">
       <div class="brd">
@@ -3129,14 +3575,34 @@
             >Disponible (version pilote)</span
           ></span
         >
-        <h3 data-en="Modules, school by school">Des modules, école par école</h3>
+        <h3 data-en="Install on your servers">Installation sur vos serveurs</h3>
         <p data-l="fr" lang="fr-CA">
-          Les modules sous licence s’activent école par école. Pour l’instant, IP Lynx, qui exploite
-          la plateforme, les active avec ses outils d’administration.
+          Deux images Docker et Docker Compose, avec un Supabase minimal sur le même serveur. Une
+          sauvegarde chaque nuit, chiffrée avant de quitter le serveur et signée : la restauration
+          refuse un fichier modifié. Les sauvegardes peuvent aller vers votre stockage compatible
+          S3. Des points de contrôle de santé pour votre surveillance. Les tests automatisés
+          installent, sauvegardent et restaurent à chaque changement. Aucun conseil ne l’a encore
+          installée.
         </p>
         <p data-l="en" lang="en-CA" hidden>
-          Licensed modules are turned on school by school. For now, IP Lynx, which runs the
-          platform, turns them on with its admin tools.
+          Two Docker images and Docker Compose, with a minimal Supabase on the same server. A backup
+          every night, encrypted before it leaves the server and signed: the restore refuses a
+          changed file. Backups can go to your S3-compatible storage. Health checks for your
+          monitoring. Automated tests install, back up and restore on every change. No board has
+          installed it yet.
+        </p>
+      </div>
+      <div class="brd">
+        <span><span class="stamp stamp--soon" data-en="Coming soon">Bientôt</span></span>
+        <h3 data-en="Hosted in Canada by IP Lynx">Hébergement au Canada par IP Lynx</h3>
+        <p data-l="fr" lang="fr-CA">
+          Notre version hébergée est conçue pour le Canada : la base de données et la connexion chez
+          Supabase, le serveur de l’application et nos sauvegardes chiffrées, dans la région
+          infonuagique de Montréal. Elle n’est pas encore en ligne.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          Our hosted version is designed for Canada: the database and sign-in at Supabase, the app’s
+          server and our encrypted backups, in the Montréal cloud region. It is not online yet.
         </p>
       </div>
       <div class="brd">
@@ -3145,39 +3611,19 @@
             >Disponible (version pilote)</span
           ></span
         >
-        <h3 data-en="Your choices, applied for you">Vos choix, appliqués pour vous</h3>
+        <h3 data-en="Retention, every night">La conservation, chaque nuit</h3>
         <p data-l="fr" lang="fr-CA">
-          Interdire l’IA dans toutes vos écoles, mettre en commun le budget d’IA de vos écoles,
-          choisir vos niveaux de langue, l’année d’études où commence l’anglais et l’heure de
-          publication automatique des plans : ces choix sont enregistrés dans les données, et IP
-          Lynx les applique à la demande du conseil. Il n’y a pas encore d’écrans pour le conseil.
+          Ce qui a dépassé sa durée est effacé chaque nuit, conseil par conseil. Par défaut :
+          journal d’audit 2 ans, plans de suppléance 1 an, prénoms des élèves 1 an après l’année
+          scolaire, utilisation de l’IA 2 ans, commentaires 1 an, sauvegardes 30 jours. Le personnel
+          enseignant voit un avis 60 jours avant l’effacement des prénoms d’une classe. Ces minimums
+          attendent l’avis d’un ou d’une juriste.
         </p>
         <p data-l="en" lang="en-CA" hidden>
-          Forbidding AI in all your schools, pooling your schools’ AI budget, your language levels,
-          the grade where English starts and the plans’ automatic release time: these choices are
-          stored as data, and IP Lynx applies them at the board’s request. There are no board
-          screens yet.
-        </p>
-      </div>
-      <div class="brd">
-        <span class="stamps"
-          ><span class="stamp stamp--ok" data-en="Available (pilot build)"
-            >Disponible (version pilote)</span
-          ><span class="stamp stamp--soon" data-en="Viewer: coming soon"
-            >Écran : bientôt</span
-          ></span
-        >
-        <h3 data-en="An audit log">Un journal d’audit</h3>
-        <p data-l="fr" lang="fr-CA">
-          On ne peut qu’y ajouter des entrées, et il ne contient ni noms d’élèves ni texte d’alerte.
-          Chaque utilisation de code, consultation de plan, impression, affichage d’alerte et suivi
-          y est inscrit, avec la personne qui a émis le code, tout comme chaque étape de révision
-          des ressources. L’écran pour le consulter est prévu.
-        </p>
-        <p data-l="en" lang="en-CA" hidden>
-          Entries can only be added, and it holds no student names or alert text. Every code use,
-          plan view, print, alert reveal and report is recorded, with who issued the code, and so is
-          every review step of a resource. A screen to read it is planned.
+          What has passed its retention period is erased every night, board by board. By default:
+          audit log 2 years, substitute plans 1 year, students’ first names 1 year after the school
+          year, AI use 2 years, feedback 1 year, backups 30 days. Teachers see a notice 60 days
+          before a class’s first names are erased. These minimums are waiting for a lawyer’s review.
         </p>
       </div>
       <div class="brd">
@@ -3186,19 +3632,19 @@
             >Disponible (version pilote)</span
           ></span
         >
-        <h3 data-en="Each role sees its share">Chaque rôle voit ce qui lui revient</h3>
+        <h3 data-en="Sign-in and roles">Connexion et rôles</h3>
         <p data-l="fr" lang="fr-CA">
-          Une enseignante ou un enseignant ne voit que ses propres classes. La direction voit les
-          classes, les listes d’élèves et les alertes de son école, mais pas la planification ni la
-          progression du personnel enseignant. Le secrétariat ne voit pas les listes de classe, sauf
-          les prénoms d’un plan de suppléance publié, et c’est journalisé. L’administration du
-          conseil ne voit aucune donnée d’élève. Ce sont des hypothèses à confirmer avec un conseil.
+          Comptes sur invitation, sans mot de passe. Les tentatives de connexion sont limitées par
+          personne et par réseau. La direction ne voit pas la planification du personnel enseignant,
+          le secrétariat ne voit les prénoms que dans un plan de suppléance publié, et
+          l’administration du conseil ne voit aucune donnée d’élève. Ce sont des choix par défaut, à
+          confirmer avec un conseil.
         </p>
         <p data-l="en" lang="en-CA" hidden>
-          A teacher sees only their own classes. The principal or vice-principal sees the school’s
-          classes, class lists and alerts, but not teachers’ planning or progress. The office sees
-          no class lists, except first names in a released substitute plan, and that is logged. The
-          board admin sees no student data. These are assumptions to confirm with a board.
+          Invite-only accounts, no passwords. Sign-in attempts are limited per person and per
+          network. The principal does not see teachers’ planning, the office sees first names only
+          in a released substitute plan, and the board’s administrators see no student data. These
+          are defaults to confirm with a board.
         </p>
       </div>
       <div class="brd">
@@ -3207,36 +3653,17 @@
             >Disponible (version pilote)</span
           ></span
         >
-        <h3 data-en="Limits for AI">Des limites pour l’IA</h3>
+        <h3 data-en="At the end of a contract">À la fin d’un contrat</h3>
         <p data-l="fr" lang="fr-CA">
-          Désactivée par défaut dans chaque école. Un budget mensuel par école, qui peut être mis en
-          commun entre les écoles du conseil, et au plus 3 demandes à la fois et 40 par heure par
-          personne. La direction voit l’utilisation du mois. Aucun prix n’est encore fixé.
+          IP Lynx exporte tout le journal d’audit du conseil en un fichier CSV pour votre bureau de
+          la protection de la vie privée, puis supprime les données du conseil dans les 30 jours et
+          le confirme par écrit. La suppression est refusée sans cet export. Les sauvegardes qui
+          contiennent encore ces données expirent dans les 30 jours.
         </p>
         <p data-l="en" lang="en-CA" hidden>
-          Off by default in each school. A monthly budget per school, which can be pooled across the
-          board’s schools, and at most 3 requests at a time and 40 per hour per person. The
-          principal sees the month’s use. No pricing is set yet.
-        </p>
-      </div>
-      <div class="brd">
-        <span
-          ><span class="stamp stamp--ok" data-en="Available (pilot build)"
-            >Disponible (version pilote)</span
-          ></span
-        >
-        <h3 data-en="You choose who approves">Vous choisissez qui approuve</h3>
-        <p data-l="fr" lang="fr-CA">
-          Le conseil désigne les personnes qui approuvent les ressources pour tout le conseil, et
-          celles qui révisent le contenu de foi; IP Lynx les inscrit avec ses outils. Personne ne
-          révise tant que le conseil n’a nommé personne. La « Couverture du curriculum » montre les
-          attentes encore sans ressource approuvée.
-        </p>
-        <p data-l="en" lang="en-CA" hidden>
-          The board names the people who approve resources for the whole board, and those who review
-          faith content; IP Lynx records them with its tools. Nobody reviews until the board names
-          someone. “Curriculum coverage” shows the expectations that still have no approved
-          resource.
+          IP Lynx exports the board’s whole audit log as one CSV file for your privacy office, then
+          deletes the board’s data within 30 days and confirms it in writing. The deletion is
+          refused without that export. Backups that still hold the data expire within 30 days.
         </p>
       </div>
       <div class="brd">
@@ -3249,7 +3676,7 @@
         <p data-l="fr" lang="fr-CA">
           Deux outils d’exploitation, sans écran. La génération en lot prépare avec l’IA des
           brouillons pour une année, une matière et des types choisis, sans refaire ce que le
-          conseil a déjà, avec un plafond de coût par lot; les brouillons attendent vos personnes
+          conseil a déjà, avec un plafond de coût par lot ; les brouillons attendent vos personnes
           désignées. Un paquet de contenu exporte des ressources d’une installation et les importe
           dans une autre, après un essai à blanc. La génération en lot n’a fonctionné qu’avec un
           faux fournisseur.
@@ -3260,23 +3687,6 @@
           batch; the drafts wait for your designated reviewers. A content pack exports resources
           from one install and imports them into another, after a dry run. Batch generation has only
           run with a fake provider.
-        </p>
-      </div>
-      <div class="brd">
-        <span><span class="stamp stamp--soon" data-en="Coming soon">Bientôt</span></span>
-        <h3 data-en="Hosting in Canada, or on your servers">Hébergement au Canada, ou chez vous</h3>
-        <p data-l="fr" lang="fr-CA">
-          Deux options prévues : notre version hébergée, où la base de données, le serveur web et le
-          traitement en arrière-plan fonctionneront dans une région infonuagique au Canada, ou une
-          installation sur les serveurs du conseil avec Docker. Aucune n’existe encore.
-          L’architecture garde les deux possibles : tâches en arrière-plan dans Postgres seulement,
-          aucun service propre à un hébergeur, un serveur web autonome.
-        </p>
-        <p data-l="en" lang="en-CA" hidden>
-          Two planned options: our hosted version, where the database, web server and background
-          worker will run in a Canadian cloud region, or an install on the board’s own servers with
-          Docker. Neither exists yet. The architecture keeps both possible: background jobs in
-          Postgres only, no host-only services, a standalone web server build.
         </p>
       </div>
     </div>
@@ -3291,19 +3701,23 @@
     <div class="vision">
       <div class="stamps">
         <span class="stamp stamp--soon" data-en="Coming soon">Bientôt</span>
-        <h3 data-en="Next phase, before the pilot">Prochaine phase, avant le projet pilote</h3>
+        <h3 data-en="Before the pilot">Avant le projet pilote</h3>
       </div>
       <ul class="soon-list">
-        <li data-en="Hosting in Canada">Hébergement au Canada</li>
-        <li data-en="Docker install on the board’s servers">
-          Installation Docker sur les serveurs du conseil
+        <li data-en="Hosting in Canada goes online">Mise en ligne de l’hébergement au Canada</li>
+        <li data-en="Supabase’s written answer on its logs and backups">
+          Réponse écrite de Supabase sur ses journaux et ses sauvegardes
         </li>
-        <li data-en="Onboarding for pilot teachers">
-          Accueil du personnel enseignant du projet pilote
+        <li data-en="A restore drill and outside monitoring">
+          Essai de restauration et surveillance externe
         </li>
-        <li data-en="Principal’s dashboard">Tableau de bord de la direction</li>
-        <li data-en="Audit log viewer">Écran du journal d’audit</li>
-        <li data-en="Backups and monitoring">Sauvegardes et surveillance</li>
+        <li data-en="Zero-data-retention request to Anthropic">
+          Demande de non-conservation des données à Anthropic
+        </li>
+        <li data-en="A lawyer’s review of the pilot terms">
+          Revue des conditions du projet pilote par un ou une juriste
+        </li>
+        <li data-en="First run of the real AI model">Premier essai du vrai modèle d’IA</li>
       </ul>
     </div>
     <div class="vision">
@@ -3335,31 +3749,194 @@
 
   <!-- ================= PILOT ================= -->
   <section class="sec" id="pilote" aria-labelledby="pilot-title">
-    <div class="pilot">
+    <div class="sec-head">
+      <p class="hand" data-en="Your turn">À vous</p>
+      <h2 id="pilot-title" data-en="Try it with us">Faites l’essai avec nous</h2>
+      <div class="stamps">
+        <span class="stamp stamp--ok" data-en="Available (pilot build)"
+          >Disponible (version pilote)</span
+        >
+        <span class="tag" data-en="The first sign-in, as teachers will see it"
+          >La première connexion, comme la verra le personnel enseignant</span
+        >
+      </div>
+      <p class="intro" data-l="fr" lang="fr-CA">
+        Le projet pilote est gratuit et n’a pas encore commencé. Voici comment se passera votre
+        première connexion, puis ce que nous vous demanderons.
+      </p>
+      <p class="intro" data-l="en" lang="en-CA" hidden>
+        The pilot is free and has not started yet. Here is how your first sign-in will go, and then
+        what we will ask of you.
+      </p>
+    </div>
+
+    <div class="first">
+      <ol class="steps">
+        <li>
+          <p class="step-meta">
+            <span class="who" data-en="Board administration">Administration du conseil</span>
+          </p>
+          <h3 data-en="The invitation">L’invitation</h3>
+          <p data-l="fr" lang="fr-CA">
+            Une personne qui administre votre conseil vous invite dans « Conseil ». Son message vous
+            arrive par courriel ou par texto : l’adresse de l’application et le courriel à taper. Un
+            code à 6 chiffres arrive ensuite par courriel. Aucun mot de passe.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            Someone who administers your board invites you in “Conseil”. Their message reaches you
+            by email or text: the app’s address and the email to type. A 6-digit code then arrives
+            by email. No password.
+          </p>
+        </li>
+        <li>
+          <p class="step-meta">
+            <span class="who" data-en="You">Vous</span>
+          </p>
+          <h3 data-en="“Bienvenue” (welcome)">« Bienvenue »</h3>
+          <p data-l="fr" lang="fr-CA">
+            Cinq points simples sur la vie privée, un lien vers « Confidentialité et conditions »,
+            la case pour accepter les conditions du projet pilote, puis votre nom affiché et la
+            façon dont vos élèves vous appellent. Si les conditions changent, une bannière vous le
+            dit, sans vous bloquer.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            Five plain privacy points, a link to “Confidentialité et conditions” (privacy and
+            terms), the box to accept the pilot terms, then your display name and how your students
+            address you. If the terms change, a banner tells you, without blocking you.
+          </p>
+        </li>
+        <li>
+          <p class="step-meta">
+            <span class="who" data-en="You">Vous</span>
+          </p>
+          <h3 data-en="“Pour bien commencer” (getting started)">« Pour bien commencer »</h3>
+          <p data-l="fr" lang="fr-CA">
+            Quatre étapes, comptées dans vos vraies classes : créer la classe, ajouter les élèves
+            (prénoms seulement), entrer l’horaire, créer une unité et ses leçons. Ou « Essayer avec
+            une classe exemple », en 3e ou en 5e année : 20 prénoms inventés, un horaire, une unité
+            de Français et une de Mathématiques de 8 leçons. Marquée « Exemple », elle n’est jamais
+            incluse dans un plan de suppléance et s’efface après 60 jours.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            Four steps, counted in your real classes: create the class, add the students (first
+            names only), enter the timetable, create a unit and its lessons. Or try a sample class,
+            Grade 3 or Grade 5: 20 invented first names, a timetable, and a Français and a Math unit
+            of 8 lessons. Marked “Exemple”, it is never part of a substitute plan and is erased
+            after 60 days.
+          </p>
+        </li>
+        <li>
+          <p class="step-meta">
+            <span class="who" data-en="You">Vous</span>
+          </p>
+          <h3 data-en="“Commentaires” (feedback)">« Commentaires »</h3>
+          <p data-l="fr" lang="fr-CA">
+            En haut de chaque page : un problème, une idée ou une question, lu par l’administration
+            du conseil (IP Lynx peut avoir ce rôle pendant le projet pilote). Les prénoms des élèves
+            de vos écoles sont remplacés par « [élève] » avant l’enregistrement. Au bas de chaque
+            page, « Nouveautés » dit ce qui a changé d’une version à l’autre.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            At the top of every page: a problem, an idea or a question, read by the board’s
+            administrators (IP Lynx may hold that role during the pilot). The first names of your
+            schools’ students become “[élève]” before it is stored. At the bottom of every page,
+            “Nouveautés” (what’s new) says what changed from one version to the next.
+          </p>
+        </li>
+      </ol>
+      <div class="first-shots">
+        <figure class="shot shot--phone">
+          <img
+            src="assets/start-phone.webp"
+            width="560"
+            height="1212"
+            loading="lazy"
+            decoding="async"
+            alt="Capture d’écran sur téléphone : « Aujourd’hui », vendredi 2 octobre 2026, pour une enseignante qui vient de se connecter. La carte « Pour bien commencer », 0 sur 4 : Créer votre classe, Ajouter vos élèves (prénoms seulement), Entrer votre horaire, Créer une unité et ses leçons, chacune « À faire ». En dessous, le lien « Votre classe exemple : Classe exemple (3e année) » et la mention qu’elle ne compte pas dans les étapes, n’est jamais incluse dans un plan de suppléance et sera supprimée le 1er décembre 2026."
+            data-alt-en="Phone screenshot: “Aujourd’hui” (today), Friday, October 2, 2026, for a teacher who has just signed in. The “Pour bien commencer” (getting started) card, 0 of 4: create your class, add your students (first names only), enter your timetable, create a unit and its lessons, each to do. Below, the link to her sample class, Grade 3, and the note that it does not count in the steps, is never part of a substitute plan and will be deleted on December 1, 2026."
+          />
+          <figcaption data-en="“Pour bien commencer” on “Aujourd’hui”, with the sample class.">
+            « Pour bien commencer » sur « Aujourd’hui », avec la classe exemple.
+          </figcaption>
+        </figure>
+        <figure class="shot shot--phone">
+          <img
+            src="assets/sample-class-phone.webp"
+            width="560"
+            height="1212"
+            loading="lazy"
+            decoding="async"
+            alt="Capture d’écran sur téléphone : « Classe exemple (3e année) », marquée « Exemple ». Un encadré : « Classe exemple : elle n’est jamais incluse dans un plan de suppléance et sera supprimée le 1er décembre 2026. », avec le bouton « Supprimer la classe exemple ». L’onglet Planification montre l’unité de Français « Lire et raconter une histoire », 3 leçons données sur 8, et l’unité de Mathématiques « Additionner et soustraire jusqu’à 1 000 »."
+            data-alt-en="Phone screenshot: “Classe exemple (3e année)” (sample class, Grade 3), marked “Exemple”. A box says it is never part of a substitute plan and will be deleted on December 1, 2026, with a button to delete the sample class. The planning tab shows the Français unit “Lire et raconter une histoire”, 3 of 8 lessons taught, and the Math unit “Additionner et soustraire jusqu’à 1 000”."
+          />
+          <figcaption data-en="The sample class: invented names, a timetable and two units.">
+            La classe exemple : des prénoms inventés, un horaire et deux unités.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <figure class="shot shot-wide">
+      <img
+        src="assets/feedback-desktop.webp"
+        width="1280"
+        height="560"
+        loading="lazy"
+        decoding="async"
+        alt="Capture d’écran sur ordinateur : « Commentaires reçus » du Conseil scolaire catholique Démo, avec les filtres Tous, Nouveau, Lu et Traité. Un commentaire marqué « Idée » et « Nouveau », du 2 oct. 2026 à 11 h 37 : « [élève] aimerait voir le quiz sur sa tablette après la séance. Est-ce possible de le laisser ouvert jusqu’à la récréation ? », la mention « Ne souhaite pas être contacté·e », l’école, la page, l’appareil et la version, et les boutons « Marquer comme lu » et « Marquer comme traité »."
+        data-alt-en="Computer screenshot: “Commentaires reçus” (feedback received) of Conseil scolaire catholique Démo, with filters for all, new, read and done. One comment marked as an idea and new, Oct. 2, 2026 at 11:37, in French: “[élève] would like to see the quiz on the tablet after the session. Could it stay open until recess?”, a note that the sender does not wish to be contacted, the school, page, device and version, and buttons to mark it read or done."
+      />
+      <figcaption
+        data-en="The teacher wrote “Samuel aimerait voir le quiz…”. The board’s administrator reads “[élève] aimerait voir le quiz…”."
+      >
+        L’enseignante a écrit « Samuel aimerait voir le quiz… ». L’administration du conseil lit
+        « [élève] aimerait voir le quiz… ».
+      </figcaption>
+    </figure>
+    <p class="caveat extras" data-l="fr" lang="fr-CA">
+      Pendant le projet pilote, utilisez des prénoms inventés ou des initiales, ou la classe
+      exemple, tant que votre direction n’a pas donné son accord par écrit. Les conditions que vous
+      acceptez à la première connexion le disent.
+    </p>
+    <p class="caveat extras" data-l="en" lang="en-CA" hidden>
+      During the pilot, use invented first names or initials, or the sample class, until your
+      principal agrees in writing. The terms you accept at your first sign-in say so.
+    </p>
+
+    <div class="pilot extras">
       <div class="prose">
-        <p class="hand" data-en="Your turn">À vous</p>
-        <h2 id="pilot-title" data-en="Try it with us">Faites l’essai avec nous</h2>
+        <h3 class="pilot-h" data-en="What we will ask of you">Ce que nous vous demanderons</h3>
         <p data-l="fr" lang="fr-CA">
-          Le projet pilote est gratuit et n’a pas encore commencé. Nous cherchons des membres du
-          personnel enseignant d’écoles élémentaires catholiques de langue française de l’Ontario,
-          et des personnes des conseils scolaires qui veulent suivre le projet.
+          Nous cherchons des membres du personnel enseignant d’écoles élémentaires catholiques de
+          langue française de l’Ontario, des directions d’école, et des personnes des conseils
+          scolaires qui veulent suivre le projet. Avant le début, il reste à mettre l’hébergement en
+          ligne et à faire revoir les conditions par un ou une juriste.
         </p>
         <p data-l="en" lang="en-CA" hidden>
-          The pilot is free and has not started yet. We are looking for teachers in Ontario’s
-          French-language Catholic elementary schools, and for school-board staff who want to follow
-          the project.
+          We are looking for teachers in Ontario’s French-language Catholic elementary schools,
+          principals, and school-board staff who want to follow the project. Before it starts, the
+          hosting has to go online and a lawyer has to review the terms.
         </p>
         <p data-l="fr" lang="fr-CA">
-          Nous vous demanderons d’essayer la plateforme sur votre propre téléphone, et le mode
-          classe avec le projecteur et les tablettes de votre classe si vous le voulez, puis de nous
-          dire ce qui manque. Par exemple : combien de temps faut-il pour signaler une absence à
-          6 h, au saut du lit? Notre objectif : moins de 60 secondes. Ce n’est pas encore mesuré.
+          Essayez la plateforme sur votre propre téléphone, et le mode classe avec le projecteur et
+          les tablettes de votre classe si vous le voulez, puis dites-nous ce qui manque. Combien de
+          temps faut-il pour signaler une absence à 6 h, au saut du lit ? Notre objectif : moins de
+          60 secondes. Et entre l’invitation et votre première connexion ? Notre objectif : moins de
+          3 minutes. Rien de cela n’est encore mesuré.
         </p>
         <p data-l="en" lang="en-CA" hidden>
-          We will ask you to try the platform on your own phone, and class mode with your
-          classroom’s projector and tablets if you want, then tell us what is missing. For example:
-          how long does it take to report an absence at 6 a.m., just out of bed? Our goal is under
-          60 seconds. It has not been measured yet.
+          Try the platform on your own phone, and class mode with your classroom’s projector and
+          tablets if you want, then tell us what is missing. How long does it take to report an
+          absence at 6 a.m., just out of bed? Our goal is under 60 seconds. And from the invitation
+          to your first sign-in? Our goal is under 3 minutes. None of this has been measured yet.
+        </p>
+        <p data-l="fr" lang="fr-CA">
+          Pour la direction : le tableau de bord vous est-il utile à 7 h 45 ? Quelque chose y
+          ressemble-t-il à de la surveillance du personnel ?
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          For principals: is the dashboard useful at 7:45 a.m.? Does anything there feel like
+          monitoring teachers?
         </p>
       </div>
 
@@ -3369,7 +3946,7 @@
             >Ce formulaire n’envoie rien pour l’instant.</strong
           >
           <span data-l="fr" lang="fr-CA"
-            >Il prépare votre message; vous nous l’envoyez ensuite vous-même, à
+            >Il prépare votre message ; vous nous l’envoyez ensuite vous-même, à
             <span class="email-inline" data-contact-email>pilote@iplynx.ca</span>. N’y mettez aucun
             renseignement sur vos élèves.</span
           >
@@ -3494,14 +4071,14 @@
     « <span data-app-name>Lynx École</span> » est un nom de travail qui peut changer. Une plateforme
     d’IP Lynx Inc., intégrateur ontarien en sécurité et en télécommunications. En développement :
     aucun service en ligne, aucun conseil scolaire client, aucun témoignage. Les exemples et les
-    prénoms de cette page sont fictifs, comme les données des captures d’écran. État au 1er octobre
-    2026.
+    prénoms de cette page sont fictifs, comme les données des captures d’écran (les courriels y sont
+    brouillés). État au 2 octobre 2026.
   </p>
   <p data-l="en" lang="en-CA" hidden>
     “<span data-app-name>Lynx École</span>” is a working name that may change. A platform by IP Lynx
     Inc., an Ontario security and telecom integrator. In development: no live service, no
-    school-board clients, no testimonials.The examples and first names on this page are fictional,
-    and so is the data in the screenshots. Status as of October 1, 2026.
+    school-board clients, no testimonials. The examples and first names on this page are fictional,
+    and so is the data in the screenshots (emails are blurred). Status as of October 2, 2026.
   </p>
 </footer>
 
@@ -3564,7 +4141,7 @@
         emailBad: 'Cette adresse courriel semble incomplète. Exemple : prenom.nom@conseil.ca',
         roleMissing: 'Choisissez votre rôle.',
         thanksTitle: function (first) {
-          return 'Merci, ' + first + '! Votre demande est prête.';
+          return 'Merci, ' + first + ' ! Votre demande est prête.';
         },
         thanksBody:
           'Rien n’a été envoyé. Copiez le message ci-dessous et envoyez-le à cette adresse :',

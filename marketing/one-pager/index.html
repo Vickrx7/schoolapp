@@ -384,7 +384,7 @@
       </p>
       <h1 id="fr-title">Fiche d’information pour les conseils scolaires</h1>
       <p class="meta">
-        État au 1er octobre 2026 · Version pilote, rien n’est encore en ligne · IP Lynx Inc.,
+        État au 2 octobre 2026 · Version pilote, rien n’est encore en ligne · IP Lynx Inc.,
         intégrateur ontarien en sécurité et en télécommunications
       </p>
       <p class="jump"><a href="#en" lang="en-CA">English version below</a></p>
@@ -395,14 +395,16 @@
       <ul>
         <li>
           Une plateforme pour les écoles élémentaires catholiques de langue française de l’Ontario,
-          pensée d’abord pour le personnel enseignant.
+          pensée d’abord pour le personnel enseignant, avec des écrans pour la direction et
+          l’administration du conseil.
         </li>
         <li>
-          Tout ce qui suit est « Disponible (version pilote) » : construit et couvert par des tests
-          automatisés, mais pas encore hébergé, et pas encore utilisé en classe.
+          Tout ce qui suit est « Disponible (version pilote) », sauf ce qui est marqué « Bientôt » :
+          construit et couvert par des tests automatisés, mais pas encore hébergé, et pas encore
+          utilisé dans une vraie école.
         </li>
         <li>
-          Aucun conseil scolaire n’est client; le projet pilote gratuit n’a pas commencé. « Lynx
+          Aucun conseil scolaire n’est client ; le projet pilote gratuit n’a pas commencé. « Lynx
           École » est un nom de travail.
         </li>
       </ul>
@@ -412,50 +414,53 @@
       <h2 id="fr-today">Ce que fait la version pilote</h2>
       <div class="rows">
         <div class="row">
-          <p>La journée</p>
+          <p>Personnel enseignant</p>
           <p>
-            « Aujourd’hui » : les périodes, le calendrier appliqué (messes, journées pédagogiques)
-            et la prochaine leçon de chaque matière. « Leçon donnée » en une touche. Horaire
-            hebdomadaire ou par jours en rotation.
+            « Aujourd’hui » et la prochaine leçon de chaque matière. « Je suis absent·e », puis
+            « Envoyer » : le plan de suppléance part de là où chaque classe est rendue, complet sans
+            IA. Banque de ressources par niveau de langue, mode classe au projecteur et sur les
+            tablettes. IA facultative, désactivée par défaut.
           </p>
         </div>
         <div class="row">
-          <p>Plan de suppléance</p>
+          <p>Suppléance</p>
           <p>
-            « Je suis absent·e », puis « Envoyer » : le plan part de là où chaque classe est rendue,
-            complet sans IA. Le secrétariat remet un code d’une journée; la personne suppléante,
-            sans compte, voit « Maintenant » et « Ensuite » et envoie son suivi.
+            Le secrétariat remet un code d’une journée ; la personne suppléante, sans compte, voit
+            « Maintenant » et « Ensuite » et envoie son suivi. Chaque consultation est journalisée,
+            avec la personne qui a émis le code.
           </p>
         </div>
         <div class="row">
-          <p>Banque de ressources</p>
+          <p>Direction</p>
           <p>
-            Recherche en français et par attente, des versions par niveau de langue (aucun nom de
-            niveau imprimé, corrigé jamais sur la feuille de l’élève), ajout à la planification et
-            au plan de suppléance. Approbation par des personnes que le conseil désigne, révision
-            distincte du contenu de foi.
+            « Tableau de bord de la direction » : les absences du jour et leurs plans, les
+            consultations d’alertes, les contributions à la banque et l’IA du mois, jamais la
+            planification du personnel enseignant. « Journal d’audit » filtrable, avec l’étiquette
+            « Code émis par le secrétariat » et un export CSV lui-même journalisé.
           </p>
         </div>
         <div class="row">
-          <p>Mode classe</p>
+          <p>Conseil</p>
           <p>
-            « Présenter à la classe » au projecteur. Quiz sur les tablettes de la classe, sans
-            compte d’élève : appareils numérotés, corrigé jamais sur un appareil, réponses effacées
-            à la fin de la séance.
+            Invitations (nos serveurs n’envoient aucun courriel d’invitation), rôles et accès,
+            écoles, années scolaires, calendrier, approbation des ressources, utilisation de l’IA
+            par école (CSV), commentaires reçus et journal administratif.
           </p>
         </div>
         <div class="row">
-          <p>IA, facultative</p>
+          <p>Premiers pas</p>
           <p>
-            « Texte différencié », consignes détaillées dans les plans, création de ressources.
-            Désactivée par défaut; on voit exactement ce qui sera envoyé.
+            « Bienvenue » avec les conditions du projet pilote, « Pour bien commencer » et une
+            classe exemple de 20 prénoms inventés, supprimée après 60 jours. « Commentaires » en
+            haut de chaque page.
           </p>
         </div>
         <div class="row">
-          <p>Pour le conseil</p>
+          <p>Installation</p>
           <p>
-            Modules école par école, « Couverture du curriculum », génération en lot plafonnée et
-            paquets de contenu (outils de l’exploitant), journal d’audit.
+            Sur les serveurs du conseil, avec Docker : une sauvegarde chiffrée et signée chaque
+            nuit, une restauration vérifiée, des points de contrôle de santé. Testée automatiquement
+            à chaque changement ; aucun conseil ne l’a encore installée.
           </p>
         </div>
       </div>
@@ -473,25 +478,25 @@
         </figure>
         <figure>
           <img
-            src="assets/library-item.webp"
+            src="assets/audit-desktop.webp"
             width="760"
             height="475"
             loading="lazy"
             decoding="async"
-            alt="Capture d’écran : la fiche « Le huard, oiseau des lacs », avec ses versions par niveau et les boutons Imprimer, Présenter à la classe et Adapter cette ressource."
+            alt="Capture d’écran : le journal d’audit de la direction, catégorie Alertes. En tête, une personne suppléante a consulté les alertes de la 3e année avec un code émis par Julie Bergeron, avec l’étiquette « Code émis par le secrétariat »."
           />
-          <figcaption>Une ressource et ses versions par niveau.</figcaption>
+          <figcaption>Le journal d’audit : un code émis par le secrétariat.</figcaption>
         </figure>
         <figure>
           <img
-            src="assets/projector.webp"
+            src="assets/board-desktop.webp"
             width="760"
             height="475"
             loading="lazy"
             decoding="async"
-            alt="Capture d’écran du projecteur : une question de quiz, quatre choix avec lettre, forme et couleur, les réponses de la classe et l’explication."
+            alt="Capture d’écran : « Administration du conseil », avec ce qui reste à régler, l’état du système (service en arrière-plan, sauvegarde, nettoyage) et les durées de conservation des données."
           />
-          <figcaption>Le mode classe au projecteur. Données fictives.</figcaption>
+          <figcaption>« Administration du conseil ». Données fictives.</figcaption>
         </figure>
       </div>
     </section>
@@ -501,46 +506,45 @@
         <h2 id="fr-priv">Vie privée</h2>
         <ul>
           <li>
-            Un prénom ou un surnom par élève : aucun nom de famille, NISO, date de naissance ni
-            adresse.
+            Un prénom ou un surnom par élève, sans nom de famille, NISO, date de naissance ni
+            adresse. Alertes désactivées par défaut, chiffrées (AES-256-GCM), jamais imprimées.
           </li>
           <li>
-            Alertes de sécurité ou médicales désactivées par défaut, chiffrées (AES-256-GCM),
-            affichées sur demande, jamais imprimées; chaque consultation est journalisée.
+            IA : les noms des élèves et du personnel des écoles où travaille la personne deviennent
+            des marqueurs ; un autre nom (un parent) n’est pas reconnu, et elle le retire à l’aperçu
+            du texte exact. Le texte envoyé est traité aux États-Unis par Claude (Anthropic) et
+            conservé une période limitée.
           </li>
           <li>
-            Comptes sur invitation, sans mot de passe; sécurité au niveau des lignes sur chaque
-            table. Un code de suppléance dure une journée, mais fonctionne pour quiconque le détient
+            Effacement chaque nuit : prénoms des élèves un an après l’année scolaire (avis 60 jours
+            avant), journal d’audit après deux ans.
+          </li>
+          <li>
+            Comptes sur invitation, sans mot de passe, tentatives limitées ; sécurité au niveau des
+            lignes sur chaque table. Un code de suppléance fonctionne pour quiconque le détient
             (c’est journalisé).
           </li>
-          <li>
-            L’IA ne sert jamais aux élèves; les noms connus deviennent des marqueurs avant l’envoi.
-            Le texte dépersonnalisé est traité par Claude (Anthropic), possiblement hors du Canada,
-            selon les conditions de conservation du fournisseur.
-          </li>
-          <li>Mode classe : rien de ce qu’un élève tape n’est conservé, et aucune IA.</li>
         </ul>
       </section>
       <section aria-labelledby="fr-not">
         <h2 id="fr-not">Limites</h2>
         <ul>
-          <li>Rien n’est hébergé : aucun service en ligne.</li>
           <li>
-            Le vrai modèle d’IA n’a jamais été appelé, seulement un faux fournisseur : aucune
-            promesse de qualité.
+            Rien n’est hébergé. Le vrai modèle d’IA n’a jamais été appelé, seulement un faux
+            fournisseur : aucune promesse de qualité.
           </li>
           <li>
-            Le curriculum intégré est un échantillon résumé (3e et 5e année) marqué « À vérifier »,
-            pas le texte du Ministère. Les ressources et les textes de foi, écrits pour la
-            démonstration, n’ont été validés ni en classe ni par une autorité catholique.
+            Aucune certification, aucune EFVP, aucun test d’intrusion. Les conditions et les durées
+            minimales n’ont pas encore été revues par un ou une juriste. WCAG 2.0 AA est une cible.
           </li>
           <li>
-            Aucune certification, aucune évaluation des facteurs relatifs à la vie privée (EFVP),
-            aucun test d’intrusion. WCAG 2.0 AA est une cible.
+            Le curriculum intégré est un échantillon résumé (3e et 5e année) marqué « À vérifier ».
+            Les ressources et les textes de foi, écrits pour la démonstration, n’ont été validés ni
+            en classe ni par une autorité catholique.
           </li>
           <li>
-            Pas encore essayé sur le matériel d’une vraie classe. Aucun lien avec la sonorisation,
-            les portes ou les caméras.
+            Pas encore essayé dans une vraie école ni sur le matériel d’une vraie classe. Aucun lien
+            avec la sonorisation, les portes ou les caméras.
           </li>
         </ul>
       </section>
@@ -549,18 +553,19 @@
     <div class="soon">
       <p>
         <span class="stamp stamp--soon">Bientôt</span>
-        <strong>Avant le projet pilote :</strong> hébergement au Canada, installation Docker sur les
-        serveurs du conseil, accueil du personnel enseignant, tableau de bord de la direction, écran
-        du journal d’audit, sauvegardes et surveillance.
+        <strong>Avant le projet pilote :</strong> mise en ligne de l’hébergement au Canada, réponse
+        écrite de Supabase sur ses journaux et ses sauvegardes, essai de restauration, demande de
+        non-conservation des données à Anthropic, revue des conditions par un ou une juriste,
+        premier essai du vrai modèle d’IA.
       </p>
     </div>
 
     <section aria-labelledby="fr-pilot">
       <h2 id="fr-pilot">Projet pilote</h2>
       <p>
-        Gratuit; il n’a pas commencé. Un conseil peut dès maintenant nous transmettre ses exigences
-        de confidentialité et confirmer les règles d’accès par rôle, qui sont encore des hypothèses.
-        Pour en parler :
+        Gratuit ; il n’a pas commencé. Un conseil peut dès maintenant lire notre document de
+        confidentialité (en anglais), nous transmettre ses exigences et nommer la personne qui
+        administrera le projet pilote dans « Conseil ». Pour en parler :
         <!-- Placeholder: nobody has confirmed this mailbox. Change it before sharing (marketing/README.md). -->
         <span class="contact">pilote@iplynx.ca</span>
       </p>
@@ -579,7 +584,7 @@
       </p>
       <h1 id="en-title">Fact sheet for school boards</h1>
       <p class="meta">
-        Status as of October 1, 2026 · Pilot build, nothing is online yet · IP Lynx Inc., an Ontario
+        Status as of October 2, 2026 · Pilot build, nothing is online yet · IP Lynx Inc., an Ontario
         security and telecom integrator
       </p>
       <p class="jump"><a href="#fr" lang="fr-CA">Version française ci-dessus</a></p>
@@ -590,11 +595,11 @@
       <ul>
         <li>
           A platform for Ontario’s French-language Catholic elementary schools, built for teachers
-          first.
+          first, with screens for principals and the board’s administrators.
         </li>
         <li>
-          Everything below is “Available (pilot build)”: built and covered by automated tests, but
-          not hosted yet, and not used in class yet.
+          Everything below is “Available (pilot build)”, except what is marked “Coming soon”: built
+          and covered by automated tests, but not hosted yet, and not used in a real school yet.
         </li>
         <li>
           No school board is a client; the free pilot has not started. “Lynx École” is a working
@@ -607,49 +612,51 @@
       <h2 id="en-today">What the pilot build does</h2>
       <div class="rows">
         <div class="row">
-          <p>The day</p>
+          <p>Teachers</p>
           <p>
-            “Today”: the periods, the calendar applied (masses, PA days) and the next lesson in each
-            subject. “Lesson taught” in one tap. Weekly or rotating-day timetables.
+            “Today”: the periods, the calendar applied and the next lesson in each subject. “I’m
+            absent”, then “Send”: the substitute plan starts where each class left off, complete
+            without AI. A French resource bank with versions by language level, and class mode on
+            the projector and class tablets. AI is optional and off by default.
           </p>
         </div>
         <div class="row">
-          <p>Substitute plan</p>
+          <p>Substitutes</p>
           <p>
-            “I’m absent”, then “Send”: the plan starts where each class left off, complete without
-            AI. The office hands out a one-day code; the substitute, with no account, sees “Now” and
-            “Next” and sends a report.
+            The office hands out a one-day code; the substitute, with no account, sees “Now” and
+            “Next” and sends a report. Every view is logged, with who issued the code.
           </p>
         </div>
         <div class="row">
-          <p>Resource bank</p>
+          <p>Principals</p>
           <p>
-            Search in French and by curriculum expectation, versions by language level (no level
-            name printed, answer key never on the student sheet), added to planning and to the
-            substitute plan. Approval by people the board designates, a separate review for faith
-            content.
+            The principal’s dashboard: today’s absences and their plans, alert reads, contributions
+            to the bank and the month’s AI use, never teachers’ planning. A filterable audit log,
+            with the badge “Code émis par le secrétariat” (code issued by the office) and a CSV
+            export that is itself logged.
           </p>
         </div>
         <div class="row">
-          <p>Class mode</p>
+          <p>The board</p>
           <p>
-            “Present to the class” on the projector. Quizzes on the class tablets, with no student
-            accounts: numbered devices, the answer key never on a device, answers erased when the
-            session ends.
+            Invitations (our servers send no invitation email), roles and access, schools, school
+            years, calendar, resource approval, AI use per school (CSV), feedback received and an
+            administrative log.
           </p>
         </div>
         <div class="row">
-          <p>AI, optional</p>
+          <p>First steps</p>
           <p>
-            “Differentiated text”, detailed instructions in plans, resource drafting. Off by
-            default; you see exactly what will be sent.
+            “Bienvenue” (welcome) with the pilot terms, a getting-started list and a sample class of
+            20 invented first names, deleted after 60 days. Feedback from the top of every page.
           </p>
         </div>
         <div class="row">
-          <p>For the board</p>
+          <p>Install</p>
           <p>
-            Modules school by school, “Curriculum coverage”, capped batch generation and content
-            packs (operator tools), an audit log.
+            On the board’s servers, with Docker: an encrypted, signed backup every night, a checked
+            restore, health checks. Tested automatically on every change; no board has installed it
+            yet.
           </p>
         </div>
       </div>
@@ -667,25 +674,25 @@
         </figure>
         <figure>
           <img
-            src="assets/library-item.webp"
+            src="assets/audit-desktop.webp"
             width="760"
             height="475"
             loading="lazy"
             decoding="async"
-            alt="Screenshot: the page of “Le huard, oiseau des lacs”, with its level versions and buttons to print, present to the class and adapt the resource."
+            alt="Screenshot: the principal’s audit log, alerts category. At the top, a substitute read the Grade 3 alerts with a code issued by Julie Bergeron, tagged “Code émis par le secrétariat” (code issued by the office)."
           />
-          <figcaption>A resource and its level versions.</figcaption>
+          <figcaption>The audit log: a code issued by the office.</figcaption>
         </figure>
         <figure>
           <img
-            src="assets/projector.webp"
+            src="assets/board-desktop.webp"
             width="760"
             height="475"
             loading="lazy"
             decoding="async"
-            alt="Projector screenshot: a quiz question, four choices with a letter, a shape and a colour, the class’s answers and the explanation."
+            alt="Screenshot: “Administration du conseil” (board administration), with what is left to set up, the system’s state (background service, backup, clean-up) and the data retention periods."
           />
-          <figcaption>Class mode on the projector. Screens in French, fictional data.</figcaption>
+          <figcaption>Board administration. Screens in French, fictional data.</figcaption>
         </figure>
       </div>
     </section>
@@ -694,40 +701,46 @@
       <section aria-labelledby="en-priv">
         <h2 id="en-priv">Privacy</h2>
         <ul>
-          <li>One first name or nickname per student: no last name, OEN, birthdate or address.</li>
           <li>
-            Safety and medical alerts off by default, encrypted (AES-256-GCM), shown on request,
-            never printed; every view is logged.
+            One first name or nickname per student: no last name, OEN, birthdate or address. Alerts
+            off by default, encrypted (AES-256-GCM), never printed; every view is logged.
           </li>
           <li>
-            Invite-only accounts, no passwords; Row Level Security on every table. A substitute code
-            lasts one day, but works for whoever holds it (that use is logged).
+            AI: the names of the students and staff at the person’s schools become markers before
+            sending. Another name (a parent’s) is not recognized: the person removes it at the
+            preview of the exact text. The text is processed in the United States by Claude
+            (Anthropic), which keeps it for a limited time. Never for students.
           </li>
           <li>
-            Students never use AI; known names become markers before sending. The de-identified text
-            is processed by Claude (Anthropic), possibly outside Canada, under the provider’s
-            retention terms.
+            Nightly deletion on default periods: students’ first names a year after the school year,
+            the audit log two years, with a notice 60 days before first names are erased.
           </li>
-          <li>Class mode: nothing a student types is kept, and no AI.</li>
+          <li>
+            Invite-only accounts, no passwords, limited sign-in attempts; Row Level Security on
+            every table. A substitute code works for whoever holds it (that use is logged).
+          </li>
         </ul>
       </section>
       <section aria-labelledby="en-not">
         <h2 id="en-not">Limits</h2>
         <ul>
-          <li>Nothing is hosted: no live service.</li>
           <li>
-            The real AI model has never been called, only a fake provider: no claim about quality.
+            Nothing is hosted. The real AI model has never been called, only a fake provider: no
+            claim about quality.
           </li>
           <li>
-            The curriculum included is a paraphrased sample (Grades 3 and 5) marked “À vérifier” (to
-            verify), not the Ministry’s text. The resources and faith texts were written for the
-            demo; no class and no Catholic authority has validated them.
+            No certification, no privacy impact assessment (PIA), no penetration test. No lawyer has
+            reviewed the terms or the minimum retention periods yet. WCAG 2.0 AA is a target.
           </li>
           <li>
-            No certification, no privacy impact assessment (PIA), no penetration test. WCAG 2.0 AA
-            is a target.
+            The curriculum included is a paraphrased sample (Grades 3 and 5) marked “À vérifier” (to
+            verify). The resources and faith texts were written for the demo; no class and no
+            Catholic authority has validated them.
           </li>
-          <li>Not tried yet on a real classroom’s equipment. No link with PA, doors or cameras.</li>
+          <li>
+            Not tried yet in a real school or on a real classroom’s equipment. No link with PA,
+            doors or cameras.
+          </li>
         </ul>
       </section>
     </div>
@@ -735,17 +748,18 @@
     <div class="soon">
       <p>
         <span class="stamp stamp--soon">Coming soon</span>
-        <strong>Before the pilot:</strong> hosting in Canada, a Docker install on the board’s
-        servers, onboarding for teachers, the principal’s dashboard, an audit log viewer, backups
-        and monitoring.
+        <strong>Before the pilot:</strong> hosting in Canada goes online, Supabase’s written answer
+        on its logs and backups, a restore drill, the zero-data-retention request to Anthropic, a
+        lawyer’s review of the terms, the first run of the real AI model.
       </p>
     </div>
 
     <section aria-labelledby="en-pilot">
       <h2 id="en-pilot">The pilot</h2>
       <p>
-        Free; it has not started. A board can already send us its privacy requirements and confirm
-        the access rules by role, which are still assumptions. To talk about it:
+        Free; it has not started. A board can already read our privacy document, send us its
+        requirements and name the person who will administer the pilot in “Conseil”. To talk about
+        it:
         <!-- Placeholder: nobody has confirmed this mailbox. Change it before sharing (marketing/README.md). -->
         <span class="contact">pilote@iplynx.ca</span>
       </p>
