@@ -16,6 +16,8 @@ down here so it can be reviewed with pilot teachers.
 
 **D-002 — Working product name "Lynx École" (placeholder).** Set by `NEXT_PUBLIC_APP_NAME`; no
 code change is needed to rename.
+_Amended in Phase 6 (2026-10-02):_ the name is `APP_NAME`, read by the server at run time, so one
+image serves any install (D-113); `NEXT_PUBLIC_APP_NAME` is still read when `APP_NAME` is unset.
 
 **D-003 — Board differences live in data, not code.** Anything that plausibly differs between
 boards or schools is a table row or a validated JSON setting:
@@ -33,6 +35,13 @@ Onboarding a new board is configuration only (see `pnpm admin`).
 **D-004 — Accounts are invite-only (Assumption).** Sign-up is disabled in Supabase Auth. An admin
 provisions boards, schools and staff with `pnpm admin ...` (apps/admin). _Why:_ boards control who
 has access; no one can self-register with a personal address. A board-admin UI comes later.
+_Amended in Phase 6 (2026-10-02):_ board admins invite staff of their own board in « Conseil » («
+Inviter une personne »), and the worker creates the Auth account; the inviter sends the sign-in
+message from their own e-mail or texting app, and no invitation e-mail leaves our servers (D-107).
+The CLI stays for the operator: the first board admin of a board, schools, deletions on request.
+`pnpm admin invite` gives the account the `authenticated` role explicitly, and `invite` (for a
+person whose access was removed) and `deactivate` go through `operator_set_staff_active`, so the
+board's log shows the change with IP Lynx as the actor (D-106, D-107).
 
 ## Schedule model
 
@@ -89,6 +98,12 @@ can never become (D-049). _Amended in Phase 4:_ library content is written only 
 database functions (D-063). _Amended in Phase 5:_ a second private schema and role, for class
 devices only: `class_portal`, run by `lynx_class_portal`, which executes five functions, reads no
 table and is kept apart from the substitute portal's role (D-083); `anon` still executes nothing.
+_Amended in Phase 6 (2026-10-02):_ the raw audit table is closed to the API and read only through
+`list_audit_entries` (D-103); the worker also holds the service role for Auth's admin API, never the
+web server (D-107); the operator's functions (`operator_*`, `log_operator_access`) are executable by
+the service role only; colleagues read a profile's name, address, honorific, language and access
+state, not the terms or checklist columns (D-109); and no personal value travels in an API query
+string, which an ESLint rule enforces (D-119).
 
 **D-013 — Who sees what (Assumption: to confirm with a board).**
 
@@ -110,6 +125,12 @@ class mode belongs to the class team with a teacher role: principals and office 
 a teacher's sessions or kept class results (D-090), and the future audit viewer must not give the
 direction a per-teacher view of `class_session.ended` (D-101). Opinions on resources are
 anonymous to everyone, reviewers and the direction included (D-093).
+_Amended in Phase 6 (2026-10-02):_ the direction's views exist: « Tableau de bord de la direction »
+(D-102) and « Journal d'audit » (D-103), still without units, lessons, progress or per-teacher
+tallies. Board admins read administrative and approval entries of the audit log only, never alert,
+absence or substitute entries; they manage their board's staff, school contact details and bell
+times, school years, reviewers, AI usage totals and feedback in « Conseil » (D-107, D-108, D-118),
+and still see no student data.
 
 **D-014 — Students are stored by a single first-name/nickname field.** The column is
 `students.first_name` (max 40 characters). There is no last-name field anywhere. For two students
@@ -142,6 +163,12 @@ like more than a first name are flagged; empty, too-long and email-like values a
 updates, no truncation; deletes only when a retention job explicitly opts in. Audited in Phase 1:
 alert reads/writes, alert switch on/off, role grants/revocations, class-team changes, class
 deletion. Audit entries never contain student names or alert text.
+_Amended in Phase 6 (2026-10-02):_ the log is read through one database function with a catalogue of
+four audiences (`direction`, `direction_board`, `board`, `operator`); `select` on the table is
+revoked from signed-in users; a guard trigger refuses free-text keys, strings over 120 characters
+and details over 2 KB in every new row; exports are audited (`audit_log.exported`); and the nightly
+retention job deletes rows after `auditDays` (730 by default) with the opt-in the immutability
+trigger already allowed (D-103, D-105).
 
 **D-018 — Proposed retention defaults (implemented as purge jobs in Phase 6).**
 
@@ -161,6 +188,12 @@ failures a day, closed sessions without kept results 30 days, kept class aggrega
 days (then only its SHA-256), runs planned but never started a day; staged pack imports a day;
 opinions until the rater or the item is deleted; the keys of pack items deleted here as long as
 the board. Deleted rows remain in database backups for the backup window (`docs/phase-5.md`).
+_Amended in Phase 6 (2026-10-02):_ the purge jobs exist: the worker's nightly
+`retention_maintenance`, with per-board settings the operator changes (`pnpm admin set-retention`)
+within bounds of at least 365 days. A class's purge removes students' first names, levels, alerts
+and the plans covering it a year after its school year, and keeps the teacher's units, lessons,
+timetable, progress, « Fiche de suppléance » and kept class results (D-105). The defaults are
+Assumptions pending a lawyer's review.
 
 **D-019 — Login: 6-digit email code plus a "confirm" link.** The email contains both. The link
 opens a page with a button that completes sign-in. _Why:_ board email security scanners
@@ -220,6 +253,10 @@ without Docker. CI uses the Supabase CLI.
 for the board-hosted Docker image. Vercel now has a Montréal region, but the worker needs a long-running process, so hosted mode
 will need at least one small container in a Canadian region anyway. _Amended in Phase 3:_ PDFs
 are rendered on demand in the web server's Node runtime, never stored (D-053).
+_Amended in Phase 6 (2026-10-02):_ hosting is decided (D-114): hosted is Supabase Pro in Canada
+(Central) plus one AWS Lightsail server in `ca-central-1` running Caddy, the web server and the
+worker with Docker Compose; board-hosted is the same Compose plus a minimal self-hosted Supabase.
+This is a deviation from SPEC §5, which named Vercel. `DEPLOYMENT.md` has both procedures.
 
 ## Content and curriculum
 
@@ -265,6 +302,9 @@ form as typed. Checking off a lesson is optimistic with an "Annuler" undo.
 
 **D-036 — Class pages are for the class's teaching team.** Principals and office staff don't get
 the teacher screens; their oversight views come in Phase 6.
+_Amended in Phase 6 (2026-10-02):_ the oversight views now exist for principals and vice-principals:
+« Direction » (`/direction`) and « Journal d'audit » (`/audit`), D-102 and D-103. Class pages stay
+the teaching team's.
 
 ## AI (Phase 2)
 
@@ -325,6 +365,10 @@ before any call (`packages/ai/src/privacy.ts`):
 **D-039 — AI is off until the direction turns it on, and a board can forbid it.** Per-school
 switch on the École page (principal or vice-principal, audited). `boards.settings.ai.allowed =
 false` turns AI off for every school of a board, whatever its principals chose.
+_Amended in Phase 6 (2026-10-02):_ board admins may also turn AI on or off for a school of their
+board, on the school's page in « Conseil » (« Normalement décidé par la direction de l'école »), for
+beta schools without a direction account (D-108, Assumption). The alerts switch stays the
+direction's.
 
 **D-040 — Budgets in provider dollars, pooled per board.** Amounts are the provider's cost in US
 dollars per calendar month (school time zone), not the price charged to boards. Each school gets
@@ -338,6 +382,10 @@ slightly over. Failed calls cost money and are counted. The operator sets budget
 collection comes later (Phase 6). Board AI settings (`boards.settings.ai`, including `allowed`)
 and `ai_budgets` are operator-only: a trigger refuses changes to `settings.ai` from API users, and
 values outside the app's bounds (allowance 0–100 000, multiplier 1–10) are refused for everyone.
+_Amended in Phase 6 (2026-10-02):_ board admins see the month's usage per school in « Utilisation de
+l'IA » (with a CSV), through `board_ai_usage`; usage rows are readable by their author only (D-104).
+Budgets stay operator-only. Payment collection is still not built: billing stays on `pnpm admin
+ai-usage --csv`.
 
 **D-041 — Model, prompts and quality.** Default model Claude Opus 5.5 at medium effort (chosen by
 the product owner for the beta), both configurable (`AI_MODEL`, `AI_EFFORT`) with prices in
@@ -368,6 +416,8 @@ saved texts are ordinary library items (D-073).
 are deleted after 30 days (`AI_JOB_RETENTION_DAYS`); saved drafts stay in the library. Usage
 records in `ai_generations` hold no text and are kept. The request log (`ai_request_log`: job id,
 user id and time, no text) is deleted after one day.
+_Amended in Phase 6 (2026-10-02):_ usage records in `ai_generations` are deleted after `aiUsageDays`
+(730 days by default, at least 365) by the nightly retention job (D-105).
 
 **D-044 — Drafts are kept per person and survive a failed AI request (amends D-035).** Long text
 forms (lessons, pasted rosters, AI requests and results) save a draft on the device once the
@@ -394,6 +444,8 @@ can't be deleted, only turned off; a result whose level was deleted since is sav
 version, with a warning. _Amended in Phase 4:_ no level that a library version uses can be
 deleted, board levels included (it used to become a second base version); a level removed with
 its owner or its board takes those versions with it (D-063).
+_Amended in Phase 6 (2026-10-02):_ no screen or API shows who used AI how much: rows are the
+author's only, and the direction and board admins get totals (D-104).
 
 ## Substitute hand-off (Phase 3)
 
@@ -542,6 +594,9 @@ blocks go and the end of day moves. Rotating-day schools show « Jour N »; an u
 gives no blocks and a warning. Half days split at the school's `halfDaySplit`, else the first
 lunch, else the nutrition break nearest midday (flagged as guessed); the other half's blocks are
 still sequenced. Co-homeroom classes list the other homeroom teacher as a contact (Assumption).
+_Amended in Phase 6 (2026-10-02):_ sample classes (« Classe exemple », D-109) are never covered:
+`app.teacher_class_ids` leaves them out, so they never reach a plan, a code or the plan-source
+check, and the absence form says so.
 
 **D-056 — Who sees what for the substitute hand-off (amends D-013 and D-016).** A released plan
 is a hand-off document; the teacher's units and progress otherwise stay private.
@@ -564,6 +619,9 @@ names the issuer and the issuer's role on the redemption, every view and every a
 such a session is visible (the Phase 6 audit viewer should flag it). The absent teacher is the
 plan's owner only while she holds a teacher role at the school, and issues codes only for
 classes she still teaches; a change to her roles or classes rebuilds her refreshable plans.
+_Amended in Phase 6 (2026-10-02):_ the audit viewer flags a substitute's entry whose code the office
+issued (`issued_by_role = 'office'`) with « Code émis par le secrétariat », for the school's
+direction (D-103). Board admins see none of the substitute or alert entries in the log either.
 
 **D-057 — « Fiche de suppléance » per class.** `class_sub_profiles` holds arrival, routines,
 class management, dismissal, fallback activities and a neighbouring colleague (an active teacher
@@ -590,6 +648,10 @@ after confirmation (or after the plan date if never confirmed): the worker's dai
 with its codes, sessions, report and the report's pending progress (audited
 `sub_plan.deleted`); deleting a teacher removes her absences. No phone number or email address
 of a substitute is ever stored: « Texto » and « Courriel » open the sender's own apps.
+_Amended in Phase 6 (2026-10-02):_ plans and structured reports are purged a year after the plan
+date (school-local), and absences with no plan left after the same delay, by the nightly retention
+job (`subPlanDays`, 365 to 1,095 days; D-105). The 60-day purge of report free text is unchanged and
+goes to the lawyer with the other minimums.
 
 **D-060 — Events, integrations and licensing.** Events carry ids, dates and the part of day
 only: `absence.published`/`updated`/`cancelled`/`sources_changed` (with `cause` when an earlier
@@ -705,6 +767,10 @@ using it in one's own class stay under the teacher's authority (SPEC §9.5). Nob
 own item; the board's own items have no author and are kept by its content reviewers, the audit
 showing who did what. _Why:_ SPEC §9.3 (« someone the board designates »); the richer board
 workflow of §12 comes later.
+_Amended in Phase 6 (2026-10-02):_ board admins designate the board's reviewers in « Approbation des
+ressources » (`set_library_reviewer`, naming the person by one of their roles in the board), and a
+person's last role removed in a board removes their designation there (D-107). The CLI command stays
+for the operator.
 
 **D-065 — Who can see library items (amends D-013).** Three rules, each with a form that takes
 the user (service role only) and a form for the current user:
@@ -934,6 +1000,9 @@ planning). « Ressources » replaces « Différencier » as a
 top-level item when it is shown: the hub links to « Texte différencié », and « Ressources » stays
 highlighted on `/differentiate/*`. The phone's bottom bar keeps Phase 3's limit of six places
 (`PHONE_BAR_MAX`); with more items, it shows the first five and « Plus », a sheet with the rest.
+_Amended in Phase 6 (2026-10-02):_ « Direction » and « Conseil » join the navigation, in the order
+of D-118, with each role's landing page (`landingFor`); the phone bar keeps this decision's six
+places and « Plus ».
 
 **D-079 — Library events and audit.** Events carry `{itemId}` (and `scope` for sharing) and
 nothing else: `library_item.review_requested`, `.approved` (SPEC §7), `.rejected`, `.retracted`,
@@ -1783,6 +1852,18 @@ inviting one address, never interleave; an account the run created is deleted ag
 profile uses it; on `ready`, an account that already existed is made to match the profile
 (unbanned). Both handlers read the current state, so a restore may hand their events back
 (D-115).
+As built (slice S7, `20261201090400_phase6_security_review.sql`, pgTAP `31`): the operator's `pnpm
+admin deactivate` and `invite` used to change the profile directly, unaudited; they now go through
+`public.operator_set_staff_active(user, active)` (service role only), which does what « Retirer
+l'accès » and « Rétablir l'accès » do (one `staff.access_removed` or `staff.access_restored` per
+board and school of the person's roles, with actor `service`, so the board's admins and the school's
+direction see it; upcoming plans refreshed; `staff.access_changed` for the worker) for any account,
+the last admin of a board included. The CLI still bans or unbans the sign-in at once. Every CLI
+command that takes an e-mail address (`invite`, `deactivate`, `set-library-reviewer`, `delete-user`,
+`import-pack --approver`) finds the account with `operator_account_id` (the address in the request
+body) and names it by id afterwards (`accountIdByEmail`, `apps/admin/src/context.ts`; a unit test
+runs each command against a recording fake of the API and finds no address in any URL). `invite`
+creates the Auth account with the `authenticated` role, as the worker does.
 
 **D-108 — What board admins may change on a school (amends D-039).** Allowed: contact details and
 bell times, through `public.merge_school_settings`, which merges keys atomically (no
@@ -1857,6 +1938,13 @@ supprimée »), and its class team is not logged (`app.class_teachers_guard` ski
 and `create_sample_class` names the teacher being added in the transaction-local
 `app.sample_class_setup` around `create_class`, before the class is marked)
 (`20261201090300_onboarding_feedback.sql`; pgTAP 30).
+As built (slice S7): colleagues could read every column of each other's profiles, the terms' version
+and acceptance time and the checklist's dismissal included; the time of the terms' acceptance is
+about when a person first signed in, which « Personnel » deliberately never shows. `select` on
+`users` is now granted on `id`, `email`, `display_name`, `honorific`, `preferred_locale` and
+`deactivated_at` only (`created_at` and `updated_at` went too: accepting the terms moves
+`updated_at`), and a person reads their own three values through `public.my_onboarding_state()` (the
+session and the sign-in action use it; a failed read is an error, never a second « Bienvenue »).
 
 **D-110 — Pilot terms and privacy notice.** The public page « Confidentialité et conditions »
 (`/confidentialite`) holds the plain-language notice (from `PRIVACY.md`) and the pilot terms, in
@@ -1867,6 +1955,10 @@ shown when set. **Assumption:** the wording is ours until an Ontario privacy law
 As built (slice S6): `/confidentialite` (public, dynamic for `APP_NAME`) is linked from the login
 page, « Bienvenue », the app's footer and the substitute portal's footer; the code screen carries
 the one line. The texts are the `legal` messages; `PRIVACY.md` (slice S7) must say the same.
+As built (slice S7): `PRIVACY.md` is written from the `legal` messages and says the same, in more
+detail for a board's privacy officer. The notice's « Qui y a accès » now names every reason IP Lynx
+may access the data (support, an incident, a restore, an upgrade), as `log-operator-access` records
+them; the terms did not change, so `CURRENT_TERMS_VERSION` stays.
 
 **D-111 — Error monitoring for the pilot: scrubbed structured logs and error references; no
 third-party error service.** `@lynx/observability` gives `createLogger` (JSON lines on stdout),
@@ -1903,6 +1995,14 @@ on the substitute portal it says to give the reference to the school office, and
 to show it to the teacher (the `problemReport` messages, served on `/jouer` with `classPortal`);
 `global-error.tsx` links to `/commentaires?ref=…`, a page of its own (the reference is kept only
 when `isReference`). `feedback.error_ref` now accepts a Next digest's `@E…` suffix.
+As built (slice S7): a browser that leaves while a page is still streaming makes Next report « The
+destination stream closed early. »; that is now an `info` line (« request ended by the browser »,
+route and type only), so `error` lines are faults to look at. Only Next's own message counts: a
+reset connection or an aborted call inside the server stays an error. The scrubber was checked
+against error texts captured from the local stack (PostgreSQL's DETAIL lines with an address and a
+whole failing row, PostgREST and Auth error bodies, a sign-in link with its token, a Zod error with
+its input; `packages/observability/src/real-samples.test.ts`); a first name in free text is still
+not recognized, which is why errors never carry what people typed.
 
 **D-112 — Health, heartbeats, external checks and « État du système ».** `/api/health` is liveness
 only; `/api/health/ready` checks Auth (`/auth/v1/health`), PostgREST and the portals' pools when
@@ -1939,6 +2039,10 @@ service, the backup and the data clean-up last ran, in the board's time zone («
 « il y a 6 h », « hier 23 h 53 » for the evening before, else the date; `lib/relative-time.ts`),
 each followed by « normal » or « à vérifier » in words; it says the state is unavailable when
 `system_status()` cannot be read.
+As built (slice S7): the card said « IP Lynx a été avisé », which nothing guarantees (the card
+notifies nobody, and on a board's own servers IP Lynx does not run the install); it now says « Un
+problème a été détecté : signalez-le à la personne qui gère le serveur. » The external monitors and
+the on-call person are deployment steps (`DEPLOYMENT.md`).
 
 **D-113 — Run-time configuration: no `NEXT_PUBLIC_*` in the web app (amends D-002).** The server
 reads `SUPABASE_URL`, `SUPABASE_ANON_KEY` and `APP_NAME` through `serverEnv()` at run time; Next's
@@ -2116,13 +2220,24 @@ also fails on any policy violation the browser reports.
 As built (slice S3b): the session limits are in `supabase/config.toml` (`[auth.sessions]`, read by the
 Supabase CLI and the lite stack) and `GOTRUE_SESSIONS_*` in `compose.supabase.yml`; hosted, they are
 dashboard settings (Pro plan).
+As built (slice S7): an ESLint rule (every app and package) refuses a PostgREST filter on `email`,
+`first_name`, `display_name` or `honorific`, any pattern or full-text filter, and the same in
+`.or()` syntax (`apps/web/src/lib/no-personal-query-strings.test.ts` pins it). The proxy's access
+log also drops the `q` parameter (the words searched in « Ressources ») and the `Referer` header.
+The CSP check of `e2e/operations.spec.ts` now covers the projector, the public privacy page and the
+Phase 6 teacher pages too.
 
 **D-120 — The demo is scripted and tested; a hosted demo site is deferred.** `docs/demo-script.md`
 is the script (15 and 5 minutes); `e2e/demo.spec.ts` clicks through it on the lite stack with the
 fake AI provider. A public demo site would run on a separate small server with invented data,
 never on the pilot server, which holds the pilot's service key and alert keys.
+As built (slice S7): `e2e/demo.spec.ts` has one test per step of the script (steps 1 to 10; step 11
+is a slide). The absence is for the next school day, so the script's « 6 h » runs at any hour; the
+substitute's alert reveal is real, so the « Journal d'audit » step shows the office-issued flag from
+the demo itself; the invited teacher goes through « Bienvenue » and makes a sample class; everything
+is removed at the end.
 
-**Amendments to existing decisions** (each entry's text is updated by slice S7):
+**Amendments to existing decisions** (slice S7 wrote each one into its entry, as « Amended in Phase 6 »):
 
 | Decision     | Amendment                                                                                     |
 | ------------ | --------------------------------------------------------------------------------------------- |

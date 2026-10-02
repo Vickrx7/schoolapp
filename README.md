@@ -3,7 +3,8 @@
 Plateforme pour les écoles élémentaires catholiques de langue française de l’Ontario: planning,
 lesson tracking, differentiated texts with AI, the substitute hand-off, a reviewed resource
 library (« Banque de ressources ») and class mode (« Présenter à la classe », quizzes on class
-tablets), built for teachers first.
+tablets), built for teachers first, with the principal's dashboard, the audit log and « Conseil »
+for board admins (release 0.6, ready for a pilot).
 
 - Product brief: [`SPEC.md`](SPEC.md)
 - Decisions and assumptions: [`DECISIONS.md`](DECISIONS.md)
@@ -11,7 +12,13 @@ tablets), built for teachers first.
   [`docs/phase-2.md`](docs/phase-2.md), [`docs/phase-3.md`](docs/phase-3.md) (substitute hand-off,
   including its deployment steps), [`docs/phase-4.md`](docs/phase-4.md) (library: reviewers, demo
   resources, curriculum import), [`docs/phase-5.md`](docs/phase-5.md) (class mode, including its
-  deployment steps and class devices; adaptations, opinions, coverage, bulk generation)
+  deployment steps and class devices; adaptations, opinions, coverage, bulk generation),
+  [`docs/phase-6.md`](docs/phase-6.md) (pilot readiness: direction, audit log, « Conseil »,
+  onboarding, retention, monitoring, deployment, the security review)
+- Privacy (for a board's privacy officer): [`PRIVACY.md`](PRIVACY.md)
+- Installing in production, hosted in Canada or on a board's servers: [`DEPLOYMENT.md`](DEPLOYMENT.md)
+- Running the pilot: [`docs/PILOT.md`](docs/PILOT.md); the board demo:
+  [`docs/demo-script.md`](docs/demo-script.md)
 - Moving library resources between installs (for a board's IT):
   [`docs/content-packs.md`](docs/content-packs.md)
 - Where things stand and how to continue: [`docs/HANDOFF.md`](docs/HANDOFF.md)
@@ -23,7 +30,7 @@ tablets), built for teachers first.
 apps/
   web/            Next.js app (App Router, PWA). UI text in apps/web/messages/{fr-CA,en-CA}.json
   worker/         Background jobs, event outbox dispatcher and AI jobs (graphile-worker, Postgres only)
-  admin/          CLI to onboard boards, schools and staff (invite-only accounts); coverage, bulk generation, content packs
+  admin/          CLI to onboard boards, schools and staff (invite-only accounts); coverage, bulk generation, content packs; retention, status, support access, deletions
 packages/
   ai/             AI service: privacy layer, providers (Claude, fake), runner, evaluation set
   content/        Library resource types: schemas, answer keys, rendering, readiness, class-mode slides, content pack format
@@ -31,6 +38,12 @@ packages/
   db/             Generated database types
   integrations/   Adapter interfaces + mocks: PA/bells, access control, intercoms, video, SMS/voice
   config/         Environment variable schema (Zod)
+  observability/  Scrubbed JSON logs, error references, the console guard (web server and worker)
+deploy/
+  docker/         Dockerfile (web and app images), Compose files, Caddyfiles, generate-secrets.mjs, migrate.sh, upgrade.sh
+  backup/         Encrypted backups and the checked restore (backup.sh, restore.sh)
+  host/           The server's journal settings and the nightly backup's cron line
+  ci/             CI checks (migration order, no NEXT_PUBLIC_, the restore fixture)
 prompts/          Versioned AI system prompts (prompts/<feature>/<version>.md)
 content/library/  Demo resources as a content pack (demo/pack.json, demo/items/*.json) and writing rules
 content/curriculum/  Curriculum sample for 3e and 5e (paraphrased, « À vérifier ») in the import format
@@ -95,12 +108,15 @@ Same ports and keys as the Supabase CLI, so the same `.env.local` works. See
 | `pnpm library:pack --version <v> --out <file>`                | Build the demo resources as a content pack file (`docs/content-packs.md`)                                                                                                                                                               |
 | `pnpm library:seed` / `pnpm library:seed:check`               | Regenerate the demo curriculum and library seeds from `content/` / check they are up to date (CI)                                                                                                                                       |
 | `pnpm ai:eval [--feature sub_plan] [--provider fake] [--yes]` | Run an AI evaluation set (`differentiate`, `sub_plan`, `library_item`, `library_levels`; Claude costs about $1–5; `fake` is free)                                                                                                       |
+| `docker compose up -d --wait` (in `deploy/docker`)            | A production install, hosted or board-hosted (`DEPLOYMENT.md`); `docker compose run --rm admin …` runs the admin CLI there                                                                                                              |
 
 ## Configuration
 
 Everything is configured with environment variables, documented in [`.env.example`](.env.example).
 Board- and school-level options (schedule type, Anglais start grade, alerts on/off, language levels,
-substitute access hours, modules...) are stored in the database (DECISIONS.md, D-003).
+substitute access hours, modules, retention...) are stored in the database (DECISIONS.md, D-003).
+Production installs run with Docker Compose, which gives each service only its own variables:
+[`DEPLOYMENT.md`](DEPLOYMENT.md) § 2 lists them per service.
 
 | Variable                                                | Used by                | What it is                                                                                               |
 | ------------------------------------------------------- | ---------------------- | -------------------------------------------------------------------------------------------------------- |
@@ -139,10 +155,14 @@ per school until the principal turns it on, and nothing personal is sent to the 
 become markers and personal details block the request ([`docs/ai-data-flow.md`](docs/ai-data-flow.md)).
 Substitutes have no account: a one-day code, hashed at rest, rate-limited and revocable, opens only
 that day's plan, and every view of a plan, print and alert reveal is audited. Details in
-`DECISIONS.md` (D-012 to D-019, D-037 to D-046, D-049 to D-056); `PRIVACY.md` comes in a later
-phase. Library resources hold no student data: a first-name check runs before anything is shared,
+`DECISIONS.md` (D-012 to D-019, D-037 to D-046, D-049 to D-056) and in [`PRIVACY.md`](PRIVACY.md),
+written for a board's privacy officer. Library resources hold no student data: a first-name check runs before anything is shared,
 answer keys never reach student sheets or substitute plans, and nobody else reads a teacher's
 private drafts (D-062, D-065, D-066). Class mode keeps no student data: devices get numbers and
 fixed team names, nothing a student types is stored, answers and devices are deleted when the
 session ends (only class counts survive if the teacher asks), and answer keys never reach a
-device (D-084 to D-089). Opinions on resources are anonymous (D-093).
+device (D-084 to D-089). Opinions on resources are anonymous (D-093). The audit log is read
+through one database function: principals see their school's sensitive entries, board admins
+administrative ones only, and nobody a student's name (D-103). Retention runs nightly (D-105);
+logs are scrubbed of personal details and stay on the server 14 days (D-111). If information
+leaves Canada, it holds no personal data.
