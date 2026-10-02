@@ -948,6 +948,11 @@ content is reusable, so the output may contain no person marker (« Élève A »
 names from a fictional list sent in the request, less any name of a person the teacher can see
 (so the list never trips the privacy check). Never automatic, always previewed; the generic
 `request_ai_job` stays limited to « Texte différencié ».
+_Amended by « Commentaires de bulletin » (2026-10-02):_ comment banks have their own feature,
+`report_comment_bank`, requested the same way (`public.request_report_comment_bank`, previewed by
+`report_comment_bank_ai_preview`, the input built by the database from ids) and turned into the
+requester's private draft by the same `app.library_item_from_ai_result` (D-132); `library_item`
+writes the 25 other types (`LIBRARY_ITEM_AI_TYPES`).
 
 **D-073 — Versions per language level, and Phase 2 saved texts (amends D-042).** The AI feature
 `library_levels` writes 1 to 6 missing level versions from an item's base version, with the same
@@ -1076,6 +1081,13 @@ becomes `’`, spaces inside « », a non-breaking space before `:`, « 3ème »
 faith words appear. Substantive problems are still retried: missing keys, the wrong set of
 levels, a level name shown to students, person markers, `NOT_CANADIAN` words, « CP/CE/CM »,
 invented dotted attente codes, quotations over 40 words and third-party sources.
+_Amended by « Commentaires de bulletin » (2026-10-02):_ the comment bank feature (D-132) chooses
+its prompt sections by scope and report (`scope:subject`, `period:term`…) rather than by type, and
+normalizes for free the placeholder's spellings (`{prenom}`, `[Prénom]` → `{prénom}`, « d’{prénom} »
+→ « de {prénom} »), French names of kinds, skills, ratings, marks and categories, a feminine or
+masculine text that repeats the neutral one, and each entry's attente key into its code; a marker,
+another placeholder, a code in a text, another level's qualifier, a missing point fort or
+prochaine étape and a text over the chosen length are retried.
 
 **D-081 — Hooks for Phase 5 only.** `questions` on games (quiz battles), `studentContent`,
 `gradeAll`, the content pack provenance and seed pack format (future export and import), and
@@ -2715,14 +2727,60 @@ and masculine texts are optional, for when agreement cannot be avoided; the word
 student on the device, and the app never infers gender from a name. A comment's length counts
 Unicode code points after NFC, a line break as one (**Assumption**); no-break spaces can become
 plain spaces on copy. Qualifiers: an entry for one achievement level must not carry another
-level's qualifier (`entryQualifierProblems`, a readiness warning). For report cards the qualifiers
-are « avec une efficacité limitée », « avec une certaine efficacité », « avec beaucoup
-d'efficacité » and « avec un très haut degré d'efficacité » (knowledge: « limitée », « partielle »,
-« bonne », « approfondie »), **Assumption** to check against the official achievement chart
-(D-030). Rubrics and the `library_item/v1` prompt still use « avec efficacité » for level 3 and
-« avec beaucoup d'efficacité » for level 4 (D-080): aligning them needs a prompt v2 and is left
-open. _Why:_ the name must never reach a bank, and a composer that stores templates keeps first
+level's qualifier (`entryQualifierProblems`, a readiness warning). Banks use the achievement
+chart's scale, the same one as rubrics and the `library_item/v1` prompt (one source of truth:
+`REPORT_CARD_QUALIFIERS` is `ACHIEVEMENT_QUALIFIERS`, and detection is the rubric's
+`qualifierLevels`): for the knowledge category « limitée », « partielle », « générale »,
+« approfondie » (levels 1 to 4), and for the three others « avec une efficacité limitée », « avec
+une certaine efficacité », « avec efficacité », « avec beaucoup d'efficacité ». « Une bonne
+compréhension / connaissance » is still read as level 3 when a bank is checked (teachers write
+it), but the demo banks and the AI write « générale ». Both scales are **à vérifier** against the
+official achievement chart (D-030): the lead confirmed the effectiveness scale from a summary of
+the Faire croître le succès chart only. _As built (slice S2):_ the open question of S1 (a second,
+report-card scale with « avec un très haut degré d'efficacité ») is closed by this alignment; the
+demo bank « Mathématiques, 3e année » was reworded to match. _Why:_ the name must never reach a bank, and a composer that stores templates keeps first
 names off the device's storage too (D-130).
+
+**D-132 — « Créer une banque avec l'IA » is its own feature (amends D-072 and D-080).** A teacher
+or a member of the direction at a library school with AI on asks for a comment bank at
+`/library/generate/comments` (also linked from the library hub, « Créer une banque de commentaires
+(IA) », and from « Créer avec l'IA »). The form sends ids and choices only: the scope (a subject,
+the learning skills and work habits, or Enseignement religieux), the report (« Bulletin de
+progrès » or « Bulletin scolaire », one at a time; a bank for both is written by hand), one grade
+from 1re to 8e année (**Assumption**), the subject (none for the learning skills, Enseignement
+religieux for religion and never for a subject), 0 to 12 attentes of that subject and grade (none:
+« commentaires généraux », D-030), the length of the entries (250 or 400 characters) and a note of
+at most 500 characters. The database builds the input from the ids
+(`app.report_comment_bank_ai_input`: labels, attente codes, texts, kinds and domaines from its
+tables; 42501 for who may ask, 22023 for anything else) and `report_comment_bank_ai_preview`
+returns it, so « Vérifier avant d'envoyer » shows exactly what is sent, names highlighted, under
+« Aucun renseignement sur vos élèves n'est envoyé : seulement l'année, la matière et les attentes
+choisies. » `request_report_comment_bank` queues it through `app.enqueue_ai_job` (school switch,
+school budget, limits per person: LXA01 to LXA03); a second tap with the same input while it is
+open returns that job. Nothing about a student, class or school, and no id, is sent; the note is
+de-identified and checked like any text (D-038). The feature `report_comment_bank` (prompt
+`report_comment_bank/v1`, its common part plus the scope's section and, for a subject or
+religion, the report's) answers entries with an attente key (`E1`…) that normalizing turns into
+the code; validation retries any token but `{prénom}`, any marker, a code in a text, another
+level's qualifier, a text over the chosen length, more than 160 entries and an attente (or the
+subject without attentes) without a point fort and a prochaine étape for every level or mark (every
+learning skill for the learning skills). The worker needs no code of its own: a trigger on
+`ai_jobs` turns a success into the requester's private `ai_generated` draft through the library's
+`app.library_item_from_ai_result` (now keeping a missing duration null), with the request's grade,
+subject and attentes, the bank's scope and report and the canonical entries, printable only, faith
+content for religion (and so the faith review), and audits `library_item.generated`; an unusable
+answer fails the job (`invalidOutput`). « En préparation » and the job page are the library's,
+in the bank's words; a failed request is taken up again from `?resume=`. The form also takes a link
+with ids only (`?scope=&grade=&subject=&period=&exp=`), for « Bulletins » (slice S3). Not
+generated in bulk (D-129). Cost: about $0.30 to $0.60 a bank, from the school's budget (D-040).
+_Why:_ the input and output of a bank share nothing with a resource's (no duration, materials,
+levels, formats or characters), `library_item/v1` is frozen (D-041) and a second section there
+would mean re-running its evaluation for 25 types; and a bank written from curriculum labels only
+can never hold anything about a student. As built (slice S2): migration
+`20270118090200_report_comments_ai.sql`; `@lynx/ai` `features/report-comment-bank.ts`, ten
+evaluation cases and `checkReportCommentBank` (`pnpm ai:eval --feature report_comment_bank`);
+`server/actions/report-bank-ai.ts`; pgTAP `35_report_comments` (S2 part); e2e
+`report-comments.spec.ts`.
 
 ## Schema additions beyond SPEC section 8
 

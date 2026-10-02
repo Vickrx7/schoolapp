@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { MAX_TEXT_TIMES_LEVELS, type DifferentiateOutput } from '../features/differentiate';
 import { libraryItemFeature } from '../features/library-item';
 import { libraryLevelsFeature } from '../features/library-levels';
+import { reportCommentBankFeature } from '../features/report-comment-bank';
 import {
   SUB_PLAN_LIMITS,
   SUB_PLAN_MAX_BLOCKS,
@@ -18,11 +19,13 @@ import {
   checkDifferentiation,
   checkLibraryItem,
   checkLibraryLevels,
+  checkReportCommentBank,
   checkSubPlan,
 } from './checks';
 import { differentiateCases } from './differentiate-cases';
 import { libraryItemCases } from './library-item-cases';
 import { libraryLevelsCases } from './library-levels-cases';
+import { reportCommentBankCases } from './report-comment-bank-cases';
 import { subPlanCases } from './sub-plan-cases';
 
 const good: DifferentiateOutput = {
@@ -357,6 +360,72 @@ describe('library evaluation (library_item, library_levels)', () => {
         'no European French or anglicisms',
         'as many questions as the base in every level',
       ]),
+    );
+  });
+});
+
+describe('« Créer une banque avec l’IA » checks', () => {
+  it('has ten cases, and the fake provider passes every check of each', async () => {
+    expect(reportCommentBankCases).toHaveLength(10);
+    expect(new Set(reportCommentBankCases.map((c) => c.id)).size).toBe(10);
+    const system = await loadPrompt('report_comment_bank', 'v1');
+    for (const c of reportCommentBankCases) {
+      const run = await runFeature({
+        feature: reportCommentBankFeature,
+        provider: createFakeProvider(),
+        price: priceFor('fake'),
+        systemPrompt: system,
+        input: c.input,
+        people: c.people ?? [],
+      });
+      expect(run.status, c.id).toBe('succeeded');
+      const failed = checkReportCommentBank(run.output!, c.input, c.expect).filter(
+        (r) => !r.passed,
+      );
+      expect(failed, c.id).toEqual([]);
+    }
+  });
+
+  it('catches a missing {prénom}, a wrong qualifier, « elle », a name and a long text', () => {
+    const c = reportCommentBankCases.find((x) => x.id === 'note-names-student')!;
+    const fake = reportCommentBankFeature.normalize!(
+      reportCommentBankFeature.fake(c.input),
+      c.input,
+    );
+    const bad = {
+      ...fake,
+      entries: fake.entries.map((e, i) =>
+        i === 0
+          ? { ...e, neutral: 'Aïcha compare des nombres avec beaucoup d’efficacité.' }
+          : i === 1
+            ? { ...e, neutral: `Elle ${'compare des nombres '.repeat(25)}` }
+            : i < 6
+              ? { ...e, neutral: e.neutral.replace('{prénom}', 'L’élève') }
+              : e,
+      ),
+    };
+    const failed = checkReportCommentBank(bad, c.input, c.expect)
+      .filter((r) => !r.passed)
+      .map((r) => r.name);
+    expect(failed).toEqual(
+      expect.arrayContaining([
+        'the bank passes `final` and every rule of the request',
+        '{prénom} in at least 80 % of points forts and prochaines étapes',
+        'each qualified entry uses its own level’s qualifier and no other',
+        'neutral texts do not use « il » or « elle » for the student (rough)',
+        'every text within 400 characters',
+        'the student named in the note is nowhere in the bank',
+      ]),
+    );
+    // Impersonal « il » is not the student.
+    const impersonal = {
+      ...fake,
+      entries: fake.entries.map((e, i) =>
+        i === 1 ? { ...e, neutral: 'Il serait profitable que {prénom} s’exerce chaque jour.' } : e,
+      ),
+    };
+    expect(checkReportCommentBank(impersonal, c.input, c.expect).filter((r) => !r.passed)).toEqual(
+      [],
     );
   });
 });

@@ -74,6 +74,7 @@ describe('system prompts and the privacy check', () => {
         path.join('sub_plan', 'v1.md'),
         path.join('library_item', 'v1.md'),
         path.join('library_levels', 'v1.md'),
+        path.join('report_comment_bank', 'v1.md'),
       ]),
     );
   });

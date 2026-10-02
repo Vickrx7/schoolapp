@@ -219,6 +219,11 @@ before sending. A name the app does not know (a parent's, a sibling's) cannot be
   on our server. **A name the app does not know** (a parent's, a sibling's, a student of another
   school) is not recognized: the teacher sees the exact text before sending, and the preview asks
   her to remove any such name. `docs/ai-data-flow.md` has the details.
+- **AI, report card comment banks (« Créer une banque avec l'IA », D-132):** the request carries
+  curriculum labels and the teacher's note only: the grade, the subject, the report, the chosen
+  attentes and the length of the entries, built by the database from ids, and the note
+  (« Précisions »), de-identified like any other. No student, class, school or identifier, and no
+  report card comment, is part of it; the bank comes back with the placeholder `{prénom}`.
 
 ## 6. Residency and jurisdiction
 

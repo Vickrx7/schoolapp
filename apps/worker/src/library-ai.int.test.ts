@@ -1,8 +1,8 @@
 /**
- * Integration test for the library's AI (DECISIONS D-072, D-073), end to end with the fake
+ * Integration test for the library's AI (DECISIONS D-072, D-073, D-132), end to end with the fake
  * provider: the teacher's request built by the database from ids, the worker's run with the
  * whole roster, and the database turning the answer into her private draft (or new versions of
- * her resource). Needs a migrated and seeded database (DATABASE_URL). Everything runs in
+ * her resource, or a comment bank). Needs a migrated and seeded database (DATABASE_URL). Everything runs in
  * transactions that are rolled back, so the demo data is untouched. Run with `pnpm test:int`,
  * with the worker stopped.
  */
@@ -249,6 +249,141 @@ describe('« Créer les versions manquantes avec l’IA » (library_levels)', ()
         [itemId],
       );
       expect(item[0].content_revision).toBe(2);
+    });
+  });
+});
+
+describe('« Créer une banque avec l’IA » (report_comment_bank)', () => {
+  it('turns the teacher’s request into her private draft bank, with no student data sent', async () => {
+    await inRollback(async (db) => {
+      const { rows: subjects } = await db.query<{ id: string }>(
+        `select id from public.subjects where code = 'mat' and board_id is null`,
+      );
+      const request = {
+        scope: 'subject',
+        period: 'term',
+        gradeCode: '3',
+        subjectId: subjects[0]!.id,
+        expectationIds: [B1_2],
+        length: 'medium',
+        teacherNote: 'Comme pour Samuel, parler de la droite numérique.',
+      };
+      const [preview] = await asTeacher<{ input: Record<string, unknown> }>(
+        db,
+        'select public.report_comment_bank_ai_preview($1, $2::jsonb) as input',
+        [SCHOOL, JSON.stringify(request)],
+      );
+      const [job] = await asTeacher<{ id: string }>(
+        db,
+        'select public.request_report_comment_bank($1, $2::jsonb) as id',
+        [SCHOOL, JSON.stringify(request)],
+      );
+      const { rows: stored } = await db.query('select input from public.ai_jobs where id = $1', [
+        job!.id,
+      ]);
+      expect(stored[0].input).toEqual(preview!.input);
+
+      await runAiJob(job!.id, { pool: db, ai, logger: silent });
+
+      const { rows } = await db.query(
+        `select j.status, j.sent_text, j.result ->> 'itemId' as item_id, g.prompt_version,
+                g.feature, g.model
+           from public.ai_jobs j join public.ai_generations g on g.id = j.ai_generation_id
+          where j.id = $1`,
+        [job!.id],
+      );
+      expect(rows[0]).toMatchObject({
+        status: 'succeeded',
+        prompt_version: 'v1',
+        feature: 'report_comment_bank',
+        model: 'fake',
+      });
+      // Sent: the grade, the subject, the attente with its key, the de-identified note. No ids,
+      // no school, no class, no student.
+      const sent: string = rows[0].sent_text;
+      expect(sent).toContain("Année d'études : 3e année");
+      expect(sent).toContain('Matière : Mathématiques');
+      expect(sent).toContain('- E1 — B1.2');
+      expect(sent).toContain('Comme pour Élève A, parler de la droite numérique.');
+      expect(sent).not.toMatch(/Samuel|Tremblay|Gagnon|Saint-Exemple|école|classe/i);
+      expect(sent).not.toMatch(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-/);
+
+      const itemId: string = rows[0].item_id;
+      const { rows: items } = await db.query(
+        `select author_id, status, share_scope, source, type, bucket, duration_minutes, materials,
+                is_projectable, sub_friendly, prompt_version,
+                (select array_agg(e.expectation_id) from public.library_item_expectations e
+                  where e.item_id = i.id) as expectations,
+                (select array_agg(g.grade_code) from public.library_item_grades g
+                  where g.item_id = i.id) as grades,
+                (select count(*)::int from public.library_item_versions v where v.item_id = i.id)
+                  as versions
+           from public.library_items i where i.id = $1`,
+        [itemId],
+      );
+      expect(items[0]).toMatchObject({
+        author_id: TEACHER,
+        status: 'draft',
+        share_scope: 'private',
+        source: 'ai_generated',
+        type: 'report_comments',
+        bucket: 'evaluer',
+        duration_minutes: null,
+        materials: null,
+        is_projectable: false,
+        sub_friendly: false,
+        prompt_version: 'v1',
+        expectations: [B1_2],
+        grades: ['3'],
+        versions: 1,
+      });
+
+      const { rows: versions } = await db.query<{ content: Record<string, unknown> }>(
+        'select content from public.library_item_versions where item_id = $1',
+        [itemId],
+      );
+      const content = versions[0]!.content as {
+        scope: string;
+        period: string;
+        entries: Record<string, unknown>[];
+      };
+      expect(content).toMatchObject({ scope: 'subject', period: 'term' });
+      expect(content.entries.length).toBeGreaterThanOrEqual(8);
+      for (const e of content.entries) {
+        expect(Object.keys(e).sort()).toEqual(
+          [
+            'category',
+            'expectationCodes',
+            'feminine',
+            'kind',
+            'level',
+            'masculine',
+            'neutral',
+            'progress',
+            'rating',
+            'skill',
+          ].sort(),
+        );
+        if (e.kind !== 'general') expect(e.neutral).toContain('{prénom}');
+        expect(JSON.stringify(e)).not.toMatch(/Samuel|Élève A/);
+      }
+      expect(content.entries.filter((e) => e.kind === 'strength')[0]).toMatchObject({
+        expectationCodes: ['B1.2'],
+        level: 1,
+        category: 'application',
+      });
+
+      // The draft is hers, and audited as generated.
+      const mine = await asTeacher(db, 'select id from public.library_items where id = $1', [
+        itemId,
+      ]);
+      expect(mine).toHaveLength(1);
+      const { rows: audit } = await db.query(
+        `select count(*)::int as n from public.audit_log
+          where action = 'library_item.generated' and entity_id = $1`,
+        [itemId],
+      );
+      expect(audit[0].n).toBe(1);
     });
   });
 });

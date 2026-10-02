@@ -10,6 +10,7 @@ import {
 } from '@lynx/content';
 import { ShieldCheck } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
@@ -74,6 +75,7 @@ export function GenerateForm({
   resumed: boolean;
 }) {
   const t = useTranslations('libraryAi');
+  const tBank = useTranslations('reportBankAi');
   const tc = useTranslations('libraryCommon');
   const tCommon = useTranslations('common');
   const router = useRouter();
@@ -248,6 +250,19 @@ export function GenerateForm({
                 ))}
               </Select>
             </Field>
+            {/* A comment bank has its own request (D-132). */}
+            <p className="text-sm text-slate-600">
+              {tBank.rich('fromGenerate', {
+                link: (chunks) => (
+                  <Link
+                    href="/library/generate/comments"
+                    className="font-medium text-brand-700 underline"
+                  >
+                    {chunks}
+                  </Link>
+                ),
+              })}
+            </p>
 
             <fieldset className="space-y-2">
               <legend className="text-sm font-medium text-slate-700">{t('fields.grades')}</legend>

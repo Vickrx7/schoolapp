@@ -83,6 +83,8 @@ test('every page family carries the security policy and works under it', async (
     // « Couverture » (D-125): the overview, then a subject with its filters.
     `/classes/${SEED.class3}/planning/coverage`,
     `/classes/${SEED.class3}/planning/coverage?subject=${french!.id}`,
+    // « Créer une banque avec l’IA » (D-132): the form and its attentes, loaded by an action.
+    '/library/generate/comments',
   ]) {
     await expectPolicy(page, path);
     await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();

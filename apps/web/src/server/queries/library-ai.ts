@@ -219,28 +219,46 @@ export async function valuesForJob(
 export type LibraryJobStatus = 'queued' | 'running' | 'succeeded' | 'failed';
 
 /**
- * The status of the teacher's recent « Créer avec l’IA » requests: a device draft that was sent
- * comes back only if its request failed (D-035).
+ * The status of the teacher's recent « Créer avec l’IA » requests (or « Créer une banque avec
+ * l’IA »'s): a device draft that was sent comes back only if its request failed (D-035).
  */
-export async function loadLibraryJobStatuses(): Promise<Record<string, LibraryJobStatus>> {
+export async function loadLibraryJobStatuses(
+  feature: 'library_item' | 'report_comment_bank' = 'library_item',
+): Promise<Record<string, LibraryJobStatus>> {
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase
     .from('ai_jobs')
     .select('id, status')
-    .eq('feature', 'library_item')
+    .eq('feature', feature)
     .order('created_at', { ascending: false })
     .limit(50);
   return Object.fromEntries((data ?? []).map((j) => [j.id, j.status]));
 }
 
+/** The library's AI features: « Créer avec l’IA », its versions per level, comment banks. */
+export const LIBRARY_AI_FEATURES = [
+  'library_item',
+  'library_levels',
+  'report_comment_bank',
+] as const;
+export type LibraryAiFeature = (typeof LIBRARY_AI_FEATURES)[number];
+
+const featureOf = (value: string): LibraryAiFeature =>
+  (LIBRARY_AI_FEATURES as readonly string[]).includes(value)
+    ? (value as LibraryAiFeature)
+    : 'library_item';
+
 export interface LibraryJobView {
   id: string;
-  feature: 'library_item' | 'library_levels';
+  feature: LibraryAiFeature;
   status: LibraryJobStatus;
   /** A key under `errors` (`invalidOutput`, `libraryChanged`, `aiBudgetReached`…). */
   errorCode: string | null;
   createdAt: string;
-  /** The new resource (library_item), or the resource the levels are for (library_levels). */
+  /**
+   * The new resource (library_item, report_comment_bank), or the resource the levels are for
+   * (library_levels).
+   */
   itemId: string | null;
   itemType: LibraryItemType | null;
 }
@@ -255,12 +273,12 @@ export async function loadLibraryJob(jobId: string): Promise<LibraryJobView | nu
     .from('ai_jobs')
     .select('id, feature, status, error_code, created_at, input, result')
     .eq('id', jobId)
-    .in('feature', ['library_item', 'library_levels'])
+    .in('feature', [...LIBRARY_AI_FEATURES])
     .maybeSingle();
   if (!data) return null;
   const input = (data.input ?? {}) as Record<string, unknown>;
   const result = (data.result ?? {}) as Record<string, unknown>;
-  const feature = data.feature === 'library_levels' ? 'library_levels' : 'library_item';
+  const feature = featureOf(data.feature);
   return {
     id: data.id,
     feature,
@@ -281,13 +299,13 @@ export async function loadOpenLibraryJobs(): Promise<LibraryJobView[]> {
   const { data } = await supabase
     .from('ai_jobs')
     .select('id, feature, status, error_code, created_at, input')
-    .in('feature', ['library_item', 'library_levels'])
+    .in('feature', [...LIBRARY_AI_FEATURES])
     .in('status', ['queued', 'running'])
     .order('created_at', { ascending: false })
     .limit(10);
   return (data ?? []).map((j) => {
     const input = (j.input ?? {}) as Record<string, unknown>;
-    const feature = j.feature === 'library_levels' ? 'library_levels' : 'library_item';
+    const feature = featureOf(j.feature);
     return {
       id: j.id,
       feature,

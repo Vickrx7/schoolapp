@@ -96,7 +96,11 @@ export default async function MyLibraryPage({
                     className="inline-flex min-h-11 items-center gap-2 font-medium text-slate-900 hover:underline"
                   >
                     <Sparkles className="size-4 text-brand-700" aria-hidden />
-                    {job.feature === 'library_levels' ? t('jobLevels') : t('jobItem')}
+                    {job.feature === 'library_levels'
+                      ? t('jobLevels')
+                      : job.feature === 'report_comment_bank'
+                        ? t('jobBank')
+                        : t('jobItem')}
                   </Link>
                   <span className="text-sm text-slate-600">
                     {t(`jobStatus.${job.status}`)} · {date(job.createdAt)}

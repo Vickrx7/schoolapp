@@ -2,7 +2,10 @@
 
 This page describes exactly what goes to the AI provider, written to help answer a school board's
 privacy questionnaire. `PRIVACY.md` (Phase 6) points here as its annex. Decisions: DECISIONS.md,
-D-037 to D-046, D-052 for the substitute plan, and D-072 to D-074 for the resource bank.
+D-037 to D-046, D-052 for the substitute plan, D-072 to D-074 for the resource bank, and D-132 for
+report card comment banks.
+
+No AI feature receives a report card comment about a student; the composer runs in the browser.
 
 ## The rule
 
@@ -211,6 +214,49 @@ the board's own private drafts, which the board's designated reviewers read, edi
    recorded per board, outside every school's budget, and the operator sees them in
    `pnpm admin ai-usage`.
 
+## Banque de commentaires de bulletin : « Créer une banque avec l'IA »
+
+A teacher (or a principal or vice-principal) at a school with the Library module can ask the AI to
+write a report card comment bank (« Banque de commentaires de bulletin », D-129): points forts
+and prochaines étapes, for each level of the report card or each mark of the progress report, that
+she later picks from and adapts for each student. The AI writes from curriculum labels only: **it
+never sees a student or anything about one**. The result is her private draft, which she reviews
+before using or sharing it (D-132). It is never automatic.
+
+1. **Choices, not text.** The form sends ids and choices only: what the bank is for (a subject,
+   the learning skills and work habits, or Enseignement religieux), the report (« Bulletin de
+   progrès » or « Bulletin scolaire »), one grade (1re to 8e année), the subject, up to 12
+   attentes, the length of the entries (250 or 400 characters), and an optional note
+   (« Précisions », at most 500 characters), the only text she types.
+2. **The request is built by the database.** From those ids, the database reads the French labels
+   itself: the grade (« 3e année »), the subject, the attentes' codes, texts, kinds and domaines.
+   A browser cannot put other text in them. It also checks that each id belongs to her board and
+   fits the others (the attentes of that subject and grade; Enseignement religieux only for a
+   religion bank; no subject for the learning skills).
+3. **Preview, in the browser.** « Vérifier avant d'envoyer » shows exactly the text that would be
+   sent, with the names it replaced highlighted, under « Aucun renseignement sur vos élèves n'est
+   envoyé : seulement l'année, la matière et les attentes choisies. » A personal detail in the
+   note (below) blocks the request until she removes it.
+4. **Queue, then de-identification again on the server,** as for every AI request: the same school
+   switch, budget and limits per person (the school's monthly budget pays for it), and the worker
+   replaces every student and staff member of every school where she works with a marker, then
+   checks the final text one last time.
+5. **The call.** The worker sends the system prompt (`prompts/report_comment_bank/v1.md`: its
+   common part, the section for the scope and, for a subject or religion, the section for the
+   report) and the request: the grade, the subject, the report and its marks, the attentes with
+   their keys (« E1 »), codes and texts, the length of the entries, and the de-identified note.
+
+   It sends **no** ids, no school, board, class or staff names, no students, no alerts, no
+   report card comment and no other resource.
+
+6. **The answer comes back** to the worker. Every text names the student only with the
+   placeholder `{prénom}`; an answer with any other placeholder, a marker (« Élève A »), a
+   curriculum code in a text, a qualifier of another level or a text over the chosen length is
+   refused and asked again, and so no name can come back into a bank. The database then stores it
+   as her private draft (`app.library_item_from_ai_result`, as « Créer avec l'IA »), with the
+   prompt version and model it came from. In the composer, the student's first name replaces
+   `{prénom}` on the device only.
+
 ## How names are found
 
 - **The text is cleaned first.** Text pasted from web pages, PDFs or Word often carries invisible
@@ -264,6 +310,7 @@ of the text.
 | The teacher's text, the answer, and the exact de-identified text sent (`ai_jobs`)                   | Canadian database | 30 days, then deleted                                  |
 | Saved differentiated texts (library drafts)                                                         | Canadian database | Until the teacher deletes them                         |
 | Resources written with the AI, and versions added by it (library items, private drafts)             | Canadian database | Until the teacher deletes them                         |
+| Comment banks written with the AI (library items, private drafts; `{prénom}`, no student data)      | Canadian database | Until the teacher deletes them                         |
 | Bulk runs and their requests: the de-identified text sent (`library_bulk_requests.sent_text`)       | Canadian database | 30 days, then only its SHA-256 (runs: 1 year)          |
 | The board's drafts from bulk generation (library items, private until approved)                     | Canadian database | Until a reviewer deletes them                          |
 | A bulk batch and its answers                                                                        | The AI provider   | Deleted as soon as read (otherwise at most 29 days)    |

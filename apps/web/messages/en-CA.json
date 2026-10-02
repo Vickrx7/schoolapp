@@ -2259,7 +2259,8 @@
         "archived": "No archived resources."
       },
       "note": "Note from the reviewer: {note}",
-      "updated": "Updated {date}"
+      "updated": "Updated {date}",
+      "jobBank": "Comment bank (AI)"
     },
     "errors": {
       "required": "This field is required.",
@@ -2526,6 +2527,54 @@
       "resume": "Take up the request",
       "ready": "The resource is ready.",
       "open": "Open the resource"
+    }
+  },
+  "reportBankAi": {
+    "title": "Create a bank with AI",
+    "intro": "Choose the grade, the subject, the report and, if you like, the expectations. The AI prepares strengths and next steps, with {token} in place of the student’s first name: a private draft to review before you use or share it.",
+    "hubTitle": "Create a comment bank (AI)",
+    "hubHint": "Strengths and next steps for the report card, from the curriculum only: a private draft to review.",
+    "fromGenerate": "A report card comment bank? <link>Create a bank with AI</link>",
+    "fields": {
+      "school": "School",
+      "scope": "For",
+      "grade": "Grade",
+      "gradePlaceholder": "Choose a grade",
+      "subject": "Subject",
+      "subjectPlaceholder": "Choose a subject",
+      "subjectMissing": "Religious education is not offered for this grade.",
+      "period": "Report",
+      "periods": {
+        "term": "Report card (terms 1 and 2)",
+        "progress": "Progress report"
+      },
+      "skillsHint": "The bank covers the six learning skills and work habits, with the ratings E, G, S and N: no subject or expectation to choose.",
+      "expectations": "Expectations (optional, up to {max})",
+      "expectationsHint": "Choose the expectations worked on during the term. Without expectations, the bank holds general comments for the subject.",
+      "expectationsChooseFirst": "Choose the grade and the subject first.",
+      "expectationsEmpty": "No expectations are loaded for this subject: the bank will hold general comments.",
+      "expectationsCount": "{count, plural, =0 {No expectations chosen: the bank will hold general comments.} one {# expectation chosen out of {max}.} other {# expectations chosen out of {max}.}}",
+      "length": "Length of the entries",
+      "lengths": {
+        "short": "Short (250 characters)",
+        "medium": "Medium (400 characters)"
+      },
+      "note": "Details",
+      "noteHint": "Up to {max} characters: for example the tone you want, the strategies seen in class or the materials used. Write nothing about a particular student: no name, no personal information."
+    },
+    "preview": "Check before sending",
+    "previewTitle": "What will be sent to the AI",
+    "previewNoStudents": "No information about your students is sent: only the grade, the subject and the chosen expectations.",
+    "previewIntro": "This is exactly what will be sent, with your details. Known names are replaced by markers. The bank will only write {token} in place of the student’s first name.",
+    "previewCheck": "Check that no name or other personal information remains in your details.",
+    "reviewNote": "Review every entry before using it.",
+    "job": {
+      "title": "Preparing the comment bank",
+      "working": "The AI is preparing the comment bank (a few minutes).",
+      "workingHint": "You can leave this page: the bank will be waiting in “My resources”. Review every entry before using it.",
+      "tooLongHint": "The AI service may be busy or stopped. Your request isn’t lost: check again later or take it up again.",
+      "failed": "The comment bank could not be prepared.",
+      "failedKept": "Your request is not lost: you can take it up again."
     }
   },
   "subPlanLibrary": {

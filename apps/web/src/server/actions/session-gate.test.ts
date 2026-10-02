@@ -3,7 +3,7 @@
  * else (DECISIONS D-109), so a person who has not accepted the pilot terms, or whose session
  * ended, is sent to « Bienvenue » or the sign-in page and reaches no data. The planning, progress,
  * roster and timetable actions did not (risk 7 of the « Mon année » plan); « Mon année »'s own
- * actions do from the start.
+ * actions do from the start, and so do « Créer une banque avec l’IA »'s (D-132).
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -24,6 +24,7 @@ const modules = {
   students: await import('./students'),
   timetable: await import('./timetable'),
   'year-plan': await import('./year-plan'),
+  'report-bank-ai': await import('./report-bank-ai'),
 };
 
 const actions = Object.entries(modules).flatMap(([file, mod]) =>
@@ -40,7 +41,7 @@ beforeEach(() => {
   createClient.mockReset();
 });
 
-describe('the planning, progress, roster, timetable and year plan actions (D-109)', () => {
+describe('the planning, progress, roster, timetable, year plan and comment bank AI actions (D-109)', () => {
   it('are all checked', () => {
     expect(actions.map((a) => a.name).sort()).toEqual([
       'planning.createUnit',
@@ -52,6 +53,8 @@ describe('the planning, progress, roster, timetable and year plan actions (D-109
       'planning.updateUnit',
       'progress.markLessonTaught',
       'progress.unmarkLesson',
+      'report-bank-ai.previewReportBankGeneration',
+      'report-bank-ai.requestReportBankGeneration',
       'students.addStudents',
       'students.deleteStudent',
       'students.deleteStudentAlert',
@@ -93,5 +96,12 @@ describe('the planning, progress, roster, timetable and year plan actions (D-109
     expect(rpc).toHaveBeenCalledWith('unmark_lesson', {
       p_lesson_id: '30000000-0000-4000-8000-000000000301',
     });
+    // A bank request with no choices stops at the form's checks: nothing is read or sent.
+    rpc.mockClear();
+    expect(await modules['report-bank-ai'].previewReportBankGeneration({} as never)).toMatchObject({
+      ok: false,
+      error: 'invalid',
+    });
+    expect(rpc).not.toHaveBeenCalled();
   });
 });

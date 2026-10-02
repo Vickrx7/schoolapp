@@ -10,7 +10,8 @@
     "./features/sub-plan": "./src/features/sub-plan.ts",
     "./features/shared": "./src/features/shared.ts",
     "./features/library-item": "./src/features/library-item.ts",
-    "./features/library-levels": "./src/features/library-levels.ts"
+    "./features/library-levels": "./src/features/library-levels.ts",
+    "./features/report-comment-bank": "./src/features/report-comment-bank.ts"
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json"

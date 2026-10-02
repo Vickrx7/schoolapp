@@ -1,18 +1,24 @@
 /**
  * Automatic quality checks for AI answers (« Texte différencié », « Consignes détaillées »,
- * « Créer avec l’IA », « Créer les versions manquantes avec l’IA »). They catch regressions; a
- * teacher still reads the report for what code cannot judge (natural Canadian French, tone).
+ * « Créer avec l’IA », « Créer les versions manquantes avec l’IA », « Créer une banque avec
+ * l’IA »). They catch regressions; a teacher still reads the report for what code cannot judge
+ * (natural Canadian French, tone).
  */
 import {
   ACHIEVEMENT_CATEGORIES,
   DESIGN_STAGES,
+  FIRST_NAME_TOKEN,
   frenchStrings,
+  hasCurriculumCode,
+  hasStrayPlaceholder,
   notCanadianWords,
   questionsOf,
+  reportQualifierLevels,
   rubricWordingProblems,
   studentContent,
   TYPE_INFO,
   validateAnswerKey,
+  type AchievementCategory,
   type AnswerKey,
   type LibraryItemType,
 } from '@lynx/content';
@@ -25,6 +31,13 @@ import {
   proseStrings,
   type LibraryAiVersion,
 } from '../features/library-shared';
+import {
+  REPORT_BANK_LENGTHS,
+  reportBankCoverageProblems,
+  validateReportCommentBank,
+  type ReportCommentBankAiOutput,
+  type ReportCommentBankInput,
+} from '../features/report-comment-bank';
 import { mentionsLevelLabel, NOT_CANADIAN } from '../features/shared';
 import type { SubPlanAiInput, SubPlanAiOutput } from '../features/sub-plan';
 
@@ -792,6 +805,146 @@ export function checkLibraryLevels(
     results.push({
       name: 'as many questions as the base in every level',
       passed: output.levels.every((l) => questionsOf(type, l.content).length === expected),
+    });
+  }
+  return results;
+}
+
+// ---------------------------------------------------------------------------------------
+// « Créer une banque avec l’IA » (report_comment_bank)
+// ---------------------------------------------------------------------------------------
+
+/** What one bank evaluation case expects beyond the checks every answer gets. */
+export interface ReportCommentBankExpectations {
+  /** Names that must never be in the bank (a student named in the teacher's note). */
+  absentNames?: string[];
+  /** At least this many entries tied to each attente of the request. */
+  minEntriesPerExpectation?: number;
+}
+
+/** `{prénom}` in at least this share of the points forts and prochaines étapes. */
+const MIN_PLACEHOLDER_SHARE = 0.8;
+
+/**
+ * « il » or « elle » as the subject of a neutral text: a rough sign of wording that is not
+ * épicène (« il faut », « il serait profitable » and other impersonal uses are left alone).
+ */
+const GENDERED_PRONOUN =
+  /(?<![\p{L}’'])(?:elles?(?![\p{L}])|ils?(?![\p{L}])(?!\s+(?:faut|faudrait|serait|sera|est\s+(?:important|utile|essentiel|souhaitable|recommandé|conseillé)|s[’']agit|y\s+a|importe|convient|reste|semble|vaut)(?![\p{L}])))/iu;
+
+export function checkReportCommentBank(
+  output: ReportCommentBankAiOutput,
+  input: ReportCommentBankInput,
+  expect: ReportCommentBankExpectations = {},
+): CheckResult[] {
+  const results: CheckResult[] = [];
+  const failing = (items: string[]) => ({
+    passed: items.length === 0,
+    detail: items.slice(0, 8).join(', ') || undefined,
+  });
+  const texts = output.entries.flatMap((e) => [e.neutral, e.feminine, e.masculine]);
+  const french = [output.title, output.summary, output.keywords, ...texts];
+
+  results.push({
+    name: 'the bank passes `final` and every rule of the request',
+    ...failing(validateReportCommentBank(output, input)),
+  });
+  results.push(...wordingChecks(french, french));
+
+  const picked = output.entries.filter((e) => e.kind === 'strength' || e.kind === 'next_step');
+  const named = picked.filter((e) => e.neutral.includes(FIRST_NAME_TOKEN)).length;
+  results.push({
+    name: `{prénom} in at least ${MIN_PLACEHOLDER_SHARE * 100} % of points forts and prochaines étapes`,
+    passed: picked.length > 0 && named / picked.length >= MIN_PLACEHOLDER_SHARE,
+    detail: `${named}/${picked.length}`,
+  });
+  results.push({
+    name: 'no other placeholder, no curriculum code in a text',
+    ...failing(
+      output.entries.flatMap((e, i) =>
+        [e.neutral, e.feminine, e.masculine].some(
+          (t) => hasStrayPlaceholder(t) || hasCurriculumCode(t),
+        )
+          ? [String(i)]
+          : [],
+      ),
+    ),
+  });
+
+  // Qualifiers: an entry with a level and a category uses its own level's and no other's.
+  const qualified = output.entries
+    .map((e, i) => ({ e, i }))
+    .filter(
+      ({ e }) =>
+        e.level !== null &&
+        (ACHIEVEMENT_CATEGORIES as readonly string[]).includes(e.category ?? ''),
+    );
+  results.push({
+    name: 'each qualified entry uses its own level’s qualifier and no other',
+    ...failing(
+      qualified
+        .filter(({ e }) => {
+          const found = reportQualifierLevels(e.category as AchievementCategory, e.neutral);
+          return found.length !== 1 || found[0] !== e.level;
+        })
+        .map(({ i }) => String(i)),
+    ),
+  });
+  if (input.period === 'term' && input.scope !== 'learning_skills') {
+    const strengths = output.entries.filter((e) => e.kind === 'strength' && e.level !== null);
+    const withCategory = strengths.filter((e) => e.category !== null).length;
+    results.push({
+      name: 'at least half of the points forts carry a category and its qualifier',
+      passed: strengths.length > 0 && withCategory * 2 >= strengths.length,
+      detail: `${withCategory}/${strengths.length}`,
+    });
+  }
+  if (input.period === 'progress' || input.scope === 'learning_skills') {
+    results.push({
+      name: 'no achievement level on this report',
+      passed: output.entries.every((e) => e.level === null),
+    });
+  }
+
+  results.push({
+    name: 'neutral texts do not use « il » or « elle » for the student (rough)',
+    ...failing(
+      output.entries.flatMap((e, i) => (GENDERED_PRONOUN.test(e.neutral) ? [String(i)] : [])),
+    ),
+  });
+  const max = REPORT_BANK_LENGTHS[input.length];
+  results.push({
+    name: `every text within ${max} characters`,
+    ...failing(
+      output.entries.flatMap((e, i) =>
+        [e.neutral, e.feminine, e.masculine].some((t) => [...t].length > max) ? [String(i)] : [],
+      ),
+    ),
+  });
+  results.push({
+    name: 'a point fort and a prochaine étape for every attente (or skill) and mark',
+    ...failing(reportBankCoverageProblems(output.entries, input)),
+  });
+  if (expect.minEntriesPerExpectation !== undefined) {
+    const min = expect.minEntriesPerExpectation;
+    results.push({
+      name: `at least ${min} entries for each attente`,
+      ...failing(
+        input.expectations
+          .filter((x) => output.entries.filter((e) => e.expectationKey === x.key).length < min)
+          .map((x) => x.key),
+      ),
+    });
+  }
+  if (expect.absentNames?.length) {
+    const text = fold(french.join('\n'));
+    const found = expect.absentNames.filter((n) =>
+      new RegExp(`(^|[^\\p{L}])${fold(n)}([^\\p{L}]|$)`, 'u').test(text),
+    );
+    results.push({
+      name: 'the student named in the note is nowhere in the bank',
+      passed: found.length === 0,
+      detail: found.join(', ') || undefined,
     });
   }
   return results;

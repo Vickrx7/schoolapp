@@ -386,9 +386,8 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   `SUB_PORTAL_DATABASE_URL` (in `.env.example`).
 - **Migrations are applied once.** The lite stack does not re-apply an edited migration: after
   editing one that is not committed yet, `stack.sh reset`. Never edit a committed migration; add
-  a new one (the latest is `20270118090100_report_comments.sql`, pgTAP file `35`;
-  `20270118090200` is kept for « Commentaires de bulletin » S2, and Info-parents moves to
-  `20270125…`).
+  a new one (the latest is `20270118090200_report_comments_ai.sql`, pgTAP file `35`;
+  Info-parents moves to `20270125…`).
 - **Seeds come in two parts.** `supabase/seed.sql`, then `supabase/seeds/*.sql` by name
   (`config.toml` `sql_paths` for the CLI, `cmd_seed` in `stack.sh`). `seeds/20_library_demo.sql`
   is generated from `content/library/demo`: after changing the pack, run `pnpm library:seed`
@@ -494,6 +493,13 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   instead (banks have their own request). Their texts use `{prénom}` (`fillComment`); a message
   that shows it passes it as an ICU value (`{token}`), never as literal braces. The demo pack has
   three banks (81 items).
+- **« Créer une banque avec l'IA » (D-132)** is the AI feature `report_comment_bank`
+  (`/library/generate/comments`): its request is built by the database from ids
+  (`report_comment_bank_ai_preview`, `request_report_comment_bank`) and its answer becomes a draft
+  through `app.library_item_from_ai_result`, like « Créer avec l'IA »; the job page and
+  « En préparation » are the library's (`LIBRARY_AI_FEATURES` in `server/queries/library-ai.ts`).
+  Banks use the rubrics' qualifiers (`REPORT_CARD_QUALIFIERS` is `ACHIEVEMENT_QUALIFIERS`). The
+  form takes ids in its URL (`?scope=&grade=&subject=&period=&exp=id,id`) for « Bulletins ».
 - **Unit tests of the web app's server code** can import `@/…`: the root `vitest.config.ts`
   aliases it (`server/actions/session-gate.test.ts` mocks the session and the database).
 - **New accounts in browser tests go through « Bienvenue ».** The seed's demo accounts have
@@ -620,7 +626,9 @@ Where an item is already in `DECISIONS.md`, the D-number is given. Don't add dup
    one library case alone (`pnpm ai:eval --feature library_item --case quiz-5e --yes`, under $1)
    before `--feature library_item` and `--feature library_levels` (about $3–5 together), and one
    batch case (`pnpm ai:eval --feature library_item --case quiz-5e --batch --yes`, a worst case of
-   about $0.70) before any real bulk run. Reports go to `packages/ai/eval-results/` (git-ignored):
+   about $0.70) before any real bulk run, and one comment bank case
+   (`pnpm ai:eval --feature report_comment_bank --case mat-3e-term --yes`, under $1) before the
+   ten (about $3–5). Reports go to `packages/ai/eval-results/` (git-ignored):
    send them to Mike. Propose prompt changes first; never edit a used prompt version (add `v2`).
 3. **Get PRs #1 and #2 reviewed and merged.**
 4. **Test with real teachers and a real substitute** (`docs/phase-3.md`, `docs/phase-4.md` and

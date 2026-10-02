@@ -198,7 +198,7 @@ export const loadMyLibrary = cache(async (session: SessionContext): Promise<MyLi
       .from('ai_jobs')
       .select('id, feature, status, created_at, input')
       .eq('user_id', session.userId)
-      .in('feature', ['library_item', 'library_levels'])
+      .in('feature', ['library_item', 'library_levels', 'report_comment_bank'])
       .in('status', ['queued', 'running'])
       .order('created_at', { ascending: false })
       .limit(20),

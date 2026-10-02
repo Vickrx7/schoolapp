@@ -2259,7 +2259,8 @@
         "archived": "Aucune ressource archivée."
       },
       "note": "Note de la personne responsable de la révision : {note}",
-      "updated": "Modifiée le {date}"
+      "updated": "Modifiée le {date}",
+      "jobBank": "Banque de commentaires (IA)"
     },
     "errors": {
       "required": "Ce champ est obligatoire.",
@@ -2526,6 +2527,54 @@
       "resume": "Reprendre la demande",
       "ready": "La ressource est prête.",
       "open": "Ouvrir la ressource"
+    }
+  },
+  "reportBankAi": {
+    "title": "Créer une banque avec l’IA",
+    "intro": "Choisissez l’année, la matière, le bulletin et, si vous le voulez, les attentes. L’IA prépare des points forts et des prochaines étapes, avec {token} à la place du prénom de l’élève : un brouillon privé, à relire avant de l’utiliser ou de le partager.",
+    "hubTitle": "Créer une banque de commentaires (IA)",
+    "hubHint": "Des points forts et des prochaines étapes pour le bulletin, à partir du curriculum seulement : un brouillon privé, à relire.",
+    "fromGenerate": "Une banque de commentaires de bulletin? <link>Créer une banque avec l’IA</link>",
+    "fields": {
+      "school": "École",
+      "scope": "Pour",
+      "grade": "Année d’études",
+      "gradePlaceholder": "Choisissez une année",
+      "subject": "Matière",
+      "subjectPlaceholder": "Choisissez une matière",
+      "subjectMissing": "Enseignement religieux n’est pas offert pour cette année.",
+      "period": "Bulletin",
+      "periods": {
+        "term": "Bulletin scolaire (1re et 2e étapes)",
+        "progress": "Bulletin de progrès"
+      },
+      "skillsHint": "La banque porte sur les six habiletés d’apprentissage et habitudes de travail, avec les cotes E, T, S et N : aucune matière ni attente à choisir.",
+      "expectations": "Attentes (facultatif, jusqu’à {max})",
+      "expectationsHint": "Choisissez les attentes travaillées pendant l’étape. Sans attente, la banque contient des commentaires généraux pour la matière.",
+      "expectationsChooseFirst": "Choisissez d’abord l’année et la matière.",
+      "expectationsEmpty": "Aucune attente n’est chargée pour cette matière : la banque contiendra des commentaires généraux.",
+      "expectationsCount": "{count, plural, =0 {Aucune attente choisie : la banque contiendra des commentaires généraux.} one {# attente choisie sur {max}.} other {# attentes choisies sur {max}.}}",
+      "length": "Longueur des entrées",
+      "lengths": {
+        "short": "Courtes (250 caractères)",
+        "medium": "Moyennes (400 caractères)"
+      },
+      "note": "Précisions",
+      "noteHint": "Au plus {max} caractères : par exemple le ton voulu, les stratégies vues en classe ou le matériel utilisé. N’écrivez rien sur un élève en particulier : ni nom, ni renseignement personnel."
+    },
+    "preview": "Vérifier avant d’envoyer",
+    "previewTitle": "Ce qui sera envoyé à l’IA",
+    "previewNoStudents": "Aucun renseignement sur vos élèves n’est envoyé : seulement l’année, la matière et les attentes choisies.",
+    "previewIntro": "Voici exactement ce qui sera envoyé, avec vos précisions. Les noms connus sont remplacés par des marqueurs. La banque écrira seulement {token} à la place du prénom de l’élève.",
+    "previewCheck": "Vérifiez qu’aucun nom ni aucun autre renseignement personnel ne reste dans vos précisions.",
+    "reviewNote": "Relisez chaque entrée avant de l’utiliser.",
+    "job": {
+      "title": "Préparation de la banque de commentaires",
+      "working": "L’IA prépare la banque de commentaires (quelques minutes).",
+      "workingHint": "Vous pouvez quitter cette page : la banque vous attendra dans « Mes ressources ». Relisez chaque entrée avant de l’utiliser.",
+      "tooLongHint": "Le service d’IA est peut-être occupé ou arrêté. Votre demande n’est pas perdue : revenez plus tard ou reprenez-la.",
+      "failed": "La banque de commentaires n’a pas pu être préparée.",
+      "failedKept": "Votre demande n’est pas perdue : vous pouvez la reprendre."
     }
   },
   "subPlanLibrary": {

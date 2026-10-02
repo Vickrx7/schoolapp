@@ -47,7 +47,7 @@
       "content": {
         "title": "",
         "objective": "",
-        "teacherNote": "Banque de démonstration à valider en classe. Choisissez au plus un point fort et une prochaine étape par attente travaillée pendant l’étape, puis adaptez le texte à l’élève. Les entrées sont rédigées au neutre (épicène); {prénom} est remplacé par le prénom de l’élève, et « de {prénom} » devient « d’Éloïse » ou « de Bastien » selon le prénom. Les qualificatifs suivent la grille d’évaluation du rendement (une compréhension limitée, partielle, bonne ou approfondie; avec une efficacité limitée, avec une certaine efficacité, avec beaucoup d’efficacité, avec un très haut degré d’efficacité) : à vérifier contre le document officiel en vigueur.",
+        "teacherNote": "Banque de démonstration à valider en classe. Choisissez au plus un point fort et une prochaine étape par attente travaillée pendant l’étape, puis adaptez le texte à l’élève. Les entrées sont rédigées au neutre (épicène); {prénom} est remplacé par le prénom de l’élève, et « de {prénom} » devient « d’Éloïse » ou « de Bastien » selon le prénom. Les qualificatifs suivent la grille d’évaluation du rendement, comme les grilles d’évaluation de la bibliothèque (une compréhension limitée, partielle, générale ou approfondie; avec une efficacité limitée, avec une certaine efficacité, avec efficacité, avec beaucoup d’efficacité) : à vérifier contre le document officiel en vigueur.",
         "scope": "subject",
         "period": "term",
         "entries": [
@@ -83,7 +83,7 @@
             "rating": null,
             "category": "connaissance",
             "expectationCodes": ["B1.1"],
-            "neutral": "{prénom} lit, représente, compose et décompose des nombres jusqu’à 1 000 de différentes façons et démontre une bonne compréhension de la valeur de position.",
+            "neutral": "{prénom} lit, représente, compose et décompose des nombres jusqu’à 1 000 de différentes façons et démontre une compréhension générale de la valeur de position.",
             "feminine": "",
             "masculine": ""
           },
@@ -179,7 +179,7 @@
             "rating": null,
             "category": "application",
             "expectationCodes": ["B1.2"],
-            "neutral": "{prénom} compare et ordonne des nombres jusqu’à 1 000 avec beaucoup d’efficacité en s’appuyant sur la valeur de position.",
+            "neutral": "{prénom} compare et ordonne des nombres jusqu’à 1 000 avec efficacité en s’appuyant sur la valeur de position.",
             "feminine": "",
             "masculine": ""
           },
@@ -191,7 +191,7 @@
             "rating": null,
             "category": "application",
             "expectationCodes": ["B1.2"],
-            "neutral": "{prénom} compare et ordonne des nombres jusqu’à 1 000 avec un très haut degré d’efficacité et justifie son raisonnement avec précision.",
+            "neutral": "{prénom} compare et ordonne des nombres jusqu’à 1 000 avec beaucoup d’efficacité et justifie son raisonnement avec précision.",
             "feminine": "",
             "masculine": ""
           },
@@ -275,7 +275,7 @@
             "rating": null,
             "category": "application",
             "expectationCodes": ["B1.3"],
-            "neutral": "{prénom} arrondit des nombres naturels à la dizaine ou à la centaine près avec beaucoup d’efficacité, dans divers contextes.",
+            "neutral": "{prénom} arrondit des nombres naturels à la dizaine ou à la centaine près avec efficacité, dans divers contextes.",
             "feminine": "",
             "masculine": ""
           },
@@ -287,7 +287,7 @@
             "rating": null,
             "category": "application",
             "expectationCodes": ["B1.3"],
-            "neutral": "{prénom} arrondit des nombres à la dizaine ou à la centaine près avec un très haut degré d’efficacité et explique quand un arrondi est utile, par exemple pour estimer.",
+            "neutral": "{prénom} arrondit des nombres à la dizaine ou à la centaine près avec beaucoup d’efficacité et explique quand un arrondi est utile, par exemple pour estimer.",
             "feminine": "",
             "masculine": ""
           },
@@ -371,7 +371,7 @@
             "rating": null,
             "category": "communication",
             "expectationCodes": ["B2.3"],
-            "neutral": "{prénom} utilise diverses stratégies de calcul mental, dont l’estimation, pour additionner et soustraire, et explique sa démarche avec beaucoup d’efficacité.",
+            "neutral": "{prénom} utilise diverses stratégies de calcul mental, dont l’estimation, pour additionner et soustraire, et explique sa démarche avec efficacité.",
             "feminine": "",
             "masculine": ""
           },
@@ -383,7 +383,7 @@
             "rating": null,
             "category": "communication",
             "expectationCodes": ["B2.3"],
-            "neutral": "{prénom} choisit la stratégie de calcul mental la mieux adaptée aux nombres en jeu et explique sa démarche avec un très haut degré d’efficacité.",
+            "neutral": "{prénom} choisit la stratégie de calcul mental la mieux adaptée aux nombres en jeu et explique sa démarche avec beaucoup d’efficacité.",
             "feminine": "",
             "masculine": ""
           },
@@ -467,7 +467,7 @@
             "rating": null,
             "category": "habiletes",
             "expectationCodes": ["B2.5"],
-            "neutral": "{prénom} représente et résout des problèmes d’addition et de soustraction avec beaucoup d’efficacité, à l’aide de divers outils et algorithmes.",
+            "neutral": "{prénom} représente et résout des problèmes d’addition et de soustraction avec efficacité, à l’aide de divers outils et algorithmes.",
             "feminine": "",
             "masculine": ""
           },
@@ -479,7 +479,7 @@
             "rating": null,
             "category": "habiletes",
             "expectationCodes": ["B2.5"],
-            "neutral": "{prénom} résout des problèmes d’addition et de soustraction à plusieurs étapes avec un très haut degré d’efficacité et vérifie ses réponses.",
+            "neutral": "{prénom} résout des problèmes d’addition et de soustraction à plusieurs étapes avec beaucoup d’efficacité et vérifie ses réponses.",
             "feminine": "",
             "masculine": ""
           },

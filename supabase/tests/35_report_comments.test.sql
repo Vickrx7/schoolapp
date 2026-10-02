@@ -3,10 +3,12 @@
 -- materials, the subject a learning-skills bank does without, the faith review of a religion bank,
 -- never in a lesson (LXK01), class mode, a substitute plan or on the projector, search, and the
 -- library AI requests that refuse it (supabase/migrations/20270118090000_report_comments_type.sql
--- and 20270118090100_report_comments.sql; DECISIONS D-129, D-131).
+-- and 20270118090100_report_comments.sql; DECISIONS D-129, D-131). Slice S2: « Créer une banque
+-- avec l'IA », its request built from ids, its refusals and the answer turned into a private draft
+-- (20270118090200_report_comments_ai.sql; D-132).
 begin;
 \ir _helpers.psql
-select plan(35);
+select plan(66);
 select tests.build_fixture();
 select tests.build_library_fixture();
 -- The operator's role reads the test ids (the content pack export, section 7).
@@ -315,6 +317,334 @@ select is(
   0, 'a subject filter leaves it out'
 );
 select tests.clear_authentication();
+
+-- ---------------------------------------------------------------------------------------
+-- 8. « Créer une banque avec l'IA » (slice S2, D-132;
+--    supabase/migrations/20270118090200_report_comments_ai.sql). The worker's part is played by
+--    superuser updates of ai_jobs, as apps/worker/src/ai.ts writes them.
+-- ---------------------------------------------------------------------------------------
+
+-- A request as the web server sends it: ids and choices only. `p_changes` replaces keys.
+create function tests.bank_request(p_changes jsonb default '{}')
+returns jsonb
+language sql
+as $$
+  select jsonb_build_object(
+    'scope', 'subject',
+    'period', 'term',
+    'gradeCode', '3',
+    'subjectId', (select id from public.subjects where code = 'fra' and board_id is null),
+    'expectationIds', jsonb_build_array(tests.id('exp_a')),
+    'length', 'medium',
+    'teacherNote', 'Insister sur la lecture à voix haute.'
+  ) || p_changes;
+$$;
+
+-- What the worker records when a job finishes: a usage row, then the job (finishJob).
+create function tests.finish_bank_job(p_job uuid, p_result jsonb)
+returns void
+language plpgsql
+as $$
+declare
+  v_gen uuid;
+begin
+  insert into public.ai_generations (board_id, school_id, user_id, feature, prompt_version,
+    provider, model, status)
+  select j.board_id, j.school_id, j.user_id, j.feature, 'v1', 'fake', 'fake', 'succeeded'
+  from public.ai_jobs j where j.id = p_job
+  returning id into v_gen;
+  update public.ai_jobs
+  set status = 'succeeded', result = p_result, sent_text = 'Banque de commentaires de bulletin…',
+      ai_generation_id = v_gen, finished_at = now()
+  where id = p_job;
+end;
+$$;
+
+-- An answer as the AI gives it once normalized: one point fort for E1 at level 3 (with the
+-- attente's code from `expectationKey`) and one general comment.
+create function tests.bank_answer()
+returns jsonb
+language sql
+as $$
+  select jsonb_build_object(
+    'title', 'Commentaires de bulletin : Français, 3e année',
+    'summary', 'Des points forts et des prochaines étapes.',
+    'keywords', 'bulletin, lecture',
+    'entries', jsonb_build_array(
+      jsonb_build_object('kind', 'strength', 'expectationKey', 'E1', 'skill', null, 'level', 3,
+        'progress', null, 'rating', null, 'category', 'connaissance',
+        'neutral', '{prénom} dégage l’idée principale d’un texte avec une compréhension générale.',
+        'feminine', '', 'masculine', '', 'expectationCodes', jsonb_build_array('T1.2')),
+      jsonb_build_object('kind', 'general', 'expectationKey', null, 'skill', null, 'level', null,
+        'progress', null, 'rating', null, 'category', null,
+        'neutral', 'Les progrès de {prénom} en lecture sont réguliers.', 'feminine', '',
+        'masculine', '', 'expectationCodes', '[]'::jsonb)));
+$$;
+
+select lives_ok(
+  $$insert into public.ai_jobs (board_id, school_id, user_id, feature, input) values
+      (tests.id('board_a'), tests.id('school_a1'), tests.id('teacher_a'), 'report_comment_bank', '{}')$$,
+  'jobs accept the comment bank feature'
+);
+delete from public.ai_jobs where feature = 'report_comment_bank';
+
+-- The preview: exactly what would be sent, built from the database.
+select tests.authenticate_as('teacher_a');
+select is(
+  public.report_comment_bank_ai_preview(tests.id('school_a1'), tests.bank_request(jsonb_build_object(
+    -- Labels sent by a client are never used.
+    'gradeLabels', jsonb_build_array('CE2'), 'subjectLabel', 'Autre chose',
+    'expectations', jsonb_build_array(jsonb_build_object('key', 'E1', 'text', 'Inventé'))))),
+  jsonb_build_object('itemType', 'report_comments', 'scope', 'subject', 'period', 'term',
+    'length', 'medium', 'gradeCodes', jsonb_build_array('3'),
+    'gradeLabels', jsonb_build_array('3e année'),
+    'subjectId', (select id from public.subjects where code = 'fra' and board_id is null),
+    'subjectLabel', 'Français',
+    'expectations', jsonb_build_array(jsonb_build_object('key', 'E1',
+      'expectationId', tests.id('exp_a'), 'code', 'T1.2',
+      'text', 'Dégager l''idée principale d''un texte informatif.', 'kind', 'specific',
+      'strandLabel', null)),
+    'teacherNote', 'Insister sur la lecture à voix haute.'),
+  'the preview has the labels, the attentes with E-keys, codes and texts, and the note: no school, class or student'
+);
+select results_eq(
+  $$select x -> 'subjectId', x -> 'subjectLabel', x -> 'expectations', x -> 'gradeLabels'
+    from (select public.report_comment_bank_ai_preview(tests.id('school_a1'),
+      tests.bank_request('{"scope": "learning_skills", "subjectId": null, "expectationIds": [],
+        "period": "progress", "gradeCode": "5"}')) as x) t$$,
+  $$values ('null'::jsonb, 'null'::jsonb, '[]'::jsonb, '["5e année"]'::jsonb)$$,
+  'a learning-skills bank has no subject and no attente'
+);
+select is(
+  public.report_comment_bank_ai_preview(tests.id('school_a1'), tests.bank_request(jsonb_build_object(
+    'scope', 'religion', 'expectationIds', '[]'::jsonb,
+    'subjectId', (select id from public.subjects where code = 'ere' and board_id is null)))) ->> 'subjectLabel',
+  'Enseignement religieux', 'a religion bank is about Enseignement religieux'
+);
+select is(
+  jsonb_array_length(public.report_comment_bank_ai_preview(tests.id('school_a1'),
+    tests.bank_request('{"expectationIds": []}')) -> 'expectations'),
+  0, 'a subject bank may have no attente (« commentaires généraux »)'
+);
+select tests.clear_authentication();
+
+-- Twelve more attentes of Français, 3e année.
+insert into public.curriculum_expectations (subject_id, grade_code, parent_id, kind, code, text_fr,
+  curriculum_version)
+select (select id from public.subjects where code = 'fra' and board_id is null), '3',
+  tests.id('exp_a_parent'), 'specific', 'T2.' || n, 'Attente ' || n || '.', 'test'
+from generate_series(1, 12) n;
+
+-- Refusals: who may ask (42501).
+update public.module_entitlements set enabled = false
+where school_id = tests.id('school_a2') and module = 'library';
+select tests.authenticate_as('faith_reviewer_a');
+select is(
+  tests.error_of($$select public.report_comment_bank_ai_preview(tests.id('school_a2'), tests.bank_request())$$),
+  '42501', 'a school without the Library module cannot ask'
+);
+select tests.authenticate_as('office_a');
+select is(
+  tests.error_of($$select public.request_report_comment_bank(tests.id('school_a1'), tests.bank_request())$$),
+  '42501', 'office staff cannot ask'
+);
+select tests.authenticate_as('teacher_b');
+select is(
+  tests.error_of($$select public.report_comment_bank_ai_preview(tests.id('school_a1'), tests.bank_request())$$),
+  '42501', 'nor a teacher of another board at this school'
+);
+select tests.authenticate_as('former_teacher');
+select is(
+  tests.error_of($$select public.report_comment_bank_ai_preview(tests.id('school_a1'), tests.bank_request())$$),
+  '42501', 'nor a deactivated account'
+);
+
+-- Refusals: requests the app never sends (22023).
+select tests.authenticate_as('teacher_a');
+select is(
+  array[
+    tests.error_of($$select public.report_comment_bank_ai_preview(tests.id('school_a1'), tests.bank_request('{"scope": "school"}'))$$),
+    tests.error_of($$select public.report_comment_bank_ai_preview(tests.id('school_a1'), tests.bank_request('{"period": "any"}'))$$),
+    tests.error_of($$select public.report_comment_bank_ai_preview(tests.id('school_a1'), tests.bank_request('{"length": "long"}'))$$)
+  ],
+  array['22023', '22023', '22023'], 'a bad scope, report or length is refused'
+);
+select is(
+  array[
+    tests.error_of($$select public.report_comment_bank_ai_preview(tests.id('school_a1'), tests.bank_request('{"gradeCode": ["3", "5"]}'))$$),
+    tests.error_of($$select public.report_comment_bank_ai_preview(tests.id('school_a1'), tests.bank_request('{"gradeCode": "K1", "scope": "learning_skills", "subjectId": null, "expectationIds": []}'))$$)
+  ],
+  array['22023', '22023'], 'two grades, or kindergarten, are refused (one grade, 1re to 8e)'
+);
+select is(
+  tests.error_of($$select public.report_comment_bank_ai_preview(tests.id('school_a1'), tests.bank_request(
+    jsonb_build_object('expectationIds', jsonb_build_array(tests.id('exp_other')))))$$),
+  '22023', 'an attente of another subject or grade is refused'
+);
+select is(
+  tests.error_of($$select public.report_comment_bank_ai_preview(tests.id('school_a1'), tests.bank_request(
+    jsonb_build_object('expectationIds', (select jsonb_agg(id order by code) from public.curriculum_expectations
+      where code ~ '^T(2\.\d+|1\.2)$' and grade_code = '3'))))$$),
+  '22023', '13 attentes are refused'
+);
+select lives_ok(
+  $$select public.report_comment_bank_ai_preview(tests.id('school_a1'), tests.bank_request(
+    jsonb_build_object('expectationIds', (select jsonb_agg(id order by code) from public.curriculum_expectations
+      where code ~ '^T2\.\d+$' and grade_code = '3'))))$$,
+  '12 are accepted'
+);
+select is(
+  array[
+    tests.error_of($$select public.report_comment_bank_ai_preview(tests.id('school_a1'), tests.bank_request(
+      '{"scope": "learning_skills", "expectationIds": []}'))$$),
+    tests.error_of($$select public.report_comment_bank_ai_preview(tests.id('school_a1'), tests.bank_request(
+      '{"scope": "religion", "expectationIds": []}'))$$),
+    tests.error_of($$select public.report_comment_bank_ai_preview(tests.id('school_a1'), tests.bank_request(
+      jsonb_build_object('expectationIds', '[]'::jsonb,
+        'subjectId', (select id from public.subjects where code = 'ere' and board_id is null))))$$)
+  ],
+  array['22023', '22023', '22023'],
+  'the subject fits the scope: none for the learning skills, ERE for religion, never ERE for a subject'
+);
+select is(
+  tests.error_of($$select public.report_comment_bank_ai_preview(tests.id('school_a1'), tests.bank_request(
+    jsonb_build_object('teacherNote', repeat('a', 501))))$$),
+  '22023', 'a note over 500 characters is refused'
+);
+
+-- Asking: the AI switch, then one job per request.
+select tests.clear_authentication();
+update public.schools set ai_enabled = false where id = tests.id('school_a1');
+select tests.authenticate_as('teacher_a');
+select is(
+  tests.error_of($$select public.request_report_comment_bank(tests.id('school_a1'), tests.bank_request())$$),
+  'LXA01', 'AI off for the school is refused'
+);
+select tests.clear_authentication();
+update public.schools set ai_enabled = true where id = tests.id('school_a1');
+select tests.authenticate_as('teacher_a');
+select tests.remember('bank_job', public.request_report_comment_bank(tests.id('school_a1'), tests.bank_request()));
+select is(
+  public.request_report_comment_bank(tests.id('school_a1'), tests.bank_request()),
+  tests.id('bank_job'), 'a second tap while the request is open returns it'
+);
+select is(
+  (select input from public.ai_jobs where id = tests.id('bank_job')),
+  public.report_comment_bank_ai_preview(tests.id('school_a1'), tests.bank_request()),
+  'the job holds exactly what the preview showed'
+);
+select tests.clear_authentication();
+
+-- The answer becomes the teacher's private draft.
+select tests.finish_bank_job(tests.id('bank_job'), tests.bank_answer());
+select tests.remember('ai_bank', (select (result ->> 'itemId')::uuid from public.ai_jobs where id = tests.id('bank_job')));
+select results_eq(
+  $$select j.status::text, i.type::text, i.author_id, i.status::text, i.share_scope::text,
+      i.source::text, i.prompt_version, i.bucket::text, i.school_id
+    from public.ai_jobs j join public.library_items i on i.id = (j.result ->> 'itemId')::uuid
+    where j.id = tests.id('bank_job')$$,
+  $$values ('succeeded', 'report_comments', tests.id('teacher_a'), 'draft', 'private',
+      'ai_generated', 'v1', 'evaluer', tests.id('school_a1'))$$,
+  'the job succeeded with a private AI draft bank by the teacher, in « Évaluer », with its prompt version'
+);
+select results_eq(
+  $$select subject_id, duration_minutes, materials, is_printable, is_projectable, is_interactive,
+      sub_friendly, faith_content
+    from public.library_items where id = tests.id('ai_bank')$$,
+  $$values ((select id from public.subjects where code = 'fra' and board_id is null), null::smallint,
+      null::text, true, false, false, false, false)$$,
+  'its subject, no duration or materials, printable only, never for a substitute'
+);
+select results_eq(
+  $$select (select array_agg(grade_code) from public.library_item_grades where item_id = tests.id('ai_bank')),
+      (select array_agg(expectation_id) from public.library_item_expectations where item_id = tests.id('ai_bank'))$$,
+  $$values (array['3'], array[tests.id('exp_a')])$$,
+  'the grade and the attentes of the request'
+);
+select is(
+  (select content from public.library_item_versions where item_id = tests.id('ai_bank')
+     and language_level_id is null),
+  jsonb_build_object('title', '', 'objective', '', 'teacherNote', '', 'scope', 'subject',
+    'period', 'term', 'entries', jsonb_build_array(
+      jsonb_build_object('kind', 'strength', 'skill', null, 'level', 3, 'progress', null,
+        'rating', null, 'category', 'connaissance', 'expectationCodes', jsonb_build_array('T1.2'),
+        'neutral', '{prénom} dégage l’idée principale d’un texte avec une compréhension générale.',
+        'feminine', '', 'masculine', ''),
+      jsonb_build_object('kind', 'general', 'skill', null, 'level', null, 'progress', null,
+        'rating', null, 'category', null, 'expectationCodes', '[]'::jsonb,
+        'neutral', 'Les progrès de {prénom} en lecture sont réguliers.', 'feminine', '',
+        'masculine', ''))),
+  'one base version: the request''s scope and report and the entries, with the library''s keys only'
+);
+select is(
+  (select count(*)::int from public.audit_log where action = 'library_item.generated'
+     and entity_id = tests.id('ai_bank')
+     and details = jsonb_build_object('ai_job_id', tests.id('bank_job'), 'author_id', tests.id('teacher_a'))),
+  1, 'generating is audited with the job and the author only'
+);
+select tests.authenticate_as('teacher_a');
+select is(
+  (select count(*)::int from public.library_items where id = tests.id('ai_bank')), 1,
+  'the author reads her draft'
+);
+select tests.authenticate_as('teacher_a_other');
+select is(
+  (select count(*)::int from public.library_items where id = tests.id('ai_bank')), 0,
+  'a colleague does not'
+);
+
+-- A learning-skills bank has no subject; a religion bank needs the faith review.
+select tests.authenticate_as('teacher_a');
+select tests.remember('skills_job', public.request_report_comment_bank(tests.id('school_a1'),
+  tests.bank_request('{"scope": "learning_skills", "subjectId": null, "expectationIds": []}')));
+select tests.remember('ere_job', public.request_report_comment_bank(tests.id('school_a1'),
+  tests.bank_request(jsonb_build_object('scope', 'religion', 'expectationIds', '[]'::jsonb,
+    'subjectId', (select id from public.subjects where code = 'ere' and board_id is null)))));
+select tests.clear_authentication();
+select tests.finish_bank_job(tests.id('skills_job'), tests.bank_answer());
+select tests.finish_bank_job(tests.id('ere_job'), tests.bank_answer());
+select results_eq(
+  $$select i.subject_id is null, i.requires_faith_review, i.faith_content,
+      (select count(*)::int from public.library_item_expectations e where e.item_id = i.id)
+    from public.ai_jobs j join public.library_items i on i.id = (j.result ->> 'itemId')::uuid
+    where j.id in (tests.id('skills_job'), tests.id('ere_job')) order by j.id = tests.id('ere_job')$$,
+  $$values (true, false, false, 0), (false, true, true, 0)$$,
+  'a learning-skills bank has no subject; a religion bank has faith content and needs the faith review'
+);
+
+-- An answer that cannot be stored fails the job and leaves nothing behind.
+select tests.authenticate_as('teacher_a');
+select tests.remember('bad_job', public.request_report_comment_bank(tests.id('school_a1'),
+  tests.bank_request('{"length": "short"}')));
+select tests.clear_authentication();
+create temporary table bank_count on commit drop as select count(*) as n from public.library_items;
+select tests.finish_bank_job(tests.id('bad_job'), jsonb_build_object('title', 'Banque',
+  'entries', 'pas une liste'));
+select results_eq(
+  $$select status::text, error_code, result is null from public.ai_jobs where id = tests.id('bad_job')$$,
+  $$values ('failed', 'invalidOutput', true)$$,
+  'a malformed answer turns the job into invalidOutput'
+);
+select is(
+  (select count(*) from public.library_items), (select n from bank_count),
+  'and creates no bank'
+);
+
+-- Permissions.
+select ok(
+  has_function_privilege('authenticated', 'public.report_comment_bank_ai_preview(uuid, jsonb)', 'execute')
+    and has_function_privilege('authenticated', 'public.request_report_comment_bank(uuid, jsonb)', 'execute')
+    and not has_function_privilege('anon', 'public.report_comment_bank_ai_preview(uuid, jsonb)', 'execute')
+    and not has_function_privilege('anon', 'public.request_report_comment_bank(uuid, jsonb)', 'execute'),
+  'signed-in staff may preview and ask; anonymous visitors may not'
+);
+select ok(
+  has_function_privilege('service_role', 'app.report_comment_bank_ai_input(uuid, uuid, jsonb)', 'execute')
+    and not has_function_privilege('authenticated', 'app.report_comment_bank_ai_input(uuid, uuid, jsonb)', 'execute')
+    and not has_function_privilege('anon', 'app.report_comment_bank_ai_input(uuid, uuid, jsonb)', 'execute')
+    and not has_function_privilege('authenticated', 'app.report_comment_bank_from_job(public.ai_jobs)', 'execute'),
+  'the input builder takes a user: the service role only; the trigger''s helper has no grant'
+);
 
 select * from finish();
 rollback;

@@ -14,7 +14,11 @@
  *   pnpm ai:eval --feature library_item --batch --case quiz-5e --yes   # worst case about $0.70
  *   pnpm ai:eval --feature library_levels --provider fake  # « Créer les versions manquantes »
  *
- * `--feature` is differentiate (the default), sub_plan, library_item or library_levels. Reads
+ *   pnpm ai:eval --feature report_comment_bank --provider fake   # « Créer une banque avec l’IA »
+ *   pnpm ai:eval --feature report_comment_bank --case mat-3e-term --yes   # one case, under $1
+ *
+ * `--feature` is differentiate (the default), sub_plan, library_item, library_levels or
+ * report_comment_bank. Reads
  * ANTHROPIC_API_KEY, AI_MODEL and AI_EFFORT from the environment (or apps/web/.env.local).
  *
  * `--batch` (library_item only; bulk generation, DECISIONS D-096 to D-098) sends the cases as one
@@ -44,6 +48,11 @@ import {
   type LibraryItemInput,
 } from '../features/library-item';
 import { libraryLevelsFeature } from '../features/library-levels';
+import {
+  reportCommentBankFeature,
+  type ReportCommentBankAiOutput,
+  type ReportCommentBankInput,
+} from '../features/report-comment-bank';
 import type { LibraryAiVersion } from '../features/library-shared';
 import { subPlanFeature } from '../features/sub-plan';
 import { countedInputTokens, fallbackInputTokens, schemaJsonText, worstCaseUsd } from '../batch';
@@ -56,12 +65,14 @@ import {
   checkDifferentiation,
   checkLibraryItem,
   checkLibraryLevels,
+  checkReportCommentBank,
   checkSubPlan,
   type CheckResult,
 } from './checks';
 import { differentiateCases } from './differentiate-cases';
 import { libraryItemCases } from './library-item-cases';
 import { libraryLevelsCases } from './library-levels-cases';
+import { reportCommentBankCases } from './report-comment-bank-cases';
 import { subPlanCases } from './sub-plan-cases';
 
 const { values } = parseArgs({
@@ -562,6 +573,105 @@ async function libraryLevelsRuns(version: string): Promise<CaseRun[]> {
   return runs;
 }
 
+const MARK_FR: Record<string, string> = {
+  with_difficulty: 'Progresse avec difficulté',
+  well: 'Progresse bien',
+  very_well: 'Progresse très bien',
+  excellent: 'E',
+  good: 'T',
+  satisfactory: 'S',
+  needs_improvement: 'N',
+};
+const KIND_FR: Record<string, string> = {
+  strength: 'Point fort',
+  next_step: 'Prochaine étape',
+  general: 'Commentaire général',
+};
+
+/** A comment bank as the teacher who reads the report sees it, then what was sent. */
+function reportBankAnswer(
+  o: ReportCommentBankAiOutput,
+  input: ReportCommentBankInput,
+  sentText: string,
+): string[] {
+  const answer: string[] = [`**${o.title}** — ${o.summary}`, '', `Mots-clés : ${o.keywords}`, ''];
+  const groups = new Map<string, typeof o.entries>();
+  for (const e of o.entries) {
+    const key = e.skill ?? e.expectationKey ?? '—';
+    groups.set(key, [...(groups.get(key) ?? []), e]);
+  }
+  for (const [key, entries] of groups) {
+    const expectation = input.expectations.find((x) => x.key === key);
+    answer.push(
+      `### ${expectation ? `${expectation.key} ${expectation.code} : ${expectation.text}` : key === '—' ? 'Général' : key}`,
+      '',
+    );
+    for (const e of entries) {
+      const mark =
+        e.level !== null
+          ? `niveau ${e.level}`
+          : (MARK_FR[e.progress ?? e.rating ?? ''] ?? 'toutes les cotes');
+      const forms = [e.feminine && `F : ${e.feminine}`, e.masculine && `M : ${e.masculine}`]
+        .filter(Boolean)
+        .join(' · ');
+      answer.push(
+        `- **${KIND_FR[e.kind] ?? e.kind}** (${mark}${e.category ? `, ${e.category}` : ''}) : ${e.neutral}${forms ? ` (${forms})` : ''}`,
+      );
+    }
+    answer.push('');
+  }
+  answer.push(
+    '<details><summary>Texte envoyé</summary>',
+    '',
+    '```',
+    sentText,
+    '```',
+    '</details>',
+    '',
+  );
+  return answer;
+}
+
+async function reportCommentBankRuns(version: string): Promise<CaseRun[]> {
+  const cases = reportCommentBankCases.filter((c) => !values.case || c.id === values.case);
+  if (!cases.length) throw new Error(`no case named ${values.case}`);
+  // About $0.30 to $0.60 per bank at medium effort: more attentes, more entries.
+  confirmCost(
+    cases.length,
+    'comment banks',
+    cases.reduce((sum, c) => sum + 0.3 + 0.025 * c.input.expectations.length, 0),
+  );
+  const system = await loadPrompt(reportCommentBankFeature.name, version);
+  const runs: CaseRun[] = [];
+  for (const c of cases) {
+    process.stdout.write(`${c.id} … `);
+    const run = await runFeature({
+      feature: reportCommentBankFeature,
+      provider,
+      price,
+      systemPrompt: system,
+      input: c.input,
+      people: c.people ?? [],
+    });
+    const checks = run.output ? checkReportCommentBank(run.output, c.input, c.expect) : null;
+    const answer = run.output ? reportBankAnswer(run.output, c.input, run.sentText ?? '') : [];
+    runs.push({
+      id: c.id,
+      heading: `${c.id}: ${c.title}`,
+      status: run.status,
+      line: statusLine(run),
+      problems: run.problems,
+      checks,
+      answer,
+      costUsd: run.costUsd,
+    });
+    console.log(
+      checks ? `${checks.filter((r) => r.passed).length}/${checks.length} checks` : run.status,
+    );
+  }
+  return runs;
+}
+
 const FEATURES = {
   differentiate: {
     title: 'Texte différencié',
@@ -575,11 +685,16 @@ const FEATURES = {
     feature: libraryLevelsFeature,
     runs: libraryLevelsRuns,
   },
+  report_comment_bank: {
+    title: 'Créer une banque avec l’IA',
+    feature: reportCommentBankFeature,
+    runs: reportCommentBankRuns,
+  },
 } as const;
 const chosen = FEATURES[values.feature as keyof typeof FEATURES];
 if (!chosen) {
   throw new Error(
-    `unknown feature ${values.feature} (differentiate, sub_plan, library_item or library_levels)`,
+    `unknown feature ${values.feature} (differentiate, sub_plan, library_item, library_levels or report_comment_bank)`,
   );
 }
 if (values.batch && values.feature !== 'library_item') {

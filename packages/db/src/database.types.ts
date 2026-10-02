@@ -4219,6 +4219,10 @@ export type Database = {
         Args: { p_unit_id: string; p_lesson_ids: string[] };
         Returns: undefined;
       };
+      report_comment_bank_ai_preview: {
+        Args: { p_school_id: string; p_request: Json };
+        Returns: Json;
+      };
       request_ai_job: {
         Args: { p_school_id: string; p_feature: string; p_input: Json };
         Returns: string;
@@ -4229,6 +4233,10 @@ export type Database = {
       };
       request_library_levels: {
         Args: { p_item_id: string; p_school_id: string; p_level_ids: string[] };
+        Returns: string;
+      };
+      request_report_comment_bank: {
+        Args: { p_school_id: string; p_request: Json };
         Returns: string;
       };
       request_sub_plan_ai: {

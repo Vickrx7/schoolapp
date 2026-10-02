@@ -5,6 +5,7 @@
  * in the teacher's browser, and the device stores comments with `{prénom}`, never the name.
  */
 import type { AchievementCategory } from './questions';
+import { ACHIEVEMENT_QUALIFIERS, qualifierLevels, type RubricLevel } from './rubric';
 import { FIRST_NAME_TOKEN } from './types/report-comments';
 
 export type CommentForm = 'neutral' | 'feminine' | 'masculine';
@@ -113,37 +114,17 @@ export function plainSpaces(text: string): string {
 // Achievement-chart qualifiers of a report card comment
 // ---------------------------------------------------------------------------------------
 
-export type AchievementLevel = 1 | 2 | 3 | 4;
+export type AchievementLevel = RubricLevel;
 
 /**
- * The qualifier of each level in a report card comment (**Assumption**, to be checked with pilot
- * teachers, D-030): the knowledge category qualifies what the student knows or understands; the
- * three others say how effectively the student works.
+ * The qualifier of each level in a report card comment: the achievement chart's, the same as a
+ * rubric's (`ACHIEVEMENT_QUALIFIERS`, one source of truth, D-131). The knowledge category
+ * qualifies what the student knows or understands (« limitée, partielle, générale,
+ * approfondie »); the three others say how effectively the student works (« avec une efficacité
+ * limitée, avec une certaine efficacité, avec efficacité, avec beaucoup d’efficacité »).
+ * **À vérifier** against the official chart (D-030).
  */
-export const REPORT_CARD_QUALIFIERS: Record<
-  AchievementCategory,
-  readonly [string, string, string, string]
-> = {
-  connaissance: ['limitée', 'partielle', 'bonne', 'approfondie'],
-  habiletes: [
-    'avec une efficacité limitée',
-    'avec une certaine efficacité',
-    'avec beaucoup d’efficacité',
-    'avec un très haut degré d’efficacité',
-  ],
-  communication: [
-    'avec une efficacité limitée',
-    'avec une certaine efficacité',
-    'avec beaucoup d’efficacité',
-    'avec un très haut degré d’efficacité',
-  ],
-  application: [
-    'avec une efficacité limitée',
-    'avec une certaine efficacité',
-    'avec beaucoup d’efficacité',
-    'avec un très haut degré d’efficacité',
-  ],
-};
+export const REPORT_CARD_QUALIFIERS = ACHIEVEMENT_QUALIFIERS;
 
 const fold = (s: string) =>
   s
@@ -153,35 +134,24 @@ const fold = (s: string) =>
     .replace(/[’`´]/g, "'")
     .replace(/[\u00a0\u202f]/g, ' ');
 
-// « connaissance(s) / compréhension limitée », « une bonne compréhension », « approfondie ».
-const KNOWLEDGE: readonly [RegExp, RegExp, RegExp, RegExp] = [
-  /(?<!\p{L})limitee?s?(?!\p{L})/u,
-  /(?<!\p{L})partiel(?:le)?s?(?!\p{L})/u,
-  /(?<!\p{L})(?:bonnes? (?:connaissances?|comprehensions?)|genera(?:l|le|ux|les))(?!\p{L})/u,
-  /(?<!\p{L})approfondie?s?(?!\p{L})/u,
-];
-// The longest phrase first: « un très haut degré d'efficacité » before « efficacité limitée ».
-const EFFECTIVENESS: readonly (readonly [AchievementLevel, RegExp])[] = [
-  [4, /(?:tres )?haut degre d'efficacite/u],
-  [3, /beaucoup d'efficacite/u],
-  [2, /certaine efficacite/u],
-  [1, /efficacite limitee/u],
-];
+/**
+ * « Une bonne compréhension »: what teachers often write for knowledge at level 3. Accepted as
+ * level 3 when checking a bank (rubrics keep the chart's word only); banks and the AI write
+ * « générale ».
+ */
+const KNOWLEDGE_LEVEL_3_SYNONYM = /(?<!\p{L})bonnes? (?:connaissances?|comprehensions?)(?!\p{L})/u;
 
-/** The levels whose report card qualifier appears in a text. */
+/**
+ * The levels whose report card qualifier appears in a text: the rubric's detection
+ * (`qualifierLevels`), plus « bonne connaissance / compréhension » as level 3 for knowledge.
+ */
 export function reportQualifierLevels(
   category: AchievementCategory,
   text: string,
 ): AchievementLevel[] {
-  const folded = fold(text);
-  if (category === 'connaissance') {
-    return ([1, 2, 3, 4] as const).filter((level) => KNOWLEDGE[level - 1]!.test(folded));
-  }
-  const levels: AchievementLevel[] = [];
-  for (const [level, phrase] of EFFECTIVENESS) {
-    if (phrase.test(folded)) levels.push(level);
-  }
-  return levels.sort((a, b) => a - b);
+  const levels = new Set(qualifierLevels(category, plainSpaces(text)));
+  if (category === 'connaissance' && KNOWLEDGE_LEVEL_3_SYNONYM.test(fold(text))) levels.add(3);
+  return [...levels].sort((a, b) => a - b);
 }
 
 export interface EntryQualifierProblem {

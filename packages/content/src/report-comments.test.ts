@@ -13,9 +13,11 @@ import {
   fillComment,
   normalizeCommentTemplate,
   plainSpaces,
+  REPORT_CARD_QUALIFIERS,
   reportQualifierLevels,
   unfillComment,
 } from './report-comments';
+import { ACHIEVEMENT_QUALIFIERS, qualifierLevels } from './rubric';
 import { sampleCanonical } from './samples';
 import { contentSchema, emptyContent } from './schemas';
 import { seedItemSchema } from './seed-pack';
@@ -228,18 +230,32 @@ describe('comment bank: {prénom} and elision (D-131)', () => {
 });
 
 describe('comment bank: qualifiers of the achievement chart', () => {
-  it('finds each level’s qualifier', () => {
+  it('finds each level’s qualifier: the achievement chart’s, as rubrics have it (D-131)', () => {
+    expect(REPORT_CARD_QUALIFIERS).toBe(ACHIEVEMENT_QUALIFIERS);
     expect(reportQualifierLevels('habiletes', 'avec une efficacité limitée')).toEqual([1]);
     expect(reportQualifierLevels('communication', 'avec une certaine efficacité')).toEqual([2]);
-    expect(reportQualifierLevels('application', 'avec beaucoup d’efficacité')).toEqual([3]);
-    expect(reportQualifierLevels('application', "avec un très haut degré d'efficacité")).toEqual([
-      4,
+    expect(reportQualifierLevels('application', 'résout des problèmes avec efficacité')).toEqual([
+      3,
+    ]);
+    expect(reportQualifierLevels('application', "avec beaucoup d'efficacité")).toEqual([4]);
+    expect(reportQualifierLevels('communication', 'avec\u00a0une certaine efficacité')).toEqual([
+      2,
     ]);
     expect(reportQualifierLevels('habiletes', 'sans qualificatif')).toEqual([]);
     expect(reportQualifierLevels('connaissance', 'une compréhension limitée')).toEqual([1]);
     expect(reportQualifierLevels('connaissance', 'une connaissance partielle')).toEqual([2]);
-    expect(reportQualifierLevels('connaissance', 'une bonne compréhension')).toEqual([3]);
+    expect(reportQualifierLevels('connaissance', 'une compréhension générale')).toEqual([3]);
     expect(reportQualifierLevels('connaissance', 'une connaissance approfondie')).toEqual([4]);
+  });
+
+  it('accepts « bonne compréhension » as level 3 for knowledge, for banks only', () => {
+    expect(reportQualifierLevels('connaissance', 'une bonne compréhension')).toEqual([3]);
+    expect(reportQualifierLevels('connaissance', 'de bonnes connaissances')).toEqual([3]);
+    // Rubrics keep the chart's word.
+    expect(qualifierLevels('connaissance', 'une bonne compréhension')).toEqual([]);
+    // Only for knowledge, and only « bonne » before what is known.
+    expect(reportQualifierLevels('habiletes', 'une bonne compréhension')).toEqual([]);
+    expect(reportQualifierLevels('connaissance', 'une bonne idée')).toEqual([]);
   });
 
   it('flags an entry that uses another level’s qualifier', () => {
@@ -251,13 +267,13 @@ describe('comment bank: qualifiers of the achievement chart', () => {
           neutral: '{prénom} résout avec beaucoup d’efficacité.',
         }),
       ),
-    ).toEqual([{ field: 'neutral', foundLevel: 3 }]);
+    ).toEqual([{ field: 'neutral', foundLevel: 4 }]);
     expect(
       entryQualifierProblems(
         entry({
           level: 3,
           category: 'habiletes',
-          neutral: '{prénom} résout avec beaucoup d’efficacité.',
+          neutral: '{prénom} résout avec efficacité.',
         }),
       ),
     ).toEqual([]);

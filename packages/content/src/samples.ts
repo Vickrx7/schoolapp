@@ -502,8 +502,7 @@ function samples(common: Common): { [T in LibraryItemType]: ContentOf<T> } {
           rating: null,
           category: 'habiletes',
           expectationCodes: ['B1.2'],
-          neutral:
-            '{prénom} compare et ordonne des nombres jusqu’à 1 000 avec beaucoup d’efficacité.',
+          neutral: '{prénom} compare et ordonne des nombres jusqu’à 1 000 avec efficacité.',
           feminine: '',
           masculine: '',
         },
