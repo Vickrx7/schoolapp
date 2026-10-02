@@ -4,5 +4,9 @@
 -- again (a password change is a DEPLOYMENT.md step).
 \set pgpass `echo "$POSTGRES_PASSWORD"`
 
+-- Not in the server's log (the image logs statements while it initializes).
+set log_statement = 'none';
+set pgaudit.log = 'none';
+
 alter user authenticator with password :'pgpass';
 alter user supabase_auth_admin with password :'pgpass';

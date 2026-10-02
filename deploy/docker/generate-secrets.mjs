@@ -52,7 +52,9 @@ const postgresPassword = password();
 const jwtSecret = password();
 const subPortalPassword = password(40);
 const classPortalPassword = password(40);
-const db = (user, pw) => `postgresql://${user}:${pw}@db:5432/postgres`;
+// Inside Compose's own network (the connection never leaves the server) the self-hosted database
+// has no TLS: the Supabase CLI (migrate) needs to be told so.
+const db = (user, pw) => `postgresql://${user}:${pw}@db:5432/postgres?sslmode=disable`;
 const domain = mode === 'ci' ? 'localhost' : '';
 
 const files = {
