@@ -1,16 +1,23 @@
 #!/usr/bin/env bash
 # Restores a backup made by deploy/backup/backup.sh (DECISIONS D-115).
 #
-#   deploy/backup/restore.sh <lynx-backup-….tar> --identity <age key file> --db-url <url> [--yes] [--force]
+#   deploy/backup/restore.sh <lynx-backup-….tar> --identity <age key file> --signing-key <file> --db-url <url> [--yes] [--force]
 #
-# Run it from a workstation that holds the age private key (never the server), into a database
-# that is already migrated to the backup's migrations (`migrate`, or tools/lite-stack/stack.sh
-# fresh for a drill) with web and worker stopped. It:
+# Run it from a workstation that holds the age private key and the copy of BACKUP_SIGNING_KEY
+# (never the server), into a database that is already migrated to the backup's migrations
+# (`migrate`, or tools/lite-stack/stack.sh fresh for a drill) with web and worker stopped. The
+# signing key file holds the 64 hex digits (or the line BACKUP_SIGNING_KEY=…); without
+# --signing-key, BACKUP_SIGNING_KEY is read from the environment. It:
+#   0. refuses a backup whose signature is missing or wrong, before decrypting anything (anyone
+#      holding the age public key can make an encrypted file: only the signature says the
+#      install made it, unchanged), a manifest that names anything but tables and row counts,
+#      and a dump with anything but what pg_dump writes (no psql command, no other statement);
 #   1. refuses unless the target's migrations equal the backup's, and its Auth migrations include
 #      the backup's (a newer Auth is fine);
 #   2. refuses a target that already holds a board, unless --force (which replaces everything);
 #   3. asks for confirmation, unless --yes;
-#   4. in one transaction: empties the backed-up tables (and Auth's sessions), loads the dump, bans
+#   4. in one transaction (psql --single-transaction, stopping at the first error): empties the
+#      backed-up tables (and Auth's sessions), loads the dump, bans
 #      again every person whose access was removed (an Auth ban can lag behind the database's),
 #      checks every table's row count against the manifest, and hands the events of the hour
 #      before the backup back to the worker's idempotent handlers (queued jobs are not backed up);
@@ -41,10 +48,11 @@ usage() {
   exit 2
 }
 
-file="" identity="" url="" yes=no force=no
+file="" identity="" signing_key_file="" url="" yes=no force=no
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --identity) identity="${2:-}"; shift 2 ;;
+    --signing-key) signing_key_file="${2:-}"; shift 2 ;;
     --db-url) url="${2:-}"; shift 2 ;;
     --yes) yes=yes; shift ;;
     --force) force=yes; shift ;;
@@ -56,6 +64,14 @@ done
 [[ -n "$file" && -n "$identity" && -n "$url" ]] || usage
 [[ -f "$file" ]] || die "no such backup: $file"
 [[ -f "$identity" ]] || die "no such age identity file: $identity"
+if [[ -n "$signing_key_file" ]]; then
+  [[ -f "$signing_key_file" ]] || die "no such signing key file: $signing_key_file"
+  signing_key="$(read_signing_key "$signing_key_file")"
+else
+  signing_key="${BACKUP_SIGNING_KEY:-}"
+fi
+[[ "$signing_key" =~ ^[0-9a-fA-F]{64}$ ]] ||
+  die "the backups' signing key is needed (--signing-key <file>, or BACKUP_SIGNING_KEY): 64 hex digits"
 
 umask 077
 work="$(mktemp -d)"
@@ -63,6 +79,15 @@ trap 'rm -rf "$work"' EXIT
 
 tar -xf "$file" -C "$work" manifest.json.age dump.sql.gz.age ||
   die "$file is not a backup made by backup.sh"
+
+# 0. The signature, before anything is decrypted: only the install's key can have made it.
+tar -xf "$file" -C "$work" signature 2> /dev/null ||
+  die "$file is not signed: refusing to restore it (only backups signed with BACKUP_SIGNING_KEY are restored)"
+expected_signature="hmac-sha256:v1 $(backup_signed_text "$work" | hmac_sha256_hex "$signing_key")"
+[[ "$(head -c 200 "$work/signature" | tr -d '\n')" == "$expected_signature" ]] ||
+  die "the backup's signature is wrong: it was not made by this install with this key, or it was changed afterwards. Refusing to restore it."
+log "signature checked"
+
 age -d -i "$identity" -o "$work/manifest.json" "$work/manifest.json.age" ||
   die "cannot decrypt the backup with $identity"
 manifest="$work/manifest.json"
@@ -73,9 +98,39 @@ manifest="$work/manifest.json"
 created_at="$(jq -r '.createdAt' "$manifest")"
 [[ "$created_at" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$ ]] ||
   die "the manifest's time is not a UTC time"
-jq -e '.counts | keys | all(test("^(public|auth)\\.[a-z0-9_]+$"))' "$manifest" > /dev/null ||
-  die "the manifest names a table outside public and auth"
-log "backup of $created_at (release $(jq -r '.release' "$manifest"), $(jq -r '.serverVersion' "$manifest"))"
+# Every count is a table of public or auth and a whole number: they are written into SQL below.
+jq -e '(.counts | type == "object") and (.counts | length > 0)
+    and (.counts | to_entries | all(
+      (.key | test("^(public|auth)\\.[a-z0-9_]+$"))
+      and (.value | type == "number" and . >= 0 and . == floor and . < 1e15)))' "$manifest" > /dev/null ||
+  die "the manifest's counts must be tables of public and auth with whole numbers of rows"
+jq -e '(.migrations | type == "array") and (.migrations | all(type == "string" and test("^[0-9]{14}$")))
+    and (.authMigrations | type == "array") and (.authMigrations | all(type == "string" and test("^[0-9]{1,20}$")))' \
+  "$manifest" > /dev/null || die "the manifest's migration versions are not versions"
+log "backup of $created_at (release $(jq -r '.release | tostring | .[0:40]' "$manifest"), $(jq -r '.serverVersion | tostring | .[0:80]' "$manifest"))"
+
+# The dump holds what pg_dump writes for data and nothing else (no psql command, no other
+# statement), checked in full before anything is loaded: comments, SET lines, the search path,
+# sequence values, COPY blocks (any data until their `\.`), and pg_dump's own \restrict and
+# \unrestrict lines. A backslash anywhere else would be a psql command run on this machine.
+dump_lines_ok() {
+  awk '
+    copying { if ($0 == "\\.") copying = 0; next }
+    /^$/ || /^--[^\\]*$/ { next }
+    /^SET [a-z_]+ = [^;\\]*;$/ { next }
+    /^SELECT pg_catalog\.set_config\('"'"'search_path'"'"', '"'"''"'"', false\);$/ { next }
+    /^SELECT pg_catalog\.setval\('"'"'[^'"'"'\\]+'"'"', [0-9]+, (true|false)\);$/ { next }
+    /^COPY [^;\\]+ FROM stdin;$/ { copying = 1; next }
+    /^\\(restrict|unrestrict) [A-Za-z0-9]+$/ { next }
+    { bad = NR; exit }
+    END {
+      if (bad) { printf "restore: line %d of the dump is not something pg_dump writes\n", bad > "/dev/stderr"; exit 1 }
+      if (copying) { print "restore: the dump ends inside a COPY block" > "/dev/stderr"; exit 1 }
+    }
+  '
+}
+age -d -i "$identity" "$work/dump.sql.gz.age" | gunzip -c | dump_lines_ok ||
+  die "the dump holds something pg_dump does not write: refusing to load it"
 
 # 1. Migrations: equal; Auth's: a superset.
 jq -r '.migrations[]' "$manifest" > "$work/backup-migrations"
@@ -117,7 +172,6 @@ events="$(printf "'%s'," "${REDISPATCH_EVENTS[@]}")"
 events="${events%,}"
 
 cat > "$work/pre.sql" <<SQL
-begin;
 set session_replication_role = replica;
 truncate table $truncate_list;
 SQL
@@ -166,7 +220,6 @@ with handed_back as (
 )
 select count(*) as redispatched from handed_back \gset
 
-commit;
 \echo restore: loaded; :banned deactivated people banned again; :redispatched recent events handed back to the worker
 SQL
 
@@ -183,7 +236,7 @@ log "loading (one transaction)"
       { print }
     '
   cat "$work/post.sql"
-} | "$PSQL" --dbname="$url" -X -q -o /dev/null -v ON_ERROR_STOP=1 -f - ||
+} | "$PSQL" --dbname="$url" -X -q -o /dev/null -v ON_ERROR_STOP=1 --single-transaction -f - ||
   die "the restore failed and was rolled back: the target is as it was"
 
 # 5. What is left to do by hand.

@@ -135,6 +135,7 @@ value from another install or from this repository.
 | -------------------------------------------------------- | ------------ | ---------------- | ------------------------------------------------------------------------ |
 | `BACKUP_DATABASE_URL`                                    | **yes**      | board: generated | The database as its owner, in session mode                               |
 | `BACKUP_AGE_RECIPIENT`                                   | no           | empty            | The **public** key from `age-keygen` (`age1…`); several, space-separated |
+| `BACKUP_SIGNING_KEY`                                     | **yes**      | generated        | Signs every backup (64 hex digits). Keep a copy with the age key (3.7)   |
 | `BACKUP_S3_BUCKET`, `BACKUP_S3_PREFIX`                   | no           | empty            | Optional copy to S3                                                      |
 | `BACKUP_S3_REGION`                                       | no           | `ca-central-1`   |                                                                          |
 | `BACKUP_S3_ACCESS_KEY_ID`, `BACKUP_S3_SECRET_ACCESS_KEY` | **yes**      | empty            | A key that may only put objects in the bucket                            |
@@ -155,6 +156,7 @@ value from another install or from this repository.
 | `SMTP_ADMIN_EMAIL`, `SMTP_SENDER_NAME`                          | no      | `Lynx École`  | The sign-in e-mail's sender                                                           |
 | `AUTH_EMAIL_MAX_FREQUENCY`                                      | no      | `60s`         | One code per address per interval                                                     |
 | `AUTH_EMAIL_RATE_LIMIT`                                         | no      | 100           | Sign-in e-mails per hour, for the whole install                                       |
+| `AUTH_RATE_LIMIT_OTP`, `AUTH_RATE_LIMIT_VERIFY`                 | no      | 60, 60        | Code requests and code checks per client address per 5 minutes (a school shares one)  |
 | `GOTRUE_SESSIONS_TIMEBOX`, `GOTRUE_SESSIONS_INACTIVITY_TIMEOUT` | no      | `168h`, `12h` | Sessions end after 7 days, or 12 hours without activity                               |
 
 **Compose itself:** `COMPOSE_FILE` (which files), `LOG_DRIVER` (`journald`), and in CI only
@@ -270,13 +272,18 @@ The board admin then signs in, accepts the pilot terms and invites the staff in 
 1. On the operator's workstation (never the server): `age-keygen -o lynx-backup.key`. Put the
    printed public key (`age1…`) in `BACKUP_AGE_RECIPIENT`. Keep the key file offline, with a second
    copy in a vault. Without it no backup can be read.
-2. An S3 bucket in `ca-central-1`: versioning on; a lifecycle rule that expires current objects
+2. Copy `BACKUP_SIGNING_KEY` from `.env` (`generate-secrets.mjs` made it) into a file next to the
+   age key, `lynx-backup-signing.key`, and into the vault. Every backup is signed with it, and
+   `restore.sh` refuses a backup whose signature it cannot check: the age public key on the server
+   lets anyone make an encrypted file, the signature says this install made it, unchanged. Never
+   store the signing key with the backups (not in the bucket).
+3. An S3 bucket in `ca-central-1`: versioning on; a lifecycle rule that expires current objects
    after 30 days and **noncurrent versions after 1 day**; public access blocked.
-3. An IAM user whose only permission is `s3:PutObject` on that bucket; its keys go in
+4. An IAM user whose only permission is `s3:PutObject` on that bucket; its keys go in
    `BACKUP_S3_ACCESS_KEY_ID` and `BACKUP_S3_SECRET_ACCESS_KEY`.
-4. The nightly job: `deploy/host/lynx-backup.cron` to `/etc/cron.d/lynx-backup` (06:30 UTC, which
+5. The nightly job: `deploy/host/lynx-backup.cron` to `/etc/cron.d/lynx-backup` (06:30 UTC, which
    is 01:30 or 02:30 in Toronto), with the checkout's path.
-5. Try it once: `docker compose run --rm backup`, then « État du système » shows the backup.
+6. Try it once: `docker compose run --rm backup`, then « État du système » shows the backup.
 
 Supabase's own daily backups (7 days on Pro) are the first way back; ours are the copy outside
 Supabase.
@@ -376,13 +383,19 @@ proxies from the right; throttling of substitute codes and class devices depends
   `X-Forwarded-For` and keep `Host`, and set `TRUSTED_PROXY_HOPS=2`.
 - Reached without a proxy, a client could write its own address: the per-network and per-device
   delays would no longer hold (the code's strength and the global cap of failures still do).
+- Staff sign-in (D-121) uses the same address: the app's own limits on wrong codes per network,
+  and, board-hosted, Supabase Auth's limits per address, which the web server passes to Auth in
+  `X-Lynx-Client-Ip` (`GOTRUE_RATE_LIMIT_HEADER` in `compose.supabase.yml`; Auth is reachable only
+  from inside, so no client can set it). When the address cannot be told (`TRUSTED_PROXY_HOPS`
+  wrong), neither applies per network: the per-person limits still do.
 
 ## 6. Backups and restore
 
 **What a backup is.** `lynx-backup-<UTC time>.tar` in the `backups` volume (and S3), holding the
 data of the `public` and `auth` schemas (without sessions, sign-in tokens and Auth's log) and a
-manifest (release, migrations, row counts), both encrypted with `age`. The dump is never written
-unencrypted. Keys and `.env` are never in a backup.
+manifest (release, migrations, row counts), both encrypted with `age`, and a `signature`
+(HMAC-SHA256 with `BACKUP_SIGNING_KEY`). The dump is never written unencrypted. Keys and `.env`
+are never in a backup.
 
 **Taking one by hand:** `docker compose run --rm backup`.
 
@@ -395,10 +408,14 @@ hours):
 3. Prepare an empty database at the backup's migrations: a fresh install (`up` with a new `db-data`
    volume, board-hosted) or a new Supabase project, then `migrate`.
 4. Restore:
-   `deploy/backup/restore.sh lynx-backup-….tar --identity lynx-backup.key --db-url <owner URL>`.
-   It checks the migrations, refuses a database that already has a board (unless `--force`),
-   loads everything in one transaction, bans again everyone whose access was removed, compares
-   every table's row count with the manifest, and hands recent events back to the worker.
+   `deploy/backup/restore.sh lynx-backup-….tar --identity lynx-backup.key --signing-key lynx-backup-signing.key --db-url <owner URL>`.
+   It checks the signature before decrypting anything and refuses an unsigned or altered backup,
+   a manifest whose counts are not tables and numbers, and a dump holding anything but what
+   pg_dump writes for data (a psql command or another statement never runs on your machine). It
+   checks the migrations, refuses a database that already has a board (unless `--force`), loads
+   everything in one transaction (`--single-transaction`, stopping at the first error), bans again
+   everyone whose access was removed, compares every table's row count with the manifest, and
+   hands recent events back to the worker.
 5. Do what it prints: re-apply access removals made after the backup's time (from the board's
    records and the audit log), and tell staff to sign in again (sessions are not restored).
 6. Start web and worker (`docker compose up -d --wait`), then check `/api/health/ready` and
@@ -427,6 +444,12 @@ first, which takes a backup when migrations are pending) and checks that the web
 - Rolling back means the previous tag plus a restore of the backup `migrate` took.
 - Rebuild monthly even without a new release, for the base images' security updates
   (`docker compose build --pull` then `docker compose up -d --wait`).
+- **Upgrading an install made before backups were signed:** add `BACKUP_SIGNING_KEY` (`openssl
+rand -hex 32`) to `.env` under the backup settings, and copy it next to the age key, before the
+  upgrade: `migrate` takes a signed backup, and `backup.sh` refuses to run without the key. Older
+  backups have no signature and `restore.sh` refuses them; keep the previous release's
+  `restore.sh` for them until they age out (30 days). Board-hosted, also add `AUTH_RATE_LIMIT_OTP=60`
+  and `AUTH_RATE_LIMIT_VERIFY=60` (or leave them out: those are the defaults).
 - Record the access first (`--reason migration`).
 
 ## 8. Secrets and rotation
@@ -442,6 +465,7 @@ first, which takes a backup when migrations are pending) and checks that the web
 | `POSTGRES_PASSWORD` (board-hosted)                                | `docker compose exec db psql -U supabase_admin -d postgres` then `alter role postgres`, `authenticator` and `supabase_auth_admin` `with password '…'`; update `.env` (and the database URLs); `docker compose up -d` |
 | SMTP, Anthropic, S3 keys                                          | At the provider, then `.env`, then `docker compose up -d`                                                                                                                                                            |
 | The backup key                                                    | `age-keygen` a new one, put both public keys in `BACKUP_AGE_RECIPIENT` for 30 days, then only the new one                                                                                                            |
+| `BACKUP_SIGNING_KEY`                                              | `openssl rand -hex 32` into `.env` and next to the age key; keep the old one with it for 30 days (older backups need it to restore)                                                                                  |
 
 Generate a key: `node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`.
 
@@ -482,6 +506,10 @@ Generate a key: `node -e "console.log(require('crypto').randomBytes(32).toString
 - **Sign-in codes do not arrive:** check the mail relay or SES (SPF, DKIM, DMARC for the sending
   domain), the rate limit, and the board's mail filtering. A code is valid one hour; Auth sends one
   per address per interval (`AUTH_EMAIL_MAX_FREQUENCY`).
+- **« Trop de codes erronés » / « Trop de tentatives de connexion »:** the sign-in throttle (D-121):
+  five wrong codes need a new code, and limits per address and per network wait for minutes (or,
+  after twenty wrong codes in a day, hours). The link in the code's e-mail always works. A whole
+  school held back at once means `TRUSTED_PROXY_HOPS` is wrong (section 5).
 - **« Les invitations ne sont pas configurées sur ce serveur. »:** the worker lacks
   `SUPABASE_URL` or `SUPABASE_SERVICE_ROLE_KEY`; its start line says `staffAccounts: off`.
 - **Substitutes or class devices are throttled together:** `TRUSTED_PROXY_HOPS` does not match the

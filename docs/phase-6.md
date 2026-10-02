@@ -24,7 +24,7 @@ and `docs/demo-script.md` (the board demo, kept true by `apps/web/e2e/demo.spec.
 - « Administration du conseil »: « Pour bien démarrer le conseil » (what is left to set up), « État
   du système » (the background service, the last backup and the last clean-up) and « Conservation
   des données » (the board's retention).
-- « Personnel »: everyone with a role in the board (« Active », « Jamais connectée », « Accès
+- « Personnel »: everyone with a role in the board (« Accès actif », « Aucune connexion », « Accès
   retiré »), « Inviter une personne » (the worker creates the account; the page gives a French or
   English message to send by e-mail or text; no invitation e-mail leaves our servers), and each
   person's page: add or remove a role, « Retirer l'accès » and « Rétablir l'accès ».
@@ -129,6 +129,9 @@ Settings this phase adds or renames (the README's table has them all):
 | `staff_invitations`                                                   | e-mail, name, title, role, school, status, error code, inviter               | the board's admins                               | pending 14 days; processed 90 days        |
 | `users.terms_version`, `terms_accepted_at`, `onboarding_dismissed_at` | the pilot terms accepted, when; the checklist hidden                         | the person only (`my_onboarding_state`)          | with the account                          |
 | `classes.sample_owner_id`, `students_purged_at`                       | a sample class's owner; when a class's students were purged                  | the class team                                   | with the class                            |
+| `classes.students_purge_notice_on`                                    | the first night the year-end notice showed (review fix C4)                   | the class team                                   | with the class                            |
+| `sign_in_attempts`                                                    | keyed hashes of an address and a network, kind, time (D-121)                 | nobody through the API                           | 2 days                                    |
+| `app.install_secrets`                                                 | the install's random key for those hashes                                    | the database owner only; never in backups        | with the install                          |
 | `feedback`                                                            | kind, message, page template, error reference, release, device, language     | the board's admins (sender only if they agreed)  | 365 days                                  |
 | `audit_action_catalog`, `system_heartbeats`                           | who may read each action; the last run of each service with counts           | nobody through the API; board admins see a state | catalogue fixed; heartbeats replaced      |
 | Auth's own tables                                                     | e-mails, sign-in times, sessions' IP and browser, Auth's log                 | nobody through the app                           | sessions 7 days or 12 h idle; log 90 days |
@@ -244,6 +247,56 @@ sender-confirmed first names (board admins only, 365 days); the end-of-year firs
 (domain unit tests only, not in a browser test); « Signaler ce problème » on an error page (its
 `/commentaires?ref=` target is tested).
 
+## Final review fixes, round A (code and data, 2026-10-02)
+
+The final review (correctness, security, UX) found what follows; round A fixed the code and data.
+Migration `20261201090500_phase6_review_fixes.sql`, pgTAP `32_phase6_review_fixes`.
+
+- **C1 (high) — the class purge deleted current plans.** A teacher who kept last year's class had
+  its blocks in every new plan; a year after that class's year, the nightly purge deleted her
+  upcoming plans, released ones included, every night. Plans now cover only classes whose school
+  year includes the day (`sub_plan_sources`, the builder's `classesOn`, « Aujourd'hui »), and the
+  purge deletes only plans of the class's own year (a later plan loses only its link). pgTAP 32 and
+  `retention.int.test.ts` (the reviewer's case, two nights).
+- **C2 — the worker could deadlock its pool on invitations.** One connection per job; the pool
+  fails a checkout after 30 s. `staff.int.test.ts`: four existing-account invitations at once on a
+  pool sized as the worker's.
+- **C3 — an unban that failed after an invitation completed was never retried.** A delivery for a
+  `ready` invitation syncs its account again. `staff.int.test.ts` (Auth fails the first unban).
+- **C4 — a year moved into the past purged that night without notice.** The first night of the
+  notice is recorded, and the purge waits 60 days after it (`classPurgeDate`). pgTAP 32, unit tests.
+- **S1 (high) — staff sign-in codes were not throttled board-hosted.** The app's own throttle
+  (D-121) and Auth's per-address limits through `X-Lynx-Client-Ip`. pgTAP 32 and
+  `e2e/sign-in.spec.ts` (five wrong codes lock the code; a new code works).
+- **S2 — feedback stored students' first names.** They are replaced with « [élève] » before
+  storing, for office staff too. Unit tests, pgTAP 32, `feedback.spec.ts`.
+- **S3 — `delete-user` left the person's invitations.** Deleted, by account and address. pgTAP 32.
+- **S4 — `restore.sh` ran whatever a forged backup held.** Backups are signed
+  (`BACKUP_SIGNING_KEY`); the restore checks the signature first, the manifest's counts and every
+  dump line, and loads in one transaction. `deploy/ci/restore-refusals.sh` in the backup CI job.
+- **S5 — an invitation completed after its inviter lost access.** Cancelled by the system. pgTAP 32.
+- **S6 — `?next=` keeps its query string** across sign-in and « Bienvenue ». Not changed: it only
+  ever leads to a page of the app, and every page checks access again; a crafted link can only
+  open a filtered view.
+- **S7 — on hosted Supabase, Auth's per-address limits count the web server's address** for
+  everyone. Covered by S1 for the guessing risk (the app's throttle counts per person and per
+  client network); Supabase's own limits stay install-wide there until hosted Supabase can be
+  given the client's address. Watch for 429s at the morning peak.
+- **UX (U2–U13, U15–U19):** « Pour bien commencer » reachable from « Profil » after « Masquer »,
+  with a toast saying so; neutral staff statuses (« Accès actif », « Aucune connexion », « Personne
+  désignée… »); board tabs scroll to the current section on phones, with an edge cue; « État du
+  système » says « pas encore … prévu » on install day; « 1er » for the first of a month
+  everywhere; the sample class explained once; « Commentaires » named on phones; the direction's
+  phone bar has five items; « Plus tard » and « Ce qui a changé » for newer terms (D-110); « Retour
+  à l'accueil » on not-found pages, which are pages with a heading, as the error page is (with its
+  tab title); « Journal d'audit » wording (no duplicated issuer, « aucune alerte », « Type de
+  personne », « Historique de cette personne ») and its place in the navigation; the invitation's
+  title is a list (Mme, M., Mx), the role editor's fields full width; release months that are not in
+  the future; the feedback page's error advice only with a reference, the board's feedback times
+  as the log writes them; French spacing (`tools/i18n/typography.mjs`, checked by a unit test) and
+  curly quotes in the English « Conseil »; the privacy page leads back to the substitute portal.
+- **Round B** (privacy wording, U1 and U14) follows.
+
 ## Deviations from the plan
 
 - **No `versions.env`:** the images are pinned by digest in `compose.yml` and
@@ -267,10 +320,10 @@ sender-confirmed first names (board admins only, 365 days); the end-of-year firs
 
 | Kind                     |                      Count | What Phase 6 added                                                                                                                                                                                                                      |
 | ------------------------ | -------------------------: | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Unit (`pnpm test`)       |                      1,274 | scrubbing (vectors and real error texts), logs, retention dates, sample classes, invitation messages, CSV, audit filters and labels, the audit catalogue against every migration, navigation, CLI commands and their URLs, ESLint rules |
-| Database (pgTAP)         |                      1,647 | files 27 to 31: accounts, audit viewer, retention, onboarding and feedback, the security review                                                                                                                                         |
-| Integration (`test:int`) | 90 (and 3 after a restore) | staff accounts against the stack's real Auth, retention, health, the schema guard, restore re-dispatch, a plan refresh whose absence is deleted mid-build                                                                               |
-| Browser (Playwright)     |                        128 | « Conseil » (desktop and phone), « Direction », « Journal d'audit » (desktop and phone), onboarding (desktop and phone), feedback, legal pages, operations, the Docker smoke test, the demo                                             |
+| Unit (`pnpm test`)       |                      1,292 | scrubbing (vectors and real error texts), logs, retention dates, sample classes, invitation messages, CSV, audit filters and labels, the audit catalogue against every migration, navigation, CLI commands and their URLs, ESLint rules |
+| Database (pgTAP)         |                      1,690 | files 27 to 32: accounts, audit viewer, retention, onboarding and feedback, the security review, the final review's fixes                                                                                                               |
+| Integration (`test:int`) | 93 (and 3 after a restore) | staff accounts against the stack's real Auth, retention, health, the schema guard, restore re-dispatch, a plan refresh whose absence is deleted mid-build                                                                               |
+| Browser (Playwright)     |                        130 | « Conseil » (desktop and phone), « Direction », « Journal d'audit » (desktop and phone), onboarding (desktop and phone), feedback, legal pages, operations, the Docker smoke test, the demo                                             |
 
 CI runs all of them on every push, plus `backup-restore` (a backup restored into an empty
 PostgreSQL 17 database, then the pgTAP suite on it) and `docker-smoke` (the board-hosted install

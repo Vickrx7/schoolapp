@@ -19,8 +19,15 @@ export function LoginForm({ next }: { next: string }) {
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
-  const message = (key: string) => {
-    if (key === 'invalidCode' || key === 'tooManyAttempts') return t(key);
+  const message = (key: string, retryAfterMinutes?: number) => {
+    if (key === 'invalidCode' || key === 'tooManyAttempts' || key === 'codeLocked') return t(key);
+    // The sign-in throttle (D-121): how long, in minutes or, past two hours, in hours.
+    if (key === 'signInWait') {
+      const minutes = retryAfterMinutes ?? 15;
+      return minutes > 120
+        ? t('signInWaitHours', { hours: Math.ceil(minutes / 60) })
+        : t('signInWait', { minutes });
+    }
     return tErrors(key === 'invalid' ? 'invalid' : 'unexpected');
   };
 
@@ -31,7 +38,7 @@ export function LoginForm({ next }: { next: string }) {
       try {
         const result = await requestLoginCode(email);
         if (result.ok) setStep('code');
-        else setError(message(result.error));
+        else setError(message(result.error, result.retryAfterMinutes));
       } catch {
         setError(tErrors('network'));
       }
@@ -48,7 +55,7 @@ export function LoginForm({ next }: { next: string }) {
           // The pilot terms first, then the page asked for (D-109).
           router.replace(result.data.termsRequired ? welcomeHref(next) : next);
           router.refresh();
-        } else setError(message(result.error));
+        } else setError(message(result.error, result.retryAfterMinutes));
       } catch {
         setError(tErrors('network'));
       }

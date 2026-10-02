@@ -63,51 +63,52 @@ Mon Tableau, Cartable, Ardoise). No availability or trademark check has been don
 
 **Commits on #2:**
 
-| Commit    | What                                                                                     |
-| --------- | ---------------------------------------------------------------------------------------- |
-| `9bba837` | Phase 2 hardening: privacy layer, AI limits, the « Différencier » screens (41 fixes)     |
-| `25f9659` | Phase 3 groundwork: the plan builder (`packages/domain`) and the database behind it      |
-| `f6a6816` | Merge of the fact-checked handoff note from PR #1's branch                               |
-| `16cc8fa` | Absence form, absence page, plan review and editing, Fiche, worker refresh               |
-| `e46a56f` | Codes, the substitute portal, the office and direction board                             |
-| `9aa32d8` | CI prints the page snapshot of a failed browser test                                     |
-| `36c5b91` | Office account kept in French for the browser tests (CI fix)                             |
-| `21f9ba6` | The substitute's report, the teacher's confirmation, PDFs                                |
-| `edd830b` | Phase 3b: « Consignes détaillées (IA) » and the students' activity sheets                |
-| `31412d8` | Phase 3 hardening (26 review findings) and the Phase 3 docs, decisions D-047 to D-060    |
-| `6f29480` | Phase 3 tests: ending the day unsent, step undo, the editor staying open                 |
-| `8230bb1` | Phase 4 head start: `@lynx/content` and the 29 demo resources (merged branches)          |
-| `5200997` | Phase 4 database: saving, review, sharing, board approval; D-061 to D-081                |
-| `166483b` | Library item page, printing, the demo seed and the curriculum import                     |
-| `b1cdcbe` | Library search, browsing by attente and PDFs (and a PDF font fix for all PDFs)           |
-| `c871b45` | Marketing: bilingual landing page, board fact sheet, promo script v2 (and 2 fixes)       |
-| `ebe1a8f` | Writing, review, sharing, planning and AI generation of library resources                |
-| `703da28` | Substitute plans use reviewed library resources                                          |
-| `9d45e0e` | Phase 4 hardening (30 review findings) and the Phase 4 docs                              |
-| `958fd3f` | The ratings table in the Phase 4 security review                                         |
-| `e0ab7de` | Phase 5 head start: class-mode slides and the content pack format (pure code, tests)     |
-| `d37bbb6` | Phase 5 head start: class portal codes and gate, coverage and lineage views (pure)       |
-| `219d5bb` | Library expansion: 49 more demo resources (78) and the curriculum sample, « À vérifier » |
-| `a01e06d` | Phase 5 foundation: D-082 to D-101, settings, messages, empty hooks, admin, worker tasks |
-| `d76f084` | Phase 5: class-mode database, « Présenter à la classe », « Adapter », « Votre avis »     |
-| `f7a0ce6` | Phase 5: quizzes on class devices (`/jouer`) and « Couverture du curriculum »            |
-| `587a0e1` | Phase 5: bulk generation of board drafts and content packs (admin CLI)                   |
-| `24ad631` | Phase 5 hardening (14 review findings) and the Phase 5 docs                              |
-| `3aaf668` | Marketing: app screenshots; `88bb93b` the library and class mode shown as available      |
-| `3e3f1bb` | Phase 6 foundation: D-102 to D-120, shared schema, settings, navigation, stubs           |
-| `ca21d2c` | Phase 6 S1: invitations, roles, access, deletions, sample classes, settings (database)   |
-| `0d85e15` | Phase 6 S2: audit viewer, AI usage totals, retention, heartbeats (database, worker, CLI) |
-| `598ee7b` | Phase 6 S3a: scrubbed logs, error references, health checks, security headers            |
-| `8010537` | Phase 6 S3b: Docker images, Compose installs, encrypted backups and restores, CI jobs    |
-| `4612c53` | Phase 6 S4: « Conseil » for board admins, and the worker's staff accounts                |
-| `8a5356a` | Phase 6 S5: « Tableau de bord de la direction » and « Journal d'audit » (with its CSV)   |
-| `2c0abb2` | Phase 6 S6: « Bienvenue », the checklist, the sample class, feedback, release notes      |
-| (latest)  | Phase 6 S7: PRIVACY, DEPLOYMENT, the pilot guide, the demo script and its test, review   |
+| Commit    | What                                                                                      |
+| --------- | ----------------------------------------------------------------------------------------- |
+| `9bba837` | Phase 2 hardening: privacy layer, AI limits, the « Différencier » screens (41 fixes)      |
+| `25f9659` | Phase 3 groundwork: the plan builder (`packages/domain`) and the database behind it       |
+| `f6a6816` | Merge of the fact-checked handoff note from PR #1's branch                                |
+| `16cc8fa` | Absence form, absence page, plan review and editing, Fiche, worker refresh                |
+| `e46a56f` | Codes, the substitute portal, the office and direction board                              |
+| `9aa32d8` | CI prints the page snapshot of a failed browser test                                      |
+| `36c5b91` | Office account kept in French for the browser tests (CI fix)                              |
+| `21f9ba6` | The substitute's report, the teacher's confirmation, PDFs                                 |
+| `edd830b` | Phase 3b: « Consignes détaillées (IA) » and the students' activity sheets                 |
+| `31412d8` | Phase 3 hardening (26 review findings) and the Phase 3 docs, decisions D-047 to D-060     |
+| `6f29480` | Phase 3 tests: ending the day unsent, step undo, the editor staying open                  |
+| `8230bb1` | Phase 4 head start: `@lynx/content` and the 29 demo resources (merged branches)           |
+| `5200997` | Phase 4 database: saving, review, sharing, board approval; D-061 to D-081                 |
+| `166483b` | Library item page, printing, the demo seed and the curriculum import                      |
+| `b1cdcbe` | Library search, browsing by attente and PDFs (and a PDF font fix for all PDFs)            |
+| `c871b45` | Marketing: bilingual landing page, board fact sheet, promo script v2 (and 2 fixes)        |
+| `ebe1a8f` | Writing, review, sharing, planning and AI generation of library resources                 |
+| `703da28` | Substitute plans use reviewed library resources                                           |
+| `9d45e0e` | Phase 4 hardening (30 review findings) and the Phase 4 docs                               |
+| `958fd3f` | The ratings table in the Phase 4 security review                                          |
+| `e0ab7de` | Phase 5 head start: class-mode slides and the content pack format (pure code, tests)      |
+| `d37bbb6` | Phase 5 head start: class portal codes and gate, coverage and lineage views (pure)        |
+| `219d5bb` | Library expansion: 49 more demo resources (78) and the curriculum sample, « À vérifier »  |
+| `a01e06d` | Phase 5 foundation: D-082 to D-101, settings, messages, empty hooks, admin, worker tasks  |
+| `d76f084` | Phase 5: class-mode database, « Présenter à la classe », « Adapter », « Votre avis »      |
+| `f7a0ce6` | Phase 5: quizzes on class devices (`/jouer`) and « Couverture du curriculum »             |
+| `587a0e1` | Phase 5: bulk generation of board drafts and content packs (admin CLI)                    |
+| `24ad631` | Phase 5 hardening (14 review findings) and the Phase 5 docs                               |
+| `3aaf668` | Marketing: app screenshots; `88bb93b` the library and class mode shown as available       |
+| `3e3f1bb` | Phase 6 foundation: D-102 to D-120, shared schema, settings, navigation, stubs            |
+| `ca21d2c` | Phase 6 S1: invitations, roles, access, deletions, sample classes, settings (database)    |
+| `0d85e15` | Phase 6 S2: audit viewer, AI usage totals, retention, heartbeats (database, worker, CLI)  |
+| `598ee7b` | Phase 6 S3a: scrubbed logs, error references, health checks, security headers             |
+| `8010537` | Phase 6 S3b: Docker images, Compose installs, encrypted backups and restores, CI jobs     |
+| `4612c53` | Phase 6 S4: « Conseil » for board admins, and the worker's staff accounts                 |
+| `8a5356a` | Phase 6 S5: « Tableau de bord de la direction » and « Journal d'audit » (with its CSV)    |
+| `2c0abb2` | Phase 6 S6: « Bienvenue », the checklist, the sample class, feedback, release notes       |
+| `da31b87` | Phase 6 S7: PRIVACY, DEPLOYMENT, the pilot guide, the demo script and its test, review    |
+| (latest)  | Phase 6 final review, round A: plans keep to their year, staff jobs, sign-in, backups, UX |
 
-**Verified (locally, from an empty database, and in CI on each pushed commit):** 1274 unit tests
-(none skipped), 1647 pgTAP tests, 90 integration tests (plus the 3 of `restore-smoke`, which run
+**Verified (locally, from an empty database, and in CI on each pushed commit):** 1292 unit tests
+(none skipped), 1690 pgTAP tests, 93 integration tests (plus the 3 of `restore-smoke`, which run
 after a restore: the `backup-restore` CI job and the local drill; the staff-account tests talk to
-the stack's real Auth server), 128 Playwright tests (desktop, phone and tablet, axe on every Phase
+the stack's real Auth server), 130 Playwright tests (desktop, phone and tablet, axe on every Phase
 3, 4 and 5 page, every « Conseil » page, the direction's dashboard and « Journal d'audit »,
 « Bienvenue », « Pour bien commencer », and each step of the board demo), lint,
 typecheck, format, generated DB types up to date, the demo curriculum and library seeds up to date
@@ -233,7 +234,8 @@ with filters, paging, « Historique de cet élément » and a CSV whose download
 (D-102, D-103 « As built »). Slice S6 (`2c0abb2`) adds « Bienvenue » (the pilot terms and the
 profile, before any page at the first sign-in; newer terms only show a banner), « Pour bien
 commencer » with the sample class (20 invented names, never in a substitute plan, deleted after 60
-days), « Commentaires » (students' first names confirmed before sending), « Signaler ce problème »
+days), « Commentaires » (students' first names replaced with « [élève] » before storing, since the
+final review), « Signaler ce problème »
 on error pages, « Confidentialité et conditions », « Nouveautés » and the version in the footer
 (D-109, D-110, D-111, D-116, D-117 « As built »). Slice S7 (latest commits) writes `PRIVACY.md`,
 `DEPLOYMENT.md`, `docs/PILOT.md`, `docs/demo-script.md` and `docs/phase-6.md`, adds
@@ -245,7 +247,12 @@ addresses and names), its `deactivate` was unaudited (now as « Retirer l'accès
 could read each other's terms acceptance time, « État du système » claimed IP Lynx had been told,
 the hosted database URLs needed Supabase's certificate authority (a `certs` mount), the proxy log
 kept search words, and three kinds of log noise and a Friday contrast failure on « Aujourd'hui »
-(D-107, D-109, D-110, D-111, D-112, D-119, D-120 « As built »).
+(D-107, D-109, D-110, D-111, D-112, D-119, D-120 « As built »). The final review's round A
+(`20261201090500_phase6_review_fixes.sql`, pgTAP `32`; `docs/phase-6.md` « Final review fixes »)
+keeps plans to their school year's classes and the year-end purge to its year and its 60 days of
+notice, gives each worker job one connection and retries a failed unban, throttles staff sign-in
+(D-121), replaces students' first names in feedback, signs backups and checks restores, and fixes
+the UX review's findings; round B (the privacy wording) follows.
 
 **Other deliverables:**
 
@@ -339,7 +346,7 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   `SUB_PORTAL_DATABASE_URL` (in `.env.example`).
 - **Migrations are applied once.** The lite stack does not re-apply an edited migration: after
   editing one that is not committed yet, `stack.sh reset`. Never edit a committed migration; add
-  a new one (the latest is `20261201090400_phase6_security_review.sql`, pgTAP file `31`).
+  a new one (the latest is `20261201090500_phase6_review_fixes.sql`, pgTAP file `32`).
 - **Seeds come in two parts.** `supabase/seed.sql`, then `supabase/seeds/*.sql` by name
   (`config.toml` `sql_paths` for the CLI, `cmd_seed` in `stack.sh`). `seeds/20_library_demo.sql`
   is generated from `content/library/demo`: after changing the pack, run `pnpm library:seed`
@@ -392,10 +399,21 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   inlined-settings check greps `.next` without its `cache` directory (never shipped).
 - **Restore drill (local, Postgres 16):** with the worker stopped, `psql … -f
 deploy/ci/restore-fixture.sql`, `psql … -f deploy/backup/fingerprint.sql > before`, `age-keygen`,
-  `deploy/backup/backup.sh` (`BACKUP_DATABASE_URL`, `BACKUP_AGE_RECIPIENT`, `BACKUP_DIR`),
-  `tools/lite-stack/stack.sh fresh`, `deploy/backup/restore.sh <file> --identity <key> --db-url …
---yes`, the fingerprint again and `diff`, then `RESTORE_SMOKE=1 pnpm test:int restore-smoke`
-  (with `SUPABASE_URL` and `SUPABASE_ANON_KEY` from `.env.example`). Run `stack.sh reset` afterwards.
+  `openssl rand -hex 32 > signing.key`, `deploy/backup/backup.sh` (`BACKUP_DATABASE_URL`,
+  `BACKUP_AGE_RECIPIENT`, `BACKUP_SIGNING_KEY`, `BACKUP_DIR`), `deploy/ci/restore-refusals.sh <file>
+<key> signing.key <db url>` (altered backups are refused), `tools/lite-stack/stack.sh fresh`,
+  `deploy/backup/restore.sh <file> --identity <key> --signing-key signing.key --db-url … --yes`, the
+  fingerprint again and `diff`, then `RESTORE_SMOKE=1 pnpm test:int restore-smoke` (with
+  `SUPABASE_URL` and `SUPABASE_ANON_KEY` from `.env.example`). Run `stack.sh reset` afterwards.
+- **Sign-in is throttled (D-121):** five wrong codes for one address need a new code, and more
+  limits apply per address and per network (`sign_in_attempts`; a sign-in clears the address's).
+  Every browser test signs in from 127.0.0.1: a spec that types wrong codes uses its own account
+  (`e2e/sign-in.spec.ts`). `stack.sh reset` empties the table.
+- **French typography in the catalogues:** after editing `messages/fr-CA.json` (or the English
+  « Conseil »), run `node tools/i18n/typography.mjs`: no-break spaces inside « » and before « : »,
+  a narrow one before « ; », none before ? and ! (Canadian usage), curly quotes in English. A unit
+  test fails on anything it would change. Playwright's text matching treats those spaces as spaces;
+  a regular expression must use `\s` (or `.`) where a colon follows a word.
 - **`pnpm test:int <name>`** filters by file name (`pnpm test:int -- <name>` runs every file).
 - **New accounts in browser tests go through « Bienvenue ».** The seed's demo accounts have
   accepted the pilot terms, but an account a spec makes (`createStaffUser`, or an invitation the

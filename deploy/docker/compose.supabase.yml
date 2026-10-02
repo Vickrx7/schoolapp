@@ -70,6 +70,14 @@ services:
       GOTRUE_SMTP_SENDER_NAME: ${SMTP_SENDER_NAME:-}
       GOTRUE_SMTP_MAX_FREQUENCY: ${AUTH_EMAIL_MAX_FREQUENCY:-60s}
       GOTRUE_RATE_LIMIT_EMAIL_SENT: ${AUTH_EMAIL_RATE_LIMIT:-100}
+      # Auth's own limits per client address (D-121): the web server sends the address it derived
+      # (CLIENT_IP_HEADER, TRUSTED_PROXY_HOPS) in this header on its sign-in calls; nothing else
+      # reaches Auth. Code requests and code checks per address per 5 minutes: a school's staff
+      # share one address, so these leave room for a morning's sign-ins (the app's own throttle
+      # counts wrong codes per person).
+      GOTRUE_RATE_LIMIT_HEADER: X-Lynx-Client-Ip
+      GOTRUE_RATE_LIMIT_OTP: ${AUTH_RATE_LIMIT_OTP:-60}
+      GOTRUE_RATE_LIMIT_VERIFY: ${AUTH_RATE_LIMIT_VERIFY:-60}
       # Shared classroom computers (D-119): signed out after 7 days, or 12 hours without activity.
       GOTRUE_SESSIONS_TIMEBOX: ${GOTRUE_SESSIONS_TIMEBOX:-168h}
       GOTRUE_SESSIONS_INACTIVITY_TIMEOUT: ${GOTRUE_SESSIONS_INACTIVITY_TIMEOUT:-12h}

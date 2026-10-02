@@ -23,9 +23,9 @@ const EMPTY: Draft = { kind: 'problem', message: '', mayContact: true };
 /**
  * « Envoyer un commentaire » (DECISIONS D-116): the kind, the message with its counter (kept as
  * a draft on this device for this person, D-035), the error reference when an error page opened
- * it, and whether the board may write back. When the message names students of the person's
- * schools, each name is listed to confirm before anything is sent; other personal details must be
- * removed (the first-name guard, D-066).
+ * it, and whether the board may write back. The server replaces the first names of the person's
+ * schools' students with « [élève] » (the hint says so); other personal details (an address, a
+ * phone number…) must be removed before anything is sent.
  */
 export function FeedbackForm({
   userId,
@@ -43,45 +43,37 @@ export function FeedbackForm({
   const id = useId();
   const draft = useDraft<Draft>(`feedback:${userId}`, EMPTY);
   const [errorRef, setErrorRef] = useState(initialRef ?? '');
-  const [check, setCheck] = useState<{ names: string[]; blocked: string[] } | null>(null);
-  const [confirmed, setConfirmed] = useState<string[]>([]);
+  const [blocked, setBlocked] = useState<string[] | null>(null);
   const send = useAction(sendFeedback);
   const { kind, message, mayContact } = draft.value;
 
   const edit = <K extends keyof Draft>(field: K, value: Draft[K]) => {
     draft.update(field, value);
-    // The names found were in the old text.
-    if (field === 'message') setCheck(null);
+    // The details found were in the old text.
+    if (field === 'message') setBlocked(null);
   };
 
-  const ready =
-    !check || (check.blocked.length === 0 && check.names.every((n) => confirmed.includes(n)));
+  const ready = !blocked?.length;
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     if (!ready) return;
-    const result = await send.run(
-      {
-        kind,
-        message,
-        errorRef: errorRef.trim() || null,
-        device: deviceClass(window.innerWidth),
-        mayContact,
-      },
-      confirmed,
-    );
+    const result = await send.run({
+      kind,
+      message,
+      errorRef: errorRef.trim() || null,
+      device: deviceClass(window.innerWidth),
+      mayContact,
+    });
     if (!result?.ok) return;
     if (result.data.sent) {
       toast.success(t('sent'));
       draft.discard();
       setErrorRef('');
-      setCheck(null);
-      setConfirmed([]);
+      setBlocked(null);
       onSent?.();
     } else {
-      const { names, blocked } = result.data;
-      setCheck({ names, blocked });
-      setConfirmed((prev) => prev.filter((n) => names.includes(n)));
+      setBlocked(result.data.blocked);
     }
   };
 
@@ -171,38 +163,17 @@ export function FeedbackForm({
         {t('mayContact')}
       </label>
 
-      {check ? (
-        <div className="space-y-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-950">
-          {check.blocked.length ? (
-            <div role="alert">
-              <p>{t('names.blocked')}</p>
-              <ul className="mt-1 list-disc pl-5">
-                {check.blocked.map((k) => (
-                  <li key={k}>{tBlocked.has(k as 'email') ? tBlocked(k as 'email') : k}</li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
-          {check.names.length ? (
-            <fieldset className="space-y-1">
-              <legend>{t('names.intro', { names: check.names.join(', ') })}</legend>
-              {check.names.map((name) => (
-                <label key={name} className="flex min-h-11 cursor-pointer items-center gap-2">
-                  <input
-                    type="checkbox"
-                    className="size-5"
-                    checked={confirmed.includes(name)}
-                    onChange={(e) =>
-                      setConfirmed((prev) =>
-                        e.target.checked ? [...prev, name] : prev.filter((n) => n !== name),
-                      )
-                    }
-                  />
-                  {t('names.confirm', { name })}
-                </label>
-              ))}
-            </fieldset>
-          ) : null}
+      {blocked?.length ? (
+        <div
+          role="alert"
+          className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-950"
+        >
+          <p>{t('blocked')}</p>
+          <ul className="mt-1 list-disc pl-5">
+            {blocked.map((k) => (
+              <li key={k}>{tBlocked.has(k as 'email') ? tBlocked(k as 'email') : k}</li>
+            ))}
+          </ul>
         </div>
       ) : null}
 

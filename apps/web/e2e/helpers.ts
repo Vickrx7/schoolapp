@@ -21,7 +21,7 @@ export const DEMO = {
  */
 export const e2ePrefix = (tag = '') => `E2E-${tag}${Date.now().toString(36)}`;
 
-async function latestCode(email: string, after: number): Promise<string> {
+export async function latestCode(email: string, after: number): Promise<string> {
   for (let i = 0; i < 40; i++) {
     const res = await fetch(
       `${MAILPIT}/api/v1/search?query=${encodeURIComponent(`to:${email}`)}&limit=5`,

@@ -56,3 +56,39 @@ has_data() { # url
 
 # Lines to a JSON array of strings.
 json_lines() { jq -R -s -c 'split("\n") | map(select(length > 0))'; }
+
+# HMAC-SHA256 of standard input with a 32-byte key given as 64 hex digits (DECISIONS D-115:
+# backups are signed with BACKUP_SIGNING_KEY). Bash and sha256sum only: the key never appears on
+# a command line, where other users of the machine could read it. Prints the MAC in hex.
+hmac_sha256_hex() { # hex key
+  local key="$1" ipad="" opad="" inner="" inner_bytes="" i byte
+  [[ "$key" =~ ^[0-9a-fA-F]{64}$ ]] || return 1
+  key="${key}$(printf '%0128d' 0)"
+  key="${key:0:128}"
+  for ((i = 0; i < 128; i += 2)); do
+    byte=$((16#${key:i:2}))
+    ipad+="$(printf '\\x%02x' $((byte ^ 0x36)))"
+    opad+="$(printf '\\x%02x' $((byte ^ 0x5c)))"
+  done
+  inner="$({
+    printf '%b' "$ipad"
+    cat
+  } | sha256sum | cut -d' ' -f1)"
+  for ((i = 0; i < 64; i += 2)); do inner_bytes+="\\x${inner:i:2}"; done
+  {
+    printf '%b' "$opad"
+    printf '%b' "$inner_bytes"
+  } | sha256sum | cut -d' ' -f1
+}
+
+# What a backup's signature covers: its two encrypted files, by their SHA-256.
+backup_signed_text() { # directory holding manifest.json.age and dump.sql.gz.age
+  printf 'lynx-backup-signature:v1\nmanifest.json.age %s\ndump.sql.gz.age %s\n' \
+    "$(sha256sum "$1/manifest.json.age" | cut -d' ' -f1)" \
+    "$(sha256sum "$1/dump.sql.gz.age" | cut -d' ' -f1)"
+}
+
+# The signing key from a file (a line of 64 hex digits, or BACKUP_SIGNING_KEY=…), or nothing.
+read_signing_key() { # file
+  sed -n -E 's/^(BACKUP_SIGNING_KEY=)?([0-9a-fA-F]{64})[[:space:]]*$/\2/p' "$1" | head -n 1
+}

@@ -6,13 +6,15 @@ import { serverEnv } from './env';
 
 /**
  * Supabase client acting as the signed-in user. Every query runs under Row Level Security;
- * the web app never uses the service role key.
+ * the web app never uses the service role key. `headers`: extra headers on every call (the
+ * sign-in actions pass the client's address for Auth's own limits, D-121).
  */
-export async function createSupabaseServerClient() {
+export async function createSupabaseServerClient(extra: { headers?: Record<string, string> } = {}) {
   const env = serverEnv();
   const cookieStore = await cookies();
   // Read at run time on the server (DECISIONS D-113): never inlined into the build.
   return createServerClient<Database>(env.SUPABASE_URL, env.SUPABASE_ANON_KEY, {
+    ...(extra.headers ? { global: { headers: extra.headers } } : {}),
     cookies: {
       getAll() {
         return cookieStore.getAll();

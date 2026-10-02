@@ -95,6 +95,7 @@ board can change.
 | Sessions: IP address, browser (user agent), times (`auth.sessions`, `auth.refresh_tokens`)                                    | Keeping a person signed in                    | Nobody through the app                                                                                                  | Ended after 7 days, or 12 hours without activity; never in our backups    |
 | Sign-in service log: e-mail, IP address, action (`auth.audit_log_entries`)                                                    | Investigating sign-in problems                | Nobody through the app                                                                                                  | 90 days; never in our backups                                             |
 | Sign-in codes (`auth.one_time_tokens`)                                                                                        | The 6-digit code                              | Nobody                                                                                                                  | Valid one hour, used once; never in our backups                           |
+| Sign-in attempts: keyed hashes of the address and of the network, never in clear (`sign_in_attempts`)                         | Throttling code guessing (D-121)              | Nobody                                                                                                                  | 2 days                                                                    |
 
 ### Classes, students and teaching
 
@@ -157,8 +158,9 @@ shown 60 days before the purge says so.
 | Proxy access logs: time, page address without codes, tokens or search words, status, masked IP address                         | IP Lynx (or the board's IT)                                                          | 14 days                                 |
 | Backups: the database's data, encrypted (section 8)                                                                            | Nobody without the private key, kept offline                                         | 30 days                                 |
 
-Feedback can contain a student's first name: the app lists each first name it finds and asks the
-sender to confirm it, and other personal details must be removed before sending.
+Before feedback is stored, the server replaces the first names of the students of the sender's
+schools with « [élève] » (« [student] » in English), and other personal details must be removed
+before sending. A name the app does not know (a parent's, a sibling's) cannot be recognized.
 
 ## 5. Data flows
 
@@ -274,7 +276,9 @@ to record their access first.
   substitutes' report notes are also encrypted by the app (AES-256-GCM, each tied to its student or
   report) with keys only the web server holds, so a database copy alone cannot read them. Backups
   are encrypted with `age` before they leave the server; the private key is kept offline by the
-  operator (and, board-hosted, in the board's vault), never on the server.
+  operator (and, board-hosted, in the board's vault), never on the server. Each backup is also
+  signed (HMAC-SHA256 with a key generated per install); the restore refuses an unsigned or
+  altered file, and a dump holding anything but data, before loading anything.
 - **Keys:** generated per install (`generate-secrets.mjs`, file mode 0600), never in the code, the
   images, the backups or the logs. Alert keys and code keys rotate with a version number
   (`DEPLOYMENT.md`).
@@ -334,9 +338,11 @@ which is why no per-board setting goes below 365 days.
 | Accounts, classes, planning, library resources                                 | until deleted (section 10)                             | no                 |
 
 - The class purge removes the students' first names and levels, their alerts, the substitute plans
-  that covered the class and its class mode link. It keeps the teacher's units, lessons, timetable,
-  progress and « Fiche de suppléance », and the kept class results (counts only, with their own
-  retention). Teachers see a notice 60 days before.
+  of the class's own school year that covered the class and its class mode link. It keeps the
+  teacher's units, lessons, timetable, progress and « Fiche de suppléance », and the kept class
+  results (counts only, with their own retention). Teachers see a notice 60 days before; if a
+  school year's dates or the setting change so that the date has already passed, the purge waits
+  until the notice has shown for 60 days.
 - Deleted data remains in backups until those backups expire (at most 30 days).
 - On hosted Supabase the clean-up may not be allowed to delete the sign-in service's own log. The
   job then reports it, and that log follows Supabase's own retention; we will confirm it with
@@ -350,7 +356,8 @@ student, their sample class, and their own library resources.
 
 **The board asks IP Lynx to delete** an account (after removing the person's access in « Conseil »):
 `pnpm admin delete-user` deletes their classes where they were the only homeroom teacher, their
-substitute plans, private resources, feedback and profile, then their sign-in account. Shared and
+substitute plans, private resources, feedback, invitations (which hold their address and name)
+and profile, then their sign-in account. Shared and
 approved resources stay, without an author.
 
 **At the end of a contract:**

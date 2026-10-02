@@ -9,6 +9,10 @@
 #   BACKUP_DATABASE_URL     the database, as its owner (`postgres`); a session connection
 #   BACKUP_AGE_RECIPIENT    one or more age public keys (age1…, separated by spaces or commas).
 #                           Only public keys: the private key never goes on the server.
+#   BACKUP_SIGNING_KEY      32 random bytes as 64 hex digits (generate-secrets.mjs makes it): signs
+#                           each backup, so restore.sh refuses a file someone else made or changed
+#                           (the age public key alone lets anyone make one). The operator keeps a
+#                           copy with the age identity; it is never stored with the backups.
 #   BACKUP_DIR              where backups are written (default ./backups; /backups in the image)
 #   BACKUP_KEEP_DAYS        local backups older than this are deleted (default 30)
 #   BACKUP_S3_BUCKET, BACKUP_S3_REGION (default ca-central-1), BACKUP_S3_ACCESS_KEY_ID,
@@ -21,8 +25,9 @@
 # The result is BACKUP_DIR/lynx-backup-<UTC time>.tar holding two files, each encrypted to the
 # recipients: dump.sql.gz.age (the dump, streamed from pg_dump to age, never on disk in clear) and
 # manifest.json.age (release, migration and Auth migration versions, pg_dump and server versions,
-# and each table's row count, counted in the dump itself so they match its snapshot).
-# deploy/backup/restore.sh reads it back.
+# and each table's row count, counted in the dump itself so they match its snapshot), and
+# `signature`: an HMAC-SHA256, with BACKUP_SIGNING_KEY, of both files' SHA-256 (D-115).
+# deploy/backup/restore.sh checks it before decrypting anything, then reads the backup back.
 set -euo pipefail
 shopt -s nullglob
 
@@ -33,6 +38,9 @@ LOG_NAME=backup
 
 : "${BACKUP_DATABASE_URL:?set BACKUP_DATABASE_URL (the database to back up)}"
 : "${BACKUP_AGE_RECIPIENT:?set BACKUP_AGE_RECIPIENT (an age public key, age1…)}"
+: "${BACKUP_SIGNING_KEY:?set BACKUP_SIGNING_KEY (64 hex digits; generate-secrets.mjs makes one)}"
+[[ "$BACKUP_SIGNING_KEY" =~ ^[0-9a-fA-F]{64}$ ]] ||
+  die "BACKUP_SIGNING_KEY must be 64 hex digits (32 random bytes): openssl rand -hex 32"
 BACKUP_DIR="${BACKUP_DIR:-./backups}"
 BACKUP_KEEP_DAYS="${BACKUP_KEEP_DAYS:-30}"
 APP_RELEASE="${APP_RELEASE:-dev}"
@@ -104,8 +112,12 @@ jq -n \
     dump: {file: "dump.sql.gz.age", bytes: $bytes, sha256: $sha256}}' |
   age "${recipients[@]}" -o "$work/manifest.json.age"
 
+# The signature: only the holder of BACKUP_SIGNING_KEY can make one that restore.sh accepts.
+printf 'hmac-sha256:v1 %s\n' \
+  "$(backup_signed_text "$work" | hmac_sha256_hex "$BACKUP_SIGNING_KEY")" > "$work/signature"
+
 file="$BACKUP_DIR/$name.tar"
-tar -C "$work" -cf "$work/$name.tar" manifest.json.age dump.sql.gz.age
+tar -C "$work" -cf "$work/$name.tar" signature manifest.json.age dump.sql.gz.age
 mv "$work/$name.tar" "$file"
 bytes="$(wc -c < "$file" | tr -d ' ')"
 log "wrote $file ($bytes bytes, $(jq -r 'length' <<< "$counts") tables, $(jq -r '[.[]] | add' <<< "$counts") rows)"

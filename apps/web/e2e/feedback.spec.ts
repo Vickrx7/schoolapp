@@ -4,9 +4,9 @@ import { DEMO, e2ePrefix, expectAccessible, login } from './helpers';
 
 /**
  * « Commentaires » (DECISIONS D-111, D-116): a teacher writes from any page; a student's first
- * name is flagged and confirmed before anything is sent; the board's admin reads it on
- * « Commentaires reçus » and marks it « Traité ». An error page's reference travels with it.
- * Everything the test sends is deleted at the end.
+ * name is replaced with « [élève] » before it is stored (the dialog says so); the board's admin
+ * reads it on « Commentaires reçus » and marks it « Traité ». An error page's reference travels
+ * with it. Everything the test sends is deleted at the end.
  */
 
 test.afterAll(async () => {
@@ -24,12 +24,14 @@ async function openFeedback(page: Page) {
   return dialog;
 }
 
-test('a teacher’s feedback names a student, is confirmed, and the board admin handles it', async ({
+test('a teacher’s feedback names a student, is stored without the name, and the board admin handles it', async ({
   page,
   browser,
 }) => {
   test.setTimeout(120_000);
-  const message = `Samuel n’arrive pas à ouvrir la leçon de lecture ${e2ePrefix()}`;
+  const suffix = `n’arrive pas à ouvrir la leçon de lecture ${e2ePrefix()}`;
+  const typed = `Samuel ${suffix}`;
+  const message = `[élève] ${suffix}`;
   const admin = await browser.newContext();
   try {
     await login(page, DEMO.teacher3);
@@ -42,24 +44,22 @@ test('a teacher’s feedback names a student, is confirmed, and the board admin 
     await expect(dialog.getByRole('radio', { name: 'Un problème' })).toBeChecked();
     await expectAccessible(page);
 
-    await dialog.getByLabel('Votre message').fill(message);
-    await expect(dialog.getByText(`${message.length} sur 2000 caractères`)).toBeVisible();
-    await dialog.getByRole('button', { name: 'Envoyer', exact: true }).click();
-
-    // The first name is flagged: nothing is sent until it is confirmed.
+    // The dialog says students' first names are replaced before sending.
     await expect(
-      dialog.getByText(/Ce message contient des prénoms d’élèves de votre école : Samuel\./),
+      dialog.getByText('Les prénoms des élèves de vos écoles sont remplacés par [élève]', {
+        exact: false,
+      }),
     ).toBeVisible();
-    const send = dialog.getByRole('button', { name: 'Envoyer', exact: true });
-    await expect(send).toBeDisabled();
-    expect(await query('select 1 from public.feedback where message = $1', [message])).toHaveLength(
-      0,
-    );
-    await expectAccessible(page);
-    await dialog.getByRole('checkbox', { name: 'Envoyer « Samuel » quand même' }).check();
-    await send.click();
-    await expect(page.getByText('Merci! Votre commentaire a été envoyé.')).toBeVisible();
+    await dialog.getByLabel('Votre message').fill(typed);
+    await expect(dialog.getByText(`${typed.length} sur 2000 caractères`)).toBeVisible();
+    await dialog.getByRole('button', { name: 'Envoyer', exact: true }).click();
+    await expect(page.getByText(/^Merci.+Votre commentaire a été envoyé\.$/)).toBeVisible();
     await expect(dialog).toBeHidden();
+
+    // Stored without the name: nobody reading feedback sees a student's first name.
+    expect(
+      await query('select 1 from public.feedback where message like $1', [`%${suffix}`]),
+    ).toHaveLength(1);
 
     const [row] = await query<Record<string, unknown>>(
       `select f.kind, f.route, f.device, f.locale, f.status, f.may_contact, f.error_ref,
@@ -86,7 +86,8 @@ test('a teacher’s feedback names a student, is confirmed, and the board admin 
     const card = adminPage.locator('li').filter({ hasText: message });
     await expect(card).toContainText('Nouveau');
     await expect(card).toContainText('Isabelle Tremblay');
-    await expect(card).toContainText('Page : /classes');
+    await expect(card).toContainText(/Page.:.\/classes/);
+    await expect(card).not.toContainText('Samuel');
     await card.getByRole('button', { name: 'Marquer comme traité' }).click();
     await expect(card).toContainText('Traité');
     await expect
@@ -100,7 +101,7 @@ test('a teacher’s feedback names a student, is confirmed, and the board admin 
       .toBe('done');
   } finally {
     await admin.close();
-    await query('delete from public.feedback where message = $1', [message]);
+    await query('delete from public.feedback where message like $1', [`%${suffix}`]);
   }
 });
 
@@ -120,7 +121,7 @@ test('an error’s reference goes with the report', async ({ page }) => {
     await page.getByRole('radio', { name: 'Une question' }).check();
     await page.getByRole('checkbox', { name: 'On peut me contacter à ce sujet' }).uncheck();
     await page.getByRole('button', { name: 'Envoyer', exact: true }).click();
-    await expect(page.getByText('Merci! Votre commentaire a été envoyé.')).toBeVisible();
+    await expect(page.getByText(/^Merci.+Votre commentaire a été envoyé\.$/)).toBeVisible();
     const [row] = await query<{ kind: string; error_ref: string; may_contact: boolean }>(
       'select kind, error_ref, may_contact from public.feedback where message = $1',
       [message],

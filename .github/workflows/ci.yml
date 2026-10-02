@@ -153,15 +153,24 @@ jobs:
           psql "$DATABASE_URL" -X -q -v ON_ERROR_STOP=1 -f deploy/ci/restore-fixture.sql
           psql "$DATABASE_URL" -X -A -t -q -f deploy/backup/fingerprint.sql > "$RUNNER_TEMP/before.txt"
           age-keygen -o "$RUNNER_TEMP/backup-key.txt"
+          # The signing key, as generate-secrets.mjs makes it (the operator keeps a copy).
+          openssl rand -hex 32 > "$RUNNER_TEMP/signing-key.txt"
           BACKUP_DATABASE_URL="$DATABASE_URL" BACKUP_DIR="$RUNNER_TEMP/backups" APP_RELEASE=ci \
-            BACKUP_AGE_RECIPIENT="$(age-keygen -y "$RUNNER_TEMP/backup-key.txt")" deploy/backup/backup.sh
+            BACKUP_AGE_RECIPIENT="$(age-keygen -y "$RUNNER_TEMP/backup-key.txt")" \
+            BACKUP_SIGNING_KEY="$(cat "$RUNNER_TEMP/signing-key.txt")" deploy/backup/backup.sh
           test "$(psql "$DATABASE_URL" -X -A -t -c "select count(*) from public.system_heartbeats where component = 'backup'")" = 1
+
+      - name: Altered, unsigned or tampered backups are refused before anything runs
+        run: |
+          deploy/ci/restore-refusals.sh "$RUNNER_TEMP"/backups/lynx-backup-*.tar \
+            "$RUNNER_TEMP/backup-key.txt" "$RUNNER_TEMP/signing-key.txt" "$DATABASE_URL"
 
       - name: Restore into an empty database
         run: |
           pnpm exec supabase db reset --no-seed
           deploy/backup/restore.sh "$RUNNER_TEMP"/backups/lynx-backup-*.tar \
-            --identity "$RUNNER_TEMP/backup-key.txt" --db-url "$DATABASE_URL" --yes
+            --identity "$RUNNER_TEMP/backup-key.txt" --signing-key "$RUNNER_TEMP/signing-key.txt" \
+            --db-url "$DATABASE_URL" --yes
 
       - name: The restored database holds what was backed up
         run: |

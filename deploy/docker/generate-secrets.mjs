@@ -7,9 +7,11 @@
 //   … [--out <file>]                     # default: .env here
 //
 // The file is created with mode 0600 and never overwritten. Each service's settings are grouped
-// under its name; compose.yml gives each service only its own. The backup key is not generated
-// here: its private half must never be on the server (run `age-keygen` on the operator's
-// workstation and put only the public key, age1…, in BACKUP_AGE_RECIPIENT).
+// under its name; compose.yml gives each service only its own. The backup encryption key is not
+// generated here: its private half must never be on the server (run `age-keygen` on the
+// operator's workstation and put only the public key, age1…, in BACKUP_AGE_RECIPIENT). The
+// backups' signing key is (BACKUP_SIGNING_KEY): the operator copies it next to the age identity,
+// and restore.sh refuses any backup it did not sign (D-115).
 import { createHmac, randomBytes, randomInt } from 'node:crypto';
 import { writeFileSync } from 'node:fs';
 
@@ -143,6 +145,8 @@ const sections = [
     ...(selfHosted ? [] : ['BACKUP_DATABASE_URL=']),
     '# The PUBLIC key from `age-keygen` on the operator’s workstation (age1…); several: space-separated.',
     'BACKUP_AGE_RECIPIENT=',
+    '# Signs every backup. Copy it now next to the age identity, off this server: restore needs it.',
+    `BACKUP_SIGNING_KEY=${randomBytes(32).toString('hex')}`,
     '# Optional copy to S3 in Canada, with a key that may only put objects.',
     'BACKUP_S3_BUCKET=',
     'BACKUP_S3_REGION=ca-central-1',
@@ -170,6 +174,9 @@ if (selfHosted) {
       `SMTP_ADMIN_EMAIL=${mode === 'ci' ? 'no-reply@example.test' : ''}`,
       'SMTP_SENDER_NAME=Lynx École',
       `AUTH_EMAIL_MAX_FREQUENCY=${mode === 'ci' ? '1s' : '60s'}`,
+      '# Code requests and code checks per client address per 5 minutes (a school shares one).',
+      'AUTH_RATE_LIMIT_OTP=60',
+      'AUTH_RATE_LIMIT_VERIFY=60',
       'GOTRUE_SESSIONS_TIMEBOX=168h',
       'GOTRUE_SESSIONS_INACTIVITY_TIMEOUT=12h',
     ],
