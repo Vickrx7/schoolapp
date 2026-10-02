@@ -26,6 +26,8 @@ export const KNOWN_ERRORS: ReadonlySet<string> = new Set([
   'endBeforeStart',
   'subjectRequired',
   'notAName',
+  'invalidEmail',
+  'invalidPhone',
   'alertsKeyMissing',
   'tooShort',
   'atLeastTwoLevels',

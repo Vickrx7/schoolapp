@@ -66,8 +66,13 @@ jobs:
           pnpm db:types:direct
           git diff --exit-code packages/db/src/database.types.ts
 
-      - name: Integration tests (event outbox, AI jobs)
-        run: pnpm test:int
+      - name: Integration tests (event outbox, AI jobs, staff accounts)
+        run: |
+          # Staff accounts (D-107) use Auth's admin API: the local stack's URL and service key.
+          eval "$(pnpm exec supabase status -o env | grep -E '^(API_URL|SERVICE_ROLE_KEY)=' || true)"
+          export SUPABASE_URL="${API_URL:-http://127.0.0.1:54321}"
+          export SUPABASE_SERVICE_ROLE_KEY="${SERVICE_ROLE_KEY:-$(grep '^SUPABASE_SERVICE_ROLE_KEY=' .env.example | cut -d= -f2-)}"
+          pnpm test:int
 
       - name: Configure the web app for the local stack
         run: |

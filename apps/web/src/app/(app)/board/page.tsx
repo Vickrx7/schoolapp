@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
-import Link from 'next/link';
-import { redirect } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { EmptyState, PageHeader } from '@/components/ui/page';
-import { adminBoards, landingFor, requireSession } from '@/server/session';
+import { BoardChecklist } from '@/components/board/board-checklist';
+import { BoardHeader } from '@/components/board/board-header';
+import { RetentionCard } from '@/components/board/retention-card';
+import { SystemStatusCard } from '@/components/board/system-status-card';
+import { loadBoardOverview, requireBoardPage } from '@/server/queries/board';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('board');
@@ -12,28 +12,41 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /**
- * « Administration du conseil » (DECISIONS D-107): the landing page of a board admin who neither
- * teaches nor directs (D-118). Phase 6's slice S4 builds it; until then this page leads to the
- * board's calendar.
+ * « Administration du conseil » (DECISIONS D-107, D-112): the landing page of a board admin who
+ * neither teaches nor directs (D-118). What the board still has to set up, the system's state and
+ * how long its data is kept; the sections are in the tabs.
  */
-export default async function BoardPage() {
-  const session = await requireSession();
-  const boards = adminBoards(session);
-  if (boards.length === 0) redirect(landingFor(session));
+export default async function BoardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ board?: string }>;
+}) {
+  const { board: requested } = await searchParams;
+  const page = await requireBoardPage(requested, { landing: true });
   const t = await getTranslations('board');
-  const tNav = await getTranslations('nav');
+  const overview = await loadBoardOverview(page.basics, page.query);
 
   return (
     <div>
-      <PageHeader title={t('title')} subtitle={boards.map((b) => b.name).join(' · ')} />
-      <EmptyState
-        title={t('placeholder')}
-        action={
-          <Button asChild variant="secondary">
-            <Link href="/calendar">{tNav('calendar')}</Link>
-          </Button>
-        }
+      <BoardHeader
+        title={t('title')}
+        board={page.board}
+        boards={page.boards}
+        query={page.query}
+        library={page.library}
+        path="/board"
       />
+      <div className="grid gap-4 lg:grid-cols-2">
+        <BoardChecklist items={overview.checklist} />
+        <div className="space-y-4">
+          <SystemStatusCard
+            status={overview.status}
+            timezone={page.basics.timezone}
+            now={new Date()}
+          />
+          <RetentionCard retention={page.board.settings.retention} />
+        </div>
+      </div>
     </div>
   );
 }

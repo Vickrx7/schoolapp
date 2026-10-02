@@ -123,7 +123,7 @@ start_services() {
     GOTRUE_URI_ALLOW_LIST="$SITE_URL/**,http://127.0.0.1:3000/**" \
     GOTRUE_DISABLE_SIGNUP="$([[ "$signup" == true ]] && echo false || echo true)" \
     GOTRUE_JWT_SECRET="$JWT_SECRET" GOTRUE_JWT_EXP=3600 GOTRUE_JWT_AUD=authenticated \
-    GOTRUE_JWT_ADMIN_ROLES=service_role \
+    GOTRUE_JWT_ADMIN_ROLES=service_role GOTRUE_JWT_DEFAULT_GROUP_NAME=authenticated \
     GOTRUE_EXTERNAL_EMAIL_ENABLED="${email_provider:-true}" GOTRUE_MAILER_AUTOCONFIRM=false \
     GOTRUE_MAILER_OTP_EXP=3600 GOTRUE_MAILER_OTP_LENGTH=6 \
     ${session_env[@]+"${session_env[@]}"} \

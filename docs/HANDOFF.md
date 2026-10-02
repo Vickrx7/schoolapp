@@ -97,12 +97,14 @@ Mon Tableau, Cartable, Ardoise). No availability or trademark check has been don
 | `ca21d2c` | Phase 6 S1: invitations, roles, access, deletions, sample classes, settings (database)   |
 | `0d85e15` | Phase 6 S2: audit viewer, AI usage totals, retention, heartbeats (database, worker, CLI) |
 | `598ee7b` | Phase 6 S3a: scrubbed logs, error references, health checks, security headers            |
-| (latest)  | Phase 6 S3b: Docker images, Compose installs, encrypted backups and restores, CI jobs    |
+| `8010537` | Phase 6 S3b: Docker images, Compose installs, encrypted backups and restores, CI jobs    |
+| (latest)  | Phase 6 S4: « Conseil » for board admins, and the worker's staff accounts                |
 
-**Verified (locally, from an empty database, and in CI on each pushed commit):** 1155 unit tests
-(none skipped), 1611 pgTAP tests, 79 integration tests (plus the 3 of `restore-smoke`, which run
-after a restore: the `backup-restore` CI job and the local drill), 100 Playwright tests (desktop,
-phone and tablet, axe on every Phase 3, 4 and 5 page), lint, typecheck, format, generated DB types
+**Verified (locally, from an empty database, and in CI on each pushed commit):** 1188 unit tests
+(none skipped), 1611 pgTAP tests, 89 integration tests (plus the 3 of `restore-smoke`, which run
+after a restore: the `backup-restore` CI job and the local drill; the staff-account tests talk to
+the stack's real Auth server), 104 Playwright tests (desktop, phone and tablet, axe on every Phase
+3, 4 and 5 page and every « Conseil » page), lint, typecheck, format, generated DB types
 up to date, the demo curriculum and library seeds up to date (`pnpm library:seed:check`), web
 build with no setting built in; in CI also a backup restored into an empty database, and both
 Docker images run as a board-hosted install (`docker-smoke`).
@@ -200,14 +202,24 @@ in the matching log line, and browsers report their errors to `/api/client-error
 reference, route template, a hash of the message); `/api/health` and `/api/health/ready` for
 monitors; the Content Security Policy and `X-Robots-Tag` on every page (not on PDFs); and an ESLint
 rule against `NEXT_PUBLIC_` (D-111, D-112, D-113, D-119 « As built »). No third-party error
-service: logs stay on the server. Slice S3b (latest commit) adds deployment (`deploy/`): two images
+service: logs stay on the server. Slice S3b (`8010537` to `b161445`) adds deployment (`deploy/`): two images
 (`web`, `app`) configured at run time, Docker Compose for the hosted install and for a board's own
 servers (with a minimal self-hosted Supabase), `generate-secrets.mjs`, `migrate.sh` (a backup first
 when migrations are pending on a database with data), `upgrade.sh`, nightly encrypted backups and
 a checked restore (`deploy/backup/`), the worker's refusal to start on a database without its
 migrations, the session limits (7 days, 12 hours idle), and three CI jobs besides the two existing
 ones' checks: `backup-restore`, `docker-smoke` and the migration-name and `NEXT_PUBLIC_` checks
-(D-114, D-115, D-119 « As built »). `DEPLOYMENT.md` comes with slice S7.
+(D-114, D-115, D-119 « As built »). `DEPLOYMENT.md` comes with slice S7. Slice S4 (latest commit)
+replaces the « Conseil » placeholder with « Administration du conseil » (`/board`): what the board
+still has to set up, « État du système » and « Conservation des données », then « Personnel »
+(invite within the board; the worker now creates the Auth account and the page gives a French or
+English message the inviter sends by e-mail or text; remove a role, add one, remove and restore
+access, with the worker banning and unbanning the sign-in), « Écoles » (contact details and bell
+times, also on « École » for the direction; the AI switch; the rest read only), « Années
+scolaires », « Approbation des ressources », « Utilisation de l'IA » (per school, with a CSV) and
+« Commentaires reçus »; board admins add board-wide PA days and holidays in « Calendrier », and the
+direction's substitute settings are now merged in the database (D-104, D-107, D-108, D-112, D-116,
+D-118 « As built »). The « Journal d'audit » tab comes with slice S5.
 
 **Other deliverables:**
 
@@ -287,6 +299,10 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   - The lite stack used to re-grant default table privileges on every start (fixed in
     `bootstrap.sql`).
   - New tables must `revoke all ... from anon, authenticated` explicitly.
+  - Auth had no default group here, so accounts made through its admin API got an empty role,
+    and PostgREST refused their tokens (the app said « pas d'accès »). `stack.sh` now sets
+    `GOTRUE_JWT_DEFAULT_GROUP_NAME=authenticated` as the CLI and Compose do, and the worker sets
+    the role itself (D-107). Restart the stack (`stack.sh reset`) to pick it up.
   - `supabase/tests/00_schema_invariants.test.sql` catches most of this.
 - **Network:** GitHub Actions artifact downloads (`*.blob.core.windows.net`) are blocked by the
   egress policy. Read CI failures from the job logs: a failed browser test prints its page

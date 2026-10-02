@@ -128,9 +128,20 @@ export const calendarEventTypes = [
   'other',
 ] as const;
 
+/**
+ * A calendar event: for the whole board (`boardId`: the board's admins, DECISIONS D-107), or for a
+ * school or one of its classes (`schoolId`). Exactly one of the two.
+ */
 export const calendarEventFormSchema = z
   .object({
-    schoolId: uuid,
+    boardId: uuid
+      .nullable()
+      .optional()
+      .transform((v) => v ?? null),
+    schoolId: uuid
+      .nullable()
+      .optional()
+      .transform((v) => v ?? null),
     classId: uuid
       .nullable()
       .optional()
@@ -150,9 +161,16 @@ export const calendarEventFormSchema = z
     affectsSchedule: z.boolean().default(true),
     notes: optionalText(1000),
   })
+  .refine((e) => (e.boardId === null) !== (e.schoolId === null), { message: 'invalid' })
+  .refine((e) => e.classId === null || e.schoolId !== null, { message: 'invalid' })
   .refine((e) => e.endsOn >= e.startsOn, { message: 'endBeforeStart', path: ['endsOn'] })
   .refine(
-    (e) => !e.startTime || !e.endTime || timeToMinutes(e.endTime) > timeToMinutes(e.startTime),
+    (e) =>
+      !e.startTime ||
+      !e.endTime ||
+      !isLocalTime(e.startTime) ||
+      !isLocalTime(e.endTime) ||
+      timeToMinutes(e.endTime) > timeToMinutes(e.startTime),
     { message: 'endBeforeStart', path: ['endTime'] },
   );
 
@@ -209,4 +227,105 @@ export const substituteSettingsFormSchema = z
   .refine((s) => timeToMinutes(s.accessUntil) > timeToMinutes(s.accessFrom), {
     message: 'endBeforeStart',
     path: ['accessUntil'],
+  });
+
+// ---------------------------------------------------------------------------------------
+// « Conseil »: what a board's admins enter (DECISIONS D-107, D-108)
+// ---------------------------------------------------------------------------------------
+
+/** The roles a board admin hands out (never facilities or parent), as `invite_staff` checks. */
+export const staffRoles = [
+  'teacher',
+  'principal',
+  'vice_principal',
+  'office_admin',
+  'board_admin',
+] as const;
+export type StaffRole = (typeof staffRoles)[number];
+
+/** As the database checks addresses: no spaces, one @, and a dot after it. */
+const EMAIL_PATTERN = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+/** As `staff_invitations.email` requires: lower case, no spaces, one @ and a dot after it. */
+const staffEmail = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .min(1, 'required')
+  .max(320, 'tooLong')
+  .refine((v) => v.length === 0 || EMAIL_PATTERN.test(v), 'invalidEmail');
+
+/**
+ * « Inviter une personne »: a board admin has no school (`schoolId` is dropped), every other role
+ * has one of the board's schools (the database checks it belongs to the board).
+ */
+export const staffInviteFormSchema = z
+  .object({
+    boardId: uuid,
+    schoolId: uuid
+      .nullable()
+      .optional()
+      .transform((v) => v ?? null),
+    email: staffEmail,
+    displayName: trimmed(120),
+    honorific: optionalText(20),
+    role: z.enum(staffRoles),
+  })
+  .transform((v) => (v.role === 'board_admin' ? { ...v, schoolId: null } : v))
+  .refine((v) => v.role === 'board_admin' || v.schoolId !== null, {
+    message: 'required',
+    path: ['schoolId'],
+  });
+
+/** « Ajouter un rôle »: the same rule for the school. */
+export const staffRoleFormSchema = z
+  .object({
+    role: z.enum(staffRoles),
+    schoolId: uuid
+      .nullable()
+      .optional()
+      .transform((v) => v ?? null),
+  })
+  .transform((v) => (v.role === 'board_admin' ? { ...v, schoolId: null } : v))
+  .refine((v) => v.role === 'board_admin' || v.schoolId !== null, {
+    message: 'required',
+    path: ['schoolId'],
+  });
+
+/**
+ * « Coordonnées et heures » of a school (`merge_school_settings`): the office's phone (digits,
+ * spaces and `+().-`) and e-mail, blank to clear, and the first bell before dismissal.
+ */
+export const schoolContactFormSchema = z
+  .object({
+    officePhone: optionalText(40).refine(
+      (v) => v === null || /^[0-9 +().-]*$/.test(v),
+      'invalidPhone',
+    ),
+    officeEmail: optionalText(320).refine(
+      (v) => v === null || EMAIL_PATTERN.test(v),
+      'invalidEmail',
+    ),
+    dayStart: localTimeSchema,
+    dayEnd: localTimeSchema,
+  })
+  .refine(
+    // Compared only once both are times (their own errors come first).
+    (v) =>
+      !isLocalTime(v.dayStart) ||
+      !isLocalTime(v.dayEnd) ||
+      timeToMinutes(v.dayEnd) > timeToMinutes(v.dayStart),
+    { message: 'endBeforeStart', path: ['dayEnd'] },
+  );
+
+/** « Années scolaires »: a name (unique in the board) and its first and last days. */
+export const schoolYearFormSchema = z
+  .object({
+    name: trimmed(40),
+    startsOn: localDateSchema,
+    endsOn: localDateSchema,
+  })
+  .refine((v) => !isLocalDate(v.startsOn) || !isLocalDate(v.endsOn) || v.endsOn > v.startsOn, {
+    message: 'endBeforeStart',
+    path: ['endsOn'],
   });

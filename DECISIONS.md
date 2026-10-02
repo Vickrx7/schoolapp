@@ -1602,6 +1602,11 @@ requests; failures count `failed` and `invalid_output`. The library's item detai
 `ai_generations(feature)` for the provenance line: since this change only the item's author reads
 the feature, and everyone else sees the prompt version alone, as teachers already did for
 colleagues' items.
+As built (slice S4): « Utilisation de l'IA » (`/board/usage?month=YYYY-MM`, the board's current
+month by default) shows `board_ai_usage` per school with a total, as cards on phones and a table
+from `md:`; « Télécharger (CSV) » (`/board/usage/export`, `private, no-store`) writes the same rows
+with a byte order mark, `;` and a decimal comma in French, `,` in English, and a `'` before any
+cell that starts like a formula (`apps/web/src/server/csv.ts`, there for the audit export too).
 
 **D-105 — Retention implemented (implements D-018 and D-059; per-board settings, operator-only;
 Assumptions on the defaults, pending a lawyer's review).** The worker's nightly
@@ -1718,6 +1723,30 @@ report's unconfirmed lessons first, `sub_plan.deleted {reason: 'account_deleted'
 classes; `operator_delete_board` deletes the board's resources and classes, then the board, the
 profiles of the people who worked only there, and the board's audit rows; the CLI then deletes their
 Auth accounts.
+As built (slice S4, `apps/web/src/{server/queries/board.ts,server/actions/board.ts,components/board}`,
+worker `src/{auth-admin,staff}.ts`): « Personnel » lists everyone with a role in the board
+(« Active », « Jamais connectée », « Accès retiré ») and the invitations being prepared or that failed
+in the last 30 days; « Inviter une personne » offers the board's own schools only (none for an
+admin) and the message's language. The invitation page asks every 1.5 s while the worker works
+(`role="status"`; after 90 s it says it is slow and offers « Vérifier de nouveau »), then gives the
+French or English message (`server/invite-message.ts`: the sign-in address, the e-mail address to
+type and the 6-digit code, no link to click; « Courriel » is a `mailto:` to the person, « Texto » an
+`sms:` body, « Copier le message »), or says that a colleague of the board now has the role (the
+invitation was ready in the transaction that made it), or why it failed. « Fiche de la personne »
+(`/board/staff/[userId]`; every change still names the person by one of their roles in the board)
+removes and adds roles and removes or restores access; removing a teacher role warns that the
+person's classes there stay out of reach (without their number: board admins cannot read classes);
+deletion is a `mailto:` to `SUPPORT_EMAIL`. The worker calls Auth's admin API with a 10 s limit per
+request and sorts its errors into `transient` (no answer, 408, 429, 5xx: retried), `exists`,
+`notFound` and `refused` (any other 4xx: `authRefused`). It creates accounts with the
+`authenticated` role explicitly: the lite stack's Auth had no default group and gave accounts made
+through the admin API an empty role, which PostgREST refuses (the lite stack now sets
+`GOTRUE_JWT_DEFAULT_GROUP_NAME`, as the CLI and Compose do). A provisioning run holds an advisory
+lock on the address and a ban sync one on the person, so two deliveries of an event, or two boards
+inviting one address, never interleave; an account the run created is deleted again only while no
+profile uses it; on `ready`, an account that already existed is made to match the profile
+(unbanned). Both handlers read the current state, so a restore may hand their events back
+(D-115).
 
 **D-108 — What board admins may change on a school (amends D-039).** Allowed: contact details and
 bell times, through `public.merge_school_settings`, which merges keys atomically (no
@@ -1733,6 +1762,14 @@ the first bell before dismissal, a missing value read as the app's default) and 
 direction only; at most 8 KB of short strings or nulls, its times `HH:MM`), merged under a row lock.
 The guard trigger (`app.schools_guard_direction_settings`) covers the alerts switch and the
 substitute settings, so a board admin cannot change either through a direct update either.
+As built (slice S4): « Coordonnées et heures » (`components/board/school-contact-card.tsx`) is on
+« École » for the direction (office staff read it) and on the board's page of the school
+(`/board/schools/[schoolId]`), next to the AI switch (« Normalement décidé par la direction de
+l'école ») and, read only, the schedule, the modules and the alerts switch's state. The
+direction's « Suppléance » card now saves through `merge_school_settings({substitute})` instead of
+reading and rewriting the whole settings object. Board-wide calendar events (« Tout le conseil ·
+… ») are the board's admins' (`calendarEventFormSchema` takes `boardId` or `schoolId`, exactly
+one), and their « Calendrier » can delete any event of their board but a class's.
 
 **D-109 — Teacher onboarding: the terms at first sign-in, a checklist computed from data, a sample
 class kept out of plans (Assumption on its content).** `requireSession()` sends a person who has
@@ -1825,6 +1862,12 @@ refusal of the anonymous key still counts as up) and `select 1` on each configur
 (without waiting at the class portal's gate), each cut off after 2 s, and answers `{"status":
 "ok"}` or 503 `{"status": "unavailable"}`; the server logs which checks fail, once each time
 that set changes. Both are `no-store`, dynamic, and skip the session (`proxy.ts`).
+As built (slice S4): the « État du système » card on « Conseil » says « Tout fonctionne
+normalement » or « Un problème a été détecté : IP Lynx a été avisé », then when the background
+service, the backup and the data clean-up last ran, in the board's time zone (« il y a 4 min »,
+« il y a 6 h », « hier 23 h 53 » for the evening before, else the date; `lib/relative-time.ts`),
+each followed by « normal » or « à vérifier » in words; it says the state is unavailable when
+`system_status()` cannot be read.
 
 **D-113 — Run-time configuration: no `NEXT_PUBLIC_*` in the web app (amends D-002).** The server
 reads `SUPABASE_URL`, `SUPABASE_ANON_KEY` and `APP_NAME` through `serverEnv()` at run time; Next's
@@ -1943,6 +1986,8 @@ As built (slice S1): `submit_feedback` takes the board (one the sender belongs t
 school where the sender works in that board (`42501` otherwise); the 20 count over the last 24
 hours; the table's checks refuse a route with a query, and unknown kinds, devices or locales
 (`23514`).
+As built (slice S4): « Commentaires reçus » (`/board/feedback`, filtered « Nouveau », « Lu »,
+« Traité ») shows the sender's name and address only when they agreed to be contacted.
 
 **D-117 — « Nouveautés » and the version.** `APP_RELEASE` is set when the image is built and shown
 in the footer, in `/api/health` and in logs and heartbeats. `/nouveautes` is a static page of
@@ -1964,6 +2009,13 @@ there is no redirect loop (« Suppléances » needs a school with the Teaching m
 until slices S4 and S5, `/board` and `/direction` are short pages that say the page « arrive
 bientôt » and link to what the role already has; the desktop links scroll on their own on a narrow
 tablet rather than the page.
+As built (slice S4): `/board` is « Administration du conseil »: « Pour bien démarrer le conseil »
+(computed: a school year that is not over, every school's office phone, someone besides the board's
+admins, a PA day or holiday still to come and, with the Library module, someone who approves
+content), « État du système » and « Conservation des données », with the sections as tabs
+(« Aperçu », « Personnel », « Écoles », « Années scolaires », « Approbation des ressources » with
+the Library module, « Utilisation de l'IA », « Commentaires »); the « Journal d'audit » tab comes
+with slice S5. A person who administers several boards picks one (`?board=`, a plain form).
 
 **D-119 — Security headers, logs and sessions.** In production, a Content Security Policy
 (`default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';

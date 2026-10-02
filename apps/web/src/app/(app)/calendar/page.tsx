@@ -6,7 +6,7 @@ import { DeleteEventButton } from '@/components/calendar/delete-event-button';
 import { Badge, Card } from '@/components/ui/card';
 import { EmptyState, PageHeader } from '@/components/ui/page';
 import { formatLocalDate, formatTime, formatTimeRange } from '@/lib/format';
-import { hasRole, requireSession } from '@/server/session';
+import { adminBoards, hasRole, requireSession } from '@/server/session';
 import { createSupabaseServerClient } from '@/server/supabase';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -41,21 +41,34 @@ export default async function CalendarPage() {
   const managedSchools = session.schools.filter((s) =>
     hasRole(s, 'principal', 'vice_principal', 'office_admin'),
   );
+  // A board's admins manage its board-wide and school-wide events (D-107); a class's events stay
+  // its teachers' and its school's (app.can_manage_calendar_event).
+  const boards = adminBoards(session);
   const myClasses = (classesRes.data ?? []).map((r) => r.classes);
-  const canManage = (e: { school_id: string | null; class_id: string | null }) =>
-    e.school_id !== null &&
-    (managedSchools.some((s) => s.id === e.school_id) ||
-      (e.class_id !== null && myClasses.some((c) => c.id === e.class_id)));
+  const canManage = (e: { board_id: string; school_id: string | null; class_id: string | null }) =>
+    (e.class_id === null && boards.some((b) => b.id === e.board_id)) ||
+    (e.school_id !== null &&
+      (managedSchools.some((s) => s.id === e.school_id) ||
+        (e.class_id !== null && myClasses.some((c) => c.id === e.class_id))));
 
   const scopes = [
+    ...boards.map((b) => ({
+      key: `board:${b.id}`,
+      boardId: b.id,
+      schoolId: null,
+      classId: null,
+      label: `${t('scopeBoard')} · ${b.name}`,
+    })),
     ...managedSchools.map((s) => ({
       key: `school:${s.id}`,
+      boardId: null,
       schoolId: s.id,
       classId: null,
       label: `${t('scopeSchool')} · ${s.shortName ?? s.name}`,
     })),
     ...myClasses.map((c) => ({
       key: `class:${c.id}`,
+      boardId: null,
       schoolId: c.school_id,
       classId: c.id,
       label: t('scopeClass', { name: c.name }),

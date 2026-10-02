@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { SchoolContactCard } from '@/components/board/school-contact-card';
 import { AiSchoolCard, type AiUsage } from '@/components/school/ai-school-card';
 import { SchoolSettingsForm } from '@/components/school/school-settings-form';
 import { SubstituteSettingsCard } from '@/components/school/substitute-settings-card';
@@ -86,6 +87,18 @@ export default async function SchoolPage() {
             anchors={(anchors ?? [])
               .filter((a) => a.school_id === s.id)
               .map((a) => ({ id: a.id, date: a.anchor_date, day: a.cycle_day }))}
+          />
+          <SchoolContactCard
+            school={{ id: s.id, name: s.name }}
+            contact={{
+              officePhone: s.settings.contact.officePhone ?? '',
+              officeEmail: s.settings.contact.officeEmail ?? '',
+              dayStart: s.settings.dayStart,
+              dayEnd: s.settings.dayEnd,
+            }}
+            // The direction and the board's admins (D-108); office staff read it.
+            canEdit={hasRole(s, 'principal', 'vice_principal')}
+            showName
           />
           <AiSchoolCard
             school={{
