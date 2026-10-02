@@ -1,6 +1,6 @@
 'use server';
 
-import { unitPlanSchema } from '@lynx/domain';
+import { isLocalDate, unitPlanSchema } from '@lynx/domain';
 import { getLocale } from 'next-intl/server';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
@@ -13,9 +13,10 @@ import { createSupabaseServerClient } from '../supabase';
 import { parseInput } from './validation';
 
 /**
- * « Mon année » (DECISIONS D-123): planning a unit, its window and the attentes it aims at.
- * Every action gates through the session first (D-109); row level security and the database's
- * checks (`save_unit_plan`, LXY01, LXY02) decide in the end. Titles and attentes are never logged.
+ * « Mon année » (DECISIONS D-123, D-126): planning a unit, its window and the attentes it aims
+ * at, and starting a planned unit. Every action gates through the session first (D-109); row
+ * level security and the database's checks (`save_unit_plan`, `start_unit`, LXY01, LXY02) decide
+ * in the end. Titles and attentes are never logged.
  */
 
 const uuid = z.uuid();
@@ -70,4 +71,96 @@ export async function loadExpectationOptions(
   const cls = await loadClass(session, classId);
   if (!cls?.myRole) return fail('forbidden');
   return ok(await loadExpectationChoices(subjectId, cls.gradeCodes, await getLocale()));
+}
+
+/**
+ * « Enregistrer ces dates » (D-126): saves the weeks « Mon année » showed for a unit dated from
+ * its lessons, keeping its title, description and attentes as they are.
+ */
+export async function saveUnitDates(
+  classId: string,
+  unitId: string,
+  window: { startsOn: string; endsOn: string },
+): Promise<ActionResult> {
+  await requireSession();
+  if (
+    !uuid.safeParse(classId).success ||
+    !uuid.safeParse(unitId).success ||
+    typeof window?.startsOn !== 'string' ||
+    typeof window.endsOn !== 'string' ||
+    !isLocalDate(window.startsOn) ||
+    !isLocalDate(window.endsOn) ||
+    window.endsOn < window.startsOn
+  ) {
+    return fail('invalid');
+  }
+  const supabase = await createSupabaseServerClient();
+  const { data: unit, error: readError } = await supabase
+    .from('units')
+    .select('subject_id, title, description, unit_expectations(expectation_id)')
+    .eq('id', unitId)
+    .eq('class_id', classId)
+    .maybeSingle();
+  if (readError) return fail(reportError('saveUnitDates', readError));
+  if (!unit) return fail('notFound');
+  const parsed = parseInput(unitPlanSchema, {
+    classId,
+    subjectId: unit.subject_id,
+    title: unit.title,
+    description: unit.description ?? '',
+    startsOn: window.startsOn,
+    endsOn: window.endsOn,
+    expectationIds: unit.unit_expectations.map((e) => e.expectation_id),
+  });
+  if (!parsed.ok) return parsed.result;
+  const v = parsed.data;
+  const { error } = await supabase.rpc('save_unit_plan', {
+    p_unit_id: unitId,
+    p_class_id: v.classId,
+    p_subject_id: v.subjectId,
+    p_title: v.title,
+    p_description: v.description as string,
+    p_starts_on: v.startsOn as string,
+    p_ends_on: v.endsOn as string,
+    p_expectation_ids: v.expectationIds,
+  });
+  if (error) return fail(reportError('saveUnitDates', error));
+  refresh(classId, unitId);
+  return ok(undefined);
+}
+
+/**
+ * « Commencer l'unité » on « Aujourd'hui » (D-123, D-126): a planned unit becomes the subject's
+ * unit under way; with `finishCurrent` (« Terminer et commencer »), the unit under way is marked
+ * finished first, else it goes back to « À venir » (`set_active_unit`). Never automatic.
+ */
+export async function startPlannedUnit(
+  classId: string,
+  unitId: string,
+  finishCurrent: boolean,
+): Promise<ActionResult> {
+  await requireSession();
+  if (
+    !uuid.safeParse(classId).success ||
+    !uuid.safeParse(unitId).success ||
+    typeof finishCurrent !== 'boolean'
+  ) {
+    return fail('invalid');
+  }
+  const supabase = await createSupabaseServerClient();
+  const { data: unit, error: readError } = await supabase
+    .from('units')
+    .select('id')
+    .eq('id', unitId)
+    .eq('class_id', classId)
+    .maybeSingle();
+  if (readError) return fail(reportError('startPlannedUnit', readError));
+  if (!unit) return fail('notFound');
+  const { error } = await supabase.rpc('start_unit', {
+    p_unit_id: unitId,
+    p_finish_current: finishCurrent,
+  });
+  if (error) return fail(reportError('startPlannedUnit', error));
+  refresh(classId, unitId);
+  return ok(undefined);
 }

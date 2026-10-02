@@ -229,7 +229,16 @@
       "interrupted": "Interrupted"
     },
     "affectedBy": "{status}: {event}",
-    "openUnit": "Open the unit"
+    "openUnit": "Open the unit",
+    "plannedUnit": {
+      "noActive": "No unit in progress. “{title}” is planned from {date}.",
+      "finished": "Every lesson in this unit has been taught. Next planned unit: “{title}”.",
+      "next": "Next planned unit: “{title}” (from {date}).",
+      "start": "Start the unit",
+      "finishAndStart": "Finish and start “{title}”",
+      "started": "“{title}” is in progress.",
+      "yearLink": "My year"
+    }
   },
   "classes": {
     "title": "My classes",
@@ -382,7 +391,13 @@
     "lessonCount": "{done} / {total} lessons taught",
     "deleteConfirm": "Delete the unit “{title}” and all its lessons?",
     "deleted": "Unit deleted.",
-    "updated": "Unit updated."
+    "updated": "Unit updated.",
+    "tabs": {
+      "label": "Planning sections",
+      "units": "Units",
+      "year": "My year",
+      "coverage": "Coverage"
+    }
   },
   "lessons": {
     "title": "Lessons",
@@ -3649,6 +3664,16 @@
     "intro": "What changed in the app, from the newest version to the oldest.",
     "current": "Installed version: {version}",
     "versions": {
+      "v070": {
+        "title": "Version 0.7 · My year",
+        "date": "October 2026",
+        "items": {
+          "year": "“My year” in each class’s planning: the units on the weeks of the year, with holidays, liturgical seasons and report card dates.",
+          "unitPlan": "Plan a unit: its weeks and the expectations it addresses.",
+          "today": "“Today” shows the planned unit and starts it in one tap.",
+          "reportPeriods": "Board: the report card periods of each school year."
+        }
+      },
       "v060": {
         "title": "Version 0.6 · Ready for the pilot",
         "date": "October 2026",
@@ -3752,6 +3777,95 @@
       "save": "Save",
       "openUnit": "Open the unit",
       "saved": "Planning saved."
+    },
+    "page": {
+      "title": "My year · {year}",
+      "metaTitle": "My year · {className}",
+      "intro": "Place your units on the weeks of the year. PA days and holidays are greyed out. This plan is private: only the class team sees it.",
+      "noYear": "This class’s school year can’t be found.",
+      "empty": "No units yet. Plan the first one: its subject, its weeks and the expectations it addresses.",
+      "toPlace": "{count, plural, one {# unit has no saved dates yet.} other {# units have no saved dates yet.}}",
+      "toPlaceLink": "Go to the list"
+    },
+    "grid": {
+      "caption": "The class’s units by subject and week, with the calendar, report cards and liturgical seasons.",
+      "scrollHint": "Scroll the table sideways to see the whole year.",
+      "month": "Month",
+      "weekOf": "Week of",
+      "week": "Week of {date}",
+      "thisWeek": "This week",
+      "calendar": "Calendar",
+      "reports": "Report cards",
+      "seasons": "Liturgical season",
+      "noSchool": "No school",
+      "schoolDays": "{count, plural, one {# day} other {# days}}",
+      "schoolDaysLong": "{count, plural, one {# school day} other {# school days}}",
+      "mass": "Mass",
+      "massLabel": "Mass: {title}, {date}",
+      "ordinaryTime": "Ordinary Time",
+      "seasonDates": "{season}, from {from} to {to}",
+      "unitDates": "from {start} to {end}"
+    },
+    "seasons": {
+      "avent": "Advent",
+      "noel": "Christmas season",
+      "careme": "Lent",
+      "paques": "Easter season"
+    },
+    "status": {
+      "lateStart": "Not started yet",
+      "inferred": "Dates from the lessons"
+    },
+    "reports": {
+      "short": {
+        "progress": "Progress",
+        "term1": "Term 1",
+        "term2": "Term 2"
+      },
+      "whatShort": {
+        "end": "Ends {date}",
+        "due": "Due {date}",
+        "issued": "Sent home {date}"
+      },
+      "what": {
+        "end": "evaluation period ends {date}",
+        "due": "marks due by {date}",
+        "issued": "sent home {date}"
+      },
+      "marker": "{kind}: {what}"
+    },
+    "month": {
+      "heading": "{month} · {days, plural, =0 {no school} one {# school day} other {# school days}}",
+      "current": "This month",
+      "daysOff": "No school",
+      "events": "Events",
+      "reports": "Report cards",
+      "seasons": "Liturgical season",
+      "units": "Units",
+      "noUnits": "No units this month.",
+      "jump": "Go to this month"
+    },
+    "inferred": {
+      "title": "Dates from the lessons taught ({count})",
+      "intro": "These units have no saved dates. Their weeks run from the first to the last lesson taught, up to this week for a unit in progress. Save them as they are or adjust them.",
+      "dates": "From {start} to {end}",
+      "save": "Save these dates",
+      "saveLabel": "Save these dates: “{title}”",
+      "adjust": "Adjust",
+      "adjustLabel": "Adjust: “{title}”",
+      "saved": "Dates saved."
+    },
+    "unplaced": {
+      "title": "Units without dates ({count})",
+      "intro": "Choose their weeks to see them on the year.",
+      "place": "Place",
+      "placeLabel": "Place: “{title}”"
+    },
+    "warnings": {
+      "title": "To check",
+      "overlap": "Overlap: “{first}” and “{second}” ({subject}), {from} to {to}.",
+      "breaks": "“{title}” includes weeks without school: {breaks} ({weeks, plural, one {# week} other {# weeks}}).",
+      "outside": "“{title}” ({start}–{end}): outside the school year."
     }
   }
 }

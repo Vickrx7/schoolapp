@@ -114,15 +114,16 @@ Mon Tableau, Cartable, Ardoise). No availability or trademark check has been don
 | `6915404` | Round A: the browser tests match the catalogues' no-break spaces                            |
 | `de7b798` | Round A: staff sign-in throttled, no names in feedback, signed backups                      |
 | `00e1343` | Final review, round B: privacy wording, terms `2026-10-pilote-2`, the journal, audit export |
-| (latest)  | « Mon année » S1: report periods, unit windows and attentes, the planning actions' gate     |
+| `d2dad5a` | « Mon année » S1: report periods, unit windows and attentes, the planning actions' gate     |
+| (latest)  | « Mon année » S2: the year view, and « Aujourd'hui » starting a planned unit                |
 
-**Verified (locally, from an empty database, and in CI on each pushed commit):** 1357 unit tests
+**Verified (locally, from an empty database, and in CI on each pushed commit):** 1372 unit tests
 (none skipped), 1796 pgTAP tests, 93 integration tests (plus the 3 of `restore-smoke`, which run
 after a restore: the `backup-restore` CI job and the local drill; the staff-account tests talk to
-the stack's real Auth server), 132 Playwright tests (desktop, phone and tablet, axe on every Phase
+the stack's real Auth server), 137 Playwright tests (desktop, phone and tablet, axe on every Phase
 3, 4 and 5 page, every « Conseil » page, the direction's dashboard and « Journal d'audit »,
-« Bienvenue », « Pour bien commencer », each step of the board demo, a unit's planning and the
-report periods), lint,
+« Bienvenue », « Pour bien commencer », each step of the board demo, a unit's planning, the
+report periods, « Mon année » on a desktop and at 360 px, and starting a planned unit), lint,
 typecheck, format, generated DB types up to date, the demo curriculum and library seeds up to date
 (`pnpm library:seed:check`), web build with no setting built in; in CI also a backup restored
 into an empty database, and both Docker images run as a board-hosted install (`docker-smoke`).
@@ -133,8 +134,12 @@ D-123 to D-128): slice S1 is done: the board's « Périodes de bulletin » in «
 attentes on its page (« Modifier la planification »), the lesson form listing the unit's attentes
 first, the domain code for the year view and coverage (`packages/domain/src/year-plan`), and the
 planning, progress, roster and timetable actions gated by `requireSession()` like the others.
-Slices S2 (the year view « Mon année » and « Aujourd'hui ») and S3 (« Couverture » and the
-« Plan à long terme » PDF) are next; AI is deferred (D-128).
+Slice S2 is done (D-126): « Unités · Mon année » inside the class's « Planification » tab; the
+year view `/classes/[id]/planning/year` (a grid of weeks by subject on larger screens, with the
+calendar, report dates and liturgical seasons; a list of months on phones; units dated from their
+lessons to confirm, units without dates to place, warnings in words; « Planifier une unité »); and
+on « Aujourd'hui » the planned unit due that week with « Commencer l'unité ». Slice S3
+(« Couverture » and the « Plan à long terme » PDF) is next; AI is deferred (D-128).
 
 **Phase 3 is complete** (3a and 3b; see `docs/phase-3.md`): absence button, plans built in the
 request and kept current by the worker, review and editing, release at 07:30, codes, the
@@ -464,6 +469,11 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   current week while the year has six weeks to go, else fixed fall dates) and attentes, and adds
   the planned 3e « L'addition et la soustraction jusqu'à 1 000 ». Browser tests that change them
   put them back (`e2e/db-year-plan.ts`).
+- **« Mon année » on « Aujourd'hui »:** a subject block shows the class's planned unit due that
+  week (window starting by the week's Friday). The seed's planned 3e « L'addition et la
+  soustraction jusqu'à 1 000 » starts two weeks after the reset, so a spec that opens
+  « Aujourd'hui » two or more weeks ahead sees « Prochaine unité prévue » on 3e Mathématiques.
+  `e2e/year-plan.spec.ts` makes « E2E-… » units (one started from « Aujourd'hui ») and deletes them.
 - **Unit tests of the web app's server code** can import `@/…`: the root `vitest.config.ts`
   aliases it (`server/actions/session-gate.test.ts` mocks the session and the database).
 - **New accounts in browser tests go through « Bienvenue ».** The seed's demo accounts have
@@ -605,8 +615,8 @@ Where an item is already in `DECISIONS.md`, the D-number is given. Don't add dup
    hosted checks. « Essayer comme les élèves » (a Phase 4 hook, D-081) was not built in Phase 5.
 7. **Name.** Once chosen: check availability, then rename `APP_NAME`, the icon, the
    login email template and the promo.
-8. **« Mon année » slices S2 and S3** (the year view and « Aujourd'hui », then « Couverture » and
-   the long-range plan PDF), on top of slice S1's database and domain code (D-123 to D-128).
+8. **« Mon année » slice S3** (« Couverture » and the long-range plan PDF), on top of slices S1
+   and S2 (D-123 to D-128).
 
 **Known issues and risks:**
 

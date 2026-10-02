@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { localized } from '@/i18n/config';
 import Link from 'next/link';
 import { LessonList } from '@/components/planning/lesson-list';
+import { PlanningTabs } from '@/components/planning/planning-tabs';
 import { EditUnitButton, UnitStatusButton } from '@/components/planning/unit-actions';
 import { Badge } from '@/components/ui/card';
 import { UnitPlanCard } from '@/components/year-plan/unit-plan-card';
@@ -107,6 +108,7 @@ export default async function UnitPage({
 
   return (
     <div className="space-y-4">
+      <PlanningTabs classId={classId} />
       <Link
         href={`/classes/${classId}/planning`}
         className="inline-flex items-center gap-1 text-sm text-slate-600 hover:text-slate-900"

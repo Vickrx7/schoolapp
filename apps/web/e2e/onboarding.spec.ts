@@ -130,6 +130,27 @@ test('a new teacher accepts the terms, then tries the app with a sample class', 
     );
     await expectAccessible(page);
 
+    // « Mon année » (D-126): the sample units are dated from the lessons already taught, shown
+    // on the year and saved only when the teacher confirms.
+    const sampleClassId = /\/classes\/([0-9a-f-]{36})\//.exec(page.url())![1];
+    await page.goto(`/classes/${sampleClassId}/planning/year`);
+    const inferred = page.getByRole('region', {
+      name: /^Dates d’après les leçons données \(\d+\)$/,
+    });
+    await expect(inferred).toBeVisible();
+    await expect(
+      page.getByRole('table').getByText('Dates d’après les leçons').first(),
+    ).toBeVisible();
+    await expectAccessible(page);
+    const firstSave = inferred.getByRole('button', { name: /^Enregistrer ces dates\s:/ }).first();
+    const saveName = (await firstSave.getAttribute('aria-label'))!;
+    const save = page.getByRole('button', { name: saveName, exact: true });
+    await expect(async () => {
+      if (await save.isVisible()) await save.click();
+      await expect(save).toHaveCount(0, { timeout: 2000 });
+    }).toPass();
+    await expect(page.getByText('Dates enregistrées.').first()).toBeVisible();
+
     // Deleting it: a simple confirmation, then the checklist, unchanged.
     const dialog = page.getByRole('dialog');
     await expect(async () => {

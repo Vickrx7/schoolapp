@@ -2,6 +2,7 @@ import { getLocale, getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { NewUnitButton } from '@/components/planning/new-unit-button';
+import { PlanningTabs } from '@/components/planning/planning-tabs';
 import { UnitStatusButton } from '@/components/planning/unit-actions';
 import { Badge, Card } from '@/components/ui/card';
 import { EmptyState } from '@/components/ui/page';
@@ -46,6 +47,7 @@ export default async function PlanningPage({ params }: { params: Promise<{ class
 
   return (
     <div className="space-y-5">
+      <PlanningTabs classId={classId} />
       <div className="flex flex-wrap items-start justify-between gap-3">
         <p className="max-w-prose text-slate-600">{t('intro')}</p>
         <NewUnitButton classId={classId} subjects={subjects} />

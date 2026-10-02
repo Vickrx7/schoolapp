@@ -24,6 +24,7 @@ import { PurgeNotice } from '@/components/onboarding/class-notices';
 import { SampleBadge } from '@/components/onboarding/sample-badge';
 import { TeacherChecklist } from '@/components/onboarding/teacher-checklist';
 import { Button } from '@/components/ui/button';
+import { StartUnitButton } from '@/components/year-plan/start-unit-button';
 import { Badge, Card, CardBody, CardHeader, CardTitle, Notice } from '@/components/ui/card';
 import { EmptyState, PageHeader } from '@/components/ui/page';
 import { formatLocalDate, formatTime, formatTimeRange } from '@/lib/format';
@@ -438,6 +439,28 @@ async function BlockCard({
                 />
               ) : null}
             </div>
+          ) : block.plannedUnit &&
+            (block.lessonState === 'no_active_unit' || block.lessonState === 'unit_finished') ? (
+            // A planned unit is due (« Mon année », D-126): one tap starts it, never by itself.
+            <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm text-slate-700">
+                {block.lessonState === 'no_active_unit'
+                  ? t('today.plannedUnit.noActive', {
+                      title: block.plannedUnit.title,
+                      date: formatLocalDate(block.plannedUnit.startsOn, locale, {
+                        day: 'numeric',
+                        month: 'long',
+                      }),
+                    })
+                  : t('today.plannedUnit.finished', { title: block.plannedUnit.title })}
+              </p>
+              <StartUnitButton
+                classId={block.classId}
+                unitId={block.plannedUnit.id}
+                title={block.plannedUnit.title}
+                finishCurrent={block.lessonState === 'unit_finished'}
+              />
+            </div>
           ) : block.lessonState === 'no_active_unit' ? (
             <p className="mt-2 text-sm text-slate-600">
               {t('today.noActiveUnit')}{' '}
@@ -456,6 +479,24 @@ async function BlockCard({
                 className="text-brand-700 underline underline-offset-2 hover:text-brand-800"
               >
                 {t('today.planUnit')}
+              </Link>
+            </p>
+          ) : null}
+          {block.lesson && block.plannedUnit ? (
+            // The unit under way still has lessons, and the next one's weeks have come.
+            <p className="mt-3 text-sm text-slate-700" data-testid="next-planned-unit">
+              {t('today.plannedUnit.next', {
+                title: block.plannedUnit.title,
+                date: formatLocalDate(block.plannedUnit.startsOn, locale, {
+                  day: 'numeric',
+                  month: 'short',
+                }),
+              })}{' '}
+              <Link
+                href={`/classes/${block.classId}/planning/year`}
+                className="text-brand-700 underline underline-offset-2 hover:text-brand-800"
+              >
+                {t('today.plannedUnit.yearLink')}
               </Link>
             </p>
           ) : null}

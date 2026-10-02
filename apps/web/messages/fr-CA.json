@@ -229,7 +229,16 @@
       "interrupted": "Perturbé"
     },
     "affectedBy": "{status} : {event}",
-    "openUnit": "Voir l’unité"
+    "openUnit": "Voir l’unité",
+    "plannedUnit": {
+      "noActive": "Aucune unité en cours. « {title} » est prévue à partir du {date}.",
+      "finished": "Toutes les leçons de l’unité sont données. Prochaine unité prévue : « {title} ».",
+      "next": "Prochaine unité prévue : « {title} » (à partir du {date}).",
+      "start": "Commencer l’unité",
+      "finishAndStart": "Terminer et commencer « {title} »",
+      "started": "« {title} » est en cours.",
+      "yearLink": "Mon année"
+    }
   },
   "classes": {
     "title": "Mes classes",
@@ -382,7 +391,13 @@
     "lessonCount": "{done} / {total} leçons données",
     "deleteConfirm": "Supprimer l’unité « {title} » et toutes ses leçons?",
     "deleted": "Unité supprimée.",
-    "updated": "Unité mise à jour."
+    "updated": "Unité mise à jour.",
+    "tabs": {
+      "label": "Sections de la planification",
+      "units": "Unités",
+      "year": "Mon année",
+      "coverage": "Couverture"
+    }
   },
   "lessons": {
     "title": "Leçons",
@@ -3649,6 +3664,16 @@
     "intro": "Ce qui a changé dans l’application, de la version la plus récente à la plus ancienne.",
     "current": "Version installée : {version}",
     "versions": {
+      "v070": {
+        "title": "Version 0.7 · Mon année",
+        "date": "Octobre 2026",
+        "items": {
+          "year": "« Mon année » dans la planification de chaque classe : les unités sur les semaines de l’année, avec les congés, les temps liturgiques et les dates de bulletin.",
+          "unitPlan": "Planifier une unité : ses semaines et les attentes visées.",
+          "today": "« Aujourd’hui » annonce l’unité prévue et la commence en un geste.",
+          "reportPeriods": "Conseil : les périodes de bulletin de chaque année scolaire."
+        }
+      },
       "v060": {
         "title": "Version 0.6 · Prêt pour le projet pilote",
         "date": "Octobre 2026",
@@ -3752,6 +3777,95 @@
       "save": "Enregistrer",
       "openUnit": "Ouvrir l’unité",
       "saved": "Planification enregistrée."
+    },
+    "page": {
+      "title": "Mon année · {year}",
+      "metaTitle": "Mon année · {className}",
+      "intro": "Placez vos unités sur les semaines de l’année. Les journées pédagogiques et les congés sont grisés. Ce plan est privé : seule l’équipe de la classe le voit.",
+      "noYear": "L’année scolaire de cette classe est introuvable.",
+      "empty": "Aucune unité pour l’instant. Planifiez la première : sa matière, ses semaines et les attentes visées.",
+      "toPlace": "{count, plural, one {# unité n’a pas encore de dates enregistrées.} other {# unités n’ont pas encore de dates enregistrées.}}",
+      "toPlaceLink": "Aller à la liste"
+    },
+    "grid": {
+      "caption": "Les unités de la classe par matière et par semaine, avec le calendrier, les bulletins et les temps liturgiques.",
+      "scrollHint": "Faites défiler le tableau de côté pour voir toute l’année.",
+      "month": "Mois",
+      "weekOf": "Semaine du",
+      "week": "Semaine du {date}",
+      "thisWeek": "Cette semaine",
+      "calendar": "Calendrier",
+      "reports": "Bulletins",
+      "seasons": "Temps liturgique",
+      "noSchool": "Pas d’école",
+      "schoolDays": "{count, plural, one {# jour} other {# jours}}",
+      "schoolDaysLong": "{count, plural, one {# jour de classe} other {# jours de classe}}",
+      "mass": "Messe",
+      "massLabel": "Messe : {title}, le {date}",
+      "ordinaryTime": "Temps ordinaire",
+      "seasonDates": "{season}, du {from} au {to}",
+      "unitDates": "du {start} au {end}"
+    },
+    "seasons": {
+      "avent": "Avent",
+      "noel": "Temps de Noël",
+      "careme": "Carême",
+      "paques": "Temps pascal"
+    },
+    "status": {
+      "lateStart": "Pas encore commencée",
+      "inferred": "Dates d’après les leçons"
+    },
+    "reports": {
+      "short": {
+        "progress": "Progrès",
+        "term1": "1re étape",
+        "term2": "2e étape"
+      },
+      "whatShort": {
+        "end": "Fin {date}",
+        "due": "Saisie {date}",
+        "issued": "Remise {date}"
+      },
+      "what": {
+        "end": "fin de la période d’évaluation le {date}",
+        "due": "saisie au plus tard le {date}",
+        "issued": "remise aux familles le {date}"
+      },
+      "marker": "{kind} : {what}"
+    },
+    "month": {
+      "heading": "{month} · {days, plural, =0 {pas d’école} one {# jour de classe} other {# jours de classe}}",
+      "current": "Ce mois-ci",
+      "daysOff": "Pas d’école",
+      "events": "Événements",
+      "reports": "Bulletins",
+      "seasons": "Temps liturgique",
+      "units": "Unités",
+      "noUnits": "Aucune unité ce mois-ci.",
+      "jump": "Aller à ce mois-ci"
+    },
+    "inferred": {
+      "title": "Dates d’après les leçons données ({count})",
+      "intro": "Ces unités n’ont pas de dates enregistrées. Leurs semaines vont de la première à la dernière leçon donnée, jusqu’à cette semaine pour une unité en cours. Enregistrez-les telles quelles ou ajustez-les.",
+      "dates": "Du {start} au {end}",
+      "save": "Enregistrer ces dates",
+      "saveLabel": "Enregistrer ces dates : « {title} »",
+      "adjust": "Ajuster",
+      "adjustLabel": "Ajuster : « {title} »",
+      "saved": "Dates enregistrées."
+    },
+    "unplaced": {
+      "title": "Unités sans dates ({count})",
+      "intro": "Choisissez leurs semaines pour les voir sur l’année.",
+      "place": "Placer",
+      "placeLabel": "Placer : « {title} »"
+    },
+    "warnings": {
+      "title": "À vérifier",
+      "overlap": "Chevauchement : « {first} » et « {second} » ({subject}), du {from} au {to}.",
+      "breaks": "« {title} » comprend des semaines sans école : {breaks} ({weeks, plural, one {# semaine} other {# semaines}}).",
+      "outside": "« {title} » ({start}–{end}) : hors de l’année scolaire."
     }
   }
 }

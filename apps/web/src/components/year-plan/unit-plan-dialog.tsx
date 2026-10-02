@@ -38,7 +38,8 @@ export type PlanWeek = Pick<SchoolWeek, 'monday' | 'days' | 'schoolDays' | 'days
  * « Planifier une unité » / « Planification de l'unité » (DECISIONS D-123): the title, the first
  * and last week (saved as their first and last weekday, clamped to the school year), with the
  * weeks and school days they hold, the attentes the unit aims at and its description. A new unit
- * is « À venir ». What was typed stays after an error or a close.
+ * is « À venir ». What was typed stays after an error or a close. With `open` and `onOpenChange`
+ * and no `trigger`, the page opens it (« Mon année » shares one dialog among its unit cells).
  */
 export function UnitPlanDialog({
   classId,
@@ -49,6 +50,9 @@ export function UnitPlanDialog({
   expectations,
   trigger,
   showOpenUnit = false,
+  open: openProp,
+  onOpenChange,
+  onCloseAutoFocus,
 }: {
   classId: string;
   /** Null: a new unit. */
@@ -59,15 +63,25 @@ export function UnitPlanDialog({
   year: DateWindow;
   /** The attentes of the unit's subject, when the page has them already. */
   expectations?: ExpectationChoice[];
-  trigger: ReactNode;
+  /** The button that opens it; none when the page controls `open`. */
+  trigger?: ReactNode;
   /** « Ouvrir l'unité » after saving (from the year view). */
   showOpenUnit?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  /** Where the focus goes on close, when there is no trigger to go back to. */
+  onCloseAutoFocus?: (event: Event) => void;
 }) {
   const t = useTranslations('yearPlan.dialog');
   const tCommon = useTranslations('common');
   const locale = useLocale();
   const router = useRouter();
-  const [open, setOpen] = useState(false);
+  const [openState, setOpenState] = useState(false);
+  const open = openProp ?? openState;
+  const setOpen = (value: boolean) => {
+    if (openProp === undefined) setOpenState(value);
+    onOpenChange?.(value);
+  };
   const [subjectId, setSubjectId] = useState(unit?.subjectId ?? subjects[0]?.id ?? '');
   const [title, setTitle] = useState(unit?.title ?? '');
   const [description, setDescription] = useState(unit?.description ?? '');
@@ -154,11 +168,12 @@ export function UnitPlanDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      {trigger ? <DialogTrigger asChild>{trigger}</DialogTrigger> : null}
       <DialogContent
         title={unit ? t('editTitle') : t('newTitle')}
         closeLabel={tCommon('close')}
         className="sm:max-w-2xl"
+        onCloseAutoFocus={onCloseAutoFocus}
       >
         <form onSubmit={submit} className="space-y-4" noValidate>
           {unit ? null : (

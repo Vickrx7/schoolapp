@@ -75,6 +75,8 @@ test('every page family carries the security policy and works under it', async (
     '/demarrage',
     '/commentaires',
     '/nouveautes',
+    // « Mon année » (D-126): the grid's scroller and the planning dialogs.
+    `/classes/${SEED.class3}/planning/year`,
   ]) {
     await expectPolicy(page, path);
     await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();

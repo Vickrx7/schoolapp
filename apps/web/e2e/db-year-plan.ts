@@ -122,3 +122,40 @@ export async function restoreUnitPlan(unitId: string, plan: UnitPlanRow): Promis
 export async function deleteUnitsTitled(prefix: string): Promise<void> {
   await query(`delete from public.units where starts_with(title, $1)`, [prefix]);
 }
+
+/**
+ * A unit of a class planned for a window (« À venir »), with lessons, as the year view and
+ * « Aujourd'hui » read it. Returns its id. Title it with an `e2ePrefix()` and delete it with
+ * `deleteUnitsTitled`.
+ */
+export async function insertPlannedUnit(unit: {
+  classId: string;
+  subjectCode: string;
+  title: string;
+  startsOn: string;
+  endsOn: string;
+  lessons?: string[];
+}): Promise<string> {
+  const [row] = await query<{ id: string }>(
+    `insert into public.units (class_id, subject_id, title, status, sort_order, planned_start_on, planned_end_on)
+     values ($1, (select id from public.subjects where code = $2 and board_id is null), $3, 'planned', 9, $4, $5)
+     returning id`,
+    [unit.classId, unit.subjectCode, unit.title, unit.startsOn, unit.endsOn],
+  );
+  for (const [i, title] of (unit.lessons ?? []).entries()) {
+    await query(
+      'insert into public.unit_lessons (unit_id, sequence_number, title) values ($1, $2, $3)',
+      [row!.id, i + 1, title],
+    );
+  }
+  return row!.id;
+}
+
+/** A unit's status. */
+export async function unitStatus(unitId: string): Promise<string | undefined> {
+  const [row] = await query<{ status: string }>(
+    'select status::text from public.units where id = $1',
+    [unitId],
+  );
+  return row?.status;
+}

@@ -61,7 +61,9 @@ describe('the planning, progress, roster, timetable and year plan actions (D-109
       'timetable.deleteTimetableBlock',
       'timetable.saveTimetableBlock',
       'year-plan.loadExpectationOptions',
+      'year-plan.saveUnitDates',
       'year-plan.saveUnitPlan',
+      'year-plan.startPlannedUnit',
     ]);
   });
 

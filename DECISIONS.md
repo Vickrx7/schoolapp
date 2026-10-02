@@ -2495,6 +2495,45 @@ test checks it against the demo seed, `supabase/seeds/50_year_plan_demo.sql`); a
 the year is a field error before the database's check) and `prefillReportPeriods`
 (`server/actions/board.ts`); `ReportPeriodsEditor` on each year's card.
 
+**D-126 — The year view (« Mon année »).** `/classes/[id]/planning/year`, a section of the
+class's « Planification » tab (« Unités · Mon année », « Couverture » to come with D-125; no new
+navigation item, D-118 unchanged). The school year as weeks, Monday to Friday, each labelled by its
+first day in the year, grouped by month: a « Calendrier » row (« Pas d'école » and the reason for a
+week without school, « 4 jours » and the days off named for a partial week, « Messe » for masses
+and liturgies), a « Bulletins » row (each report period's end, « saisie » and « remise », D-124), a
+« Temps liturgique » row (Advent, Christmas, Lent and Easter as `liturgicalSeasonOn` computes them,
+D-058; a week takes the season of its Wednesday; each band named, never colour alone) and one row
+per subject with units or timetable blocks, with a second lane when two units share a week. Each
+unit is a button with its title and its status in words (« À venir », « En cours », « Terminée »,
+or « Pas encore commencée » for a planned unit whose start has passed) that opens « Planification
+de l'unité » (D-123); « Planifier une unité » creates one. A unit under way or finished without
+saved dates is dated from its lessons (first to last lesson taught, up to today while under way)
+and marked « Dates d'après les leçons »: shown, and saved, as its weeks, only when the teacher taps
+« Enregistrer ces dates » or saves the dialog (**Assumption**). Units without dates are listed with
+« Placer ». Warnings in words: two units of a subject that overlap, weeks without school inside a
+unit, a unit outside the school year. On phones (below `md`), a list of months instead of the grid
+(school days, days off, events, report dates, seasons and the units that touch the month), so
+nothing scrolls sideways at 360 px. No drag and drop. On « Aujourd'hui », a subject block whose
+class and subject have a planned unit due that week (its window starts by the week's Friday and has
+not ended; the earliest) says so: with no unit under way, « Aucune unité en cours. « … » est prévue
+à partir du … » and « Commencer l'unité »; when the unit under way has all its lessons given,
+« Terminer et commencer « … » » (that unit is marked « Terminée » first); with lessons left,
+« Prochaine unité prévue : « … » (à partir du …) » and a link to « Mon année ». Never automatic
+(D-123). Private to the class team (the class layout, D-013); not audited. _Why:_ teachers plan by
+weeks against the calendar they live by (days off, report cards, the liturgical year), and a
+grid of some forty weeks does not fit a phone, while a list of months does.
+As built (slice S2): `loadYearPlan` (`server/queries/year-plan.ts`) and the pure model
+`buildYearView` (`server/planning/year-view.ts`, unit-tested); `components/year-plan/year-grid.tsx`
+(a `<table>` with a caption, header scopes and spans, in a focusable box that scrolls sideways and
+opens on the current week, the subject column, unit titles and month names kept in view),
+`year-month-list.tsx`, `year-plan-lists.tsx` and one planning dialog shared by every unit on the
+page (`year-plan-dialogs.tsx`, so the year's weeks are sent once); `PlanningTabs` on the units list,
+a unit's page and the year; actions `saveUnitDates` (keeps the unit's title, description and
+attentes) and `startPlannedUnit` (`start_unit`), both gated by `requireSession()`; `loadToday`
+reads the planned units of the date's week (`plannedUnitFor`). « Nouveautés »: `v070`, « Version 0.7
+· Mon année ». Browser tests: `year-plan.spec.ts`, `year-plan-mobile.spec.ts` (360 px), the sample
+class's dates in `onboarding.spec.ts`, and the page in the security-policy check.
+
 **D-128 — AI for the year plan is deferred.** « Proposer une répartition (IA) » is not built:
 production boards have no curriculum loaded (D-030), the demo sample is partial and unverified,
 and the report-comment composer's January deadline comes first (lead's answer, 2026-10-02). When

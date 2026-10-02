@@ -1,9 +1,12 @@
 import 'server-only';
 import {
+  addDays,
   assignLessonsToSlots,
   isTeachable,
   isTeachersBlock,
+  mondayOf,
   nextLessons,
+  plannedUnitFor,
   resolveSchoolDay,
   type BlockStatus,
   type CalendarEventType,
@@ -53,6 +56,11 @@ export interface TodayBlock {
   lesson: TodayLesson | null;
   lessonState: 'taught' | 'assigned' | 'no_active_unit' | 'unit_finished' | null;
   gapTitle: string | null;
+  /**
+   * The class and subject's planned unit due this week (« Mon année », D-126): its window starts
+   * by the week's Friday and has not ended. « Commencer l'unité » starts it; never automatic.
+   */
+  plannedUnit: { id: string; title: string; startsOn: LocalDate } | null;
 }
 
 export interface TodaySchoolDay {
@@ -105,31 +113,50 @@ export async function loadToday(
   const classById = new Map(myClasses.map((r) => [r.class_id, r.classes]));
   const schoolIds = [...new Set(myClasses.map((r) => r.classes.school_id))];
 
-  const [blocksRes, anchorsRes, unitsRes, progressRes, subjectsRes, roomsRes] = await Promise.all([
-    supabase
-      .from('timetable_blocks')
-      .select(
-        'id, class_id, day_key, start_time, end_time, kind, subject_id, title, teacher_id, room_id',
-      )
-      .in('class_id', classIds),
-    supabase
-      .from('school_cycle_anchors')
-      .select('school_id, anchor_date, cycle_day')
-      .in('school_id', schoolIds),
-    supabase
-      .from('units')
-      .select(
-        'id, class_id, subject_id, title, unit_lessons(id, sequence_number, title, objectives, materials)',
-      )
-      .in('class_id', classIds)
-      .eq('status', 'active'),
-    supabase
-      .from('lesson_progress')
-      .select('lesson_id, status, taught_on, sub_reports(sub_plan_id, sub_plans(absence_id))')
-      .in('class_id', classIds),
-    supabase.from('subjects').select('id, label_fr, label_en, color'),
-    supabase.from('rooms').select('id, name').in('school_id', schoolIds),
-  ]);
+  const friday = addDays(mondayOf(date), 4);
+  const [blocksRes, anchorsRes, unitsRes, progressRes, subjectsRes, roomsRes, plannedRes] =
+    await Promise.all([
+      supabase
+        .from('timetable_blocks')
+        .select(
+          'id, class_id, day_key, start_time, end_time, kind, subject_id, title, teacher_id, room_id',
+        )
+        .in('class_id', classIds),
+      supabase
+        .from('school_cycle_anchors')
+        .select('school_id, anchor_date, cycle_day')
+        .in('school_id', schoolIds),
+      supabase
+        .from('units')
+        .select(
+          'id, class_id, subject_id, title, unit_lessons(id, sequence_number, title, objectives, materials)',
+        )
+        .in('class_id', classIds)
+        .eq('status', 'active'),
+      supabase
+        .from('lesson_progress')
+        .select('lesson_id, status, taught_on, sub_reports(sub_plan_id, sub_plans(absence_id))')
+        .in('class_id', classIds),
+      supabase.from('subjects').select('id, label_fr, label_en, color'),
+      supabase.from('rooms').select('id, name').in('school_id', schoolIds),
+      // Planned units whose window touches the date's week (« Mon année », D-126).
+      supabase
+        .from('units')
+        .select('id, class_id, subject_id, title, status, planned_start_on, planned_end_on')
+        .in('class_id', classIds)
+        .eq('status', 'planned')
+        .lte('planned_start_on', friday)
+        .gte('planned_end_on', date),
+    ]);
+  const plannedUnits = (plannedRes.data ?? []).map((u) => ({
+    id: u.id,
+    classId: u.class_id,
+    subjectId: u.subject_id,
+    title: u.title,
+    status: u.status,
+    plannedStartOn: u.planned_start_on,
+    plannedEndOn: u.planned_end_on,
+  }));
 
   const anchors = anchorsRes.data ?? [];
   const earliestAnchor = anchors.reduce<string>(
@@ -257,6 +284,9 @@ export async function loadToday(
     const assignment = assignments.get(b.id);
     const unit = b.subjectId ? activeUnits.get(`${b.classId}:${b.subjectId}`) : undefined;
     const gaps = unit ? nextLessons(unit.lessons, progress).gaps : [];
+    const planned = b.subjectId
+      ? plannedUnitFor({ units: plannedUnits, classId: b.classId, subjectId: b.subjectId, date })
+      : null;
     return {
       id: b.id,
       classId: b.classId,
@@ -281,6 +311,9 @@ export async function loadToday(
         : null,
       lessonState: assignment?.reason ?? null,
       gapTitle: assignment?.reason === 'assigned' && gaps[0] ? gaps[0].title : null,
+      plannedUnit: planned
+        ? { id: planned.id, title: planned.title, startsOn: planned.plannedStartOn! }
+        : null,
     };
   });
 
