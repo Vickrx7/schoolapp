@@ -2902,10 +2902,273 @@
   },
   "direction": {
     "title": "Leadership dashboard",
-    "placeholder": "The leadership dashboard is coming soon."
+    "intro": "Today’s absences and their plans, shared resources, AI use and alert access. Teachers’ planning stays theirs: it does not appear here.",
+    "auditLink": "Audit log",
+    "absences": {
+      "title": "Absences today",
+      "empty": "No absences today.",
+      "noSchoolToday": "No school today.",
+      "nextDay": "Next school day · {date}",
+      "emptyDay": "No absences that day.",
+      "noSchoolDays": "No school days in the coming weeks.",
+      "codes": "{count, plural, =0 {No active code} one {# active code} other {# active codes}}",
+      "open": "Open the substitute board"
+    },
+    "contributions": {
+      "title": "Contributions to the resource library",
+      "counts": "{school, plural, one {# resource shared} other {# resources shared}} with the school · {board} with the whole board · {approved} approved by the board",
+      "since": "Since {date} (this school year)",
+      "sinceDate": "Since {date}",
+      "latest": "Most recent",
+      "empty": "No resources shared or approved since the start of the school year.",
+      "sharedSchool": "Shared with the school",
+      "sharedBoard": "Shared with the board",
+      "approved": "Approved by the board",
+      "board": "School board resource"
+    },
+    "ai": {
+      "title": "AI use this month",
+      "off": "AI is turned off for the school.",
+      "unavailable": "The totals are not available right now."
+    },
+    "alerts": {
+      "title": "Alert access (last 7 days)",
+      "empty": "No alerts viewed in the last 7 days.",
+      "all": "See the audit log"
+    }
   },
   "audit": {
-    "title": "Audit log"
+    "title": "Audit log",
+    "intro": "Who viewed or changed what at your school: alerts, substitute days, accounts and settings. Entries never hold a student’s first name or free text.",
+    "boardIntro": "Alert access and substitute days are visible to each school’s leadership only.",
+    "filters": {
+      "open": "Filters",
+      "openCount": "Filters ({count})",
+      "title": "Filter the log",
+      "close": "Close",
+      "scope": "Scope",
+      "schoolScope": "{name} (leadership)",
+      "boardScope": "{name} (board)",
+      "period": "Period",
+      "from": "From",
+      "to": "To",
+      "periodHint": "At most 365 days.",
+      "category": "Category",
+      "anyCategory": "All categories",
+      "person": "Person",
+      "anyPerson": "Everyone",
+      "otherPerson": "Chosen person",
+      "type": "Type",
+      "anyType": "All types",
+      "school": "School",
+      "anySchool": "All schools",
+      "apply": "Show",
+      "clear": "Clear filters",
+      "entity": "Entries about one item",
+      "clearEntity": "See all items"
+    },
+    "categories": {
+      "alerts": "Alerts",
+      "substitute": "Substitute days",
+      "access": "Accounts and roles",
+      "settings": "Settings",
+      "classes": "Classes",
+      "library": "Resource library",
+      "audit": "Log",
+      "system": "System"
+    },
+    "actorTypes": {
+      "user": "Staff",
+      "substitute": "Substitute",
+      "system": "System",
+      "service": "IP Lynx"
+    },
+    "formerPerson": "Person who no longer has access",
+    "invitedPerson": "Invited person",
+    "issuedBy": "code issued by {name} ({role})",
+    "issuedByName": "code issued by {name}",
+    "issuedByRole": "code issued by {role}",
+    "issuerRoles": {
+      "owner": "teacher",
+      "direction": "leadership",
+      "office": "office"
+    },
+    "issuerRolesAlone": {
+      "owner": "the teacher",
+      "direction": "the leadership",
+      "office": "the office"
+    },
+    "entities": {
+      "student": "Student · {className}",
+      "types": {
+        "class": "Class",
+        "student": "Student",
+        "user": "Person",
+        "school": "School",
+        "sub_plan": "Substitute plan",
+        "sub_report": "End-of-day report",
+        "absence": "Absence",
+        "library_item": "Resource",
+        "staff_invitation": "Invitation",
+        "board": "Board",
+        "library_bulk_run": "Bulk generation",
+        "content_pack": "Resource pack",
+        "audit_log": "Audit log",
+        "other": "Item"
+      }
+    },
+    "values": {
+      "reasons": {
+        "support": "support",
+        "incident": "incident",
+        "restore": "restore",
+        "migration": "migration",
+        "retention": "data retention",
+        "class_retention": "end of the class’s year",
+        "class_deleted": "class deleted",
+        "account_deleted": "account deleted",
+        "other": "other reason"
+      },
+      "enabled": "turned on",
+      "disabled": "turned off"
+    },
+    "flags": {
+      "officeIssuedCode": "Code issued by the office"
+    },
+    "when": "{date} at {time}",
+    "columns": {
+      "when": "Date and time",
+      "who": "Person",
+      "action": "Action",
+      "item": "Item",
+      "school": "School"
+    },
+    "caption": "Audit log entries, newest first",
+    "empty": "No entries for these filters.",
+    "emptyHelp": "Try a longer period or another category.",
+    "older": "Older entries",
+    "pages": "Log pages",
+    "newest": "Back to the newest",
+    "history": "History of this item",
+    "actions": {
+      "student_alert": {
+        "viewed": "Safety or medical alerts viewed ({alertCount, plural, one {# alert} other {# alerts}})",
+        "created": "Safety or medical alert added",
+        "updated": "Safety or medical alert changed",
+        "deleted": "Safety or medical alert deleted"
+      },
+      "absence": {
+        "published": "Absence reported",
+        "updated": "Absence changed",
+        "cancelled": "Absence cancelled"
+      },
+      "sub_plan": {
+        "viewed": "Substitute plan viewed",
+        "printed": "Substitute plan printed",
+        "released": "Substitute plan released",
+        "deleted": "Substitute plan deleted ({reason})"
+      },
+      "sub_code": {
+        "issued": "Substitute code issued",
+        "revoked": "Substitute code revoked",
+        "redeemed": "Substitute code used"
+      },
+      "sub_session": {
+        "revoked": "A device’s access cut off",
+        "ended": "Substitute’s access ended"
+      },
+      "sub_report": {
+        "submitted": "End-of-day report sent",
+        "viewed": "End-of-day report viewed",
+        "confirmed": "End-of-day report confirmed"
+      },
+      "class_teacher": {
+        "added": "Added to the class team: {person} ({role})",
+        "removed": "Removed from the class team: {person} ({role})",
+        "role_changed": "Class team role changed: {person} ({fromRole} → {toRole})"
+      },
+      "class": {
+        "deleted": "Class deleted",
+        "students_purged": "Student first names erased after the school year ({count, plural, one {# student} other {# students}})"
+      },
+      "user_role": {
+        "granted": "Role granted: {person} ({role})",
+        "revoked": "Role removed: {person} ({role})",
+        "changed": "Role changed: {person}"
+      },
+      "staff": {
+        "invited": "Invitation prepared: {person} ({role})",
+        "access_removed": "Access removed: {person}",
+        "access_restored": "Access restored: {person}",
+        "deleted": "Account deleted",
+        "invitation_cancelled": "Invitation cancelled: {person} ({role})"
+      },
+      "school": {
+        "ai_enabled": "AI turned on for the school",
+        "ai_disabled": "AI turned off for the school",
+        "student_alerts_enabled": "Student alerts turned on for the school",
+        "student_alerts_disabled": "Student alerts turned off for the school",
+        "module_changed": "{module} module {state} for the school",
+        "ai_budget_changed": "School AI budget changed"
+      },
+      "audit_log": {
+        "exported": "Audit log exported ({count, plural, one {# entry} other {# entries}})"
+      },
+      "operator": {
+        "access": "IP Lynx accessed the board’s data ({reason})"
+      },
+      "board": {
+        "settings_changed": "Board settings changed (AI or data retention)"
+      },
+      "retention": {
+        "purged": "Old data erased on the retention schedule"
+      },
+      "library_item": {
+        "approved": "Resource approved for the board",
+        "rejected": "Resource sent back for changes",
+        "retracted": "Approval withdrawn",
+        "faith_approved": "Faith content approved",
+        "faith_rejected": "Faith content declined",
+        "faith_flagged": "Faith content flagged",
+        "deleted": "Resource deleted"
+      },
+      "library_reviewer": {
+        "designated": "Designated to approve resources: {person}",
+        "changed": "Designation changed: {person}",
+        "removed": "Designation removed: {person}"
+      },
+      "content_pack": {
+        "imported": "Resource pack imported",
+        "exported": "Resource pack exported"
+      },
+      "library_bulk_run": {
+        "planned": "Bulk generation planned",
+        "started": "Bulk generation started",
+        "cancel_requested": "Bulk generation stop requested",
+        "cancelled": "Bulk generation stopped",
+        "completed": "Bulk generation finished",
+        "failed": "Bulk generation failed"
+      }
+    },
+    "export": {
+      "download": "Download (CSV)",
+      "note": "The file holds at most 10,000 entries, the most recent of the chosen period. Every download is recorded in the log."
+    },
+    "csv": {
+      "fileName": "audit-log",
+      "when": "Date and time (school time)",
+      "action": "Action code",
+      "actionLabel": "Action",
+      "actor": "Person",
+      "actorType": "Type",
+      "issuer": "Code issued by",
+      "subject": "Person concerned",
+      "school": "School",
+      "entityType": "Item type",
+      "entity": "Item",
+      "details": "Details",
+      "flags": "Flags"
+    }
   },
   "board": {
     "title": "Board administration",
@@ -2919,7 +3182,8 @@
       "years": "School years",
       "reviewers": "Resource approval",
       "usage": "AI usage",
-      "feedback": "Feedback"
+      "feedback": "Feedback",
+      "audit": "Audit log"
     },
     "checklist": {
       "title": "Getting the board started",

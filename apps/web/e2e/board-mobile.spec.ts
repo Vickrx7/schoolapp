@@ -75,6 +75,7 @@ test('a board admin runs the board from a phone', async ({ page }) => {
       ['/board/years', 'Années scolaires'],
       ['/board/reviewers', 'Approbation des ressources'],
       ['/board/usage', 'Utilisation de l’IA'],
+      ['/audit', 'Journal d’audit'],
       ['/board/feedback', 'Commentaires reçus'],
     ] as const) {
       await page.goto(path);

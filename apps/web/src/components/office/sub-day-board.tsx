@@ -22,8 +22,11 @@ export interface BoardSchool {
   arrivalInstructions: string | null;
 }
 
-/** « Publié à 7 h 30 », « Publié par Mme Tremblay à 7 h 05 », « Sera publié à 7 h 30 ». */
-function useReleaseText() {
+/**
+ * « Publié à 7 h 30 », « Publié par Mme Tremblay à 7 h 05 », « Sera publié à 7 h 30 ». Also the
+ * direction's dashboard (D-102).
+ */
+export function useReleaseText() {
   const t = useTranslations('office');
   const locale = useLocale();
   return (row: SubDayRow, timeZone: string) => {

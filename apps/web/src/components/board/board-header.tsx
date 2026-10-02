@@ -56,7 +56,7 @@ export async function BoardHeader({
           </Button>
         </form>
       ) : null}
-      <BoardTabs query={query} library={library} />
+      <BoardTabs query={query} library={library} boardId={board.id} />
     </>
   );
 }

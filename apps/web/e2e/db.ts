@@ -285,6 +285,40 @@ export async function insertPastPlan(
   return { absenceId: row!.absence_id, planId: row!.plan_id, date: row!.date };
 }
 
+/**
+ * A published, released one-day absence of a demo teacher on `date`, with its plan covering one
+ * class (« Suppléances » and the direction's dashboard read its status, never its contents, so
+ * the plan is empty). Remove it with `deleteAbsence` (or `cleanupAbsences`).
+ */
+export async function insertReleasedAbsence(
+  email: string,
+  date: string,
+  classId: string,
+): Promise<{ absenceId: string; planId: string }> {
+  const [row] = await query<{ absence_id: string; plan_id: string }>(
+    `with a as (
+       insert into public.absences (teacher_id, school_id, starts_on, ends_on, status, published_at)
+       select u.id, $2, $3::date, $3::date, 'published', now()
+       from public.users u where u.email = $1
+       returning id, starts_on
+     ), p as (
+       insert into public.sub_plans (absence_id, plan_date, plan, status, released_at, review_deadline)
+       select a.id, a.starts_on, '{}'::jsonb, 'released', now(), now() from a
+       returning id, absence_id
+     ), c as (
+       insert into public.sub_plan_classes (sub_plan_id, class_id) select p.id, $4 from p
+     )
+     select p.absence_id, p.id as plan_id from p`,
+    [email, SEED.school, date, classId],
+  );
+  if (!row) throw new Error(`no account ${email}`);
+  return { absenceId: row.absence_id, planId: row.plan_id };
+}
+
+export async function deleteAbsence(absenceId: string): Promise<void> {
+  await query('delete from public.absences where id = $1', [absenceId]);
+}
+
 /** The lessons of a class that have progress (to remove what a test adds afterwards). */
 export async function lessonsWithProgress(classId: string): Promise<string[]> {
   const rows = await query<{ lesson_id: string }>(

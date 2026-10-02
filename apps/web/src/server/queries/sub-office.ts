@@ -47,9 +47,14 @@ const HORIZON_DAYS = 30;
 
 /**
  * The board from `from`: that day if it is a school day, and the next school day (so « today »
- * on a Friday also shows Monday).
+ * on a Friday also shows Monday). `access: false` leaves out each plan's codes and devices (the
+ * direction's dashboard shows their counts only).
  */
-export async function loadSubBoard(school: SchoolContext, from: LocalDate): Promise<SubBoardDay[]> {
+export async function loadSubBoard(
+  school: SchoolContext,
+  from: LocalDate,
+  { access = true }: { access?: boolean } = {},
+): Promise<SubBoardDay[]> {
   const supabase = await createSupabaseServerClient();
   const events = await loadSchoolEvents(supabase, school, from, addDays(from, HORIZON_DAYS));
   const days = nextInstructionalDays(from, 2, events);
@@ -84,7 +89,7 @@ export async function loadSubBoard(school: SchoolContext, from: LocalDate): Prom
       )
         ? (r.report_status as SubDayRow['reportStatus'])
         : 'none',
-      access: await loadSubAccess(supabase, r.plan_id),
+      access: access ? await loadSubAccess(supabase, r.plan_id) : null,
     })),
   );
   return days.map((date) => ({ date, rows: rows.filter((r) => r.planDate === date) }));

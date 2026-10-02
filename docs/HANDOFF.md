@@ -98,16 +98,17 @@ Mon Tableau, Cartable, Ardoise). No availability or trademark check has been don
 | `0d85e15` | Phase 6 S2: audit viewer, AI usage totals, retention, heartbeats (database, worker, CLI) |
 | `598ee7b` | Phase 6 S3a: scrubbed logs, error references, health checks, security headers            |
 | `8010537` | Phase 6 S3b: Docker images, Compose installs, encrypted backups and restores, CI jobs    |
-| (latest)  | Phase 6 S4: « Conseil » for board admins, and the worker's staff accounts                |
+| `4612c53` | Phase 6 S4: « Conseil » for board admins, and the worker's staff accounts                |
+| (latest)  | Phase 6 S5: « Tableau de bord de la direction » and « Journal d'audit » (with its CSV)   |
 
-**Verified (locally, from an empty database, and in CI on each pushed commit):** 1188 unit tests
+**Verified (locally, from an empty database, and in CI on each pushed commit):** 1226 unit tests
 (none skipped), 1611 pgTAP tests, 89 integration tests (plus the 3 of `restore-smoke`, which run
 after a restore: the `backup-restore` CI job and the local drill; the staff-account tests talk to
-the stack's real Auth server), 104 Playwright tests (desktop, phone and tablet, axe on every Phase
-3, 4 and 5 page and every « Conseil » page), lint, typecheck, format, generated DB types
-up to date, the demo curriculum and library seeds up to date (`pnpm library:seed:check`), web
-build with no setting built in; in CI also a backup restored into an empty database, and both
-Docker images run as a board-hosted install (`docker-smoke`).
+the stack's real Auth server), 110 Playwright tests (desktop, phone and tablet, axe on every Phase
+3, 4 and 5 page, every « Conseil » page, the direction's dashboard and « Journal d'audit »), lint,
+typecheck, format, generated DB types up to date, the demo curriculum and library seeds up to date
+(`pnpm library:seed:check`), web build with no setting built in; in CI also a backup restored
+into an empty database, and both Docker images run as a board-hosted install (`docker-smoke`).
 
 **Phase 3 is complete** (3a and 3b; see `docs/phase-3.md`): absence button, plans built in the
 request and kept current by the worker, review and editing, release at 07:30, codes, the
@@ -209,8 +210,8 @@ when migrations are pending on a database with data), `upgrade.sh`, nightly encr
 a checked restore (`deploy/backup/`), the worker's refusal to start on a database without its
 migrations, the session limits (7 days, 12 hours idle), and three CI jobs besides the two existing
 ones' checks: `backup-restore`, `docker-smoke` and the migration-name and `NEXT_PUBLIC_` checks
-(D-114, D-115, D-119 « As built »). `DEPLOYMENT.md` comes with slice S7. Slice S4 (latest commit)
-replaces the « Conseil » placeholder with « Administration du conseil » (`/board`): what the board
+(D-114, D-115, D-119 « As built »). `DEPLOYMENT.md` comes with slice S7. Slice S4 (`4612c53`,
+`81da4cf`) replaces the « Conseil » placeholder with « Administration du conseil » (`/board`): what the board
 still has to set up, « État du système » and « Conservation des données », then « Personnel »
 (invite within the board; the worker now creates the Auth account and the page gives a French or
 English message the inviter sends by e-mail or text; remove a role, add one, remove and restore
@@ -219,7 +220,13 @@ times, also on « École » for the direction; the AI switch; the rest read only
 scolaires », « Approbation des ressources », « Utilisation de l'IA » (per school, with a CSV) and
 « Commentaires reçus »; board admins add board-wide PA days and holidays in « Calendrier », and the
 direction's substitute settings are now merged in the database (D-104, D-107, D-108, D-112, D-116,
-D-118 « As built »). The « Journal d'audit » tab comes with slice S5.
+D-118 « As built »). Slice S5 (latest commit) replaces the « Direction » placeholder with
+« Tableau de bord de la direction » (`/direction`: per school, today's absences and their plans'
+status, the latest alert entries of the audit log, the school year's library contributions and
+the month's AI totals; never a teacher's planning) and adds « Journal d'audit » (`/audit`: the
+direction's view of their school and, as a « Conseil » tab, the board admins' view of their board,
+with filters, paging, « Historique de cet élément » and a CSV whose download is itself logged)
+(D-102, D-103 « As built »).
 
 **Other deliverables:**
 

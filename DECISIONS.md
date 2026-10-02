@@ -1532,6 +1532,20 @@ shows no units, lessons, progress, class-mode sessions or results, and no per-te
 **Assumption:** contributions are credited as on the item page, without counts per teacher,
 because a count per teacher reads as monitoring. _Why:_ a principal at 7:45 needs to know who is
 away and whether the day is covered; teachers' planning stays theirs (D-013).
+As built (slice S5, `server/queries/direction.ts`): one section per school the person directs,
+with four cards. « Absences aujourd'hui » (Teaching module only) uses `loadSubBoard(school, today,
+{ access: false })` (codes and devices as counts, statuses as text badges, the next school day
+folded away; on a day without school the next school day is shown open) and links to
+« Suppléances ». « Accès aux alertes (7 derniers jours) » is `list_audit_entries({schoolId,
+category: 'alerts', from})` with five entries, `from` being the school's midnight six days before
+today, then « Voir le journal d'audit » (`/audit?school=…&category=alerts`). « Contributions à la
+banque de ressources » (Library module only) counts the school's items `teacher_reviewed` with
+scope `school`, scope `board`, and `board_approved`, updated since the start of the latest school
+year that has begun (`school_years`; without one, the last 365 days, and the card says « Depuis
+le … » only), then lists the 10 latest credited as on the item page (« Banque de mots · Mme
+Tremblay », or « Ressource du conseil scolaire »). « Utilisation de l'IA ce mois-ci » shows the
+totals of `ai_usage_summary`. Local dates reach the database as « YYYY-MM-DD 00:00:00 <zone> »,
+so the instants are computed there (D-009).
 
 **D-103 — Audit viewer: a catalogue with four audiences, the raw table closed, one database
 function (amends D-013, D-017 and D-056).** `public.audit_action_catalog (action, category,
@@ -1588,6 +1602,28 @@ school's direction, or an admin of the board; the school's own board) audits `au
 {rows, category, from, to}` with at most 10,000 rows. The guard is a plain `before insert`
 trigger, so it applies to every writer; every audit write of Phases 1–6 passes it (the whole
 pgTAP suite runs with it).
+As built (slice S5, `server/audit/{filters,labels,csv,rows}.ts`, `server/queries/audit.ts`):
+« Journal d'audit » (`/audit`) reads its address `?school&board&from&to&category&actor&type&entity&
+before`. The scope is a school the person directs, or a board they administer (optionally narrowed
+to one of its schools); people with neither get « Page introuvable » (404 for the export). The
+period is in the scope's local dates, both ends included: by default the last 30 days, at most
+365 days (not 366: a period crossing a daylight-saving change would otherwise pass the database's
+366-day bound by an hour). 50 entries a page, paged by id (« Entrées plus anciennes »); each entry
+links to « Historique de cet élément » (`entity`). Board admins open it from the « Journal
+d'audit » tab of « Conseil » (always `/audit?board=…`), which shows the board's intro and offers
+the board's categories only (`BOARD_CATEGORIES`; the direction's are `DIRECTION_CATEGORIES`, and a
+unit test checks both against the catalogue's audiences). Each of the 60 actions someone may read
+has a sentence `audit.actions.<action>` in both languages; `server/audit/catalog.test.ts` scans
+every `app.log_audit(…)` call of every migration, expands `'library_bulk_run.' || p_status` with
+the values the same function allows for `p_status` (and fails on any such prefix whose values it
+cannot find), and checks that every action has a catalogue row and every readable one its
+sentence. A person the viewer may not read is « Personne qui n'a plus accès » (an invitation's
+invitee « Personne invitée »); a substitute's entry says « code émis par Julie Bergeron
+(secrétariat) » and carries the badge « Code émis par le secrétariat ». The CSV
+(`/audit/export`, a plain link) holds the filters' period without the paging, newest first, at
+most 10,000 entries read 1,000 at a time, with the plan's columns (the time as « YYYY-MM-DD HH:MM »
+on the scope's clock, details as sorted `key=value; …`); `log_audit_export` is called once the
+file is built, and no file is sent when it fails.
 
 **D-104 — AI usage rows are private to their author; totals are served by definer functions
 (amends D-040 and D-046).** `ai_generations_select` becomes `user_id = app.active_user_id()`. The

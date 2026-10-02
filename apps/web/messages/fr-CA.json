@@ -2902,10 +2902,273 @@
   },
   "direction": {
     "title": "Tableau de bord de la direction",
-    "placeholder": "Le tableau de bord de la direction arrive bientôt."
+    "intro": "Les absences du jour et leurs plans, les ressources partagées, l’utilisation de l’IA et les consultations d’alertes. La planification des enseignant·es reste la leur : elle n’apparaît pas ici.",
+    "auditLink": "Journal d’audit",
+    "absences": {
+      "title": "Absences aujourd’hui",
+      "empty": "Aucune absence aujourd’hui.",
+      "noSchoolToday": "Pas de classe aujourd’hui.",
+      "nextDay": "Prochain jour d’école · {date}",
+      "emptyDay": "Aucune absence ce jour-là.",
+      "noSchoolDays": "Aucun jour de classe dans les semaines à venir.",
+      "codes": "{count, plural, =0 {Aucun code actif} one {# code actif} other {# codes actifs}}",
+      "open": "Ouvrir le tableau des suppléances"
+    },
+    "contributions": {
+      "title": "Contributions à la banque de ressources",
+      "counts": "{school, plural, one {# ressource partagée} other {# ressources partagées}} avec l’école · {board} avec tout le conseil · {approved, plural, one {# approuvée} other {# approuvées}} par le conseil",
+      "since": "Depuis le {date} (cette année scolaire)",
+      "sinceDate": "Depuis le {date}",
+      "latest": "Les plus récentes",
+      "empty": "Aucune ressource partagée ou approuvée depuis le début de l’année scolaire.",
+      "sharedSchool": "Partagée avec l’école",
+      "sharedBoard": "Partagée avec le conseil",
+      "approved": "Approuvée par le conseil",
+      "board": "Ressource du conseil scolaire"
+    },
+    "ai": {
+      "title": "Utilisation de l’IA ce mois-ci",
+      "off": "L’IA est désactivée pour l’école.",
+      "unavailable": "Les totaux ne sont pas disponibles pour l’instant."
+    },
+    "alerts": {
+      "title": "Accès aux alertes (7 derniers jours)",
+      "empty": "Aucune consultation d’alertes depuis 7 jours.",
+      "all": "Voir le journal d’audit"
+    }
   },
   "audit": {
-    "title": "Journal d’audit"
+    "title": "Journal d’audit",
+    "intro": "Qui a consulté ou modifié quoi à votre école : alertes, suppléance, comptes et paramètres. Les entrées ne contiennent jamais de prénom d’élève ni de texte libre.",
+    "boardIntro": "Les consultations d’alertes et la suppléance sont visibles par la direction de chaque école seulement.",
+    "filters": {
+      "open": "Filtres",
+      "openCount": "Filtres ({count})",
+      "title": "Filtrer le journal",
+      "close": "Fermer",
+      "scope": "Portée",
+      "schoolScope": "{name} (direction)",
+      "boardScope": "{name} (conseil)",
+      "period": "Période",
+      "from": "Du",
+      "to": "Au",
+      "periodHint": "Au plus 365 jours.",
+      "category": "Catégorie",
+      "anyCategory": "Toutes les catégories",
+      "person": "Personne",
+      "anyPerson": "Toutes les personnes",
+      "otherPerson": "Personne choisie",
+      "type": "Type",
+      "anyType": "Tous les types",
+      "school": "École",
+      "anySchool": "Toutes les écoles",
+      "apply": "Afficher",
+      "clear": "Effacer les filtres",
+      "entity": "Entrées d’un seul élément",
+      "clearEntity": "Voir tous les éléments"
+    },
+    "categories": {
+      "alerts": "Alertes",
+      "substitute": "Suppléance",
+      "access": "Comptes et rôles",
+      "settings": "Paramètres",
+      "classes": "Classes",
+      "library": "Banque de ressources",
+      "audit": "Journal",
+      "system": "Système"
+    },
+    "actorTypes": {
+      "user": "Personnel",
+      "substitute": "Personne suppléante",
+      "system": "Système",
+      "service": "IP Lynx"
+    },
+    "formerPerson": "Personne qui n’a plus accès",
+    "invitedPerson": "Personne invitée",
+    "issuedBy": "code émis par {name} ({role})",
+    "issuedByName": "code émis par {name}",
+    "issuedByRole": "code émis par {role}",
+    "issuerRoles": {
+      "owner": "enseignant·e",
+      "direction": "direction",
+      "office": "secrétariat"
+    },
+    "issuerRolesAlone": {
+      "owner": "l’enseignant·e",
+      "direction": "la direction",
+      "office": "le secrétariat"
+    },
+    "entities": {
+      "student": "Élève · {className}",
+      "types": {
+        "class": "Classe",
+        "student": "Élève",
+        "user": "Personne",
+        "school": "École",
+        "sub_plan": "Plan de suppléance",
+        "sub_report": "Suivi de la journée",
+        "absence": "Absence",
+        "library_item": "Ressource",
+        "staff_invitation": "Invitation",
+        "board": "Conseil",
+        "library_bulk_run": "Génération en lot",
+        "content_pack": "Ensemble de ressources",
+        "audit_log": "Journal d’audit",
+        "other": "Élément"
+      }
+    },
+    "values": {
+      "reasons": {
+        "support": "soutien",
+        "incident": "incident",
+        "restore": "restauration",
+        "migration": "migration",
+        "retention": "conservation des données",
+        "class_retention": "fin de l’année de la classe",
+        "class_deleted": "classe supprimée",
+        "account_deleted": "compte supprimé",
+        "other": "autre raison"
+      },
+      "enabled": "activé",
+      "disabled": "désactivé"
+    },
+    "flags": {
+      "officeIssuedCode": "Code émis par le secrétariat"
+    },
+    "when": "{date} à {time}",
+    "columns": {
+      "when": "Date et heure",
+      "who": "Personne",
+      "action": "Action",
+      "item": "Élément",
+      "school": "École"
+    },
+    "caption": "Entrées du journal d’audit, des plus récentes aux plus anciennes",
+    "empty": "Aucune entrée pour ces filtres.",
+    "emptyHelp": "Essayez une période plus longue ou une autre catégorie.",
+    "older": "Entrées plus anciennes",
+    "pages": "Pages du journal",
+    "newest": "Revenir aux plus récentes",
+    "history": "Historique de cet élément",
+    "actions": {
+      "student_alert": {
+        "viewed": "Alertes de sécurité ou médicales consultées ({alertCount, plural, one {# alerte} other {# alertes}})",
+        "created": "Alerte de sécurité ou médicale ajoutée",
+        "updated": "Alerte de sécurité ou médicale modifiée",
+        "deleted": "Alerte de sécurité ou médicale supprimée"
+      },
+      "absence": {
+        "published": "Absence signalée",
+        "updated": "Absence modifiée",
+        "cancelled": "Absence annulée"
+      },
+      "sub_plan": {
+        "viewed": "Plan de suppléance consulté",
+        "printed": "Plan de suppléance imprimé",
+        "released": "Plan de suppléance publié",
+        "deleted": "Plan de suppléance supprimé ({reason})"
+      },
+      "sub_code": {
+        "issued": "Code de suppléance émis",
+        "revoked": "Code de suppléance annulé",
+        "redeemed": "Code de suppléance utilisé"
+      },
+      "sub_session": {
+        "revoked": "Accès d’un appareil coupé",
+        "ended": "Fin de l’accès de la personne suppléante"
+      },
+      "sub_report": {
+        "submitted": "Suivi de la journée envoyé",
+        "viewed": "Suivi de la journée consulté",
+        "confirmed": "Suivi de la journée confirmé"
+      },
+      "class_teacher": {
+        "added": "Ajout à l’équipe de la classe : {person} ({role})",
+        "removed": "Retrait de l’équipe de la classe : {person} ({role})",
+        "role_changed": "Rôle changé dans l’équipe de la classe : {person} ({fromRole} → {toRole})"
+      },
+      "class": {
+        "deleted": "Classe supprimée",
+        "students_purged": "Prénoms des élèves effacés à la fin de l’année ({count, plural, one {# élève} other {# élèves}})"
+      },
+      "user_role": {
+        "granted": "Rôle accordé : {person} ({role})",
+        "revoked": "Rôle retiré : {person} ({role})",
+        "changed": "Rôle modifié : {person}"
+      },
+      "staff": {
+        "invited": "Invitation préparée : {person} ({role})",
+        "access_removed": "Accès retiré : {person}",
+        "access_restored": "Accès rétabli : {person}",
+        "deleted": "Compte supprimé",
+        "invitation_cancelled": "Invitation annulée : {person} ({role})"
+      },
+      "school": {
+        "ai_enabled": "IA activée pour l’école",
+        "ai_disabled": "IA désactivée pour l’école",
+        "student_alerts_enabled": "Alertes des élèves activées pour l’école",
+        "student_alerts_disabled": "Alertes des élèves désactivées pour l’école",
+        "module_changed": "Module {module} {state} pour l’école",
+        "ai_budget_changed": "Budget d’IA de l’école modifié"
+      },
+      "audit_log": {
+        "exported": "Journal d’audit exporté ({count, plural, one {# entrée} other {# entrées}})"
+      },
+      "operator": {
+        "access": "Accès d’IP Lynx aux données du conseil ({reason})"
+      },
+      "board": {
+        "settings_changed": "Paramètres du conseil modifiés (IA ou conservation des données)"
+      },
+      "retention": {
+        "purged": "Données anciennes effacées selon le calendrier de conservation"
+      },
+      "library_item": {
+        "approved": "Ressource approuvée pour le conseil",
+        "rejected": "Ressource renvoyée pour être retravaillée",
+        "retracted": "Approbation retirée",
+        "faith_approved": "Contenu de foi approuvé",
+        "faith_rejected": "Contenu de foi refusé",
+        "faith_flagged": "Contenu de foi signalé",
+        "deleted": "Ressource supprimée"
+      },
+      "library_reviewer": {
+        "designated": "Personne désignée pour approuver les ressources : {person}",
+        "changed": "Désignation modifiée : {person}",
+        "removed": "Désignation retirée : {person}"
+      },
+      "content_pack": {
+        "imported": "Ensemble de ressources importé",
+        "exported": "Ensemble de ressources exporté"
+      },
+      "library_bulk_run": {
+        "planned": "Génération en lot planifiée",
+        "started": "Génération en lot lancée",
+        "cancel_requested": "Arrêt de la génération en lot demandé",
+        "cancelled": "Génération en lot arrêtée",
+        "completed": "Génération en lot terminée",
+        "failed": "Génération en lot échouée"
+      }
+    },
+    "export": {
+      "download": "Télécharger (CSV)",
+      "note": "Le fichier contient au plus 10 000 entrées, les plus récentes de la période choisie. Chaque téléchargement est inscrit au journal."
+    },
+    "csv": {
+      "fileName": "journal-audit",
+      "when": "Date et heure (heure de l’école)",
+      "action": "Code de l’action",
+      "actionLabel": "Action",
+      "actor": "Personne",
+      "actorType": "Type",
+      "issuer": "Code émis par",
+      "subject": "Personne concernée",
+      "school": "École",
+      "entityType": "Type d’élément",
+      "entity": "Élément",
+      "details": "Détails",
+      "flags": "Indicateurs"
+    }
   },
   "board": {
     "title": "Administration du conseil",
@@ -2919,7 +3182,8 @@
       "years": "Années scolaires",
       "reviewers": "Approbation des ressources",
       "usage": "Utilisation de l’IA",
-      "feedback": "Commentaires"
+      "feedback": "Commentaires",
+      "audit": "Journal d’audit"
     },
     "checklist": {
       "title": "Pour bien démarrer le conseil",
