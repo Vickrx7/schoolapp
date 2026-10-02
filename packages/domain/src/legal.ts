@@ -5,8 +5,10 @@
  * (`terms_version`, `terms_accepted_at`) and audited as `user.terms_accepted`.
  *
  * A version is `YYYY-MM-<slug>` (the same pattern as the database's check). Publish new terms by
- * changing `CURRENT_TERMS_VERSION`: the seed's demo accounts accept the current version
- * (`supabase/seed.sql`, checked by a unit test).
+ * changing `CURRENT_TERMS_VERSION` and adding its one-line « Ce qui a changé » to
+ * `TERMS_CHANGES` (the message `welcome.changes.<key>`, in both languages; unit tests check
+ * both): the seed's demo accounts accept the current version (`supabase/seed.sql`, checked by a
+ * unit test).
  */
 
 /** `YYYY-MM-` then 1 to 24 lowercase letters, digits or hyphens: `2026-11-pilote-1`. */
@@ -14,6 +16,19 @@ export const TERMS_VERSION_PATTERN = /^[0-9]{4}-[0-9]{2}-[a-z0-9-]{1,24}$/;
 
 /** The terms in force. Changing it shows everyone the « conditions ont changé » banner. */
 export const CURRENT_TERMS_VERSION = '2026-11-pilote-1';
+
+/**
+ * « Ce qui a changé » for each version, shown when newer terms are offered (never at a first
+ * sign-in): the key of its one line under `welcome.changes` in the message catalogues.
+ */
+export const TERMS_CHANGES: Readonly<Record<string, string>> = {
+  '2026-11-pilote-1': 'pilote1',
+};
+
+/** The message key of what `version` changed (`welcome.changes.<key>`), if any. */
+export function termsChangeKey(version: string = CURRENT_TERMS_VERSION): string | null {
+  return TERMS_CHANGES[version] ?? null;
+}
 
 export function isTermsVersion(value: string): boolean {
   return TERMS_VERSION_PATTERN.test(value);

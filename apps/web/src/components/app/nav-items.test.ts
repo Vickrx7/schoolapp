@@ -73,9 +73,19 @@ describe('the phone navigation bar', () => {
 });
 
 describe('the bar with « Direction » and « Conseil » (D-118)', () => {
-  it('gives a principal who does not teach six items, « Suppléances » included', () => {
+  it('gives a principal who does not teach five items: the dashboard links « Suppléances »', () => {
     const principal = items('direction', 'substitutes', 'library', 'calendar', 'school', 'profile');
-    expect(phoneBar(principal)).toEqual({ bar: principal, more: [] });
+    expect(keys(phoneBar(principal).bar)).toEqual([
+      'direction',
+      'library',
+      'calendar',
+      'school',
+      'profile',
+    ]);
+    expect(phoneBar(principal).more).toEqual([]);
+    // Without the library: « Suppléances » fits.
+    const smaller = items('direction', 'substitutes', 'calendar', 'school', 'profile');
+    expect(phoneBar(smaller)).toEqual({ bar: smaller, more: [] });
   });
 
   it('gives a teaching vice-principal the first five and « Plus »', () => {
@@ -101,6 +111,17 @@ describe('the bar with « Direction » and « Conseil » (D-118)', () => {
     // The demo board's admin also reviews resources: four.
     const reviewer = items('library', 'calendar', 'board', 'profile');
     expect(phoneBar(reviewer)).toEqual({ bar: reviewer, more: [] });
+  });
+
+  it('puts « Journal d’audit » under « Direction », else « Conseil » (Phase 6 review)', () => {
+    const direction = { key: 'direction' as const, href: '/direction' };
+    const board = { key: 'board' as const, href: '/board' };
+    const principal: NavKey[] = ['direction', 'library', 'calendar', 'school', 'profile'];
+    const admin: NavKey[] = ['library', 'calendar', 'board', 'profile'];
+    expect(isNavActive(direction, '/audit', principal)).toBe(true);
+    expect(isNavActive(board, '/audit', admin)).toBe(true);
+    expect(isNavActive(board, '/audit', [...principal, 'board'])).toBe(false);
+    expect(isNavActive({ key: 'calendar', href: '/calendar' }, '/audit', admin)).toBe(false);
   });
 
   it('keeps « Direction » and « Conseil » active on their sub-pages', () => {

@@ -145,15 +145,29 @@ test('a new teacher accepts the terms, then tries the app with a sample class', 
     );
     expect(rows.map((r) => r.action)).toEqual(['sample_class.deleted']);
 
-    // « Masquer » hides it on « Aujourd'hui »; the page keeps it.
+    // « Masquer » hides it on « Aujourd'hui »; « Profil » leads back to it, sample class and all.
     await page.goto('/today');
     await expectChecklist(page, 0);
     await page.getByRole('button', { name: 'Masquer', exact: true }).click();
     await expect(page.getByTestId('onboarding-checklist')).toBeHidden();
-    await page.goto('/demarrage');
+    await expect(page.getByText('Liste masquée. Vous la retrouverez dans Profil.')).toBeVisible();
+    await page.goto('/profile');
+    await page.getByRole('link', { name: 'Voir toutes les étapes' }).click();
+    await expect(page).toHaveURL(/\/demarrage$/);
     await expect(
       page.getByText('La liste est masquée sur « Aujourd’hui ». Elle reste ici.'),
     ).toBeVisible();
+    await page.getByRole('button', { name: 'Essayer avec une classe exemple (3e)' }).click();
+    await expect(page.getByText('Classe exemple créée.')).toBeVisible();
+    // Why « Créer votre classe » is still to do, said once.
+    const checklist = await expectChecklist(page, 0);
+    await expect(checklist).toContainText(
+      'Elle ne compte pas dans les étapes ci-dessus, n’est jamais incluse dans un plan de suppléance et sera supprimée le',
+    );
+    await page.goto('/today');
+    await expect(page.getByTestId('sample-notice')).toContainText(
+      'Classe exemple (3e année) · Elle n’est jamais incluse dans un plan de suppléance',
+    );
   } finally {
     await deleteSampleClasses(email);
     await deleteStaff(email);
@@ -182,6 +196,15 @@ test('newer terms show a banner and never block', async ({ page }) => {
 
     await banner.getByRole('link', { name: 'Lire et accepter' }).click();
     await expect(page).toHaveURL(/\/bienvenue\?next=%2Fclasses$/);
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Les conditions ont changé' }),
+    ).toBeVisible();
+    // What changed, in one line, and « Plus tard »: back to the page, the banner still there.
+    await expect(page.getByTestId('terms-change')).toContainText('Ce qui a changé');
+    await page.getByRole('link', { name: 'Plus tard', exact: true }).click();
+    await expect(page).toHaveURL(/\/classes$/);
+    await expect(page.getByTestId('terms-banner')).toBeVisible();
+    await page.getByTestId('terms-banner').getByRole('link', { name: 'Lire et accepter' }).click();
     await expect(
       page.getByRole('heading', { level: 1, name: 'Les conditions ont changé' }),
     ).toBeVisible();

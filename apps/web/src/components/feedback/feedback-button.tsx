@@ -13,8 +13,8 @@ export function FeedbackButton() {
   return (
     <Button variant="ghost" className="px-3" onClick={() => feedback.open()}>
       <MessageSquarePlus aria-hidden />
-      {/* The icon alone on phones; the name is always there for screen readers. */}
-      <span className="sr-only sm:not-sr-only">{t('button')}</span>
+      {/* Named on phones too: « Bienvenue » and « Nouveautés » send people to « Commentaires ». */}
+      <span>{t('button')}</span>
     </Button>
   );
 }

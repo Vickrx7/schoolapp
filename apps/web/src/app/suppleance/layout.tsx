@@ -31,8 +31,9 @@ export default async function PortalLayout({ children }: { children: ReactNode }
       </header>
       <main className="mx-auto max-w-3xl px-4 pt-4 pb-8">{children}</main>
       <footer className="mx-auto max-w-3xl px-4 pb-[calc(4rem+env(safe-area-inset-bottom))] text-sm print:hidden">
+        {/* The notice leads back here, not to the staff sign-in (D-110). */}
         <Link
-          href="/confidentialite"
+          href="/confidentialite?from=suppleance"
           className="inline-flex min-h-11 items-center text-slate-600 underline underline-offset-2 hover:text-slate-900"
         >
           {t('footerLink')}

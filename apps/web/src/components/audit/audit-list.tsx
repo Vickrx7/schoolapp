@@ -10,7 +10,7 @@ export interface AuditListEntry extends AuditEntryView {
   historyHref: string | null;
 }
 
-function HistoryLink({ href }: { href: string }) {
+function HistoryLink({ href, person }: { href: string; person: boolean }) {
   const t = useTranslations('audit');
   return (
     <Link
@@ -18,7 +18,7 @@ function HistoryLink({ href }: { href: string }) {
       className="inline-flex min-h-11 items-center gap-1 text-sm text-brand-700 hover:underline"
     >
       <History className="size-4" aria-hidden />
-      {t('history')}
+      {person ? t('historyPerson') : t('history')}
     </Link>
   );
 }
@@ -67,7 +67,9 @@ export function AuditList({
                   <AuditFlags entry={entry} />
                 </p>
               ) : null}
-              {entry.historyHref ? <HistoryLink href={entry.historyHref} /> : null}
+              {entry.historyHref ? (
+                <HistoryLink href={entry.historyHref} person={entry.entityType === 'user'} />
+              ) : null}
             </Card>
           </li>
         ))}
@@ -111,7 +113,9 @@ export function AuditList({
                 <td className="px-4 py-3 text-slate-900">{entry.sentence}</td>
                 <td className="px-4 py-3">
                   {entry.entity ? <span className="block">{entry.entity}</span> : null}
-                  {entry.historyHref ? <HistoryLink href={entry.historyHref} /> : null}
+                  {entry.historyHref ? (
+                    <HistoryLink href={entry.historyHref} person={entry.entityType === 'user'} />
+                  ) : null}
                 </td>
                 {showSchool ? <td className="px-4 py-3">{entry.schoolName ?? '—'}</td> : null}
               </tr>

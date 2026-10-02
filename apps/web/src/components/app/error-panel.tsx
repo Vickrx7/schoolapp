@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useFeedback } from '@/components/feedback/feedback-provider';
 import { Button } from '@/components/ui/button';
 import { EmptyState } from '@/components/ui/page';
@@ -12,7 +12,7 @@ import { useErrorReference } from '@/hooks/use-error-reference';
  * give when reporting the problem, which matches the server's log line. « Signaler ce problème »
  * opens « Commentaires » with the reference filled in (D-116) for signed-in staff (the app, the
  * projector); on the substitute portal, which has no account, it says to give the reference to
- * the school office.
+ * the school office. The page's heading and its tab title say an error happened.
  */
 export function ErrorPanel({
   error,
@@ -25,9 +25,14 @@ export function ErrorPanel({
   const reference = useErrorReference(error);
   const feedback = useFeedback();
   const [help, setHelp] = useState(false);
+  const title = t('errors.title');
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
   return (
     <EmptyState
-      title={t('errors.title')}
+      as="h1"
+      title={title}
       body={
         <>
           {t('errors.unexpected')}

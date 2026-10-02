@@ -21,6 +21,20 @@ describe('display formatting', () => {
     expect(formatLocalDate('2026-10-05', 'fr-CA')).toBe('lundi 5 octobre');
     expect(formatLocalDate('2026-10-05', 'en-CA')).toBe('Monday, October 5');
   });
+
+  it('writes « 1er » for the first of a month in French, only there', () => {
+    const long = { day: 'numeric', month: 'long', year: 'numeric' } as const;
+    expect(formatLocalDate('2026-12-01', 'fr-CA', long)).toBe('1er décembre 2026');
+    expect(formatLocalDate('2026-12-01', 'fr-CA')).toBe('mardi 1er décembre');
+    expect(formatShortDate('2026-12-01', 'fr-CA')).toBe('mar. 1er déc.');
+    expect(formatLocalDate('2026-12-11', 'fr-CA', long)).toBe('11 décembre 2026');
+    expect(formatLocalDate('2026-12-21', 'fr-CA', long)).toBe('21 décembre 2026');
+    expect(formatLocalDate('2026-12-01', 'en-CA', long)).toBe('December 1, 2026');
+    // A date in figures stays in figures.
+    expect(
+      formatLocalDate('2026-12-01', 'fr-CA', { day: 'numeric', month: 'numeric', year: 'numeric' }),
+    ).not.toContain('1er');
+  });
 });
 
 describe('instants on the school clock', () => {

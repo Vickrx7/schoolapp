@@ -26,7 +26,7 @@ describe('libraryCoverage messages', () => {
       '0 attente sur 3 a au moins une ressource approuvée.',
     );
     expect(t('status.none')).toBe('Aucune ressource approuvée');
-    expect(t('status.few', { count: 1 })).toBe('Peu : 1 ressource approuvée');
+    expect(t('status.few', { count: 1 })).toBe('Peu\u00a0: 1 ressource approuvée');
     expect(t('status.approved', { count: 3 })).toBe('3 ressources approuvées');
     expect(t('status.overall', { count: 0 })).toBe(
       'Aucune ressource approuvée pour cette attente et ses contenus d’apprentissage',
@@ -40,7 +40,9 @@ describe('libraryCoverage messages', () => {
         covered: 11,
         total: 36,
       }),
-    ).toBe('Mathématiques, 3e année : 11 attentes sur 36 ont au moins une ressource approuvée');
+    ).toBe(
+      'Mathématiques, 3e année\u00a0: 11 attentes sur 36 ont au moins une ressource approuvée',
+    );
   });
 
   it('count the expectations in English', () => {

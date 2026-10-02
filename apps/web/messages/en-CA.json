@@ -55,6 +55,9 @@
     "invalidCode": "This code is wrong or has expired. Ask for a new one.",
     "unknownEmail": "If this address has access to the app, a code was just sent to it.",
     "tooManyAttempts": "Too many attempts. Wait a few minutes, then try again.",
+    "codeLocked": "Too many wrong codes. Request a new code, or open the link in the email.",
+    "signInWait": "Too many sign-in attempts. Try again in {minutes, plural, one {# minute} other {# minutes}}, or open the link in the latest email.",
+    "signInWaitHours": "Too many sign-in attempts. Try again in {hours, plural, one {# hour} other {# hours}}, or open the link in the latest email.",
     "confirmTitle": "Finish signing in",
     "confirmIntro": "Press the button to sign in on this device.",
     "confirmButton": "Sign in",
@@ -88,7 +91,7 @@
     "invalidPhone": "Invalid number: digits, spaces and + ( ) . - only.",
     "alertsKeyMissing": "Alerts aren’t configured on this server. Contact the support team.",
     "pageNotFound": "This page doesn’t exist or you don’t have access to it.",
-    "goToday": "Go to Today",
+    "goHome": "Back to the home page",
     "tooShort": "This text is too short.",
     "tooLongForLevels": "This text is too long for this many levels. Shorten it or choose fewer levels.",
     "atLeastTwoLevels": "Choose at least two levels.",
@@ -2958,8 +2961,8 @@
       "person": "Person",
       "anyPerson": "Everyone",
       "otherPerson": "Chosen person",
-      "type": "Type",
-      "anyType": "All types",
+      "type": "Who acted",
+      "anyType": "Anyone",
       "school": "School",
       "anySchool": "All schools",
       "apply": "Show",
@@ -3050,9 +3053,10 @@
     "pages": "Log pages",
     "newest": "Back to the newest",
     "history": "History of this item",
+    "historyPerson": "History of this person",
     "actions": {
       "student_alert": {
-        "viewed": "Safety or medical alerts viewed ({alertCount, plural, one {# alert} other {# alerts}})",
+        "viewed": "{alertCount, plural, =0 {Alert list opened (no alerts)} one {Safety or medical alerts viewed (# alert)} other {Safety or medical alerts viewed (# alerts)}}",
         "created": "Safety or medical alert added",
         "updated": "Safety or medical alert changed",
         "deleted": "Safety or medical alert deleted"
@@ -3191,7 +3195,7 @@
       "done": "Done",
       "todo": "To do",
       "year": "School year created",
-      "contact": "Schools' contact details and bell times",
+      "contact": "Schools’ contact details and bell times",
       "staff": "Staff invited",
       "calendar": "PA days and holidays on the calendar",
       "reviewers": "People who approve resources"
@@ -3207,7 +3211,13 @@
       "line": "{what}: {when}",
       "lineOk": "normal",
       "lineProblem": "to check",
+      "lineScheduled": "scheduled",
       "never": "never",
+      "notYet": {
+        "worker": "not yet",
+        "backup": "not yet (the first runs tonight)",
+        "retention": "not yet (the first runs tonight)"
+      },
       "justNow": "just now",
       "minutesAgo": "{count} min ago",
       "hoursAgo": "{count} h ago",
@@ -3216,14 +3226,14 @@
     },
     "retention": {
       "title": "Data retention",
-      "intro": "This data is deleted automatically, every night, after these periods. IP Lynx sets the periods at the board's request.",
+      "intro": "This data is deleted automatically, every night, after these periods. IP Lynx sets the periods at the board’s request.",
       "auditDays": "Audit log",
       "subPlanDays": "Substitute plans and absences, after the day",
-      "classDaysAfterYearEnd": "Students' first names, after the end of the school year",
+      "classDaysAfterYearEnd": "Students’ first names, after the end of the school year",
       "aiUsageDays": "AI usage",
       "feedbackDays": "Feedback received",
       "days": "{count, plural, one {# day} other {# days}}",
-      "planningKept": "Classes' units and lessons are kept."
+      "planningKept": "Classes’ units and lessons are kept."
     },
     "staff": {
       "title": "Staff",
@@ -3238,8 +3248,8 @@
       "wholeBoard": "Whole board",
       "empty": "Nobody has a role in this board yet.",
       "statuses": {
-        "active": "Active",
-        "neverSignedIn": "Never signed in",
+        "active": "Access active",
+        "neverSignedIn": "No sign-in yet",
         "removed": "Access removed",
         "pending": "Invitation being prepared",
         "failed": "Invitation failed",
@@ -3248,7 +3258,7 @@
       },
       "invitations": "Open invitations",
       "invitationsHint": "Invitations being prepared and those that failed this month.",
-      "openInvitation": "See {name}'s invitation"
+      "openInvitation": "See {name}’s invitation"
     },
     "invite": {
       "open": "Invite someone",
@@ -3256,7 +3266,9 @@
       "intro": "The account is created without sending any email: you send the welcome message yourself.",
       "email": "Email",
       "name": "Full name",
-      "honorific": "Title (Mrs., Mr., Mx…)",
+      "honorific": "Title (Mme, M., Mx)",
+      "honorificHint": "As substitute plans print it, in French: Mme, M. or Mx.",
+      "honorificNone": "None (name only)",
       "role": "Role",
       "school": "School",
       "chooseSchool": "Choose a school",
@@ -3277,7 +3289,7 @@
       "cancelledState": "This invitation was cancelled.",
       "failedState": "The invitation did not go through.",
       "cancel": "Cancel the invitation",
-      "cancelConfirm": "Cancel {name}'s invitation? The account will not be created.",
+      "cancelConfirm": "Cancel {name}’s invitation? The account will not be created.",
       "cancelled": "Invitation cancelled.",
       "noEmailSent": "Our servers send no invitation email: the message goes from your own email or phone.",
       "messageLanguage": "Message language",
@@ -3295,7 +3307,7 @@
       "back": "Back to staff",
       "roles": "Roles",
       "removeRole": "Remove this role",
-      "removeRoleConfirm": "Remove the role \"{role}\" from {name}?",
+      "removeRoleConfirm": "Remove the role “{role}” from {name}?",
       "removeTeacherWarning": "Their classes at this school will stay out of reach until a teacher role is given back there.",
       "roleRemoved": "Role removed.",
       "addRole": "Add a role",
@@ -3305,20 +3317,20 @@
       "accessActive": "This person can sign in.",
       "accessRemoved": "This person can no longer sign in or see any data. Their classes, plans and resources are kept.",
       "removeAccess": "Remove access",
-      "removeAccessConfirm": "Remove {name}'s access? This person will no longer be able to sign in. Their classes, plans and resources are kept.",
+      "removeAccessConfirm": "Remove {name}’s access? This person will no longer be able to sign in. Their classes, plans and resources are kept.",
       "accessRemovedSaved": "Access removed.",
       "restoreAccess": "Restore access",
-      "restoreAccessConfirm": "Restore {name}'s access? This person will be able to sign in again.",
+      "restoreAccessConfirm": "Restore {name}’s access? This person will be able to sign in again.",
       "accessRestored": "Access restored.",
       "ownAccess": "You cannot remove your own access.",
       "deletion": "To delete this account and its data, write to IP Lynx.",
       "deletionWrite": "Write to IP Lynx",
       "deletionSubject": "Deleting an account",
-      "reviewer": "Designated to approve the board's resources."
+      "reviewer": "Designated to approve the board’s resources."
     },
     "schools": {
       "title": "Schools",
-      "intro": "IP Lynx adds the board's schools.",
+      "intro": "IP Lynx adds the board’s schools.",
       "empty": "No schools yet.",
       "open": "Open {name}",
       "back": "Back to schools",
@@ -3329,9 +3341,9 @@
       "modules": "Modules",
       "modulesLine": "{modules} — pilot project",
       "noModules": "No modules",
-      "alertsOff": "Safety alerts: off — up to the school's leadership",
-      "alertsOn": "Safety alerts: on — up to the school's leadership",
-      "aiNote": "Normally decided by the school's leadership.",
+      "alertsOff": "Safety alerts: off — up to the school’s leadership",
+      "alertsOn": "Safety alerts: on — up to the school’s leadership",
+      "aiNote": "Normally decided by the school’s leadership.",
       "contactMissing": "Contact details to complete",
       "moduleNames": {
         "core": "Core",
@@ -3351,12 +3363,12 @@
       "dayStart": "First bell",
       "dayEnd": "Dismissal",
       "saved": "Contact details saved.",
-      "readOnly": "Only the school's leadership and the board's administrators can change this."
+      "readOnly": "Only the school’s leadership and the board’s administrators can change this."
     },
     "years": {
       "title": "School years",
       "intro": "Classes are created in a school year. A year that classes use cannot be deleted.",
-      "caption": "The board's school years",
+      "caption": "The board’s school years",
       "name": "Name",
       "namePlaceholder": "2027-2028",
       "startsOn": "First day",
@@ -3369,21 +3381,21 @@
       "saved": "School year saved.",
       "delete": "Delete",
       "deleteLabel": "Delete the school year {name}",
-      "deleteConfirm": "Delete the school year \"{name}\"?",
+      "deleteConfirm": "Delete the school year “{name}”?",
       "deleted": "School year deleted.",
       "empty": "No school years. Add the one that is starting."
     },
     "reviewers": {
       "title": "Resource approval",
       "intro": "The designated people approve resources proposed to the whole board. Faith content is reviewed by someone designated for it.",
-      "noLibrary": "None of the board's schools has the resource library.",
+      "noLibrary": "None of the board’s schools has the resource library.",
       "empty": "Nobody is designated. No resource can be approved for the board.",
       "approvesContent": "Approves content",
       "reviewsFaith": "Reviews faith content",
       "saved": "Designation saved.",
       "remove": "Remove the designation",
-      "removeLabel": "Remove {name}'s designation",
-      "removeConfirm": "Remove {name}'s designation?",
+      "removeLabel": "Remove {name}’s designation",
+      "removeConfirm": "Remove {name}’s designation?",
       "removed": "Designation removed.",
       "designate": "Designate someone",
       "person": "Person",
@@ -3413,10 +3425,11 @@
     },
     "feedback": {
       "title": "Feedback received",
-      "intro": "What the board's staff send with the \"Feedback\" button.",
+      "intro": "What the board’s staff send with the “Feedback” button.",
       "filter": "Show",
       "all": "All",
       "empty": "No feedback.",
+      "when": "{date} at {time}",
       "statuses": {
         "new": "New",
         "read": "Read",
@@ -3452,6 +3465,7 @@
     "progressLabel": "{done} of {total} steps done",
     "hide": "Hide",
     "hidden": "The list is hidden on “Today”. It stays here.",
+    "hiddenToast": "List hidden. You can find it in Profile.",
     "showOnToday": "Show on “Today”",
     "open": "See all the steps",
     "allDone": "Everything is ready. Have a great school year!",
@@ -3473,6 +3487,8 @@
       "badge": "Sample",
       "yours": "Your sample class: {name}",
       "notice": "Sample class: it is never included in a substitute plan and will be deleted on {date}.",
+      "listNotice": "It does not count toward the steps above, is never included in a substitute plan and will be deleted on {date}.",
+      "bannerNotice": "It is never included in a substitute plan and will be deleted on {date}.",
       "delete": "Delete the sample class",
       "deleteConfirm": "The sample class, its made-up students, its timetable and its units will be deleted. Your real classes do not change.",
       "deleted": "Sample class deleted.",
@@ -3504,7 +3520,12 @@
     "start": "Get started",
     "updatedTitle": "The terms have changed",
     "updatedIntro": "The terms of the pilot project were updated. Read them, then accept them to make this message go away.",
+    "whatChanged": "What changed: {change}",
+    "changes": {
+      "pilote1": "the first complete version of the pilot project’s terms."
+    },
     "acceptUpdated": "Accept the terms",
+    "later": "Later",
     "accepted": "Terms accepted.",
     "version": "Terms version: {version}"
   },
@@ -3564,6 +3585,7 @@
     "contactBoard": "For any question, contact your school board’s administration.",
     "version": "Terms version: {version}",
     "footerLink": "Privacy",
+    "backToPortal": "Back to substitute access",
     "loginLink": "Privacy and terms",
     "portalNotice": "By using this code, you access confidential information for this day only; every viewing is logged.",
     "bannerText": "The terms of the pilot project have changed.",
@@ -3581,7 +3603,7 @@
       "question": "A question"
     },
     "message": "Your message",
-    "messageHint": "Avoid students’ first names: they are almost never needed.",
+    "messageHint": "First names of your schools’ students are replaced with [student] before sending.",
     "counter": "{count} of {max} characters",
     "reference": "Error reference (optional)",
     "referenceHint": "The reference shown on an error page, for example “7f3a2c9d”.",
@@ -3589,11 +3611,7 @@
     "send": "Send",
     "sending": "Sending…",
     "sent": "Thank you! Your feedback was sent.",
-    "names": {
-      "intro": "This message contains first names of students at your school: {names}. Your board’s administration will read it. Remove them if you can, or confirm each one.",
-      "confirm": "Send “{name}” anyway",
-      "blocked": "First remove this personal information:"
-    },
+    "blocked": "First remove this personal information:",
     "pageIntro": "Describe what happened. The error reference helps find the problem."
   },
   "releaseNotes": {
@@ -3603,7 +3621,7 @@
     "versions": {
       "v060": {
         "title": "Version 0.6 · Ready for the pilot",
-        "date": "November 2026",
+        "date": "October 2026",
         "items": {
           "welcome": "“Welcome” at the first sign-in: the pilot terms and your profile.",
           "start": "“Getting started”: four steps and a sample class to try the app.",
@@ -3615,7 +3633,7 @@
       },
       "v050": {
         "title": "Version 0.5 · Class mode",
-        "date": "November 2026",
+        "date": "October 2026",
         "items": {
           "present": "“Present to the class” on the projector, and the quiz on students’ devices.",
           "growth": "Resource adaptations, colleagues’ opinions and curriculum coverage.",

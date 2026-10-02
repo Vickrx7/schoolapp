@@ -398,7 +398,9 @@ test('9. « Journal d’audit »: the code the office issued, and the CSV', asyn
     .filter({ hasText: 'Alertes de sécurité ou médicales consultées' })
     .first();
   await expect(entry).toContainText('Personne suppléante');
-  await expect(entry).toContainText('code émis par Julie Bergeron (secrétariat)');
+  // Who issued it, and the badge saying the office did (not the same fact twice).
+  await expect(entry).toContainText('code émis par Julie Bergeron');
+  await expect(entry).not.toContainText('(secrétariat)');
   await expect(entry).toContainText('Code émis par le secrétariat');
   await expectAccessible(principal);
 
@@ -424,11 +426,11 @@ test('10. « Conseil »: the system’s state, an invitation, « Bienvenue » an
     await expect(page).toHaveURL(/\/board$/);
     await expect(page.getByRole('heading', { name: 'État du système' })).toBeVisible();
     for (const line of [
-      'Service de fond',
+      'Service en arrière-plan',
       'Dernière sauvegarde',
       'Dernier nettoyage des données',
     ]) {
-      await expect(page.getByText(new RegExp(`^${line} : `))).toBeVisible();
+      await expect(page.getByText(new RegExp(`^${line}\\s:\\s`))).toBeVisible();
     }
     await expect(page.getByRole('heading', { name: 'Conservation des données' })).toBeVisible();
 
@@ -439,7 +441,7 @@ test('10. « Conseil »: the system’s state, an invitation, « Bienvenue » an
     const dialog = page.getByRole('dialog');
     await clickUntil(page.getByRole('button', { name: 'Inviter une personne' }), dialog);
     await dialog.getByLabel('Courriel', { exact: true }).fill(INVITEE.email);
-    await dialog.getByLabel('Titre (Mme, M., Mx…)').fill('Mme');
+    await dialog.getByLabel('Titre', { exact: true }).selectOption('Mme');
     await dialog.getByLabel('Nom complet').fill(INVITEE.name);
     await dialog.getByLabel('Rôle').selectOption({ label: 'Enseignant·e' });
     await dialog.getByRole('button', { name: 'Inviter', exact: true }).click();

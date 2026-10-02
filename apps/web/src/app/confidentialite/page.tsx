@@ -1,4 +1,5 @@
 import { CURRENT_TERMS_VERSION } from '@lynx/domain';
+import { ChevronLeft } from 'lucide-react';
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
@@ -17,16 +18,25 @@ export async function generateMetadata(): Promise<Metadata> {
 
 /**
  * « Confidentialité et conditions » (DECISIONS D-110): public (`PUBLIC_PATHS` in proxy.ts), linked
- * from the login page, « Bienvenue », the app's footer and the substitute portal.
+ * from the login page, « Bienvenue », the app's footer and the substitute portal. Opened from
+ * the portal (`?from=suppleance`), it leads back there (a substitute has no staff sign-in).
  */
-export default async function PrivacyPage() {
+export default async function PrivacyPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ from?: string }>;
+}) {
   const t = await getTranslations('legal');
   const env = serverEnv();
+  const fromPortal = (await searchParams).from === 'suppleance';
   return (
     <div className="min-h-dvh">
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex h-14 max-w-3xl items-center gap-3 px-4">
-          <Link href="/" className="flex items-center gap-2 font-bold text-slate-900">
+          <Link
+            href={fromPortal ? '/suppleance' : '/'}
+            className="flex items-center gap-2 font-bold text-slate-900"
+          >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/icon.svg" alt="" className="size-8" />
             <span>{APP_NAME}</span>
@@ -37,6 +47,15 @@ export default async function PrivacyPage() {
         </div>
       </header>
       <main className="mx-auto max-w-3xl px-4 pt-6 pb-16">
+        {fromPortal ? (
+          <Link
+            href="/suppleance"
+            className="mb-2 inline-flex min-h-11 items-center gap-1 text-sm text-slate-600 hover:text-slate-900"
+          >
+            <ChevronLeft className="size-4" aria-hidden />
+            {t('backToPortal')}
+          </Link>
+        ) : null}
         <h1 className="mb-6 text-2xl font-bold tracking-tight text-slate-900">{t('title')}</h1>
         <PrivacyNotice
           appName={APP_NAME}

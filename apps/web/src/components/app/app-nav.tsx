@@ -82,7 +82,8 @@ export function AppNav({
     .filter((i) => i.key !== 'school' || showSchool)
     .filter((i) => i.key !== 'board' || showBoard);
   const { bar, more } = phoneBar(items);
-  const active = (item: Item) => isNavActive(item, pathname);
+  const shown = items.map((i) => i.key);
+  const active = (item: Item) => isNavActive(item, pathname, shown);
   const moreActive = more.some(active);
 
   return (

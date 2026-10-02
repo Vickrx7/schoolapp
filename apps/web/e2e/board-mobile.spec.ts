@@ -87,6 +87,16 @@ test('a board admin runs the board from a phone', async ({ page }) => {
     }
     // The feedback, long words included, wraps inside the screen.
     await expect(page.getByText(message)).toBeVisible();
+    // The current section is scrolled into view, and the row says more sections are to the left.
+    const current = tabs.locator('[aria-current="page"]');
+    await expect(current).toHaveText('Commentaires');
+    await expect(async () => {
+      const box = await current.boundingBox();
+      const viewport = page.viewportSize()!;
+      expect(box!.x).toBeGreaterThanOrEqual(0);
+      expect(box!.x + box!.width).toBeLessThanOrEqual(viewport.width);
+    }).toPass();
+    await expect(page.getByTestId('board-tabs-more-before')).toBeVisible();
     await tall(page.getByRole('button', { name: 'Marquer comme lu' }).first());
   } finally {
     await query('delete from public.feedback where message = $1', [message]);

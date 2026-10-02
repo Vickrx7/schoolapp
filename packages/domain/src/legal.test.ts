@@ -1,6 +1,13 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { CURRENT_TERMS_VERSION, TERMS_VERSION_PATTERN, isTermsVersion, termsState } from './legal';
+import {
+  CURRENT_TERMS_VERSION,
+  TERMS_CHANGES,
+  TERMS_VERSION_PATTERN,
+  isTermsVersion,
+  termsChangeKey,
+  termsState,
+} from './legal';
 
 describe('the pilot terms (D-109, D-110)', () => {
   it('has a current version the database accepts', () => {
@@ -16,6 +23,15 @@ describe('the pilot terms (D-109, D-110)', () => {
   it('is accepted by every demo account of the seed, so demos and browser tests go straight in', () => {
     const seed = readFileSync(new URL('../../../supabase/seed.sql', import.meta.url), 'utf8');
     expect(seed).toContain(`'${CURRENT_TERMS_VERSION}', now()`);
+  });
+
+  it('says what each version changed, the current one included (Phase 6 review)', () => {
+    expect(termsChangeKey()).toMatch(/^[a-zA-Z0-9]+$/);
+    for (const [version, key] of Object.entries(TERMS_CHANGES)) {
+      expect(isTermsVersion(version), version).toBe(true);
+      expect(key, version).toMatch(/^[a-zA-Z0-9]+$/);
+    }
+    expect(termsChangeKey('2026-01-unknown')).toBeNull();
   });
 
   it('recognizes versions', () => {

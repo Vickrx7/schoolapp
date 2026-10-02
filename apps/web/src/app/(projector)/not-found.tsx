@@ -9,10 +9,11 @@ export default async function ProjectorNotFound() {
   return (
     <div className="mx-auto max-w-xl px-4 py-16">
       <EmptyState
+        as="h1"
         title={t('pageNotFound')}
         action={
           <Button asChild>
-            <Link href="/today">{t('goToday')}</Link>
+            <Link href="/">{t('goHome')}</Link>
           </Button>
         }
       />

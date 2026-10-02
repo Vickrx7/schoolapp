@@ -25,12 +25,14 @@ export default async function FeedbackPage({
   const session = await requireSession();
   const { ref } = await searchParams;
   const t = await getTranslations('feedback');
+  const reference = isReference(ref) ? ref : null;
   return (
     <div className="mx-auto max-w-xl">
       <PageHeader title={t('title')} subtitle={t('intro')} />
       <Card className="p-4">
-        <p className="mb-4 text-sm text-slate-600">{t('pageIntro')}</p>
-        <FeedbackForm userId={session.userId} initialRef={isReference(ref) ? ref : null} />
+        {/* An error page sent the person here: what to describe. An idea needs no such advice. */}
+        {reference ? <p className="mb-4 text-sm text-slate-600">{t('pageIntro')}</p> : null}
+        <FeedbackForm userId={session.userId} initialRef={reference} />
       </Card>
     </div>
   );

@@ -160,13 +160,13 @@ describe('the projector (D-086, D-087)', () => {
     });
     const html = board(english);
     expect(html).toContain('<p lang="en-CA"');
-    expect(html).toMatch(/Explication : <span lang="en-CA">Five hundreds\.<\/span>/);
+    expect(html).toMatch(/Explication\u00a0: <span lang="en-CA">Five hundreds\.<\/span>/);
     // « Vrai » and « Faux » are the interface's words: no language of their own.
     expect(html).not.toContain('lang="fr-CA"');
     expect(text(html)).toMatch(/Vrai Bonne réponse 3 réponses/);
 
     const hint = board(live({ lang: 'en-CA', question: { ...question, hint: 'Count on.' } }));
-    expect(hint).toMatch(/Indice : <span lang="en-CA">Count on\.<\/span>/);
+    expect(hint).toMatch(/Indice\u00a0: <span lang="en-CA">Count on\.<\/span>/);
   });
 
   it('ranks teams with ties sharing a rank, and shows class figures in « Chacun pour soi »', () => {

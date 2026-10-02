@@ -7,10 +7,11 @@ export default async function NotFound() {
   const t = await getTranslations('errors');
   return (
     <EmptyState
+      as="h1"
       title={t('pageNotFound')}
       action={
         <Button asChild>
-          <Link href="/today">{t('goToday')}</Link>
+          <Link href="/">{t('goHome')}</Link>
         </Button>
       }
     />

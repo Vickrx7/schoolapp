@@ -115,8 +115,8 @@ mois-ci ».
 because whoever holds a code sees the day's plan. The log never holds a student's name."
 
 **Click:** « Voir le journal d'audit » (or `/audit`) → « Catégorie » « Alertes » → « Afficher »: the
-substitute's entry « Alertes de sécurité ou médicales consultées », « code émis par Julie Bergeron
-(secrétariat) », with the badge « Code émis par le secrétariat ». « Télécharger (CSV) »: the export
+substitute's entry « Alertes de sécurité ou médicales consultées », « code émis par Julie Bergeron », with
+the badge « Code émis par le secrétariat ». « Télécharger (CSV) »: the export
 is itself logged.
 
 ### 10. « Conseil » (2 min)

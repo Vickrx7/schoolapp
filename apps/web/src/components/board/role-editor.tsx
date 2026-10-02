@@ -82,7 +82,9 @@ export function RoleEditor({
       {canAdd ? (
         <form onSubmit={submit} className="space-y-3 rounded-lg bg-slate-50 p-3" noValidate>
           <p className="font-medium text-slate-900">{t('addRole')}</p>
-          <div className="grid gap-3 sm:grid-cols-2">
+          {/* One above the other: a school's full name (« École élémentaire catholique … »)
+              would be cut off half-width, and every school would read the same. */}
+          <div className="grid gap-3">
             <Field label={tInvite('role')} htmlFor="role-new">
               <Select
                 id="role-new"

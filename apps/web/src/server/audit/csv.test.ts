@@ -81,7 +81,7 @@ describe('auditCsv (D-103)', () => {
       [
         '2026-11-12 08:05',
         'user_role.granted',
-        'Rôle accordé : Marc Gagnon (Enseignant·e)',
+        'Rôle accordé\u00a0: Marc Gagnon (Enseignant·e)',
         '"\'=HYPERLINK(""http://x"")"',
         'Personnel',
         '',

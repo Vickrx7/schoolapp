@@ -71,8 +71,9 @@ test('the principal reads and filters the audit log on a phone', async ({ page }
     .filter({ hasText: 'Alertes de sécurité ou médicales consultées (1 alerte)' })
     .first();
   await expect(card).toContainText('Personne suppléante');
-  await expect(card).toContainText('code émis par le secrétariat');
+  // The badge says it, once (no « code émis par le secrétariat » line besides).
   await expect(card).toContainText('Code émis par le secrétariat');
+  await expect(card).not.toContainText('code émis par le secrétariat');
   await tall(page.getByRole('link', { name: 'Télécharger (CSV)' }));
   await noHorizontalScroll(page);
   await expectAccessible(page);

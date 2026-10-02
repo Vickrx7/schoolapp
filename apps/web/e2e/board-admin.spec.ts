@@ -109,7 +109,7 @@ test('a board admin invites a teacher, then removes and restores her access', as
 
     // A new teacher: the worker prepares the account, then the page gives the message.
     await dialog.getByLabel('Courriel', { exact: true }).fill(email);
-    await dialog.getByLabel('Titre (Mme, M., Mx…)').fill('Mme');
+    await dialog.getByLabel('Titre', { exact: true }).selectOption('Mme');
     await dialog.getByLabel('Nom complet').fill('Isabelle Pilote');
     await dialog.getByLabel('Rôle').selectOption({ label: 'Enseignant·e' });
     await dialog.getByRole('button', { name: 'Inviter', exact: true }).click();
@@ -150,7 +150,7 @@ test('a board admin invites a teacher, then removes and restores her access', as
     await page.goto('/board/staff');
     const row = page.getByRole('row').filter({ hasText: email });
     await expect(row).toContainText('Enseignant·e · É.É.C. Saint-Exemple');
-    await expect(row).toContainText('Active');
+    await expect(row).toContainText('Accès actif');
 
     // « Retirer l'accès »: the database refuses her at once, the worker bans the sign-in.
     await row.getByRole('link', { name: 'Isabelle Pilote' }).click();

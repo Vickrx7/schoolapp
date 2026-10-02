@@ -9,6 +9,18 @@ import {
   type LocalTime,
 } from '@lynx/domain';
 
+/**
+ * A date formatted by `format`, with French's « 1er » for the first of a month written out
+ * (« 1er décembre 2026 », « mardi 1er déc. »), which Intl never writes. Every date the app
+ * shows in words goes through here.
+ */
+export function formatDateWith(format: Intl.DateTimeFormat, at: Date, locale: string): string {
+  const parts = format.formatToParts(at);
+  const monthInWords = parts.some((p) => p.type === 'month' && !/^\d+$/.test(p.value));
+  if (!locale.startsWith('fr') || !monthInWords) return format.format(at);
+  return parts.map((p) => (p.type === 'day' && p.value === '1' ? '1er' : p.value)).join('');
+}
+
 /** Formats a school-local date for display, e.g. "lundi 28 septembre" / "Monday, September 28". */
 export function formatLocalDate(
   date: LocalDate,
@@ -16,8 +28,10 @@ export function formatLocalDate(
   options: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'long' },
 ): string {
   // Noon UTC with timeZone UTC: the displayed day can never shift.
-  return new Intl.DateTimeFormat(locale, { ...options, timeZone: 'UTC' }).format(
+  return formatDateWith(
+    new Intl.DateTimeFormat(locale, { ...options, timeZone: 'UTC' }),
     new Date(`${date}T12:00:00Z`),
+    locale,
   );
 }
 

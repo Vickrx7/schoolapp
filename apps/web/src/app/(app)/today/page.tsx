@@ -195,7 +195,7 @@ export default async function TodayPage({
               {sample.name}
             </Link>{' '}
             ·{' '}
-            {tOnboarding('sample.notice', {
+            {tOnboarding('sample.bannerNotice', {
               date: formatLocalDate(sample.purgeOn, locale, {
                 day: 'numeric',
                 month: 'long',

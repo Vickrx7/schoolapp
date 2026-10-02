@@ -52,7 +52,7 @@ describe('pack provenance (D-100)', () => {
       ]);
     }
     expect(fr.libraryPacks.provenance).toBe(
-      'Éditeur déclaré : {publisher} · importé le {date} · empreinte {hash}',
+      'Éditeur déclaré\u00a0: {publisher} · importé le {date} · empreinte {hash}',
     );
   });
 });

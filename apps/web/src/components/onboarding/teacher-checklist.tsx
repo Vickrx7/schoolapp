@@ -97,7 +97,7 @@ export async function TeacherChecklist({
                   {t('sample.yours', { name: sample.name })}
                 </Link>
                 <span className="text-slate-600">
-                  {t('sample.notice', {
+                  {t('sample.listNotice', {
                     date: formatLocalDate(sample.purgeOn, locale, {
                       day: 'numeric',
                       month: 'long',

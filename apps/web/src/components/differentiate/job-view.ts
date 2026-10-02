@@ -1,5 +1,6 @@
 /** Shaping stored requests for display. */
 import type { DifferentiateInput, DifferentiateOutput } from '@lynx/ai/features/differentiate';
+import { formatDateWith } from '../../lib/format';
 import type { EditorVersion } from './result-lines';
 
 /**
@@ -39,9 +40,9 @@ export const DEFAULT_TIME_ZONE = 'America/Toronto';
  * « 28 sept. 2026, 15 h 45 ».
  */
 export function formatMoment(iso: string, locale: string, timeZone = DEFAULT_TIME_ZONE): string {
-  return new Intl.DateTimeFormat(locale, {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-    timeZone,
-  }).format(new Date(iso));
+  return formatDateWith(
+    new Intl.DateTimeFormat(locale, { dateStyle: 'medium', timeStyle: 'short', timeZone }),
+    new Date(iso),
+    locale,
+  );
 }

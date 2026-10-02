@@ -68,7 +68,9 @@ test('the principal filters the alerts and sees the code the office issued', asy
   await expect(page).toHaveURL(/[?&]category=alerts(&|$)/);
   const entry = table(page).getByRole('row').filter({ hasText: ALERTS_VIEWED }).first();
   await expect(entry).toContainText('Personne suppléante');
-  await expect(entry).toContainText('code émis par Julie Bergeron (secrétariat)');
+  // Who issued it, and the badge saying the office did (not the same fact twice).
+  await expect(entry).toContainText('code émis par Julie Bergeron');
+  await expect(entry).not.toContainText('(secrétariat)');
   await expect(entry).toContainText('Code émis par le secrétariat');
   await expect(entry).toContainText('3e année – Mme Tremblay');
   // Only alerts.

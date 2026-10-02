@@ -80,16 +80,37 @@ test('the direction, the office and the board each land on their own page (D-118
     expect(overflow).toBeLessThanOrEqual(0);
   };
 
-  // A principal who does not teach: « Direction », and six items that fit the bar.
+  // A principal who does not teach: « Direction », and five items; her dashboard opens
+  // « Suppléances ».
   await login(page, DEMO.principal);
   await expect(page).toHaveURL(/\/direction$/);
   await expect(
     page.getByRole('heading', { level: 1, name: 'Tableau de bord de la direction' }),
   ).toBeVisible();
-  await expect(nav.getByRole('link')).toHaveCount(6);
-  for (const name of ['Direction', 'Suppléances', 'Ressources', 'Calendrier', 'École', 'Profil']) {
+  await expect(nav.getByRole('link')).toHaveCount(5);
+  for (const name of ['Direction', 'Ressources', 'Calendrier', 'École', 'Profil']) {
     await expect(nav.getByRole('link', { name, exact: true })).toBeVisible();
   }
+  // At 360 px every item is a 44 px target and no two labels touch (D-034).
+  await page.setViewportSize({ width: 360, height: 780 });
+  const boxes = await nav.getByRole('link').evaluateAll((links) =>
+    links.map((l) => {
+      const label = l.getBoundingClientRect();
+      const range = document.createRange();
+      range.selectNodeContents(l);
+      const text = [...range.getClientRects()].reduce(
+        (box, r) => ({ left: Math.min(box.left, r.left), right: Math.max(box.right, r.right) }),
+        { left: Infinity, right: -Infinity },
+      );
+      return { width: label.width, left: text.left, right: text.right };
+    }),
+  );
+  for (const [i, box] of boxes.entries()) {
+    expect(box.width).toBeGreaterThanOrEqual(44);
+    if (i > 0) expect(box.left - boxes[i - 1]!.right).toBeGreaterThanOrEqual(4);
+  }
+  await noHorizontalScroll();
+  await page.setViewportSize({ width: 412, height: 839 });
   await expect(nav.getByRole('link', { name: 'Direction', exact: true })).toHaveAttribute(
     'aria-current',
     'page',

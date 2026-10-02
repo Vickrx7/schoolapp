@@ -94,11 +94,11 @@ describe('the plan PDF with a library resource', () => {
     const schedule = model.sections.find((s) => s.id === 'schedule')!;
     const french = schedule.blocks.find((b) => b.key === BLOCK.french)!;
     expect(french.library).toMatchObject({
-      heading: 'Ressource de la banque : Le huard, oiseau des lacs',
+      heading: 'Ressource de la banque\u00a0: Le huard, oiseau des lacs',
       guideLabel: 'Guide de la ressource',
       notes: [
-        'Matériel pour les élèves : « Activités pour les élèves (PDF) », une copie par groupe.',
-        'Le corrigé reste avec l’enseignant·e : ramassez les feuilles.',
+        'Matériel pour les élèves\u00a0: «\u00a0Activités pour les élèves (PDF)\u00a0», une copie par groupe.',
+        'Le corrigé reste avec l’enseignant·e\u00a0: ramassez les feuilles.',
       ],
     });
     expect(french.library!.guide.kind).toBe('teacher');

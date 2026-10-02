@@ -8,10 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Field, Input, Select } from '@/components/ui/field';
 import { useAction } from '@/hooks/use-action';
 import { useDraft } from '@/hooks/use-draft';
+import { HONORIFICS } from '@/lib/honorifics';
 import { acceptTerms } from '@/server/actions/onboarding';
-
-/** How students address a teacher, as substitute plans print it (« Mme Tremblay »). */
-const HONORIFICS = ['Mme', 'M.', 'Mx'];
 
 const POINTS = ['firstNames', 'alerts', 'ai', 'canada', 'feedback'] as const;
 
@@ -34,6 +32,7 @@ export function WelcomeForm({
   displayName,
   honorific,
   next,
+  laterHref = null,
 }: {
   mode: Exclude<TermsState, 'accepted'>;
   userId: string;
@@ -42,6 +41,8 @@ export function WelcomeForm({
   displayName: string;
   honorific: string | null;
   next: string | null;
+  /** Newer terms only: « Plus tard » goes back there, the banner stays (D-109). */
+  laterHref?: string | null;
 }) {
   const t = useTranslations('welcome');
   const tCommon = useTranslations('common');
@@ -61,8 +62,8 @@ export function WelcomeForm({
       window.location.assign(target);
     },
   });
-  const honorifics =
-    HONORIFICS.includes(draft.value.honorific) || !draft.value.honorific
+  const honorifics: readonly string[] =
+    (HONORIFICS as readonly string[]).includes(draft.value.honorific) || !draft.value.honorific
       ? HONORIFICS
       : [draft.value.honorific, ...HONORIFICS];
 
@@ -178,9 +179,16 @@ export function WelcomeForm({
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-xs text-slate-500">{t('version', { version })}</p>
-        <Button type="submit" size="lg" disabled={!hydrated || accept.pending}>
-          {mode === 'required' ? t('start') : t('acceptUpdated')}
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          {laterHref ? (
+            <Button asChild variant="secondary" size="lg">
+              <Link href={laterHref}>{t('later')}</Link>
+            </Button>
+          ) : null}
+          <Button type="submit" size="lg" disabled={!hydrated || accept.pending}>
+            {mode === 'required' ? t('start') : t('acceptUpdated')}
+          </Button>
+        </div>
       </div>
     </form>
   );

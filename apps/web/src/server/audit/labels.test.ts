@@ -87,7 +87,8 @@ describe('audit sentences (D-103)', () => {
     expect(view).toMatchObject({
       when: '12 nov. 2026 à 7 h 52',
       actor: 'Personne suppléante',
-      issuer: 'code émis par Julie Bergeron (secrétariat)',
+      // The badge says the office issued it: the name alone, not the same fact twice.
+      issuer: 'code émis par Julie Bergeron',
       sentence: 'Alertes de sécurité ou médicales consultées (2 alertes)',
       entity: '3e année – Mme Tremblay',
       flags: ['Code émis par le secrétariat'],
@@ -96,7 +97,7 @@ describe('audit sentences (D-103)', () => {
     const viewEn = auditEntryView(entry, { t: tEn, locale: 'en-CA', timeZone: 'America/Toronto' });
     expect(viewEn).toMatchObject({
       actor: 'Substitute',
-      issuer: 'code issued by Julie Bergeron (office)',
+      issuer: 'code issued by Julie Bergeron',
       sentence: 'Safety or medical alerts viewed (2 alerts)',
       flags: ['Code issued by the office'],
     });
@@ -104,6 +105,20 @@ describe('audit sentences (D-103)', () => {
     expect(
       auditSentence(row({ action: 'student_alert.viewed', details: { alert_count: 1 } }), tFr),
     ).toBe('Alertes de sécurité ou médicales consultées (1 alerte)');
+    // A class without alerts: its list was opened, nothing was read.
+    expect(
+      auditSentence(row({ action: 'student_alert.viewed', details: { alert_count: 0 } }), tFr),
+    ).toBe('Liste des alertes ouverte (aucune alerte)');
+    expect(
+      auditSentence(row({ action: 'student_alert.viewed', details: { alert_count: 0 } }), tEn),
+    ).toBe('Alert list opened (no alerts)');
+    // The office's badge without the name: no issuer line at all.
+    expect(
+      auditEntryView(
+        { ...entry, issuer_label: null },
+        { t: tFr, locale: 'fr-CA', timeZone: 'America/Toronto' },
+      ).issuer,
+    ).toBeNull();
   });
 
   it('say who issued a code when only the role or only the name is known', () => {
@@ -133,7 +148,7 @@ describe('audit sentences (D-103)', () => {
         }),
         tFr,
       ),
-    ).toBe('Ajout à l’équipe de la classe : Paul Leblanc (Enseignant·e de matière)');
+    ).toBe('Ajout à l’équipe de la classe\u00a0: Paul Leblanc (Enseignant·e de matière)');
     expect(
       auditSentence(
         row({
@@ -144,13 +159,13 @@ describe('audit sentences (D-103)', () => {
         }),
         tFr,
       ),
-    ).toBe('Rôle accordé : Marc Gagnon (Enseignant·e)');
+    ).toBe('Rôle accordé\u00a0: Marc Gagnon (Enseignant·e)');
     expect(
       auditSentence(
         row({ action: 'staff.access_removed', entity_type: 'user', entity_label: null }),
         tFr,
       ),
-    ).toBe('Accès retiré : Personne qui n’a plus accès');
+    ).toBe('Accès retiré\u00a0: Personne qui n’a plus accès');
     expect(
       auditSentence(
         row({
@@ -161,7 +176,7 @@ describe('audit sentences (D-103)', () => {
         }),
         tFr,
       ),
-    ).toBe('Invitation préparée : Personne invitée (Secrétariat)');
+    ).toBe('Invitation préparée\u00a0: Personne invitée (Secrétariat)');
     expect(
       auditSentence(
         row({

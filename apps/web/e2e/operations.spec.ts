@@ -1,6 +1,7 @@
 import { seedItemId } from '@lynx/content';
 import { expect, test, type Page } from '@playwright/test';
-import { DEMO, login } from './helpers';
+import { closeDb, query, SEED } from './db';
+import { DEMO, expectAccessible, login } from './helpers';
 
 /**
  * Web operations (Phase 6, DECISIONS D-111, D-112, D-119): the health checks monitors call, the
@@ -13,6 +14,10 @@ const CSP =
   "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; " +
   "img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; " +
   "base-uri 'self'; form-action 'self'; object-src 'none'";
+
+test.afterAll(async () => {
+  await closeDb();
+});
 
 /** What the browser says when the policy blocks something. */
 function watchPolicy(page: Page): string[] {
@@ -124,4 +129,44 @@ test('error reports are taken from the app’s own pages only, without any page 
   });
   expect(foreign.status()).toBe(403);
   expect(foreign.headers()['cache-control']).toBe('no-store');
+});
+
+test('the error page and the page-not-found page are pages of their own', async ({ page }) => {
+  // A page that does not exist: a heading, and the way back to the person's own home page.
+  await login(page, DEMO.principal);
+  await page.goto('/classes/00000000-0000-4000-8000-000000000000/students');
+  await expect(
+    page.getByRole('heading', {
+      level: 1,
+      name: 'Cette page n’existe pas ou vous n’y avez pas accès.',
+    }),
+  ).toBeVisible();
+  await expectAccessible(page);
+  await page.getByRole('link', { name: 'Retour à l’accueil' }).click();
+  await expect(page).toHaveURL(/\/direction$/);
+
+  // The error page: a draft this form cannot read (stored by hand) makes the lesson form fail.
+  const [teacher] = await query<{ id: string }>('select id from public.users where email = $1', [
+    DEMO.teacher3,
+  ]);
+  const [unit] = await query<{ id: string }>(
+    'select id from public.units where class_id = $1 order by created_at limit 1',
+    [SEED.class3],
+  );
+  await page.context().clearCookies();
+  await page.addInitScript((key) => {
+    localStorage.setItem(key, JSON.stringify({ value: { title: 5 }, savedAt: Date.now() }));
+  }, `lynx-draft:lesson:${teacher!.id}:${unit!.id}:new`);
+  await login(page, DEMO.teacher3);
+  await page.goto(`/classes/${SEED.class3}/planning/${unit!.id}`);
+  const error = page.getByRole('heading', { level: 1, name: 'Oups, un problème est survenu.' });
+  await expect(async () => {
+    if (!(await error.isVisible())) {
+      await page.getByRole('button', { name: 'Ajouter une leçon' }).first().click();
+    }
+    await expect(error).toBeVisible({ timeout: 1500 });
+  }).toPass();
+  await expect(page).toHaveTitle('Oups, un problème est survenu.');
+  await expect(page.getByRole('button', { name: 'Signaler ce problème' })).toBeVisible();
+  await expectAccessible(page);
 });

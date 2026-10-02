@@ -116,10 +116,17 @@ export function auditIssuerParts(
   return { name: entry.issuer_label, role: known };
 }
 
-/** « code émis par Julie Bergeron (secrétariat) », « code émis par le secrétariat ». */
+/**
+ * « code émis par Julie Bergeron (secrétariat) », « code émis par le secrétariat ». When the
+ * office issued it, its badge (« Code émis par le secrétariat ») says so already: the name alone,
+ * or nothing when the name is not shown.
+ */
 export function auditIssuer(entry: AuditRow, t: AuditT): string | null {
   const parts = auditIssuerParts(entry, t);
   if (!parts) return null;
+  if (entry.flags.includes('office_issued_code')) {
+    return parts.name ? t('audit.issuedByName', { name: parts.name }) : null;
+  }
   if (parts.name && parts.role) {
     return t('audit.issuedBy', { name: parts.name, role: t(`audit.issuerRoles.${parts.role}`) });
   }
@@ -190,8 +197,9 @@ export interface AuditEntryView {
   issuer: string | null;
   sentence: string;
   entity: string | null;
-  /** For « Historique de cet élément ». */
+  /** For « Historique de cet élément » (« … de cette personne » for a person). */
   entityId: string | null;
+  entityType: string | null;
   schoolName: string | null;
   flags: string[];
   officeIssued: boolean;
@@ -211,6 +219,7 @@ export function auditEntryView(
     sentence: auditSentence(entry, t),
     entity: auditEntity(entry, t),
     entityId: entry.entity_id,
+    entityType: entry.entity_type,
     schoolName: entry.school_name,
     flags: auditFlags(entry, t),
     officeIssued: entry.flags.includes('office_issued_code'),

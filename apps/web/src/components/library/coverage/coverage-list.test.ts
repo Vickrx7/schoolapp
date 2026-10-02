@@ -82,12 +82,12 @@ describe('CoverageList', () => {
   it('names each level in words', () => {
     expect(itemOf(markup, 'B1.1')).toContain('3 ressources approuvées');
     expect(itemOf(markup, 'B1.2')).toContain('Aucune ressource approuvée');
-    expect(itemOf(markup, 'B1.3')).toContain('Peu : 1 ressource approuvée');
+    expect(itemOf(markup, 'B1.3')).toContain('Peu\u00a0: 1 ressource approuvée');
     expect(markup).toContain(
       '4 ressources approuvées pour cette attente et ses contenus d’apprentissage',
     );
     expect(markup).toContain('Domaine B — Nombres');
-    expect(itemOf(markup, 'B1.1')).toContain('Types : Quiz, Fiche d’exercices');
+    expect(itemOf(markup, 'B1.1')).toContain('Types\u00a0: Quiz, Fiche d’exercices');
     expect(itemOf(markup, 'B1.2')).toContain('À vérifier');
   });
 
@@ -159,7 +159,7 @@ describe('CoverageSummary', () => {
     expect(markup).toContain('>11 sur 36<');
     expect(markup).toContain('>25 sans ressource<');
     expect(markup).toContain(
-      'Mathématiques, 3e année : 11 attentes sur 36 ont au moins une ressource approuvée',
+      'Mathématiques, 3e année\u00a0: 11 attentes sur 36 ont au moins une ressource approuvée',
     );
     // 5e année has no Français attentes.
     expect(markup).toContain('Aucune attente chargée');

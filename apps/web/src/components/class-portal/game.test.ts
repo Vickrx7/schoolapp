@@ -148,10 +148,13 @@ describe('a class device', () => {
     );
     expect(text(html)).toContain('Question 1 sur 5');
     expect(text(html)).toContain('Quel nombre vient juste après 999?');
-    expect(labelledNames(html).slice(0, 2)).toEqual(['Réponse A : 990', 'Réponse B : 1 000']);
+    expect(labelledNames(html).slice(0, 2)).toEqual([
+      'Réponse A\u00a0: 990',
+      'Réponse B\u00a0: 1 000',
+    ]);
     // The choice's text carries the content's language; the words around it do not.
     expect(html).toMatch(/<span id="[^"]+-text" lang="fr-CA"[^>]*>990<\/span>/);
-    expect(html).toMatch(/<span id="[^"]+-before" hidden="">Réponse A :<\/span>/);
+    expect(html).toMatch(/<span id="[^"]+-before" hidden="">Réponse A\u00a0:<\/span>/);
     expect(html).toContain('min-h-24');
     // The countdown uses the device's clock: drawn once the page is interactive, never in the
     // server's HTML (which would not match the first client render).
@@ -273,7 +276,7 @@ describe('a class device', () => {
     expect(labelledNames(english)).toContain('Descendre « first »');
     const englishChoices = q({ ...mc, prompt: 'Which one?' }, 'en-CA');
     expect(englishChoices).toMatch(/<span id="[^"]+-text" lang="en-CA"[^>]*>990<\/span>/);
-    expect(labelledNames(englishChoices)[0]).toBe('Réponse A : 990');
+    expect(labelledNames(englishChoices)[0]).toBe('Réponse A\u00a0: 990');
 
     const short = q({ id: 'q5', kind: 'short_answer', prompt: 'Write one thousand.' }, 'en-CA');
     expect(short).toMatch(/<input[^>]*lang="en-CA"/);

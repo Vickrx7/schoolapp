@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Notice } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Field, Input, Select } from '@/components/ui/field';
+import { HONORIFICS } from '@/lib/honorifics';
 import { useAction } from '@/hooks/use-action';
 import type { AppLocale } from '@/i18n/config';
 import { inviteStaff } from '@/server/actions/board';
@@ -89,31 +90,36 @@ export function InviteDialog({
               onChange={(e) => setEmail(e.target.value)}
             />
           </Field>
-          <div className="grid gap-3 sm:grid-cols-[8rem_1fr]">
-            <Field
-              label={t('honorific')}
-              htmlFor="invite-honorific"
-              error={invite.fieldError('honorific')}
+          <Field label={t('name')} htmlFor="invite-name" error={invite.fieldError('displayName')}>
+            <Input
+              id="invite-name"
+              value={name}
+              maxLength={120}
+              autoComplete="off"
+              aria-invalid={Boolean(invite.fieldError('displayName'))}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </Field>
+          {/* The titles « Bienvenue » offers, as the substitute plans print them (French). */}
+          <Field
+            label={t('honorific')}
+            htmlFor="invite-honorific"
+            hint={t('honorificHint')}
+            error={invite.fieldError('honorific')}
+          >
+            <Select
+              id="invite-honorific"
+              value={honorific}
+              onChange={(e) => setHonorific(e.target.value)}
             >
-              <Input
-                id="invite-honorific"
-                value={honorific}
-                maxLength={20}
-                autoComplete="off"
-                onChange={(e) => setHonorific(e.target.value)}
-              />
-            </Field>
-            <Field label={t('name')} htmlFor="invite-name" error={invite.fieldError('displayName')}>
-              <Input
-                id="invite-name"
-                value={name}
-                maxLength={120}
-                autoComplete="off"
-                aria-invalid={Boolean(invite.fieldError('displayName'))}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </Field>
-          </div>
+              {HONORIFICS.map((h) => (
+                <option key={h} value={h}>
+                  {h}
+                </option>
+              ))}
+              <option value="">{t('honorificNone')}</option>
+            </Select>
+          </Field>
           <Field label={t('role')} htmlFor="invite-role">
             <Select
               id="invite-role"

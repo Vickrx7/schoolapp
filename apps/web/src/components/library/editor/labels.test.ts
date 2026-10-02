@@ -154,7 +154,8 @@ describe('library labels', () => {
     collect({ ...fr.libraryEdit, ...fr.libraryReview, ...fr.libraryPlanning } as unknown as Tree);
     for (const text of strings) {
       expect(text, text).not.toMatch(/'/);
-      expect(text, text).not.toMatch(/«(?! )|(?<! )»/);
+      // A no-break space inside « » (tools/i18n/typography.mjs).
+      expect(text, text).not.toMatch(/«(?!\u00a0)|(?<!\u00a0)»/);
     }
   });
 });

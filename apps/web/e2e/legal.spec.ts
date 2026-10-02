@@ -36,10 +36,13 @@ test('the substitute portal says every viewing is logged and links to the notice
     'En utilisant ce code, vous accédez à des renseignements confidentiels réservés à cette journée ; chaque consultation est enregistrée.',
   );
   await page.getByRole('contentinfo').getByRole('link', { name: 'Confidentialité' }).click();
-  await expect(page).toHaveURL(/\/confidentialite$/);
+  await expect(page).toHaveURL(/\/confidentialite\?from=suppleance$/);
   await expect(
     page.getByRole('heading', { level: 1, name: 'Confidentialité et conditions' }),
   ).toBeVisible();
+  // Back to the portal, never to the staff sign-in.
+  await page.getByRole('link', { name: 'Retour à l’accès suppléance' }).click();
+  await expect(page).toHaveURL(/\/suppleance$/);
 });
 
 test('the app’s footer has « Confidentialité », « Nouveautés » and the version', async ({

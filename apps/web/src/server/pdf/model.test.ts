@@ -59,7 +59,7 @@ describe('buildPlanPdfModel', () => {
   it('prints alerts as the fixed sentence only: there is no alert text to print', () => {
     const m = model();
     expect(m.alertsNotice).toBe(
-      'Alertes de sécurité ou médicales : consultez l’application ou la direction.',
+      'Alertes de sécurité ou médicales\u00a0: consultez l’application ou la direction.',
     );
     // Nothing else in the document speaks of alerts.
     expect(JSON.stringify(m).match(/[Aa]lerte/g)).toHaveLength(1);
@@ -176,7 +176,7 @@ describe('buildPlanPdfModel', () => {
     // Without the teacher's steps, the AI's steps and « Dites : » lines are printed.
     const aiOnly = composeSubPlan(pdfPlan(), { ai, audience: 'pdf' });
     expect(block(model(FR_LABELS, aiOnly), BLOCK.french).steps).toEqual([
-      { minutes: '50 min', text: 'Lisez le texte.', say: 'Dites : « Écoutez bien. »' },
+      { minutes: '50 min', text: 'Lisez le texte.', say: 'Dites\u00a0: « Écoutez bien. »' },
     ]);
   });
 

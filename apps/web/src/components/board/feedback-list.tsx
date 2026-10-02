@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Badge, Card } from '@/components/ui/card';
 import { useAction } from '@/hooks/use-action';
+import { formatLocalDate, formatTime, instantInZone } from '@/lib/format';
 import { setFeedbackStatus } from '@/server/actions/board';
 
 export interface FeedbackItem {
@@ -31,11 +32,12 @@ function FeedbackCard({ item, timeZone }: { item: FeedbackItem; timeZone: string
   const t = useTranslations('board.feedback');
   const locale = useLocale();
   const save = useAction(setFeedbackStatus, { successMessage: t('saved') });
-  const when = new Intl.DateTimeFormat(locale, {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-    timeZone,
-  }).format(new Date(item.createdAt));
+  // « 2 oct. 2026 à 7 h 45 », as the audit log writes it, on the board's clock.
+  const at = instantInZone(item.createdAt, timeZone);
+  const when = t('when', {
+    date: formatLocalDate(at.date, locale, { day: 'numeric', month: 'short', year: 'numeric' }),
+    time: formatTime(at.time, locale),
+  });
   const details = [
     item.schoolName ? t('school', { name: item.schoolName }) : null,
     item.route ? t('route', { route: item.route }) : null,
