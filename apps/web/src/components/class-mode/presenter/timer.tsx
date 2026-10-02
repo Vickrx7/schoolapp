@@ -129,9 +129,11 @@ export function TimerDisplay({ timer }: { timer: PresenterTimer }) {
           {formatRemaining(timer.remainingMs)}
         </p>
       )}
+      {/* The bar moves every 250 ms (usePresenterTimer); each move ends before the next starts,
+          so the page settles between ticks (an accessibility check waits for that). */}
       <div aria-hidden className="h-3 overflow-hidden rounded-full bg-slate-200">
         <div
-          className="h-full rounded-full bg-brand-700 transition-[width] duration-300 ease-linear motion-reduce:transition-none"
+          className="h-full rounded-full bg-brand-700 transition-[width] duration-200 ease-linear motion-reduce:transition-none"
           style={{ width: `${Math.round(left * 1000) / 10}%` }}
         />
       </div>

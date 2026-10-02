@@ -1,3 +1,4 @@
+import { seedItemId } from '@lynx/content';
 import { expect, test, type Page } from '@playwright/test';
 import { DEMO, login } from './helpers';
 
@@ -54,13 +55,28 @@ test('the health checks answer monitors and are never cached', async ({ request 
 
 test('every page family carries the security policy and works under it', async ({ page }) => {
   const violations = watchPolicy(page);
+  // The public privacy page, then the login page.
+  await expectPolicy(page, '/confidentialite');
+  await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();
   await expectPolicy(page, '/login');
   // Signing in needs the page's scripts: the policy lets the app's own run.
   await login(page, DEMO.teacher3, { stayOnPage: true });
-  for (const path of ['/today', '/classes', '/library', '/calendar', '/absences']) {
+  for (const path of [
+    '/today',
+    '/classes',
+    '/library',
+    '/calendar',
+    '/absences',
+    '/demarrage',
+    '/commentaires',
+    '/nouveautes',
+  ]) {
     await expectPolicy(page, path);
     await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();
   }
+  // The projector (« Présenter à la classe »): its player runs under the policy too.
+  await expectPolicy(page, `/projector/items/${seedItemId('demo', 'pause-jeu-du-miroir')}`);
+  await expect(page.getByRole('heading', { level: 2 }).first()).toBeVisible();
   // The substitute portal and class devices keep their own rules on top.
   for (const path of ['/suppleance', '/jouer']) {
     const headers = await expectPolicy(page, path);

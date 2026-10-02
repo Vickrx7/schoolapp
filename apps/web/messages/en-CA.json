@@ -3199,7 +3199,7 @@
     "system": {
       "title": "System status",
       "ok": "Everything is working normally",
-      "problem": "A problem was detected: IP Lynx has been notified",
+      "problem": "A problem was detected: tell the person who runs the server.",
       "unavailable": "The system status is not available right now.",
       "worker": "Background service",
       "backup": "Last backup",
@@ -3538,7 +3538,7 @@
       },
       "access": {
         "title": "Who can see it",
-        "body": "Everyone sees only what their role allows: a teacher sees their classes, the principal sees the school’s absences and log. Alert viewings and substitute activity are written to the audit log. IP Lynx accesses the data only for support, and every access is written to the board’s log."
+        "body": "Everyone sees only what their role allows: a teacher sees their classes, the principal sees the school’s absences and log. Alert viewings and substitute activity are written to the audit log. IP Lynx accesses the data only for support or to maintain the service (an incident, a restore, an upgrade), and writes every access to the board’s log."
       },
       "retention": {
         "title": "How long",

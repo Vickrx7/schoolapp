@@ -4010,6 +4010,14 @@ export type Database = {
         Args: { p_school_id: string; p_patch: Json };
         Returns: undefined;
       };
+      my_onboarding_state: {
+        Args: never;
+        Returns: {
+          terms_version: string;
+          terms_accepted_at: string;
+          onboarding_dismissed_at: string;
+        }[];
+      };
       operator_account_id: {
         Args: { p_email: string };
         Returns: string;
@@ -4021,6 +4029,10 @@ export type Database = {
       operator_delete_staff_account: {
         Args: { p_user_id: string; p_all_boards?: boolean };
         Returns: Json;
+      };
+      operator_set_staff_active: {
+        Args: { p_user_id: string; p_active: boolean };
+        Returns: boolean;
       };
       operator_status: {
         Args: never;

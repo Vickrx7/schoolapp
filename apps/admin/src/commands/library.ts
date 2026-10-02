@@ -13,6 +13,7 @@ import {
   type PlannedExpectation,
 } from '../curriculum';
 import {
+  accountIdByEmail,
   bool,
   boardBySlug,
   check,
@@ -51,15 +52,14 @@ export const libraryCommands: Record<string, Command> = {
   async 'set-library-reviewer'(ctx) {
     const board = await boardBySlug(ctx, need(ctx, 'board'));
     const email = need(ctx, 'email').toLowerCase();
-    const user = check(
-      await ctx.db.from('users').select('id, display_name').eq('email', email).maybeSingle(),
-      `user ${email}`,
-    );
+    // By id from here on: the address stays out of the URLs (D-119).
+    const userId = await accountIdByEmail(ctx, email);
+    if (!userId) throw new CliError(`user ${email}: not found`);
     const { data: current, error: readError } = await ctx.db
       .from('library_reviewers')
       .select('approves_content, reviews_faith')
       .eq('board_id', board.id)
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
       .maybeSingle();
     if (readError) throw new CliError(`library reviewers: ${readError.message}`);
     const approvesContent = bool(ctx, 'content') ?? current?.approves_content ?? true;
@@ -72,7 +72,7 @@ export const libraryCommands: Record<string, Command> = {
         .from('library_reviewers')
         .delete()
         .eq('board_id', board.id)
-        .eq('user_id', user.id);
+        .eq('user_id', userId);
       if (error) throw new CliError(`remove reviewer: ${error.message}`);
       return `${email} no longer reviews library resources for ${board.name}.`;
     }
@@ -89,7 +89,7 @@ export const libraryCommands: Record<string, Command> = {
     const { error } = await ctx.db.from('library_reviewers').upsert(
       {
         board_id: board.id,
-        user_id: user.id,
+        user_id: userId,
         approves_content: approvesContent,
         reviews_faith: reviewsFaith,
       },

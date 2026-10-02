@@ -25,15 +25,19 @@
 		format filter {
 			wrap json
 			fields {
-				# Sign-in links and substitute codes never reach the logs.
+				# Sign-in links and substitute codes never reach the logs, nor the words a
+				# teacher searched for (« Ressources » keeps them in its address).
 				request>uri query {
 					delete token_hash
 					delete token
 					delete code
+					delete q
 				}
 				request>headers>Cookie delete
 				request>headers>Authorization delete
 				request>headers>X-Forwarded-For delete
+				# The previous page's address, query included.
+				request>headers>Referer delete
 				resp_headers>Set-Cookie delete
 				request>remote_ip ip_mask 24 64
 				request>client_ip ip_mask 24 64

@@ -335,7 +335,8 @@ async function BlockCard({
         className={cn(
           'flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-slate-600',
           current && 'bg-brand-50 text-brand-900',
-          inactive && 'line-through opacity-60',
+          // Struck through, never faded: the text keeps its contrast (WCAG 2 AA, D-034).
+          inactive && 'line-through',
         )}
       >
         <span className="shrink-0 whitespace-nowrap tabular-nums sm:w-32">
@@ -352,13 +353,17 @@ async function BlockCard({
       className={cn(
         'overflow-hidden',
         current && 'ring-2 ring-brand-500',
-        inactive && 'opacity-70',
+        // A cancelled or replaced period (a mass, an assembly): a dashed, flat card and a grey
+        // stripe, never a faded one, so its text and badges keep their contrast (D-034).
+        inactive && 'border-dashed border-slate-300 bg-slate-50 shadow-none',
       )}
     >
       <div className="flex">
         <div
           className="w-1.5 shrink-0"
-          style={{ backgroundColor: block.subject?.color ?? '#94a3b8' }}
+          style={{
+            backgroundColor: inactive ? '#cbd5e1' : (block.subject?.color ?? '#94a3b8'),
+          }}
           aria-hidden
         />
         <div className="min-w-0 flex-1 p-4">

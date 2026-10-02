@@ -4,28 +4,14 @@
 import { Constants } from '@lynx/db';
 import { z } from 'zod';
 import {
+  accountIdByEmail,
   boardBySlug,
   check,
   CliError,
   need,
   schoolByPath,
-  type CliContext,
   type Command,
 } from '../context';
-
-async function findAuthUserId(ctx: CliContext, email: string): Promise<string | null> {
-  const { data } = await ctx.db.from('users').select('id').eq('email', email).maybeSingle();
-  if (data) return data.id;
-  // Not in our profile table yet: look through auth users (small installs; paged).
-  for (let page = 1; page < 50; page++) {
-    const { data: list, error } = await ctx.db.auth.admin.listUsers({ page, perPage: 200 });
-    if (error) throw new CliError(`listing users: ${error.message}`);
-    const found = list.users.find((u) => u.email?.toLowerCase() === email);
-    if (found) return found.id;
-    if (list.users.length < 200) return null;
-  }
-  return null;
-}
 
 export const setupCommands: Record<string, Command> = {
   async 'create-board'(ctx) {
@@ -96,16 +82,20 @@ export const setupCommands: Record<string, Command> = {
         ? { board: await boardBySlug(ctx, need(ctx, 'board')), school: null }
         : await schoolByPath(ctx, need(ctx, 'school'));
 
-    let userId = await findAuthUserId(ctx, email);
+    // The profile, else an Auth account without one (an interrupted invitation).
+    const existing = await accountIdByEmail(ctx, email);
+    let userId = existing;
     if (!userId) {
-      // Pre-confirmed account: the person signs in with the emailed code; no password.
-      const { data, error } = await ctx.db.auth.admin.createUser({ email, email_confirm: true });
+      // Pre-confirmed account: the person signs in with the emailed code; no password. The role
+      // every signed-in person's token carries is set here, as the worker does (D-107), rather
+      // than left to the Auth server's default group, which may be unset.
+      const { data, error } = await ctx.db.auth.admin.createUser({
+        email,
+        email_confirm: true,
+        role: 'authenticated',
+      });
       if (error || !data.user) throw new CliError(`create auth user: ${error?.message}`);
       userId = data.user.id;
-    } else {
-      // Re-inviting someone who was deactivated lifts the sign-in block.
-      const { error } = await ctx.db.auth.admin.updateUserById(userId, { ban_duration: 'none' });
-      if (error) throw new CliError(`unblock sign-in: ${error.message}`);
     }
     check(
       await ctx.db
@@ -116,7 +106,6 @@ export const setupCommands: Record<string, Command> = {
             email,
             display_name: need(ctx, 'name'),
             honorific: ctx.values.honorific ?? null,
-            deactivated_at: null,
           },
           { onConflict: 'id' },
         )
@@ -131,24 +120,44 @@ export const setupCommands: Record<string, Command> = {
       school_id: target.school?.id ?? null,
     });
     if (error && error.code !== '23505') throw new CliError(`grant role: ${error.message}`);
+    if (existing) {
+      // Someone whose access was removed gets it back as « Rétablir l'accès » gives it: audited
+      // for the board and the school (D-106), plans refreshed; then the sign-in block is lifted
+      // now (the worker does it too).
+      const restored = await ctx.db.rpc('operator_set_staff_active', {
+        p_user_id: userId,
+        p_active: true,
+      });
+      if (restored.error) throw new CliError(`restore access: ${restored.error.message}`);
+      const { error: unbanError } = await ctx.db.auth.admin.updateUserById(userId, {
+        ban_duration: 'none',
+        role: 'authenticated',
+      });
+      if (unbanError) throw new CliError(`unblock sign-in: ${unbanError.message}`);
+    }
     return `${email} can now sign in as ${role}${target.school ? ` at ${target.school.name}` : ` for ${target.board.name}`}.`;
   },
 
   async deactivate(ctx) {
     const email = need(ctx, 'email').toLowerCase();
-    const data = check(
-      await ctx.db
-        .from('users')
-        .update({ deactivated_at: new Date().toISOString() })
-        .eq('email', email)
-        .select('id')
-        .maybeSingle(),
-      `user ${email}`,
-    );
-    // Block sign-in at the auth level too (the database already denies all access).
-    const { error } = await ctx.db.auth.admin.updateUserById(data.id, { ban_duration: '876000h' });
-    if (error) throw new CliError(`block sign-in: ${error.message}`);
-    return `${email} is deactivated: they can no longer sign in or see any data.`;
+    const userId = await accountIdByEmail(ctx, email);
+    if (!userId) throw new CliError(`user ${email}: not found`);
+    // As « Retirer l'accès »: audited for the board and the school with IP Lynx as the actor
+    // (D-106), plans refreshed, the worker told.
+    const { data: changed, error } = await ctx.db.rpc('operator_set_staff_active', {
+      p_user_id: userId,
+      p_active: false,
+    });
+    if (error?.code === 'P0002') throw new CliError(`user ${email}: no profile`);
+    if (error) throw new CliError(`deactivate ${email}: ${error.message}`);
+    // Block sign-in at the auth level now (the database already denies all access).
+    const { error: banError } = await ctx.db.auth.admin.updateUserById(userId, {
+      ban_duration: '876000h',
+    });
+    if (banError) throw new CliError(`block sign-in: ${banError.message}`);
+    return changed
+      ? `${email} is deactivated: they can no longer sign in or see any data.`
+      : `${email} was already deactivated; their sign-in stays blocked.`;
   },
 
   async 'set-module'(ctx) {

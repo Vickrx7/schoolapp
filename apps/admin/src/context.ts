@@ -75,6 +75,19 @@ export function check<T>(
   return result.data as NonNullable<T>;
 }
 
+/**
+ * The account an e-mail address belongs to: its profile, else an Auth account without one (an
+ * interrupted invitation); null when there is none. The address travels in the body of the
+ * `operator_account_id` call, never in a URL: PostgREST puts filters in the query string, and
+ * the hosted API gateway's logs record URLs (DECISIONS D-119). Commands then name the person by
+ * id only.
+ */
+export async function accountIdByEmail(ctx: CliContext, email: string): Promise<string | null> {
+  const { data, error } = await ctx.db.rpc('operator_account_id', { p_email: email });
+  if (error) throw new CliError(`find ${email}: ${error.message}`);
+  return data ?? null;
+}
+
 export async function boardBySlug(ctx: CliContext, slug: string) {
   return check(
     await ctx.db.from('boards').select('id, name').eq('slug', slug).maybeSingle(),

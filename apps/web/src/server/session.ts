@@ -68,14 +68,14 @@ export const loadSessionState = cache(async (): Promise<SessionState> => {
   if (!auth.user) return { status: 'anonymous' };
 
   const userId = auth.user.id;
-  const [profile, roles, reviewers] = await Promise.all([
+  const [profile, onboarding, roles, reviewers] = await Promise.all([
     supabase
       .from('users')
-      .select(
-        'email, display_name, honorific, preferred_locale, deactivated_at, terms_version, terms_accepted_at, onboarding_dismissed_at',
-      )
+      .select('email, display_name, honorific, preferred_locale, deactivated_at')
       .eq('id', userId)
       .maybeSingle(),
+    // Colleagues may not read these columns (D-109): the person's own, through a function.
+    supabase.rpc('my_onboarding_state').maybeSingle(),
     supabase.from('user_roles').select('role, board_id, school_id').eq('user_id', userId),
     supabase
       .from('library_reviewers')
@@ -83,6 +83,9 @@ export const loadSessionState = cache(async (): Promise<SessionState> => {
       .eq('user_id', userId),
   ]);
   if (!profile.data || profile.data.deactivated_at) return { status: 'inactive' };
+  // Never guess the terms: a failed read would send the person to « Bienvenue » again.
+  if (onboarding.error)
+    throw new Error(`my_onboarding_state failed: ${onboarding.error.code ?? ''}`);
 
   const roleRows = roles.data ?? [];
   const schoolIds = [
@@ -117,9 +120,9 @@ export const loadSessionState = cache(async (): Promise<SessionState> => {
     displayName: profile.data.display_name,
     honorific: profile.data.honorific,
     preferredLocale: profile.data.preferred_locale,
-    termsVersion: profile.data.terms_version,
-    termsAcceptedAt: profile.data.terms_accepted_at,
-    onboardingDismissedAt: profile.data.onboarding_dismissed_at,
+    termsVersion: onboarding.data?.terms_version ?? null,
+    termsAcceptedAt: onboarding.data?.terms_accepted_at ?? null,
+    onboardingDismissedAt: onboarding.data?.onboarding_dismissed_at ?? null,
     roles: roleRows.map((r) => ({ role: r.role, boardId: r.board_id, schoolId: r.school_id })),
     schools: (schools.data ?? []).map((s) => {
       const today = localDateIn(s.timezone);

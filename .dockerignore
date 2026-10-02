@@ -15,5 +15,6 @@ supabase/.branches
 **/test-results
 packages/ai/eval-results
 backups
+deploy/docker/certs
 **/*.env*
 !.env.example

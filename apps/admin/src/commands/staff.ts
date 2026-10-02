@@ -10,11 +10,18 @@
  *   pnpm admin delete-board --board csc-exemple --confirm csc-exemple --exported --yes
  *     (after the board was offered its audit log and library export)
  *
- * Addresses travel in request bodies (`operator_account_id`), never in a URL (D-119). The database
+ * Addresses travel in request bodies (`accountIdByEmail`), never in a URL (D-119). The database
  * deletes the data (`operator_delete_staff_account`, `operator_delete_board`); this command then
  * deletes the Auth accounts, which hold the address and sign-in history.
  */
-import { boardBySlug, CliError, need, type CliContext, type Command } from '../context';
+import {
+  accountIdByEmail,
+  boardBySlug,
+  CliError,
+  need,
+  type CliContext,
+  type Command,
+} from '../context';
 
 export const OPERATOR_ACCESS_REASONS = ['support', 'incident', 'restore', 'migration'] as const;
 export type OperatorAccessReason = (typeof OPERATOR_ACCESS_REASONS)[number];
@@ -117,10 +124,7 @@ export const staffCommands: Record<string, Command> = {
       throw new CliError(
         `This deletes ${email}'s account and data for good (DECISIONS D-107). Add --yes to go ahead.`,
       );
-    const { data: userId, error: findError } = await ctx.db.rpc('operator_account_id', {
-      p_email: email,
-    });
-    if (findError) throw new CliError(`find ${email}: ${findError.message}`);
+    const userId = await accountIdByEmail(ctx, email);
     if (!userId) throw new CliError(`No account uses ${email}.`);
 
     const { data, error } = await ctx.db.rpc('operator_delete_staff_account', {

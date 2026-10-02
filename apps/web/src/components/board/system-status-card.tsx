@@ -7,7 +7,9 @@ import type { SystemStatus } from '@/server/queries/board';
 /**
  * « État du système » (DECISIONS D-112): one sentence, then when the background service, the
  * backup and the data clean-up last ran, in the board's time zone. Never a count: the hosted
- * install serves several boards. A problem says IP Lynx was told (its monitors were).
+ * install serves several boards. A problem asks the admin to tell whoever runs the server: this
+ * card notifies nobody, and on a board's own servers that is the board's IT, not IP Lynx (the
+ * external monitors of DEPLOYMENT.md page the on-call person).
  */
 export async function SystemStatusCard({
   status,

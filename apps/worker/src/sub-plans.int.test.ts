@@ -501,6 +501,36 @@ describe('substitute plans after publishing', () => {
     expect(await mark()).toBeNull();
   });
 
+  it('stops without failing when the absence is deleted while its plans are rebuilt', async () => {
+    await markAbsence();
+    const before = await planRows();
+    // Everything in one transaction, rolled back: the deletion lands between the build and the
+    // save, as when a teacher cancels her absence while the worker rebuilds it.
+    const client = await pool.connect();
+    try {
+      await client.query('begin');
+      const db = {
+        query: async (text: string, values?: unknown[]) => {
+          if (text.includes('write_absence_plans')) {
+            await client.query('delete from public.absences where id = $1', [absenceId]);
+          }
+          return client.query(text, values);
+        },
+      } as unknown as Db;
+      const logger = recordingLogger();
+      expect(await refreshAbsencePlans(absenceId!, { pool: db, logger })).toBe('up_to_date');
+      expect(logger.entries).toEqual([]);
+    } finally {
+      await client.query('rollback');
+      client.release();
+    }
+    expect(await planRows()).toEqual(before);
+    // Still marked (the deletion was rolled back): the next run rebuilds it.
+    expect(await refreshAbsencePlans(absenceId!, { pool, logger: recordingLogger() })).toBe(
+      'refreshed',
+    );
+  });
+
   it('does nothing when the plans are up to date or the absence is gone', async () => {
     const before = await planRows();
     expect(await refreshAbsencePlans(absenceId!, { pool, logger: recordingLogger() })).toBe(

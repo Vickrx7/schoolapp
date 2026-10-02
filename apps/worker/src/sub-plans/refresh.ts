@@ -38,7 +38,7 @@ export const REFRESH_ATTEMPTS = 3;
 export type RefreshOutcome =
   /** New plans were saved (days that can no longer change were left as they were). */
   | 'refreshed'
-  /** Nothing to do: the absence is gone, no longer published, or not marked. */
+  /** Nothing to do: the absence is gone (even mid-build), no longer published, or not marked. */
   | 'up_to_date';
 
 interface AbsenceRow {
@@ -134,10 +134,18 @@ export async function refreshAbsencePlans(
     );
 
     // Refused (false) when the mark moved since it was read: the sources are stale.
-    const saved = await pool.query<{ written: boolean }>(
-      'select app.write_absence_plans($1, $2::jsonb, $3::timestamptz, true) as written',
-      [absenceId, JSON.stringify(plans), absence.sources_changed_at],
-    );
+    let saved;
+    try {
+      saved = await pool.query<{ written: boolean }>(
+        'select app.write_absence_plans($1, $2::jsonb, $3::timestamptz, true) as written',
+        [absenceId, JSON.stringify(plans), absence.sources_changed_at],
+      );
+    } catch (error) {
+      // Deleted while it was being rebuilt (P0002): nothing is left to refresh, so the job is
+      // done rather than failed and retried.
+      if ((error as { code?: unknown }).code === 'P0002') return 'up_to_date';
+      throw error;
+    }
     if (saved.rows[0]?.written) {
       logger.info('sub plans refreshed', { absenceId, days: plans.length, attempt });
       return 'refreshed';

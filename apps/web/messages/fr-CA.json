@@ -3199,7 +3199,7 @@
     "system": {
       "title": "État du système",
       "ok": "Tout fonctionne normalement",
-      "problem": "Un problème a été détecté : IP Lynx a été avisé",
+      "problem": "Un problème a été détecté : signalez-le à la personne qui gère le serveur.",
       "unavailable": "L’état du système n’est pas disponible pour le moment.",
       "worker": "Service de fond",
       "backup": "Dernière sauvegarde",
@@ -3538,7 +3538,7 @@
       },
       "access": {
         "title": "Qui y a accès",
-        "body": "Chaque personne voit seulement ce que son rôle permet : une enseignante ou un enseignant voit ses classes, la direction voit les absences et le journal de son école. Les consultations d’alertes et la suppléance sont inscrites au journal d’audit. IP Lynx accède aux données seulement pour le soutien, et chaque accès est inscrit au journal du conseil."
+        "body": "Chaque personne voit seulement ce que son rôle permet : une enseignante ou un enseignant voit ses classes, la direction voit les absences et le journal de son école. Les consultations d’alertes et la suppléance sont inscrites au journal d’audit. IP Lynx accède aux données seulement pour le soutien ou l’entretien du service (un incident, une restauration, une mise à jour), et inscrit chaque accès au journal du conseil."
       },
       "retention": {
         "title": "Combien de temps",

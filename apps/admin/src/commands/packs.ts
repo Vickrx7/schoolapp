@@ -46,7 +46,14 @@ import {
 } from '@lynx/content';
 import type { Json } from '@lynx/db';
 import { z } from 'zod';
-import { boardBySlug, CliError, need, type CliContext, type Command } from '../context';
+import {
+  accountIdByEmail,
+  boardBySlug,
+  CliError,
+  need,
+  type CliContext,
+  type Command,
+} from '../context';
 
 /** How many items `content_pack_stage_items` takes per call. */
 export const STAGE_CHUNK = 50;
@@ -662,14 +669,9 @@ async function importPack(ctx: CliContext): Promise<string> {
   const boardId = board.id;
   let approverId: string | null = null;
   if (approve) {
-    const { data, error } = await ctx.db
-      .from('users')
-      .select('id')
-      .eq('email', approverEmail!)
-      .maybeSingle();
-    if (error) throw new CliError(`approver: ${error.message}`);
-    if (!data) throw new CliError(`approver ${approverEmail}: no such user`);
-    approverId = data.id;
+    // In the request body, never the URL (D-119); the import checks the person is a reviewer.
+    approverId = await accountIdByEmail(ctx, approverEmail!.toLowerCase());
+    if (!approverId) throw new CliError(`approver ${approverEmail}: no such user`);
   }
   const faithKeys = items.filter((item) => packItemSuggestsFaith(item)).map((item) => item.key);
 

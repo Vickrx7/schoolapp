@@ -66,11 +66,7 @@ export async function verifyLoginCode(
   await syncLocaleAtSignIn(supabase);
   const userId = data.user?.id;
   if (!userId) return ok({ termsRequired: false });
-  const { data: profile } = await supabase
-    .from('users')
-    .select('terms_version')
-    .eq('id', userId)
-    .maybeSingle();
+  const { data: profile } = await supabase.rpc('my_onboarding_state').maybeSingle();
   // No profile (or no access): the app's pages say so.
   return ok({ termsRequired: profile ? termsState(profile.terms_version) === 'required' : false });
 }

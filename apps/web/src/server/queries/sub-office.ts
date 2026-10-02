@@ -1,4 +1,5 @@
 import 'server-only';
+import { notFound } from 'next/navigation';
 import { addDays, nextInstructionalDays, type AbsencePart, type LocalDate } from '@lynx/domain';
 import type { SubAccess } from '@/components/sub-codes/access-view';
 import type { SchoolContext } from '../session';
@@ -65,6 +66,9 @@ export async function loadSubBoard(
     p_from: days[0]!,
     p_to: days[days.length - 1]!,
   });
+  // The role that let this person read the school's days was removed since the page's session
+  // was read (« Retirer ce rôle » in « Conseil »): « Page introuvable », as on the next visit.
+  if (error?.code === '42501') notFound();
   if (error) throw new Error(`list_school_sub_days failed: ${error.code ?? ''}`);
   const rows = await Promise.all(
     (data ?? []).map(async (r): Promise<SubDayRow> => ({

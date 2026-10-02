@@ -19,20 +19,36 @@ const release = appReleaseFrom(process.env);
 export const webLogger: Logger = createLogger('server', { component: 'web', release });
 
 /**
+ * What Next reports when the browser went away while a page was still streaming (a tap on
+ * another link, a closed tab): nothing failed on the server, and nobody saw an error page. Only
+ * Next's own message: a reset connection or an aborted call inside the server (the database,
+ * Auth) is a real fault.
+ */
+export function isClientAbort(error: unknown): boolean {
+  return (
+    error instanceof Error &&
+    error.name === 'Error' &&
+    error.message === 'The destination stream closed early.'
+  );
+}
+
+/**
  * A request that failed on the server (`instrumentation.ts#onRequestError`): one line with the
  * route template, its type and the scrubbed error (its digest is the « Référence » the page
- * shows). Next prints the same error right after; the console guard drops that copy.
+ * shows). Next prints the same error right after; the console guard drops that copy. A browser
+ * that left mid-stream is an `info` line, so error lines stay faults to look at.
  */
 export function reportServerError(
   error: unknown,
   context: { routePath: string; routeType: string },
 ): void {
   markLogged(error);
-  webLogger.error('request failed', {
-    route: routeTemplate(context.routePath),
-    type: context.routeType,
-    error: scrubError(error),
-  });
+  const route = routeTemplate(context.routePath);
+  if (isClientAbort(error)) {
+    webLogger.info('request ended by the browser', { route, type: context.routeType });
+    return;
+  }
+  webLogger.error('request failed', { route, type: context.routeType, error: scrubError(error) });
 }
 
 /**

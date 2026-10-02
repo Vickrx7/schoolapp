@@ -8,6 +8,25 @@ import nextVitals from 'eslint-config-next/core-web-vitals';
 
 const webFiles = ['apps/web/**/*.{js,jsx,ts,tsx}'];
 
+// No personal value in an API query string (DECISIONS D-119). PostgREST puts a filter's value in
+// the URL, and the hosted API gateway's logs record URLs: a lookup by e-mail or name goes in an
+// RPC body instead (`operator_account_id`, the search and audit functions). Pinned by
+// apps/web/src/lib/no-personal-query-strings.test.ts.
+const PERSONAL_COLUMNS = 'email|first_name|display_name|honorific';
+const personalQueryStrings = [
+  // .eq('email', …), .in('first_name', …), .filter('display_name', 'eq', …)
+  `CallExpression[callee.property.name=/^(eq|neq|gt|gte|lt|lte|like|ilike|is|in|contains|containedBy|match|imatch|not|filter|textSearch)$/][arguments.0.value=/^(${PERSONAL_COLUMNS})$/]`,
+  // Pattern and full-text filters carry what someone typed.
+  'CallExpression[callee.property.name=/^(like|ilike|likeAllOf|likeAnyOf|ilikeAllOf|ilikeAnyOf|textSearch)$/]',
+  // The same filters in PostgREST's own syntax: .or('email.eq.…').
+  `CallExpression[callee.property.name='or'] Literal[value=/(^|[,(])(${PERSONAL_COLUMNS})\\./]`,
+  `CallExpression[callee.property.name='or'] TemplateElement[value.raw=/(^|[,(])(${PERSONAL_COLUMNS})\\./]`,
+].map((selector) => ({
+  selector,
+  message:
+    'No personal value in a PostgREST query string (D-119): look people up with an RPC (the value goes in the request body) and filter by id.',
+}));
+
 export default defineConfig([
   globalIgnores([
     '**/node_modules/**',
@@ -51,13 +70,19 @@ export default defineConfig([
     files: webFiles,
     languageOptions: { globals: { ...globals.browser } },
   },
+  {
+    files: ['apps/*/src/**/*.{js,jsx,ts,tsx}', 'packages/*/src/**/*.{js,jsx,ts,tsx}'],
+    rules: { 'no-restricted-syntax': ['error', ...personalQueryStrings] },
+  },
   // The web app reads its settings on the server at run time (DECISIONS D-113): Next would
-  // build a `NEXT_PUBLIC_*` value into the app, tying an image to one install.
+  // build a `NEXT_PUBLIC_*` value into the app, tying an image to one install. (The rule's
+  // options replace the block above for these files, so they repeat its selectors.)
   {
     files: ['apps/web/src/**/*.{js,jsx,ts,tsx}'],
     rules: {
       'no-restricted-syntax': [
         'error',
+        ...personalQueryStrings,
         ...[
           'Identifier[name=/^NEXT_PUBLIC_/]',
           'Literal[value=/^NEXT_PUBLIC_/]',
