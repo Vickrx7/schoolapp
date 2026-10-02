@@ -1,0 +1,45 @@
+# The only public entry (DECISIONS D-114, D-119): HTTPS for APP_DOMAIN, HSTS, and access logs
+# without codes, tokens, cookies or full client addresses. The web server trusts the address it
+# appends to X-Forwarded-For (TRUSTED_PROXY_HOPS=1). Behind a board's load balancer, add it here
+# with `trusted_proxies` in a `servers` global option and set TRUSTED_PROXY_HOPS=2.
+{
+	email {$ACME_EMAIL}
+}
+
+# CADDY_TLS=acme: a Let's Encrypt certificate (the default); internal: Caddy's own authority
+# (the CI smoke test, air-gapped installs).
+(tls-acme) {
+}
+
+(tls-internal) {
+	tls internal
+}
+
+{$APP_DOMAIN} {
+	import tls-{$CADDY_TLS:acme}
+
+	header Strict-Transport-Security "max-age=31536000"
+
+	log {
+		output stdout
+		format filter {
+			wrap json
+			fields {
+				# Sign-in links and substitute codes never reach the logs.
+				request>uri query {
+					delete token_hash
+					delete token
+					delete code
+				}
+				request>headers>Cookie delete
+				request>headers>Authorization delete
+				request>headers>X-Forwarded-For delete
+				resp_headers>Set-Cookie delete
+				request>remote_ip ip_mask 24 64
+				request>client_ip ip_mask 24 64
+			}
+		}
+	}
+
+	reverse_proxy web:3000
+}

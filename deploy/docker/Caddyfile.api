@@ -1,0 +1,33 @@
+# The self-hosted Supabase's API gateway (board-hosted; DECISIONS D-114), on the internal network
+# only: what Supabase's own gateway does for this app, as tools/lite-stack/proxy.mjs does locally.
+{
+	admin off
+	auto_https off
+}
+
+:8000 {
+	# Supabase's gateway sends the API key as the bearer token when a call has none.
+	@apikey_only {
+		header apikey *
+		not header Authorization *
+	}
+	request_header @apikey_only Authorization "Bearer {http.request.header.apikey}"
+
+	handle /healthz {
+		respond 200
+	}
+	handle_path /auth/v1/* {
+		reverse_proxy auth:9999
+	}
+	handle_path /rest/v1/* {
+		reverse_proxy rest:3000
+	}
+	# The sign-in e-mail's template, read by Auth (supabase/templates).
+	handle_path /templates/* {
+		root * /srv/templates
+		file_server
+	}
+	handle {
+		respond 404
+	}
+}

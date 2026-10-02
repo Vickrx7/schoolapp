@@ -3,6 +3,9 @@ import { defineConfig, devices } from '@playwright/test';
 const baseURL = process.env.E2E_BASE_URL ?? 'http://localhost:3000';
 // Use a pre-installed browser when the bundled one isn't available (e.g. sandboxes).
 const executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || undefined;
+// The docker-smoke CI job reaches the install through Caddy at https://localhost, whose
+// certificate comes from Caddy's own authority (deploy/docker; DECISIONS D-114).
+const ignoreHTTPSErrors = process.env.E2E_IGNORE_HTTPS_ERRORS === '1';
 
 export default defineConfig({
   testDir: './e2e',
@@ -18,6 +21,7 @@ export default defineConfig({
     locale: 'fr-CA',
     timezoneId: 'America/Toronto',
     trace: 'retain-on-failure',
+    ignoreHTTPSErrors,
     launchOptions: { executablePath },
   },
   projects: [

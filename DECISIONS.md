@@ -1859,6 +1859,37 @@ tests it. Hosted: Supabase Pro in `ca-central-1`, an AWS Lightsail server (4 GB,
 images built on the server from a tagged checkout. Every service gets only its own variables. _Why:_
 one tested artifact for both modes; the worker needs a long-running process; everything that
 handles names stays in Canada.
+As built (slice S3b, `deploy/`): the base is `node:22.23.3-bookworm-slim`; pnpm is installed with
+npm for every user (corepack would fetch it again at run time for the non-root user); the
+PostgreSQL 17 client comes from the PostgreSQL project's repository. Both images run as `node`.
+The worker runs as one process (`node --import tsx src/index.ts`) so it receives the stop signal
+itself; the admin CLI likewise (`docker compose run --rm admin …`). The web build fails if
+`http://build.invalid` appears in `.next` outside Next's own build cache (`.next/cache` records the
+settings a build saw and is never shipped); the CI web build makes the same check. There is no
+`versions.env`: Compose interpolates from `.env` alone, so a second file would need `--env-file`
+on every command a board's IT types. The images are pinned by digest in `compose.yml` and
+`compose.supabase.yml`, which are therefore the only place production versions are set
+(`docker compose config --images` lists them): `supabase/postgres` 17.6.1.171, `supabase/gotrue`
+v2.197.0 and `postgrest` v16.3, the versions the Supabase CLI (2.118) runs in CI, plus Caddy 2.11.4
+and, for CI only, Mailpit. Our own images (`lynx-web`, `lynx-app`) are built from the checkout and
+never pulled (`pull_policy: never`). `generate-secrets.mjs --hosted|--board|--ci [--out]` creates
+`.env` itself (mode 0600, never overwritten; a shell redirection would create the file first),
+including `COMPOSE_FILE`, so a board install picks `compose.supabase.yml` without flags; it never
+generates the backup key. `migrate.sh` runs `supabase db push --skip-vault` with the CLI's telemetry
+and update check off, and sends the portal roles' passwords as SCRAM-SHA-256 verifiers computed by
+`portal-passwords.mjs`, so a password never reaches the database's logs or a command line. The
+self-hosted database's first start sets the Auth and PostgREST logins from `POSTGRES_PASSWORD`
+(`db-init/99-lynx-roles.sql`, Supabase's own self-hosting pattern). The schema guard compares
+14-digit versions with `supabase_migrations.schema_migrations` and `lite_stack.schema_migrations`
+(either counts), names the missing migrations (the logger scrubs bare versions) and refuses when no
+migration file ships with it. Caddy: `CADDY_TLS=acme|internal`; its access log also drops
+`X-Forwarded-For` and `Set-Cookie`; a board load balancer needs `trusted_proxies` in the Caddyfile
+and `TRUSTED_PROXY_HOPS=2`. The host's cron line is in UTC (Ubuntu's cron has no `CRON_TZ`): 06:30
+UTC, 01:30 or 02:30 in Toronto. `upgrade.sh` checks readiness from inside the web container. The
+`docker-smoke` CI job builds both images, starts the board-hosted install behind Caddy at
+`https://localhost`, loads the demo seed, runs the admin CLI, the browser smoke test
+(`e2e/smoke.spec.ts`, `@smoke`), a backup and `upgrade.sh`, and proves the schema guard by mounting
+one extra migration file into the worker.
 
 **D-115 — Backups: nightly encrypted logical dumps; Supabase's own backups remain the primary path
 on hosted; restores are tested in CI (Assumption: RPO 24 h, RTO 4 h, 30 days).**
@@ -1875,6 +1906,26 @@ idempotent handlers, and prints the runbook (re-apply access removals made after
 everyone signs in again). On hosted, Supabase's daily backups are the primary restore path, and a
 restore of our dump into a staging hosted project is a go-live gate. The monthly drill runs on the
 operator's workstation (which holds the private key), never the server.
+As built (slice S3b): a backup is `lynx-backup-<UTC time>.tar` holding two files encrypted to the
+recipients (several allowed): `dump.sql.gz.age`, streamed from `pg_dump` through the row count and
+gzip to age, so the dump is never in clear on disk, and `manifest.json.age` (also the dump's size
+and SHA-256), rather than one archive encrypted whole, which would need the clear dump on disk
+first. `restore.sh` checks the SHA-256 first; in its one transaction (`session_replication_role =
+replica`) it empties every table the backup holds and Auth's sessions, refresh tokens, MFA claims,
+flow states and one-time tokens, so no session survives a `--force` restore; the row counts are
+checked inside the transaction (a difference rolls everything back). The events handed back are
+those dispatched in the hour before the backup of the types `ai.job_requested`,
+`absence.sources_changed`, `library_bulk_run.started`, `library_bulk_run.cancel_requested`,
+`staff_invitation.created` and `staff.access_changed` (a unit test checks that each of their
+handlers is idempotent; `absence.published` is left out, its handler would issue a door credential
+once integrations are real). A dump made by `pg_dump` 17 is restored into Postgres 16 (the lite
+stack's drill) without its `SET transaction_timeout` header line. The backup records its heartbeat
+only on a database that has `app.record_heartbeat`. Tested in CI (`backup-restore`, PostgreSQL 17)
+and locally (`tools/lite-stack/stack.sh fresh`, Postgres 16): a deactivated person not yet banned
+and two recent events (`deploy/ci/restore-fixture.sql`), a fingerprint (`deploy/backup/fingerprint.sql`),
+the backup, an empty database, the restore, the same fingerprint, `RESTORE_SMOKE=1 pnpm test:int
+restore-smoke` (the person is banned, only the idempotent event is handed back, a restored teacher
+signs in with an e-mailed code) and the pgTAP suite on the restored database.
 
 **D-116 — Pilot feedback in the app (Assumption on who reads it).** « Commentaires » records a kind
 (problem, idea, question), up to 2,000 characters, the route's template, the error reference, the
@@ -1924,6 +1975,9 @@ plugin document that Chrome checks against its own `object-src`. The portal rule
 `no-referrer`) still apply on top. The browser tests run on the production build, so every page
 family (app, portal, `/jouer`, projector) is exercised under the policy; `e2e/operations.spec.ts`
 also fails on any policy violation the browser reports.
+As built (slice S3b): the session limits are in `supabase/config.toml` (`[auth.sessions]`, read by the
+Supabase CLI and the lite stack) and `GOTRUE_SESSIONS_*` in `compose.supabase.yml`; hosted, they are
+dashboard settings (Pro plan).
 
 **D-120 — The demo is scripted and tested; a hosted demo site is deferred.** `docs/demo-script.md`
 is the script (15 and 5 minutes); `e2e/demo.spec.ts` clicks through it on the lite stack with the

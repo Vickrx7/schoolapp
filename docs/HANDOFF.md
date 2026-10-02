@@ -96,7 +96,8 @@ Mon Tableau, Cartable, Ardoise). No availability or trademark check has been don
 | `3e3f1bb` | Phase 6 foundation: D-102 to D-120, shared schema, settings, navigation, stubs           |
 | `ca21d2c` | Phase 6 S1: invitations, roles, access, deletions, sample classes, settings (database)   |
 | `0d85e15` | Phase 6 S2: audit viewer, AI usage totals, retention, heartbeats (database, worker, CLI) |
-| (latest)  | Phase 6 S3a: scrubbed logs, error references, health checks, security headers            |
+| `598ee7b` | Phase 6 S3a: scrubbed logs, error references, health checks, security headers            |
+| (latest)  | Phase 6 S3b: Docker images, Compose installs, encrypted backups and restores, CI jobs    |
 
 **Verified (locally, from an empty database, and in CI on each pushed commit):** 1056 unit tests
 (none skipped), 1611 pgTAP tests, 78 integration tests, 94 Playwright tests (desktop, phone and
@@ -196,7 +197,14 @@ in the matching log line, and browsers report their errors to `/api/client-error
 reference, route template, a hash of the message); `/api/health` and `/api/health/ready` for
 monitors; the Content Security Policy and `X-Robots-Tag` on every page (not on PDFs); and an ESLint
 rule against `NEXT_PUBLIC_` (D-111, D-112, D-113, D-119 « As built »). No third-party error
-service: logs stay on the server.
+service: logs stay on the server. Slice S3b (latest commit) adds deployment (`deploy/`): two images
+(`web`, `app`) configured at run time, Docker Compose for the hosted install and for a board's own
+servers (with a minimal self-hosted Supabase), `generate-secrets.mjs`, `migrate.sh` (a backup first
+when migrations are pending on a database with data), `upgrade.sh`, nightly encrypted backups and
+a checked restore (`deploy/backup/`), the worker's refusal to start on a database without its
+migrations, the session limits (7 days, 12 hours idle), and three CI jobs besides the two existing
+ones' checks: `backup-restore`, `docker-smoke` and the migration-name and `NEXT_PUBLIC_` checks
+(D-114, D-115, D-119 « As built »). `DEPLOYMENT.md` comes with slice S7.
 
 **Other deliverables:**
 
@@ -214,7 +222,10 @@ service: logs stay on the server.
 
 Docker doesn't work here (image pulls are blocked: Docker Hub 429, ECR/GHCR blobs 403), so use the
 **lite stack**, which runs the same Supabase pieces as plain binaries on the same ports and keys
-(`tools/lite-stack/README.md`). CI uses the real Supabase CLI.
+(`tools/lite-stack/README.md`). CI uses the real Supabase CLI. The Docker files in `deploy/` are
+built and run only by the `docker-smoke` CI job; here, `docker compose config` checks the Compose
+files without a daemon (from `deploy/docker`, with `--env-file` pointing at a file made by
+`node generate-secrets.mjs --ci --out <file>`).
 
 ```bash
 pnpm install
@@ -331,7 +342,16 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   `grep -rl build.invalid apps/web/.next` must find nothing.
 - **Next warning:** "next start does not work with output: standalone" is harmless in tests. The
   standalone server is at `apps/web/.next/standalone/apps/web/server.js` (monorepo tracing root);
-  there is no production or Docker setup yet (Phase 6, D-029).
+  the `web` image runs it (`deploy/docker/Dockerfile`).
+- **`build.invalid` in `.next/cache`:** Next's build cache records the settings a build saw, so the
+  inlined-settings check greps `.next` without its `cache` directory (never shipped).
+- **Restore drill (local, Postgres 16):** with the worker stopped, `psql … -f
+deploy/ci/restore-fixture.sql`, `psql … -f deploy/backup/fingerprint.sql > before`, `age-keygen`,
+  `deploy/backup/backup.sh` (`BACKUP_DATABASE_URL`, `BACKUP_AGE_RECIPIENT`, `BACKUP_DIR`),
+  `tools/lite-stack/stack.sh fresh`, `deploy/backup/restore.sh <file> --identity <key> --db-url …
+--yes`, the fingerprint again and `diff`, then `RESTORE_SMOKE=1 pnpm test:int restore-smoke`
+  (with `SUPABASE_URL` and `SUPABASE_ANON_KEY` from `.env.example`). Run `stack.sh reset` afterwards.
+- **`pnpm test:int <name>`** filters by file name (`pnpm test:int -- <name>` runs every file).
 
 ## 4. Environment ("School app")
 

@@ -98,9 +98,15 @@ toml_value() { # section key
 start_services() {
   # Same mapping as the Supabase CLI: [auth] enable_signup allows new accounts, while
   # [auth.email] enable_signup turns the whole email provider (codes and links) on or off.
-  local signup email_provider
+  local signup email_provider timebox inactivity
   signup="$(toml_value auth enable_signup)"
   email_provider="$(toml_value auth.email enable_signup)"
+  # Session limits (DECISIONS D-119): a time box and an inactivity timeout, as `[auth.sessions]`.
+  timebox="$(toml_value auth.sessions timebox | tr -d '"')"
+  inactivity="$(toml_value auth.sessions inactivity_timeout | tr -d '"')"
+  local -a session_env=()
+  if [[ -n "$timebox" ]]; then session_env+=("GOTRUE_SESSIONS_TIMEBOX=$timebox"); fi
+  if [[ -n "$inactivity" ]]; then session_env+=("GOTRUE_SESSIONS_INACTIVITY_TIMEOUT=$inactivity"); fi
 
   start_bg mailpit "$DATA/mailpit.log" "$BIN/mailpit" --listen "127.0.0.1:$MAIL_HTTP_PORT" --smtp "127.0.0.1:$MAIL_SMTP_PORT" --smtp-auth-accept-any --smtp-auth-allow-insecure
 
@@ -120,6 +126,7 @@ start_services() {
     GOTRUE_JWT_ADMIN_ROLES=service_role \
     GOTRUE_EXTERNAL_EMAIL_ENABLED="${email_provider:-true}" GOTRUE_MAILER_AUTOCONFIRM=false \
     GOTRUE_MAILER_OTP_EXP=3600 GOTRUE_MAILER_OTP_LENGTH=6 \
+    ${session_env[@]+"${session_env[@]}"} \
     GOTRUE_SMTP_HOST=127.0.0.1 GOTRUE_SMTP_PORT="$MAIL_SMTP_PORT" GOTRUE_SMTP_USER=local GOTRUE_SMTP_PASS=local \
     GOTRUE_SMTP_ADMIN_EMAIL="no-reply@lynx-ecole.local" GOTRUE_SMTP_SENDER_NAME="Lynx École" \
     GOTRUE_SMTP_MAX_FREQUENCY=1s GOTRUE_RATE_LIMIT_EMAIL_SENT=1000 GOTRUE_RATE_LIMIT_VERIFY=1000 GOTRUE_RATE_LIMIT_OTP=1000 \
@@ -184,8 +191,8 @@ cmd_stop() {
   log "stopped"
 }
 
-cmd_reset() {
-  # Recreate the database from scratch: auth schema, migrations and seed.
+# Recreate the database from scratch: auth schema (Auth migrates it when it starts) and migrations.
+recreate_database() {
   cmd_install
   start_postgres
   local name
@@ -198,8 +205,20 @@ cmd_reset() {
   psql_db -f "$HERE/bootstrap.sql"
   start_services
   cmd_migrate
+}
+
+cmd_reset() {
+  # A fresh database with the demo data.
+  recreate_database
   cmd_seed
   psql_db -c "notify pgrst, 'reload schema'" || true
+  cmd_status
+}
+
+cmd_fresh() {
+  # A fresh database without any data, as a new install has: the target of a restore drill
+  # (deploy/backup/restore.sh; DECISIONS D-115).
+  recreate_database
   cmd_status
 }
 
@@ -224,10 +243,11 @@ case "${1:-}" in
   start) cmd_start ;;
   stop) cmd_stop ;;
   reset) cmd_reset ;;
+  fresh) cmd_fresh ;;
   migrate) cmd_migrate ;;
   seed) cmd_seed ;;
   test) cmd_test ;;
   status) cmd_status ;;
   psql) shift; cmd_psql "$@" ;;
-  *) echo "usage: $0 {install|start|stop|reset|migrate|seed|test|status|psql}"; exit 1 ;;
+  *) echo "usage: $0 {install|start|stop|reset|fresh|migrate|seed|test|status|psql}"; exit 1 ;;
 esac

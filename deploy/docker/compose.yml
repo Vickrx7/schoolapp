@@ -1,0 +1,190 @@
+# Lynx École with Docker Compose (DECISIONS D-114). Run every command from deploy/docker.
+#
+#   Hosted by IP Lynx: Supabase Pro in Canada (Central) plus this file on one Canadian server.
+#   Board-hosted: this file plus compose.supabase.yml (a minimal self-hosted Supabase); the
+#   COMPOSE_FILE line that generate-secrets.mjs writes into .env picks the files.
+#
+#   node generate-secrets.mjs --hosted|--board       # writes .env (mode 0600); fill in the blanks
+#   APP_RELEASE=0.6.0 docker compose build
+#   docker compose up -d --wait                       # migrate first, then web and worker
+#   docker compose run --rm admin <command> …         # the admin CLI (pnpm admin)
+#   docker compose run --rm backup                    # a backup now (nightly from the host's cron)
+#   ./upgrade.sh <tag>                                # later releases
+#
+# Each service gets only its own settings, from .env by interpolation: no shared env_file. Only
+# the proxy is reachable from outside (80 and 443). Images are pinned by digest here and in
+# compose.supabase.yml, the only place production image versions are set (the docker-smoke CI
+# job runs exactly these); `docker compose config --images` lists them.
+name: lynx
+
+x-logging: &logging # The host's journal, kept 14 days (deploy/host/journald-lynx.conf; D-119).
+  driver: ${LOG_DRIVER:-journald}
+
+# The app image (worker, migrate, backup, admin): built from this checkout, never pulled.
+x-app: &app
+  image: lynx-app
+  pull_policy: never
+  build:
+    context: ../..
+    dockerfile: deploy/docker/Dockerfile
+    target: app
+    args:
+      APP_RELEASE: ${APP_RELEASE:-dev}
+  init: true
+  logging: *logging
+
+services:
+  proxy:
+    image: caddy:2.11.4-alpine@sha256:6aeddd44c3078b0f9a35206472a11420648a79c184603ef95957d0a20044cb2b
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+      - '443:443/udp'
+    environment:
+      APP_DOMAIN: ${APP_DOMAIN:?set APP_DOMAIN in .env}
+      ACME_EMAIL: ${ACME_EMAIL:?set ACME_EMAIL in .env}
+      # `acme` (a Let's Encrypt certificate) or `internal` (Caddy's own CA: tests, air-gapped).
+      CADDY_TLS: ${CADDY_TLS:-acme}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      web:
+        condition: service_healthy
+    logging: *logging
+
+  web:
+    image: lynx-web
+    pull_policy: never
+    build:
+      context: ../..
+      dockerfile: deploy/docker/Dockerfile
+      target: web
+      args:
+        APP_RELEASE: ${APP_RELEASE:-dev}
+    restart: unless-stopped
+    init: true
+    environment:
+      SUPABASE_URL: ${SUPABASE_URL:?set SUPABASE_URL in .env}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY:?set SUPABASE_ANON_KEY in .env}
+      APP_BASE_URL: https://${APP_DOMAIN}
+      APP_NAME: ${APP_NAME:-}
+      SUPPORT_EMAIL: ${SUPPORT_EMAIL:-}
+      PRIVACY_CONTACT_EMAIL: ${PRIVACY_CONTACT_EMAIL:-}
+      ALERTS_ENCRYPTION_KEYS: ${ALERTS_ENCRYPTION_KEYS:-}
+      SUB_PORTAL_DATABASE_URL: ${SUB_PORTAL_DATABASE_URL:-}
+      SUB_CODE_HMAC_KEYS: ${SUB_CODE_HMAC_KEYS:-}
+      CLASS_PORTAL_DATABASE_URL: ${CLASS_PORTAL_DATABASE_URL:-}
+      CLASS_PORTAL_HMAC_KEY: ${CLASS_PORTAL_HMAC_KEY:-}
+      # The proxy appends the client's address; one proxy (two with a board load balancer).
+      CLIENT_IP_HEADER: x-forwarded-for
+      TRUSTED_PROXY_HOPS: ${TRUSTED_PROXY_HOPS:-1}
+    tmpfs:
+      - /app/apps/web/.next/cache:uid=1000,gid=1000
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    logging: *logging
+
+  worker:
+    <<: *app
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?set DATABASE_URL in .env}
+      SUPABASE_URL: ${SUPABASE_URL}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:-}
+      AI_PROVIDER: ${AI_PROVIDER:-none}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      AI_MODEL: ${AI_MODEL:-}
+      AI_EFFORT: ${AI_EFFORT:-}
+      BULK_MAX_RUN_USD: ${BULK_MAX_RUN_USD:-}
+      WORKER_CONCURRENCY: ${WORKER_CONCURRENCY:-4}
+      WORKER_HEALTH_PORT: 8081
+      HEARTBEAT_URL_WORKER: ${HEARTBEAT_URL_WORKER:-}
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:8081/healthz').then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))"
+      interval: 15s
+      timeout: 5s
+      start_period: 60s
+      retries: 3
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  # Runs once at every `up`: migrations (a backup first when some are pending on a database with
+  # data), the portal roles' logins, PostgREST's schema reload.
+  migrate:
+    <<: *app
+    restart: 'no'
+    entrypoint: ['/repo/deploy/docker/migrate.sh']
+    working_dir: /repo
+    environment:
+      MIGRATIONS_DATABASE_URL: ${MIGRATIONS_DATABASE_URL:?set MIGRATIONS_DATABASE_URL in .env}
+      SUB_PORTAL_PASSWORD: ${SUB_PORTAL_PASSWORD:-}
+      CLASS_PORTAL_PASSWORD: ${CLASS_PORTAL_PASSWORD:-}
+      MIGRATE_WITHOUT_BACKUP: ${MIGRATE_WITHOUT_BACKUP:-}
+      BACKUP_DATABASE_URL: ${BACKUP_DATABASE_URL:-}
+      BACKUP_AGE_RECIPIENT: ${BACKUP_AGE_RECIPIENT:-}
+      BACKUP_S3_BUCKET: ${BACKUP_S3_BUCKET:-}
+      BACKUP_S3_REGION: ${BACKUP_S3_REGION:-}
+      BACKUP_S3_PREFIX: ${BACKUP_S3_PREFIX:-}
+      BACKUP_S3_ACCESS_KEY_ID: ${BACKUP_S3_ACCESS_KEY_ID:-}
+      BACKUP_S3_SECRET_ACCESS_KEY: ${BACKUP_S3_SECRET_ACCESS_KEY:-}
+      BACKUP_KEEP_DAYS: ${BACKUP_KEEP_DAYS:-30}
+      HEARTBEAT_URL_BACKUP: ${HEARTBEAT_URL_BACKUP:-}
+    volumes:
+      - backups:/backups
+
+  # `docker compose run --rm backup`: nightly from the host (deploy/host/lynx-backup.cron).
+  backup:
+    <<: *app
+    profiles: [tools]
+    restart: 'no'
+    entrypoint: ['/repo/deploy/backup/backup.sh']
+    working_dir: /repo
+    environment:
+      BACKUP_DATABASE_URL: ${BACKUP_DATABASE_URL:?set BACKUP_DATABASE_URL in .env}
+      BACKUP_AGE_RECIPIENT: ${BACKUP_AGE_RECIPIENT:-}
+      BACKUP_S3_BUCKET: ${BACKUP_S3_BUCKET:-}
+      BACKUP_S3_REGION: ${BACKUP_S3_REGION:-}
+      BACKUP_S3_PREFIX: ${BACKUP_S3_PREFIX:-}
+      BACKUP_S3_ACCESS_KEY_ID: ${BACKUP_S3_ACCESS_KEY_ID:-}
+      BACKUP_S3_SECRET_ACCESS_KEY: ${BACKUP_S3_SECRET_ACCESS_KEY:-}
+      BACKUP_KEEP_DAYS: ${BACKUP_KEEP_DAYS:-30}
+      HEARTBEAT_URL_BACKUP: ${HEARTBEAT_URL_BACKUP:-}
+    volumes:
+      - backups:/backups
+
+  # `docker compose run --rm admin <command> …`, as `pnpm admin` (apps/admin/src/cli.ts).
+  admin:
+    <<: *app
+    profiles: [tools]
+    restart: 'no'
+    entrypoint: ['node', '--import', 'tsx', '/repo/apps/admin/src/cli.ts']
+    working_dir: /repo/apps/admin
+    environment:
+      SUPABASE_URL: ${SUPABASE_URL}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:-}
+      AI_PROVIDER: ${AI_PROVIDER:-none}
+      AI_MODEL: ${AI_MODEL:-}
+      BULK_MAX_RUN_USD: ${BULK_MAX_RUN_USD:-}
+
+  # Catches the sign-in e-mails in the CI smoke test (profile mail-catcher); never in production.
+  mailpit:
+    image: axllent/mailpit:v1.30.2@sha256:37a38e48e9338cd7e89dfeb487f37b02ebfcd9cb23111bed2d345e79d37d6dd6
+    profiles: [mail-catcher]
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    logging: *logging
+
+volumes:
+  caddy-data:
+  caddy-config:
+  backups:

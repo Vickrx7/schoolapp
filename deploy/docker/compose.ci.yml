@@ -1,0 +1,10 @@
+# The docker-smoke CI job only (.github/workflows/ci.yml): the database and the mail catcher on
+# the runner's loopback, for the browser smoke test's helpers (e2e/db.ts, the e-mailed codes).
+services:
+  db:
+    ports:
+      - '127.0.0.1:54322:5432'
+
+  mailpit:
+    ports:
+      - '127.0.0.1:54324:8025'

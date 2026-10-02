@@ -22,6 +22,10 @@ supabase/.branches/
 supabase/.temp/
 supabase/.env
 
+# Backups written by deploy/backup/backup.sh with its default BACKUP_DIR (encrypted, still never
+# committed)
+/backups/
+
 # Docker-free local stack runtime data
 tools/lite-stack/.data/
 tools/lite-stack/.bin/
