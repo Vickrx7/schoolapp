@@ -99,10 +99,13 @@ Mon Tableau, Cartable, Ardoise). No availability or trademark check has been don
 | `598ee7b` | Phase 6 S3a: scrubbed logs, error references, health checks, security headers            |
 | (latest)  | Phase 6 S3b: Docker images, Compose installs, encrypted backups and restores, CI jobs    |
 
-**Verified (locally, from an empty database, and in CI on each pushed commit):** 1056 unit tests
-(none skipped), 1611 pgTAP tests, 78 integration tests, 94 Playwright tests (desktop, phone and
-tablet, axe on every Phase 3, 4 and 5 page), lint, typecheck, format, generated DB types up to
-date, the demo curriculum and library seeds up to date (`pnpm library:seed:check`), web build.
+**Verified (locally, from an empty database, and in CI on each pushed commit):** 1155 unit tests
+(none skipped), 1611 pgTAP tests, 79 integration tests (plus the 3 of `restore-smoke`, which run
+after a restore: the `backup-restore` CI job and the local drill), 100 Playwright tests (desktop,
+phone and tablet, axe on every Phase 3, 4 and 5 page), lint, typecheck, format, generated DB types
+up to date, the demo curriculum and library seeds up to date (`pnpm library:seed:check`), web
+build with no setting built in; in CI also a backup restored into an empty database, and both
+Docker images run as a board-hosted install (`docker-smoke`).
 
 **Phase 3 is complete** (3a and 3b; see `docs/phase-3.md`): absence button, plans built in the
 request and kept current by the worker, review and editing, release at 07:30, codes, the

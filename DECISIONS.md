@@ -1889,7 +1889,13 @@ UTC, 01:30 or 02:30 in Toronto. `upgrade.sh` checks readiness from inside the we
 `docker-smoke` CI job builds both images, starts the board-hosted install behind Caddy at
 `https://localhost`, loads the demo seed, runs the admin CLI, the browser smoke test
 (`e2e/smoke.spec.ts`, `@smoke`), a backup and `upgrade.sh`, and proves the schema guard by mounting
-one extra migration file into the worker.
+one extra migration file into the worker. Found there: inside Compose the database URLs carry
+`sslmode=disable` (the internal network has no TLS, and the Supabase CLI refuses a database that is
+not local without TLS unless told); Supabase Auth sends an SMTP login only over TLS (or to
+localhost), so a board's mail relay needs STARTTLS or no login; and the `supabase/postgres` image
+logs the statements of its first start, its own `ALTER USER supabase_admin WITH PASSWORD` included
+(our first-start script turns that logging off for its own statements; the journal keeps it 14
+days).
 
 **D-115 — Backups: nightly encrypted logical dumps; Supabase's own backups remain the primary path
 on hosted; restores are tested in CI (Assumption: RPO 24 h, RTO 4 h, 30 days).**
