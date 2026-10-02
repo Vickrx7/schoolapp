@@ -179,6 +179,8 @@ test('1. The privacy promise: « Confidentialité et conditions »', async ({ pa
   for (const section of ['Ce que l’application recueille', 'L’intelligence artificielle']) {
     await expect(page.getByRole('heading', { name: section })).toBeVisible();
   }
+  // The AI paragraph states its limit: names the app does not know are the teacher's to remove.
+  await expect(page.getByText(/Elle ne reconnaît pas les autres noms/)).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Où sont les données' })).toBeVisible();
   await expect(page.getByText(/sont au Canada/)).toBeVisible();
   await expectAccessible(page);
@@ -460,7 +462,7 @@ test('10. « Conseil »: the system’s state, an invitation, « Bienvenue » an
     const newTeacher = await invitee.newPage();
     await login(newTeacher, INVITEE.email);
     await expect(newTeacher).toHaveURL(/\/bienvenue/);
-    await expect(newTeacher.getByText('Les données restent au Canada.')).toBeVisible();
+    await expect(newTeacher.getByText(/^Les données sont conservées au Canada\./)).toBeVisible();
     await acceptWelcome(newTeacher, { honorific: 'Mme' });
     await newTeacher.goto('/demarrage');
     const checklist = newTeacher.getByTestId('onboarding-checklist');

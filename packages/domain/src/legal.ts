@@ -14,8 +14,12 @@
 /** `YYYY-MM-` then 1 to 24 lowercase letters, digits or hyphens: `2026-11-pilote-1`. */
 export const TERMS_VERSION_PATTERN = /^[0-9]{4}-[0-9]{2}-[a-z0-9-]{1,24}$/;
 
-/** The terms in force. Changing it shows everyone the « conditions ont changé » banner. */
-export const CURRENT_TERMS_VERSION = '2026-11-pilote-1';
+/**
+ * The terms in force. Changing it shows everyone the « conditions ont changé » banner.
+ * `2026-10-pilote-2` (Phase 6 review): the notice and « Bienvenue » say that only the names the
+ * app knows are replaced before AI, who reads feedback, and how IP Lynx accesses the data.
+ */
+export const CURRENT_TERMS_VERSION = '2026-10-pilote-2';
 
 /**
  * « Ce qui a changé » for each version, shown when newer terms are offered (never at a first
@@ -23,6 +27,7 @@ export const CURRENT_TERMS_VERSION = '2026-11-pilote-1';
  */
 export const TERMS_CHANGES: Readonly<Record<string, string>> = {
   '2026-11-pilote-1': 'pilote1',
+  '2026-10-pilote-2': 'pilote2',
 };
 
 /** The message key of what `version` changed (`welcome.changes.<key>`), if any. */

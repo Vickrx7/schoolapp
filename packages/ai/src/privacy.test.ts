@@ -382,6 +382,18 @@ describe('Redactor', () => {
     expect(() => r.assertSafeOutbound('Bonjour la classe')).not.toThrow();
   });
 
+  // The limit every privacy text must state (PRIVACY.md § 5, the « L'intelligence artificielle »
+  // notice, « Bienvenue »): only the people the app knows are replaced. A parent's or a sibling's
+  // name is not on any roster, so it goes out unless the teacher removes it at the preview.
+  it('does not replace a name it does not know: the teacher removes it at the preview', () => {
+    const r = new Redactor(roster, NOW);
+    const text = 'Léa a écrit à sa mère, Josée Lapointe, et à son frère Kevin.';
+    const out = r.redact(text);
+    expect(out.text).toBe('Élève A a écrit à sa mère, Josée Lapointe, et à son frère Kevin.');
+    expect(out.blocked).toEqual([]);
+    expect(() => r.assertSafeOutbound(out.text)).not.toThrow();
+  });
+
   it('handles a large roster', () => {
     const many = Array.from({ length: 600 }, (_, i) => ({
       name: `Prénom${String.fromCharCode(97 + (i % 26))}${Math.floor(i / 26)}`,

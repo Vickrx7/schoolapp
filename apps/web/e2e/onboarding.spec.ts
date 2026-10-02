@@ -1,3 +1,4 @@
+import { CURRENT_TERMS_VERSION } from '@lynx/domain';
 import { expect, test, type Page } from '@playwright/test';
 import { closeDb, createStaffUser, deleteSampleClasses, deleteStaff, query } from './db';
 import { acceptWelcome, expectAccessible, login, nextSchoolMonday } from './helpers';
@@ -37,9 +38,17 @@ test('a new teacher accepts the terms, then tries the app with a sample class', 
     await expect(page).toHaveURL(/\/bienvenue\?next=%2Fcalendar$/);
     await expect(page.getByRole('heading', { level: 1, name: 'Bienvenue' })).toBeVisible();
     await expect(
-      page.getByRole('heading', { name: 'Votre vie privée et le projet pilote' }),
+      page.getByRole('heading', { name: 'La protection des renseignements et le projet pilote' }),
     ).toBeVisible();
-    await expect(page.getByText('Les données restent au Canada.')).toBeVisible();
+    // The two promises that matter at consent, with their limits (Phase 6 review, U1 and D1).
+    await expect(
+      page.getByText(
+        'Les données sont conservées au Canada. Seul le texte envoyé à l’intelligence artificielle est traité aux États-Unis.',
+      ),
+    ).toBeVisible();
+    await expect(
+      page.getByText(/^L’application remplace les noms des élèves et du personnel de vos écoles/),
+    ).toContainText('retirez vous-même tout autre nom');
     await expect(
       page.getByRole('link', { name: 'Lire « Confidentialité et conditions »' }),
     ).toHaveAttribute('href', '/confidentialite');
@@ -60,7 +69,7 @@ test('a new teacher accepts the terms, then tries the app with a sample class', 
     );
     expect(profile).toEqual({
       honorific: 'Mme',
-      terms_version: '2026-11-pilote-1',
+      terms_version: CURRENT_TERMS_VERSION,
       accepted: true,
     });
     const [audit] = await query<{ n: number }>(
@@ -201,6 +210,9 @@ test('newer terms show a banner and never block', async ({ page }) => {
     ).toBeVisible();
     // What changed, in one line, and « Plus tard »: back to the page, the banner still there.
     await expect(page.getByTestId('terms-change')).toContainText('Ce qui a changé');
+    await expect(page.getByTestId('terms-change')).toContainText(
+      'l’application remplace seulement les noms qu’elle connaît',
+    );
     await page.getByRole('link', { name: 'Plus tard', exact: true }).click();
     await expect(page).toHaveURL(/\/classes$/);
     await expect(page.getByTestId('terms-banner')).toBeVisible();
@@ -225,7 +237,7 @@ test('newer terms show a banner and never block', async ({ page }) => {
       'select terms_version, honorific from public.users where email = $1',
       [email],
     );
-    expect(row).toEqual({ terms_version: '2026-11-pilote-1', honorific: 'M.' });
+    expect(row).toEqual({ terms_version: CURRENT_TERMS_VERSION, honorific: 'M.' });
   } finally {
     await deleteStaff(email);
   }

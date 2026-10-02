@@ -314,7 +314,9 @@ test('the office phone a board admin sets reaches substitute plans; a board PA d
     await login(page, DEMO.boardAdmin);
     await page.goto('/board/schools');
     await expect(page.getByRole('heading', { level: 1, name: 'Écoles' })).toBeVisible();
-    await expect(page.getByText('IP Lynx ajoute les écoles du conseil.')).toBeVisible();
+    await expect(
+      page.getByText('La personne qui gère le serveur ajoute les écoles du conseil.'),
+    ).toBeVisible();
     await expect(page.getByRole('link', { name: /Ajouter une école/ })).toHaveCount(0);
     await page.getByRole('link', { name: /École élémentaire catholique Saint-Exemple/ }).click();
     await expect(

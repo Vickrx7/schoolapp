@@ -151,13 +151,13 @@
     "libraryRemixLicence": "Cette ressource ne peut pas être adaptée (licence).",
     "libraryShareCap": "Cette adaptation peut être partagée au plus avec l’école de la ressource d’origine.",
     "lastBoardAdmin": "Le conseil doit garder au moins une personne administratrice.",
-    "staffOtherBoard": "Cette personne travaille aussi pour un autre conseil : écrivez à IP Lynx.",
+    "staffOtherBoard": "Cette personne travaille aussi pour un autre conseil : demandez de l’aide à la personne qui gère le serveur.",
     "staffSelf": "Vous ne pouvez pas retirer ni rétablir votre propre accès.",
     "staffStillActive": "Retirez d’abord l’accès de cette personne.",
     "staffSelfRole": "Vous ne pouvez pas modifier vos propres rôles.",
     "staffLastRole": "Retirez plutôt l’accès de cette personne.",
     "staffAlreadyInvited": "Une invitation est déjà en préparation pour cette personne et ce rôle.",
-    "emailConflict": "Cette adresse est déjà utilisée ailleurs dans l’application. Écrivez à IP Lynx pour l’ajouter.",
+    "emailConflict": "Cette adresse est déjà utilisée ailleurs dans l’application. Demandez à la personne qui gère le serveur de l’ajouter.",
     "authNotConfigured": "Les invitations ne sont pas configurées sur ce serveur.",
     "authRefused": "Le service de connexion a refusé cette adresse.",
     "invitationExpired": "L’invitation a expiré.",
@@ -459,7 +459,7 @@
     "saved": "Paramètres enregistrés.",
     "aiTitle": "Intelligence artificielle",
     "aiIntro": "Permet au personnel de préparer des textes différenciés avec l’IA (Claude, d’Anthropic).",
-    "aiPrivacy": "Avant chaque envoi, les noms des élèves et du personnel sont remplacés par des marqueurs, et toute demande qui contient un renseignement personnel est bloquée. Seul le texte dépersonnalisé est traité par le fournisseur d’IA, possiblement hors du Canada. Tout ce qui est conservé reste au Canada.",
+    "aiPrivacy": "Avant chaque envoi, les noms des élèves et du personnel de l’école sont remplacés par des marqueurs, et les courriels, numéros de téléphone, adresses et dates de naissance détectés ne sont jamais envoyés. Un nom que l’application ne connaît pas (celui d’un parent, par exemple) doit être retiré par la personne qui écrit : elle voit le texte exact avant l’envoi. Ce texte est traité par le fournisseur d’IA, possiblement hors du Canada. Tout ce qui est conservé reste au Canada.",
     "aiStatusOn": "L’IA est activée.",
     "aiStatusOff": "L’IA est désactivée : aucun texte n’est envoyé.",
     "aiEnable": "Activer l’IA",
@@ -3227,7 +3227,7 @@
     },
     "retention": {
       "title": "Conservation des données",
-      "intro": "Ces données sont effacées automatiquement, chaque nuit, après ces durées. IP Lynx règle les durées à la demande du conseil.",
+      "intro": "Ces données sont effacées automatiquement, chaque nuit, après ces durées. La personne qui gère le serveur règle les durées à la demande du conseil.",
       "auditDays": "Journal d’audit",
       "subPlanDays": "Plans de suppléance et absences, après la journée",
       "classDaysAfterYearEnd": "Prénoms des élèves, après la fin de l’année scolaire",
@@ -3324,14 +3324,14 @@
       "restoreAccessConfirm": "Rétablir l’accès de {name}? Cette personne pourra de nouveau se connecter.",
       "accessRestored": "Accès rétabli.",
       "ownAccess": "Vous ne pouvez pas retirer votre propre accès.",
-      "deletion": "Pour supprimer ce compte et ses données, écrivez à IP Lynx.",
-      "deletionWrite": "Écrire à IP Lynx",
+      "deletion": "Seule la personne qui gère le serveur peut supprimer ce compte et ses données, à la demande écrite du conseil.",
+      "deletionWrite": "Demander la suppression",
       "deletionSubject": "Suppression d’un compte",
       "reviewer": "Personne désignée pour approuver les ressources du conseil."
     },
     "schools": {
       "title": "Écoles",
-      "intro": "IP Lynx ajoute les écoles du conseil.",
+      "intro": "La personne qui gère le serveur ajoute les écoles du conseil.",
       "empty": "Aucune école pour le moment.",
       "open": "Ouvrir la fiche de {name}",
       "back": "Retour aux écoles",
@@ -3407,7 +3407,7 @@
     },
     "usage": {
       "title": "Utilisation de l’IA",
-      "intro": "Demandes et coûts de l’IA par école pour le mois. Aucune donnée par personne n’est affichée. Les budgets sont réglés par IP Lynx.",
+      "intro": "Demandes et coûts de l’IA par école pour le mois. Aucune donnée par personne n’est affichée. Les budgets sont réglés par la personne qui gère le serveur.",
       "caption": "Utilisation de l’IA par école, {month}",
       "previous": "Mois précédent",
       "next": "Mois suivant",
@@ -3502,12 +3502,12 @@
   "welcome": {
     "title": "Bienvenue",
     "intro": "Avant de commencer, prenez une minute pour lire comment {appName} protège les renseignements de vos élèves.",
-    "privacyHeading": "Votre vie privée et le projet pilote",
+    "privacyHeading": "La protection des renseignements et le projet pilote",
     "points": {
       "firstNames": "Seulement des prénoms d’élèves : jamais de nom de famille, de date de naissance ni d’adresse. Pendant le projet pilote, utilisez des prénoms inventés ou des initiales tant que votre direction n’a pas donné son accord par écrit.",
       "alerts": "Les alertes de sécurité et médicales restent cachées jusqu’à ce qu’on choisisse de les afficher, et chaque consultation est enregistrée.",
-      "ai": "L’intelligence artificielle ne voit jamais les noms : ils sont retirés avant chaque envoi.",
-      "canada": "Les données restent au Canada.",
+      "ai": "L’application remplace les noms des élèves et du personnel de vos écoles avant chaque envoi à l’intelligence artificielle ; retirez vous-même tout autre nom (celui d’un parent, par exemple).",
+      "canada": "Les données sont conservées au Canada. Seul le texte envoyé à l’intelligence artificielle est traité aux États-Unis.",
       "feedback": "Vos commentaires sont les bienvenus : le bouton « Commentaires » est en haut de chaque page."
     },
     "readTerms": "Lire « Confidentialité et conditions »",
@@ -3523,7 +3523,8 @@
     "updatedIntro": "Les conditions du projet pilote ont été mises à jour. Lisez-les, puis acceptez-les pour que ce message disparaisse.",
     "whatChanged": "Ce qui a changé : {change}",
     "changes": {
-      "pilote1": "la première version complète des conditions du projet pilote."
+      "pilote1": "la première version complète des conditions du projet pilote.",
+      "pilote2": "l’application remplace seulement les noms qu’elle connaît (les élèves et le personnel de vos écoles) avant l’envoi à l’intelligence artificielle : retirez vous-même tout autre nom. L’avis précise aussi qui lit vos commentaires et comment IP Lynx accède aux données."
     },
     "acceptUpdated": "Accepter les conditions",
     "later": "Plus tard",
@@ -3552,19 +3553,19 @@
       },
       "ai": {
         "title": "L’intelligence artificielle",
-        "body": "Quand vous demandez de l’aide à l’intelligence artificielle, les noms des personnes sont retirés avant l’envoi. Le texte sans noms est traité par Anthropic, aux États-Unis. L’intelligence artificielle ne prend aucune décision au sujet d’un élève : vous vérifiez toujours ce qu’elle propose."
+        "body": "Quand vous demandez de l’aide à l’intelligence artificielle, l’application remplace les noms des élèves et du personnel de vos écoles par des marqueurs avant l’envoi ; un courriel, un numéro de téléphone, une adresse ou une date de naissance qu’elle détecte n’est jamais envoyé. Elle ne reconnaît pas les autres noms (celui d’un parent, par exemple) : retirez-les vous-même, vous voyez le texte exact avant l’envoi. Ce texte est traité par Anthropic, aux États-Unis, qui peut le conserver pendant une période limitée selon ses conditions commerciales. L’intelligence artificielle ne prend aucune décision au sujet d’un élève : vous vérifiez toujours ce qu’elle propose."
       },
       "where": {
         "title": "Où sont les données",
-        "body": "La base de données, les serveurs et les copies de sauvegarde chiffrées sont au Canada. Les fournisseurs utilisés sont nommés dans le document de confidentialité remis au conseil."
+        "body": "La base de données, les serveurs et les copies de sauvegarde chiffrées sont au Canada. Seul le texte envoyé à l’intelligence artificielle est traité ailleurs, aux États-Unis. Les fournisseurs utilisés sont nommés dans le document de confidentialité remis au conseil."
       },
       "access": {
         "title": "Qui y a accès",
-        "body": "Chaque personne voit seulement ce que son rôle permet : une enseignante ou un enseignant voit ses classes, la direction voit les absences et le journal de son école. Les consultations d’alertes et la suppléance sont inscrites au journal d’audit. IP Lynx accède aux données seulement pour le soutien ou l’entretien du service (un incident, une restauration, une mise à jour), et inscrit chaque accès au journal du conseil."
+        "body": "Chaque personne voit seulement ce que son rôle permet : une enseignante ou un enseignant voit ses classes, la direction voit les absences et le journal de son école. Les consultations d’alertes et la suppléance sont inscrites au journal d’audit. IP Lynx accède aux données seulement pour le soutien ou l’entretien du service (un incident, une restauration, une mise à jour), et s’engage à inscrire chaque accès au journal du conseil avant d’y accéder. Pendant le projet pilote, IP Lynx peut aussi avoir le rôle « Administration du conseil », si votre conseil le lui demande."
       },
       "retention": {
         "title": "Combien de temps",
-        "body": "Les prénoms des élèves sont effacés un an après la fin de l’année scolaire (les unités et leçons restent). Les plans de suppléance sont effacés un an après leur date, le journal d’audit après deux ans, les commentaires après un an, une classe exemple après 60 jours et les copies de sauvegarde après 30 jours."
+        "body": "Par défaut, les prénoms des élèves sont effacés un an après la fin de l’année scolaire (les unités et leçons restent). Les plans de suppléance sont effacés un an après leur date, le journal d’audit après deux ans, les commentaires après un an, une classe exemple après 60 jours et les copies de sauvegarde après 30 jours. Votre conseil peut demander d’autres durées."
       },
       "rights": {
         "title": "Vos droits",
@@ -3577,7 +3578,7 @@
       "personal": "N’entrez aucun autre renseignement personnel sur un élève que son prénom, sauf dans les alertes, lorsque la direction les a activées.",
       "account": "Votre accès est personnel. Déconnectez-vous sur un ordinateur partagé.",
       "ai": "Vérifiez ce que propose l’intelligence artificielle avant de l’utiliser avec vos élèves.",
-      "feedback": "Les commentaires que vous envoyez sont lus par l’administration de votre conseil et par IP Lynx pour améliorer l’application.",
+      "feedback": "Les commentaires que vous envoyez sont lus par les personnes qui ont le rôle « Administration du conseil », pour améliorer l’application ; pendant le projet pilote, IP Lynx peut avoir ce rôle, si votre conseil le lui demande.",
       "changes": "Ces conditions peuvent changer. Une bannière vous le dira, et vous pourrez les relire avant de les accepter."
     },
     "contactHeading": "Pour nous joindre",
@@ -3596,7 +3597,7 @@
   "feedback": {
     "button": "Commentaires",
     "title": "Envoyer un commentaire",
-    "intro": "Un problème, une idée, une question? L’administration de votre conseil et IP Lynx lisent chaque message.",
+    "intro": "Un problème, une idée, une question? Les personnes qui ont le rôle « Administration du conseil » lisent chaque message ; pendant le projet pilote, IP Lynx peut avoir ce rôle.",
     "kindLegend": "C’est…",
     "kinds": {
       "problem": "Un problème",

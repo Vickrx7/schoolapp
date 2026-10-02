@@ -1,3 +1,4 @@
+import { CURRENT_TERMS_VERSION } from '@lynx/domain';
 import { expect, test } from '@playwright/test';
 import { DEMO, expectAccessible, login } from './helpers';
 
@@ -18,7 +19,7 @@ test('the privacy notice and the pilot terms are public, in French and English',
   ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Avis de confidentialité' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Conditions du projet pilote' })).toBeVisible();
-  await expect(page.getByText('Version des conditions : 2026-11-pilote-1')).toBeVisible();
+  await expect(page.getByText(`Version des conditions : ${CURRENT_TERMS_VERSION}`)).toBeVisible();
   await expectAccessible(page);
 
   await page.getByRole('button', { name: 'English' }).click();

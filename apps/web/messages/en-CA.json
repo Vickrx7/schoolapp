@@ -151,13 +151,13 @@
     "libraryRemixLicence": "This resource cannot be adapted (licence).",
     "libraryShareCap": "This adaptation can be shared at most with the original resource’s school.",
     "lastBoardAdmin": "The board must keep at least one administrator.",
-    "staffOtherBoard": "This person also works for another board: write to IP Lynx.",
+    "staffOtherBoard": "This person also works for another board: ask the person who manages the server for help.",
     "staffSelf": "You cannot remove or restore your own access.",
     "staffStillActive": "Remove this person’s access first.",
     "staffSelfRole": "You cannot change your own roles.",
     "staffLastRole": "Remove this person’s access instead.",
     "staffAlreadyInvited": "An invitation is already being prepared for this person and role.",
-    "emailConflict": "This address is already used elsewhere in the app. Write to IP Lynx to add it.",
+    "emailConflict": "This address is already used elsewhere in the app. Ask the person who manages the server to add it.",
     "authNotConfigured": "Invitations are not set up on this server.",
     "authRefused": "The sign-in service refused this address.",
     "invitationExpired": "The invitation has expired.",
@@ -459,7 +459,7 @@
     "saved": "Settings saved.",
     "aiTitle": "Artificial intelligence",
     "aiIntro": "Lets staff prepare differentiated texts with AI (Claude, by Anthropic).",
-    "aiPrivacy": "Before anything is sent, student and staff names are replaced with markers, and any request that contains personal information is blocked. Only the de-identified text is processed by the AI provider, possibly outside Canada. Everything that is stored stays in Canada.",
+    "aiPrivacy": "Before anything is sent, the names of the school’s students and staff are replaced with markers, and the email addresses, phone numbers, addresses and birth dates the app detects are never sent. A name the app does not know (a parent’s, for example) must be removed by the person writing, who sees the exact text before it is sent. That text is processed by the AI provider, possibly outside Canada. Everything that is stored stays in Canada.",
     "aiStatusOn": "AI is on.",
     "aiStatusOff": "AI is off: no text is sent.",
     "aiEnable": "Turn on AI",
@@ -3227,7 +3227,7 @@
     },
     "retention": {
       "title": "Data retention",
-      "intro": "This data is deleted automatically, every night, after these periods. IP Lynx sets the periods at the board’s request.",
+      "intro": "This data is deleted automatically, every night, after these periods. The person who manages the server sets the periods at the board’s request.",
       "auditDays": "Audit log",
       "subPlanDays": "Substitute plans and absences, after the day",
       "classDaysAfterYearEnd": "Students’ first names, after the end of the school year",
@@ -3324,14 +3324,14 @@
       "restoreAccessConfirm": "Restore {name}’s access? This person will be able to sign in again.",
       "accessRestored": "Access restored.",
       "ownAccess": "You cannot remove your own access.",
-      "deletion": "To delete this account and its data, write to IP Lynx.",
-      "deletionWrite": "Write to IP Lynx",
+      "deletion": "Only the person who manages the server can delete this account and its data, at the board’s written request.",
+      "deletionWrite": "Ask for the deletion",
       "deletionSubject": "Deleting an account",
       "reviewer": "Designated to approve the board’s resources."
     },
     "schools": {
       "title": "Schools",
-      "intro": "IP Lynx adds the board’s schools.",
+      "intro": "The person who manages the server adds the board’s schools.",
       "empty": "No schools yet.",
       "open": "Open {name}",
       "back": "Back to schools",
@@ -3407,7 +3407,7 @@
     },
     "usage": {
       "title": "AI usage",
-      "intro": "AI requests and costs per school for the month. No data per person is shown. Budgets are set by IP Lynx.",
+      "intro": "AI requests and costs per school for the month. No data per person is shown. Budgets are set by the person who manages the server.",
       "caption": "AI usage per school, {month}",
       "previous": "Previous month",
       "next": "Next month",
@@ -3502,12 +3502,12 @@
   "welcome": {
     "title": "Welcome",
     "intro": "Before you start, take a minute to read how {appName} protects your students’ information.",
-    "privacyHeading": "Your privacy and the pilot project",
+    "privacyHeading": "Protecting information in the pilot project",
     "points": {
       "firstNames": "Students’ first names only: never a last name, a birth date or an address. During the pilot, use made-up first names or initials until your principal agrees in writing.",
       "alerts": "Safety and medical alerts stay hidden until someone chooses to show them, and every viewing is logged.",
-      "ai": "Artificial intelligence never sees names: they are removed before anything is sent.",
-      "canada": "The data stays in Canada.",
+      "ai": "The app replaces the names of your schools’ students and staff before anything is sent to artificial intelligence; remove any other name yourself (a parent’s, for example).",
+      "canada": "The data is stored in Canada. Only the text sent to artificial intelligence is processed in the United States.",
       "feedback": "Your feedback is welcome: the “Feedback” button is at the top of every page."
     },
     "readTerms": "Read “Privacy and terms”",
@@ -3523,7 +3523,8 @@
     "updatedIntro": "The terms of the pilot project were updated. Read them, then accept them to make this message go away.",
     "whatChanged": "What changed: {change}",
     "changes": {
-      "pilote1": "the first complete version of the pilot project’s terms."
+      "pilote1": "the first complete version of the pilot project’s terms.",
+      "pilote2": "the app replaces only the names it knows (your schools’ students and staff) before anything is sent to artificial intelligence: remove any other name yourself. The notice also says who reads your feedback and how IP Lynx accesses the data."
     },
     "acceptUpdated": "Accept the terms",
     "later": "Later",
@@ -3552,19 +3553,19 @@
       },
       "ai": {
         "title": "Artificial intelligence",
-        "body": "When you ask artificial intelligence for help, people’s names are removed before anything is sent. The text without names is processed by Anthropic, in the United States. Artificial intelligence makes no decision about a student: you always check what it suggests."
+        "body": "When you ask artificial intelligence for help, the app replaces the names of your schools’ students and staff with markers before anything is sent; an email, a phone number, an address or a birth date it detects is never sent. It does not recognize other names (a parent’s, for example): remove them yourself, you see the exact text before it is sent. This text is processed by Anthropic, in the United States, which may keep it for a limited time under its commercial terms. Artificial intelligence makes no decision about a student: you always check what it suggests."
       },
       "where": {
         "title": "Where the data is",
-        "body": "The database, the servers and the encrypted backups are in Canada. The providers used are named in the privacy document given to the board."
+        "body": "The database, the servers and the encrypted backups are in Canada. Only the text sent to artificial intelligence is processed elsewhere, in the United States. The providers used are named in the privacy document given to the board."
       },
       "access": {
         "title": "Who can see it",
-        "body": "Everyone sees only what their role allows: a teacher sees their classes, the principal sees the school’s absences and log. Alert viewings and substitute activity are written to the audit log. IP Lynx accesses the data only for support or to maintain the service (an incident, a restore, an upgrade), and writes every access to the board’s log."
+        "body": "Everyone sees only what their role allows: a teacher sees their classes, the principal sees the school’s absences and log. Alert viewings and substitute activity are written to the audit log. IP Lynx accesses the data only for support or to maintain the service (an incident, a restore, an upgrade), and undertakes to write each access to the board’s log before it happens. During the pilot, IP Lynx may also hold the “Board administration” role, if your board asks it to."
       },
       "retention": {
         "title": "How long",
-        "body": "Students’ first names are erased one year after the end of the school year (units and lessons stay). Substitute plans are erased one year after their date, the audit log after two years, feedback after one year, a sample class after 60 days and backups after 30 days."
+        "body": "By default, students’ first names are erased one year after the end of the school year (units and lessons stay). Substitute plans are erased one year after their date, the audit log after two years, feedback after one year, a sample class after 60 days and backups after 30 days. Your board may ask for other periods."
       },
       "rights": {
         "title": "Your rights",
@@ -3577,7 +3578,7 @@
       "personal": "Enter no personal information about a student other than their first name, except in alerts, when the principal has turned them on.",
       "account": "Your access is personal. Sign out on a shared computer.",
       "ai": "Check what artificial intelligence suggests before using it with your students.",
-      "feedback": "The feedback you send is read by your board’s administration and by IP Lynx to improve the app.",
+      "feedback": "The feedback you send is read by the people with the “Board administration” role, to improve the app; during the pilot, IP Lynx may hold that role, if your board asks it to.",
       "changes": "These terms may change. A banner will tell you, and you can read them again before accepting them."
     },
     "contactHeading": "Contact us",
@@ -3596,7 +3597,7 @@
   "feedback": {
     "button": "Feedback",
     "title": "Send feedback",
-    "intro": "A problem, an idea, a question? Your board’s administration and IP Lynx read every message.",
+    "intro": "A problem, an idea, a question? The people with the “Board administration” role read every message; during the pilot, IP Lynx may hold that role.",
     "kindLegend": "It is…",
     "kinds": {
       "problem": "A problem",
