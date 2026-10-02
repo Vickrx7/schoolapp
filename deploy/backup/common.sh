@@ -57,6 +57,19 @@ has_data() { # url
 # Lines to a JSON array of strings.
 json_lines() { jq -R -s -c 'split("\n") | map(select(length > 0))'; }
 
+# Where backup.sh puts a backup's copy (D-115): Amazon S3 by default (the bucket's own address in
+# the region), or any S3-compatible storage at BACKUP_S3_ENDPOINT, path-style. Fails (status 1) on
+# an endpoint that is not a bare http(s) address. The key is the prefix and the file's name.
+s3_object_url() { # endpoint (may be empty), bucket, region, key
+  local endpoint="$1" bucket="$2" region="$3" key="$4"
+  if [[ -z "$endpoint" ]]; then
+    printf 'https://%s.s3.%s.amazonaws.com/%s\n' "$bucket" "$region" "$key"
+    return 0
+  fi
+  [[ "$endpoint" =~ ^https?://[A-Za-z0-9.-]+(:[0-9]{1,5})?/?$ ]] || return 1
+  printf '%s/%s/%s\n' "${endpoint%/}" "$bucket" "$key"
+}
+
 # HMAC-SHA256 of standard input with a 32-byte key given as 64 hex digits (DECISIONS D-115:
 # backups are signed with BACKUP_SIGNING_KEY). Bash and sha256sum only: the key never appears on
 # a command line, where other users of the machine could read it. Prints the MAC in hex.

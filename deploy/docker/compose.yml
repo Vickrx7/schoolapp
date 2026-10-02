@@ -104,6 +104,10 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       AI_MODEL: ${AI_MODEL:-}
       AI_EFFORT: ${AI_EFFORT:-}
+      # A model the app has no price for (packages/ai/src/pricing.ts) needs both, in USD per
+      # million tokens, or the worker refuses to start.
+      AI_PRICE_INPUT_PER_MTOK: ${AI_PRICE_INPUT_PER_MTOK:-}
+      AI_PRICE_OUTPUT_PER_MTOK: ${AI_PRICE_OUTPUT_PER_MTOK:-}
       BULK_MAX_RUN_USD: ${BULK_MAX_RUN_USD:-}
       WORKER_CONCURRENCY: ${WORKER_CONCURRENCY:-4}
       WORKER_HEALTH_PORT: 8081
@@ -138,6 +142,7 @@ services:
       BACKUP_AGE_RECIPIENT: ${BACKUP_AGE_RECIPIENT:-}
       BACKUP_SIGNING_KEY: ${BACKUP_SIGNING_KEY:-}
       BACKUP_S3_BUCKET: ${BACKUP_S3_BUCKET:-}
+      BACKUP_S3_ENDPOINT: ${BACKUP_S3_ENDPOINT:-}
       BACKUP_S3_REGION: ${BACKUP_S3_REGION:-}
       BACKUP_S3_PREFIX: ${BACKUP_S3_PREFIX:-}
       BACKUP_S3_ACCESS_KEY_ID: ${BACKUP_S3_ACCESS_KEY_ID:-}
@@ -160,6 +165,7 @@ services:
       BACKUP_AGE_RECIPIENT: ${BACKUP_AGE_RECIPIENT:-}
       BACKUP_SIGNING_KEY: ${BACKUP_SIGNING_KEY:-}
       BACKUP_S3_BUCKET: ${BACKUP_S3_BUCKET:-}
+      BACKUP_S3_ENDPOINT: ${BACKUP_S3_ENDPOINT:-}
       BACKUP_S3_REGION: ${BACKUP_S3_REGION:-}
       BACKUP_S3_PREFIX: ${BACKUP_S3_PREFIX:-}
       BACKUP_S3_ACCESS_KEY_ID: ${BACKUP_S3_ACCESS_KEY_ID:-}
@@ -177,11 +183,17 @@ services:
     restart: 'no'
     entrypoint: ['node', '--import', 'tsx', '/repo/apps/admin/src/cli.ts']
     working_dir: /repo/apps/admin
+    # Its replies name the people and boards a command acted on: shown to the operator, never
+    # kept in the journal (D-119).
+    logging:
+      driver: none
     environment:
       SUPABASE_URL: ${SUPABASE_URL}
       SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:-}
       AI_PROVIDER: ${AI_PROVIDER:-none}
       AI_MODEL: ${AI_MODEL:-}
+      AI_PRICE_INPUT_PER_MTOK: ${AI_PRICE_INPUT_PER_MTOK:-}
+      AI_PRICE_OUTPUT_PER_MTOK: ${AI_PRICE_OUTPUT_PER_MTOK:-}
       BULK_MAX_RUN_USD: ${BULK_MAX_RUN_USD:-}
 
   # Catches the sign-in e-mails in the CI smoke test (profile mail-catcher); never in production.

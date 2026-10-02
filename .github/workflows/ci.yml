@@ -155,10 +155,27 @@ jobs:
           age-keygen -o "$RUNNER_TEMP/backup-key.txt"
           # The signing key, as generate-secrets.mjs makes it (the operator keeps a copy).
           openssl rand -hex 32 > "$RUNNER_TEMP/signing-key.txt"
+          # The copy goes to S3-compatible storage (BACKUP_S3_ENDPOINT): a stand-in that checks the
+          # request's AWS signature and the body's SHA-256, as S3 does.
+          export S3_FAKE_DIR="$RUNNER_TEMP/s3" S3_FAKE_PORT=9000 S3_FAKE_KEY_ID=ci-backup S3_FAKE_SECRET="$(openssl rand -hex 20)"
+          node deploy/ci/s3-fake.mjs 2> "$RUNNER_TEMP/s3-fake.log" &
+          fake=$!
+          for _ in $(seq 1 40); do grep -q listening "$RUNNER_TEMP/s3-fake.log" && break; sleep 0.25; done
           BACKUP_DATABASE_URL="$DATABASE_URL" BACKUP_DIR="$RUNNER_TEMP/backups" APP_RELEASE=ci \
             BACKUP_AGE_RECIPIENT="$(age-keygen -y "$RUNNER_TEMP/backup-key.txt")" \
-            BACKUP_SIGNING_KEY="$(cat "$RUNNER_TEMP/signing-key.txt")" deploy/backup/backup.sh
+            BACKUP_SIGNING_KEY="$(cat "$RUNNER_TEMP/signing-key.txt")" \
+            BACKUP_S3_ENDPOINT=http://127.0.0.1:9000 BACKUP_S3_BUCKET=lynx-ci BACKUP_S3_PREFIX=nightly/ \
+            BACKUP_S3_ACCESS_KEY_ID=ci-backup BACKUP_S3_SECRET_ACCESS_KEY="$S3_FAKE_SECRET" deploy/backup/backup.sh
           test "$(psql "$DATABASE_URL" -X -A -t -c "select count(*) from public.system_heartbeats where component = 'backup'")" = 1
+          backup="$(ls "$RUNNER_TEMP"/backups/lynx-backup-*.tar)"
+          cmp "$backup" "$RUNNER_TEMP/s3/lynx-ci/nightly/$(basename "$backup")"
+          # A wrong secret is refused: the stand-in really checks signatures.
+          code="$(printf 'user = "ci-backup:wrong"\n' | curl --config - -sS -o /dev/null -w '%{http_code}' \
+            --aws-sigv4 "aws:amz:ca-central-1:s3" -H "x-amz-content-sha256: $(sha256sum "$backup" | cut -d' ' -f1)" \
+            -T "$backup" http://127.0.0.1:9000/lynx-ci/refused.tar)"
+          test "$code" = 403
+          cat "$RUNNER_TEMP/s3-fake.log"
+          kill "$fake"
 
       - name: Altered, unsigned or tampered backups are refused before anything runs
         run: |
@@ -232,7 +249,26 @@ jobs:
       - name: The admin CLI works in the image
         run: |
           docker compose run --rm admin create-board --name "Conseil de fumée" --slug ci-smoke
-          docker compose run --rm admin invite --email admin.fumee@example.test --name "Admin Fumée" --role board_admin --board ci-smoke
+          # Its replies reach the operator's terminal, though they are never kept in the journal.
+          out="$(docker compose run --rm -T admin invite --email admin.fumee@example.test --name "Admin Fumée" --role board_admin --board ci-smoke)"
+          echo "$out"
+          grep -q 'can now sign in as board_admin' <<< "$out"
+
+      - name: A board is deleted only after its whole audit log is exported (D-122)
+        run: |
+          set +e
+          refused="$(docker compose run --rm -T admin delete-board --board ci-smoke --confirm ci-smoke --exported --yes 2>&1)"
+          code=$?
+          set -e
+          echo "$refused"
+          test "$code" -ne 0
+          grep -q 'export-audit' <<< "$refused"
+          mkdir -p "$RUNNER_TEMP/exports"
+          docker compose run --rm -T --user "$(id -u):$(id -g)" -v "$RUNNER_TEMP/exports:/out" \
+            admin export-audit --board ci-smoke --out /out/journal-ci-smoke.csv
+          head -3 "$RUNNER_TEMP/exports/journal-ci-smoke.csv"
+          test "$(stat -c %a "$RUNNER_TEMP/exports/journal-ci-smoke.csv")" = 600
+          docker compose run --rm -T admin delete-board --board ci-smoke --confirm ci-smoke --exported --yes
 
       - name: Browser smoke test (@smoke) through Caddy
         working-directory: apps/web
@@ -268,11 +304,29 @@ jobs:
           test "$code" -eq 1
           grep -q 'missing migrations of this release' "$RUNNER_TEMP/guard.log"
 
+      - name: The journal holds no e-mail address and no password (D-119)
+        run: |
+          # Every line the install's containers wrote (the CI mail catcher aside): Auth logs
+          # warnings only, the database no statement and no error detail, the admin CLI nothing.
+          sudo journalctl --no-pager -o json |
+            jq -r 'select((.CONTAINER_NAME // "") | test("^lynx-") and (test("mailpit") | not))
+              | "\(.CONTAINER_NAME) \(.MESSAGE | if type == "array" then implode else . end)"' \
+            > "$RUNNER_TEMP/journal.txt"
+          cut -d' ' -f1 "$RUNNER_TEMP/journal.txt" | sed -E 's/-run-[0-9a-f]+$/-run/' | sort | uniq -c
+          if grep -E -i '[a-z0-9._%+-]+@[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}' "$RUNNER_TEMP/journal.txt"; then
+            echo "::error::an e-mail address reached the journal"
+            exit 1
+          fi
+          if grep -i -E "password +'" "$RUNNER_TEMP/journal.txt"; then
+            echo "::error::a password statement reached the journal"
+            exit 1
+          fi
+
       - name: Logs of every service
         if: failure()
         run: |
           docker compose ps -a
-          # The database logs every statement of the migrations: its end only, and the app's last.
+          # The database's start-up and errors (no statements, D-119): its end only, and the app's last.
           for service in db auth rest api-gateway mailpit migrate; do
             docker compose logs --no-color --timestamps --tail=80 "$service"
           done

@@ -14,7 +14,21 @@ services:
   db:
     image: supabase/postgres:17.6.1.171@sha256:658d1c9b09ae4f61b8e95087b6859181b4b7d6940d769cf7b605609c8aad43e9
     restart: unless-stopped
-    command: ['postgres', '-c', 'config_file=/etc/postgresql/postgresql.conf']
+    # What the database writes to the journal (D-119): the image logs every DDL statement
+    # (`log_statement = 'ddl'`: role passwords included, at its first start too, since the
+    # options reach the initializing server) and each error's DETAIL and statement, which quote
+    # the values (« Key (email)=(…) already exists »). Here: no statements, errors without their
+    # detail or statement. An error's own message can still quote a value it refused.
+    command:
+      - postgres
+      - -c
+      - config_file=/etc/postgresql/postgresql.conf
+      - -c
+      - log_statement=none
+      - -c
+      - log_error_verbosity=terse
+      - -c
+      - log_min_error_statement=panic
     environment:
       POSTGRES_HOST: /var/run/postgresql
       POSTGRES_PORT: 5432
@@ -81,6 +95,10 @@ services:
       # Shared classroom computers (D-119): signed out after 7 days, or 12 hours without activity.
       GOTRUE_SESSIONS_TIMEBOX: ${GOTRUE_SESSIONS_TIMEBOX:-168h}
       GOTRUE_SESSIONS_INACTIVITY_TIMEOUT: ${GOTRUE_SESSIONS_INACTIVITY_TIMEOUT:-12h}
+      # Warnings and errors only (D-119): at `info`, Auth writes the address of every code
+      # request, sign-in and sign-out to the journal. `info` while investigating sign-in
+      # problems (AUTH_LOG_LEVEL in .env), then back.
+      GOTRUE_LOG_LEVEL: ${AUTH_LOG_LEVEL:-warn}
     healthcheck:
       test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:9999/health']
       interval: 5s

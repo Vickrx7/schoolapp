@@ -19,6 +19,10 @@
 #   BACKUP_S3_SECRET_ACCESS_KEY, BACKUP_S3_PREFIX
 #                           optional copy to S3 with a put-only key (versioning and lifecycle
 #                           rules on the bucket: DEPLOYMENT.md)
+#   BACKUP_S3_ENDPOINT      empty: Amazon S3 in BACKUP_S3_REGION. Otherwise the address of any
+#                           S3-compatible storage (MinIO, Ceph, a NAS: https://s3.conseil.ca), used
+#                           with path-style addresses (<endpoint>/<bucket>/<key>) and the same
+#                           signature (BACKUP_S3_REGION is the region it expects, often us-east-1)
 #   HEARTBEAT_URL_BACKUP    optional monitor pinged after a successful backup (it gets no data)
 #   APP_RELEASE             recorded in the manifest and the heartbeat
 #
@@ -45,6 +49,10 @@ BACKUP_DIR="${BACKUP_DIR:-./backups}"
 BACKUP_KEEP_DAYS="${BACKUP_KEEP_DAYS:-30}"
 APP_RELEASE="${APP_RELEASE:-dev}"
 [[ "$BACKUP_KEEP_DAYS" =~ ^[0-9]+$ ]] || die "BACKUP_KEEP_DAYS must be a number of days"
+BAD_S3_ENDPOINT="BACKUP_S3_ENDPOINT must be an address such as https://s3.conseil.ca (no path, no query)"
+if [[ -n "${BACKUP_S3_BUCKET:-}" ]]; then
+  s3_object_url "${BACKUP_S3_ENDPOINT:-}" "$BACKUP_S3_BUCKET" x y > /dev/null || die "$BAD_S3_ENDPOINT"
+fi
 
 # Sessions, sign-in flows and Auth's own log are left out (D-115): everyone signs in again after
 # a restore, and Auth's log (e-mail and IP addresses) is never copied off the database.
@@ -126,8 +134,9 @@ if [[ -n "${BACKUP_S3_BUCKET:-}" ]]; then
   region="${BACKUP_S3_REGION:-ca-central-1}"
   : "${BACKUP_S3_ACCESS_KEY_ID:?set BACKUP_S3_ACCESS_KEY_ID for the S3 copy}"
   : "${BACKUP_S3_SECRET_ACCESS_KEY:?set BACKUP_S3_SECRET_ACCESS_KEY for the S3 copy}"
-  url="https://$BACKUP_S3_BUCKET.s3.$region.amazonaws.com/${BACKUP_S3_PREFIX:-}$name.tar"
-  log "copying to s3://$BACKUP_S3_BUCKET/${BACKUP_S3_PREFIX:-}$name.tar"
+  url="$(s3_object_url "${BACKUP_S3_ENDPOINT:-}" "$BACKUP_S3_BUCKET" "$region" "${BACKUP_S3_PREFIX:-}$name.tar")" ||
+    die "$BAD_S3_ENDPOINT"
+  log "copying to s3://$BACKUP_S3_BUCKET/${BACKUP_S3_PREFIX:-}$name.tar${BACKUP_S3_ENDPOINT:+ at $BACKUP_S3_ENDPOINT}"
   # The key goes to curl on its standard input, never on a command line.
   printf 'user = "%s:%s"\n' "$BACKUP_S3_ACCESS_KEY_ID" "$BACKUP_S3_SECRET_ACCESS_KEY" |
     curl --config - -fsS --retry 3 --aws-sigv4 "aws:amz:$region:s3" \

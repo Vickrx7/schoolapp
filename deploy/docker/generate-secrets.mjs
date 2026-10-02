@@ -149,6 +149,8 @@ const sections = [
     `BACKUP_SIGNING_KEY=${randomBytes(32).toString('hex')}`,
     '# Optional copy to S3 in Canada, with a key that may only put objects.',
     'BACKUP_S3_BUCKET=',
+    '# Empty: Amazon S3. Or any S3-compatible storage (MinIO, Ceph, a NAS): https://s3.example.ca',
+    'BACKUP_S3_ENDPOINT=',
     'BACKUP_S3_REGION=ca-central-1',
     'BACKUP_S3_PREFIX=',
     'BACKUP_S3_ACCESS_KEY_ID=',
