@@ -248,6 +248,9 @@ export function buildSavePayload(form: LibraryEditorForm): SavePayloadResult {
   const converted = form.versions.map((version) =>
     fromAuthoring(type, { type, content: version.content, solution: version.solution }),
   );
+  // A type that is not teaching material (the comment bank, D-129) has no duration, materials or
+  // formats to choose: printable only, never for a substitute.
+  const teaching = TYPE_INFO[type].teachingMaterial;
   const candidate = {
     type,
     boardId: form.boardId,
@@ -260,12 +263,12 @@ export function buildSavePayload(form: LibraryEditorForm): SavePayloadResult {
     expectationIds: form.expectationIds,
     tagIds: form.tagIds,
     keywords: form.keywords,
-    durationMinutes: form.durationMinutes,
-    materials: form.materials,
-    isPrintable: form.isPrintable,
-    isProjectable: form.isProjectable,
-    isInteractive: form.isInteractive,
-    subFriendly: form.subFriendly,
+    durationMinutes: teaching ? form.durationMinutes : null,
+    materials: teaching ? form.materials : '',
+    isPrintable: teaching ? form.isPrintable : true,
+    isProjectable: teaching && form.isProjectable,
+    isInteractive: teaching && form.isInteractive,
+    subFriendly: teaching && form.subFriendly,
     safetyNotes: safetyNotesOf(type, form.safetyNotes),
     faithContent: form.faithContent,
     faithOnStudentSheet: form.faithOnStudentSheet,
@@ -326,6 +329,8 @@ function formIssuePath(
 export function readinessErrors(
   payload: LibraryItemForm,
   boardLevelIds: readonly string[],
+  /** The subject's code, for a comment bank's scope (undefined: not checked here). */
+  subjectCode?: string | null,
 ): FieldErrors {
   const type = payload.type;
   const fieldErrors: FieldErrors = {};
@@ -337,6 +342,7 @@ export function readinessErrors(
       type,
       gradeCodes: payload.gradeCodes,
       subjectId: payload.subjectId,
+      subjectCode,
       durationMinutes: payload.durationMinutes,
       materials: payload.materials,
       keywords: payload.keywords,

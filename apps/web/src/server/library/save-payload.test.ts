@@ -93,6 +93,41 @@ describe('the editor form', () => {
     }
   });
 
+  it('saves a comment bank without duration, materials or formats (D-129)', () => {
+    const form = {
+      ...sampleForm('report_comments'),
+      durationMinutes: 30,
+      materials: 'Crayons',
+      isProjectable: true,
+      isInteractive: true,
+      subFriendly: true,
+      expectationIds: [],
+    };
+    expect(emptyEditorForm('report_comments', { boardId: BOARD, schoolId: null })).toMatchObject({
+      durationMinutes: null,
+      isPrintable: true,
+      isProjectable: false,
+    });
+    const result = buildSavePayload(form);
+    if (!result.ok) throw new Error(JSON.stringify(result.fieldErrors));
+    expect(result.payload).toMatchObject({
+      durationMinutes: null,
+      materials: '',
+      isPrintable: true,
+      isProjectable: false,
+      isInteractive: false,
+      subFriendly: false,
+    });
+    // Ready without them; the scope decides about the subject when its code is known.
+    expect(readinessErrors(result.payload, [])).toEqual({});
+    expect(readinessErrors(result.payload, [], 'ere')).toEqual({
+      'readiness.scope': 'readiness.scope',
+    });
+    expect(readinessErrors({ ...result.payload, subjectId: null }, [], null)).toEqual({
+      'readiness.subject': 'readiness.subject',
+    });
+  });
+
   it('reads an item back into the form, answers included', () => {
     const { content, answerKey } = sampleCanonical('quiz');
     const item = {

@@ -177,13 +177,15 @@
       "key": "Add the answer key of the base version.",
       "levels": "Add a version for each of the board’s levels before proposing the resource to the board.",
       "safety": "Complete the safety notes.",
-      "content": "A version is incomplete: check the highlighted fields."
+      "content": "A version is incomplete: check the highlighted fields.",
+      "scope": "Choose a subject that matches “For”: none for learning skills, Religious education for religious education, another subject otherwise."
     },
     "yearPlanWindow": "These dates are outside the class’s school year.",
     "yearPlanExpectation": "An expectation you chose is not of the unit’s subject or the class’s grades.",
     "reportPeriodOutsideYear": "The period must be within the school year.",
     "datesBoth": "Choose both the first and the last week, or neither.",
-    "beforePeriodStart": "This date must come after the start of the period."
+    "beforePeriodStart": "This date must come after the start of the period.",
+    "reportBankNotTeaching": "A report card comment bank can’t be added to a lesson."
   },
   "days": {
     "1": "Monday",
@@ -1202,7 +1204,8 @@
       "weekly_challenge": "Weekly challenge",
       "catholic_reflection": "Catholic reflection",
       "culture_hook": "Cultural hook",
-      "parent_guide": "Family guide"
+      "parent_guide": "Family guide",
+      "report_comments": "Report card comment bank"
     },
     "typeHints": {
       "lesson_plan": "A lesson step by step, with success criteria.",
@@ -1229,7 +1232,8 @@
       "weekly_challenge": "A challenge to take on over a few days, with hints.",
       "catholic_reflection": "A faith moment: reflection, questions, prayer and an action to take.",
       "culture_hook": "An opener about French-speaking cultures, especially Franco-Ontarian, to start a discussion.",
-      "parent_guide": "A guide in French and English to support learning at home."
+      "parent_guide": "A guide in French and English to support learning at home.",
+      "report_comments": "Strengths and next steps to choose from when writing report card comments."
     },
     "buckets": {
       "enseigner": "Teach",
@@ -1305,6 +1309,40 @@
     "expectationKinds": {
       "overall": "Overall expectation",
       "specific": "Specific expectation"
+    },
+    "reportBankScopes": {
+      "subject": "A subject",
+      "learning_skills": "Learning skills and work habits",
+      "religion": "Religious education"
+    },
+    "reportBankPeriods": {
+      "progress": "Progress report",
+      "term": "Report card",
+      "any": "Both"
+    },
+    "reportEntryKinds": {
+      "strength": "Strength",
+      "next_step": "Next step",
+      "general": "General comment"
+    },
+    "learningSkills": {
+      "responsibility": "Responsibility",
+      "organization": "Organization",
+      "independent_work": "Independent Work",
+      "collaboration": "Collaboration",
+      "initiative": "Initiative",
+      "self_regulation": "Self-Regulation"
+    },
+    "learningSkillRatings": {
+      "excellent": "E – Excellent",
+      "good": "G – Good",
+      "satisfactory": "S – Satisfactory",
+      "needs_improvement": "N – Needs Improvement"
+    },
+    "progressMarks": {
+      "with_difficulty": "Progressing with difficulty",
+      "well": "Progressing well",
+      "very_well": "Progressing very well"
     }
   },
   "libraryItem": {
@@ -1550,7 +1588,8 @@
       "licenceHint": "Optional. Leave empty if you created the resource yourself.",
       "tags": "Tags ({count} of {max})",
       "keywords": "Keywords",
-      "keywordsHint": "Free words to find the resource again, separated by commas."
+      "keywordsHint": "Free words to find the resource again, separated by commas.",
+      "notTeachingMaterial": "A comment bank has no duration, materials or formats: it never goes into a lesson, class mode, the projector or a substitute plan."
     },
     "curriculum": {
       "grades": "Grades ({max} at most)",
@@ -1891,6 +1930,27 @@
         "default": "Solution",
         "experiment": "Expected results",
         "challenge": "Solution to the challenge"
+      },
+      "scope": "For",
+      "period": "Report",
+      "entries": {
+        "_label": "Entries",
+        "_item": "Entry",
+        "_add": "Add an entry",
+        "kind": "Kind of entry",
+        "skill": "Skill",
+        "level": "Achievement level",
+        "progress": "Progress",
+        "rating": "Rating",
+        "category": "Category",
+        "expectationCodes": {
+          "_label": "Expectation codes",
+          "_item": "Code",
+          "_add": "Add a code"
+        },
+        "neutral": "Neutral text",
+        "feminine": "Feminine text (optional)",
+        "masculine": "Masculine text (optional)"
       }
     },
     "phases": {
@@ -2097,12 +2157,14 @@
         "content": "Every version is complete",
         "key": "A complete answer key",
         "safety": "The safety notes",
-        "levels": "A version for every board level"
+        "levels": "A version for every board level",
+        "scope": "A subject that matches “For”"
       },
       "warnings": {
         "sampleAnswer": "A short answer has no expected answer in the answer key.",
         "subNotes": "A lesson plan for substitutes should have notes for the substitute.",
-        "baseOnly": "Base version only: no versions by level."
+        "baseOnly": "Base version only: no versions by level.",
+        "qualifier": "An entry uses the qualifier of another achievement level."
       }
     },
     "workflow": {
@@ -2228,11 +2290,41 @@
       "duplicateRight": "A match is used twice.",
       "unpairedLeft": "Every item needs its match.",
       "notPermutation": "The order in the key does not match the items to put in order.",
-      "orderGivesAnswer": "The order shown to students would give the answer away."
+      "orderGivesAnswer": "The order shown to students would give the answer away.",
+      "placeholder": "Between braces, only the first-name token is allowed: check its spelling.",
+      "codeInText": "Don’t write an expectation code in the text: choose it under “Expectation codes”."
     },
     "confirmSave": {
       "title": "Save the changes?",
       "confirm": "Save anyway"
+    },
+    "commentEntries": {
+      "intro": "Each entry is a sentence chosen for a student. Write a neutral (gender-inclusive) text first; add a feminine and a masculine text only when agreement can’t be avoided. The texts are in French.",
+      "tokenHint": "Write {token} where the student’s first name goes.",
+      "groupExpectation": "Expectation {codes}",
+      "groupGeneral": "General comments",
+      "groupGeneralHint": "Entries without an expectation are always offered.",
+      "count": "Entries: {count} of {max}",
+      "add": "Add an entry",
+      "addTo": "{kind}: add",
+      "entry": "Entry {n}",
+      "remove": "Remove entry {n}",
+      "anyLevel": "Every level",
+      "anyProgress": "Every progress mark",
+      "anyRating": "Every rating",
+      "anyCategory": "No category",
+      "chooseSkill": "Choose a skill",
+      "levelOption": "Level {n}",
+      "forms": "Feminine and masculine wording",
+      "noCodes": "Link expectations under “Curriculum” to tie entries to them.",
+      "codesHint": "Up to 4 of the resource’s expectations.",
+      "categoryHint": "Optional: checks that an entry doesn’t use another level’s qualifier.",
+      "entryError": "Entry {n}: {message}",
+      "kindHeadings": {
+        "strength": "Strengths",
+        "next_step": "Next steps",
+        "general": "Comments"
+      }
     }
   },
   "libraryReview": {

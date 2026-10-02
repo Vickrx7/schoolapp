@@ -17,8 +17,9 @@ export function readinessChecks(
   return [
     'grades',
     'subject',
-    'duration',
-    'materials',
+    // A comment bank (D-129): no duration or materials, and a subject that fits its scope.
+    ...(type === 'report_comments' ? (['scope'] as const) : []),
+    ...(info.teachingMaterial ? (['duration', 'materials'] as const) : []),
     'tags',
     ...(info.expectationsOptional ? [] : (['expectations'] as const)),
     'base',

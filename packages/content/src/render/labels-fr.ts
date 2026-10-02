@@ -5,6 +5,14 @@
  */
 import type { QuestionKind, AchievementCategory } from '../questions';
 import type { Supervision } from '../safety';
+import type {
+  LearningSkill,
+  LearningSkillRating,
+  ProgressMark,
+  ReportBankPeriod,
+  ReportBankScope,
+  ReportEntryKind,
+} from '../types/report-comments';
 import { NBSP } from '../style';
 
 /** « Label : » with the non-breaking space. */
@@ -129,6 +137,16 @@ export const DOC_LABELS_FR = {
   discussionQuestions: 'Discutons',
   activity: 'Activité',
   factsToVerify: 'Faits à vérifier',
+  // Comment banks.
+  reportBankScope: 'Pour',
+  reportBankPeriod: 'Bulletin',
+  generalComments: 'Commentaires généraux',
+  expectationOne: 'Attente',
+  expectationMany: 'Attentes',
+  anyLevel: 'Tous les niveaux',
+  feminine: 'Au féminin',
+  masculine: 'Au masculin',
+  achievementCategory: 'Catégorie',
 } as const;
 
 export const QUESTION_KIND_LABELS_FR: Record<QuestionKind, string> = {
@@ -144,6 +162,46 @@ export const CATEGORY_LABELS_FR: Record<AchievementCategory, string> = {
   habiletes: 'Habiletés de la pensée',
   communication: 'Communication',
   application: 'Mise en application',
+};
+
+export const REPORT_BANK_SCOPE_LABELS_FR: Record<ReportBankScope, string> = {
+  subject: 'Une matière',
+  learning_skills: 'Les habiletés d’apprentissage et habitudes de travail',
+  religion: 'L’enseignement religieux',
+};
+
+export const REPORT_BANK_PERIOD_LABELS_FR: Record<ReportBankPeriod, string> = {
+  progress: 'Bulletin de progrès',
+  term: 'Bulletin scolaire',
+  any: 'Bulletin de progrès et bulletin scolaire',
+};
+
+export const REPORT_ENTRY_KIND_LABELS_FR: Record<ReportEntryKind, string> = {
+  strength: 'Points forts',
+  next_step: 'Prochaines étapes',
+  general: 'Commentaires',
+};
+
+export const LEARNING_SKILL_LABELS_FR: Record<LearningSkill, string> = {
+  responsibility: 'Fiabilité',
+  organization: 'Sens de l’organisation',
+  independent_work: 'Autonomie',
+  collaboration: 'Esprit de collaboration',
+  initiative: 'Sens de l’initiative',
+  self_regulation: 'Autorégulation',
+};
+
+export const LEARNING_SKILL_RATING_LABELS_FR: Record<LearningSkillRating, string> = {
+  excellent: 'E — Excellent',
+  good: 'T — Très bien',
+  satisfactory: 'S — Satisfaisant',
+  needs_improvement: 'N — Amélioration nécessaire',
+};
+
+export const PROGRESS_MARK_LABELS_FR: Record<ProgressMark, string> = {
+  with_difficulty: 'Progresse avec difficulté',
+  well: 'Progresse bien',
+  very_well: 'Progresse très bien',
 };
 
 export const SUPERVISION_LABELS_FR: Record<Supervision, string> = {

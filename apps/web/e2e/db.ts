@@ -360,7 +360,7 @@ export interface ReadyItemOptions {
 /**
  * A resource that is ready to be marked reviewed, proposed and approved, written directly as the
  * database owner (like `tests.library_item` in the database tests): 3e année, Mathématiques,
- * B1.2, materials, a keyword, the sample content of its type from `@lynx/content` with its
+ * B1.2, a duration and materials (none for a comment bank), a keyword, the sample content of its type from `@lynx/content` with its
  * answer key, safety notes for experiments and STEM challenges, and the board's levels when
  * asked. Approved items are approved (and faith-reviewed) by the board's reviewer. Returns the
  * item's id.
@@ -385,8 +385,8 @@ export async function insertReadyItem(options: ReadyItemOptions): Promise<string
          $4::public.library_item_type, $5::text,
          'Une ressource créée pour les tests de bout en bout.', $7::public.library_item_status,
          $6::public.share_scope, $8::public.library_source, author.id, $2::text is null,
-         (select id from public.subjects where code = 'mat' and board_id is null), 30,
-         'Crayons et feuilles', 'e2e nombres', $9::boolean, $10::jsonb, $11::boolean,
+         (select id from public.subjects where code = 'mat' and board_id is null), $12::smallint,
+         $13::text, 'e2e nombres', $9::boolean, $10::jsonb, $11::boolean,
          case when $7::public.library_item_status = 'board_approved' then now() end,
          case when $7::public.library_item_status = 'board_approved' then reviewer.id end,
          case when $7::public.library_item_status = 'board_approved' and $11::boolean then now() end,
@@ -408,6 +408,9 @@ export async function insertReadyItem(options: ReadyItemOptions): Promise<string
         subFriendly,
         safetyNotes,
         Boolean(options.faith),
+        // A comment bank is not teaching material (D-129): no duration or materials.
+        TYPE_INFO[options.type].teachingMaterial ? 30 : null,
+        TYPE_INFO[options.type].teachingMaterial ? 'Crayons et feuilles' : null,
       ],
     );
     const itemId = item!.id;

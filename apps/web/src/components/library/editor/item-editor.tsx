@@ -157,6 +157,15 @@ function EditorBody({
     context.subjects.find((s) => s.id === f.subjectId)?.code ?? null;
   const subjectCode = subjectCodeOf(form);
   const info = TYPE_INFO[form.type];
+  // The attentes « Curriculum » last loaded: a comment bank ties its entries to the chosen ones.
+  const [expectationOptions, setExpectationOptions] = useState(context.expectations);
+  const chosenExpectations = useMemo(() => {
+    const seen = new Set<string>();
+    return expectationOptions
+      .filter((e) => form.expectationIds.includes(e.id))
+      .filter((e) => !seen.has(e.code) && Boolean(seen.add(e.code)))
+      .map((e) => ({ code: e.code, text: e.text }));
+  }, [expectationOptions, form.expectationIds]);
   const baseIndex = Math.max(
     0,
     form.versions.findIndex((v) => v.languageLevelId === null),
@@ -308,7 +317,12 @@ function EditorBody({
             'readiness.expectations',
           )}
         >
-          <CurriculumFields form={form} patch={patch} context={context} />
+          <CurriculumFields
+            form={form}
+            patch={patch}
+            context={context}
+            onOptions={setExpectationOptions}
+          />
         </Section>
 
         <Section
@@ -322,6 +336,7 @@ function EditorBody({
             form={form}
             index={baseIndex}
             subjectCode={subjectCode}
+            expectations={chosenExpectations}
             onChange={(version) =>
               patch({ versions: form.versions.map((v, i) => (i === baseIndex ? version : v)) })
             }

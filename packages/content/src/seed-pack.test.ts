@@ -246,10 +246,10 @@ describe('seed pack (content/library/demo)', () => {
     expect(problems).toEqual([]);
   });
 
-  it('50. the pack lists its 78 items once each, every bucket has at least 3, and ids are unique', () => {
-    expect(itemFiles).toHaveLength(78);
-    expect(items).toHaveLength(78);
-    expect(pack.items).toHaveLength(78);
+  it('50. the pack lists its 81 items once each, every bucket has at least 3, and ids are unique', () => {
+    expect(itemFiles).toHaveLength(81);
+    expect(items).toHaveLength(81);
+    expect(pack.items).toHaveLength(81);
     expect(new Set(pack.items).size).toBe(pack.items.length);
     expect([...pack.items].sort()).toEqual(items.map((i) => i.slug).sort());
 
@@ -520,6 +520,7 @@ describe('seed pack (content/library/demo)', () => {
           type: item.type,
           gradeCodes: item.gradeCodes,
           subjectId: item.subjectCode,
+          subjectCode: item.subjectCode,
           durationMinutes: item.durationMinutes,
           materials: item.materials,
           keywords: item.keywords,

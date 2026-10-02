@@ -6,6 +6,12 @@
  */
 import type { LibraryItemType } from '../catalog';
 import { guillemets } from '../style';
+import {
+  LEARNING_SKILL_RATINGS,
+  LEARNING_SKILLS,
+  PROGRESS_MARKS,
+  REPORT_ENTRY_KINDS,
+} from '../types/report-comments';
 import { DocBuilder, records, str, strings, type Audience } from './builder';
 import type { LeafBlock } from './doc';
 import {
@@ -15,7 +21,13 @@ import {
   FAMILY_LABELS,
   GENDER_LABELS_FR,
   labelled,
+  LEARNING_SKILL_LABELS_FR,
+  LEARNING_SKILL_RATING_LABELS_FR,
   lessonPhaseLabels,
+  PROGRESS_MARK_LABELS_FR,
+  REPORT_BANK_PERIOD_LABELS_FR,
+  REPORT_BANK_SCOPE_LABELS_FR,
+  REPORT_ENTRY_KIND_LABELS_FR,
   SPACE_LABELS_FR,
   WORD_CLASS_LABELS_FR,
 } from './labels-fr';
@@ -37,6 +49,46 @@ function lessonSteps(value: unknown) {
     minutes: num(s.minutes),
     detail: str(s.say) ? labelled(L.say, guillemets(str(s.say))) : '',
   }));
+}
+
+const rank = (values: readonly string[], value: unknown) => {
+  const i = values.indexOf(str(value));
+  return i < 0 ? values.length : i;
+};
+
+/** « Niveau 3 · Communication : … », with the feminine and masculine texts on their own lines. */
+function commentEntryText(e: C): string {
+  const marks = [
+    num(e.level) !== null ? L.level(num(e.level)!) : '',
+    PROGRESS_MARK_LABELS_FR[str(e.progress) as keyof typeof PROGRESS_MARK_LABELS_FR] ?? '',
+    LEARNING_SKILL_RATING_LABELS_FR[
+      str(e.rating) as keyof typeof LEARNING_SKILL_RATING_LABELS_FR
+    ] ?? '',
+    CATEGORY_LABELS_FR[str(e.category) as keyof typeof CATEGORY_LABELS_FR] ?? '',
+  ].filter(Boolean);
+  const lines = [marks.length ? labelled(marks.join(' · '), str(e.neutral)) : str(e.neutral)];
+  if (str(e.feminine)) lines.push(labelled(L.feminine, str(e.feminine)));
+  if (str(e.masculine)) lines.push(labelled(L.masculine, str(e.masculine)));
+  return lines.join('\n');
+}
+
+/** Entries by kind (« Points forts », « Prochaines étapes », « Commentaires »), then by mark. */
+function commentEntriesByKind(entries: C[], r: DocBuilder): void {
+  for (const kind of REPORT_ENTRY_KINDS) {
+    const ofKind = entries
+      .map((e, i) => ({ e, i }))
+      .filter(({ e }) => str(e.kind) === kind && str(e.neutral))
+      .sort(
+        (a, b) =>
+          (num(a.e.level) ?? 0) - (num(b.e.level) ?? 0) ||
+          rank(PROGRESS_MARKS, a.e.progress) - rank(PROGRESS_MARKS, b.e.progress) ||
+          rank(LEARNING_SKILL_RATINGS, a.e.rating) - rank(LEARNING_SKILL_RATINGS, b.e.rating) ||
+          a.i - b.i,
+      );
+    if (!ofKind.length) continue;
+    r.heading(REPORT_ENTRY_KIND_LABELS_FR[kind], 3);
+    r.list(ofKind.map(({ e }) => commentEntryText(e)));
+  }
 }
 
 const RENDERERS: Record<LibraryItemType, Renderer> = {
@@ -226,6 +278,43 @@ const RENDERERS: Record<LibraryItemType, Renderer> = {
         levels: [1, 2, 3, 4].map(L.level),
         rows,
       });
+    }
+  },
+  /** Teacher-only: entries by attente (or learning skill), then kind, then level or mark. */
+  report_comments(c, r) {
+    r.line(
+      L.reportBankScope,
+      REPORT_BANK_SCOPE_LABELS_FR[str(c.scope) as keyof typeof REPORT_BANK_SCOPE_LABELS_FR],
+    );
+    r.line(
+      L.reportBankPeriod,
+      REPORT_BANK_PERIOD_LABELS_FR[str(c.period) as keyof typeof REPORT_BANK_PERIOD_LABELS_FR],
+    );
+    const entries = records(c.entries);
+    if (str(c.scope) === 'learning_skills') {
+      for (const skill of LEARNING_SKILLS) {
+        const ofSkill = entries.filter((e) => str(e.skill) === skill);
+        if (!ofSkill.length) continue;
+        r.heading(LEARNING_SKILL_LABELS_FR[skill], 2);
+        commentEntriesByKind(ofSkill, r);
+      }
+      return;
+    }
+    // Groups in the order their first entry comes; entries without attente last.
+    const groups = new Map<string, C[]>();
+    for (const e of entries) {
+      const codes = strings(e.expectationCodes);
+      const key = codes.join(', ');
+      groups.set(key, [...(groups.get(key) ?? []), e]);
+    }
+    const keys = [...groups.keys()].sort((a, b) => Number(a === '') - Number(b === ''));
+    for (const key of keys) {
+      const many = key.includes(', ');
+      r.heading(
+        key ? `${many ? L.expectationMany : L.expectationOne} ${key}` : L.generalComments,
+        2,
+      );
+      commentEntriesByKind(groups.get(key)!, r);
     }
   },
   game(c, r) {

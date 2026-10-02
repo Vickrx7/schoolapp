@@ -1,3 +1,4 @@
+import { TYPE_INFO } from '@lynx/content';
 import { Clock, MousePointerClick, Presentation, Printer } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
@@ -41,9 +42,10 @@ export function ItemCard({
   const t = useTranslations('library');
   const tc = useTranslations('libraryCommon');
   const grades = card.gradeCodes.map((code) => gradeLabels.get(code) ?? code).join(', ');
-  const formats = (Object.keys(FORMAT_ICONS) as (keyof typeof FORMAT_ICONS)[]).filter(
-    (f) => card.formats[f],
-  );
+  // A comment bank is not teaching material (D-129): no formats to show.
+  const formats = TYPE_INFO[card.type].teachingMaterial
+    ? (Object.keys(FORMAT_ICONS) as (keyof typeof FORMAT_ICONS)[]).filter((f) => card.formats[f])
+    : [];
 
   return (
     <li data-result-index={index}>

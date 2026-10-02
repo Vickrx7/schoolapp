@@ -54,6 +54,7 @@ export async function WorkflowSlot({ item }: { item: LibraryItemView }) {
       type: item.type,
       gradeCodes: item.grades.map((g) => g.code),
       subjectId: item.subject?.id ?? null,
+      subjectCode: item.subject?.code ?? null,
       durationMinutes: item.durationMinutes,
       materials: item.materials,
       keywords: item.keywords,

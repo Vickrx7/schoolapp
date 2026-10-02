@@ -3,7 +3,7 @@
  * are unit-tested: which subjects a grade has, what a restored draft may still hold, the faith
  * suggestion and what the form sends.
  */
-import { TYPE_INFO } from '@lynx/content';
+import { TYPE_INFO, isLibraryItemAiType } from '@lynx/content';
 import { rankCatholicReferences } from '@lynx/domain';
 import type { GenerateForm } from '@/server/actions/library-ai';
 import type {
@@ -60,7 +60,9 @@ export function effectiveGenerateValues(
 ): GenerateFormValues {
   const school = context.schools.find((s) => s.id === values.schoolId) ?? context.schools[0];
   const schoolId = school?.id ?? '';
-  const info = TYPE_INFO[values.itemType] ?? TYPE_INFO.worksheet;
+  // Only the types « Créer avec l’IA » writes (a comment bank has its own form, D-132).
+  const itemType = isLibraryItemAiType(values.itemType) ? values.itemType : 'worksheet';
+  const info = TYPE_INFO[itemType];
   const gradeCodes = values.gradeCodes
     .filter((g) => context.grades.some((x) => x.code === g))
     .slice(0, MAX_GRADES);
@@ -76,7 +78,7 @@ export function effectiveGenerateValues(
   );
   return {
     ...values,
-    itemType: TYPE_INFO[values.itemType] ? values.itemType : 'worksheet',
+    itemType,
     schoolId,
     gradeCodes,
     subjectId,
@@ -140,7 +142,7 @@ export function toGenerateForm(values: GenerateFormValues, referenceId: string):
   const faith = values.itemType === 'catholic_reflection' || values.faith;
   return {
     schoolId: values.schoolId,
-    itemType: values.itemType,
+    itemType: isLibraryItemAiType(values.itemType) ? values.itemType : 'worksheet',
     gradeCodes: values.gradeCodes,
     subjectId: values.subjectId,
     expectationIds: values.expectationIds,

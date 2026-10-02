@@ -74,11 +74,13 @@ const BLOCKING: Record<ReadinessBlockingCode, true> = {
   safety: true,
   content: true,
   levels: true,
+  scope: true,
 };
 const WARNINGS: Record<ReadinessWarningCode, true> = {
   sampleAnswer: true,
   subNotes: true,
   baseOnly: true,
+  qualifier: true,
 };
 
 describe('library labels', () => {
@@ -109,10 +111,14 @@ describe('library labels', () => {
           );
           expect(typeof at(edit, `${spec.labelKey}._add`), `${spec.labelKey}._add`).toBe('string');
         }
-        if (spec.kind === 'select' && spec.optionsKey !== 'categories') {
+        if (spec.kind === 'select') {
+          // The editor's own option labels, or the library's shared vocabulary (categories, a
+          // comment bank's scope, period, kinds, skills, ratings and progress marks).
+          const common = messages.libraryCommon as unknown as Tree;
           for (const option of spec.options ?? []) {
             const key = `options.${spec.optionsKey}.${option}`;
-            expect(typeof at(edit, key), `${type} ${key}`).toBe('string');
+            const label = at(edit, key) ?? at(common, `${spec.optionsKey}.${option}`);
+            expect(typeof label, `${type} ${key}`).toBe('string');
           }
         }
       }
@@ -166,6 +172,11 @@ describe('list sizes in the editor', () => {
     expect(limitsOf('exit_ticket', 'questions')).toMatchObject({ min: 1, max: 3 });
     expect(limitsOf('unit_test', 'sections.questions')).toMatchObject({ min: 1, max: 30 });
     expect(limitsOf('rubric', 'criteria')).toMatchObject({ min: 4, max: 16 });
+    expect(limitsOf('report_comments', 'entries')).toMatchObject({ min: 1, max: 160 });
+    expect(limitsOf('report_comments', 'entries.expectationCodes')).toMatchObject({
+      min: 0,
+      max: 4,
+    });
     expect(limitsOf('lesson_plan', 'opening')).toMatchObject({ min: 1, max: 8 });
     expect(limitsOf('parent_guide', 'fr.learning')).toMatchObject({ min: 1, max: 6 });
     expect(limitsOf('lesson_plan', 'successCriteria')).toMatchObject({
@@ -179,7 +190,11 @@ describe('list sizes in the editor', () => {
       const walk = (specs: readonly FieldSpec[], prefix: string) => {
         for (const spec of specs) {
           const key = prefix ? `${prefix}.${spec.path}` : spec.path;
-          if (['stringList', 'objectList', 'questions', 'rubric'].includes(spec.kind)) {
+          if (
+            ['stringList', 'objectList', 'questions', 'rubric', 'commentEntries'].includes(
+              spec.kind,
+            )
+          ) {
             expect(limits.get(key), `${type} ${key}`).toBeDefined();
           }
           if (spec.fields) walk(spec.fields, key);

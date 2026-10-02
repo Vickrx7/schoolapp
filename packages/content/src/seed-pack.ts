@@ -71,7 +71,11 @@ export const seedItemSchema = z
     /** Faith content reviewed, by the same reviewer. */
     faithReviewed: z.boolean().default(false),
     gradeCodes: z.array(z.string().regex(GRADE_CODE_PATTERN)).min(1).max(4),
-    subjectCode: z.string().regex(/^[a-z0-9_]{2,32}$/),
+    /** Null only for a learning-skills comment bank (D-129). */
+    subjectCode: z
+      .string()
+      .regex(/^[a-z0-9_]{2,32}$/)
+      .nullable(),
     /** Attentes by grade and code (`{ "grade": "3", "code": "C1.2" }`) of the item's subject. */
     expectations: z
       .array(
@@ -82,8 +86,10 @@ export const seedItemSchema = z
       )
       .max(12)
       .default([]),
-    durationMinutes: z.number().int().min(1).max(600),
-    materials: z.string().trim().min(1).max(4000),
+    /** Null for a type that is not teaching material (the comment bank, D-129). */
+    durationMinutes: z.number().int().min(1).max(600).nullable(),
+    /** Empty for a type that is not teaching material. */
+    materials: z.string().trim().max(4000).default(''),
     keywords: z.string().trim().max(300).default(''),
     tags: z.array(slug).max(10).default([]),
     formats: z.strictObject({
@@ -114,6 +120,16 @@ export const seedItemSchema = z
       if (levels.indexOf(level) !== i) issue(['versions', i, 'level'], 'duplicateLevel');
     });
     if (!info.levelable && levels.length > 1) issue(['versions'], 'notLevelable');
+
+    // Teaching material has a duration and materials; a comment bank has neither (D-129), and
+    // no subject when it is about the learning skills.
+    if (info.teachingMaterial) {
+      if (item.durationMinutes === null) issue(['durationMinutes'], 'required');
+      if (!item.materials) issue(['materials'], 'required');
+    } else if (item.durationMinutes !== null) {
+      issue(['durationMinutes'], 'notAllowed');
+    }
+    if (item.subjectCode === null && !seedSubjectOptional(item)) issue(['subjectCode'], 'required');
 
     item.versions.forEach((version, i) => {
       const content = contentSchema(item.type, 'final').safeParse(version.content);
@@ -181,6 +197,12 @@ export const seedItemSchema = z
     }
   });
 export type SeedItem = z.output<typeof seedItemSchema>;
+
+/** A learning-skills comment bank (its base version's scope) has no subject (D-129). */
+export function seedSubjectOptional(item: Pick<SeedItem, 'type' | 'versions'>): boolean {
+  const base = item.versions.find((v) => v.level === null);
+  return item.type === 'report_comments' && base?.content.scope === 'learning_skills';
+}
 
 /** True when faith review applies, as `app.library_items_before_write` computes it. */
 export function seedItemRequiresFaithReview(item: SeedItem): boolean {

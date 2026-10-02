@@ -119,7 +119,11 @@ export default async function LibraryItemPage({ params, searchParams }: Props) {
   const hasStudentSheet = TYPE_INFO[item.type].audience !== 'teacher';
   const search = parseLibrarySearch(query);
   const fromResults = library && showsResults(search);
-  const attachTarget = library && search.attachTo ? await loadAttachTarget(search.attachTo) : null;
+  // A comment bank is not teaching material (D-129): never « Joindre à cette leçon ».
+  const attachTarget =
+    library && search.attachTo && TYPE_INFO[item.type].teachingMaterial
+      ? await loadAttachTarget(search.attachTo)
+      : null;
   const back = !library
     ? { href: '/differentiate', label: t('backToDifferentiate') }
     : fromResults

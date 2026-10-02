@@ -1,5 +1,10 @@
 import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
-import { LIBRARY_ITEM_TYPES, TYPE_INFO, type LibraryItemType } from '@lynx/content';
+import {
+  LIBRARY_ITEM_AI_TYPES,
+  TYPE_INFO,
+  aiDefaultDuration,
+  type LibraryItemAiType,
+} from '@lynx/content';
 import { describe, expect, it } from 'vitest';
 import { Redactor, type KnownPerson } from '../privacy';
 import { loadPrompt } from '../prompts';
@@ -32,7 +37,7 @@ const LEVELS = ['Débutant', 'Intermédiaire', 'Avancé', 'Enrichi'].map((label,
 
 /** A request as `app.library_item_ai_input` builds it. */
 function request(
-  type: LibraryItemType,
+  type: LibraryItemAiType,
   options: { levels?: boolean; faith?: boolean; note?: string; subFriendly?: boolean } = {},
 ): LibraryItemInput {
   const info = TYPE_INFO[type];
@@ -64,7 +69,7 @@ function request(
             text: 'Comment peux-tu prendre soin de la nature et des animaux autour de toi?',
           }
         : null,
-    durationMinutes: Math.max(5, info.defaultDuration),
+    durationMinutes: aiDefaultDuration(type),
     subFriendly: options.subFriendly ?? false,
     teacherNote: options.note ?? '',
   });
@@ -94,7 +99,7 @@ function withBase(
 
 describe('library_item: schemas', () => {
   it('ai 1. gives every type an output schema the API accepts, and the fake answer parses with it', () => {
-    for (const type of LIBRARY_ITEM_TYPES) {
+    for (const type of LIBRARY_ITEM_AI_TYPES) {
       for (const levels of [false, true]) {
         const input = request(type, { levels });
         const schema = feature.outputSchemaFor!(input);
@@ -106,6 +111,10 @@ describe('library_item: schemas', () => {
 
   it('refuses requests the database would never build', () => {
     const ok = request('quiz');
+    // A comment bank has its own feature (D-132).
+    expect(libraryItemInputSchema.safeParse({ ...ok, itemType: 'report_comments' }).success).toBe(
+      false,
+    );
     expect(libraryItemInputSchema.safeParse({ ...ok, expectations: [] }).success).toBe(false);
     expect(libraryItemInputSchema.safeParse({ ...request('rubric'), levels: LEVELS }).success).toBe(
       false,
@@ -190,8 +199,8 @@ describe('library_item: what is sent', () => {
   it('ai 4. sends the common part of the prompt and only the section of the requested type', async () => {
     const prompt = await loadPrompt('library_item', 'v1');
     const sections = [...prompt.matchAll(/<!-- section: (type:[a-z_]+) -->/g)].map((m) => m[1]);
-    expect(new Set(sections)).toEqual(new Set(LIBRARY_ITEM_TYPES.map((t) => `type:${t}`)));
-    for (const type of LIBRARY_ITEM_TYPES) {
+    expect(new Set(sections)).toEqual(new Set(LIBRARY_ITEM_AI_TYPES.map((t) => `type:${t}`)));
+    for (const type of LIBRARY_ITEM_AI_TYPES) {
       const system = feature.systemPrompt!(prompt, request(type));
       expect(system).toContain('## Règles essentielles');
       expect(system).toContain(`## Type : ${TYPE_INFO[type].labelFr}`);
@@ -230,7 +239,7 @@ describe('library_item: answers', () => {
   });
 
   it('ai 7. the fake answer passes normalize and validate for every type, with and without levels and faith', () => {
-    for (const type of LIBRARY_ITEM_TYPES) {
+    for (const type of LIBRARY_ITEM_AI_TYPES) {
       for (const levels of [false, true]) {
         for (const faith of [false, true]) {
           const { sent, output } = answer(

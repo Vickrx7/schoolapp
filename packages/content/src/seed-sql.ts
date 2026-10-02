@@ -159,7 +159,8 @@ function itemSql(
   const author = item.author ? refs.user(item.author) : 'null';
   const approver = item.approvedBy ? refs.user(item.approvedBy) : 'null';
   const school = item.school ? refs.school(item.school) : 'null';
-  const subject = refs.subject(item.subjectCode);
+  // A learning-skills comment bank has no subject (D-129).
+  const subject = item.subjectCode ? refs.subject(item.subjectCode) : 'null';
   const reference = item.catholicReference ? refs.reference(item.catholicReference) : 'null';
   const approved = item.status === 'board_approved';
   // The board's own items (no author, D-091): its content reviewers keep them.
@@ -175,7 +176,7 @@ function itemSql(
     '    pack_content_hash, pack_revision)',
     `  values (${id}, v_board, ${school}, ${q(item.type)}, ${dq(item.title)}, ${dqOrNull(item.summary)},`,
     `    ${q(item.status)}, ${q(item.shareScope)}, ${q(item.source)}, ${author}, ${boardOwned},`,
-    `    ${dqOrNull(item.licence)}, v_pack, ${subject}, ${item.durationMinutes}, ${dq(item.materials)},`,
+    `    ${dqOrNull(item.licence)}, v_pack, ${subject}, ${item.durationMinutes ?? 'null'}, ${dqOrNull(item.materials)},`,
     `    ${dqOrNull(item.keywords)},`,
     `    ${item.formats.printable}, ${item.formats.projectable}, ${item.formats.interactive}, ${item.subFriendly},`,
     `    ${item.safetyNotes ? json(item.safetyNotes) : 'null'}, ${item.faithContent}, ${item.faithOnStudentSheet},`,
@@ -190,7 +191,7 @@ function itemSql(
   ];
   if (item.expectations.length) {
     const values = item.expectations.map(
-      (e) => `(${id}, ${refs.expectation(item.subjectCode, e.grade, e.code)})`,
+      (e) => `(${id}, ${refs.expectation(item.subjectCode ?? '', e.grade, e.code)})`,
     );
     lines.push(
       '  insert into public.library_item_expectations (item_id, expectation_id) values',

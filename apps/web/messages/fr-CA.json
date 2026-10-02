@@ -177,13 +177,15 @@
       "key": "Ajoutez le corrigé de la version de base.",
       "levels": "Ajoutez une version pour chaque niveau du conseil avant de proposer la ressource au conseil.",
       "safety": "Complétez les notes de sécurité.",
-      "content": "Une version n’est pas complète : vérifiez les champs signalés."
+      "content": "Une version n’est pas complète : vérifiez les champs signalés.",
+      "scope": "Choisissez une matière qui correspond à « Pour » : aucune pour les habiletés d’apprentissage, Enseignement religieux pour l’enseignement religieux, une autre matière sinon."
     },
     "yearPlanWindow": "Ces dates sont hors de l’année scolaire de la classe.",
     "yearPlanExpectation": "Une attente choisie n’est pas de la matière de l’unité ou des années d’études de la classe.",
     "reportPeriodOutsideYear": "La période doit être comprise dans l’année scolaire.",
     "datesBoth": "Choisissez la première et la dernière semaine, ou ni l’une ni l’autre.",
-    "beforePeriodStart": "Cette date doit suivre le début de la période."
+    "beforePeriodStart": "Cette date doit suivre le début de la période.",
+    "reportBankNotTeaching": "Une banque de commentaires de bulletin ne s’ajoute pas à une leçon."
   },
   "days": {
     "1": "lundi",
@@ -1202,7 +1204,8 @@
       "weekly_challenge": "Défi de la semaine",
       "catholic_reflection": "Réflexion catholique",
       "culture_hook": "Amorce culturelle",
-      "parent_guide": "Guide pour les familles"
+      "parent_guide": "Guide pour les familles",
+      "report_comments": "Banque de commentaires de bulletin"
     },
     "typeHints": {
       "lesson_plan": "Le déroulement d’une leçon, étape par étape, avec les critères de réussite.",
@@ -1229,7 +1232,8 @@
       "weekly_challenge": "Un défi à relever sur quelques jours, avec des indices.",
       "catholic_reflection": "Un moment de foi : réflexion, questions, prière et geste à poser.",
       "culture_hook": "Une amorce sur la francophonie, surtout franco-ontarienne, pour lancer une discussion.",
-      "parent_guide": "Un guide en français et en anglais pour soutenir l’apprentissage à la maison."
+      "parent_guide": "Un guide en français et en anglais pour soutenir l’apprentissage à la maison.",
+      "report_comments": "Des points forts et des prochaines étapes à choisir pour rédiger les commentaires du bulletin."
     },
     "buckets": {
       "enseigner": "Enseigner",
@@ -1305,6 +1309,40 @@
     "expectationKinds": {
       "overall": "Attente",
       "specific": "Contenu d’apprentissage"
+    },
+    "reportBankScopes": {
+      "subject": "Une matière",
+      "learning_skills": "Les habiletés d’apprentissage et habitudes de travail",
+      "religion": "L’enseignement religieux"
+    },
+    "reportBankPeriods": {
+      "progress": "Bulletin de progrès",
+      "term": "Bulletin scolaire",
+      "any": "Les deux"
+    },
+    "reportEntryKinds": {
+      "strength": "Point fort",
+      "next_step": "Prochaine étape",
+      "general": "Commentaire général"
+    },
+    "learningSkills": {
+      "responsibility": "Fiabilité",
+      "organization": "Sens de l’organisation",
+      "independent_work": "Autonomie",
+      "collaboration": "Esprit de collaboration",
+      "initiative": "Sens de l’initiative",
+      "self_regulation": "Autorégulation"
+    },
+    "learningSkillRatings": {
+      "excellent": "E — Excellent",
+      "good": "T — Très bien",
+      "satisfactory": "S — Satisfaisant",
+      "needs_improvement": "N — Amélioration nécessaire"
+    },
+    "progressMarks": {
+      "with_difficulty": "Progresse avec difficulté",
+      "well": "Progresse bien",
+      "very_well": "Progresse très bien"
     }
   },
   "libraryItem": {
@@ -1550,7 +1588,8 @@
       "licenceHint": "Facultatif. Laissez vide si vous avez créé la ressource vous-même.",
       "tags": "Étiquettes ({count} sur {max})",
       "keywords": "Mots-clés",
-      "keywordsHint": "Des mots libres pour retrouver la ressource, séparés par des virgules."
+      "keywordsHint": "Des mots libres pour retrouver la ressource, séparés par des virgules.",
+      "notTeachingMaterial": "Une banque de commentaires n’a ni durée, ni matériel, ni format : elle ne va jamais dans une leçon, en mode classe, au projecteur ou dans un plan de suppléance."
     },
     "curriculum": {
       "grades": "Années d’études ({max} au maximum)",
@@ -1891,6 +1930,27 @@
         "default": "Solution",
         "experiment": "Résultats attendus",
         "challenge": "Solution du défi"
+      },
+      "scope": "Pour",
+      "period": "Bulletin",
+      "entries": {
+        "_label": "Entrées",
+        "_item": "Entrée",
+        "_add": "Ajouter une entrée",
+        "kind": "Sorte d’entrée",
+        "skill": "Habileté",
+        "level": "Niveau de rendement",
+        "progress": "Progrès",
+        "rating": "Cote",
+        "category": "Catégorie",
+        "expectationCodes": {
+          "_label": "Codes d’attentes",
+          "_item": "Code",
+          "_add": "Ajouter un code"
+        },
+        "neutral": "Texte neutre",
+        "feminine": "Texte au féminin (facultatif)",
+        "masculine": "Texte au masculin (facultatif)"
       }
     },
     "phases": {
@@ -2097,12 +2157,14 @@
         "content": "Chaque version est complète",
         "key": "Un corrigé complet",
         "safety": "Les notes de sécurité",
-        "levels": "Une version pour chaque niveau du conseil"
+        "levels": "Une version pour chaque niveau du conseil",
+        "scope": "Une matière qui correspond à « Pour »"
       },
       "warnings": {
         "sampleAnswer": "Une réponse courte n’a pas de réponse attendue dans le corrigé.",
         "subNotes": "Un plan de leçon pour la suppléance devrait avoir des notes pour la personne suppléante.",
-        "baseOnly": "Version de base seulement : aucune version par niveau."
+        "baseOnly": "Version de base seulement : aucune version par niveau.",
+        "qualifier": "Une entrée emploie le qualificatif d’un autre niveau de rendement."
       }
     },
     "workflow": {
@@ -2228,11 +2290,41 @@
       "duplicateRight": "Une correspondance est utilisée deux fois.",
       "unpairedLeft": "Chaque élément doit avoir sa correspondance.",
       "notPermutation": "L’ordre du corrigé ne correspond pas aux éléments à mettre en ordre.",
-      "orderGivesAnswer": "L’ordre affiché aux élèves donnerait la réponse."
+      "orderGivesAnswer": "L’ordre affiché aux élèves donnerait la réponse.",
+      "placeholder": "Entre accolades, seul le jeton du prénom est permis : vérifiez son orthographe.",
+      "codeInText": "N’écrivez pas de code d’attente dans le texte : choisissez-le dans « Codes d’attentes »."
     },
     "confirmSave": {
       "title": "Enregistrer les modifications?",
       "confirm": "Enregistrer quand même"
+    },
+    "commentEntries": {
+      "intro": "Chaque entrée est une phrase que l’on choisit pour un élève. Écrivez d’abord un texte neutre (épicène) ; ajoutez un texte au féminin et au masculin seulement si l’accord ne peut pas être évité.",
+      "tokenHint": "Écrivez {token} là où ira le prénom de l’élève.",
+      "groupExpectation": "Attente {codes}",
+      "groupGeneral": "Commentaires généraux",
+      "groupGeneralHint": "Les entrées sans attente sont toujours proposées.",
+      "count": "Entrées : {count} sur {max}",
+      "add": "Ajouter une entrée",
+      "addTo": "{kind} : ajouter",
+      "entry": "Entrée {n}",
+      "remove": "Retirer l’entrée {n}",
+      "anyLevel": "Tous les niveaux",
+      "anyProgress": "Tous les progrès",
+      "anyRating": "Toutes les cotes",
+      "anyCategory": "Aucune catégorie",
+      "chooseSkill": "Choisir une habileté",
+      "levelOption": "Niveau {n}",
+      "forms": "Formulations au féminin et au masculin",
+      "noCodes": "Liez des attentes dans « Curriculum » pour y rattacher des entrées.",
+      "codesHint": "Jusqu’à 4 attentes de la ressource.",
+      "categoryHint": "Facultatif : vérifie qu’une entrée n’emploie pas le qualificatif d’un autre niveau.",
+      "entryError": "Entrée {n} : {message}",
+      "kindHeadings": {
+        "strength": "Points forts",
+        "next_step": "Prochaines étapes",
+        "general": "Commentaires"
+      }
     }
   },
   "libraryReview": {

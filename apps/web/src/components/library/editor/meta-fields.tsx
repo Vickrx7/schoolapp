@@ -18,7 +18,8 @@ export type FormPatch = (changes: Partial<LibraryEditorForm>) => void;
  * « À propos »: title, summary, the school a new resource is written for, duration, materials
  * (with « Aucun matériel particulier »), formats, « Conçue pour une personne suppléante »
  * (refused for assessments, guides and projects, and for experiments without standard
- * supervision, D-077), licence, tags and keywords.
+ * supervision, D-077), licence, tags and keywords. A type that is not teaching material (the
+ * comment bank, D-129) has no duration, materials, formats or substitute box: a line says why.
  */
 export function MetaFields({
   form,
@@ -32,7 +33,6 @@ export function MetaFields({
   isNew: boolean;
 }) {
   const t = useTranslations('libraryEdit.fields');
-  const tc = useTranslations('libraryCommon');
   const errors = useEditorErrors();
   const info = TYPE_INFO[form.type];
   const subAllowed = subFriendlyAllowed(form.type, form.safetyNotes);
@@ -88,6 +88,48 @@ export function MetaFields({
           </Select>
         </Field>
       ) : null}
+      {info.teachingMaterial ? (
+        <TeachingFields form={form} patch={patch} subAllowed={subAllowed} subHint={subHint} />
+      ) : (
+        <p className="text-sm text-slate-600">{t('notTeachingMaterial')}</p>
+      )}
+
+      <TagPicker form={form} patch={patch} tags={context.tags} />
+
+      <Field
+        label={t('licence')}
+        htmlFor={fieldId('licence')}
+        hint={t('licenceHint')}
+        error={errors.at('licence')}
+      >
+        <Input
+          id={fieldId('licence')}
+          value={form.licence}
+          maxLength={200}
+          onChange={(e) => patch({ licence: e.target.value })}
+        />
+      </Field>
+    </div>
+  );
+}
+
+/** Duration, materials, formats and « Conçue pour une personne suppléante ». */
+function TeachingFields({
+  form,
+  patch,
+  subAllowed,
+  subHint,
+}: {
+  form: LibraryEditorForm;
+  patch: FormPatch;
+  subAllowed: boolean;
+  subHint: string;
+}) {
+  const t = useTranslations('libraryEdit.fields');
+  const tc = useTranslations('libraryCommon');
+  const errors = useEditorErrors();
+  return (
+    <>
       <Field
         label={t('duration')}
         htmlFor={fieldId('durationMinutes')}
@@ -181,22 +223,6 @@ export function MetaFields({
           </p>
         ) : null}
       </div>
-
-      <TagPicker form={form} patch={patch} tags={context.tags} />
-
-      <Field
-        label={t('licence')}
-        htmlFor={fieldId('licence')}
-        hint={t('licenceHint')}
-        error={errors.at('licence')}
-      >
-        <Input
-          id={fieldId('licence')}
-          value={form.licence}
-          maxLength={200}
-          onChange={(e) => patch({ licence: e.target.value })}
-        />
-      </Field>
-    </div>
+    </>
   );
 }

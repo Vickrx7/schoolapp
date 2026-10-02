@@ -5,6 +5,11 @@ import { useTranslations } from 'next-intl';
 import { useCallback } from 'react';
 import { Badge } from '@/components/ui/card';
 import { Field, Input, Select, Textarea } from '@/components/ui/field';
+import {
+  CommentEntriesEditor,
+  type CommentEntry,
+  type EntryExpectation,
+} from './comment-entries-editor';
 import { fieldId, useEditorErrors } from './editor-errors';
 import { limitsOf } from './field-limits';
 import { NumberInput } from './number-input';
@@ -102,6 +107,8 @@ export interface ContentFieldsProps {
    * goes on the fields themselves: labels, hints and buttons are in the interface's language.
    */
   lang?: 'fr-CA' | 'en-CA';
+  /** A comment bank's attentes, offered to its entries (D-129). */
+  expectations?: readonly EntryExpectation[];
 }
 
 /**
@@ -120,8 +127,10 @@ export function ContentFields({
   subjectCode,
   questionIds,
   lang = 'fr-CA',
+  expectations = [],
 }: ContentFieldsProps) {
   const t = useTranslations('libraryEdit');
+  const tc = useTranslations('libraryCommon');
   const errors = useEditorErrors();
   const labels = useFieldLabels(type, subjectCode);
   const set = (key: string, next: unknown) => onChange({ ...value, [key]: next });
@@ -211,7 +220,10 @@ export function ContentFields({
                     <option key={o} value={o}>
                       {t.has(`options.${spec.optionsKey}.${o}` as 'none')
                         ? t(`options.${spec.optionsKey}.${o}` as 'none')
-                        : o}
+                        : // The library's shared vocabulary (a comment bank's « Pour », « Bulletin »).
+                          tc.has(`${spec.optionsKey}.${o}` as 'scope.private')
+                          ? tc(`${spec.optionsKey}.${o}` as 'scope.private')
+                          : o}
                     </option>
                   ))}
                 </Select>
@@ -337,6 +349,21 @@ export function ContentFields({
                 max={limits.max}
                 shortAnswerOnly={spec.shortAnswerOnly}
                 takenIds={questionIds}
+              />
+            );
+          case 'commentEntries':
+            return (
+              <CommentEntriesEditor
+                key={spec.path}
+                label={label}
+                entries={asArray<CommentEntry>(current)}
+                onChange={(next) => set(spec.path, next)}
+                path={fieldPath}
+                scope={asString(value.scope)}
+                period={asString(value.period)}
+                expectations={expectations}
+                min={limits.min}
+                max={limits.max}
               />
             );
           case 'rubric':

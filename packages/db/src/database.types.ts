@@ -4434,6 +4434,7 @@ export type Database = {
         | 'unit_test'
         | 'diagnostic'
         | 'rubric'
+        | 'report_comments'
         | 'game'
         | 'brain_break'
         | 'song'
@@ -4622,6 +4623,7 @@ export const Constants = {
         'unit_test',
         'diagnostic',
         'rubric',
+        'report_comments',
         'game',
         'brain_break',
         'song',

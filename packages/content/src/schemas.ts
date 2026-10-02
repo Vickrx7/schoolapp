@@ -21,6 +21,7 @@ import {
   worksheet,
 } from './types/pratiquer';
 import { catholicReflection, cultureHook, parentGuide } from './types/relier';
+import { reportComments } from './types/report-comments';
 import type { SchemaContext } from './types/shared';
 
 export const CURRENT_SCHEMA_VERSION = 1;
@@ -43,6 +44,7 @@ const FACTORIES = {
   unit_test: unitTest,
   diagnostic,
   rubric,
+  report_comments: reportComments,
   game,
   brain_break: brainBreak,
   song,
@@ -96,7 +98,7 @@ export function answerKeySchema(mode: SchemaMode): z.ZodType<unknown> {
 
 /**
  * Empty content of a type, valid in `draft`. A rubric starts with one criterion per
- * achievement-chart category.
+ * achievement-chart category; a comment bank is for the « bulletin scolaire ».
  */
 export function emptyContent<T extends LibraryItemType>(type: T): ContentOf<T> {
   const content = emptyFromSchema(contentObject(type, 'draft')) as Record<string, unknown>;
@@ -107,6 +109,7 @@ export function emptyContent<T extends LibraryItemType>(type: T): ContentOf<T> {
       levels: { level1: '', level2: '', level3: '', level4: '' },
     }));
   }
+  if (type === 'report_comments') content.period = 'term';
   return content as ContentOf<T>;
 }
 

@@ -32,6 +32,9 @@ export const CONTENT_ERROR_KEYS = [
   // Cross-field rules of `final`.
   'worksheetEmpty',
   'missingCategory',
+  // Comment banks (D-131): a token other than {prénom}, a curriculum code in a text.
+  'placeholder',
+  'codeInText',
 ] as const;
 export type ContentErrorKey = (typeof CONTENT_ERROR_KEYS)[number];
 

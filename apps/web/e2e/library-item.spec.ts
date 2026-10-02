@@ -12,11 +12,13 @@ import { DEMO, chip, e2ePrefix, expectAccessible, login } from './helpers';
 const PREFIX = e2ePrefix();
 const QUIZ = `${PREFIX} Quiz des nombres`;
 const BOARD_ITEM = `${PREFIX} Jeu du conseil`;
+const BANK = `${PREFIX} Commentaires de mathématiques`;
 const NOT_FOUND = 'Cette page n’existe pas ou vous n’y avez pas accès.';
 
 let quizId = '';
 let draftId = '';
 let boardItemId = '';
+let bankId = '';
 let designatedHere = false;
 
 const mainNav = (page: Page) =>
@@ -42,6 +44,12 @@ test.beforeAll(async () => {
     title: BOARD_ITEM,
     status: 'teacher_reviewed',
     scope: 'board',
+  });
+  bankId = await insertReadyItem({
+    author: null,
+    type: 'report_comments',
+    title: BANK,
+    status: 'board_approved',
   });
   // The demo board's reviewer (supabase/seed.sql designates her; kept if already there).
   const inserted = await query(
@@ -140,6 +148,36 @@ test('the item page switches versions and keeps the key hidden until asked', asy
     'aria-pressed',
     'true',
   );
+});
+
+test('a comment bank is a teacher document, never planned, presented or used by a substitute', async ({
+  page,
+}) => {
+  await login(page, DEMO.teacher3);
+  await page.goto(`/library/items/${bankId}`);
+  await expect(page.getByRole('heading', { level: 1, name: BANK })).toBeVisible();
+  // Its entries, by attente, kind and level (D-129): the teacher's document opens first.
+  await expect(page.getByRole('tab', { name: 'Guide et corrigé' })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  );
+  const panel = page.getByRole('tabpanel');
+  await expect(panel.getByRole('heading', { name: 'Attente B1.2' })).toBeVisible();
+  await expect(panel.getByRole('heading', { name: 'Points forts' }).first()).toBeVisible();
+  await expect(panel).toContainText(/Niveau 3 · Habiletés de la pensée\s:\s\{prénom\} compare/);
+  // Not teaching material: no planning, class mode or projector.
+  await expect(page.getByRole('button', { name: 'Ajouter à ma planification' })).toHaveCount(0);
+  await expect(page.getByRole('link', { name: 'Présenter à la classe' })).toHaveCount(0);
+  await expectAccessible(page);
+  await expect(page.getByText('Banque de commentaires de bulletin').first()).toBeVisible();
+  // « Détails » has no duration, materials, formats or substitute line.
+  await page.getByRole('tab', { name: 'Détails' }).click();
+  const details = page.getByRole('tabpanel');
+  await expect(details).toContainText('B1.2');
+  for (const label of ['Durée', 'Matériel', 'Formats', 'Pour la suppléance']) {
+    await expect(details.getByText(label, { exact: true }), label).toHaveCount(0);
+  }
+  await expectAccessible(page);
 });
 
 test('printing keeps keys and level names off student sheets', async ({ page }) => {

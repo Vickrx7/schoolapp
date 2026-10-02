@@ -36,10 +36,13 @@ export function CurriculumFields({
   form,
   patch,
   context,
+  onOptions,
 }: {
   form: LibraryEditorForm;
   patch: FormPatch;
   context: EditorContext;
+  /** Told the attentes on screen after each load (a comment bank's entries use their codes). */
+  onOptions?: (options: EditorExpectation[]) => void;
 }) {
   const t = useTranslations('libraryEdit.curriculum');
   const tc = useTranslations('libraryCommon');
@@ -80,6 +83,7 @@ export function CurriculumFields({
         loadedFor.current = wanted;
         setFailed(false);
         setOptions(result.data);
+        onOptions?.(result.data);
         const available = new Set(result.data.map((e) => e.id));
         const ids = latest.current.expectationIds;
         const kept = ids.filter((id) => available.has(id));

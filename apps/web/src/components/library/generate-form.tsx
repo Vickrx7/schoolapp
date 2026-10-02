@@ -1,6 +1,13 @@
 'use client';
 
-import { LIBRARY_BUCKETS, TYPE_INFO, typesOf, type LibraryItemType } from '@lynx/content';
+import {
+  LIBRARY_BUCKETS,
+  TYPE_INFO,
+  aiDefaultDuration,
+  isLibraryItemAiType,
+  typesOf,
+  type LibraryItemAiType,
+} from '@lynx/content';
 import { ShieldCheck } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
@@ -167,7 +174,11 @@ export function GenerateForm({
     void check.run(form());
   };
 
-  const typeOptions = LIBRARY_BUCKETS.map((bucket) => ({ bucket, types: typesOf(bucket) }));
+  // The types « Créer avec l’IA » writes: a comment bank has its own request (D-132).
+  const typeOptions = LIBRARY_BUCKETS.map((bucket) => ({
+    bucket,
+    types: typesOf(bucket).filter(isLibraryItemAiType),
+  }));
   const suggested = references.references.slice(0, references.suggested);
   const others = references.references.slice(references.suggested);
 
@@ -213,11 +224,11 @@ export function GenerateForm({
                 id="gen-type"
                 value={v.itemType}
                 onChange={(e) => {
-                  const itemType = e.target.value as LibraryItemType;
+                  const itemType = e.target.value as LibraryItemAiType;
                   update({
                     itemType,
-                    durationMinutes: DURATION_CHOICES.includes(TYPE_INFO[itemType].defaultDuration)
-                      ? TYPE_INFO[itemType].defaultDuration
+                    durationMinutes: DURATION_CHOICES.includes(aiDefaultDuration(itemType))
+                      ? aiDefaultDuration(itemType)
                       : v.durationMinutes,
                     withLevels: TYPE_INFO[itemType].levelable,
                     levelIds: v.levelIds.length

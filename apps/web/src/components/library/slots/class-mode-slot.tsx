@@ -1,4 +1,4 @@
-import { canPlayOnDevices } from '@lynx/content';
+import { TYPE_INFO, canPlayOnDevices } from '@lynx/content';
 import { Presentation } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { StartQuizDialog, type QuizVersionChoice } from '@/components/class-mode/start-quiz-dialog';
@@ -38,6 +38,8 @@ export interface ClassModeSlotProps {
  * a new document holds only the slides.
  */
 export async function ClassModeSlot({ item, versionId }: ClassModeSlotProps) {
+  // A comment bank is never shown to a class (D-129).
+  if (!TYPE_INFO[item.type].teachingMaterial) return null;
   const session = await getSession();
   if (!session || !librarySchools(session).length) return null;
   const presentable = isPresentable({

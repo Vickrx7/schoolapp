@@ -32,6 +32,8 @@ export * from './lesson';
 export * from './samples';
 export * from './style';
 export * from './rubric';
+export * from './report-comments';
+export * from './types/report-comments';
 export * from './curriculum-import';
 export * from './curriculum-sql';
 export * from './uuid';

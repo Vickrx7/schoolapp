@@ -99,6 +99,11 @@ describe('database errors shown to users', () => {
     expect(fr.errors).toHaveProperty('beforePeriodStart');
   });
 
+  it('maps the « Commentaires de bulletin » code to its message (D-129)', () => {
+    expect(errorKey({ code: 'LXK01' })).toBe('reportBankNotTeaching');
+    expect(fr.errors).toHaveProperty('reportBankNotTeaching');
+  });
+
   it('maps the Phase 6 codes to their messages', () => {
     const phase6 = {
       LXU01: 'lastBoardAdmin',

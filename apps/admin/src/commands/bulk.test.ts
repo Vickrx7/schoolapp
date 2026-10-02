@@ -152,6 +152,9 @@ describe('bulk-plan options', () => {
   it('reads types and run ids strictly', () => {
     expect(parseTypes('exit_ticket')).toEqual(['exit_ticket']);
     expect(() => parseTypes('')).toThrow(/--types is required/);
+    expect(() => parseTypes('lecture')).toThrow(/unknown type/);
+    // Comment banks have their own request; they are not generated in bulk (D-129).
+    expect(() => parseTypes('quiz,report_comments')).toThrow(/not generated in bulk/);
     expect(parseRunId('5F1C0000-0000-4000-8000-000000000001')).toBe(
       '5f1c0000-0000-4000-8000-000000000001',
     );

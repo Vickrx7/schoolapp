@@ -386,8 +386,9 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   `SUB_PORTAL_DATABASE_URL` (in `.env.example`).
 - **Migrations are applied once.** The lite stack does not re-apply an edited migration: after
   editing one that is not committed yet, `stack.sh reset`. Never edit a committed migration; add
-  a new one (the latest is `20270111090000_year_plan.sql`, pgTAP file `34`; the `20270118…`
-  versions are kept for the report-comment composer and Info-parents).
+  a new one (the latest is `20270118090100_report_comments.sql`, pgTAP file `35`;
+  `20270118090200` is kept for « Commentaires de bulletin » S2, and Info-parents moves to
+  `20270125…`).
 - **Seeds come in two parts.** `supabase/seed.sql`, then `supabase/seeds/*.sql` by name
   (`config.toml` `sql_paths` for the CLI, `cmd_seed` in `stack.sh`). `seeds/20_library_demo.sql`
   is generated from `content/library/demo`: after changing the pack, run `pnpm library:seed`
@@ -486,6 +487,13 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   the current week (the year has six weeks to go). The long-range plan PDF is checked by its pages
   (`/Type /Page`), not its text (compressed). Coverage reads a class's curriculum in pages of
   1 000 rows, PostgREST's `max_rows`.
+- **Comment banks (« Commentaires de bulletin », D-129)** are library type 26, `report_comments`,
+  and are not teaching material (`TYPE_INFO.teachingMaterial`): no duration, materials or formats,
+  never in a lesson (`LXK01`), class mode, the projector or a substitute plan. Code that loops over
+  `LIBRARY_ITEM_TYPES` for « Créer avec l'IA » or bulk generation uses `LIBRARY_ITEM_AI_TYPES`
+  instead (banks have their own request). Their texts use `{prénom}` (`fillComment`); a message
+  that shows it passes it as an ICU value (`{token}`), never as literal braces. The demo pack has
+  three banks (81 items).
 - **Unit tests of the web app's server code** can import `@/…`: the root `vitest.config.ts`
   aliases it (`server/actions/session-gate.test.ts` mocks the session and the database).
 - **New accounts in browser tests go through « Bienvenue ».** The seed's demo accounts have

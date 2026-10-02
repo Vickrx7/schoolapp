@@ -40,7 +40,8 @@
     { "slug": "sols", "labelFr": "Sols" },
     { "slug": "matiere", "labelFr": "Propriétés de la matière" },
     { "slug": "energie", "labelFr": "Énergie" },
-    { "slug": "corps-humain", "labelFr": "Corps humain" }
+    { "slug": "corps-humain", "labelFr": "Corps humain" },
+    { "slug": "bulletin", "labelFr": "Bulletin" }
   ],
   "items": [
     "idee-principale-paragraphe",
@@ -120,6 +121,9 @@
     "pause-graine-qui-pousse",
     "notre-place-hymne-franco-ontarien",
     "avent-preparer-le-chemin",
-    "careme-quarante-jours"
+    "careme-quarante-jours",
+    "commentaires-mat-3e-bulletin",
+    "commentaires-fra-3e-progres",
+    "commentaires-habiletes"
   ]
 }

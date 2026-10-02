@@ -119,6 +119,9 @@ export function errorKey(error: PgLikeError | null | undefined): string {
       return 'yearPlanExpectation';
     case 'LXY03':
       return 'reportPeriodOutsideYear';
+    // « Commentaires de bulletin » (supabase/migrations/20270118090100_report_comments.sql; D-129).
+    case 'LXK01':
+      return 'reportBankNotTeaching';
     default:
       return 'unexpected';
   }

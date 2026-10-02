@@ -1,3 +1,4 @@
+import { TYPE_INFO } from '@lynx/content';
 import { useFormatter, useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
 import { Badge } from '@/components/ui/card';
@@ -17,7 +18,8 @@ function Row({ label, children }: { label: string; children: ReactNode }) {
  * « Détails »: grades, subject, attentes (« À vérifier » while unverified, D-030), duration,
  * materials, formats, tags and keywords, the faith link, sharing and provenance, e.g.
  * « Préparée avec l’IA (consigne library_item/v1, modèle claude-opus-5-5) · Approuvée le 12 oct.
- * 2026 · Utilisée dans 3 unités ». Staff-typed text is shown as typed.
+ * 2026 · Utilisée dans 3 unités ». Staff-typed text is shown as typed. A comment bank (not
+ * teaching material, D-129) has no duration, materials, formats or substitute line.
  */
 export function ItemDetails({ item }: { item: LibraryItemView }) {
   const t = useTranslations('libraryItem');
@@ -32,6 +34,7 @@ export function ItemDetails({ item }: { item: LibraryItemView }) {
   const keywords = item.keywords?.trim();
   const faithShown =
     item.faith.requiresReview || item.faith.content || Boolean(item.faith.connection?.trim());
+  const teaching = TYPE_INFO[item.type].teachingMaterial;
 
   const provenance = [
     item.boardOwn
@@ -91,18 +94,22 @@ export function ItemDetails({ item }: { item: LibraryItemView }) {
           <span className="text-slate-600">{t('details.noExpectations')}</span>
         )}
       </Row>
-      <Row label={t('details.duration')}>
-        {item.durationMinutes ? tc('duration.minutes', { count: item.durationMinutes }) : none}
-      </Row>
-      <Row label={t('details.materials')}>
-        {item.materials ? <p className="whitespace-pre-line">{item.materials}</p> : none}
-      </Row>
-      <Row label={t('details.formats')}>
-        {formats.length ? formats.map((f) => tc(`formats.${f}`)).join(' · ') : none}
-      </Row>
-      <Row label={t('details.subFriendly')}>
-        {item.subFriendly ? t('details.subFriendlyYes') : t('details.no')}
-      </Row>
+      {teaching ? (
+        <>
+          <Row label={t('details.duration')}>
+            {item.durationMinutes ? tc('duration.minutes', { count: item.durationMinutes }) : none}
+          </Row>
+          <Row label={t('details.materials')}>
+            {item.materials ? <p className="whitespace-pre-line">{item.materials}</p> : none}
+          </Row>
+          <Row label={t('details.formats')}>
+            {formats.length ? formats.map((f) => tc(`formats.${f}`)).join(' · ') : none}
+          </Row>
+          <Row label={t('details.subFriendly')}>
+            {item.subFriendly ? t('details.subFriendlyYes') : t('details.no')}
+          </Row>
+        </>
+      ) : null}
       <Row label={t('details.tags')}>
         {item.tags.length || keywords ? (
           <div className="space-y-1">

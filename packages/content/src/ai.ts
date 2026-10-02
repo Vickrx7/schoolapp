@@ -14,6 +14,7 @@ import {
   type AchievementCategory,
   type AnswerKey,
 } from './questions';
+import { normalizeCommentTemplate } from './report-comments';
 import { safetyNotesSchema, type SafetyNotesDraft } from './safety';
 import { contentObject, type ContentOf } from './schemas';
 import { matchingPermutation, matchingSeed, orderingSeed, permutationFor } from './scramble';
@@ -207,7 +208,30 @@ export function normalizeAiContent<T extends LibraryItemType>(
   });
   let content = mapFrenchStrings(type, conformed, tidy);
   if (key) content = scrambleAnswerOrder(type, content, key);
+  if (type === 'report_comments') content = normalizeCommentBank(content);
   return content as ContentOf<T>;
+}
+
+/**
+ * A comment bank's entries (D-131): the placeholder spelled `{prénom}` with the article before it
+ * in full, and a feminine or masculine text that only repeats the neutral one left empty.
+ */
+function normalizeCommentBank<C>(content: C): C {
+  if (!isPlainObject(content) || !Array.isArray(content.entries)) return content;
+  const entries = content.entries.map((raw) => {
+    if (!isPlainObject(raw)) return raw;
+    const entry = { ...raw };
+    for (const field of ['neutral', 'feminine', 'masculine'] as const) {
+      if (typeof entry[field] === 'string') {
+        entry[field] = normalizeCommentTemplate(entry[field] as string);
+      }
+    }
+    for (const field of ['feminine', 'masculine'] as const) {
+      if (entry[field] === entry.neutral) entry[field] = '';
+    }
+    return entry;
+  });
+  return { ...content, entries } as C;
 }
 
 /** Converts an `ai` answer key to the canonical shape; null when there is none. */

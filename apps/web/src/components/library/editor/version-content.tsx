@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Badge } from '@/components/ui/card';
 import { Field, Textarea } from '@/components/ui/field';
 import type { EditorVersion, LibraryEditorForm } from '@/server/library/editor-form';
+import type { EntryExpectation } from './comment-entries-editor';
 import { ContentFields } from './content-fields';
 import { fieldId, useEditorErrors } from './editor-errors';
 import { questionIdsOf } from './question-ops';
@@ -19,11 +20,14 @@ export function VersionContent({
   index,
   onChange,
   subjectCode,
+  expectations,
 }: {
   form: LibraryEditorForm;
   index: number;
   onChange: (version: EditorVersion) => void;
   subjectCode: string | null;
+  /** The item's attentes (a comment bank's entries are tied to them by code). */
+  expectations?: readonly EntryExpectation[];
 }) {
   const t = useTranslations('libraryEdit');
   const errors = useEditorErrors();
@@ -42,6 +46,7 @@ export function VersionContent({
         limitsPath=""
         subjectCode={subjectCode}
         questionIds={() => questionIdsOf(form.type, version.content)}
+        expectations={expectations}
       />
       {errors.at(`versions.${index}.content`) ? (
         <p className="text-sm text-red-600" role="alert">

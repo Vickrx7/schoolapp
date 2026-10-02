@@ -158,6 +158,10 @@ describe('the « Créer avec l’IA » form', () => {
     expect(
       effectiveGenerateValues({ ...values, itemType: 'catholic_reflection' }, context).faith,
     ).toBe(true);
+    // A comment bank has its own form (D-132): an old draft falls back to a worksheet.
+    expect(
+      effectiveGenerateValues({ ...values, itemType: 'report_comments' }, context).itemType,
+    ).toBe('worksheet');
   });
 
   it('suggests the references that fit, best first, then the others (D-074)', () => {

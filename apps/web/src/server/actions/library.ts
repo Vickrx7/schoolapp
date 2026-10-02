@@ -4,6 +4,7 @@ import {
   isLibraryItemType,
   reviewReadiness,
   type LibraryItemForm,
+  type LibraryItemType,
   type ReadinessBlockingCode,
 } from '@lynx/content';
 import type { Json, ShareScope } from '@lynx/db';
@@ -133,6 +134,21 @@ async function loadStoredItem(
 }
 
 /**
+ * A comment bank's subject code (`ere`…), for the readiness of its scope (D-129): null without a
+ * subject, undefined for any other type (or a subject that cannot be read: the check is skipped).
+ */
+async function bankSubjectCode(
+  supabase: ServerSupabase,
+  type: LibraryItemType,
+  subjectId: string | null,
+): Promise<string | null | undefined> {
+  if (type !== 'report_comments') return undefined;
+  if (!subjectId) return null;
+  const { data } = await supabase.from('subjects').select('code').eq('id', subjectId).maybeSingle();
+  return data?.code ?? undefined;
+}
+
+/**
  * The first-name guard (D-066) over a payload, with the students of the user's schools; and an
  * adaptation's original title as copied (`parentTitle`, D-092).
  */
@@ -218,7 +234,11 @@ export async function saveLibraryItem(
   if (stored && revision !== null) {
     if (stored.type !== payload.type) return fail('invalid');
     if (stored.status === 'teacher_reviewed') {
-      const errors = readinessErrors(payload, await loadBoardLevelIds(stored.boardId));
+      const errors = readinessErrors(
+        payload,
+        await loadBoardLevelIds(stored.boardId),
+        await bankSubjectCode(supabase, payload.type, payload.subjectId),
+      );
       if (Object.keys(errors).length) return fail('libraryNotReady', errors);
     }
     if (stored.shareScope !== 'private') {
@@ -328,6 +348,7 @@ export async function markReviewed(itemId: string, originality: boolean): Promis
       type: stored.type,
       gradeCodes: stored.payload.gradeCodes,
       subjectId: stored.payload.subjectId,
+      subjectCode: await bankSubjectCode(supabase, stored.type, stored.payload.subjectId),
       durationMinutes: stored.payload.durationMinutes,
       materials: stored.payload.materials,
       keywords: stored.payload.keywords,
@@ -423,6 +444,7 @@ export async function requestApproval(
       type: stored.type,
       gradeCodes: stored.payload.gradeCodes,
       subjectId: stored.payload.subjectId,
+      subjectCode: await bankSubjectCode(supabase, stored.type, stored.payload.subjectId),
       durationMinutes: stored.payload.durationMinutes,
       materials: stored.payload.materials,
       keywords: stored.payload.keywords,

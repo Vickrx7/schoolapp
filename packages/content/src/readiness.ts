@@ -3,12 +3,15 @@
  * marked reviewed, and before board approval. SQL checks the same metadata
  * (`app.library_assert_ready`, `LXL01`/`LXL02`); the `final` schemas and key completeness are
  * checked here only, since SQL cannot run Zod. Every problem is listed, not just the first.
+ * A type that is not teaching material (the comment bank, D-129) needs no duration or
+ * materials, and its subject follows its scope (`scope`).
  */
 import { validateAnswerKey, type KeyIssueCode } from './answer-key';
 import { TYPE_INFO, type LibraryItemType } from './catalog';
 import { parseAnswerKey, parseVersionContent } from './parse';
 import { questionsOf, type ContentPath } from './questions-of';
 import { safetyNotesComplete } from './safety';
+import { entryQualifierProblems } from './report-comments';
 import { contentSchema } from './schemas';
 
 export type ReadinessBlockingCode =
@@ -22,8 +25,9 @@ export type ReadinessBlockingCode =
   | 'key'
   | 'safety'
   | 'content'
-  | 'levels';
-export type ReadinessWarningCode = 'sampleAnswer' | 'subNotes' | 'baseOnly';
+  | 'levels'
+  | 'scope';
+export type ReadinessWarningCode = 'sampleAnswer' | 'subNotes' | 'baseOnly' | 'qualifier';
 
 export interface ReadinessIssue<C extends string = ReadinessBlockingCode | ReadinessWarningCode> {
   code: C;
@@ -42,6 +46,11 @@ export interface ReadinessItem {
   type: LibraryItemType;
   gradeCodes: readonly string[];
   subjectId: string | null;
+  /**
+   * The subject's code, for a comment bank's scope (religion is `ere`, a subject is not).
+   * Undefined when the caller does not know it: that part of the check is skipped.
+   */
+  subjectCode?: string | null;
   durationMinutes: number | null;
   materials: string | null;
   keywords: string | null;
@@ -84,10 +93,29 @@ export function reviewReadiness({
   const blocking: ReadinessIssue<ReadinessBlockingCode>[] = [];
   const warnings: ReadinessIssue<ReadinessWarningCode>[] = [];
 
+  const base = versions.find((v) => v.languageLevelId === null);
+  // A comment bank's scope: learning skills have no subject, religion is `ere`, a subject is not.
+  const scope =
+    item.type === 'report_comments'
+      ? (base?.content as { scope?: unknown } | undefined)?.scope
+      : undefined;
+
   if (!item.gradeCodes.length) blocking.push({ code: 'grades' });
-  if (!item.subjectId) blocking.push({ code: 'subject' });
-  if (item.durationMinutes == null) blocking.push({ code: 'duration' });
-  if (blank(item.materials)) blocking.push({ code: 'materials' });
+  if (!item.subjectId && scope !== 'learning_skills') blocking.push({ code: 'subject' });
+  if (item.type === 'report_comments') {
+    const code = item.subjectCode;
+    const wrong =
+      scope === 'learning_skills'
+        ? item.subjectId !== null
+        : item.subjectId !== null &&
+          code !== undefined &&
+          (scope === 'religion' ? code !== 'ere' : code === 'ere');
+    if (wrong) blocking.push({ code: 'scope' });
+  }
+  if (info.teachingMaterial) {
+    if (item.durationMinutes == null) blocking.push({ code: 'duration' });
+    if (blank(item.materials)) blocking.push({ code: 'materials' });
+  }
   if (blank(item.keywords) && !item.tagIds.length) blocking.push({ code: 'tags' });
   if (!versions.some((v) => v.languageLevelId === null)) blocking.push({ code: 'base' });
   if (!info.expectationsOptional && !item.expectationIds.length) {
@@ -105,6 +133,14 @@ export function reviewReadiness({
     }
     const parsed = parseVersionContent(item.type, version.content);
     if (!parsed.ok) return;
+    if (item.type === 'report_comments') {
+      const entries = (parsed.content as { entries?: unknown }).entries;
+      (Array.isArray(entries) ? entries : []).forEach((entry, i) => {
+        if (entryQualifierProblems(entry as Parameters<typeof entryQualifierProblems>[0]).length) {
+          warnings.push({ code: 'qualifier', versionIndex, path: ['entries', i] });
+        }
+      });
+    }
     const questions = questionsOf(item.type, parsed.content);
     const key = version.answerKey == null ? null : parseAnswerKey(version.answerKey);
     if (!key || !key.ok) {
@@ -142,7 +178,6 @@ export function reviewReadiness({
   }
 
   if (item.type === 'lesson_plan' && item.subFriendly) {
-    const base = versions.find((v) => v.languageLevelId === null);
     const subNotes = (base?.content as { subNotes?: unknown } | undefined)?.subNotes;
     if (typeof subNotes !== 'string' || blank(subNotes)) warnings.push({ code: 'subNotes' });
   }

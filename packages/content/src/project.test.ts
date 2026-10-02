@@ -22,7 +22,12 @@ function mismatches(specs: readonly FieldSpec[], schema: z.ZodObject, at: string
     while (inner instanceof z.ZodNullable || inner instanceof z.ZodArray) {
       inner = inner instanceof z.ZodNullable ? inner.unwrap() : inner.element;
     }
-    if (spec.kind === 'object' || spec.kind === 'objectList' || spec.kind === 'rubric') {
+    if (
+      spec.kind === 'object' ||
+      spec.kind === 'objectList' ||
+      spec.kind === 'rubric' ||
+      spec.kind === 'commentEntries'
+    ) {
       if (!(inner instanceof z.ZodObject) || !spec.fields) {
         problems.push(`${at}${spec.path}: ${spec.kind} without an object schema or fields`);
       } else {

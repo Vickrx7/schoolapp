@@ -4,7 +4,12 @@
  * over, batch prices are half, and a fake batch of every library resource type comes back through
  * the same checks as a streamed call.
  */
-import { LIBRARY_ITEM_TYPES, TYPE_INFO, type LibraryItemType } from '@lynx/content';
+import {
+  LIBRARY_ITEM_AI_TYPES,
+  TYPE_INFO,
+  aiDefaultDuration,
+  type LibraryItemAiType,
+} from '@lynx/content';
 import { describe, expect, it } from 'vitest';
 import {
   countedInputTokens,
@@ -34,7 +39,7 @@ const LEVEL_IDS = [
 ];
 
 /** A bulk request as `public.library_bulk_plan` builds it: one attente, board levels or none. */
-function bulkInput(type: LibraryItemType, levels: boolean): LibraryItemInput {
+function bulkInput(type: LibraryItemAiType, levels: boolean): LibraryItemInput {
   const info = TYPE_INFO[type];
   return libraryItemInputSchema.parse({
     itemType: type,
@@ -71,7 +76,7 @@ function bulkInput(type: LibraryItemType, levels: boolean): LibraryItemInput {
             text: 'Respecter chaque personne.',
           }
         : null,
-    durationMinutes: Math.max(5, info.defaultDuration),
+    durationMinutes: aiDefaultDuration(type),
     subFriendly: false,
     teacherNote:
       'Automne. Ressources existantes à ne pas reprendre : « Les nombres jusqu’à 1 000 ».',
@@ -84,7 +89,7 @@ const people = [
   { name: 'Isabelle Tremblay', kind: 'staff' as const },
 ];
 
-const CASES = LIBRARY_ITEM_TYPES.flatMap((type) =>
+const CASES = LIBRARY_ITEM_AI_TYPES.flatMap((type) =>
   TYPE_INFO[type].levelable
     ? [
         { type, levels: false },
@@ -153,7 +158,7 @@ describe('the worst case of a request (A3)', () => {
   });
 
   it('writes the output schema of every type as JSON', () => {
-    for (const type of LIBRARY_ITEM_TYPES) {
+    for (const type of LIBRARY_ITEM_AI_TYPES) {
       const text = schemaJsonText(libraryItemFeature.outputSchemaFor!(bulkInput(type, false)));
       expect(text.length, type).toBeGreaterThan(100);
     }

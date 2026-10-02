@@ -1,7 +1,8 @@
 /**
  * « Créer avec l’IA » (SPEC 9.3, DECISIONS D-072, D-074, D-080): a new library resource of any of
- * the 25 types, written from the curriculum, with versions per language level when asked, and a
- * link with the faith when asked. The answer becomes a private draft of the teacher who asked
+ * the 25 types of `LIBRARY_ITEM_AI_TYPES` (every type but the comment bank, which has its own
+ * feature, D-132), written from the curriculum, with versions per language level when asked, and
+ * a link with the faith when asked. The answer becomes a private draft of the teacher who asked
  * (the database's trigger on `ai_jobs`), which she reviews before using or sharing it.
  *
  * The input is built by the database from ids (`app.library_item_ai_input`): labels, attente
@@ -16,7 +17,7 @@
 import {
   BUCKET_LABELS_FR,
   GRADE_CODE_PATTERN,
-  LIBRARY_ITEM_TYPES,
+  LIBRARY_ITEM_AI_TYPES,
   TYPE_INFO,
   aiFaithContent,
   normalizeFrenchTypography,
@@ -78,7 +79,8 @@ const gradeCode = z.string().regex(GRADE_CODE_PATTERN);
 
 export const libraryItemInputSchema = z
   .object({
-    itemType: z.enum(LIBRARY_ITEM_TYPES),
+    /** Every type but the comment bank, which has its own feature (D-132). */
+    itemType: z.enum(LIBRARY_ITEM_AI_TYPES),
     gradeCodes: z.array(gradeCode).min(1).max(2),
     /** « 3e année »: French labels, from the database. */
     gradeLabels: z.array(z.string().max(40)).min(1).max(2),

@@ -10,6 +10,14 @@ import { contentObject } from './schemas';
 import { DESIGN_STAGES } from './types/explorer';
 import { BRAIN_BREAK_SPACES } from './types/jouer';
 import { GRAMMATICAL_GENDERS, WORD_CLASSES } from './types/pratiquer';
+import {
+  LEARNING_SKILL_RATINGS,
+  LEARNING_SKILLS,
+  PROGRESS_MARKS,
+  REPORT_BANK_PERIODS,
+  REPORT_BANK_SCOPES,
+  REPORT_ENTRY_KINDS,
+} from './types/report-comments';
 
 export type FieldKind =
   | 'text'
@@ -21,7 +29,8 @@ export type FieldKind =
   | 'objectList'
   | 'object'
   | 'questions'
-  | 'rubric';
+  | 'rubric'
+  | 'commentEntries';
 
 export type FieldAudience = 'student' | 'teacher';
 
@@ -33,7 +42,10 @@ export interface FieldSpec {
   labelKey: string;
   /** `teacher`: never on the student sheet. */
   audience: FieldAudience;
-  /** Nested fields of an `object`, or of each element of an `objectList` or `rubric`. */
+  /**
+   * Nested fields of an `object`, or of each element of an `objectList`, `rubric` or
+   * `commentEntries`.
+   */
   fields?: FieldSpec[];
   /** `select` values; labels are `libraryCommon.<optionsKey>.<value>`. */
   options?: readonly string[];
@@ -220,6 +232,26 @@ const SPECS: Record<LibraryItemType, Draft[]> = {
           textarea('level3'),
           textarea('level4'),
         ]),
+      ],
+    }),
+  ],
+  // Teacher-only (no student sheet): the editor shows the entries with their own editor.
+  report_comments: [
+    ...common(),
+    select('scope', REPORT_BANK_SCOPES, 'reportBankScopes'),
+    select('period', REPORT_BANK_PERIODS, 'reportBankPeriods'),
+    field('commentEntries')('entries', {
+      fields: [
+        select('kind', REPORT_ENTRY_KINDS, 'reportEntryKinds'),
+        select('skill', LEARNING_SKILLS, 'learningSkills', { nullable: true }),
+        number('level', { nullable: true }),
+        select('progress', PROGRESS_MARKS, 'progressMarks', { nullable: true }),
+        select('rating', LEARNING_SKILL_RATINGS, 'learningSkillRatings', { nullable: true }),
+        select('category', ACHIEVEMENT_CATEGORIES, 'categories', { nullable: true }),
+        strings('expectationCodes'),
+        textarea('neutral'),
+        textarea('feminine'),
+        textarea('masculine'),
       ],
     }),
   ],

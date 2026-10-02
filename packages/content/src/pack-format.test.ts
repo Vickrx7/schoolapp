@@ -109,7 +109,7 @@ describe('content pack format', () => {
       contentSchemaVersion: 1,
     });
     expect(pack.items.map((i) => i.key)).toEqual(seed.items);
-    expect(pack.items).toHaveLength(78);
+    expect(pack.items).toHaveLength(81);
     expect(pack.levels.map((l) => l.code)).toEqual(BOARD_DEFAULT_LEVELS.map((l) => l.code));
     expect(pack.catholicReferences).toEqual([
       { type: 'reflection', title: 'Prendre soin de la création' },

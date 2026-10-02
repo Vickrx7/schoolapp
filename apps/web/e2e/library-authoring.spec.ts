@@ -186,6 +186,99 @@ test('a teacher writes a quiz with every question kind, marks it reviewed and sh
   await expectAccessible(page);
 });
 
+test('a teacher writes a comment bank by hand, marks it reviewed without duration or materials and shares it', async ({
+  page,
+}) => {
+  test.setTimeout(90_000);
+  const title = `${PREFIX} Commentaires de mathématiques`;
+  await login(page, DEMO.teacher3);
+  await page.goto('/library/new');
+  await page.getByRole('link', { name: /^Banque de commentaires de bulletin/ }).click();
+  await page.waitForURL(/\/library\/new\?type=report_comments/);
+  await expect(
+    page.getByRole('heading', {
+      level: 1,
+      name: /^Nouvelle ressource\s:\sBanque de commentaires de bulletin$/,
+    }),
+  ).toBeVisible();
+  // Not teaching material (D-129): no duration, materials, formats or substitute box.
+  await expect(page.getByText(/^Une banque de commentaires n’a ni durée/)).toBeVisible();
+  await expect(page.getByLabel('Durée')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Aucun matériel particulier' })).toHaveCount(0);
+  await expect(
+    page.getByRole('checkbox', { name: 'Conçue pour une personne suppléante' }),
+  ).toHaveCount(0);
+
+  await page.getByLabel('Titre', { exact: true }).fill(title);
+  await expect(page.getByRole('checkbox', { name: '3e année' })).toBeChecked();
+  await page.getByLabel('Matière', { exact: true }).selectOption({ label: 'Mathématiques' });
+  // Every field of a teacher's document says « Enseignant·e seulement ».
+  await expect(page.getByRole('combobox', { name: /^Pour\b/ })).toHaveValue('subject');
+  await expect(page.getByRole('combobox', { name: /^Bulletin\b/ })).toHaveValue('term');
+  await page.getByLabel('Mots-clés').fill('bulletin, numération');
+
+  // Two entries in « Commentaires généraux », with {prénom} where the first name goes.
+  await page
+    .getByRole('button', { name: /^Point fort\s:\sajouter \(Commentaires généraux\)$/ })
+    .click();
+  const first = page.getByRole('group', { name: 'Entrée 1', exact: true });
+  await first.getByLabel('Texte neutre').fill('{prénom} explique sa démarche avec clarté.');
+  await first.getByText('Formulations au féminin et au masculin').click();
+  await first
+    .getByLabel('Texte au féminin (facultatif)')
+    .fill('{prénom} est de plus en plus confiante.');
+  await page
+    .getByRole('button', { name: /^Prochaine étape\s:\sajouter \(Commentaires généraux\)$/ })
+    .click();
+  const second = page.getByRole('group', { name: 'Entrée 2', exact: true });
+  await second.getByLabel('Niveau de rendement').selectOption({ label: 'Niveau 2' });
+  await second
+    .getByLabel('Texte neutre')
+    .fill('{prénom} gagnerait à vérifier ses calculs avec une droite numérique.');
+  await expectAccessible(page);
+
+  await save(page);
+  await page.waitForURL(/\/library\/items\/[0-9a-f-]{36}\/edit$/);
+  const itemId = /items\/([0-9a-f-]{36})/.exec(page.url())![1]!;
+  await page.reload();
+  await expect(
+    page.getByRole('group', { name: 'Entrée 2', exact: true }).getByLabel('Niveau de rendement'),
+  ).toHaveValue('2');
+
+  // The checklist asks for no duration, materials or attente; « J’ai révisé… » goes through.
+  await page.goto(`/library/items/${itemId}`);
+  await expect(readiness(page, 'duration')).toHaveCount(0);
+  await expect(readiness(page, 'materials')).toHaveCount(0);
+  await expect(readiness(page, 'expectations')).toHaveCount(0);
+  await expect(readiness(page, 'scope')).toHaveAttribute('data-ready', 'true');
+  await expect(page.getByRole('button', { name: 'Ajouter à ma planification' })).toHaveCount(0);
+  let dialog = await openDialog(
+    page,
+    page.getByRole('button', { name: 'J’ai révisé cette ressource' }),
+  );
+  await dialog.getByRole('checkbox', { name: /^Je confirme que ce contenu est original/ }).check();
+  await dialog.getByRole('button', { name: 'Marquer comme révisée' }).click();
+  await expect(page.getByText('Ressource marquée comme révisée.')).toBeVisible();
+
+  dialog = await openDialog(page, page.getByRole('button', { name: 'Partager', exact: true }));
+  await dialog.getByRole('radio', { name: 'Avec mon école' }).check();
+  await dialog.getByRole('button', { name: 'Partager', exact: true }).click();
+  await expect(page.getByText('Ressource partagée avec votre école.')).toBeVisible();
+  await page.getByRole('tab', { name: 'Détails' }).click();
+  await expect(
+    page
+      .getByRole('tabpanel', { name: 'Détails' })
+      .getByText('Partagée avec l’école', { exact: true }),
+  ).toBeVisible();
+  // The teacher's document groups the entries.
+  await page.getByRole('tab', { name: 'Guide et corrigé' }).click();
+  const doc = page.getByRole('tabpanel', { name: 'Guide et corrigé' });
+  await expect(doc.getByRole('heading', { name: 'Commentaires généraux' })).toBeVisible();
+  await expect(doc).toContainText(/Au féminin\s:\s\{prénom\} est de plus en plus confiante\./);
+  await expect(doc).toContainText(/Niveau 2\s:\s\{prénom\} gagnerait à vérifier/);
+  await expectAccessible(page);
+});
+
 test('a student’s first name is confirmed before sharing', async ({ page }) => {
   const title = `${PREFIX} Fiche sur Samuel de Champlain`;
   const itemId = await insertReadyItem({

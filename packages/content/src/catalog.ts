@@ -1,7 +1,8 @@
 /**
- * The library catalogue (SPEC 9.3, DECISIONS D-061): 6 buckets and 25 item types, with the flags
- * the rest of the package (and the database) rely on. The bucket of each type must match
- * `app.library_bucket_for` in `supabase/migrations/20260928160700_library.sql`.
+ * The library catalogue (SPEC 9.3, DECISIONS D-061, D-129): 6 buckets and 26 item types, with the
+ * flags the rest of the package (and the database) rely on. The bucket of each type must match
+ * the newest `app.library_bucket_for` (`supabase/migrations/20260928160700_library.sql`, replaced
+ * by `20270118090100_report_comments.sql` for the 26th type, the comment bank).
  */
 
 export const LIBRARY_BUCKETS = [
@@ -37,6 +38,7 @@ export const LIBRARY_ITEM_TYPES = [
   'unit_test',
   'diagnostic',
   'rubric',
+  'report_comments',
   // jouer
   'game',
   'brain_break',
@@ -89,9 +91,17 @@ export interface TypeInfo {
    * `supervision = 'standard'` (see `subFriendlyAllowed`).
    */
   subFriendlyAllowed: boolean;
+  /**
+   * Material a lesson uses (true for every type but the comment bank, D-129). A type that is not
+   * has no duration, materials or formats to choose, and never goes into a lesson (`LXK01`),
+   * class mode, the projector or a substitute plan.
+   */
+  teachingMaterial: boolean;
+  /** The AI feature that writes this type (« Créer avec l'IA » or the bank's own, D-132). */
+  aiGenerator: 'library_item' | 'report_comment_bank';
   defaultFormats: ItemFormats;
-  /** Minutes; always within the AI request range (5–240). */
-  defaultDuration: number;
+  /** Minutes; always within the AI request range (5–240). Null when not teaching material. */
+  defaultDuration: number | null;
 }
 
 const PRINT: ItemFormats = { printable: true, projectable: false, interactive: false };
@@ -107,6 +117,8 @@ interface Flags {
   safety?: boolean;
   expectationsOptional?: boolean;
   neverSubFriendly?: boolean;
+  teachingMaterial?: boolean;
+  aiGenerator?: TypeInfo['aiGenerator'];
 }
 
 function info(
@@ -115,7 +127,7 @@ function info(
   audience: TypeInfo['audience'],
   flags: Flags,
   defaultFormats: ItemFormats,
-  defaultDuration: number,
+  defaultDuration: number | null,
 ): TypeInfo {
   const keyed = flags.keyed ?? false;
   return {
@@ -129,13 +141,15 @@ function info(
     needsSafety: flags.safety ?? false,
     expectationsOptional: flags.expectationsOptional ?? false,
     subFriendlyAllowed: !(flags.neverSubFriendly ?? false),
+    teachingMaterial: flags.teachingMaterial ?? true,
+    aiGenerator: flags.aiGenerator ?? 'library_item',
     defaultFormats,
     defaultDuration,
   };
 }
 
 // Letters of the plan's type table: K keyed, Q questions, L levelable, A levels for approval,
-// S safety, E attentes optional, ⊘ never sub-friendly.
+// S safety, E attentes optional, ⊘ never sub-friendly; the comment bank is not teaching material.
 export const TYPE_INFO: Record<LibraryItemType, TypeInfo> = {
   lesson_plan: info('enseigner', 'Plan de leçon', 'teacher', {}, PRINT, 60),
   anchor_chart: info('enseigner', 'Référentiel', 'student', { levelable: true }, PRINT_PROJECT, 20),
@@ -252,6 +266,19 @@ export const TYPE_INFO: Record<LibraryItemType, TypeInfo> = {
     30,
   ),
   rubric: info('evaluer', 'Grille d’évaluation', 'student', { neverSubFriendly: true }, PRINT, 10),
+  report_comments: info(
+    'evaluer',
+    'Banque de commentaires de bulletin',
+    'teacher',
+    {
+      neverSubFriendly: true,
+      expectationsOptional: true,
+      teachingMaterial: false,
+      aiGenerator: 'report_comment_bank',
+    },
+    PRINT,
+    null,
+  ),
   game: info('jouer', 'Jeu', 'student', { questions: true, levelable: true }, PLAY, 20),
   brain_break: info('jouer', 'Pause active', 'student', { expectationsOptional: true }, PROJECT, 5),
   song: info('jouer', 'Chanson', 'student', { expectationsOptional: true }, PRINT_PROJECT, 10),
@@ -289,6 +316,26 @@ export const TYPE_INFO: Record<LibraryItemType, TypeInfo> = {
     10,
   ),
 };
+
+/** The types « Créer avec l'IA » writes (`library_item`): every type but the comment bank. */
+export type LibraryItemAiType = Exclude<LibraryItemType, 'report_comments'>;
+
+/**
+ * The types whose AI generator is `library_item` (« Créer avec l'IA », bulk generation), in
+ * catalogue order. A comment bank has its own request (D-132).
+ */
+export const LIBRARY_ITEM_AI_TYPES = LIBRARY_ITEM_TYPES.filter(
+  (t): t is LibraryItemAiType => TYPE_INFO[t].aiGenerator === 'library_item',
+) as unknown as readonly [LibraryItemAiType, ...LibraryItemAiType[]];
+
+export function isLibraryItemAiType(value: unknown): value is LibraryItemAiType {
+  return typeof value === 'string' && (LIBRARY_ITEM_AI_TYPES as readonly string[]).includes(value);
+}
+
+/** A type's default duration for an AI request (5–240 minutes): only « Créer avec l'IA » types. */
+export function aiDefaultDuration(type: LibraryItemAiType): number {
+  return Math.min(240, Math.max(5, TYPE_INFO[type].defaultDuration ?? 30));
+}
 
 export const BUCKET_LABELS_FR: Record<LibraryBucket, string> = {
   enseigner: 'Enseigner',

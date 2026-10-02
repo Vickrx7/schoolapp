@@ -709,6 +709,10 @@ sizes, and a violation would fail with no path and cost a paid retry, so the `ai
 them to `normalizeAiContent` and to `validate`, which reports paths. A new field needs schema
 version 2 and a conversion. `@lynx/ai`, `@lynx/domain` and the apps depend on `@lynx/content`,
 never the reverse.
+_Amended by « Commentaires de bulletin » (2026-10-02):_ 26 types: the comment bank `report_comments` (D-129) is
+the 26th, in « Évaluer ». `TYPE_INFO` gains `teachingMaterial` (false only for the bank: no
+duration, materials or formats) and `aiGenerator` (`library_item`, or the bank's own feature);
+`LIBRARY_ITEM_AI_TYPES` lists the 25 types « Créer avec l'IA » writes.
 
 **D-062 — Answer keys stay in their own table and reach staff views only.** Every question has
 an id (`^[a-z][a-z0-9]{0,7}$`) and its answer lives in `library_item_answer_keys.answer_key`
@@ -862,6 +866,11 @@ the key's completeness are checked by the app (`reviewReadiness`), since SQL can
 the renderer copes with content that fails them. A reviewed item must stay ready when saved
 (« Remettez-la en brouillon pour l'enregistrer incomplète »). No images in Phase 4: « appuis
 visuels » are text suggestions.
+_Amended by « Commentaires de bulletin » (2026-10-02):_ a type that is not teaching material (the comment bank,
+D-129) needs no duration or materials and no attente; it needs a subject unless its base version's
+`scope` is `learning_skills`, and the app checks that the subject fits the scope (`scope`: none
+for learning skills, Enseignement religieux for religion, another subject otherwise). An entry that
+uses another level's qualifier is only a warning (`qualifier`, D-131).
 
 **D-068 — Search: Postgres full-text search with a French configuration without accents, in one
 function with the visibility rule written in.** `app.french_unaccent` copies `french` and removes
@@ -918,6 +927,12 @@ official or verified files. It keeps the rows `seed.sql` already has (ids, wordi
 parent) and only gives them the files' sort order, and the files keep every seeded code with its
 wording (tested). A real board gets curriculum files only through the import command, after the
 « À vérifier » review.
+_Amended by « Commentaires de bulletin » (2026-10-02):_ 81 items: three comment banks (D-129), the board's own
+and approved by its reviewer (**Assumption**: written by us, « à valider en classe »):
+`commentaires-mat-3e-bulletin` (bulletin scolaire, B1.1, B1.2, B1.3, B2.3, B2.5, by level),
+`commentaires-fra-3e-progres` (bulletin de progrès, C1.1 to C1.3 and D1.1, by progress mark) and
+`commentaires-habiletes` (the six learning skills by rating, 3e and 5e, no subject), and a global
+tag « Bulletin ».
 
 **D-072 — On-demand generation: the database builds the request, and the result is a private
 draft (amends D-038).** The AI feature `library_item` is requested with
@@ -983,6 +998,9 @@ lessons link the item (« Utilisée dans 3 unités »), recounted by a trigger s
 a link never inflates it; substitute plans and printouts are not counted. _Why:_ a worksheet is
 material for a lesson, not a lesson of its own, and inserting lessons shifts « Aujourd'hui » and
 substitute plans (D-010).
+_Amended by « Commentaires de bulletin » (2026-10-02):_ a comment bank is not teaching material: a lesson never
+links one (`LXK01`, the lessons trigger, so `add_library_item_to_unit` too), and « Ajouter à ma
+planification » and « Joindre à cette leçon » are not offered for it.
 
 **D-077 — Substitute plans use library items (amends D-048 and D-052).** A separate loader,
 `app.sub_plan_library_sources(teacher, school)` (the teacher calls
@@ -1016,6 +1034,7 @@ Its student pages are printed per group as the library prints them (D-075), with
 of names and level words applied to AI activities. Known limits: the sources fingerprint does not
 cover resources (one changed between reading and publishing shows at the next rebuild), and days
 that can no longer change do not count for « once per absence ».
+_Amended by « Commentaires de bulletin » (2026-10-02):_ comment banks are never sub-friendly (the constraint).
 
 **D-078 — Licensing, roles and navigation (Assumption).** Library pages, navigation and actions
 need a school with the Library module where the user is a teacher, principal or vice-principal,
@@ -1103,6 +1122,8 @@ projected on the slides (« Étape 2 sur 6 », « Sécurité », « Vrai »…) 
 (D-090), like the content; the player's controls stay in the interface language. The button opens
 the projector as a new page load, not an in-app navigation, so the projector's tab never holds the
 item page's data (its « Guide et corrigé », the teacher's note, the safety notes).
+_Amended by « Commentaires de bulletin » (2026-10-02):_ a comment bank is a teacher document: never presented,
+projectable or interactive (a constraint), and never played on devices.
 
 **D-083 — Student devices reach the database only through a private schema run by a dedicated role
 (amends D-012; the pattern of D-049).** The functions live in schema `class_portal`, which PostgREST
@@ -1413,6 +1434,9 @@ same counting unit and lists the curriculum the same way: `groupExpectationsByDo
 `isCoverageUnit` (`@lynx/domain`) decides what both count; the library's page is unchanged (its
 unit tests were not touched). What is counted differs: here, the class's own teaching, never
 resources.
+_Amended by « Commentaires de bulletin » (2026-10-02):_ a comment bank (D-129) is never counted:
+it is not a resource for teaching an attente, so it neither fills a gap nor keeps bulk generation
+from planning one.
 
 **D-095 — Bulk generation is an operator tool that writes board drafts through the Message Batches
 API (Assumption on who runs it).** Only the operator launches it (`pnpm admin bulk-plan`,
@@ -1586,6 +1610,9 @@ item a pack wrote leaves its key in `content_pack_removed_items` (board, slug, k
 person), and later versions report it as `skipped_deleted_locally` (« deleted here, not
 re-created ») instead of creating it again; the operator removes that row to get it back from the
 next version (`docs/content-packs.md`).
+_Amended by « Commentaires de bulletin » (2026-10-02):_ a learning-skills comment bank has no subject: the
+export keeps it with `subjectCode` null, and the import accepts a null subject for such a bank
+only (its base version's `scope`).
 
 **D-101 — Events, audit and retention for Phase 5 (amends D-018 and D-079).** Events carry ids only:
 `library_bulk_run.started {runId}` and `library_bulk_run.cancel_requested {runId}` (the worker's
@@ -2626,6 +2653,77 @@ through the redaction and the outbound check with the exact text shown before se
 validated (codes from the input, weeks inside the year, no overlap per subject; unused attentes a
 warning, not a paid retry, D-080), never applied automatically, from the school's budget (D-040).
 
+## « Commentaires de bulletin » (post-MVP 2)
+
+Feature #2 after the pilot build: comment banks for the report card in the library (« Banque de
+commentaires de bulletin »), AI that writes such banks from curriculum labels only, and a composer
+per class and report period that runs in the teacher's browser (« Bulletins »). Built in three
+slices: S1 (the bank as library type 26; D-129, D-131), S2 (« Créer une banque avec l'IA »; D-132)
+and S3 (the composer, the terms and « Aujourd'hui »; D-130, D-133 to D-135). The lead answered the
+plan's questions for Mike (2026-10-02), and the slices build on them: (1) no AI on an individual
+student's comment; (2) comments stay on the device; (3) 1,000 characters by default and plain
+spaces on copy, both adjustable; (4) the AI may write general banks when no attentes are loaded,
+marked as drafts to read; (5) the composer's drafts are erased when another account signs in on
+the browser and 60 days after the report goes home (for the lawyer). The feature is never called
+« Commentaires » alone: that word is the feedback button (D-116).
+
+**D-129 — Comment banks are library type 26, `report_comments` (amends D-061, D-067, D-071, D-076,
+D-077, D-082, D-094 and D-100).** A bank is library content like any other: the board's or a teacher's, shared
+with the first-name check (D-066), approved, faith-reviewed when it is about Enseignement religieux
+(D-064), found by search (« bulletin », « points forts », « prochaines étapes », « habiletés
+d'apprentissage »), adapted (D-092) and carried in content packs. Its content (schema version 1)
+says what it is for (`scope`: a subject, the learning skills and work habits, or religion) and for
+which report (`period`: « Bulletin de progrès », « Bulletin scolaire » or both), then holds 1 to 160
+entries: a kind (« Point fort », « Prochaine étape », « Commentaire général »), the mark it is for
+(an achievement level 1 to 4 for the report card, a progress mark « Progresse avec difficulté /
+bien / très bien » for the progress report, a learning skill and its rating E, T, S or N; none:
+for every mark), an optional achievement-chart category, up to four attente codes, and a neutral
+text of at most 400 characters with optional feminine and masculine texts. In `final` mode a
+skill is set exactly for learning skills, a level only for a report card, a progress mark only for
+a progress report, a rating only with a skill; no token other than `{prénom}` between braces
+(`placeholder`) and no curriculum code in a text (`codeInText`). « Évaluer », for teachers only
+(no student sheet), one base version and no levels. It is not teaching material
+(`TYPE_INFO.teachingMaterial: false`): no duration, materials or formats (printable only), never
+in a lesson (`LXK01`), class mode, the projector or a substitute plan (constraints and the lessons
+trigger); a bank prints and downloads as a PDF through the library's routes, since it holds no
+student data. The subject is optional only for a learning-skills bank, and attentes are optional
+for every bank (production boards have no curriculum, D-030: a bank without attentes holds
+« commentaires généraux » for its subject). The editor shows the entries grouped by attente (or
+learning skill), then by kind, each with its mark, category, attente codes and texts; the item
+page's teacher document groups them the same way. « Créer avec l'IA » and bulk generation refuse
+the type (22023; banks have their own request, D-132, and are not generated in bulk,
+**Assumption**). The database checks the metadata (`app.library_assert_ready`); the app checks the
+scope against the subject (`reviewReadiness`, D-067). The demo pack has three banks (D-071).
+_Why:_ teachers already keep comment banks; as library content they get review, sharing and
+approval for free, and a 26th type costs less than a new store. As built (slice S1): migrations
+`20270118090000_report_comments_type.sql` (the enum value) and
+`20270118090100_report_comments.sql`; pgTAP `35_report_comments`; `@lynx/content`
+`types/report-comments.ts` and `report-comments.ts`; the editor's `CommentEntriesEditor`. A bank
+never counts in « Couverture du curriculum » (D-094): it is not a resource for teaching an attente.
+
+**D-131 — The `{prénom}` placeholder and elision.** Bank texts name the student only as
+`{prénom}`; the app never stores a student's name in a bank. Filling it in (`fillComment`) elides
+« de », « que », « lorsque » and « puisque » before a first name that calls for it, with the
+typographic apostrophe and a capital kept at a sentence start (« D’Aïcha »): before a vowel,
+accented or not, before H (taken as mute: « d’Hugo », **Assumption**) and before Y followed by a
+consonant (« d’Yves »), but not before Y followed by a vowel (« de Youssef »); an elided article
+written in a template comes back in full before a name that does not elide (« d’{prénom} » →
+« de Samuel »). The way back (`unfillComment`) replaces the first name written with its capital as
+a whole word, so a stored comment holds the template and `fillComment` gives back the same text
+(a wrong elision typed by hand is corrected). Neutral (épicène) wording comes first; the feminine
+and masculine texts are optional, for when agreement cannot be avoided; the wording is chosen per
+student on the device, and the app never infers gender from a name. A comment's length counts
+Unicode code points after NFC, a line break as one (**Assumption**); no-break spaces can become
+plain spaces on copy. Qualifiers: an entry for one achievement level must not carry another
+level's qualifier (`entryQualifierProblems`, a readiness warning). For report cards the qualifiers
+are « avec une efficacité limitée », « avec une certaine efficacité », « avec beaucoup
+d'efficacité » and « avec un très haut degré d'efficacité » (knowledge: « limitée », « partielle »,
+« bonne », « approfondie »), **Assumption** to check against the official achievement chart
+(D-030). Rubrics and the `library_item/v1` prompt still use « avec efficacité » for level 3 and
+« avec beaucoup d'efficacité » for level 4 (D-080): aligning them needs a prompt v2 and is left
+open. _Why:_ the name must never reach a bank, and a composer that stores templates keeps first
+names off the device's storage too (D-130).
+
 ## Schema additions beyond SPEC section 8
 
 `school_years`, `rooms`, `class_grades`, `school_cycle_anchors`, `unit_lesson_expectations`,
@@ -2648,4 +2746,5 @@ cap, `no_derivatives`, `bulk_run_id` and the pack columns (`pack_slug`, `pack_it
 `staff_invitations`, `feedback`, `audit_action_catalog` and `system_heartbeats`; on `users` the
 terms' version and acceptance and the checklist's dismissal; on `classes` `sample_owner_id` and
 `students_purged_at`. « Mon année » adds `report_periods` and `unit_expectations`, and on `units`
-the planned window (`planned_start_on`, `planned_end_on`).
+the planned window (`planned_start_on`, `planned_end_on`). « Commentaires de bulletin » adds no
+table, only the `library_item_type` value `report_comments` (D-129).

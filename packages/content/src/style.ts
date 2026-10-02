@@ -31,6 +31,13 @@ export const MACHINE_KEYS: ReadonlySet<string> = new Set([
   'wordClass',
   'gender',
   'schema',
+  // A comment bank's enumerated values and attente codes (its texts are prose).
+  'scope',
+  'period',
+  'skill',
+  'progress',
+  'rating',
+  'expectationCodes',
 ]);
 
 /** Applies `fn` to every prose string of a JSON value (machine keys are left alone). */

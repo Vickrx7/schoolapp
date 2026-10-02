@@ -131,7 +131,11 @@ export const contentPackItemSchema = z
     title: nonBlank(200),
     summary: text(1000),
     gradeCodes: list(gradeCode, 1, 4),
-    subjectCode: z.string({ error: 'invalid' }).regex(/^[a-z0-9_]{2,32}$/, 'invalid'),
+    /** Null only for a learning-skills comment bank (D-129). */
+    subjectCode: z
+      .string({ error: 'invalid' })
+      .regex(/^[a-z0-9_]{2,32}$/, 'invalid')
+      .nullable(),
     expectations: list(packExpectationSchema, 0, 12),
     durationMinutes: z
       .number({ error: 'invalid' })
@@ -163,6 +167,13 @@ export const contentPackItemSchema = z
     const issue: Issue = (path, message) => ctx.addIssue({ code: 'custom', path, message });
     const info = TYPE_INFO[item.type];
     if (!info) return;
+
+    if (item.subjectCode === null) {
+      const base = item.versions.find((v) => v.level === null);
+      if (item.type !== 'report_comments' || base?.content.scope !== 'learning_skills') {
+        issue(['subjectCode'], 'required');
+      }
+    }
 
     const levels = item.versions.map((v) => v.level ?? 'base');
     if (levels.filter((l) => l === 'base').length !== 1) issue(['versions'], 'baseVersion');
@@ -487,7 +498,7 @@ export function packItemFromSeed(
 ): ContentPackItem {
   if (!PACK_ITEM_KEY_PATTERN.test(item.slug)) throw new Error(`item slug too long: ${item.slug}`);
   const expectations = item.expectations.map((e) => {
-    const curriculumVersion = options.curriculumVersions[item.subjectCode];
+    const curriculumVersion = item.subjectCode && options.curriculumVersions[item.subjectCode];
     if (!curriculumVersion) {
       throw new Error(`no curriculum version for subject ${item.subjectCode} (${item.slug})`);
     }
@@ -624,7 +635,8 @@ export const packExportRowSchema = z.object({
   title: z.string(),
   summary: nullableText,
   gradeCodes: z.array(z.string()),
-  subjectCode: z.string(),
+  /** Null for an item without a subject (a learning-skills comment bank). */
+  subjectCode: z.string().nullable(),
   expectations: z.array(
     z.object({ curriculumVersion: z.string(), gradeCode: z.string(), code: z.string() }),
   ),

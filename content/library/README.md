@@ -16,23 +16,30 @@ content/library/
 ## The demo pack
 
 « Ressources de démonstration (à valider en classe) », version `2026.1`, for the demo board
-`csc-demo`. It has 78 original items in Canadian French and 36 global tags. The depth is in 3e and
+`csc-demo`. It has 81 original items in Canadian French and 37 global tags. The depth is in 3e and
 5e année, in Français, Mathématiques and Sciences et technologie (SPEC §9.3, « depth before
 breadth »):
 
 | Subject                 | 3e  | 5e  | Several grades                                             |
 | ----------------------- | --- | --- | ---------------------------------------------------------- |
-| Français                | 16  | 9   | 2: a song, a culture hook                                  |
-| Mathématiques           | 17  | 15  | none                                                       |
+| Français                | 17  | 9   | 2: a song, a culture hook                                  |
+| Mathématiques           | 18  | 15  | none                                                       |
 | Sciences et technologie | 5   | 7   | 1: a brain break                                           |
 | Other subjects          |     |     | 6: 2 EPS brain breaks, an arts culture hook, 3 reflections |
+| No subject              |     |     | 1: the learning-skills comment bank (3e and 5e)            |
 
-- **Buckets:** Enseigner 9, Pratiquer 26, Explorer 13, Évaluer 7, Jouer 14, Relier 9.
+- **Buckets:** Enseigner 9, Pratiquer 26, Explorer 13, Évaluer 10, Jouer 14, Relier 9.
 - **Levels:** 19 items have a version for each of the four board levels: the 18 approved reading
   passages, worksheets, exit tickets and quizzes, plus Marc's exit ticket.
 - **Workflow:**
-  - 57 items are `board_created` and approved by the content reviewer
+  - 60 items are `board_created` and approved by the content reviewer
     (`nathalie.roy@demo.lynx.test`). The three Catholic reflections are also faith-reviewed.
+  - Three of them are report card comment banks (« Banque de commentaires de bulletin », D-129):
+    `commentaires-mat-3e-bulletin` (bulletin scolaire, by achievement level),
+    `commentaires-fra-3e-progres` (bulletin de progrès, by progress mark) and
+    `commentaires-habiletes` (the six learning skills by rating, no subject). Their entries use
+    `{prénom}` for the student's first name, neutral (épicène) wording first, and the achievement
+    chart's qualifiers; like everything here, they are to be checked in class.
   - 21 items belong to Isabelle (3e), Marc (5e) or Paul Leblanc (EPS) to show the workflow:
     reviewed and shared with the school, shared with the board, private drafts (five of them
     AI-generated, such as `comparer-des-nombres-brouillon`), and three items waiting in the
@@ -101,7 +108,7 @@ and the curriculum files in `content/curriculum`, and checks the following:
   - no CP, CE1… or `NOT_CANADIAN` words;
   - non-breaking spaces inside « » and before `:`.
 - **The pack as a whole:**
-  - it has 78 items, at least 3 per bucket, with unique slugs and ids;
+  - it has 81 items, at least 3 per bucket, with unique slugs and ids;
   - every tag is defined, and the pack converts to SQL;
   - every attente exists in the seeded curriculum of `seed.sql` or in a curriculum file of
     `content/curriculum`, for one of the item's grades. `seed.sql` includes four 5e Français
@@ -131,7 +138,7 @@ and the curriculum files in `content/curriculum`, and checks the following:
 - **Readiness:** reviewed and approved items pass `reviewReadiness`, with no warning other than
   « Version de base seulement ».
 
-The test expects exactly 78 items, and a fixed number of approved items per type that need levels.
+The test expects exactly 81 items, and a fixed number of approved items per type that need levels.
 Adding or removing an item means updating those numbers on purpose.
 
 ## Writing rules

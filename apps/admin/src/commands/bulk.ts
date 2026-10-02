@@ -35,7 +35,13 @@ import {
   worstCaseUsd,
   type ModelPrice,
 } from '@lynx/ai';
-import { LIBRARY_ITEM_TYPES, TYPE_INFO, type LibraryItemType } from '@lynx/content';
+import {
+  LIBRARY_ITEM_AI_TYPES,
+  TYPE_INFO,
+  aiDefaultDuration,
+  isLibraryItemType,
+  type LibraryItemAiType,
+} from '@lynx/content';
 import type { Json } from '@lynx/db';
 import type { CliOption, CliValues } from '../args';
 import {
@@ -64,21 +70,27 @@ const list = (value: string | undefined) =>
     .map((v) => v.trim())
     .filter(Boolean);
 
-/** --types: 1 to 6 distinct resource types, never a Catholic reflection (D-095). */
-export function parseTypes(value: string | undefined): LibraryItemType[] {
+/**
+ * --types: 1 to 6 distinct resource types, never a Catholic reflection (D-095) nor a comment
+ * bank (D-129: banks have their own request and are not generated in bulk).
+ */
+export function parseTypes(value: string | undefined): LibraryItemAiType[] {
   const types = list(value);
   if (!types.length) throw new CliError('--types is required (e.g. worksheet,quiz)');
   if (types.length > 6) throw new CliError('--types takes at most 6 types');
   if (new Set(types).size !== types.length) throw new CliError('--types lists a type twice');
   for (const type of types) {
-    if (!(LIBRARY_ITEM_TYPES as readonly string[]).includes(type)) {
+    if (!isLibraryItemType(type)) {
       throw new CliError(`--types: unknown type "${type}"`);
+    }
+    if (!(LIBRARY_ITEM_AI_TYPES as readonly string[]).includes(type)) {
+      throw new CliError(`--types: "${type}" is not generated in bulk`);
     }
     if (type === 'catholic_reflection') {
       throw new CliError('--types: faith reflections are generated one at a time, not in bulk');
     }
   }
-  return types as LibraryItemType[];
+  return types as LibraryItemAiType[];
 }
 
 /** --grade: one or two grade codes (3, or 3,5; K1 and K2 for the kindergarten years). */
@@ -122,7 +134,7 @@ function wholeNumber(value: string | undefined, key: CliOption, min: number, max
 export interface PlanOptions {
   grades: string[];
   subjectCode: string;
-  types: LibraryItemType[];
+  types: LibraryItemAiType[];
   maxCost: number;
   levels: 'all' | 'none';
   perExpectation: number;
@@ -179,9 +191,7 @@ export function planParams(options: PlanOptions, subjectId: string): Record<stri
     levels: options.levels,
     perExpectation: options.perExpectation,
     subFriendly: options.subFriendly,
-    durations: Object.fromEntries(
-      options.types.map((t) => [t, Math.min(240, Math.max(5, TYPE_INFO[t].defaultDuration))]),
-    ),
+    durations: Object.fromEntries(options.types.map((t) => [t, aiDefaultDuration(t)])),
     ...(options.strandCodes ? { strandCodes: options.strandCodes } : {}),
     ...(options.expectationCodes ? { expectationCodes: options.expectationCodes } : {}),
     ...(options.fromCoverage ? { fromCoverage: { minApproved: options.fromCoverage } } : {}),

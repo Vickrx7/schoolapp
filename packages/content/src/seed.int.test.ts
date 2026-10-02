@@ -155,7 +155,7 @@ describe('library catalogue and database (H3 1)', () => {
 });
 
 describe('the demo library seed (H3 2)', () => {
-  it('loads the pack: 78 items in the 6 buckets, with the ids of their slugs', async () => {
+  it('loads the pack: 81 items in the 6 buckets, with the ids of their slugs', async () => {
     const { rows } = await pool.query<{ slug: string; version: string; board_id: string }>(
       'select slug, version, board_id from public.content_packs where id = $1',
       [PACK_ID],
@@ -163,7 +163,7 @@ describe('the demo library seed (H3 2)', () => {
     expect(rows).toEqual([{ slug: 'demo', version: '2026.1', board_id: BOARD }]);
 
     const seeded = await seededItems();
-    expect(seeded.size).toBe(78);
+    expect(seeded.size).toBe(81);
     expect([...seeded.keys()].sort()).toEqual(pack.items.map(idOf).sort());
     expect(new Set([...seeded.values()].map((i) => i.bucket))).toEqual(new Set(LIBRARY_BUCKETS));
     // The pack's global tags, once each.
@@ -240,7 +240,7 @@ describe('the demo library seed (H3 2)', () => {
 
   it('passes the database’s own readiness rules, for approval when approved or requested', async () => {
     const reviewed = items.filter((i) => i.status !== 'draft');
-    expect(reviewed.length).toBe(71);
+    expect(reviewed.length).toBe(74);
     for (const item of reviewed) {
       // Raises LXL01 (with what is missing) or LXL02, as the workflow functions would.
       await expect(

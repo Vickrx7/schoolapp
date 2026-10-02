@@ -7,7 +7,7 @@ import {
   contentSchema,
   GRADE_CODE_PATTERN,
   isLibraryItemType,
-  LIBRARY_ITEM_TYPES,
+  LIBRARY_ITEM_AI_TYPES,
   TYPE_INFO,
 } from '@lynx/content';
 import { getLocale } from 'next-intl/server';
@@ -50,7 +50,8 @@ function aiError(context: string, error: { code?: string; message?: string }): s
 const generateSchema = z
   .object({
     schoolId: z.uuid(),
-    itemType: z.enum(LIBRARY_ITEM_TYPES),
+    // Every type but the comment bank, which has its own request (D-132).
+    itemType: z.enum(LIBRARY_ITEM_AI_TYPES),
     gradeCodes: z.array(z.string().regex(GRADE_CODE_PATTERN)).min(1, 'required').max(2, 'tooMany'),
     subjectId: z.uuid({ error: 'required' }),
     expectationIds: z.array(z.uuid()).max(5, 'tooMany'),
