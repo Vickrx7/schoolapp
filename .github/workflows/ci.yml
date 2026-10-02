@@ -224,6 +224,7 @@ jobs:
         working-directory: apps/web
         run: |
           pnpm exec playwright install --with-deps chromium
+          curl -sk -w ' %{http_code}\n' https://localhost/api/health/ready
           password="$(grep '^POSTGRES_PASSWORD=' ../../deploy/docker/.env | cut -d= -f2-)"
           E2E_BASE_URL=https://localhost E2E_IGNORE_HTTPS_ERRORS=1 MAILPIT_URL=http://127.0.0.1:54324 \
             DATABASE_URL="postgresql://postgres:$password@127.0.0.1:54322/postgres" \
@@ -257,4 +258,10 @@ jobs:
         if: failure()
         run: |
           docker compose ps -a
-          docker compose logs --no-color --timestamps
+          # The database logs every statement of the migrations: its end only, and the app's last.
+          for service in db auth rest api-gateway mailpit migrate; do
+            docker compose logs --no-color --timestamps --tail=80 "$service"
+          done
+          for service in worker web proxy; do
+            docker compose logs --no-color --timestamps --tail=300 "$service"
+          done

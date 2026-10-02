@@ -470,7 +470,7 @@ test('the teacher confirms the substitute’s report', async () => {
 
     // The banner is gone.
     await teacher.goto('/today');
-    await expect(teacher.getByRole('heading', { name: 'Aujourd’hui' })).toBeVisible();
+    await expect(teacher.getByRole('heading', { name: 'Aujourd’hui', exact: true })).toBeVisible();
     await expect(teacher.getByTestId('report-banner')).toHaveCount(0);
   } finally {
     await teacher.close();

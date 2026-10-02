@@ -164,8 +164,9 @@ if (selfHosted) {
       '# The mail relay that sends the sign-in codes.',
       `SMTP_HOST=${mode === 'ci' ? 'mailpit' : ''}`,
       `SMTP_PORT=${mode === 'ci' ? '1025' : '587'}`,
-      `SMTP_USER=${mode === 'ci' ? 'ci' : ''}`,
-      `SMTP_PASS=${mode === 'ci' ? 'ci' : ''}`,
+      // The CI mail catcher takes mail without a login (Auth sends a login only over TLS).
+      'SMTP_USER=',
+      'SMTP_PASS=',
       `SMTP_ADMIN_EMAIL=${mode === 'ci' ? 'no-reply@example.test' : ''}`,
       'SMTP_SENDER_NAME=Lynx École',
       `AUTH_EMAIL_MAX_FREQUENCY=${mode === 'ci' ? '1s' : '60s'}`,

@@ -108,7 +108,7 @@ fi
 # 4. One transaction.
 tables="$(jq -r '.counts | keys[]' "$manifest")"
 for table in "${AUTH_SESSION_TABLES[@]}"; do
-  [[ "$(sql "$url" -c "select to_regclass('$table') is not null")" == t ]] && tables+=$'\n'"$table"
+  if [[ "$(sql "$url" -c "select to_regclass('$table') is not null")" == t ]]; then tables+=$'\n'"$table"; fi
 done
 truncate_list="$(printf '%s\n' "$tables" | awk -F. 'NF == 2 { printf "%s\"%s\".\"%s\"", sep, $1, $2; sep = ", " }')"
 expected="$(jq -r --arg q "'" '.counts | to_entries
