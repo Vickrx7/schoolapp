@@ -51,6 +51,7 @@ import {
   boardBySlug,
   CliError,
   need,
+  operatorPath,
   type CliContext,
   type Command,
 } from '../context';
@@ -480,11 +481,6 @@ export function packError(error: { code?: string; message: string }, what: strin
 // ---------------------------------------------------------------------------------------
 // Commands
 // ---------------------------------------------------------------------------------------
-
-/** A path the operator typed, from where the command was typed (pnpm runs in apps/admin). */
-function operatorPath(given: string): string {
-  return path.resolve(process.env.INIT_CWD ?? process.cwd(), given);
-}
 
 async function boardPeople(ctx: CliContext, boardId: string): Promise<KnownPerson[]> {
   const { data, error } = await ctx.db.rpc('content_pack_people', { p_board_id: boardId });

@@ -1034,7 +1034,15 @@ create table tests.counts as
   select (select count(*) from public.audit_log where board_id = tests.id('board_a')) as board_a,
          (select count(*) from public.audit_log where board_id = tests.id('board_b')) as board_b;
 select ok((select board_b > 0 from tests.counts), 'board B has audit rows before');
+-- Its whole log exported first (D-122; 33_board_audit_export.test.sql tests the rule).
+create table tests.export_b as
+  select max(a.id) as last_id, count(*)::int as n from public.audit_log a
+  where a.board_id = tests.id('board_b')
+     or a.school_id in (select s.id from public.schools s where s.board_id = tests.id('board_b'));
+grant select on tests.export_b to service_role;
 select tests.as_service();
+select public.operator_log_audit_export(tests.id('board_b'), (select last_id from tests.export_b),
+  (select n from tests.export_b));
 insert into tests.results
 values ('del_b', public.operator_delete_board(tests.id('board_b'),
   (select slug from public.boards where id = tests.id('board_b'))));

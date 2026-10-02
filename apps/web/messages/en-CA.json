@@ -3116,7 +3116,8 @@
         "ai_budget_changed": "School AI budget changed"
       },
       "audit_log": {
-        "exported": "Audit log exported ({count, plural, one {# entry} other {# entries}})"
+        "exported": "Audit log exported ({count, plural, one {# entry} other {# entries}})",
+        "operator_exported": "Whole audit log exported for the board ({count, plural, one {# entry} other {# entries}})"
       },
       "operator": {
         "access": "IP Lynx accessed the board’s data ({reason})"

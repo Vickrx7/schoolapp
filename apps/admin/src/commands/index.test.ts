@@ -16,7 +16,14 @@ const PHASE_5 = [
 ];
 
 /** Phase 6: pilot operations (DECISIONS D-105, D-106, D-107, D-112). */
-const PHASE_6 = ['set-retention', 'status', 'delete-user', 'delete-board', 'log-operator-access'];
+const PHASE_6 = [
+  'set-retention',
+  'status',
+  'delete-user',
+  'delete-board',
+  'log-operator-access',
+  'export-audit',
+];
 
 /** Phase 5 and 6 commands whose slice has landed (each tested in its own module). */
 const AVAILABLE = new Set([
@@ -32,6 +39,7 @@ const AVAILABLE = new Set([
   'log-operator-access',
   'delete-user',
   'delete-board',
+  'export-audit',
   'set-retention',
   'status',
 ]);

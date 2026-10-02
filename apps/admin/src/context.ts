@@ -4,6 +4,7 @@
  * created only when a command first uses them, so listing the commands, the commands that are not
  * available yet and the unit tests need neither.
  */
+import path from 'node:path';
 import { loadEnv, adminEnvSchema, type AdminEnv } from '@lynx/config';
 import type { Database } from '@lynx/db';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
@@ -115,9 +116,14 @@ export async function schoolByPath(ctx: CliContext, path: string) {
 
 export const money = (n: number) => `${n.toFixed(2)} USD`;
 
+/** A path the operator typed, from where the command was typed (pnpm runs in apps/admin). */
+export function operatorPath(given: string): string {
+  return path.resolve(process.env.INIT_CWD ?? process.cwd(), given);
+}
+
 export function csvCell(v: string | number | boolean): string {
   const s = String(v);
-  return /[",\n]/.test(s) ? `"${s.replaceAll('"', '""')}"` : s;
+  return /[",\r\n]/.test(s) ? `"${s.replaceAll('"', '""')}"` : s;
 }
 
 /** Writes rows 500 at a time; each call is one statement. */

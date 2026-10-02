@@ -72,8 +72,9 @@ export const CLI_OPTIONS = {
   'class-days': { type: 'string' },
   'ai-usage-days': { type: 'string' },
   'feedback-days': { type: 'string' },
-  // Accounts and boards (commands/staff.ts, D-106, D-107): log-operator-access --board --reason,
-  // delete-user --email, delete-board --board --confirm <slug> --exported.
+  // Accounts and boards (commands/staff.ts, D-106, D-107, D-122): log-operator-access --board
+  // --reason, delete-user --email, export-audit --board --out, delete-board --board --confirm
+  // <slug> --exported.
   reason: { type: 'string' },
   'all-boards': { type: 'boolean' },
   confirm: { type: 'string' },

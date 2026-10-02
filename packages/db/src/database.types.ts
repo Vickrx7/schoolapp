@@ -4064,6 +4064,28 @@ export type Database = {
         Args: { p_user_id: string; p_all_boards?: boolean };
         Returns: Json;
       };
+      operator_export_audit: {
+        Args: { p_board_id: string; p_after_id?: number; p_limit?: number };
+        Returns: {
+          id: number;
+          occurred_at: string;
+          action: string;
+          audience: string;
+          category: string;
+          school_id: string;
+          school_name: string;
+          actor_type: Database['public']['Enums']['audit_actor_type'];
+          actor_user_id: string;
+          actor_name: string;
+          entity_type: string;
+          entity_id: string;
+          details: Json;
+        }[];
+      };
+      operator_log_audit_export: {
+        Args: { p_board_id: string; p_last_id: number; p_rows: number };
+        Returns: undefined;
+      };
       operator_set_staff_active: {
         Args: { p_user_id: string; p_active: boolean };
         Returns: boolean;

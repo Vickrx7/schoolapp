@@ -7,18 +7,23 @@
  *   pnpm admin log-operator-access --board csc-demo --reason support|incident|restore|migration
  *   pnpm admin delete-user --email prof@conseil.ca [--all-boards] --yes
  *     (refused while the account is active, LXU06; a person in several boards needs --all-boards)
+ *   pnpm admin export-audit --board csc-exemple --out journal-csc-exemple.csv
+ *     (the board's whole audit log, every audience and date, as CSV; recorded for the board, D-122)
  *   pnpm admin delete-board --board csc-exemple --confirm csc-exemple --exported --yes
- *     (after the board was offered its audit log and library export)
+ *     (after the board was offered its library, and within 7 days of export-audit)
  *
  * Addresses travel in request bodies (`accountIdByEmail`), never in a URL (D-119). The database
  * deletes the data (`operator_delete_staff_account`, `operator_delete_board`); this command then
  * deletes the Auth accounts, which hold the address and sign-in history.
  */
+import { writeFileSync } from 'node:fs';
 import {
   accountIdByEmail,
   boardBySlug,
   CliError,
+  csvCell,
   need,
+  operatorPath,
   type CliContext,
   type Command,
 } from '../context';
@@ -86,6 +91,8 @@ export interface DeletedBoard {
   libraryItems: number;
   people: number;
   auditRows: number;
+  /** Entries written after the last `export-audit`: they are not in its file. */
+  auditRowsSinceExport?: number;
 }
 
 export function deletedBoardSummary(
@@ -93,12 +100,112 @@ export function deletedBoardSummary(
   result: DeletedBoard,
   authDeleted: number,
 ): string {
+  const since = result.auditRowsSinceExport ?? 0;
   return [
     `Deleted ${name}: ${result.schools} school(s), ${result.classes} class(es),`,
     `${result.libraryItems} resource(s), ${result.people} person(s) who worked there only`,
-    `(${authDeleted} sign-in account(s) deleted), ${result.auditRows} audit row(s).`,
+    `(${authDeleted} sign-in account(s) deleted), ${result.auditRows} audit row(s)`,
+    `(${since} written after the export, not in its file).`,
     'People who also work in another board keep their account there.',
   ].join(' ');
+}
+
+/** What the database refuses when a board is deleted, in words the operator can act on. */
+export function deleteBoardErrorMessage(
+  error: { code?: string; message: string },
+  slug: string,
+): string {
+  if (error.code === 'LXB01') {
+    return `Export ${slug}'s whole audit log first (pnpm admin export-audit --board ${slug} --out <file>), at most 7 days before, and give the file to the board.`;
+  }
+  return `delete board ${slug}: ${error.message}`;
+}
+
+/** One entry of a board's whole audit log (`operator_export_audit`). */
+export interface AuditExportRow {
+  id: number;
+  occurred_at: string;
+  action: string;
+  audience: string | null;
+  category: string | null;
+  school_id: string | null;
+  school_name: string | null;
+  actor_type: string;
+  actor_user_id: string | null;
+  actor_name: string | null;
+  entity_type: string | null;
+  entity_id: string | null;
+  details: unknown;
+}
+
+export const AUDIT_EXPORT_HEADER = [
+  'id',
+  'occurred_at',
+  'action',
+  'audience',
+  'category',
+  'school_id',
+  'school_name',
+  'actor_type',
+  'actor_user_id',
+  'actor_name',
+  'entity_type',
+  'entity_id',
+  'details',
+] as const;
+
+/**
+ * A cell that a spreadsheet will not run: names are typed by people, so a leading = + - @ (or a
+ * tab or carriage return) is kept as text with a quote first, as the web app's CSV does.
+ */
+function textCell(value: string | number | null): string {
+  if (value === null) return '';
+  const s = String(value);
+  return csvCell(/^[=+\-@\t\r]/.test(s) ? `'${s}` : s);
+}
+
+/**
+ * The board's records (D-122): UTF-8 with a byte order mark (accents in Excel), comma-separated,
+ * one line per entry, oldest first; the details as JSON, as stored.
+ */
+export function auditExportCsv(rows: readonly AuditExportRow[]): string {
+  const lines = rows.map((r) =>
+    [
+      r.id,
+      r.occurred_at,
+      r.action,
+      r.audience,
+      r.category,
+      r.school_id,
+      r.school_name,
+      r.actor_type,
+      r.actor_user_id,
+      r.actor_name,
+      r.entity_type,
+      r.entity_id,
+      JSON.stringify(r.details ?? {}),
+    ]
+      .map(textCell)
+      .join(','),
+  );
+  return `\uFEFF${[AUDIT_EXPORT_HEADER.join(','), ...lines].join('\r\n')}\r\n`;
+}
+
+/** Every entry of the board, 1,000 at a time (the API's page). */
+async function wholeAuditLog(ctx: CliContext, boardId: string): Promise<AuditExportRow[]> {
+  const rows: AuditExportRow[] = [];
+  for (let after = 0; ;) {
+    const { data, error } = await ctx.db.rpc('operator_export_audit', {
+      p_board_id: boardId,
+      p_after_id: after,
+      p_limit: 1000,
+    });
+    if (error) throw new CliError(`export the audit log: ${error.message}`);
+    const page = (data ?? []) as unknown as AuditExportRow[];
+    rows.push(...page);
+    if (page.length < 1000) return rows;
+    after = page[page.length - 1]!.id;
+  }
 }
 
 /** Deletes an Auth account; one already gone counts as deleted. False when there was none. */
@@ -139,13 +246,40 @@ export const staffCommands: Record<string, Command> = {
     return deletedAccountSummary(email, data as unknown as DeletedAccount, authDeleted);
   },
 
+  async 'export-audit'(ctx) {
+    // Both options before the database: the file is never half written.
+    const slug = need(ctx, 'board');
+    const out = operatorPath(need(ctx, 'out'));
+    const board = await boardBySlug(ctx, slug);
+    const rows = await wholeAuditLog(ctx, board.id);
+    try {
+      // Never over another file; readable by the operator only (it names staff).
+      writeFileSync(out, auditExportCsv(rows), { flag: 'wx', mode: 0o600 });
+    } catch (err) {
+      throw new CliError(`write ${out}: ${(err as Error).message}`);
+    }
+    const lastId = rows.length > 0 ? rows[rows.length - 1]!.id : 0;
+    const { error } = await ctx.db.rpc('operator_log_audit_export', {
+      p_board_id: board.id,
+      p_last_id: lastId,
+      p_rows: rows.length,
+    });
+    if (error) throw new CliError(`record the export: ${error.message}`);
+    return [
+      `Wrote ${rows.length} audit entr${rows.length === 1 ? 'y' : 'ies'} of ${board.name} to ${out}`,
+      '(every audience and date). The board sees the export in its log. The file names staff:',
+      'give it to the board (its privacy office), then delete your copy. delete-board accepts',
+      'this export for 7 days.',
+    ].join(' ');
+  },
+
   async 'delete-board'(ctx) {
     const slug = need(ctx, 'board');
     if (ctx.values.confirm?.trim() !== slug)
       throw new CliError(`Type the board's slug again to confirm: --confirm ${slug}`);
     if (!ctx.values.exported)
       throw new CliError(
-        'Offer the board its audit log (CSV, « Journal d’audit ») and its library (pnpm admin export-pack) first, then add --exported.',
+        'Offer the board its library (pnpm admin export-pack) first, then add --exported. Its whole audit log must be exported too (pnpm admin export-audit), at most 7 days before.',
       );
     if (!ctx.values.yes)
       throw new CliError(
@@ -156,7 +290,7 @@ export const staffCommands: Record<string, Command> = {
       p_board_id: board.id,
       p_confirm_slug: slug,
     });
-    if (error) throw new CliError(`delete board ${slug}: ${error.message}`);
+    if (error) throw new CliError(deleteBoardErrorMessage(error, slug));
     const result = data as unknown as DeletedBoard;
     let authDeleted = 0;
     for (const userId of result.userIds) {

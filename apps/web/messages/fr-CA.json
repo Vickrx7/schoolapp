@@ -3116,7 +3116,8 @@
         "ai_budget_changed": "Budget d’IA de l’école modifié"
       },
       "audit_log": {
-        "exported": "Journal d’audit exporté ({count, plural, one {# entrée} other {# entrées}})"
+        "exported": "Journal d’audit exporté ({count, plural, one {# entrée} other {# entrées}})",
+        "operator_exported": "Journal d’audit complet exporté pour le conseil ({count, plural, one {# entrée} other {# entrées}})"
       },
       "operator": {
         "access": "Accès d’IP Lynx aux données du conseil ({reason})"
