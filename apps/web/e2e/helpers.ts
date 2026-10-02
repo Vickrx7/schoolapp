@@ -102,7 +102,15 @@ export async function acceptWelcome(page: Page, profile: { honorific?: string } 
 }
 
 // Seeded Mondays without school (see supabase/seed.sql).
-const SEEDED_MONDAYS_OFF = new Set(['2026-10-12', '2026-12-21', '2026-12-28']);
+const SEEDED_MONDAYS_OFF = new Set([
+  '2026-10-12',
+  '2026-12-21',
+  '2026-12-28',
+  '2027-02-15',
+  '2027-03-15',
+  '2027-03-29',
+  '2027-05-24',
+]);
 
 /** A coming Monday with school and no seeded check-offs (as YYYY-MM-DD). */
 export function nextSchoolMonday(): string {
@@ -145,6 +153,16 @@ const SEEDED_DAYS_OFF = new Set([
     const d = new Date(Date.UTC(2026, 11, 21 + i));
     return d.toISOString().slice(0, 10);
   }),
+  '2027-02-15',
+  '2027-03-15',
+  '2027-03-16',
+  '2027-03-17',
+  '2027-03-18',
+  '2027-03-19',
+  '2027-03-26',
+  '2027-03-29',
+  '2027-05-24',
+  '2027-06-04',
 ]);
 
 const iso = (d: Date) => d.toISOString().slice(0, 10);

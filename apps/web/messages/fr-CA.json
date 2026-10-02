@@ -178,7 +178,12 @@
       "levels": "Ajoutez une version pour chaque niveau du conseil avant de proposer la ressource au conseil.",
       "safety": "Complétez les notes de sécurité.",
       "content": "Une version n’est pas complète : vérifiez les champs signalés."
-    }
+    },
+    "yearPlanWindow": "Ces dates sont hors de l’année scolaire de la classe.",
+    "yearPlanExpectation": "Une attente choisie n’est pas de la matière de l’unité ou des années d’études de la classe.",
+    "reportPeriodOutsideYear": "La période doit être comprise dans l’année scolaire.",
+    "datesBoth": "Choisissez la première et la dernière semaine, ou ni l’une ni l’autre.",
+    "beforePeriodStart": "Cette date doit suivre le début de la période."
   },
   "days": {
     "1": "lundi",
@@ -401,7 +406,9 @@
     "markTaught": "Marquer comme donnée",
     "unmark": "Retirer la coche",
     "next": "Prochaine",
-    "number": "Leçon {n}"
+    "number": "Leçon {n}",
+    "unitExpectations": "Attentes de l’unité",
+    "otherExpectations": "Autres attentes"
   },
   "calendar": {
     "title": "Calendrier",
@@ -3199,7 +3206,8 @@
       "contact": "Coordonnées et heures des écoles",
       "staff": "Personnel invité",
       "calendar": "Journées pédagogiques et congés au calendrier",
-      "reviewers": "Personnes qui approuvent les ressources"
+      "reviewers": "Personnes qui approuvent les ressources",
+      "reportPeriods": "Périodes de bulletin"
     },
     "system": {
       "title": "État du système",
@@ -3384,7 +3392,27 @@
       "deleteLabel": "Supprimer l’année scolaire {name}",
       "deleteConfirm": "Supprimer l’année scolaire « {name} »?",
       "deleted": "Année scolaire supprimée.",
-      "empty": "Aucune année scolaire. Ajoutez celle qui commence."
+      "empty": "Aucune année scolaire. Ajoutez celle qui commence.",
+      "periods": {
+        "title": "Périodes de bulletin",
+        "open": "Périodes de bulletin",
+        "openLabel": "Périodes de bulletin de l’année {name}",
+        "dialogTitle": "Périodes de bulletin — {name}",
+        "intro": "Les dates des bulletins de l’Ontario pour cette année. Le personnel des écoles du conseil les voit. Laissez une période vide pour la retirer.",
+        "startsOn": "Début de la période d’évaluation",
+        "endsOn": "Fin de la période d’évaluation",
+        "dueOn": "Saisie au plus tard le (facultatif)",
+        "issuedOn": "Remise aux familles (facultatif)",
+        "prefill": "Préremplir avec les dates habituelles",
+        "prefillNote": "Dates habituelles proposées : à vérifier avec le calendrier du conseil.",
+        "clear": "Effacer les dates",
+        "clearLabel": "Effacer les dates : {kind}",
+        "saved": "Périodes de bulletin enregistrées.",
+        "none": "Aucune période de bulletin.",
+        "window": "Du {start} au {end}",
+        "due": "saisie au plus tard le {date}",
+        "issued": "remise le {date}"
+      }
     },
     "reviewers": {
       "title": "Approbation des ressources",
@@ -3679,5 +3707,51 @@
     "officeHelp": "Si le problème continue, donnez cette référence au secrétariat de l’école : {ref}.",
     "deviceButton": "Signaler ce problème",
     "deviceHelp": "Montre cette référence à ton enseignant·e : {ref}."
+  },
+  "reportPeriods": {
+    "kinds": {
+      "progress": "Bulletin de progrès",
+      "term1": "Bulletin scolaire — 1re étape",
+      "term2": "Bulletin scolaire — 2e étape"
+    },
+    "outsideYear": "Hors de l’année"
+  },
+  "yearPlan": {
+    "unit": {
+      "title": "Planification de l’unité",
+      "planned": "Prévue du {start} au {end}",
+      "summary": "{weeks, plural, one {# semaine} other {# semaines}} · {days, plural, =0 {aucun jour de classe} one {# jour de classe} other {# jours de classe}}",
+      "noWindow": "Pas encore de dates prévues.",
+      "outsideYear": "Ces dates sont hors de l’année scolaire de la classe.",
+      "expectations": "Attentes visées",
+      "noExpectations": "Aucune attente visée pour l’instant.",
+      "showTexts": "Voir le texte des attentes",
+      "edit": "Modifier la planification"
+    },
+    "dialog": {
+      "newTitle": "Planifier une unité",
+      "editTitle": "Planification de l’unité",
+      "subject": "Matière",
+      "unitTitle": "Titre de l’unité",
+      "firstWeek": "Première semaine",
+      "lastWeek": "Dernière semaine",
+      "noWeek": "Pas de dates",
+      "week": "Semaine du {date} ({days, plural, =0 {pas d’école} one {# jour de classe} other {# jours de classe}})",
+      "summary": "{weeks, plural, one {# semaine} other {# semaines}} · {days, plural, =0 {aucun jour de classe} one {# jour de classe} other {# jours de classe}}",
+      "expectations": "Attentes visées",
+      "expectationsHint": "Cochez une attente globale pour choisir tous ses contenus.",
+      "filter": "Filtrer les attentes",
+      "filterPlaceholder": "Code ou mot",
+      "noMatch": "Aucune attente ne correspond.",
+      "loading": "Chargement des attentes…",
+      "noneLoaded": "Aucune attente n’est chargée pour cette matière et cette année d’études.",
+      "selected": "{count, plural, =0 {Aucune attente choisie} one {# attente choisie} other {# attentes choisies}}",
+      "unverified": "À vérifier",
+      "unverifiedNotice": "Attentes résumées, à vérifier contre le programme officiel ; la liste peut être incomplète.",
+      "description": "Description (facultatif)",
+      "save": "Enregistrer",
+      "openUnit": "Ouvrir l’unité",
+      "saved": "Planification enregistrée."
+    }
   }
 }

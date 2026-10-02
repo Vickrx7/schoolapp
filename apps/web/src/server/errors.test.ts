@@ -84,6 +84,21 @@ describe('database errors shown to users', () => {
     expect(fr.errors).toHaveProperty('classPortalNotConfigured');
   });
 
+  it('maps the « Mon année » codes to their messages (D-123, D-124)', () => {
+    const yearPlan = {
+      LXY01: 'yearPlanWindow',
+      LXY02: 'yearPlanExpectation',
+      LXY03: 'reportPeriodOutsideYear',
+    };
+    for (const [code, key] of Object.entries(yearPlan)) {
+      expect(errorKey({ code }), code).toBe(key);
+      expect(fr.errors, code).toHaveProperty(key);
+    }
+    // Field errors of the domain's unitPlanSchema and reportPeriodFormSchema.
+    expect(fr.errors).toHaveProperty('datesBoth');
+    expect(fr.errors).toHaveProperty('beforePeriodStart');
+  });
+
   it('maps the Phase 6 codes to their messages', () => {
     const phase6 = {
       LXU01: 'lastBoardAdmin',

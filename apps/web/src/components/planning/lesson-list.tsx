@@ -39,6 +39,7 @@ export function LessonList({
   nextLessonId,
   today,
   expectations,
+  unitExpectationIds = [],
   library,
 }: {
   /** The signed-in user: drafts are kept per user. */
@@ -49,6 +50,8 @@ export function LessonList({
   nextLessonId: string | null;
   today: string;
   expectations: ExpectationOption[];
+  /** The attentes the unit aims at (D-123): the lesson form lists them first. */
+  unitExpectationIds?: string[];
   /**
    * « Joindre une ressource » (D-076): the class's grade and the unit's subject open the library
    * on the right results; null when the teacher has no library screens (D-078).
@@ -247,6 +250,7 @@ export function LessonList({
               lessonId={editing === 'new' ? undefined : editing.id}
               initial={editing === 'new' ? undefined : editing}
               expectations={expectations}
+              unitExpectationIds={unitExpectationIds}
               onDone={() => setEditing(null)}
             />
           </DialogContent>

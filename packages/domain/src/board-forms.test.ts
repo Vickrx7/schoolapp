@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import {
   calendarEventFormSchema,
+  reportPeriodFormSchema,
   schoolContactFormSchema,
   schoolYearFormSchema,
   staffInviteFormSchema,
   staffRoleFormSchema,
+  unitPlanSchema,
 } from './forms';
 
 const board = '0b000000-0000-4000-8000-000000000001';
@@ -195,5 +197,100 @@ describe('« Années scolaires »', () => {
         }),
       ),
     ).toEqual(['name:tooLong', 'startsOn:invalidDate']);
+  });
+});
+
+describe('« Périodes de bulletin » (D-124)', () => {
+  const progress = {
+    startsOn: '2026-09-02',
+    endsOn: '2026-10-30',
+    dueOn: '2026-11-06',
+    issuedOn: '',
+  };
+
+  it('takes each kind, or null for none; blank optional dates are null', () => {
+    expect(reportPeriodFormSchema.parse({ progress, term1: null, term2: null })).toEqual({
+      progress: { ...progress, issuedOn: null },
+      term1: null,
+      term2: null,
+    });
+  });
+
+  it('needs both window dates, the end not before the start, and later dates after the start', () => {
+    expect(
+      issues(
+        reportPeriodFormSchema.safeParse({
+          progress: { startsOn: '2026-10-30', endsOn: '2026-09-02', dueOn: '2026-09-01' },
+          term1: { startsOn: '', endsOn: '2027-01-29' },
+          term2: { startsOn: '2027-02-01', endsOn: '2027-06-11', issuedOn: '2027-01-31' },
+        }),
+      ),
+    ).toEqual([
+      'progress.endsOn:endBeforeStart',
+      'progress.dueOn:beforePeriodStart',
+      'term1.startsOn:invalidDate',
+      'term2.issuedOn:beforePeriodStart',
+    ]);
+  });
+
+  it('knows only the three kinds', () => {
+    expect(reportPeriodFormSchema.safeParse({ progress: null, term1: null }).success).toBe(false);
+  });
+});
+
+describe('« Planification de l’unité » (D-123)', () => {
+  const base = {
+    classId: klass,
+    subjectId: '0f000000-0000-4000-8000-000000000001',
+    title: '  Les fractions ',
+    description: '',
+    startsOn: '2027-01-11',
+    endsOn: '2027-02-05',
+    expectationIds: [
+      '20000000-0000-4000-8000-000000030b11',
+      '20000000-0000-4000-8000-000000030b12',
+      '20000000-0000-4000-8000-000000030b11',
+    ],
+  };
+
+  it('takes a title, a window and attentes, repeats dropped', () => {
+    expect(unitPlanSchema.parse(base)).toEqual({
+      ...base,
+      title: 'Les fractions',
+      description: null,
+      expectationIds: [
+        '20000000-0000-4000-8000-000000030b11',
+        '20000000-0000-4000-8000-000000030b12',
+      ],
+    });
+  });
+
+  it('takes no dates at all', () => {
+    expect(unitPlanSchema.parse({ ...base, startsOn: '', endsOn: null })).toMatchObject({
+      startsOn: null,
+      endsOn: null,
+    });
+  });
+
+  it('needs both dates or neither, the end not before the start', () => {
+    expect(issues(unitPlanSchema.safeParse({ ...base, endsOn: '' }))).toEqual([
+      'startsOn:datesBoth',
+    ]);
+    expect(
+      issues(unitPlanSchema.safeParse({ ...base, startsOn: '2027-02-08', endsOn: '2027-02-05' })),
+    ).toEqual(['endsOn:endBeforeStart']);
+  });
+
+  it('takes at most 200 attentes, and needs a title', () => {
+    const many = Array.from(
+      { length: 201 },
+      (_, i) => `20000000-0000-4000-8000-${String(i).padStart(12, '0')}`,
+    );
+    expect(issues(unitPlanSchema.safeParse({ ...base, title: ' ', expectationIds: many }))).toEqual(
+      ['title:required', 'expectationIds:tooMany'],
+    );
+    expect(unitPlanSchema.safeParse({ ...base, expectationIds: many.slice(0, 200) }).success).toBe(
+      true,
+    );
   });
 });

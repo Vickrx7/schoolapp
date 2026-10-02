@@ -178,7 +178,12 @@
       "levels": "Add a version for each of the board’s levels before proposing the resource to the board.",
       "safety": "Complete the safety notes.",
       "content": "A version is incomplete: check the highlighted fields."
-    }
+    },
+    "yearPlanWindow": "These dates are outside the class’s school year.",
+    "yearPlanExpectation": "An expectation you chose is not of the unit’s subject or the class’s grades.",
+    "reportPeriodOutsideYear": "The period must be within the school year.",
+    "datesBoth": "Choose both the first and the last week, or neither.",
+    "beforePeriodStart": "This date must come after the start of the period."
   },
   "days": {
     "1": "Monday",
@@ -401,7 +406,9 @@
     "markTaught": "Mark as taught",
     "unmark": "Remove check",
     "next": "Next",
-    "number": "Lesson {n}"
+    "number": "Lesson {n}",
+    "unitExpectations": "The unit’s expectations",
+    "otherExpectations": "Other expectations"
   },
   "calendar": {
     "title": "Calendar",
@@ -3199,7 +3206,8 @@
       "contact": "Schools’ contact details and bell times",
       "staff": "Staff invited",
       "calendar": "PA days and holidays on the calendar",
-      "reviewers": "People who approve resources"
+      "reviewers": "People who approve resources",
+      "reportPeriods": "Report card periods"
     },
     "system": {
       "title": "System status",
@@ -3384,7 +3392,27 @@
       "deleteLabel": "Delete the school year {name}",
       "deleteConfirm": "Delete the school year “{name}”?",
       "deleted": "School year deleted.",
-      "empty": "No school years. Add the one that is starting."
+      "empty": "No school years. Add the one that is starting.",
+      "periods": {
+        "title": "Report card periods",
+        "open": "Report card periods",
+        "openLabel": "Report card periods of the year {name}",
+        "dialogTitle": "Report card periods — {name}",
+        "intro": "Ontario’s report card dates for this year. Staff at the board’s schools see them. Leave a period blank to remove it.",
+        "startsOn": "Start of the evaluation period",
+        "endsOn": "End of the evaluation period",
+        "dueOn": "Marks due by (optional)",
+        "issuedOn": "Sent home on (optional)",
+        "prefill": "Fill in the usual dates",
+        "prefillNote": "Usual dates proposed: check them against the board’s calendar.",
+        "clear": "Clear the dates",
+        "clearLabel": "Clear the dates: {kind}",
+        "saved": "Report card periods saved.",
+        "none": "No report card periods.",
+        "window": "From {start} to {end}",
+        "due": "marks due by {date}",
+        "issued": "sent home on {date}"
+      }
     },
     "reviewers": {
       "title": "Resource approval",
@@ -3679,5 +3707,51 @@
     "officeHelp": "If the problem continues, give this reference to the school office: {ref}.",
     "deviceButton": "Report this problem",
     "deviceHelp": "Show this reference to your teacher: {ref}."
+  },
+  "reportPeriods": {
+    "kinds": {
+      "progress": "Elementary Progress Report Card",
+      "term1": "Provincial Report Card — Term 1",
+      "term2": "Provincial Report Card — Term 2"
+    },
+    "outsideYear": "Outside the year"
+  },
+  "yearPlan": {
+    "unit": {
+      "title": "Unit planning",
+      "planned": "Planned from {start} to {end}",
+      "summary": "{weeks, plural, one {# week} other {# weeks}} · {days, plural, =0 {no school days} one {# school day} other {# school days}}",
+      "noWindow": "No dates planned yet.",
+      "outsideYear": "These dates are outside the class’s school year.",
+      "expectations": "Expectations addressed",
+      "noExpectations": "No expectations addressed yet.",
+      "showTexts": "Show the expectations’ text",
+      "edit": "Edit the planning"
+    },
+    "dialog": {
+      "newTitle": "Plan a unit",
+      "editTitle": "Unit planning",
+      "subject": "Subject",
+      "unitTitle": "Unit title",
+      "firstWeek": "First week",
+      "lastWeek": "Last week",
+      "noWeek": "No dates",
+      "week": "Week of {date} ({days, plural, =0 {no school} one {# school day} other {# school days}})",
+      "summary": "{weeks, plural, one {# week} other {# weeks}} · {days, plural, =0 {no school days} one {# school day} other {# school days}}",
+      "expectations": "Expectations addressed",
+      "expectationsHint": "Tick an overall expectation to choose all its specific expectations.",
+      "filter": "Filter the expectations",
+      "filterPlaceholder": "Code or word",
+      "noMatch": "No expectation matches.",
+      "loading": "Loading the expectations…",
+      "noneLoaded": "No expectations are loaded for this subject and grade.",
+      "selected": "{count, plural, =0 {No expectations chosen} one {# expectation chosen} other {# expectations chosen}}",
+      "unverified": "To be checked",
+      "unverifiedNotice": "Summarized expectations, to be checked against the official curriculum; the list may be incomplete.",
+      "description": "Description (optional)",
+      "save": "Save",
+      "openUnit": "Open the unit",
+      "saved": "Planning saved."
+    }
   }
 }

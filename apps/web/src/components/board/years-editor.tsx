@@ -12,13 +12,9 @@ import { EmptyState } from '@/components/ui/page';
 import { useAction } from '@/hooks/use-action';
 import { formatLocalDate } from '@/lib/format';
 import { deleteSchoolYear, saveSchoolYear } from '@/server/actions/board';
+import { ReportPeriodsEditor, type ReportPeriodsYear } from './report-periods-editor';
 
-export interface YearRow {
-  id: string;
-  name: string;
-  startsOn: string;
-  endsOn: string;
-}
+export type YearRow = ReportPeriodsYear;
 
 /** Adds or changes a school year; what was typed stays after an error or a close. */
 function YearDialog({
@@ -106,7 +102,8 @@ function YearDialog({
 
 /**
  * « Années scolaires » (DECISIONS D-107): add, rename or change the dates of the board's school
- * years. Deleting one that classes use is refused (`inUse`).
+ * years, and set each one's « Périodes de bulletin » (D-124). Deleting one that classes use is
+ * refused (`inUse`).
  */
 export function YearsEditor({
   boardId,
@@ -142,39 +139,44 @@ export function YearsEditor({
         <ul className="space-y-2">
           {years.map((y) => (
             <li key={y.id}>
-              <Card className="flex flex-wrap items-center justify-between gap-3 p-4">
-                <div className="min-w-0">
-                  <p className="flex flex-wrap items-center gap-2 font-medium text-slate-900">
-                    {y.name}
-                    {y.startsOn <= today && today <= y.endsOn ? (
-                      <Badge tone="brand">{t('current')}</Badge>
-                    ) : null}
-                  </p>
-                  <p className="text-sm text-slate-600">
-                    {t('dates', { start: date(y.startsOn), end: date(y.endsOn) })}
-                  </p>
+              <Card className="space-y-3 p-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="flex flex-wrap items-center gap-2 font-medium text-slate-900">
+                      {y.name}
+                      {y.startsOn <= today && today <= y.endsOn ? (
+                        <Badge tone="brand">{t('current')}</Badge>
+                      ) : null}
+                    </p>
+                    <p className="text-sm text-slate-600">
+                      {t('dates', { start: date(y.startsOn), end: date(y.endsOn) })}
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <YearDialog
+                      boardId={boardId}
+                      year={y}
+                      title={t('editTitle', { name: y.name })}
+                      trigger={
+                        <Button variant="secondary" aria-label={t('editTitle', { name: y.name })}>
+                          <Pencil aria-hidden />
+                          {t('edit')}
+                        </Button>
+                      }
+                    />
+                    <ConfirmButton
+                      label={t('deleteLabel', { name: y.name })}
+                      message={t('deleteConfirm', { name: y.name })}
+                      confirmLabel={t('delete')}
+                      size="md"
+                      onConfirm={() => remove.run(y.id)}
+                    >
+                      {t('delete')}
+                    </ConfirmButton>
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  <YearDialog
-                    boardId={boardId}
-                    year={y}
-                    title={t('editTitle', { name: y.name })}
-                    trigger={
-                      <Button variant="secondary" aria-label={t('editTitle', { name: y.name })}>
-                        <Pencil aria-hidden />
-                        {t('edit')}
-                      </Button>
-                    }
-                  />
-                  <ConfirmButton
-                    label={t('deleteLabel', { name: y.name })}
-                    message={t('deleteConfirm', { name: y.name })}
-                    confirmLabel={t('delete')}
-                    size="md"
-                    onConfirm={() => remove.run(y.id)}
-                  >
-                    {t('delete')}
-                  </ConfirmButton>
+                <div className="border-t border-slate-100 pt-3">
+                  <ReportPeriodsEditor boardId={boardId} year={y} />
                 </div>
               </Card>
             </li>

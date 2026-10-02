@@ -112,6 +112,13 @@ export function errorKey(error: PgLikeError | null | undefined): string {
       return 'noSchoolYear';
     case 'LXF01':
       return 'feedbackLimit';
+    // « Mon année » (supabase/migrations/20270111090000_year_plan.sql; D-123, D-124).
+    case 'LXY01':
+      return 'yearPlanWindow';
+    case 'LXY02':
+      return 'yearPlanExpectation';
+    case 'LXY03':
+      return 'reportPeriodOutsideYear';
     default:
       return 'unexpected';
   }

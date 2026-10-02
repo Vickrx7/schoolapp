@@ -5,6 +5,7 @@
 import { z } from 'zod';
 import { isLocalDate, isLocalTime, timeToMinutes } from './dates';
 import { MAX_FIRST_NAME_LENGTH } from './roster';
+import type { ReportPeriodKind } from './year-plan/report-periods';
 
 const uuid = z.uuid();
 const trimmed = (max: number) => z.string().trim().min(1, 'required').max(max, 'tooLong');
@@ -329,3 +330,75 @@ export const schoolYearFormSchema = z
     message: 'endBeforeStart',
     path: ['endsOn'],
   });
+
+/** A date that may be left blank (an empty select or field): null then. */
+const optionalDate = z
+  .union([localDateSchema, z.literal('')])
+  .nullable()
+  .optional()
+  .transform((v) => v || null);
+
+/** The most attentes a unit aims at (`save_unit_plan` refuses more). */
+export const UNIT_PLAN_MAX_EXPECTATIONS = 200;
+
+/**
+ * « Planification de l'unité » (DECISIONS D-123): its title, description, planned window (both
+ * dates or neither, the end not before the start) and the attentes it aims at (at most 200,
+ * repeats dropped). The window's dates come from the weeks the teacher picks.
+ */
+export const unitPlanSchema = z
+  .object({
+    classId: uuid,
+    subjectId: uuid,
+    title: trimmed(120),
+    description: optionalText(2000),
+    startsOn: optionalDate,
+    endsOn: optionalDate,
+    expectationIds: z
+      .array(uuid)
+      .default([])
+      .transform((ids) => [...new Set(ids)])
+      .pipe(z.array(uuid).max(UNIT_PLAN_MAX_EXPECTATIONS, 'tooMany')),
+  })
+  .refine((v) => (v.startsOn === null) === (v.endsOn === null), {
+    message: 'datesBoth',
+    path: ['startsOn'],
+  })
+  .refine((v) => !v.startsOn || !v.endsOn || v.endsOn >= v.startsOn, {
+    message: 'endBeforeStart',
+    path: ['endsOn'],
+  });
+
+/**
+ * One report period's dates (DECISIONS D-124): the evaluation window, then « saisie au plus
+ * tard le » and « remise aux familles », optional, never before the window starts.
+ */
+export const reportPeriodDatesSchema = z
+  .object({
+    startsOn: localDateSchema,
+    endsOn: localDateSchema,
+    dueOn: optionalDate,
+    issuedOn: optionalDate,
+  })
+  .refine((v) => !isLocalDate(v.startsOn) || !isLocalDate(v.endsOn) || v.endsOn >= v.startsOn, {
+    message: 'endBeforeStart',
+    path: ['endsOn'],
+  })
+  .refine((v) => !isLocalDate(v.startsOn) || v.dueOn === null || v.dueOn >= v.startsOn, {
+    message: 'beforePeriodStart',
+    path: ['dueOn'],
+  })
+  .refine((v) => !isLocalDate(v.startsOn) || v.issuedOn === null || v.issuedOn >= v.startsOn, {
+    message: 'beforePeriodStart',
+    path: ['issuedOn'],
+  });
+
+/**
+ * « Périodes de bulletin » of a school year: each of the three kinds, or null for none (a period
+ * left blank is removed). Field errors read `<kind>.<field>`.
+ */
+export const reportPeriodFormSchema = z.object({
+  progress: reportPeriodDatesSchema.nullable(),
+  term1: reportPeriodDatesSchema.nullable(),
+  term2: reportPeriodDatesSchema.nullable(),
+} satisfies Record<ReportPeriodKind, unknown>);

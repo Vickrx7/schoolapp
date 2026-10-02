@@ -10,6 +10,12 @@ import {
   cleanupAbsences,
 } from './db';
 import {
+  reportPeriods,
+  restoreReportPeriods,
+  setReportPeriods,
+  SEEDED_PERIODS,
+} from './db-year-plan';
+import {
   acceptWelcome,
   DEMO,
   e2ePrefix,
@@ -23,8 +29,8 @@ import {
  * « Conseil » (DECISIONS D-107, D-108, D-112): Nathalie Roy, the demo board's admin, invites a
  * teacher (the worker creates the account; the page gives the message to send), sees her sign in,
  * removes and restores her access (the worker bans and unbans the sign-in); then school years,
- * resource reviewers, the office phone (substitute plans show it), a board-wide PA day, AI usage
- * and feedback. Needs the worker (AI_PROVIDER=fake) with SUPABASE_URL and
+ * their report periods (« Mon année », D-124), resource reviewers, the office phone (substitute
+ * plans show it), a board-wide PA day, AI usage and feedback. Needs the worker (AI_PROVIDER=fake) with SUPABASE_URL and
  * SUPABASE_SERVICE_ROLE_KEY. Everything it makes is removed at the end.
  */
 
@@ -380,5 +386,96 @@ test('the office phone a board admin sets reaches substitute plans; a board PA d
     await cleanupAbsences(DEMO.teacher3);
     await deleteEventsTitled(title);
     await restoreSchoolSettings(SEED.school, original);
+  }
+});
+
+test('a board admin sets a school year’s report periods from the usual dates', async ({ page }) => {
+  test.setTimeout(120_000);
+  // Only the progress report is set, with other dates: « Préremplir » replaces them all.
+  await setReportPeriods([
+    { ...SEEDED_PERIODS[0]!, ends_on: '2026-10-23', due_on: null, issued_on: null },
+  ]);
+  try {
+    await login(page, DEMO.boardAdmin);
+    // « Pour bien démarrer le conseil »: the periods are not all there yet.
+    const item = page.getByRole('link', { name: /Périodes de bulletin/ });
+    await expect(item).toContainText('À faire');
+
+    await page.goto('/board/years');
+    await expect(page.getByRole('heading', { level: 1, name: 'Années scolaires' })).toBeVisible();
+    const card = page.getByRole('listitem').filter({ hasText: '2026-2027' });
+    await expect(card.getByRole('term')).toHaveText(['Bulletin de progrès']);
+    await expect(card.getByRole('definition')).toHaveText('Du 2 septembre 2026 au 23 octobre 2026');
+    const dialog = page.getByRole('dialog', { name: 'Périodes de bulletin — 2026-2027' });
+    const open = page.getByRole('button', { name: 'Périodes de bulletin de l’année 2026-2027' });
+    await expect(async () => {
+      if (!(await dialog.isVisible())) await open.click();
+      await expect(dialog).toBeVisible({ timeout: 1000 });
+    }).toPass();
+    const period = (name: string) => dialog.getByRole('group', { name, exact: true });
+    const progress = period('Bulletin de progrès');
+    const term1 = period('Bulletin scolaire — 1re étape');
+    const term2 = period('Bulletin scolaire — 2e étape');
+    await expect(progress.getByLabel('Fin de la période d’évaluation')).toHaveValue('2026-10-23');
+    await expect(term1.getByLabel('Début de la période d’évaluation')).toHaveValue('');
+    await expectAccessible(page);
+
+    await dialog.getByRole('button', { name: 'Préremplir avec les dates habituelles' }).click();
+    await expect(
+      dialog.getByText(
+        /^Dates habituelles proposées\s:\sà vérifier avec le calendrier du conseil\.$/,
+      ),
+    ).toBeVisible();
+    await expect(progress.getByLabel('Fin de la période d’évaluation')).toHaveValue('2026-10-30');
+    await expect(term1.getByLabel('Début de la période d’évaluation')).toHaveValue('2026-09-02');
+    // Monday 15 February is « Jour de la Famille »: the remise moves to the Friday before.
+    await expect(term1.getByLabel('Remise aux familles (facultatif)')).toHaveValue('2027-02-12');
+    await expect(term2.getByLabel('Début de la période d’évaluation')).toHaveValue('2027-02-01');
+
+    // Edits: a date before the window is refused; a period emptied is removed.
+    await term1.getByLabel('Saisie au plus tard le (facultatif)').fill('2026-08-31');
+    await term2
+      .getByRole('button', { name: 'Effacer les dates : Bulletin scolaire — 2e étape' })
+      .click();
+    await expect(term2.getByLabel('Début de la période d’évaluation')).toHaveValue('');
+    await dialog.getByRole('button', { name: 'Enregistrer', exact: true }).click();
+    await expect(term1.getByText('Cette date doit suivre le début de la période.')).toBeVisible();
+    await term1.getByLabel('Saisie au plus tard le (facultatif)').fill('2027-02-04');
+    await progress.getByLabel('Remise aux familles (facultatif)').fill('2026-11-12');
+    await expectAccessible(page);
+    await dialog.getByRole('button', { name: 'Enregistrer', exact: true }).click();
+    await expect(page.getByText('Périodes de bulletin enregistrées.')).toBeVisible();
+    await expect(dialog).toBeHidden();
+    await expect(card.getByRole('term')).toHaveText([
+      'Bulletin de progrès',
+      'Bulletin scolaire — 1re étape',
+    ]);
+    await expect(card.getByRole('definition').first()).toHaveText(
+      'Du 2 septembre 2026 au 30 octobre 2026 · saisie au plus tard le 6 novembre · remise le 12 novembre',
+    );
+    expect(await reportPeriods()).toEqual([
+      {
+        kind: 'progress',
+        starts_on: '2026-09-02',
+        ends_on: '2026-10-30',
+        due_on: '2026-11-06',
+        issued_on: '2026-11-12',
+      },
+      {
+        kind: 'term1',
+        starts_on: '2026-09-02',
+        ends_on: '2027-01-29',
+        due_on: '2027-02-04',
+        issued_on: '2027-02-12',
+      },
+    ]);
+    await expectAccessible(page);
+
+    // With the second term back, the checklist item is done.
+    await restoreReportPeriods();
+    await page.goto('/board');
+    await expect(page.getByRole('link', { name: /Périodes de bulletin/ })).toContainText('Fait');
+  } finally {
+    await restoreReportPeriods();
   }
 });

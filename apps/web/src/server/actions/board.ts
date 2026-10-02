@@ -1,16 +1,23 @@
 'use server';
 
 import {
+  REPORT_PERIOD_KINDS,
+  reportPeriodFormSchema,
+  reportPeriodInYear,
   schoolYearFormSchema,
   staffInviteFormSchema,
   staffRoleFormSchema,
+  typicalReportPeriods,
+  type ReportPeriodDates,
+  type ReportPeriodKind,
   type StaffRole,
 } from '@lynx/domain';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { fail, ok, okVoid, type ActionResult } from '@/lib/action-result';
 import { reportError } from '../errors';
-import { adminBoards, requireSession } from '../session';
+import { toCalendarEvent } from '../queries/mappers';
+import { adminBoards, requireSession, type SessionContext } from '../session';
 import { createSupabaseServerClient } from '../supabase';
 import { parseInput } from './validation';
 
@@ -200,6 +207,105 @@ export async function deleteSchoolYear(yearId: string): Promise<ActionResult> {
   if (!data?.length) return fail('forbidden');
   refreshAll();
   return okVoid();
+}
+
+export type ReportPeriodsInput = z.input<typeof reportPeriodFormSchema>;
+export type ReportPeriodsProposal = Record<ReportPeriodKind, ReportPeriodDates | null>;
+
+/** A school year of a board the caller administers, as row level security shows it. */
+async function adminYear(session: SessionContext, boardId: string, yearId: string) {
+  if (!adminBoards(session).some((b) => b.id === boardId)) return null;
+  const supabase = await createSupabaseServerClient();
+  const { data } = await supabase
+    .from('school_years')
+    .select('id, starts_on, ends_on')
+    .eq('id', yearId)
+    .eq('board_id', boardId)
+    .maybeSingle();
+  return data ? { supabase, year: { startsOn: data.starts_on, endsOn: data.ends_on } } : null;
+}
+
+/**
+ * « Périodes de bulletin » of a school year (DECISIONS D-124): saves the three kinds as given; a
+ * kind left blank (null) is removed. A window outside the year is a field error
+ * (`reportPeriodOutsideYear`, as the database's LXY03).
+ */
+export async function saveReportPeriods(
+  boardId: string,
+  yearId: string,
+  input: ReportPeriodsInput,
+): Promise<ActionResult> {
+  const session = await requireSession();
+  if (!uuid.safeParse(boardId).success || !uuid.safeParse(yearId).success) return fail('invalid');
+  const parsed = parseInput(reportPeriodFormSchema, input);
+  if (!parsed.ok) return parsed.result;
+  const found = await adminYear(session, boardId, yearId);
+  if (!found) return fail('forbidden');
+  const { supabase, year } = found;
+  const outside: Record<string, string> = {};
+  for (const kind of REPORT_PERIOD_KINDS) {
+    const p = parsed.data[kind];
+    if (p && !reportPeriodInYear(p, year)) {
+      outside[p.startsOn < year.startsOn ? `${kind}.startsOn` : `${kind}.endsOn`] =
+        'reportPeriodOutsideYear';
+    }
+  }
+  if (Object.keys(outside).length) return fail('invalid', outside);
+
+  const { data: existing, error: readError } = await supabase
+    .from('report_periods')
+    .select('id, kind')
+    .eq('school_year_id', yearId);
+  if (readError) return fail(reportError('saveReportPeriods.read', readError));
+  const ids = new Map((existing ?? []).map((p) => [p.kind, p.id]));
+  for (const kind of REPORT_PERIOD_KINDS) {
+    const p = parsed.data[kind];
+    const id = ids.get(kind);
+    const row = p
+      ? { starts_on: p.startsOn, ends_on: p.endsOn, due_on: p.dueOn, issued_on: p.issuedOn }
+      : null;
+    const { error } =
+      row && id
+        ? await supabase.from('report_periods').update(row).eq('id', id)
+        : row
+          ? await supabase.from('report_periods').insert({ ...row, school_year_id: yearId, kind })
+          : id
+            ? await supabase.from('report_periods').delete().eq('id', id)
+            : { error: null };
+    if (error) return fail(reportError('saveReportPeriods', error));
+  }
+  refreshAll();
+  return okVoid();
+}
+
+/**
+ * « Préremplir avec les dates habituelles »: the usual Ontario dates for the year (Assumption,
+ * D-124), moved off the board's PA days and holidays. Proposed only: nothing is saved.
+ */
+export async function prefillReportPeriods(
+  boardId: string,
+  yearId: string,
+): Promise<ActionResult<ReportPeriodsProposal>> {
+  const session = await requireSession();
+  if (!uuid.safeParse(boardId).success || !uuid.safeParse(yearId).success) return fail('invalid');
+  const found = await adminYear(session, boardId, yearId);
+  if (!found) return fail('forbidden');
+  const { supabase, year } = found;
+  const { data: events, error } = await supabase
+    .from('school_calendar_events')
+    .select(
+      'id, event_type, title, starts_on, ends_on, start_time, end_time, affects_schedule, class_id',
+    )
+    .eq('board_id', boardId)
+    .is('school_id', null)
+    .in('event_type', ['pa_day', 'holiday'])
+    .lte('starts_on', year.endsOn)
+    .gte('ends_on', year.startsOn);
+  if (error) return fail(reportError('prefillReportPeriods', error));
+  const typical = typicalReportPeriods(year, (events ?? []).map(toCalendarEvent));
+  const proposal: ReportPeriodsProposal = { progress: null, term1: null, term2: null };
+  for (const { kind, ...dates } of typical) proposal[kind] = dates;
+  return ok(proposal);
 }
 
 const reviewerSchema = z.object({ approvesContent: z.boolean(), reviewsFaith: z.boolean() });

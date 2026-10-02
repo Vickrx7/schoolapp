@@ -113,17 +113,28 @@ Mon Tableau, Cartable, Ardoise). No availability or trademark check has been don
 | `ae0ca87` | Round A: the UX review's findings and the catalogues' typography                            |
 | `6915404` | Round A: the browser tests match the catalogues' no-break spaces                            |
 | `de7b798` | Round A: staff sign-in throttled, no names in feedback, signed backups                      |
-| (latest)  | Final review, round B: privacy wording, terms `2026-10-pilote-2`, the journal, audit export |
+| `00e1343` | Final review, round B: privacy wording, terms `2026-10-pilote-2`, the journal, audit export |
+| (latest)  | « Mon année » S1: report periods, unit windows and attentes, the planning actions' gate     |
 
-**Verified (locally, from an empty database, and in CI on each pushed commit):** 1302 unit tests
-(none skipped), 1715 pgTAP tests, 93 integration tests (plus the 3 of `restore-smoke`, which run
+**Verified (locally, from an empty database, and in CI on each pushed commit):** 1357 unit tests
+(none skipped), 1796 pgTAP tests, 93 integration tests (plus the 3 of `restore-smoke`, which run
 after a restore: the `backup-restore` CI job and the local drill; the staff-account tests talk to
-the stack's real Auth server), 130 Playwright tests (desktop, phone and tablet, axe on every Phase
+the stack's real Auth server), 132 Playwright tests (desktop, phone and tablet, axe on every Phase
 3, 4 and 5 page, every « Conseil » page, the direction's dashboard and « Journal d'audit »,
-« Bienvenue », « Pour bien commencer », and each step of the board demo), lint,
+« Bienvenue », « Pour bien commencer », each step of the board demo, a unit's planning and the
+report periods), lint,
 typecheck, format, generated DB types up to date, the demo curriculum and library seeds up to date
 (`pnpm library:seed:check`), web build with no setting built in; in CI also a backup restored
 into an empty database, and both Docker images run as a board-hosted install (`docker-smoke`).
+
+**« Mon année » is being built** (feature #1 after the pilot build; DECISIONS « Mon année »,
+D-123 to D-128): slice S1 is done: the board's « Périodes de bulletin » in « Années scolaires »
+(with « Préremplir avec les dates habituelles » and a checklist item), a unit's planned weeks and
+attentes on its page (« Modifier la planification »), the lesson form listing the unit's attentes
+first, the domain code for the year view and coverage (`packages/domain/src/year-plan`), and the
+planning, progress, roster and timetable actions gated by `requireSession()` like the others.
+Slices S2 (the year view « Mon année » and « Aujourd'hui ») and S3 (« Couverture » and the
+« Plan à long terme » PDF) are next; AI is deferred (D-128).
 
 **Phase 3 is complete** (3a and 3b; see `docs/phase-3.md`): absence button, plans built in the
 request and kept current by the worker, review and editing, release at 07:30, codes, the
@@ -365,7 +376,8 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   `SUB_PORTAL_DATABASE_URL` (in `.env.example`).
 - **Migrations are applied once.** The lite stack does not re-apply an edited migration: after
   editing one that is not committed yet, `stack.sh reset`. Never edit a committed migration; add
-  a new one (the latest is `20261201090600_phase6_board_audit_export.sql`, pgTAP file `33`).
+  a new one (the latest is `20270111090000_year_plan.sql`, pgTAP file `34`; the `20270118…`
+  versions are kept for the report-comment composer and Info-parents).
 - **Seeds come in two parts.** `supabase/seed.sql`, then `supabase/seeds/*.sql` by name
   (`config.toml` `sql_paths` for the CLI, `cmd_seed` in `stack.sh`). `seeds/20_library_demo.sql`
   is generated from `content/library/demo`: after changing the pack, run `pnpm library:seed`
@@ -443,6 +455,17 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   test fails on anything it would change. Playwright's text matching treats those spaces as spaces;
   a regular expression must use `\s` (or `.`) where a colon follows a word.
 - **`pnpm test:int <name>`** filters by file name (`pnpm test:int -- <name>` runs every file).
+- **Seeded days off cover the whole of 2026-2027** (« Mon année »): `supabase/seed.sql` has the
+  board's PA days and holidays through June 2027 and an Ash Wednesday mass (2027-02-10);
+  `SEEDED_DAYS_OFF` and `SEEDED_MONDAYS_OFF` in `e2e/helpers.ts` list the same days, and the
+  year-plan unit tests read the seed's days off. Change them together.
+- **`supabase/seeds/50_year_plan_demo.sql`** gives the demo year its report periods (pinned by a
+  unit test to what « Préremplir » proposes), the four seeded units their windows (around the
+  current week while the year has six weeks to go, else fixed fall dates) and attentes, and adds
+  the planned 3e « L'addition et la soustraction jusqu'à 1 000 ». Browser tests that change them
+  put them back (`e2e/db-year-plan.ts`).
+- **Unit tests of the web app's server code** can import `@/…`: the root `vitest.config.ts`
+  aliases it (`server/actions/session-gate.test.ts` mocks the session and the database).
 - **New accounts in browser tests go through « Bienvenue ».** The seed's demo accounts have
   accepted the pilot terms, but an account a spec makes (`createStaffUser`, or an invitation the
   worker completes) has not: every page sends it to `/bienvenue` until `acceptWelcome(page)`
@@ -582,6 +605,8 @@ Where an item is already in `DECISIONS.md`, the D-number is given. Don't add dup
    hosted checks. « Essayer comme les élèves » (a Phase 4 hook, D-081) was not built in Phase 5.
 7. **Name.** Once chosen: check availability, then rename `APP_NAME`, the icon, the
    login email template and the promo.
+8. **« Mon année » slices S2 and S3** (the year view and « Aujourd'hui », then « Couverture » and
+   the long-range plan PDF), on top of slice S1's database and domain code (D-123 to D-128).
 
 **Known issues and risks:**
 

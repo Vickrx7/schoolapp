@@ -483,6 +483,10 @@ Confirming a report also rebuilds. A plan counts as released when released by ha
 school-local) has passed: no job runs at 07:30. _Why:_ the flagship moment must not depend on a
 worker; plans must follow what the class actually did. The worker depends on `@lynx/domain`;
 the `pending`, `generating` and `failed` plan statuses stay unused (check constraint).
+_Amended for « Mon année » (2026-10-02):_ an update of a unit marks the absences only when a
+column plans read changes (`class_id`, `subject_id`, `title`, `status`; a `when` clause on
+`units_flag_absences_update`), so a planned window, a description or unit attentes saved never
+make a plan « updated » for nothing (D-123).
 
 **D-048 — A plan is three layers keyed by timetable block; the database never trusts ids in
 plan JSON.** `sub_plans.plan` is the generated layer (`subPlanV1Schema`), `edits` the teacher's
@@ -1787,6 +1791,10 @@ and its students go once both the purge date and that night plus 60 days have co
 (`classPurgeDate`, used by the notices). A year edited into the past, or a shorter setting, delays
 the purge instead of running it that night. The run also deletes staff sign-in attempts after two
 days (D-121) and returns `signInAttempts`. pgTAP `32`.
+_Amended for « Mon année » (2026-10-02):_ a unit's planned window and its attentes
+(`unit_expectations`) are the teacher's planning: kept when the class's students are purged,
+deleted with the unit or class (and with a sample class); report periods hold no personal data and
+go with their school year or board (D-123, D-124). No new job or setting.
 
 **D-106 — Operator actions are visible to the board.** Triggers audit changes to `boards.settings`
 keys `ai` and `retention` (`board.settings_changed {keys}`), to `module_entitlements`
@@ -1903,6 +1911,8 @@ one who deletes accounts, adds schools, sets budgets or retention: board-hosted,
 the command line. They say « la personne qui gère le serveur », and the person's page links to
 `SUPPORT_EMAIL` (« Demander la suppression ») only when it is set. The words match « État du
 système » (S7).
+_Amended for « Mon année » (2026-10-02):_ the board's admins also set each school year's report
+card periods (« Périodes de bulletin », D-124).
 
 **D-108 — What board admins may change on a school (amends D-039).** Allowed: contact details and
 bell times, through `public.merge_school_settings`, which merges keys atomically (no
@@ -2294,6 +2304,8 @@ _Amended in Phase 6 review (2026-10-02):_ a principal who does not teach gets fi
 phone bar: « Suppléances » is left out (her dashboard opens it), because six labels at 360 px
 touched each other. « Journal d'audit » highlights « Direction » when the person has it, else «
 Conseil ».
+_Amended for « Mon année » (2026-10-02):_ « Pour bien démarrer le conseil » has one more item,
+« Périodes de bulletin » (D-124); the navigation and the phone bar are unchanged.
 
 **D-119 — Security headers, logs and sessions.** In production, a Content Security Policy
 (`default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';
@@ -2417,6 +2429,82 @@ D-107 (the board's pages name « la personne qui gère le serveur »), D-110 (te
 the restore's route, the drill), D-116 (who reads feedback), D-119 (what Auth and the database
 write to the journal); new D-122 (the whole audit log exported before a board is deleted).
 
+## « Mon année » (post-MVP 1)
+
+Feature #1 after the pilot build: a year planner per class (« Mon année »), curriculum coverage
+(« Couverture ») and a long-range plan PDF (« Plan à long terme »), built in three slices: S1 (the
+database, the domain code, the board's report periods and planning on the unit page; D-123,
+D-124), S2 (the year view and « Aujourd'hui »; D-126) and S3 (coverage and the PDF; D-125, D-127).
+The plan's questions were answered by the lead for Mike (2026-10-02), and the slices build on
+them: (1) no new curriculum content: coverage counts the summaries already loaded (D-030, D-069);
+(2) report card dates are typed by the board's admins, with « Préremplir avec les dates
+habituelles » (D-124); (3) a finished unit counts its unit-level attentes as taught, shown as
+« Enseignée (unité terminée) » (D-125); (4) coverage is off by default in the PDF (D-127); (5) no
+AI for the year plan for now (D-128).
+
+**D-123 — Planned windows and unit-level attentes (amends D-047).** A unit may have a planned
+window, both dates or neither (`units.planned_start_on`, `planned_end_on`), inside its class's
+school year (`LXY01`, checked when the window is set or changed, so a year edited later never
+blocks other changes to the unit). The teacher picks a first and a last week (Monday to Friday,
+each labelled with its school days); the window is saved as the Monday of the first and the Friday
+of the last, clamped to the school year (**Assumption**: weeks are Monday to Friday). A unit aims
+at attentes (`unit_expectations`) of its own subject and of its class's grades (`LXY02`;
+**Assumption**: no cross-subject unit in v1), at most 200; a unit with attentes keeps its subject
+(`LXY02`). Only the class team reads and writes them, as units (D-013): never the direction,
+office staff, the board's admins or anyone whose access was removed. Writes go through
+`save_unit_plan` (a unit and its attentes in one transaction; a new unit is `planned`) and
+`start_unit` (« Commencer l'unité », optionally finishing the current unit first), both security
+invoker, so row level security and the column grants check every row. Planned units never start
+by themselves (**Assumption**): the teacher starts them. Substitute plans are unchanged (they read
+only active units), and the plan-freshness trigger on `units` (D-047) now fires on an update only
+when a column plans read changes (`class_id`, `subject_id`, `title`, `status`): saving a window, a
+description or attentes no longer marks the teacher's upcoming absences as changed. Not audited
+(private professional activity; D-103 would put it in the operator's audience anyway). Kept with
+the class; the student purge keeps it (D-105). _Why:_ a year plan is the teacher's tool; the
+attentes give coverage (D-125) without making teachers link every lesson.
+As built (slice S1, `20270111090000_year_plan.sql`, pgTAP `34_year_plan`): the unit page shows
+« Prévue du … au … » with its weeks and school days, the attentes as chips (their text in a
+disclosure) and « Modifier la planification » (`UnitPlanDialog`, `ExpectationPicker`: by grade and
+domaine, a filter that ignores accents, an overall attente ticked for all its contenus and shown
+partly ticked when only some are chosen, « À vérifier » on unverified rows); the lesson form lists
+« Attentes de l'unité » first. The domain module `packages/domain/src/year-plan` has the weeks
+(`schoolWeeks`, `weekWindow`, `unitSchoolDays`), the liturgical bands, placement, report periods,
+coverage and the planned unit due on « Aujourd'hui », for slices S2 and S3. Actions
+`saveUnitPlan` and `loadExpectationOptions` (`server/actions/year-plan.ts`) gate through
+`requireSession()` (D-109), as the planning, progress, roster and timetable actions now do too.
+
+**D-124 — Report periods are board data (amends D-107 and D-118).** Each school year has up to
+three report periods, Ontario's (`progress`: the Progress Report Card; `term1` and `term2`: the
+Provincial Report Card), each an evaluation window inside the year (`LXY03`) and two optional
+dates, « saisie au plus tard le » and « remise aux familles », never before the window starts.
+Fixed kinds, so nothing to translate; overlapping windows are normal (the progress report's falls
+inside the first term's). The board's admins set them in « Années scolaires » (« Périodes de
+bulletin »); the board's staff read them; they are not audited (school years are not either), and
+a school year edited later is not blocked (the editor shows « Hors de l'année »). « Préremplir avec
+les dates habituelles » proposes, without saving (**Assumption**, per board, not per school): the
+progress report from the year's first day to October 31, saisie November 7, remise November 15;
+the first term to January 31, saisie February 7, remise February 15; the second term from February
+1 (the school day on or after it) to June 11, saisie June 16, remise on the year's last day; each
+date moved to the board's school day on or before it (2026-2027: the first term's remise moves off
+Family Day to February 12), with the note « Dates habituelles proposées : à vérifier avec le
+calendrier du conseil. ». « Pour bien démarrer le conseil » gets « Périodes de bulletin » (done
+when a school year that is not over has all three). Deleted with their school year or board.
+As built (slice S1): `report_periods` (pgTAP 34); `typicalReportPeriods` (`packages/domain`; a unit
+test checks it against the demo seed, `supabase/seeds/50_year_plan_demo.sql`); actions
+`saveReportPeriods` (the three kinds in one dialog; a kind left blank is removed; a window outside
+the year is a field error before the database's check) and `prefillReportPeriods`
+(`server/actions/board.ts`); `ReportPeriodsEditor` on each year's card.
+
+**D-128 — AI for the year plan is deferred.** « Proposer une répartition (IA) » is not built:
+production boards have no curriculum loaded (D-030), the demo sample is partial and unverified,
+and the report-comment composer's January deadline comes first (lead's answer, 2026-10-02). When
+it is built (Mike's yes, real curriculum loaded): a `year_plan` feature whose input the database
+builds from ids (grades, subject, attente codes and texts, school weeks, seasons, report periods,
+the existing units' windows and attentes, never their titles), an optional « Précisions » field
+through the redaction and the outbound check with the exact text shown before sending, output
+validated (codes from the input, weeks inside the year, no overlap per subject; unused attentes a
+warning, not a paid retry, D-080), never applied automatically, from the school's budget (D-040).
+
 ## Schema additions beyond SPEC section 8
 
 `school_years`, `rooms`, `class_grades`, `school_cycle_anchors`, `unit_lesson_expectations`,
@@ -2438,4 +2526,5 @@ cap, `no_derivatives`, `bulk_run_id` and the pack columns (`pack_slug`, `pack_it
 `pack_content_hash`, `pack_revision`); and `library_item_ratings.updated_at`. Phase 6 adds
 `staff_invitations`, `feedback`, `audit_action_catalog` and `system_heartbeats`; on `users` the
 terms' version and acceptance and the checklist's dismissal; on `classes` `sample_owner_id` and
-`students_purged_at`.
+`students_purged_at`. « Mon année » adds `report_periods` and `unit_expectations`, and on `units`
+the planned window (`planned_start_on`, `planned_end_on`).

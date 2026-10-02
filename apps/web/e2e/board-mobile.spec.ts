@@ -4,8 +4,9 @@ import { DEMO, e2ePrefix, expectAccessible, login } from './helpers';
 
 /**
  * « Conseil » on a phone (DECISIONS D-107): every page fits a Pixel 7 without sideways scrolling,
- * passes axe, and its tabs and main buttons are 44 px targets; the invitation form is a bottom
- * sheet; the staff list and the usage table are cards.
+ * passes axe, and its tabs and main buttons are 44 px targets; the invitation form and the
+ * « Périodes de bulletin » editor (D-124, at 360 px) are bottom sheets; the staff list and the
+ * usage table are cards.
  */
 
 test.afterAll(async () => {
@@ -68,6 +69,34 @@ test('a board admin runs the board from a phone', async ({ page }) => {
     await tall(page.getByRole('button', { name: 'Retirer l’accès' }));
     await noHorizontalScroll(page);
     await expectAccessible(page);
+
+    // « Périodes de bulletin » (D-124) on a 360 px phone: a bottom sheet of 44 px fields.
+    const phoneSize = page.viewportSize()!;
+    await page.setViewportSize({ width: 360, height: 740 });
+    await page.goto('/board/years');
+    await expect(page.getByRole('heading', { level: 1, name: 'Années scolaires' })).toBeVisible();
+    await noHorizontalScroll(page);
+    const periods = page.getByRole('dialog', { name: 'Périodes de bulletin — 2026-2027' });
+    const openPeriods = page.getByRole('button', {
+      name: 'Périodes de bulletin de l’année 2026-2027',
+    });
+    await tall(openPeriods);
+    await expect(async () => {
+      if (!(await periods.isVisible())) await openPeriods.click();
+      await expect(periods).toBeVisible({ timeout: 1000 });
+    }).toPass();
+    const periodsSheet = await periods.boundingBox();
+    expect(Math.round(periodsSheet!.x)).toBe(0);
+    expect(Math.round(periodsSheet!.width)).toBe(360);
+    await tall(periods.getByRole('button', { name: 'Préremplir avec les dates habituelles' }));
+    const progress = periods.getByRole('group', { name: 'Bulletin de progrès', exact: true });
+    await tall(progress.getByLabel('Début de la période d’évaluation'));
+    await tall(progress.getByLabel('Remise aux familles (facultatif)'));
+    await noHorizontalScroll(page);
+    await expectAccessible(page);
+    await page.keyboard.press('Escape');
+    await expect(periods).toBeHidden();
+    await page.setViewportSize(phoneSize);
 
     for (const [path, heading] of [
       ['/board/schools', 'Écoles'],

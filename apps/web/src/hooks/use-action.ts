@@ -94,6 +94,12 @@ export const KNOWN_ERRORS: ReadonlySet<string> = new Set([
   'noSchoolYear',
   'sampleClassExists',
   'feedbackLimit',
+  // « Mon année » (server/errors.ts and the domain's forms; DECISIONS D-123, D-124).
+  'yearPlanWindow',
+  'yearPlanExpectation',
+  'reportPeriodOutsideYear',
+  'datesBoth',
+  'beforePeriodStart',
   // What a resource is missing (readinessFieldErrors, D-067).
   'readiness.grades',
   'readiness.subject',

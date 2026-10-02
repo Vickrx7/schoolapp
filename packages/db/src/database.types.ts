@@ -2223,6 +2223,50 @@ export type Database = {
           },
         ];
       };
+      report_periods: {
+        Row: {
+          id: string;
+          school_year_id: string;
+          kind: string;
+          starts_on: string;
+          ends_on: string;
+          due_on: string | null;
+          issued_on: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          school_year_id: string;
+          kind: string;
+          starts_on: string;
+          ends_on: string;
+          due_on?: string | null;
+          issued_on?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          school_year_id?: string;
+          kind?: string;
+          starts_on?: string;
+          ends_on?: string;
+          due_on?: string | null;
+          issued_on?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'report_periods_school_year_id_fkey';
+            columns: ['school_year_id'];
+            isOneToOne: false;
+            referencedRelation: 'school_years';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       rooms: {
         Row: {
           id: string;
@@ -3374,6 +3418,39 @@ export type Database = {
           },
         ];
       };
+      unit_expectations: {
+        Row: {
+          unit_id: string;
+          expectation_id: string;
+          created_at: string;
+        };
+        Insert: {
+          unit_id: string;
+          expectation_id: string;
+          created_at?: string;
+        };
+        Update: {
+          unit_id?: string;
+          expectation_id?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'unit_expectations_expectation_id_fkey';
+            columns: ['expectation_id'];
+            isOneToOne: false;
+            referencedRelation: 'curriculum_expectations';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'unit_expectations_unit_id_fkey';
+            columns: ['unit_id'];
+            isOneToOne: false;
+            referencedRelation: 'units';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       unit_lesson_expectations: {
         Row: {
           lesson_id: string;
@@ -3486,6 +3563,8 @@ export type Database = {
           created_by: string | null;
           created_at: string;
           updated_at: string;
+          planned_start_on: string | null;
+          planned_end_on: string | null;
         };
         Insert: {
           id?: string;
@@ -3498,6 +3577,8 @@ export type Database = {
           created_by?: string | null;
           created_at?: string;
           updated_at?: string;
+          planned_start_on?: string | null;
+          planned_end_on?: string | null;
         };
         Update: {
           id?: string;
@@ -3510,6 +3591,8 @@ export type Database = {
           created_by?: string | null;
           created_at?: string;
           updated_at?: string;
+          planned_start_on?: string | null;
+          planned_end_on?: string | null;
         };
         Relationships: [
           {
@@ -4197,6 +4280,19 @@ export type Database = {
         Args: { p_plan_id: string; p_edits: Json; p_expected_revision: number };
         Returns: number;
       };
+      save_unit_plan: {
+        Args: {
+          p_unit_id: string;
+          p_class_id: string;
+          p_subject_id: string;
+          p_title: string;
+          p_description: string;
+          p_starts_on: string;
+          p_ends_on: string;
+          p_expectation_ids: string[];
+        };
+        Returns: string;
+      };
       search_library: {
         Args: { p_filters: Json; p_limit?: number; p_offset?: number };
         Returns: Json;
@@ -4239,6 +4335,10 @@ export type Database = {
           p_replace_open?: boolean;
         };
         Returns: { session_id: string; join_code: string }[];
+      };
+      start_unit: {
+        Args: { p_unit_id: string; p_finish_current: boolean };
+        Returns: undefined;
       };
       sub_plan_access_ended: {
         Args: { p_plan_id: string };

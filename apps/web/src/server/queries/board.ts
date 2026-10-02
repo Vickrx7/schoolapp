@@ -3,8 +3,11 @@ import type { AppRole, ModuleKey, ScheduleType } from '@lynx/db';
 import {
   localDateIn,
   parseSchoolSettings,
+  REPORT_PERIOD_KINDS,
   type BoardSettings,
   type LocalDate,
+  type ReportPeriod,
+  type ReportPeriodKind,
   type SchoolSettings,
 } from '@lynx/domain';
 import { cache } from 'react';
@@ -162,7 +165,8 @@ export const boardHasLibrary = (basics: BoardBasics) =>
 // « Aperçu »
 // ---------------------------------------------------------------------------------------
 
-export type ChecklistKey = 'year' | 'contact' | 'staff' | 'calendar' | 'reviewers';
+export type ChecklistKey =
+  'year' | 'reportPeriods' | 'contact' | 'staff' | 'calendar' | 'reviewers';
 
 export interface ChecklistItem {
   key: ChecklistKey;
@@ -187,9 +191,10 @@ export interface BoardOverview {
 
 /**
  * « Pour bien démarrer le conseil », computed from the board's data: a school year that is not
- * over, every school's office phone, someone besides the board's admins, a PA day or holiday
- * still to come, and (with the Library module) someone who approves resources. Then the
- * « État du système » (`system_status()`: a state and three times, never counts).
+ * over, its three report periods (D-124), every school's office phone, someone besides the
+ * board's admins, a PA day or holiday still to come, and (with the Library module) someone who
+ * approves resources. Then the « État du système » (`system_status()`: a state and three times,
+ * never counts).
  */
 export async function loadBoardOverview(
   basics: BoardBasics,
@@ -198,12 +203,17 @@ export async function loadBoardOverview(
   const supabase = await createSupabaseServerClient();
   const today = localDateIn(basics.timezone);
   const library = boardHasLibrary(basics);
-  const [years, staff, events, reviewers, status] = await Promise.all([
+  const [years, periods, staff, events, reviewers, status] = await Promise.all([
     supabase
       .from('school_years')
       .select('id', { count: 'exact', head: true })
       .eq('board_id', basics.id)
       .gte('ends_on', today),
+    supabase
+      .from('report_periods')
+      .select('school_year_id, kind, school_years!inner(board_id, ends_on)')
+      .eq('school_years.board_id', basics.id)
+      .gte('school_years.ends_on', today),
     supabase
       .from('user_roles')
       .select('id', { count: 'exact', head: true })
@@ -225,8 +235,18 @@ export async function loadBoardOverview(
     supabase.rpc('system_status'),
   ]);
   const parsed = systemStatusSchema.safeParse(status.data);
+  // A year that is not over with its three periods.
+  const kindsByYear = new Map<string, Set<string>>();
+  for (const p of periods.data ?? []) {
+    kindsByYear.set(p.school_year_id, (kindsByYear.get(p.school_year_id) ?? new Set()).add(p.kind));
+  }
   const checklist: ChecklistItem[] = [
     { key: 'year', done: (years.count ?? 0) > 0, href: `/board/years${query}` },
+    {
+      key: 'reportPeriods',
+      done: [...kindsByYear.values()].some((kinds) => kinds.size === REPORT_PERIOD_KINDS.length),
+      href: `/board/years${query}`,
+    },
     {
       key: 'contact',
       done: basics.schools.length > 0 && basics.schools.every(hasContact),
@@ -475,13 +495,20 @@ export interface BoardYear {
   name: string;
   startsOn: LocalDate;
   endsOn: LocalDate;
+  /** Its report periods (D-124), in the order of the kinds. */
+  periods: ReportPeriod[];
 }
+
+const isKind = (kind: string): kind is ReportPeriodKind =>
+  (REPORT_PERIOD_KINDS as readonly string[]).includes(kind);
 
 export async function loadBoardYears(boardId: string): Promise<BoardYear[]> {
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase
     .from('school_years')
-    .select('id, name, starts_on, ends_on')
+    .select(
+      'id, name, starts_on, ends_on, report_periods(kind, starts_on, ends_on, due_on, issued_on)',
+    )
     .eq('board_id', boardId)
     .order('starts_on', { ascending: false });
   return (data ?? []).map((y) => ({
@@ -489,6 +516,21 @@ export async function loadBoardYears(boardId: string): Promise<BoardYear[]> {
     name: y.name,
     startsOn: y.starts_on,
     endsOn: y.ends_on,
+    periods: y.report_periods
+      .flatMap((p) =>
+        isKind(p.kind)
+          ? [
+              {
+                kind: p.kind,
+                startsOn: p.starts_on,
+                endsOn: p.ends_on,
+                dueOn: p.due_on,
+                issuedOn: p.issued_on,
+              },
+            ]
+          : [],
+      )
+      .sort((a, b) => REPORT_PERIOD_KINDS.indexOf(a.kind) - REPORT_PERIOD_KINDS.indexOf(b.kind)),
   }));
 }
 

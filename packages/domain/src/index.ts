@@ -11,3 +11,5 @@ export * from './sub-plan';
 export * from './legal';
 export * from './retention';
 export * from './sample-class';
+// « Mon année »: the year plan, report periods and coverage (D-123 to D-126).
+export * from './year-plan';
