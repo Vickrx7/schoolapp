@@ -93,6 +93,23 @@ export function errorKey(error: PgLikeError | null | undefined): string {
       return 'libraryRateOwn';
     case 'LXR02':
       return 'libraryRateNotApproved';
+    // Phase 6: staff accounts and roles (DECISIONS D-107), onboarding (D-109), feedback (D-116).
+    case 'LXU01':
+      return 'lastBoardAdmin';
+    case 'LXU02':
+      return 'staffOtherBoard';
+    case 'LXU05':
+      return 'staffSelf';
+    case 'LXU06':
+      return 'staffStillActive';
+    case 'LXU07':
+      return 'staffSelfRole';
+    case 'LXU08':
+      return 'staffLastRole';
+    case 'LXO01':
+      return 'noSchoolYear';
+    case 'LXF01':
+      return 'feedbackLimit';
     default:
       return 'unexpected';
   }

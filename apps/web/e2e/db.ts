@@ -445,3 +445,160 @@ export async function deleteLibraryItems({
     [ids, titlePrefix],
   );
 }
+
+// ---------------------------------------------------------------------------------------
+// Pilot readiness (Phase 6): audit entries, staff accounts, school settings, clean-up
+// ---------------------------------------------------------------------------------------
+
+export type StaffRole = 'teacher' | 'principal' | 'vice_principal' | 'office_admin' | 'board_admin';
+
+/**
+ * An audit entry written as the app writes them (`app.log_audit`, DECISIONS D-103): by a demo
+ * account when `actorEmail` is given (as if signed in), else by the system. Returns its id.
+ */
+export async function insertAudit(row: {
+  action: string;
+  boardId?: string | null;
+  schoolId?: string | null;
+  entityType?: string | null;
+  entityId?: string | null;
+  /** Ids, codes and counts only, as every audit row (no names, no free text). */
+  details?: Record<string, unknown>;
+  actorType?: 'user' | 'substitute' | 'system' | 'service';
+  actorEmail?: string | null;
+}): Promise<number> {
+  const client = await db().connect();
+  try {
+    await client.query('begin');
+    if (row.actorEmail) {
+      const { rows } = await client.query<{ id: string }>(
+        'select id from public.users where email = $1',
+        [row.actorEmail],
+      );
+      if (!rows[0]) throw new Error(`no account ${row.actorEmail}`);
+      // auth.uid() for this transaction only, as the pgTAP helpers do.
+      await client.query(
+        `select set_config('request.jwt.claims',
+                  json_build_object('sub', $1::text, 'role', 'authenticated')::text, true),
+                set_config('request.jwt.claim.sub', $1::text, true)`,
+        [rows[0].id],
+      );
+    }
+    await client.query(
+      `select app.log_audit($1, $2, $3, $4, $5, $6::jsonb, $7::public.audit_actor_type)`,
+      [
+        row.action,
+        row.boardId ?? null,
+        row.schoolId ?? null,
+        row.entityType ?? null,
+        row.entityId ?? null,
+        JSON.stringify(row.details ?? {}),
+        row.actorType ?? 'user',
+      ],
+    );
+    const {
+      rows: [inserted],
+    } = await client.query<{ id: string }>(
+      `select currval(pg_get_serial_sequence('public.audit_log', 'id')) as id`,
+    );
+    await client.query('commit');
+    return Number(inserted!.id);
+  } catch (error) {
+    await client.query('rollback');
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * A staff account as `pnpm admin invite` makes them: the Auth user (the seed's columns, so the
+ * e-mail code works), the profile and one role, at a school of the demo board (or the board for
+ * `board_admin`). It has never signed in and has not accepted the pilot terms, so its first
+ * sign-in opens « Bienvenue » (D-109). Remove it with `deleteStaff`. Returns its id.
+ */
+export async function createStaffUser(user: {
+  email: string;
+  name: string;
+  role: StaffRole;
+  /** The school for every role but `board_admin`; the demo school by default. */
+  schoolId?: string | null;
+  boardId?: string;
+  honorific?: string | null;
+}): Promise<string> {
+  const schoolId = user.role === 'board_admin' ? null : (user.schoolId ?? SEED.school);
+  const [row] = await query<{ user_id: string }>(
+    `with a as (
+       insert into auth.users (instance_id, id, aud, role, email, email_confirmed_at,
+         raw_app_meta_data, raw_user_meta_data, created_at, updated_at, confirmation_token,
+         recovery_token, email_change_token_new, email_change)
+       values ('00000000-0000-0000-0000-000000000000', gen_random_uuid(), 'authenticated',
+         'authenticated', $1, now(), '{"provider": "email", "providers": ["email"]}', '{}',
+         now(), now(), '', '', '', '')
+       returning id, email
+     ), i as (
+       insert into auth.identities (id, user_id, provider_id, identity_data, provider,
+         created_at, updated_at)
+       select gen_random_uuid(), a.id, a.id::text,
+         jsonb_build_object('sub', a.id::text, 'email', a.email, 'email_verified', true),
+         'email', now(), now()
+       from a
+       returning user_id
+     ), u as (
+       insert into public.users (id, email, display_name, honorific)
+       select i.user_id, $1, $2, $3 from i
+       returning id
+     )
+     insert into public.user_roles (user_id, role, board_id, school_id)
+     select u.id, $4::public.app_role, $5, $6 from u
+     returning user_id`,
+    [
+      user.email,
+      user.name,
+      user.honorific ?? null,
+      user.role,
+      user.boardId ?? SEED.board,
+      schoolId,
+    ],
+  );
+  return row!.user_id;
+}
+
+/** Deletes an account entirely (Auth, profile, roles, classes' teams…), as the operator would. */
+export async function deleteStaff(email: string): Promise<void> {
+  await query('delete from auth.users where email = $1', [email]);
+}
+
+/** A school's settings (`schools.settings`), to put them back after a test changes them. */
+export async function schoolSettings(schoolId: string): Promise<Record<string, unknown>> {
+  const [row] = await query<{ settings: Record<string, unknown> }>(
+    'select settings from public.schools where id = $1',
+    [schoolId],
+  );
+  if (!row) throw new Error(`no school ${schoolId}`);
+  return row.settings;
+}
+
+export async function restoreSchoolSettings(
+  schoolId: string,
+  settings: Record<string, unknown>,
+): Promise<void> {
+  await query('update public.schools set settings = $2::jsonb where id = $1', [
+    schoolId,
+    JSON.stringify(settings),
+  ]);
+}
+
+/** Deletes every calendar event with this title (school, board or class). */
+export async function deleteEventsTitled(title: string): Promise<void> {
+  await query('delete from public.school_calendar_events where title = $1', [title]);
+}
+
+/** Deletes the sample classes of an account (D-109), with everything in them. */
+export async function deleteSampleClasses(email: string): Promise<void> {
+  await query(
+    `delete from public.classes c using public.users u
+     where c.sample_owner_id = u.id and u.email = $1`,
+    [email],
+  );
+}

@@ -72,6 +72,44 @@ describe('the phone navigation bar', () => {
   });
 });
 
+describe('the bar with « Direction » and « Conseil » (D-118)', () => {
+  it('gives a principal who does not teach six items, « Suppléances » included', () => {
+    const principal = items('direction', 'substitutes', 'library', 'calendar', 'school', 'profile');
+    expect(phoneBar(principal)).toEqual({ bar: principal, more: [] });
+  });
+
+  it('gives a teaching vice-principal the first five and « Plus »', () => {
+    const all = items(
+      'today',
+      'classes',
+      'direction',
+      'substitutes',
+      'library',
+      'calendar',
+      'school',
+      'profile',
+    );
+    const { bar, more } = phoneBar(all);
+    expect(keys(bar)).toEqual(['today', 'classes', 'direction', 'library', 'calendar']);
+    expect(keys(more)).toEqual(['substitutes', 'school', 'profile']);
+    expect(bar.length + 1).toBe(PHONE_BAR_MAX);
+  });
+
+  it('gives a board admin who is not a reviewer three items', () => {
+    const admin = items('calendar', 'board', 'profile');
+    expect(phoneBar(admin)).toEqual({ bar: admin, more: [] });
+    // The demo board's admin also reviews resources: four.
+    const reviewer = items('library', 'calendar', 'board', 'profile');
+    expect(phoneBar(reviewer)).toEqual({ bar: reviewer, more: [] });
+  });
+
+  it('keeps « Direction » and « Conseil » active on their sub-pages', () => {
+    expect(isNavActive({ key: 'board', href: '/board' }, '/board/staff/abc')).toBe(true);
+    expect(isNavActive({ key: 'direction', href: '/direction' }, '/direction')).toBe(true);
+    expect(isNavActive({ key: 'board', href: '/board' }, '/boards')).toBe(false);
+  });
+});
+
 describe('the active item', () => {
   const library = { key: 'library' as const, href: '/library' };
   const today = { key: 'today' as const, href: '/today' };

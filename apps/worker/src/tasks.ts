@@ -4,6 +4,8 @@ import { classModeMaintenance } from './class-mode';
 import type { HandlerContext, Subscription } from './handlers';
 import { libraryMaintenance, tickBulkRuns } from './library-bulk';
 import { dispatchOutbox, loadEvent } from './outbox';
+import { retentionMaintenance } from './retention';
+import { recordDispatch } from './state';
 
 const handleEventPayload = z.object({ eventId: z.uuid(), handler: z.string().min(1) });
 
@@ -30,6 +32,8 @@ export function buildTaskList(options: {
         dispatchOutbox(client, options.subscriptions, options.batchSize),
       );
     } while (dispatched === options.batchSize);
+    // For the heartbeat (D-112): the outbox was drained just now.
+    recordDispatch();
   };
 
   const handleEvent: Task = async (payload, helpers) => {
@@ -91,6 +95,11 @@ export function buildTaskList(options: {
     await libraryMaintenance({ db: options.context.pool, logger: options.context.logger });
   };
 
+  // Nightly retention (D-105): purges per board and records the `retention` heartbeat.
+  const retentionMaintenanceTask: Task = async () => {
+    await retentionMaintenance({ db: options.context.pool, logger: options.context.logger });
+  };
+
   return {
     dispatch_outbox: dispatch,
     handle_event: handleEvent,
@@ -99,5 +108,6 @@ export function buildTaskList(options: {
     class_mode_maintenance: classModeMaintenanceTask,
     library_bulk_tick: libraryBulkTick,
     library_maintenance: libraryMaintenanceTask,
+    retention_maintenance: retentionMaintenanceTask,
   };
 }

@@ -31,4 +31,29 @@ describe('known action errors', () => {
       expect(KNOWN_ERRORS.has(key), key).toBe(true);
     }
   });
+
+  it('include the Phase 6 errors, but not the error pages’ texts', () => {
+    for (const key of [
+      'lastBoardAdmin',
+      'staffOtherBoard',
+      'staffSelf',
+      'staffStillActive',
+      'staffSelfRole',
+      'staffLastRole',
+      'staffAlreadyInvited',
+      'emailConflict',
+      'authNotConfigured',
+      'authRefused',
+      'invitationExpired',
+      'noSchoolYear',
+      'sampleClassExists',
+      'feedbackLimit',
+    ]) {
+      expect(KNOWN_ERRORS.has(key), key).toBe(true);
+    }
+    // « Référence : {ref} » needs its argument, and « Signaler ce problème » is a button: an
+    // action never returns them.
+    expect(KNOWN_ERRORS.has('reference')).toBe(false);
+    expect(KNOWN_ERRORS.has('reportProblem')).toBe(false);
+  });
 });

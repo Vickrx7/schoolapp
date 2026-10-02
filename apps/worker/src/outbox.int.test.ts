@@ -90,6 +90,7 @@ describe('outbox dispatch', () => {
         logger: createLogger('test'),
         pool,
         ai: null,
+        authAdmin: null,
       },
       batchSize: 10,
       aiJobRetentionDays: 30,

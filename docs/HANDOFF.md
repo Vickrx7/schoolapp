@@ -45,10 +45,10 @@ the beta (DECISIONS D-001, D-003).
   ceiling 2x; what Mike charges boards is separate.
 - **Budget/deadlines:** none given beyond the AI budget above. "No urgency" on the product name.
 
-**The name.** "Lynx École" is a placeholder (`NEXT_PUBLIC_APP_NAME`). Mike is open to anything and
-"so far likes something with Tableau". I flagged that "Tableau" alone is a big Salesforce software
-brand and suggested **« Au tableau! »** (also: Présent!, Tableau noir, Mon Tableau, Cartable,
-Ardoise). No availability or trademark check has been done yet.
+**The name.** "Lynx École" is a placeholder (`APP_NAME`, read at run time since Phase 6, D-113).
+Mike is open to anything and "so far likes something with Tableau". I flagged that "Tableau" alone
+is a big Salesforce software brand and suggested **« Au tableau! »** (also: Présent!, Tableau noir,
+Mon Tableau, Cartable, Ardoise). No availability or trademark check has been done yet.
 
 ## 2. Current state
 
@@ -91,7 +91,9 @@ Ardoise). No availability or trademark check has been done yet.
 | `d76f084` | Phase 5: class-mode database, « Présenter à la classe », « Adapter », « Votre avis »     |
 | `f7a0ce6` | Phase 5: quizzes on class devices (`/jouer`) and « Couverture du curriculum »            |
 | `587a0e1` | Phase 5: bulk generation of board drafts and content packs (admin CLI)                   |
-| (latest)  | Phase 5 hardening (14 review findings) and the Phase 5 docs                              |
+| `24ad631` | Phase 5 hardening (14 review findings) and the Phase 5 docs                              |
+| `3aaf668` | Marketing: app screenshots; `88bb93b` the library and class mode shown as available      |
+| (latest)  | Phase 6 foundation: D-102 to D-120, shared schema, settings, navigation, stubs (below)   |
 
 **Verified (locally, from an empty database, and in CI on each pushed commit):** 1004 unit tests
 (none skipped), 1346 pgTAP tests, 75 integration tests, 93 Playwright tests (desktop, phone and
@@ -151,6 +153,17 @@ laptops, a reveal that did not scroll to the answer, a small answer count, the p
 over the slide, 20 px device text, content language in accessible names, a French plural;
 opinions that could reveal colleagues' stars; unaudited deletion of board resources; deleted pack
 resources coming back with the next version).
+
+**Phase 6 (pilot readiness) is being built**, one slice at a time (S0 foundation, then S1 accounts
+and settings in the database, S2 audit viewer and retention, S3a web operations, S3b Docker, backups
+and CI, S4 « Conseil », S5 « Direction » and the audit log, S6 onboarding and feedback, S7 documents
+and demo). Decisions D-102 to D-120. The foundation (latest commit) adds the shared schema
+(`20261201090000_pilot_schema.sql`: invitations, feedback, the audit action catalogue,
+heartbeats, the terms and sample-class columns), renames the web settings (`SUPABASE_URL`,
+`SUPABASE_ANON_KEY`, `APP_NAME`, read at run time; the `NEXT_PUBLIC_*` names still work), adds
+« Direction » and « Conseil » to the navigation with each role's landing page (both pages say
+« arrive bientôt » until their slices), and registers the new worker tasks and admin commands as
+stubs (« pas encore disponible »).
 
 **Other deliverables:**
 
@@ -291,15 +304,18 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
 Everything else comes from `.env.example` (copy it to `apps/web/.env.local`). It uses the local demo
 keys, and none of it is secret:
 
-- **Web:** `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `APP_BASE_URL`,
-  `NEXT_PUBLIC_APP_NAME`, `ALERTS_ENCRYPTION_KEYS` (a dev-only key is included), and for the
-  substitute portal `SUB_PORTAL_DATABASE_URL` (local-only password), `SUB_CODE_HMAC_KEYS`
+- **Web:** `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `APP_BASE_URL`, `APP_NAME`, `APP_RELEASE`
+  (the old `NEXT_PUBLIC_*` names are still read as fallbacks; D-113), `SUPPORT_EMAIL` and
+  `PRIVACY_CONTACT_EMAIL` (optional), `ALERTS_ENCRYPTION_KEYS` (a dev-only key is included), and
+  for the substitute portal `SUB_PORTAL_DATABASE_URL` (local-only password), `SUB_CODE_HMAC_KEYS`
   (dev-only key), `CLIENT_IP_HEADER`, `TRUSTED_PROXY_HOPS` (production needs an appending reverse
   proxy; `docs/phase-3.md`). The README has the full table.
-- **Admin CLI:** `SUPABASE_SERVICE_ROLE_KEY`.
-- **Worker:** `DATABASE_URL`, `WORKER_CONCURRENCY`, `OUTBOX_BATCH_SIZE`, `INTEGRATIONS_MODE`,
-  `LOG_EVENTS`, `AI_PROVIDER` (`none` | `fake` | `anthropic`), `AI_MODEL` (default
-  `claude-opus-5-5`), `AI_EFFORT` (default `medium`), `AI_JOB_RETENTION_DAYS` (default 30).
+- **Admin CLI:** `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`.
+- **Worker:** `DATABASE_URL`, `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` (staff accounts,
+  D-107), `WORKER_HEALTH_PORT`, `APP_RELEASE`, `HEARTBEAT_URL_WORKER` (D-112),
+  `WORKER_CONCURRENCY`, `OUTBOX_BATCH_SIZE`, `INTEGRATIONS_MODE`, `LOG_EVENTS`, `AI_PROVIDER`
+  (`none` | `fake` | `anthropic`), `AI_MODEL` (default `claude-opus-5-5`), `AI_EFFORT` (default
+  `medium`), `AI_JOB_RETENTION_DAYS` (default 30).
 - **Optional, not in `.env.example`:**
   - `AI_PRICE_INPUT_PER_MTOK` / `AI_PRICE_OUTPUT_PER_MTOK`: prices for models the app doesn't
     know (`packages/config/src/index.ts`).
@@ -378,9 +394,10 @@ Where an item is already in `DECISIONS.md`, the D-number is given. Don't add dup
    keys and the class portal key), a reverse proxy set up as `docs/phase-3.md` says, and a
    zero-data-retention request to Anthropic (ask whether batches are covered). This pulls part of
    Phase 6 (`DEPLOYMENT.md`) forward.
-6. **Phase 6** (SPEC §13): present a short plan and questions to Mike before building.
+6. **Phase 6** (SPEC §13): being built (above); its questions for Mike are in the plan's J2 and
+   will be in `docs/phase-6.md`.
    « Essayer comme les élèves » (a Phase 4 hook, D-081) was not built in Phase 5.
-7. **Name.** Once chosen: check availability, then rename `NEXT_PUBLIC_APP_NAME`, the icon, the
+7. **Name.** Once chosen: check availability, then rename `APP_NAME`, the icon, the
    login email template and the promo.
 
 **Known issues and risks:**

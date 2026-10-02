@@ -1,7 +1,7 @@
 # Marketing
 
 Promotional material for the platform (working name « Lynx École », set by
-`NEXT_PUBLIC_APP_NAME`; D-002). French first (Canadian French, Ontario school usage, inclusive
+`APP_NAME`; D-002). French first (Canadian French, Ontario school usage, inclusive
 writing), with a complete English version.
 
 ## The rule: claims only what ships

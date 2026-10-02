@@ -11,25 +11,22 @@ import { serverEnv } from './env';
 export async function createSupabaseServerClient() {
   const env = serverEnv();
   const cookieStore = await cookies();
-  return createServerClient<Database>(
-    env.NEXT_PUBLIC_SUPABASE_URL,
-    env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet) {
-          try {
-            for (const { name, value, options } of cookiesToSet)
-              cookieStore.set(name, value, options);
-          } catch {
-            // Called from a Server Component: cookies are refreshed by proxy.ts instead.
-          }
-        },
+  // Read at run time on the server (DECISIONS D-113): never inlined into the build.
+  return createServerClient<Database>(env.SUPABASE_URL, env.SUPABASE_ANON_KEY, {
+    cookies: {
+      getAll() {
+        return cookieStore.getAll();
+      },
+      setAll(cookiesToSet) {
+        try {
+          for (const { name, value, options } of cookiesToSet)
+            cookieStore.set(name, value, options);
+        } catch {
+          // Called from a Server Component: cookies are refreshed by proxy.ts instead.
+        }
       },
     },
-  );
+  });
 }
 
 export type ServerSupabase = Awaited<ReturnType<typeof createSupabaseServerClient>>;

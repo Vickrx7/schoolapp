@@ -83,6 +83,37 @@ describe('database errors shown to users', () => {
     expect(fr.errors).toHaveProperty('classPortalNotConfigured');
   });
 
+  it('maps the Phase 6 codes to their messages', () => {
+    const phase6 = {
+      LXU01: 'lastBoardAdmin',
+      LXU02: 'staffOtherBoard',
+      LXU05: 'staffSelf',
+      LXU06: 'staffStillActive',
+      LXU07: 'staffSelfRole',
+      LXU08: 'staffLastRole',
+      LXO01: 'noSchoolYear',
+      LXF01: 'feedbackLimit',
+    };
+    for (const [code, key] of Object.entries(phase6)) {
+      expect(errorKey({ code }), code).toBe(key);
+      expect(fr.errors, code).toHaveProperty(key);
+    }
+    // Returned by the Phase 6 actions themselves: a duplicate (23505) where it has a meaning of
+    // its own, an invitation's failure, and the error pages' reference (D-111).
+    for (const key of [
+      'staffAlreadyInvited',
+      'sampleClassExists',
+      'emailConflict',
+      'authNotConfigured',
+      'authRefused',
+      'invitationExpired',
+      'reference',
+      'reportProblem',
+    ]) {
+      expect(fr.errors, key).toHaveProperty(key);
+    }
+  });
+
   it('turns what a resource is missing into a field error with a message', () => {
     expect(readinessFieldErrors({ code: 'LXL01', details: 'expectations' })).toEqual({
       'readiness.expectations': 'readiness.expectations',

@@ -299,6 +299,24 @@ export type Database = {
           },
         ];
       };
+      audit_action_catalog: {
+        Row: {
+          action: string;
+          category: string;
+          audience: string;
+        };
+        Insert: {
+          action: string;
+          category: string;
+          audience: string;
+        };
+        Update: {
+          action?: string;
+          category?: string;
+          audience?: string;
+        };
+        Relationships: [];
+      };
       audit_log: {
         Row: {
           id: number;
@@ -812,6 +830,8 @@ export type Database = {
           created_by: string | null;
           created_at: string;
           updated_at: string;
+          sample_owner_id: string | null;
+          students_purged_at: string | null;
         };
         Insert: {
           id?: string;
@@ -822,6 +842,8 @@ export type Database = {
           created_by?: string | null;
           created_at?: string;
           updated_at?: string;
+          sample_owner_id?: string | null;
+          students_purged_at?: string | null;
         };
         Update: {
           id?: string;
@@ -832,6 +854,8 @@ export type Database = {
           created_by?: string | null;
           created_at?: string;
           updated_at?: string;
+          sample_owner_id?: string | null;
+          students_purged_at?: string | null;
         };
         Relationships: [
           {
@@ -846,6 +870,13 @@ export type Database = {
             columns: ['room_id'];
             isOneToOne: false;
             referencedRelation: 'rooms';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'classes_sample_owner_id_fkey';
+            columns: ['sample_owner_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
             referencedColumns: ['id'];
           },
           {
@@ -1254,6 +1285,79 @@ export type Database = {
           last_error?: string | null;
         };
         Relationships: [];
+      };
+      feedback: {
+        Row: {
+          id: string;
+          board_id: string;
+          school_id: string | null;
+          user_id: string | null;
+          kind: string;
+          message: string;
+          route: string | null;
+          error_ref: string | null;
+          app_release: string | null;
+          device: string | null;
+          locale: string | null;
+          may_contact: boolean;
+          status: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          board_id: string;
+          school_id?: string | null;
+          user_id?: string | null;
+          kind: string;
+          message: string;
+          route?: string | null;
+          error_ref?: string | null;
+          app_release?: string | null;
+          device?: string | null;
+          locale?: string | null;
+          may_contact?: boolean;
+          status?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          board_id?: string;
+          school_id?: string | null;
+          user_id?: string | null;
+          kind?: string;
+          message?: string;
+          route?: string | null;
+          error_ref?: string | null;
+          app_release?: string | null;
+          device?: string | null;
+          locale?: string | null;
+          may_contact?: boolean;
+          status?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'feedback_board_id_fkey';
+            columns: ['board_id'];
+            isOneToOne: false;
+            referencedRelation: 'boards';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'feedback_school_id_fkey';
+            columns: ['school_id'];
+            isOneToOne: false;
+            referencedRelation: 'schools';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'feedback_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       grades: {
         Row: {
@@ -2462,6 +2566,83 @@ export type Database = {
           },
         ];
       };
+      staff_invitations: {
+        Row: {
+          id: string;
+          board_id: string;
+          school_id: string | null;
+          email: string;
+          display_name: string;
+          honorific: string | null;
+          role: Database['public']['Enums']['app_role'];
+          status: string;
+          error_code: string | null;
+          user_id: string | null;
+          invited_by: string | null;
+          created_at: string;
+          processed_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          board_id: string;
+          school_id?: string | null;
+          email: string;
+          display_name: string;
+          honorific?: string | null;
+          role: Database['public']['Enums']['app_role'];
+          status?: string;
+          error_code?: string | null;
+          user_id?: string | null;
+          invited_by?: string | null;
+          created_at?: string;
+          processed_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          board_id?: string;
+          school_id?: string | null;
+          email?: string;
+          display_name?: string;
+          honorific?: string | null;
+          role?: Database['public']['Enums']['app_role'];
+          status?: string;
+          error_code?: string | null;
+          user_id?: string | null;
+          invited_by?: string | null;
+          created_at?: string;
+          processed_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'staff_invitations_board_id_fkey';
+            columns: ['board_id'];
+            isOneToOne: false;
+            referencedRelation: 'boards';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'staff_invitations_invited_by_fkey';
+            columns: ['invited_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'staff_invitations_school_id_board_id_fkey';
+            columns: ['school_id', 'board_id'];
+            isOneToOne: false;
+            referencedRelation: 'schools';
+            referencedColumns: ['id', 'board_id'];
+          },
+          {
+            foreignKeyName: 'staff_invitations_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       strands: {
         Row: {
           id: string;
@@ -3036,6 +3217,27 @@ export type Database = {
           },
         ];
       };
+      system_heartbeats: {
+        Row: {
+          component: string;
+          beat_at: string;
+          release: string | null;
+          details: Json;
+        };
+        Insert: {
+          component: string;
+          beat_at?: string;
+          release?: string | null;
+          details?: Json;
+        };
+        Update: {
+          component?: string;
+          beat_at?: string;
+          release?: string | null;
+          details?: Json;
+        };
+        Relationships: [];
+      };
       tags: {
         Row: {
           id: string;
@@ -3372,6 +3574,9 @@ export type Database = {
           deactivated_at: string | null;
           created_at: string;
           updated_at: string;
+          terms_version: string | null;
+          terms_accepted_at: string | null;
+          onboarding_dismissed_at: string | null;
         };
         Insert: {
           id: string;
@@ -3382,6 +3587,9 @@ export type Database = {
           deactivated_at?: string | null;
           created_at?: string;
           updated_at?: string;
+          terms_version?: string | null;
+          terms_accepted_at?: string | null;
+          onboarding_dismissed_at?: string | null;
         };
         Update: {
           id?: string;
@@ -3392,6 +3600,9 @@ export type Database = {
           deactivated_at?: string | null;
           created_at?: string;
           updated_at?: string;
+          terms_version?: string | null;
+          terms_accepted_at?: string | null;
+          onboarding_dismissed_at?: string | null;
         };
         Relationships: [];
       };

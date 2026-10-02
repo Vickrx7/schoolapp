@@ -9,6 +9,7 @@ import {
 } from '@lynx/domain';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
+import { landingPath, type LandingPath } from '@/lib/landing';
 import type { LibraryReviewerRole } from './library/view-model';
 import { createSupabaseServerClient } from './supabase';
 
@@ -33,6 +34,14 @@ export interface SessionContext {
   displayName: string;
   honorific: string | null;
   preferredLocale: string;
+  /**
+   * The pilot terms the user accepted (DECISIONS D-109, D-110): the version and when, both null
+   * until « Bienvenue ». `termsState(termsVersion)` (@lynx/domain) says whether to ask or remind.
+   */
+  termsVersion: string | null;
+  termsAcceptedAt: string | null;
+  /** When the user hid the « Pour bien commencer » checklist (D-109). */
+  onboardingDismissedAt: string | null;
   roles: { role: AppRole; boardId: string; schoolId: string | null }[];
   schools: SchoolContext[];
   boards: { id: string; name: string; settings: BoardSettings; isAdmin: boolean }[];
@@ -59,7 +68,9 @@ export const loadSessionState = cache(async (): Promise<SessionState> => {
   const [profile, roles, reviewers] = await Promise.all([
     supabase
       .from('users')
-      .select('email, display_name, honorific, preferred_locale, deactivated_at')
+      .select(
+        'email, display_name, honorific, preferred_locale, deactivated_at, terms_version, terms_accepted_at, onboarding_dismissed_at',
+      )
       .eq('id', userId)
       .maybeSingle(),
     supabase.from('user_roles').select('role, board_id, school_id').eq('user_id', userId),
@@ -103,6 +114,9 @@ export const loadSessionState = cache(async (): Promise<SessionState> => {
     displayName: profile.data.display_name,
     honorific: profile.data.honorific,
     preferredLocale: profile.data.preferred_locale,
+    termsVersion: profile.data.terms_version,
+    termsAcceptedAt: profile.data.terms_accepted_at,
+    onboardingDismissedAt: profile.data.onboarding_dismissed_at,
     roles: roleRows.map((r) => ({ role: r.role, boardId: r.board_id, schoolId: r.school_id })),
     schools: (schools.data ?? []).map((s) => {
       const today = localDateIn(s.timezone);
@@ -205,3 +219,26 @@ export const showLibrary = (session: SessionContext) =>
 
 export const findSchool = (session: SessionContext, schoolId: string) =>
   session.schools.find((s) => s.id === schoolId) ?? null;
+
+/**
+ * Schools the user directs, as principal or vice-principal: « Direction » and the audit log
+ * (DECISIONS D-102, D-103). Whatever modules the school has.
+ */
+export const directionSchools = (session: SessionContext) =>
+  session.schools.filter((s) => hasRole(s, 'principal', 'vice_principal'));
+
+/** Boards the user administers: « Conseil » and the board's audit log (D-103, D-107). */
+export const adminBoards = (session: SessionContext) => session.boards.filter((b) => b.isAdmin);
+
+/**
+ * Where the user lands after signing in, and from « Aujourd'hui » when not teaching (D-118):
+ * teachers « Aujourd'hui », the direction « Direction », office staff « Suppléances », board
+ * admins « Conseil », anyone else « Calendrier » (`lib/landing.ts`).
+ */
+export const landingFor = (session: SessionContext): LandingPath =>
+  landingPath({
+    teaches: teachingSchools(session).length > 0,
+    directs: directionSchools(session).length > 0,
+    seesSubstituteBoard: substituteBoardSchools(session).length > 0,
+    administersBoard: adminBoards(session).length > 0,
+  });

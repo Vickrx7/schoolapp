@@ -28,7 +28,12 @@ import { cn } from '@/lib/utils';
 import { loadMyAbsences } from '@/server/queries/absences';
 import { loadPendingReports } from '@/server/queries/sub-reports';
 import { loadToday, type TodayBlock } from '@/server/queries/today';
-import { requireSession, substituteBoardSchools, teachingSchools } from '@/server/session';
+import {
+  landingFor,
+  requireSession,
+  substituteBoardSchools,
+  teachingSchools,
+} from '@/server/session';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('today');
@@ -49,7 +54,8 @@ export default async function TodayPage({
 }) {
   const session = await requireSession();
   const schools = teachingSchools(session);
-  if (schools.length === 0) redirect('/calendar');
+  // Whoever does not teach has a landing page of their own (DECISIONS D-118).
+  if (schools.length === 0) redirect(landingFor(session));
 
   const t = await getTranslations('today');
   const tAbsences = await getTranslations('absences');

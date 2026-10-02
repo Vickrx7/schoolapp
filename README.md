@@ -82,19 +82,19 @@ Same ports and keys as the Supabase CLI, so the same `.env.local` works. See
 
 ## Commands
 
-| Command                                                       | What it does                                                                                                                                                         |
-| ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm dev` / `pnpm dev:worker`                                | Run the web app / the worker                                                                                                                                         |
-| `pnpm lint` · `pnpm typecheck` · `pnpm format`                | Code quality                                                                                                                                                         |
-| `pnpm test`                                                   | Unit tests (domain logic, config, integrations, alert encryption)                                                                                                    |
-| `pnpm test:db`                                                | pgTAP database tests (RLS, audit, alerts, planner, substitute access, library, class mode) via `supabase test db`                                                    |
-| `pnpm test:int`                                               | Integration tests that need a database (`DATABASE_URL`)                                                                                                              |
-| `pnpm test:e2e`                                               | Playwright end-to-end tests (needs the stack running and a built app)                                                                                                |
-| `pnpm db:types` / `pnpm db:types:direct`                      | Regenerate `packages/db/src/database.types.ts`                                                                                                                       |
-| `pnpm admin <command>`                                        | Onboard boards, schools and staff; AI budgets and usage; library reviewers, curriculum import, coverage, bulk generation and content packs (`apps/admin/src/cli.ts`) |
-| `pnpm library:pack --version <v> --out <file>`                | Build the demo resources as a content pack file (`docs/content-packs.md`)                                                                                            |
-| `pnpm library:seed` / `pnpm library:seed:check`               | Regenerate the demo curriculum and library seeds from `content/` / check they are up to date (CI)                                                                    |
-| `pnpm ai:eval [--feature sub_plan] [--provider fake] [--yes]` | Run an AI evaluation set (`differentiate`, `sub_plan`, `library_item`, `library_levels`; Claude costs about $1–5; `fake` is free)                                    |
+| Command                                                       | What it does                                                                                                                                                                                                                            |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm dev` / `pnpm dev:worker`                                | Run the web app / the worker                                                                                                                                                                                                            |
+| `pnpm lint` · `pnpm typecheck` · `pnpm format`                | Code quality                                                                                                                                                                                                                            |
+| `pnpm test`                                                   | Unit tests (domain logic, config, integrations, alert encryption)                                                                                                                                                                       |
+| `pnpm test:db`                                                | pgTAP database tests (RLS, audit, alerts, planner, substitute access, library, class mode) via `supabase test db`                                                                                                                       |
+| `pnpm test:int`                                               | Integration tests that need a database (`DATABASE_URL`)                                                                                                                                                                                 |
+| `pnpm test:e2e`                                               | Playwright end-to-end tests (needs the stack running and a built app)                                                                                                                                                                   |
+| `pnpm db:types` / `pnpm db:types:direct`                      | Regenerate `packages/db/src/database.types.ts`                                                                                                                                                                                          |
+| `pnpm admin <command>`                                        | Onboard boards, schools and staff; AI budgets and usage; library reviewers, curriculum import, coverage, bulk generation, content packs; retention, status, support access and deletions on request (Phase 6) (`apps/admin/src/cli.ts`) |
+| `pnpm library:pack --version <v> --out <file>`                | Build the demo resources as a content pack file (`docs/content-packs.md`)                                                                                                                                                               |
+| `pnpm library:seed` / `pnpm library:seed:check`               | Regenerate the demo curriculum and library seeds from `content/` / check they are up to date (CI)                                                                                                                                       |
+| `pnpm ai:eval [--feature sub_plan] [--provider fake] [--yes]` | Run an AI evaluation set (`differentiate`, `sub_plan`, `library_item`, `library_levels`; Claude costs about $1–5; `fake` is free)                                                                                                       |
 
 ## Configuration
 
@@ -102,29 +102,33 @@ Everything is configured with environment variables, documented in [`.env.exampl
 Board- and school-level options (schedule type, Anglais start grade, alerts on/off, language levels,
 substitute access hours, modules...) are stored in the database (DECISIONS.md, D-003).
 
-| Variable                                                | Used by       | What it is                                                                                               |
-| ------------------------------------------------------- | ------------- | -------------------------------------------------------------------------------------------------------- |
-| `NEXT_PUBLIC_SUPABASE_URL`                              | web           | Supabase API URL                                                                                         |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY`                         | web           | Public API key (RLS protects all data)                                                                   |
-| `SUPABASE_SERVICE_ROLE_KEY`                             | admin CLI     | Service key, for `pnpm admin` only; never in the web app                                                 |
-| `APP_BASE_URL`                                          | web           | Public address (links in codes and emails; `https:` makes portal cookies `__Secure-`)                    |
-| `NEXT_PUBLIC_APP_NAME`                                  | web           | Product name shown in the UI (placeholder « Lynx École »)                                                |
-| `ALERTS_ENCRYPTION_KEYS`                                | web           | `version:base64` keys for alert text and substitute report notes; empty turns alerts off                 |
-| `SUB_PORTAL_DATABASE_URL`                               | web           | Direct connection as `lynx_sub_portal` for the substitute portal; empty turns it off (phase-3.md)        |
-| `SUB_CODE_HMAC_KEYS`                                    | web           | `version:base64` keys (at most two) hashing substitute codes; empty turns codes off                      |
-| `CLIENT_IP_HEADER`, `TRUSTED_PROXY_HOPS`                | web           | Client address for throttling; production needs an appending reverse proxy (docs/phase-3.md)             |
-| `CLASS_PORTAL_DATABASE_URL`                             | web           | Direct connection as `lynx_class_portal` for quizzes on class devices; empty turns them off (phase-5.md) |
-| `CLASS_PORTAL_HMAC_KEY`                                 | web           | base64 key (32 bytes) for the class devices' throttle keys; empty turns device quizzes off               |
-| `DATABASE_URL`                                          | worker, tests | Direct Postgres connection (also for `pnpm test:int` and `pnpm db:types:direct`)                         |
-| `WORKER_CONCURRENCY`, `OUTBOX_BATCH_SIZE`, `LOG_EVENTS` | worker        | Job concurrency (4), outbox batch (100), log each event (`true`/`false`)                                 |
-| `INTEGRATIONS_MODE`                                     | worker        | `mock` (the only mode in the MVP)                                                                        |
-| `AI_PROVIDER`                                           | worker        | `none`, `fake` (local answers) or `anthropic`                                                            |
-| `ANTHROPIC_API_KEY`                                     | worker, eval  | Provider key; never commit it                                                                            |
-| `AI_MODEL`, `AI_EFFORT`                                 | worker, eval  | Default `claude-opus-5-5`, `medium`                                                                      |
-| `AI_JOB_RETENTION_DAYS`                                 | worker        | Days before AI requests are deleted (30)                                                                 |
-| `AI_PRICE_INPUT_PER_MTOK`, `AI_PRICE_OUTPUT_PER_MTOK`   | worker        | Optional prices for a model the app does not know                                                        |
-| `AI_FAKE_DELAY_MS`                                      | worker        | Optional latency of the fake provider (800)                                                              |
-| `BULK_MAX_RUN_USD`                                      | worker, admin | The most one bulk generation run may cost at its worst case, in USD (100; at most 1000)                  |
+| Variable                                                | Used by                | What it is                                                                                               |
+| ------------------------------------------------------- | ---------------------- | -------------------------------------------------------------------------------------------------------- |
+| `SUPABASE_URL`                                          | web, worker, admin CLI | Supabase API URL, read at run time (was `NEXT_PUBLIC_SUPABASE_URL`, still read as a fallback; D-113)     |
+| `SUPABASE_ANON_KEY`                                     | web                    | Public API key (RLS protects all data; was `NEXT_PUBLIC_SUPABASE_ANON_KEY`)                              |
+| `SUPABASE_SERVICE_ROLE_KEY`                             | admin CLI, worker      | Service key, for `pnpm admin` and the worker's staff accounts (D-107); never in the web app              |
+| `APP_BASE_URL`                                          | web                    | Public address (links in codes and emails; `https:` makes portal cookies `__Secure-`)                    |
+| `APP_NAME`                                              | web                    | Product name shown in the UI, read at run time (placeholder « Lynx École »; was `NEXT_PUBLIC_APP_NAME`)  |
+| `APP_RELEASE`                                           | web, worker            | The release running (`dev` by default), in the footer, `/api/health`, logs and heartbeats                |
+| `SUPPORT_EMAIL`, `PRIVACY_CONTACT_EMAIL`                | web                    | Optional addresses shown for support and on the privacy page (D-110)                                     |
+| `ALERTS_ENCRYPTION_KEYS`                                | web                    | `version:base64` keys for alert text and substitute report notes; empty turns alerts off                 |
+| `SUB_PORTAL_DATABASE_URL`                               | web                    | Direct connection as `lynx_sub_portal` for the substitute portal; empty turns it off (phase-3.md)        |
+| `SUB_CODE_HMAC_KEYS`                                    | web                    | `version:base64` keys (at most two) hashing substitute codes; empty turns codes off                      |
+| `CLIENT_IP_HEADER`, `TRUSTED_PROXY_HOPS`                | web                    | Client address for throttling; production needs an appending reverse proxy (docs/phase-3.md)             |
+| `CLASS_PORTAL_DATABASE_URL`                             | web                    | Direct connection as `lynx_class_portal` for quizzes on class devices; empty turns them off (phase-5.md) |
+| `CLASS_PORTAL_HMAC_KEY`                                 | web                    | base64 key (32 bytes) for the class devices' throttle keys; empty turns device quizzes off               |
+| `DATABASE_URL`                                          | worker, tests          | Direct Postgres connection (also for `pnpm test:int` and `pnpm db:types:direct`)                         |
+| `WORKER_CONCURRENCY`, `OUTBOX_BATCH_SIZE`, `LOG_EVENTS` | worker                 | Job concurrency (4), outbox batch (100), log each event (`true`/`false`)                                 |
+| `INTEGRATIONS_MODE`                                     | worker                 | `mock` (the only mode in the MVP)                                                                        |
+| `AI_PROVIDER`                                           | worker                 | `none`, `fake` (local answers) or `anthropic`                                                            |
+| `ANTHROPIC_API_KEY`                                     | worker, eval           | Provider key; never commit it                                                                            |
+| `AI_MODEL`, `AI_EFFORT`                                 | worker, eval           | Default `claude-opus-5-5`, `medium`                                                                      |
+| `AI_JOB_RETENTION_DAYS`                                 | worker                 | Days before AI requests are deleted (30)                                                                 |
+| `AI_PRICE_INPUT_PER_MTOK`, `AI_PRICE_OUTPUT_PER_MTOK`   | worker                 | Optional prices for a model the app does not know                                                        |
+| `AI_FAKE_DELAY_MS`                                      | worker                 | Optional latency of the fake provider (800)                                                              |
+| `BULK_MAX_RUN_USD`                                      | worker, admin          | The most one bulk generation run may cost at its worst case, in USD (100; at most 1000)                  |
+| `WORKER_HEALTH_PORT`                                    | worker                 | Port of the worker's `/healthz` (0 = off; D-112)                                                         |
+| `HEARTBEAT_URL_WORKER`                                  | worker                 | Optional external monitor pinged after each heartbeat; it receives no data (D-112)                       |
 
 ## Privacy in one paragraph
 

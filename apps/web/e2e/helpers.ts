@@ -42,6 +42,13 @@ async function latestCode(email: string, after: number): Promise<string> {
 }
 
 /**
+ * Where signing in can land (DECISIONS D-118): « Aujourd'hui » for teachers, « Direction »,
+ * « Suppléances » for office staff, « Conseil » for board admins, « Calendrier » for anyone else,
+ * and « Bienvenue » until the pilot terms are accepted (D-109).
+ */
+export const LANDING_URL = /\/(today|calendar|direction|board|absences|bienvenue)(?:[/?#]|$)/;
+
+/**
  * Signs in through the real email-code flow (codes are read from the local Mailpit).
  * Works whichever language the login page is in.
  */
@@ -62,7 +69,34 @@ export async function login(page: Page, email: string, { stayOnPage = false } = 
   const code = await latestCode(email, started);
   await codeField.fill(code);
   await page.getByRole('button', { name: /^(Me connecter|Sign in)$/ }).click();
-  await page.waitForURL(/\/(today|calendar)/);
+  await page.waitForURL(LANDING_URL);
+}
+
+/**
+ * « Bienvenue » at a first sign-in (D-109, D-110): accepts the pilot terms, optionally picks how
+ * students address the person, then « Commencer ». Waits until the app's landing page shows.
+ * (Written to the plan's French copy; the onboarding slice's form decides the final labels.)
+ */
+export async function acceptWelcome(page: Page, profile: { honorific?: string } = {}) {
+  await page.waitForURL(/\/bienvenue(?:[/?#]|$)/);
+  const accept = page.getByRole('checkbox', {
+    name: 'J’ai lu et j’accepte les conditions du projet pilote',
+  });
+  // A tap before the page is interactive is lost: retry until the box is checked.
+  await expect(async () => {
+    if (!(await accept.isChecked())) await accept.check();
+    await expect(accept).toBeChecked({ timeout: 1000 });
+  }).toPass();
+  // The profile may be a second step.
+  const next = page.getByRole('button', { name: 'Continuer', exact: true });
+  if (await next.isVisible()) await next.click();
+  if (profile.honorific !== undefined) {
+    await page
+      .getByLabel(/^Comment les élèves vous appellent-ils/)
+      .selectOption({ label: profile.honorific });
+  }
+  await page.getByRole('button', { name: 'Commencer', exact: true }).click();
+  await page.waitForURL((url) => LANDING_URL.test(url.pathname) && !/bienvenue/.test(url.pathname));
 }
 
 // Seeded Mondays without school (see supabase/seed.sql).

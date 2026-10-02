@@ -21,7 +21,8 @@
     "moveDown": "Descendre",
     "draftRestored": "Brouillon non enregistré récupéré.",
     "discardDraft": "Effacer le brouillon",
-    "retry": "Réessayer"
+    "retry": "Réessayer",
+    "version": "Version {version}"
   },
   "nav": {
     "today": "Aujourd’hui",
@@ -34,7 +35,9 @@
     "differentiate": "Différencier",
     "substitutes": "Suppléances",
     "library": "Ressources",
-    "more": "Plus"
+    "more": "Plus",
+    "direction": "Direction",
+    "board": "Conseil"
   },
   "auth": {
     "title": "Connexion",
@@ -142,6 +145,22 @@
     "libraryRemixArchived": "Une ressource archivée ne peut pas être adaptée.",
     "libraryRemixLicence": "Cette ressource ne peut pas être adaptée (licence).",
     "libraryShareCap": "Cette adaptation peut être partagée au plus avec l’école de la ressource d’origine.",
+    "lastBoardAdmin": "Le conseil doit garder au moins une personne administratrice.",
+    "staffOtherBoard": "Cette personne travaille aussi pour un autre conseil : écrivez à IP Lynx.",
+    "staffSelf": "Vous ne pouvez pas retirer ni rétablir votre propre accès.",
+    "staffStillActive": "Retirez d’abord l’accès de cette personne.",
+    "staffSelfRole": "Vous ne pouvez pas modifier vos propres rôles.",
+    "staffLastRole": "Retirez plutôt l’accès de cette personne.",
+    "staffAlreadyInvited": "Une invitation est déjà en préparation pour cette personne et ce rôle.",
+    "emailConflict": "Cette adresse est déjà utilisée ailleurs dans l’application. Écrivez à IP Lynx pour l’ajouter.",
+    "authNotConfigured": "Les invitations ne sont pas configurées sur ce serveur.",
+    "authRefused": "Le service de connexion a refusé cette adresse.",
+    "invitationExpired": "L’invitation a expiré.",
+    "noSchoolYear": "Aucune année scolaire n’est définie pour votre conseil. Communiquez avec l’administration du conseil.",
+    "sampleClassExists": "Vous avez déjà une classe exemple dans cette école.",
+    "feedbackLimit": "Vous avez envoyé 20 commentaires aujourd’hui, le maximum. Réessayez demain.",
+    "reference": "Référence : {ref}",
+    "reportProblem": "Signaler ce problème",
     "readiness": {
       "grades": "Ajoutez au moins une année d’études.",
       "subject": "Choisissez une matière.",
@@ -2876,5 +2895,31 @@
     "badge": "Ensemble : {title} {version}",
     "provenance": "Éditeur déclaré : {publisher} · importé le {date} · empreinte {hash}",
     "provenanceWithoutFingerprint": "Éditeur déclaré : {publisher} · importé le {date}"
+  },
+  "direction": {
+    "title": "Tableau de bord de la direction",
+    "placeholder": "Le tableau de bord de la direction arrive bientôt."
+  },
+  "audit": {
+    "title": "Journal d’audit"
+  },
+  "board": {
+    "title": "Administration du conseil",
+    "placeholder": "L’administration du conseil arrive bientôt."
+  },
+  "onboarding": {
+    "title": "Pour bien commencer"
+  },
+  "welcome": {
+    "title": "Bienvenue"
+  },
+  "legal": {
+    "title": "Confidentialité et conditions"
+  },
+  "feedback": {
+    "button": "Commentaires"
+  },
+  "releaseNotes": {
+    "title": "Nouveautés"
   }
 }

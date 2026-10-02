@@ -76,7 +76,7 @@ const helpers = {
 function taskList(logger: Logger) {
   return buildTaskList({
     subscriptions: buildSubscriptions({ logEvents: false }),
-    context: { integrations: createMockIntegrations(), logger, pool, ai: null },
+    context: { integrations: createMockIntegrations(), logger, pool, ai: null, authAdmin: null },
     batchSize: 10,
     aiJobRetentionDays: 30,
     bulkMaxRunUsd: 100,

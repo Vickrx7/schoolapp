@@ -21,7 +21,8 @@
     "moveDown": "Move down",
     "draftRestored": "Unsaved draft restored.",
     "discardDraft": "Discard draft",
-    "retry": "Try again"
+    "retry": "Try again",
+    "version": "Version {version}"
   },
   "nav": {
     "today": "Today",
@@ -34,7 +35,9 @@
     "differentiate": "Differentiate",
     "substitutes": "Substitutes",
     "library": "Resources",
-    "more": "More"
+    "more": "More",
+    "direction": "Leadership",
+    "board": "Board"
   },
   "auth": {
     "title": "Sign in",
@@ -142,6 +145,22 @@
     "libraryRemixArchived": "An archived resource cannot be adapted.",
     "libraryRemixLicence": "This resource cannot be adapted (licence).",
     "libraryShareCap": "This adaptation can be shared at most with the original resource’s school.",
+    "lastBoardAdmin": "The board must keep at least one administrator.",
+    "staffOtherBoard": "This person also works for another board: write to IP Lynx.",
+    "staffSelf": "You cannot remove or restore your own access.",
+    "staffStillActive": "Remove this person’s access first.",
+    "staffSelfRole": "You cannot change your own roles.",
+    "staffLastRole": "Remove this person’s access instead.",
+    "staffAlreadyInvited": "An invitation is already being prepared for this person and role.",
+    "emailConflict": "This address is already used elsewhere in the app. Write to IP Lynx to add it.",
+    "authNotConfigured": "Invitations are not set up on this server.",
+    "authRefused": "The sign-in service refused this address.",
+    "invitationExpired": "The invitation has expired.",
+    "noSchoolYear": "No school year is set for your board. Contact your board’s administration.",
+    "sampleClassExists": "You already have a sample class at this school.",
+    "feedbackLimit": "You have sent 20 comments today, the most allowed. Try again tomorrow.",
+    "reference": "Reference: {ref}",
+    "reportProblem": "Report this problem",
     "readiness": {
       "grades": "Add at least one grade.",
       "subject": "Choose a subject.",
@@ -2876,5 +2895,31 @@
     "badge": "Pack: {title} {version}",
     "provenance": "Declared publisher: {publisher} · imported on {date} · fingerprint {hash}",
     "provenanceWithoutFingerprint": "Declared publisher: {publisher} · imported on {date}"
+  },
+  "direction": {
+    "title": "Leadership dashboard",
+    "placeholder": "The leadership dashboard is coming soon."
+  },
+  "audit": {
+    "title": "Audit log"
+  },
+  "board": {
+    "title": "Board administration",
+    "placeholder": "Board administration is coming soon."
+  },
+  "onboarding": {
+    "title": "Getting started"
+  },
+  "welcome": {
+    "title": "Welcome"
+  },
+  "legal": {
+    "title": "Privacy and terms"
+  },
+  "feedback": {
+    "button": "Feedback"
+  },
+  "releaseNotes": {
+    "title": "What’s new"
   }
 }

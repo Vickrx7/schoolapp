@@ -3,21 +3,28 @@
  * Pure, so the rules are unit-tested.
  */
 
+/**
+ * In the order of the top bar (DECISIONS D-118): today, classes, direction, substitutes,
+ * library, differentiate, calendar, school, board, profile.
+ */
 export type NavKey =
   | 'today'
   | 'classes'
+  | 'direction'
   | 'substitutes'
   | 'library'
   | 'differentiate'
   | 'calendar'
   | 'school'
+  | 'board'
   | 'profile';
 
 /** What fits the phone's bottom bar at 360 px (D-034: 44 px targets, labels readable). */
 export const PHONE_BAR_MAX = 6;
 
 /**
- * The phone's bottom bar, from the items of the top bar, in the same order (DECISIONS D-078):
+ * The phone's bottom bar, from the items of the top bar, in the same order (DECISIONS D-078,
+ * kept by D-118 with « Direction » and « Conseil »):
  *
  * - every item when they fit (six places);
  * - otherwise « Suppléances » is left out first: phones reach it from Aujourd'hui and École,

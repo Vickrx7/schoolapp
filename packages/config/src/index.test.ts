@@ -1,20 +1,34 @@
 import { describe, expect, it } from 'vitest';
-import { adminEnvSchema, EnvError, loadEnv, webServerEnvSchema, workerEnvSchema } from './index';
+import {
+  adminEnvSchema,
+  appNameFrom,
+  EnvError,
+  loadEnv,
+  webServerEnvSchema,
+  workerEnvSchema,
+} from './index';
 
 describe('loadEnv', () => {
   it('applies defaults and treats empty strings as unset', () => {
     const env = loadEnv(webServerEnvSchema, {
-      NEXT_PUBLIC_SUPABASE_URL: 'http://127.0.0.1:54321',
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'x'.repeat(40),
-      NEXT_PUBLIC_APP_NAME: '',
+      SUPABASE_URL: 'http://127.0.0.1:54321',
+      SUPABASE_ANON_KEY: 'x'.repeat(40),
+      APP_NAME: '',
     });
-    expect(env.NEXT_PUBLIC_APP_NAME).toBe('Lynx École');
+    expect(env).toMatchObject({
+      SUPABASE_URL: 'http://127.0.0.1:54321',
+      APP_NAME: 'Lynx École',
+      APP_RELEASE: 'dev',
+      APP_BASE_URL: 'http://localhost:3000',
+    });
+    expect(env.SUPPORT_EMAIL).toBeUndefined();
+    expect(env.PRIVACY_CONTACT_EMAIL).toBeUndefined();
   });
 
   it('leaves the substitute portal unconfigured by default, with safe proxy defaults', () => {
     const base = {
-      NEXT_PUBLIC_SUPABASE_URL: 'http://127.0.0.1:54321',
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'x'.repeat(40),
+      SUPABASE_URL: 'http://127.0.0.1:54321',
+      SUPABASE_ANON_KEY: 'x'.repeat(40),
     };
     const defaults = loadEnv(webServerEnvSchema, { ...base, SUB_PORTAL_DATABASE_URL: '' });
     expect(defaults.SUB_PORTAL_DATABASE_URL).toBeUndefined();
@@ -47,8 +61,8 @@ describe('loadEnv', () => {
 
   it('leaves quizzes on devices off by default (D-083)', () => {
     const base = {
-      NEXT_PUBLIC_SUPABASE_URL: 'http://127.0.0.1:54321',
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'x'.repeat(40),
+      SUPABASE_URL: 'http://127.0.0.1:54321',
+      SUPABASE_ANON_KEY: 'x'.repeat(40),
     };
     const defaults = loadEnv(webServerEnvSchema, {
       ...base,
@@ -82,7 +96,7 @@ describe('loadEnv', () => {
     }
     // The admin CLI reads the same setting, so both sides agree on the cap.
     const admin = {
-      NEXT_PUBLIC_SUPABASE_URL: 'http://127.0.0.1:54321',
+      SUPABASE_URL: 'http://127.0.0.1:54321',
       SUPABASE_SERVICE_ROLE_KEY: 'x'.repeat(40),
     };
     expect(loadEnv(adminEnvSchema, admin).BULK_MAX_RUN_USD).toBe(100);
@@ -91,6 +105,115 @@ describe('loadEnv', () => {
       /BULK_MAX_RUN_USD/,
     );
     expect(() => loadEnv(adminEnvSchema, {})).toThrow(/SUPABASE_SERVICE_ROLE_KEY/);
+  });
+
+  it('reads the settings at run time under their new names, the old NEXT_PUBLIC_ ones as fallbacks (D-113)', () => {
+    const legacy = {
+      NEXT_PUBLIC_SUPABASE_URL: 'http://127.0.0.1:54321',
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'a'.repeat(40),
+      NEXT_PUBLIC_APP_NAME: 'Au tableau!',
+    };
+    // An existing .env with only the old names keeps working...
+    expect(loadEnv(webServerEnvSchema, legacy)).toMatchObject({
+      SUPABASE_URL: 'http://127.0.0.1:54321',
+      SUPABASE_ANON_KEY: 'a'.repeat(40),
+      APP_NAME: 'Au tableau!',
+    });
+    // ...the new names win when both are set...
+    const both = loadEnv(webServerEnvSchema, {
+      ...legacy,
+      SUPABASE_URL: 'https://api.exemple.ca',
+      SUPABASE_ANON_KEY: 'b'.repeat(40),
+      APP_NAME: 'Présent!',
+    });
+    expect(both).toMatchObject({
+      SUPABASE_URL: 'https://api.exemple.ca',
+      SUPABASE_ANON_KEY: 'b'.repeat(40),
+      APP_NAME: 'Présent!',
+    });
+    // ...and the old names never come out of the parsed settings.
+    expect(Object.keys(both).filter((k) => k.startsWith('NEXT_PUBLIC_'))).toEqual([]);
+    // An empty new name falls back too (loadEnv treats it as unset).
+    expect(loadEnv(webServerEnvSchema, { ...legacy, APP_NAME: '' }).APP_NAME).toBe('Au tableau!');
+    expect(() => loadEnv(webServerEnvSchema, { SUPABASE_ANON_KEY: 'a'.repeat(40) })).toThrow(
+      /SUPABASE_URL/,
+    );
+    // The admin CLI and the worker read SUPABASE_URL the same way.
+    expect(
+      loadEnv(adminEnvSchema, {
+        NEXT_PUBLIC_SUPABASE_URL: 'http://127.0.0.1:54321',
+        SUPABASE_SERVICE_ROLE_KEY: 'x'.repeat(40),
+      }).SUPABASE_URL,
+    ).toBe('http://127.0.0.1:54321');
+    expect(
+      loadEnv(workerEnvSchema, {
+        DATABASE_URL: 'postgres://x',
+        NEXT_PUBLIC_SUPABASE_URL: 'http://127.0.0.1:54321',
+      }).SUPABASE_URL,
+    ).toBe('http://127.0.0.1:54321');
+  });
+
+  it('names the product from APP_NAME, at run time (D-002, D-113)', () => {
+    expect(appNameFrom({})).toBe('Lynx École');
+    expect(appNameFrom({ APP_NAME: '  ' })).toBe('Lynx École');
+    expect(appNameFrom({ NEXT_PUBLIC_APP_NAME: 'Ardoise' })).toBe('Ardoise');
+    expect(appNameFrom({ APP_NAME: 'Présent!', NEXT_PUBLIC_APP_NAME: 'Ardoise' })).toBe('Présent!');
+  });
+
+  it('checks the release name and the contact addresses (D-110, D-117)', () => {
+    const base = { SUPABASE_URL: 'http://127.0.0.1:54321', SUPABASE_ANON_KEY: 'x'.repeat(40) };
+    expect(
+      loadEnv(webServerEnvSchema, {
+        ...base,
+        APP_RELEASE: '0.6.0',
+        SUPPORT_EMAIL: 'soutien@iplynx.ca',
+        PRIVACY_CONTACT_EMAIL: 'confidentialite@iplynx.ca',
+      }),
+    ).toMatchObject({
+      APP_RELEASE: '0.6.0',
+      SUPPORT_EMAIL: 'soutien@iplynx.ca',
+      PRIVACY_CONTACT_EMAIL: 'confidentialite@iplynx.ca',
+    });
+    for (const bad of ['0.6 beta', 'v'.repeat(41), '-rc', '<script>']) {
+      expect(() => loadEnv(webServerEnvSchema, { ...base, APP_RELEASE: bad }), bad).toThrow(
+        /APP_RELEASE/,
+      );
+    }
+    expect(() => loadEnv(webServerEnvSchema, { ...base, SUPPORT_EMAIL: 'soutien' })).toThrow(
+      /SUPPORT_EMAIL/,
+    );
+  });
+
+  it('gives the worker its health port, release and heartbeat check, all off by default (D-112)', () => {
+    const worker = { DATABASE_URL: 'postgres://x' };
+    const defaults = loadEnv(workerEnvSchema, worker);
+    expect(defaults).toMatchObject({ WORKER_HEALTH_PORT: 0, APP_RELEASE: 'dev' });
+    expect(defaults.HEARTBEAT_URL_WORKER).toBeUndefined();
+    expect(defaults.SUPABASE_URL).toBeUndefined();
+    expect(defaults.SUPABASE_SERVICE_ROLE_KEY).toBeUndefined();
+    expect(
+      loadEnv(workerEnvSchema, {
+        ...worker,
+        WORKER_HEALTH_PORT: '8081',
+        APP_RELEASE: '0.6.0',
+        HEARTBEAT_URL_WORKER: 'https://hc.exemple.ca/ping/abc',
+        SUPABASE_URL: 'http://127.0.0.1:54321',
+        SUPABASE_SERVICE_ROLE_KEY: 'x'.repeat(40),
+      }),
+    ).toMatchObject({
+      WORKER_HEALTH_PORT: 8081,
+      APP_RELEASE: '0.6.0',
+      HEARTBEAT_URL_WORKER: 'https://hc.exemple.ca/ping/abc',
+      SUPABASE_URL: 'http://127.0.0.1:54321',
+    });
+    for (const bad of ['-1', '65536', 'http']) {
+      expect(() => loadEnv(workerEnvSchema, { ...worker, WORKER_HEALTH_PORT: bad }), bad).toThrow(
+        /WORKER_HEALTH_PORT/,
+      );
+    }
+    expect(() =>
+      loadEnv(workerEnvSchema, { ...worker, HEARTBEAT_URL_WORKER: 'pas une url' }),
+    ).toThrow(/HEARTBEAT_URL_WORKER/);
   });
 
   it('keeps AI off by default and needs a key for Anthropic', () => {

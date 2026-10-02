@@ -1511,6 +1511,309 @@ worker (`system`); `library_bulk_run.completed` is emitted however a run ends. T
 (`submitUnconfirmed`) and calls the packs' own clean-up (`app.content_pack_maintenance`) when it
 exists.
 
+## Pilot readiness (Phase 6)
+
+Built one slice at a time (S0 foundation; S1 accounts, onboarding, settings and feedback in the
+database; S2 audit viewer, AI usage, retention and heartbeats; S3a web operations; S3b Docker,
+backups and CI; S4 « Conseil »; S5 « Direction » and the audit log; S6 onboarding, legal, feedback
+and release notes; S7 documents, demo and the security review). Each slice adds its « As built »
+notes here.
+
+**D-102 — The principal's view is a read-only dashboard of hand-off and contribution status, never
+of teaching work (implements SPEC §9.6; amends D-013 and D-036).** « Tableau de bord de la
+direction » (`/direction`) shows, per school the person directs (principal or vice-principal):
+today's and the next school day's absences with plan, code, device and report status, from the
+same rows as « Suppléances » (`loadSubBoard`, already allowed for the direction); the school's
+library contributions (« 7 ressources partagées avec l'école · 3 avec tout le conseil · 2
+approuvées par le conseil », this school year) and the 10 latest shared or approved items, read
+under row level security since the direction is school staff (D-065); the school's AI totals this
+month (`ai_usage_summary`); and the latest five alert-access entries of the audit log (D-103). It
+shows no units, lessons, progress, class-mode sessions or results, and no per-teacher tallies.
+**Assumption:** contributions are credited as on the item page, without counts per teacher,
+because a count per teacher reads as monitoring. _Why:_ a principal at 7:45 needs to know who is
+away and whether the day is covered; teachers' planning stays theirs (D-013).
+
+**D-103 — Audit viewer: a catalogue with four audiences, the raw table closed, one database
+function (amends D-013, D-017 and D-056).** `public.audit_action_catalog (action, category,
+audience)` says who may read each action: `direction` (the school's principal and vice-principals
+only: alerts, absences, substitute plans, codes, sessions and reports, class-team changes, class
+deletions and student purges), `direction_board` (the school's direction and the board's admins:
+role changes, staff access, the AI and alert switches, audit exports), `board` (board admins only:
+library approvals, reviewers, packs and bulk runs, the operator's access and settings changes,
+retention runs, cancelled invitations) and `operator` (nobody through the API: a teacher's private
+professional activity, i.e. library drafting and sharing steps, AI generation, class mode, the
+terms). Board admins therefore never see sick days, substitute activity or alert entries (D-056:
+"board admins see none of it"; D-013: "no student data"). `select` on `audit_log` is revoked from
+`authenticated` and its policy dropped; `public.list_audit_entries` (security definer) is the only
+reader, so its predicate is the rule. An action missing from the catalogue is shown to nobody, and
+a unit test fails when a migration writes an action without a catalogue row. Labels are computed
+per viewer: a person's name only for colleagues (`app.my_colleague_ids()`), a class name only for
+classes in `app.my_schedule_class_ids()`, a library title only when
+`app.library_item_readable_by(auth.uid(), id)`, plan and absence labels (date and
+`app.formal_staff_name`) only for the school's direction, and a student entity only as « Élève ·
+<classe> », never a student's name. Details pass a whitelist of scalar keys; `user_id` and
+`issued_by` come back as labels. A substitute's entry whose code was issued by the office
+(`details.issued_by_role = 'office'`; the allowed values are `owner`, `direction` and `office`)
+carries the flag « Code émis par le secrétariat » (D-056). The CSV export holds at most 10,000 rows,
+is `;`-separated with a BOM in French and `,` in English, prefixes cells starting with `= + - @ \t
+\r` with `'`, and is itself audited (`audit_log.exported`, `direction_board`). A guard trigger
+refuses new audit rows whose details hold free-text keys (`first_name`, `note`, `title`,
+`message`, `email`…), a string longer than 120 characters, or more than 2 KB. Office staff have no
+audit viewer (**Assumption**; SPEC §9.6 names principals and admins only). As built (slice S0):
+the catalogue (`20261201090000_pilot_schema.sql`) lists every action the migrations wrote at the
+time, including five the plan did not: `library_item.deleted` (Phase 5 hardening; `board`),
+`library_item.scope_reduced` (Phase 4 review fixes; `operator`), and
+`library_bulk_run.planned`, `.cancel_requested` and `.failed` (`board`); `library_bulk_run.completed`,
+`.cancelled` and `.failed` are written as `'library_bulk_run.' || p_status`, which a scan of
+literals cannot see.
+
+**D-104 — AI usage rows are private to their author; totals are served by definer functions
+(amends D-040 and D-046).** `ai_generations_select` becomes `user_id = app.active_user_id()`. The
+direction keeps `ai_usage_summary(school)`; board admins get `public.board_ai_usage(board, month)`:
+per school, requests, failures and cost, with the board's bulk runs (no school, D-096) on their own
+line, month boundaries in each school's time zone. No screen or API shows who used AI how much.
+_Why:_ per-person AI use is a teacher's professional activity (D-013); the web app never read the
+rows, and the admin CLI uses the service role.
+
+**D-105 — Retention implemented (implements D-018 and D-059; per-board settings, operator-only;
+Assumptions on the defaults, pending a lawyer's review).** The worker's nightly
+`retention_maintenance` (`53 3 * * *`, after the other clean-ups) calls
+`app.retention_maintenance()`, which purges, per board (`boards.settings.retention`, read with
+`app.retention_days`):
+
+| Data                                                                                                                                                                                                                                                      | Kept                                        | Setting (bounds)                                                                           |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Audit log                                                                                                                                                                                                                                                 | 730 days                                    | `auditDays` (365–3650)                                                                     |
+| Substitute plans, with their classes, codes, sessions and report (cascade); the report's `pending_confirmation` progress is deleted as when a class is deleted, confirmed progress stays                                                                  | 365 days after the plan date (school-local) | `subPlanDays` (365–1095)                                                                   |
+| Absences with no plan left                                                                                                                                                                                                                                | the same, after their last day              | `subPlanDays`                                                                              |
+| A class's student data: first names, levels, alerts (cascade), plans covering it, the class link (D-084); units, lessons, timetable and progress stay; `classes.students_purged_at` is set; at most 200 classes a night; teachers are told 60 days before | 365 days after its school year ends         | `classDaysAfterYearEnd` (365–1095)                                                         |
+| Sample classes (D-109), whole                                                                                                                                                                                                                             | 60 days after creation                      | —                                                                                          |
+| AI usage ledger (`ai_generations`)                                                                                                                                                                                                                        | 730 days                                    | `aiUsageDays` (365–3650)                                                                   |
+| Feedback (D-116)                                                                                                                                                                                                                                          | 365 days                                    | `feedbackDays` (365–1095)                                                                  |
+| Dispatched outbox events                                                                                                                                                                                                                                  | 90 days                                     | —                                                                                          |
+| Invitations (D-107): pending ones fail as `expired` after 14 days; processed ones are deleted after 90 days                                                                                                                                               | —                                           | —                                                                                          |
+| Supabase Auth's audit entries (`auth.audit_log_entries`: e-mails, IP addresses)                                                                                                                                                                           | 90 days                                     | — (skipped with `"authLogs": "not_permitted"` where the database role may not delete them) |
+
+API users cannot change `settings.retention` (a trigger, as for `settings.ai`); the operator uses
+`pnpm admin set-retention`. Every lower bound is 365 days because MFIPPA Reg. 823 s.5 may require
+keeping personal information a year after its use; D-059's 60-day purge of report free text goes
+to the lawyer too. Each run writes one `retention.purged` audit row per board with counts, and the
+`retention` heartbeat (D-112). The existing jobs stay (`ai_maintenance`, `sub_access_maintenance`,
+`class_mode_maintenance`, `library_maintenance`). Deleted rows survive in backups for at most the
+backup window (D-115). As built (slice S0): the bounds and defaults are `RETENTION_LIMITS`
+(`packages/domain/src/settings.ts`); a value outside them, or not a number, reads as the default,
+and a fraction is rounded as SQL rounds it. `studentPurgeDate` is the day after the year end plus
+`classDaysAfterYearEnd` (the job purges once that sum is before the school's date),
+`samplePurgeDate` the creation date plus 60 days, and `showsPurgeNotice` covers the 60 days before
+a purge and the day itself (`packages/domain/src/retention.ts`).
+
+**D-106 — Operator actions are visible to the board.** Triggers audit changes to `boards.settings`
+keys `ai` and `retention` (`board.settings_changed {keys}`), to `module_entitlements`
+(`school.module_changed {module, enabled}`) and to `ai_budgets` (`school.ai_budget_changed
+{monthly_allowance_usd, monthly_ceiling_usd}`), with actor type `service` when `current_user =
+'service_role'`. `pnpm admin log-operator-access --board x --reason
+support|incident|restore|migration` writes `operator.access`; `DEPLOYMENT.md` makes it mandatory
+before any access to production data. The board's admins see all of these (D-103, `board`). _Why:_
+the operator holds the service role; the board must be able to see what was done to its data.
+
+**D-107 — Board admins manage the staff of their own board in the web; the worker creates Auth
+accounts; the inviter sends the message (amends D-004; D-012 unchanged, as it already allows the
+worker the service role).** « Inviter une personne » calls `invite_staff` (board admin of that
+board): an unknown address records a pending invitation and emits `staff_invitation.created
+{invitationId}`; an active person whose roles, class teams and absences are all within the caller's
+admin boards gets the role at once; such a person whose access was removed goes through the worker,
+which restores access; anyone with a role, class team or absence elsewhere, or with no role at all,
+fails at once as `emailConflict` (no name is copied from the existing account, no role is granted:
+the operator resolves it); inviting oneself is `LXU07`. The worker creates the Auth user (confirmed,
+no e-mail sent) or finds it, calls `app.complete_staff_invitation` (which checks again for
+conflicts and cancellation), and only then unbans the account; an Auth user it created for an
+invitation that was cancelled or conflicts is deleted again. **No invitation e-mail leaves our
+servers:** the page prepares a French or English message and the inviter sends it with « Courriel »
+or « Texto » from their own apps, as for substitute codes (D-059). Roles: grant within one's board
+to people who already hold a role in it, never to oneself (`LXU07`); revoke, but never the board's
+last active admin (`LXU01`) or a person's last role (`LXU08`, so nobody drops out of every list).
+Access: remove and restore, never one's own (`LXU05`), never for someone with a role, class team or
+absence outside the caller's admin boards (`LXU02`), never the last active admin (`LXU01`); the
+worker then bans or unbans the Auth account (`staff.access_changed {userId}`). Deleting an account
+is the operator's, on request (`pnpm admin delete-user`): refused while it is active (`LXU06`) and
+for a person in several boards unless `--all-boards` (`LXU02`); deleting a board likewise
+(`delete-board`). Principals do not invite (**Assumption**). _Why:_ one e-mail path (Supabase
+Auth's sign-in codes), no one-time link for mail scanners to use up (D-019), and the service role
+stays out of the web server.
+
+**D-108 — What board admins may change on a school (amends D-039).** Allowed: contact details and
+bell times, through `public.merge_school_settings`, which merges keys atomically (no
+read-modify-write races, and the substitute settings are written the same way), and the AI switch
+(**Assumption:** needed in beta schools with no direction account). The direction only: the alerts
+switch (a trigger raises `42501` when an API user without a direction role at that school changes
+`student_alerts_enabled`) and the substitute settings. The operator only (CLI): school creation,
+modules, budgets and retention; school creation stays in the CLI because every new AI-enabled
+school adds its allowance to the board's pool (D-040).
+
+**D-109 — Teacher onboarding: the terms at first sign-in, a checklist computed from data, a sample
+class kept out of plans (Assumption on its content).** `requireSession()` sends a person who has
+not accepted the pilot terms (`users.terms_accepted_at` null) to `/bienvenue?next=…`, for pages,
+server actions and route handlers; « Bienvenue » and its actions use `requireSession({ beforeTerms:
+true })`. A newer `CURRENT_TERMS_VERSION` shows a banner and never blocks, so a sick teacher at 6
+a.m. is never stopped. The « Pour bien commencer » checklist (on « Aujourd'hui » and `/demarrage`)
+counts, under row level security, the teacher's real classes, students, timetable blocks and
+active units with lessons; « Masquer » stores `users.onboarding_dismissed_at`. « Essayer avec une
+classe exemple » builds a « Classe exemple (3e année) » or 5e (`buildSampleClass`, `@lynx/domain`:
+20 invented first names, the seed's weekly timetable, a Français and a Mathématiques unit of 8
+lessons with lessons 1–3 done) and saves it with `public.create_sample_class`, a security invoker
+function, so row level security and column grants check every row; only the small definer
+`app.mark_sample_class` sets `classes.sample_owner_id`. One per teacher and school (a unique
+index). `app.teacher_class_ids` leaves sample classes out, so they never reach plans, codes or the
+plan-source check (amends D-055). Their invented names join the prompts' first-name guard fixture,
+and they are deleted 60 days after creation (D-105). As built (slice S0): the seed's demo accounts
+have accepted the current terms (`supabase/seed.sql`), so demos and browser tests go straight in;
+`termsState(version)` (`packages/domain/src/legal.ts`) says `required`, `outdated` or `accepted`;
+`terms_version` and `terms_accepted_at` are set together or not at all (a check).
+
+**D-110 — Pilot terms and privacy notice.** The public page « Confidentialité et conditions »
+(`/confidentialite`) holds the plain-language notice (from `PRIVACY.md`) and the pilot terms, in
+French and English. The acceptance is stored (version and time) and audited as
+`user.terms_accepted` (`operator`). Substitutes see one line on the code screen (« …chaque
+consultation est enregistrée. »), no click-through. `PRIVACY_CONTACT_EMAIL` and `SUPPORT_EMAIL` are
+shown when set. **Assumption:** the wording is ours until an Ontario privacy lawyer reviews it.
+
+**D-111 — Error monitoring for the pilot: scrubbed structured logs and error references; no
+third-party error service.** `@lynx/observability` gives `createLogger` (JSON lines on stdout),
+`scrubText` and `scrubError`; `scrubError` builds `{name, code?, digest?, message:
+scrubText(message), frames[]}` and never enumerates an error's own properties (a privacy error's
+`findings` hold names). Server errors reach the logs from `instrumentation.ts#onRequestError`
+(route template and type only) and `reportError`; worker failures from `runner.events`
+`job:failed` and graphile-worker's own logger, replaced by a scrubbing one; browser errors through
+`/api/client-error`, as a name, a digest or a random reference, the route template and a
+16-character SHA-256 of the message (the message itself can contain page text). Error pages show
+« Référence : … », which feedback carries, so a report can be matched to a log line.
+`NEXT_TELEMETRY_DISABLED=1` and `DO_NOT_TRACK=1` in every image. _Why no GlitchTip:_ it needs
+Postgres and Valkey on the pilot server for a handful of users; the logs stay in Canada for 14
+days (D-119). `ERROR_REPORTING_DSN` is documented as a later hook.
+
+**D-112 — Health, heartbeats, external checks and « État du système ».** `/api/health` is liveness
+only; `/api/health/ready` checks Auth (`/auth/v1/health`), PostgREST and the portals' pools when
+configured, answers 503 when degraded and never gives details. The worker's heartbeat is an
+in-process timer every 60 s, not a graphile-worker job, so long AI jobs cannot starve it: it calls
+`app.record_heartbeat('worker', release, {lastDispatchAt})` and pings `HEARTBEAT_URL_WORKER`; its
+`/healthz` (`WORKER_HEALTH_PORT`) answers 200 while the last tick succeeded less than 180 s ago.
+`public.system_heartbeats` holds rows for `worker`, `retention` and `backup`;
+`public.system_status()` gives board admins a state (`ok`/`problem`) and three times, never counts,
+because the hosted install serves several boards; `public.operator_status()` gives the operator the
+counts (service role, `pnpm admin status`). Monitoring runs off the server: an HTTP check of
+`/api/health/ready` and heartbeat checks for the worker and backups, which receive only URLs and
+pings. One named on-call person gets the alerts: urgent when the web is down 06:00–17:00 on school
+days; next morning when the worker is down (publishing still works, D-047) or a backup was missed.
+
+**D-113 — Run-time configuration: no `NEXT_PUBLIC_*` in the web app (amends D-002).** The server
+reads `SUPABASE_URL`, `SUPABASE_ANON_KEY` and `APP_NAME` through `serverEnv()` at run time; Next's
+build inlined the `NEXT_PUBLIC_*` values (the local build held `http://127.0.0.1:54321`), which made
+an image specific to one install. The old names are still read when the new ones are unset
+(`@lynx/config`), so an existing `.env` keeps working; the new names win. The browser never calls
+Supabase, so nothing needs to be public. An ESLint rule and a CI check forbid `NEXT_PUBLIC_` in
+`apps/web/src`, and the CI build uses `SUPABASE_URL=http://build.invalid` and fails if that string
+appears in `.next`. Pages that show `APP_NAME` are dynamic (the web manifest too). As built (slice
+S0): `lib/app-name.ts` reads `appNameFrom(process.env)` (`@lynx/config`) when the server starts,
+not `serverEnv()`, because the PDF renderer that prints the name is unit-tested without the web
+server's settings; the admin CLI and the worker read `SUPABASE_URL` with the same fallback; the
+CI workflow writes the live local-stack values under the new names.
+
+**D-114 — Deployment: two images configured at run time; hosted is Supabase Pro in Canada Central
+plus one Canadian server running Docker Compose; board-hosted is the same Compose plus a minimal
+self-hosted Supabase (amends D-029; deviation from SPEC §5 "Vercel").** Images
+(`deploy/docker/Dockerfile`): `web`, the Next standalone build; `app`, the whole workspace run with
+`tsx`, plus `postgresql-client-17` and `age`, which runs the worker, the admin CLI, `migrate` and
+`backup`. `migrate` runs `supabase db push`, sets the portal roles' passwords and reloads
+PostgREST's schema; it takes a backup first whenever migrations are pending on a non-empty database
+(and refuses without backups configured, unless `MIGRATE_WITHOUT_BACKUP=yes`); web and worker
+start only after it succeeds. The worker refuses to start when the database lacks a migration
+shipped with it. Board-hosted Supabase runs only what the app uses: `supabase/postgres` 17,
+Supabase Auth, PostgREST and a Caddy gateway on the internal network. `deploy/docker/versions.env`
+is the only source of production image versions, pinned by digest; only the `docker-smoke` CI job
+tests it. Hosted: Supabase Pro in `ca-central-1`, an AWS Lightsail server (4 GB, dual-stack) in
+`ca-central-1` running Caddy, web and worker, Amazon SES in `ca-central-1` for sign-in codes,
+images built on the server from a tagged checkout. Every service gets only its own variables. _Why:_
+one tested artifact for both modes; the worker needs a long-running process; everything that
+handles names stays in Canada.
+
+**D-115 — Backups: nightly encrypted logical dumps; Supabase's own backups remain the primary path
+on hosted; restores are tested in CI (Assumption: RPO 24 h, RTO 4 h, 30 days).**
+`deploy/backup/backup.sh` dumps the data of `public` and `auth` (without `auth.schema_migrations`,
+`sessions`, `refresh_tokens`, `mfa_amr_claims`, `flow_state`, `one_time_tokens` and
+`audit_log_entries`), writes a manifest (release, migration versions, Auth migration versions,
+`pg_dump` and server versions, row counts parsed from the dump's COPY blocks), encrypts it with
+`age` to `BACKUP_AGE_RECIPIENT` and copies it to S3 `ca-central-1` or the board's storage
+(versioning, current objects expire after 30 days, noncurrent after 1 day, a put-only key). Keys
+and `.env` are never in backups. `restore.sh` checks the migrations (equal) and Auth migrations (a
+superset), refuses a non-empty target without `--force`, loads in one transaction, bans every
+deactivated user again, compares counts with the manifest, re-dispatches recent outbox events to
+idempotent handlers, and prints the runbook (re-apply access removals made after the backup;
+everyone signs in again). On hosted, Supabase's daily backups are the primary restore path, and a
+restore of our dump into a staging hosted project is a go-live gate. The monthly drill runs on the
+operator's workstation (which holds the private key), never the server.
+
+**D-116 — Pilot feedback in the app (Assumption on who reads it).** « Commentaires » records a kind
+(problem, idea, question), up to 2,000 characters, the route's template, the error reference, the
+release, the device class and the locale. The message is checked for students' first names
+(`findPersonalInfo`) and each name confirmed, as when sharing. It is stored in Canada; the board
+admins of the sender's board read it and mark it « Nouveau », « Lu », « Traité ». At most 20 a
+person a day (`LXF01`); kept 365 days (D-105).
+
+**D-117 — « Nouveautés » and the version.** `APP_RELEASE` is set when the image is built and shown
+in the footer, in `/api/health` and in logs and heartbeats. `/nouveautes` is a static page of
+release notes from the message files (`releaseNotes.versions`), checked for French/English parity.
+No per-user unread state.
+
+**D-118 — Navigation and landing pages (amends D-078).** Two new items: « Direction »
+(`/direction`, principals and vice-principals) and « Conseil » (`/board`, board admins). The order
+is « Aujourd'hui », « Classes », « Direction », « Suppléances », « Ressources », « Différencier »,
+« Calendrier », « École », « Conseil », « Profil ». The phone bar keeps D-078's rules: six places,
+« Suppléances » left out first, then the first five and « Plus ». A principal who does not teach
+gets six items; a teaching vice-principal « Aujourd'hui », « Classes », « Direction »,
+« Ressources », « Calendrier » and « Plus »; a board admin who is not a reviewer three.
+`landingFor(session)`: a teacher lands on « Aujourd'hui », the direction on « Direction », office
+staff on « Suppléances », a board admin on « Conseil », anyone else on « Calendrier »;
+« Aujourd'hui » sends whoever does not teach there instead of to « Calendrier ». As built (slice
+S0): `lib/landing.ts` is the pure rule; each landing page admits exactly the people sent to it, so
+there is no redirect loop (« Suppléances » needs a school with the Teaching module, as before);
+until slices S4 and S5, `/board` and `/direction` are short pages that say the page « arrive
+bientôt » and link to what the role already has; the desktop links scroll on their own on a narrow
+tablet rather than the page.
+
+**D-119 — Security headers, logs and sessions.** In production, a Content Security Policy
+(`default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';
+img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri
+'self'; form-action 'self'; object-src 'none'`) and `X-Robots-Tag: noindex, nofollow` on every
+page; HSTS (one year) at Caddy. Access logs go through Caddy's `filter` format: the `token_hash`,
+`token` and `code` query parameters and the `Cookie` and `Authorization` headers are removed, and
+addresses are masked to /24 and /64. Container logs go to journald, kept 14 days. Auth sessions:
+a 7-day time box and a 12-hour inactivity timeout (**Assumption**; shared classroom computers).
+No personal value in an API query string: lookups by e-mail or name use RPC bodies, because the
+hosted gateway's logs record URLs.
+
+**D-120 — The demo is scripted and tested; a hosted demo site is deferred.** `docs/demo-script.md`
+is the script (15 and 5 minutes); `e2e/demo.spec.ts` clicks through it on the lite stack with the
+fake AI provider. A public demo site would run on a separate small server with invented data,
+never on the pilot server, which holds the pilot's service key and alert keys.
+
+**Amendments to existing decisions** (each entry's text is updated by slice S7):
+
+| Decision     | Amendment                                                                                     |
+| ------------ | --------------------------------------------------------------------------------------------- |
+| D-002        | the name is `APP_NAME`, read at run time (D-113)                                              |
+| D-004        | a web interface exists for board admins to manage their own board's staff (D-107)             |
+| D-013, D-036 | the direction's dashboard; board admins' audit scope (D-102, D-103)                           |
+| D-017        | catalogue, closed table, guard trigger, viewer, purge (D-103, D-105)                          |
+| D-018, D-059 | the retention jobs exist; the class purge keeps planning; bounds of at least 365 days (D-105) |
+| D-029        | hosting decided (D-114)                                                                       |
+| D-039        | board admins may switch AI (D-108)                                                            |
+| D-040        | usage totals in the web, rows the author's only; payment collection still later (D-104)       |
+| D-046        | per-person usage is never shown (D-104)                                                       |
+| D-055        | sample classes are left out of plans (D-109)                                                  |
+| D-056        | the office-issued flag exists; board admins see no substitute audit (D-103)                   |
+| D-078        | navigation (D-118)                                                                            |
+| SPEC §5      | deviation: no Vercel (D-114)                                                                  |
+
 ## Schema additions beyond SPEC section 8
 
 `school_years`, `rooms`, `class_grades`, `school_cycle_anchors`, `unit_lesson_expectations`,
@@ -1529,4 +1832,7 @@ number, token hash and last seen; on `session_responses` the question index and 
 `content_pack_import_items` and `content_pack_removed_items`; on `content_packs` the file
 fingerprint, licence and report; on `library_items` `board_owned`, `parent_title`, the sharing
 cap, `no_derivatives`, `bulk_run_id` and the pack columns (`pack_slug`, `pack_item_key`,
-`pack_content_hash`, `pack_revision`); and `library_item_ratings.updated_at`.
+`pack_content_hash`, `pack_revision`); and `library_item_ratings.updated_at`. Phase 6 adds
+`staff_invitations`, `feedback`, `audit_action_catalog` and `system_heartbeats`; on `users` the
+terms' version and acceptance and the checklist's dismissal; on `classes` `sample_owner_id` and
+`students_purged_at`.

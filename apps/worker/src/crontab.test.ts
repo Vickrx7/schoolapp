@@ -4,6 +4,9 @@ import { classModeMaintenance } from './class-mode';
 import { CRONTAB_LINES, cronTask } from './crontab';
 import { buildSubscriptions, subscribersFor, type HandlerContext } from './handlers';
 import { libraryMaintenance, tickBulkRuns } from './library-bulk';
+import { retentionMaintenance } from './retention';
+import { provisionInvitation, syncStaffAuth } from './staff';
+import { workerState } from './state';
 import { buildTaskList } from './tasks';
 
 // The Phase 5 task bodies are their slices' (S1, S6); here only the wiring is checked.
@@ -11,6 +14,12 @@ vi.mock('./class-mode', () => ({ classModeMaintenance: vi.fn(async () => undefin
 vi.mock('./library-bulk', () => ({
   tickBulkRuns: vi.fn(async () => undefined),
   libraryMaintenance: vi.fn(async () => undefined),
+}));
+// The Phase 6 bodies are their slices' (S2 retention, S4 staff accounts); here only the wiring.
+vi.mock('./retention', () => ({ retentionMaintenance: vi.fn(async () => undefined) }));
+vi.mock('./staff', () => ({
+  provisionInvitation: vi.fn(async () => undefined),
+  syncStaffAuth: vi.fn(async () => undefined),
 }));
 
 const logger = { info: vi.fn(), warn: vi.fn(), error: vi.fn() };
@@ -21,6 +30,7 @@ function context(query = vi.fn(async () => ({ rows: [] }))): HandlerContext {
     logger,
     pool: { query } as unknown as HandlerContext['pool'],
     ai: null,
+    authAdmin: null,
   };
 }
 
@@ -69,6 +79,68 @@ describe('the worker’s schedule', () => {
     });
     await list.library_maintenance!({}, helpers);
     expect(libraryMaintenance).toHaveBeenCalledWith({ db: ctx.pool, logger: ctx.logger });
+  });
+});
+
+describe('the Phase 6 tasks and handlers', () => {
+  const event = (eventType: string, aggregateId: string | null) => ({
+    eventId: '00000000-0000-4000-8000-000000000001',
+    eventType,
+    boardId: null,
+    schoolId: null,
+    aggregateType: null,
+    aggregateId,
+    payload: {},
+    occurredAt: new Date().toISOString(),
+  });
+
+  it('runs retention nightly after the other clean-ups (D-105)', async () => {
+    expect(CRONTAB_LINES).toContain(
+      '53 3 * * * retention_maintenance ?jobKey=retention_maintenance',
+    );
+    const ctx = context();
+    await tasks(ctx).retention_maintenance!({}, {} as JobHelpers);
+    expect(retentionMaintenance).toHaveBeenCalledWith({ db: ctx.pool, logger: ctx.logger });
+  });
+
+  it('provisions an invited person’s account and follows access changes (D-107)', async () => {
+    const subs = buildSubscriptions({ logEvents: false });
+    expect(subscribersFor(subs, 'staff_invitation.created').map((s) => s.handler)).toEqual([
+      'staff_invitation_provision',
+    ]);
+    expect(subscribersFor(subs, 'staff.access_changed').map((s) => s.handler)).toEqual([
+      'staff_auth_sync',
+    ]);
+    const ctx = context();
+    const provision = subs.find((s) => s.handler === 'staff_invitation_provision')!;
+    await provision.run(event('staff_invitation.created', 'invitation-1'), ctx);
+    expect(provisionInvitation).toHaveBeenCalledWith('invitation-1', {
+      pool: ctx.pool,
+      authAdmin: null,
+      logger: ctx.logger,
+    });
+    const sync = subs.find((s) => s.handler === 'staff_auth_sync')!;
+    await sync.run(event('staff.access_changed', 'user-1'), ctx);
+    expect(syncStaffAuth).toHaveBeenCalledWith('user-1', {
+      pool: ctx.pool,
+      authAdmin: null,
+      logger: ctx.logger,
+    });
+    // An event without its aggregate is dropped, not retried forever.
+    vi.mocked(syncStaffAuth).mockClear();
+    await sync.run(event('staff.access_changed', null), ctx);
+    expect(syncStaffAuth).not.toHaveBeenCalled();
+  });
+
+  it('remembers when the outbox was last drained, for the heartbeat (D-112)', async () => {
+    // An empty outbox: begin, a batch of nothing, commit.
+    const query = vi.fn(async () => ({ rows: [] }));
+    const helpers = {
+      withPgClient: async <T>(fn: (client: unknown) => Promise<T>) => fn({ query }),
+    } as unknown as JobHelpers;
+    const before = Date.now();
+    await tasks().dispatch_outbox!({}, helpers);
+    expect(workerState().lastDispatchAt?.getTime()).toBeGreaterThanOrEqual(before);
   });
 });
 

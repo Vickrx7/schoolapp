@@ -1,6 +1,9 @@
 import type { MetadataRoute } from 'next';
 import { APP_NAME } from '@/lib/app-name';
 
+// Built per request, so the name comes from the server's APP_NAME at run time (D-113).
+export const dynamic = 'force-dynamic';
+
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: APP_NAME,

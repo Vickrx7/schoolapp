@@ -14,6 +14,9 @@ export const CRONTAB_LINES: readonly string[] = [
   '*/5 * * * * library_bulk_tick ?jobKey=library_bulk_tick',
   // Library clean-up (D-101): bulk runs and requests, staged pack imports.
   '23 3 * * * library_maintenance ?jobKey=library_maintenance',
+  // Retention (D-105): purges per board after the other nightly clean-ups (03:53 UTC, the evening
+  // before in Ontario), compared with each school's local date.
+  '53 3 * * * retention_maintenance ?jobKey=retention_maintenance',
 ];
 
 /** The task a crontab line runs. */

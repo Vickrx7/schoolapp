@@ -8,7 +8,9 @@
 import type { Integrations } from '@lynx/integrations';
 import type { Pool } from 'pg';
 import { runAiJob, type AiRuntime } from './ai';
+import type { AuthAdmin } from './auth-admin';
 import type { Logger } from './logger';
+import { provisionInvitation, syncStaffAuth } from './staff';
 import { refreshAbsencePlans } from './sub-plans/refresh';
 
 export interface OutboxEvent {
@@ -28,6 +30,11 @@ export interface HandlerContext {
   pool: Pool;
   /** Null when AI is turned off for this deployment (AI_PROVIDER=none). */
   ai: AiRuntime | null;
+  /**
+   * Supabase Auth's admin API for staff accounts (D-107); null without SUPABASE_URL and
+   * SUPABASE_SERVICE_ROLE_KEY (invitations then fail as `authNotConfigured`).
+   */
+  authAdmin: AuthAdmin | null;
 }
 
 export type EventHandler = (event: OutboxEvent, ctx: HandlerContext) => Promise<void>;
@@ -95,6 +102,25 @@ export function buildSubscriptions(options: { logEvents: boolean }): Subscriptio
       await pool.query(
         "select graphile_worker.add_job('library_bulk_tick', '{}'::json, job_key => 'library_bulk_tick')",
       );
+    },
+  });
+
+  // Staff accounts (D-107): the worker creates the Auth account a board admin's invitation needs,
+  // then grants the role; and bans or unbans an account whose access was removed or restored.
+  // The events carry ids only; the handlers read the current state, so a repeat is harmless.
+  subs.push({
+    handler: 'staff_invitation_provision',
+    events: ['staff_invitation.created'],
+    run: async (event, { pool, authAdmin, logger }) => {
+      if (event.aggregateId)
+        await provisionInvitation(event.aggregateId, { pool, authAdmin, logger });
+    },
+  });
+  subs.push({
+    handler: 'staff_auth_sync',
+    events: ['staff.access_changed'],
+    run: async (event, { pool, authAdmin, logger }) => {
+      if (event.aggregateId) await syncStaffAuth(event.aggregateId, { pool, authAdmin, logger });
     },
   });
 

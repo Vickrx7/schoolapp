@@ -15,7 +15,10 @@ const PHASE_5 = [
   'list-packs',
 ];
 
-/** Phase 5 commands whose slice has landed (each tested in its own module). */
+/** Phase 6: pilot operations (DECISIONS D-105, D-106, D-107, D-112). */
+const PHASE_6 = ['set-retention', 'status', 'delete-user', 'delete-board', 'log-operator-access'];
+
+/** Phase 5 and 6 commands whose slice has landed (each tested in its own module). */
 const AVAILABLE = new Set([
   'coverage',
   'bulk-plan',
@@ -29,7 +32,7 @@ const AVAILABLE = new Set([
 ]);
 
 describe('admin commands', () => {
-  it('lists the Phase 1–4 commands and the Phase 5 ones', () => {
+  it('lists the Phase 1–4 commands and the Phase 5 and 6 ones', () => {
     expect(Object.keys(commands)).toEqual(
       expect.arrayContaining([
         'create-board',
@@ -45,6 +48,7 @@ describe('admin commands', () => {
         'list-library-reviewers',
         'import-curriculum',
         ...PHASE_5,
+        ...PHASE_6,
       ]),
     );
   });
@@ -55,7 +59,7 @@ describe('admin commands', () => {
     expect(Object.keys(commands)).toHaveLength(names.length);
   });
 
-  it.each(PHASE_5.filter((name) => !AVAILABLE.has(name)))(
+  it.each([...PHASE_5, ...PHASE_6].filter((name) => !AVAILABLE.has(name)))(
     '%s says it is not available yet, without reading the settings or the database',
     async (name) => {
       // No environment is needed: the context reads it only when a command uses it.
@@ -161,6 +165,42 @@ describe('admin options', () => {
       run: 'x',
     });
     expect(Object.keys(CLI_OPTIONS)).toEqual(expect.arrayContaining(['expectations']));
+  });
+
+  it('parse the Phase 6 command lines of the plan', () => {
+    expect(
+      parseCli(['set-retention', '--board', 'csc-demo', '--audit-days', '1095']).values,
+    ).toEqual({ board: 'csc-demo', 'audit-days': '1095' });
+    expect(
+      parseCli([
+        'set-retention',
+        '--board',
+        'csc-demo',
+        '--sub-plan-days',
+        '400',
+        '--class-days',
+        '365',
+        '--ai-usage-days',
+        '730',
+        '--feedback-days',
+        '365',
+      ]).values,
+    ).toMatchObject({
+      'sub-plan-days': '400',
+      'class-days': '365',
+      'ai-usage-days': '730',
+      'feedback-days': '365',
+    });
+    expect(
+      parseCli(['log-operator-access', '--board', 'csc-demo', '--reason', 'support']).values,
+    ).toEqual({ board: 'csc-demo', reason: 'support' });
+    expect(
+      parseCli(['delete-user', '--email', 'prof@conseil.ca', '--all-boards', '--yes']).values,
+    ).toEqual({ email: 'prof@conseil.ca', 'all-boards': true, yes: true });
+    expect(
+      parseCli(['delete-board', '--board', 'csc-x', '--confirm', 'csc-x', '--exported', '--yes'])
+        .values,
+    ).toEqual({ board: 'csc-x', confirm: 'csc-x', exported: true, yes: true });
   });
 
   it('refuses an unknown option before anything runs', () => {

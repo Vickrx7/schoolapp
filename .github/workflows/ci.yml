@@ -67,8 +67,8 @@ jobs:
           cp .env.example apps/web/.env.local
           # The defaults in .env.example match the CLI's local keys; prefer live values if present.
           eval "$(pnpm exec supabase status -o env | grep -E '^(API_URL|ANON_KEY)=' || true)"
-          if [ -n "${API_URL:-}" ]; then echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL" >> apps/web/.env.local; fi
-          if [ -n "${ANON_KEY:-}" ]; then echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_KEY" >> apps/web/.env.local; fi
+          if [ -n "${API_URL:-}" ]; then echo "SUPABASE_URL=$API_URL" >> apps/web/.env.local; fi
+          if [ -n "${ANON_KEY:-}" ]; then echo "SUPABASE_ANON_KEY=$ANON_KEY" >> apps/web/.env.local; fi
 
       - run: pnpm --filter @lynx/web build
       - run: pnpm --filter @lynx/web exec playwright install --with-deps chromium

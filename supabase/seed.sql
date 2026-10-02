@@ -92,8 +92,11 @@ identities as (
   from auth_users
   returning user_id
 )
-insert into public.users (id, email, display_name, honorific)
-select s.id, s.email, s.display_name, s.honorific
+-- Every demo account has accepted the current pilot terms (CURRENT_TERMS_VERSION in
+-- packages/domain/src/legal.ts; D-109, D-110), so demos and browser tests go straight in. An
+-- account made without them is sent to « Bienvenue » first (e2e/db.ts createStaffUser).
+insert into public.users (id, email, display_name, honorific, terms_version, terms_accepted_at)
+select s.id, s.email, s.display_name, s.honorific, '2026-11-pilote-1', now()
 from staff s join identities i on i.user_id = s.id;
 
 insert into public.user_roles (user_id, role, board_id, school_id) values

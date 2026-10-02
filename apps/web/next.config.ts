@@ -23,7 +23,14 @@ const nextConfig: NextConfig = {
   // Self-contained server bundle for the Docker image (board-hosted installs).
   output: 'standalone',
   outputFileTracingRoot: new URL('../..', import.meta.url).pathname,
-  transpilePackages: ['@lynx/domain', '@lynx/config', '@lynx/db', '@lynx/ai', '@lynx/content'],
+  transpilePackages: [
+    '@lynx/domain',
+    '@lynx/config',
+    '@lynx/db',
+    '@lynx/ai',
+    '@lynx/content',
+    '@lynx/observability',
+  ],
   // Run from node_modules, not bundled: the portal's Postgres driver, and the PDF renderer
   // (DECISIONS D-053), which has its own React reconciler and loads its layout engine at runtime.
   serverExternalPackages: ['pg', '@react-pdf/renderer'],

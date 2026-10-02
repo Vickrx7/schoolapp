@@ -1,7 +1,7 @@
 -- Schema-wide security invariants: RLS everywhere, nothing for anon, safe definer functions.
 begin;
 \ir _helpers.psql
-select plan(35);
+select plan(43);
 
 select is_empty(
   $$select c.relname from pg_class c join pg_namespace n on n.oid = c.relnamespace
@@ -329,6 +329,84 @@ select is_empty(
     where n.nspname in ('public', 'app') and p.proname like 'content\_pack\_%'
       and has_function_privilege(r.rolname, p.oid, 'execute')$$,
   'API roles cannot execute any content pack function'
+);
+
+-- Phase 6 shared schema (D-103, D-105, D-107, D-109, D-110, D-112, D-116; migration
+-- 20261201090000). The Phase 6 functions' own grants are checked in 27_pilot_accounts,
+-- 28_audit_viewer and 29_retention, so this file has one owner.
+select is_empty(
+  $$select t.tbl from unnest(array['public.staff_invitations', 'public.feedback',
+      'public.audit_action_catalog', 'public.system_heartbeats']) t (tbl)
+    where not (select c.relrowsecurity from pg_class c where c.oid = t.tbl::regclass)$$,
+  'the Phase 6 tables have row level security'
+);
+
+select is_empty(
+  $$select t.tbl || ' ' || p.priv
+    from unnest(array['public.staff_invitations', 'public.feedback',
+      'public.audit_action_catalog', 'public.system_heartbeats']) t (tbl)
+    cross join unnest(array['select', 'insert', 'update', 'delete', 'truncate', 'references',
+      'trigger']) p (priv)
+    where has_table_privilege('anon', t.tbl, p.priv)
+      or (p.priv in ('select', 'insert', 'update', 'references')
+          and has_any_column_privilege('anon', t.tbl, p.priv))$$,
+  'anon has no privilege on the Phase 6 tables'
+);
+
+select ok(
+  not has_table_privilege('authenticated', 'public.staff_invitations', 'insert')
+  and not has_any_column_privilege('authenticated', 'public.staff_invitations', 'insert')
+  and not has_table_privilege('authenticated', 'public.staff_invitations', 'update')
+  and not has_any_column_privilege('authenticated', 'public.staff_invitations', 'update')
+  and not has_table_privilege('authenticated', 'public.staff_invitations', 'delete'),
+  'invitations are written only by functions and the worker'
+);
+
+select ok(
+  not has_table_privilege('authenticated', 'public.feedback', 'insert')
+  and not has_any_column_privilege('authenticated', 'public.feedback', 'insert')
+  and not has_table_privilege('authenticated', 'public.feedback', 'delete')
+  and not has_table_privilege('authenticated', 'public.feedback', 'update')
+  and has_column_privilege('authenticated', 'public.feedback', 'status', 'update')
+  and not has_column_privilege('authenticated', 'public.feedback', 'message', 'update')
+  and not has_column_privilege('authenticated', 'public.feedback', 'board_id', 'update')
+  and not has_column_privilege('authenticated', 'public.feedback', 'user_id', 'update'),
+  'feedback is sent only through a function, and its readers change its status only'
+);
+
+select is_empty(
+  $$select t.tbl || ' ' || p.priv
+    from unnest(array['public.audit_action_catalog', 'public.system_heartbeats']) t (tbl)
+    cross join unnest(array['select', 'insert', 'update', 'delete']) p (priv)
+    where has_table_privilege('authenticated', t.tbl, p.priv)
+      or (p.priv <> 'delete' and has_any_column_privilege('authenticated', t.tbl, p.priv))$$,
+  'authenticated has no privilege on the audit catalogue or the heartbeats'
+);
+
+select ok(
+  not has_column_privilege('authenticated', 'public.users', 'terms_version', 'update')
+  and not has_column_privilege('authenticated', 'public.users', 'terms_accepted_at', 'update')
+  and not has_column_privilege('authenticated', 'public.users', 'deactivated_at', 'update')
+  and has_column_privilege('authenticated', 'public.users', 'onboarding_dismissed_at', 'update')
+  and not has_column_privilege('authenticated', 'public.classes', 'sample_owner_id', 'update')
+  and not has_column_privilege('authenticated', 'public.classes', 'students_purged_at', 'update')
+  and not has_column_privilege('authenticated', 'public.classes', 'sample_owner_id', 'insert')
+  and not has_column_privilege('authenticated', 'public.classes', 'students_purged_at', 'insert'),
+  'the terms, sample classes and the student purge are set by the database; the checklist''s dismissal by its user'
+);
+
+-- Accounts are deleted by the operator (D-107): nothing that points at a person may block it.
+select is_empty(
+  $$select conrelid::regclass::text || '.' || conname from pg_constraint
+    where contype = 'f' and confrelid = 'public.users'::regclass and confdeltype in ('a', 'r')$$,
+  'no foreign key to public.users is restrict or no action'
+);
+
+select ok(
+  not has_function_privilege('anon', 'app.record_heartbeat(text,text,jsonb)', 'execute')
+  and not has_function_privilege('authenticated', 'app.record_heartbeat(text,text,jsonb)', 'execute')
+  and not has_function_privilege('service_role', 'app.record_heartbeat(text,text,jsonb)', 'execute'),
+  'only the database owner records heartbeats (the worker, retention and backups)'
 );
 
 select * from finish();

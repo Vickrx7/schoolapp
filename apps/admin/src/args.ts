@@ -66,6 +66,19 @@ export const CLI_OPTIONS = {
   'level-map': { type: 'string' },
   approve: { type: 'boolean' },
   approver: { type: 'string' },
+  // Retention (commands/ops.ts, D-105): set-retention --board and one or more of these, in days.
+  'audit-days': { type: 'string' },
+  'sub-plan-days': { type: 'string' },
+  'class-days': { type: 'string' },
+  'ai-usage-days': { type: 'string' },
+  'feedback-days': { type: 'string' },
+  // Accounts and boards (commands/staff.ts, D-106, D-107): log-operator-access --board --reason,
+  // delete-user --email, delete-board --board --confirm <slug> --exported.
+  reason: { type: 'string' },
+  'all-boards': { type: 'boolean' },
+  confirm: { type: 'string' },
+  exported: { type: 'boolean' },
+  yes: { type: 'boolean' },
 } as const;
 
 /** `pnpm admin <command> [options]`: the command and its options (unknown ones throw). */

@@ -16,6 +16,7 @@
     "@lynx/content": "workspace:*",
     "@lynx/db": "workspace:*",
     "@lynx/domain": "workspace:*",
+    "@lynx/observability": "workspace:*",
     "@react-pdf/renderer": "^4.9.0",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.117.2",

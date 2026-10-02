@@ -34,6 +34,13 @@
  * report (commands/coverage.ts), bulk generation (commands/bulk.ts) and content packs
  * (commands/packs.ts).
  *
+ * Pilot operations (Phase 6; usage at the top of each module): recording a support access before
+ * reading a board's data, deleting an account or a board on request (commands/staff.ts), the
+ * board's retention settings and the operator's status (commands/ops.ts).
+ *
+ * Settings: SUPABASE_URL (or the older NEXT_PUBLIC_SUPABASE_URL) and SUPABASE_SERVICE_ROLE_KEY,
+ * from apps/web/.env.local when it exists.
+ *
  * The commands live in commands/ (one module per group, registered in commands/index.ts); the
  * options in args.ts; the database client and shared helpers in context.ts.
  */
