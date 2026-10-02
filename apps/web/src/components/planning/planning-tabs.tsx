@@ -5,15 +5,18 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
-/** « Couverture » (slice S3) joins these when its page exists. */
-const TABS = ['units', 'year'] as const;
+const TABS = ['units', 'year', 'coverage'] as const;
 
-const SEGMENT: Record<(typeof TABS)[number], string> = { units: '', year: '/year' };
+const SEGMENT: Record<(typeof TABS)[number], string> = {
+  units: '',
+  year: '/year',
+  coverage: '/coverage',
+};
 
 /**
- * The sections of a class's « Planification » (DECISIONS D-126): « Unités » (the units and their
- * pages) and « Mon année ». Inside the class's « Planification » tab, which stays the current
- * class tab; no new navigation item (D-118).
+ * The sections of a class's « Planification » (DECISIONS D-125, D-126): « Unités » (the units and
+ * their pages), « Mon année » and « Couverture ». Inside the class's « Planification » tab, which
+ * stays the current class tab; no new navigation item (D-118).
  */
 export function PlanningTabs({ classId }: { classId: string }) {
   const t = useTranslations('units.tabs');

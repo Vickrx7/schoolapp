@@ -131,6 +131,11 @@ tallies. Board admins read administrative and approval entries of the audit log 
 absence or substitute entries; they manage their board's staff, school contact details and bell
 times, school years, reviewers, AI usage totals and feedback in « Conseil » (D-107, D-108, D-118),
 and still see no student data.
+_Amended for « Mon année » (2026-10-02):_ a class's year plan and its coverage (D-123, D-125) are
+the class team's like its units: the direction, office staff and the board's admins never see a
+unit's planned weeks, its attentes or a class's coverage, and there is no view of coverage across
+classes or teachers. The long-range plan PDF (D-127) is the teacher's to hand over; the app sends
+it to no one.
 
 **D-014 — Students are stored by a single first-name/nickname field.** The column is
 `students.first_name` (max 40 characters). There is no last-name field anywhere. For two students
@@ -580,6 +585,11 @@ for a download on success, never the `download` attribute, and a failure is a sm
 way back. Prints by anyone but the owner are audited as `sub_plan.printed`. The document
 language is French. _Why:_ no Storage in CI or the lite stack; stored PDFs go stale after
 edits; alerts on paper cannot be audited (SPEC §6).
+_Amended for « Mon année » (2026-10-02):_ « Plan à long terme » (D-127) follows the same rules:
+rendered on demand in the web server (`runtime = 'nodejs'`), never stored, `private, no-store`, a
+path ending in `/pdf` (no page security policy), opened through a plain GET form (never
+prefetched), `?download=1` to save it, a failure page with a way back to « Mon année ». It holds
+no student data and no alert, and it is not audited: it is the teacher's own planning.
 
 **D-054 — The end-of-day report writes pending progress; the teacher confirms through one
 path.** The report autosaves to the server during the day and to the browser tab
@@ -1397,6 +1407,12 @@ address. « Créer une ressource » (a library school) and « Créer avec l'IA p
 on) are offered for attentes below the threshold; « Voir les ressources approuvées » opens the
 search for that attente, whose count can be higher (D-069). `pnpm admin coverage` without `--grade`
 and `--subject` prints the summary; `--csv` writes RFC 4180 CSV.
+_Amended for « Mon année » (2026-10-02):_ a class's « Couverture des attentes » (D-125) uses the
+same counting unit and lists the curriculum the same way: `groupExpectationsByDomaine`
+(`apps/web/src/server/curriculum-groups.ts`) groups the attentes by domaine for both pages, and
+`isCoverageUnit` (`@lynx/domain`) decides what both count; the library's page is unchanged (its
+unit tests were not touched). What is counted differs: here, the class's own teaching, never
+resources.
 
 **D-095 — Bulk generation is an operator tool that writes board drafts through the Message Batches
 API (Assumption on who runs it).** Only the operator launches it (`pnpm admin bulk-plan`,
@@ -2277,6 +2293,9 @@ release notes from the message files (`releaseNotes.versions`), checked for Fren
 No per-user unread state.
 As built (slice S6): the footer of every app page shows « Confidentialité », « Nouveautés » and
 « Version … »; `/nouveautes` lists `releaseNotes.versions` in the order of the French file.
+_Amended for « Mon année » (2026-10-02):_ `releaseNotes.versions.v070`, « Version 0.7 · Mon
+année » (October 2026): « Mon année », planning a unit, « Aujourd'hui » starting a planned unit,
+the board's report periods, « Couverture » and « Plan à long terme (PDF) ».
 
 **D-118 — Navigation and landing pages (amends D-078).** Two new items: « Direction »
 (`/direction`, principals and vice-principals) and « Conseil » (`/board`, board admins). The order
@@ -2495,9 +2514,45 @@ test checks it against the demo seed, `supabase/seeds/50_year_plan_demo.sql`); a
 the year is a field error before the database's check) and `prefillReportPeriods`
 (`server/actions/board.ts`); `ReportPeriodsEditor` on each year's card.
 
+**D-125 — Coverage is computed from the class's own data (amends D-013 and D-094).**
+« Couverture des attentes » (`/classes/[id]/planning/coverage`), the third section of a class's
+« Planification ». For each attente loaded for the class's grades (D-030, D-069), its status, best
+first: « Enseignée » (a lesson linked to it was given), « Enseignée (à confirmer) » (a substitute
+reported such a lesson and the teacher has not confirmed it, D-054), « Enseignée (unité
+terminée) » (a finished unit aims at it, even with no lesson linked: **Assumption**, the lead's
+answer to question 3), « Prévue » (a unit that is not archived aims at it, or a lesson linked to it
+is still to be given), « Pas encore prévue ». Skipped lessons, archived units and the lessons left
+in a finished unit count for nothing. A period narrows it: « Toute l'année », one of the board's
+report periods (its evaluation window, D-124) or « Dates choisies »; only the lessons given inside
+it and the units whose window overlaps it count, a unit without a window counts for the whole year
+only, and an attente given only before the period is « Enseignée avant la période ». Each attente
+shows its evidence (« 2 leçons données (dernière le 14 oct.) », the lessons reported, « Unité
+« … » (11 janv.–5 févr.) » linking to the unit). The counting unit is D-094's (a specific attente,
+or an overall attente without specific ones; an overall attente with specific ones is their
+heading, « 2 sur 3 enseignées »), and the counts (« 22 attentes · 9 enseignées · 5 prévues · 8 pas
+encore prévues ») do not change with « Afficher » (« Toutes », « Pas encore prévues », « Prévues »,
+« Enseignées »). Without a subject, an overview per subject (and per grade in a combined class) for
+the whole year; a combined class shows one grade at a time. While an attente is a summary,
+« Attentes résumées, à vérifier contre le programme officiel ; la liste peut être incomplète. »;
+« Comment on compte » says all of this. Computed on each request under row level security as the
+teacher, from the class's units, lessons and progress: nothing is stored and nothing is added to
+the database. Private to the class team (the class layout, D-013): never a direction, office, board
+or audit view, and no percentages. _Why:_ before report cards a teacher asks what she has taught
+this term; the answer must come from her own planning without her linking every lesson (finished
+units count), and must never become a way to monitor teachers.
+As built (slice S3): the statuses are the domain's `expectationCoverage` (S1);
+`server/planning/coverage-view.ts` (pure, unit-tested) reads the address and groups for display;
+`server/queries/class-coverage.ts` (`loadCoverageInputs`, `loadClassCoverage`; the curriculum of the
+class's grades is read in pages of 1 000 rows, PostgREST's limit); `components/coverage/*`. The
+filters are a GET form (they work without JavaScript; the dates appear for « Dates choisies ») and
+« Afficher » a row of links. `taughtExpectationIds` stays the report-comment composer's hook.
+Browser tests: `year-plan.spec.ts` (the statuses match the seed, a lesson given turns « Prévue »
+into « Enseignée », the report periods and chosen dates, « Afficher »), `year-plan-mobile.spec.ts`
+(360 px) and the security-policy check.
+
 **D-126 — The year view (« Mon année »).** `/classes/[id]/planning/year`, a section of the
-class's « Planification » tab (« Unités · Mon année », « Couverture » to come with D-125; no new
-navigation item, D-118 unchanged). The school year as weeks, Monday to Friday, each labelled by its
+class's « Planification » tab (« Unités · Mon année · Couverture »; « Couverture » is D-125; no
+new navigation item, D-118 unchanged). The school year as weeks, Monday to Friday, each labelled by its
 first day in the year, grouped by month: a « Calendrier » row (« Pas d'école » and the reason for a
 week without school, « 4 jours » and the days off named for a partial week, « Messe » for masses
 and liturgies), a « Bulletins » row (each report period's end, « saisie » and « remise », D-124), a
@@ -2533,6 +2588,33 @@ attentes) and `startPlannedUnit` (`start_unit`), both gated by `requireSession()
 reads the planned units of the date's week (`plannedUnitFor`). « Nouveautés »: `v070`, « Version 0.7
 · Mon année ». Browser tests: `year-plan.spec.ts`, `year-plan-mobile.spec.ts` (360 px), the sample
 class's dates in `onboarding.spec.ts`, and the page in the security-policy check.
+
+**D-127 — « Plan à long terme » PDF.** « Plan à long terme (PDF) » on « Mon année »
+(`/classes/[id]/planning/year/pdf`): page 1, landscape, the year at a glance (a column per month
+with its school days; rows for the calendar's days off and masses, the report dates, the
+liturgical seasons and each subject of the year view, with the units that touch the month and their
+dates, « † » for dates taken from the lessons and not saved); then, in portrait, the units by
+subject in date order with their dates, weeks and school days and the attentes they aim at (code
+and text, « à vérifier » while a summary), then the units without dates; and, only when the teacher
+ticks « Inclure la couverture des attentes » (`?coverage=1`), « Couverture des attentes »: the whole
+year's counts per subject (and grade), as D-125 counts them. Coverage is off by default
+(**Assumption**, the lead's answer to question 4): the plan is not a scorecard. The header names
+the school, the class, the year, the class team and the day it was printed; the footer the
+document and its pages, and « Les attentes « à vérifier » sont des résumés. » when one is printed.
+D-053's rules: on demand, never stored, Node runtime, `no-store`, a `/pdf` path, a plain GET form,
+`?download=1`, a failure page with a way back. It reads no student data (the year, the units, their
+attentes, the class team and, when asked, the class's progress); a unit's description is never
+printed and unit titles are printed as typed. Labels follow the reader's language; the curriculum's
+text is French. For the class team only (404 for anyone else, as the class pages). Not audited and
+sent nowhere: « Ce document est à vous : vous décidez à qui le remettre. » _Why:_ principals ask
+for a long-range plan, which teachers otherwise write by hand from the same data.
+As built (slice S3): `server/pdf/year-plan-model.ts` (pure; unit tests for the month cells,
+« 1er », no coverage unless asked and no student data), `year-plan-document.tsx` (US Letter, Noto
+Sans; a date never breaks across lines), `year-plan-labels.ts`, `renderYearPlanPdf` (fonts warmed,
+`render.test.ts`), `server/queries/year-plan-pdf.ts` and `YearPlanPdfForm` beside « Planifier une
+unité ». The year view's model (`buildYearView`) places the units, so screen and paper agree.
+Browser test: `year-plan.spec.ts` (`%PDF`, `private, no-store`, no page policy, one more page with
+coverage, 404 for another teacher's class).
 
 **D-128 — AI for the year plan is deferred.** « Proposer une répartition (IA) » is not built:
 production boards have no curriculum loaded (D-030), the demo sample is partial and unverified,

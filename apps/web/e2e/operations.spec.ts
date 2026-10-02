@@ -66,6 +66,9 @@ test('every page family carries the security policy and works under it', async (
   await expectPolicy(page, '/login');
   // Signing in needs the page's scripts: the policy lets the app's own run.
   await login(page, DEMO.teacher3, { stayOnPage: true });
+  const [french] = await query<{ id: string }>(
+    "select id from public.subjects where code = 'fra' and board_id is null",
+  );
   for (const path of [
     '/today',
     '/classes',
@@ -77,6 +80,9 @@ test('every page family carries the security policy and works under it', async (
     '/nouveautes',
     // « Mon année » (D-126): the grid's scroller and the planning dialogs.
     `/classes/${SEED.class3}/planning/year`,
+    // « Couverture » (D-125): the overview, then a subject with its filters.
+    `/classes/${SEED.class3}/planning/coverage`,
+    `/classes/${SEED.class3}/planning/coverage?subject=${french!.id}`,
   ]) {
     await expectPolicy(page, path);
     await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();

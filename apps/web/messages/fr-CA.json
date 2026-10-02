@@ -3671,7 +3671,9 @@
           "year": "« Mon année » dans la planification de chaque classe : les unités sur les semaines de l’année, avec les congés, les temps liturgiques et les dates de bulletin.",
           "unitPlan": "Planifier une unité : ses semaines et les attentes visées.",
           "today": "« Aujourd’hui » annonce l’unité prévue et la commence en un geste.",
-          "reportPeriods": "Conseil : les périodes de bulletin de chaque année scolaire."
+          "reportPeriods": "Conseil : les périodes de bulletin de chaque année scolaire.",
+          "coverage": "« Couverture » : pour chaque attente, ce que la classe a prévu et enseigné, pour toute l’année, une période de bulletin ou des dates choisies.",
+          "pdf": "« Plan à long terme (PDF) » : l’année de la classe sur une page, puis les unités et leurs attentes, à remettre à qui vous voulez."
         }
       },
       "v060": {
@@ -3866,6 +3868,117 @@
       "overlap": "Chevauchement : « {first} » et « {second} » ({subject}), du {from} au {to}.",
       "breaks": "« {title} » comprend des semaines sans école : {breaks} ({weeks, plural, one {# semaine} other {# semaines}}).",
       "outside": "« {title} » ({start}–{end}) : hors de l’année scolaire."
+    },
+    "pdf": {
+      "link": "Plan à long terme (PDF)",
+      "note": "Ce document est à vous : vous décidez à qui le remettre.",
+      "withCoverage": "Inclure la couverture des attentes",
+      "title": "Plan à long terme",
+      "documentTitle": "Plan à long terme — {className} — {year}",
+      "fileName": "plan-a-long-terme",
+      "subtitle": "{className} · Année scolaire {year}",
+      "team": "Équipe de la classe : {names}",
+      "member": "{name} ({role})",
+      "printedOn": "Imprimé le {date}",
+      "glance": "L’année en un coup d’œil",
+      "subject": "Matière",
+      "monthDays": "{count, plural, =0 {pas d’école} one {# jour de classe} other {# jours de classe}}",
+      "dayOff": "{title} ({dates})",
+      "season": "{season} · {dates}",
+      "inferredMark": "†",
+      "inferredLegend": "† Dates d’après les leçons données, pas encore enregistrées.",
+      "bySubject": "Les unités par matière",
+      "window": "Du {start} au {end}",
+      "inferred": "Dates d’après les leçons données",
+      "toVerify": "à vérifier",
+      "unplaced": "Unités sans dates : {titles}",
+      "noUnits": "Aucune unité pour l’instant.",
+      "coverageTitle": "Couverture des attentes",
+      "coverageIntro": "Au {date}, pour toute l’année : ce que les unités et les leçons de la classe ont prévu et enseigné, par matière.",
+      "coverageHow": "Compté comme dans « Couverture » : une attente est enseignée quand une leçon qui y est liée a été donnée ou qu’une unité terminée la vise ; prévue quand une unité la vise ou qu’une leçon liée reste à donner. Les leçons sautées ne comptent pas.",
+      "coverageNone": "Aucune attente n’est chargée pour les années d’études de cette classe.",
+      "columns": {
+        "subject": "Matière",
+        "total": "Attentes",
+        "taught": "Enseignées",
+        "planned": "Prévues",
+        "notPlanned": "Pas encore prévues"
+      },
+      "footerToVerify": "Les attentes « à vérifier » sont des résumés.",
+      "failed": "Le plan à long terme n’a pas pu être créé. Réessayez dans un moment.",
+      "failedBack": "Retour à Mon année"
+    }
+  },
+  "classCoverage": {
+    "metaTitle": "Couverture · {className}",
+    "title": "Couverture des attentes · {year}",
+    "intro": "Ce que vous avez prévu et enseigné dans cette classe, par attente. Privé à l’équipe de la classe.",
+    "failed": "La couverture n’a pas pu être chargée. Réessayez dans un instant.",
+    "counts": "{total, plural, one {# attente} other {# attentes}} · {taught, plural, one {# enseignée} other {# enseignées}} · {planned, plural, one {# prévue} other {# prévues}} · {notPlanned, plural, one {# pas encore prévue} other {# pas encore prévues}}",
+    "countsEarlier": "{count, plural, one {# enseignée avant la période} other {# enseignées avant la période}}",
+    "overview": {
+      "title": "Vue d’ensemble",
+      "intro": "Toute l’année, par matière. Choisissez une matière pour voir ses attentes.",
+      "without": "Aucune attente chargée : {subjects}.",
+      "empty": "Aucune attente n’est chargée pour les années d’études de cette classe."
+    },
+    "filters": {
+      "legend": "Ce que vous voulez voir",
+      "subject": "Matière",
+      "overview": "Vue d’ensemble (toutes les matières)",
+      "grade": "Année d’études",
+      "period": "Période",
+      "year": "Toute l’année",
+      "reportPeriod": "{kind} ({from}–{to})",
+      "custom": "Dates choisies",
+      "from": "Du",
+      "to": "Au",
+      "customHint": "Pour « Dates choisies » : le premier jour, puis le dernier.",
+      "apply": "Afficher la couverture",
+      "showLabel": "Afficher",
+      "show": {
+        "all": "Toutes",
+        "not_planned": "Pas encore prévues",
+        "planned": "Prévues",
+        "taught": "Enseignées"
+      },
+      "invalidDates": "Choisissez deux dates, la première avant la seconde. La couverture de toute l’année est affichée."
+    },
+    "list": {
+      "heading": "{subject} · {grade}",
+      "periodYear": "Période : toute l’année",
+      "periodReport": "Période : {kind}, du {from} au {to}",
+      "periodCustom": "Période : du {from} au {to}",
+      "overallCount": "{taught, plural, one {# sur {total} enseignée} other {# sur {total} enseignées}}",
+      "empty": "Aucune attente n’est chargée pour cette matière et cette année d’études.",
+      "emptyFilter": "Aucune attente ne correspond à « {show} ».",
+      "unverified": "Attentes résumées, à vérifier contre le programme officiel ; la liste peut être incomplète."
+    },
+    "status": {
+      "taught": "Enseignée",
+      "taught_pending": "Enseignée (à confirmer)",
+      "taught_unit": "Enseignée (unité terminée)",
+      "planned": "Prévue",
+      "taught_earlier": "Enseignée avant la période",
+      "not_planned": "Pas encore prévue"
+    },
+    "evidence": {
+      "lessons": "{count, plural, one {# leçon donnée} other {# leçons données}} (dernière le {date})",
+      "lessonsNoDate": "{count, plural, one {# leçon donnée} other {# leçons données}}",
+      "pending": "{count, plural, one {# leçon signalée par la suppléance, à confirmer} other {# leçons signalées par la suppléance, à confirmer}}",
+      "unit": "Unité « {title} » ({dates})",
+      "unitNoDates": "Unité « {title} » (sans dates)"
+    },
+    "howCounted": {
+      "title": "Comment on compte",
+      "taught": "« Enseignée » : une leçon liée à l’attente a été donnée. « Enseignée (à confirmer) » : une suppléance a signalé une telle leçon, que vous n’avez pas encore confirmée.",
+      "unit": "« Enseignée (unité terminée) » : une unité terminée vise l’attente, même si aucune de ses leçons n’y est liée.",
+      "planned": "« Prévue » : une unité vise l’attente, ou une leçon qui y est liée n’est pas encore donnée.",
+      "ignored": "Les leçons sautées et les unités archivées ne comptent pas.",
+      "period": "Avec une période, seules comptent les leçons données pendant la période et les unités dont les semaines la touchent ; une unité sans dates ne compte que pour toute l’année. « Enseignée avant la période » : donnée seulement avant.",
+      "units": "Une attente qui a des contenus d’apprentissage sert de titre : on compte ses contenus.",
+      "loaded": "Seules les attentes chargées dans l’application pour cette année d’études sont comptées.",
+      "private": "Le calcul est refait à chaque visite, à partir de vos unités et de vos leçons ; rien n’est enregistré, et ni la direction ni le conseil ne le voient."
     }
   }
 }

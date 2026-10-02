@@ -54,6 +54,8 @@ describe('security headers (D-119)', () => {
       '/login',
       '/today',
       '/classes/0b5e7c1a-2f3d-4e5f-8a9b-0c1d2e3f4a5b/planning',
+      '/classes/0b5e7c1a-2f3d-4e5f-8a9b-0c1d2e3f4a5b/planning/year',
+      '/classes/0b5e7c1a-2f3d-4e5f-8a9b-0c1d2e3f4a5b/planning/coverage',
       '/suppleance',
       '/suppleance/plan',
       '/s',
@@ -71,6 +73,8 @@ describe('security headers (D-119)', () => {
       '/suppleance/pdf',
       '/absences/0b5e7c1a-2f3d-4e5f-8a9b-0c1d2e3f4a5b/plans/1c2d3e4f-5a6b-4c7d-8e9f-0a1b2c3d4e5f/pdf',
       '/library/items/0b5e7c1a-2f3d-4e5f-8a9b-0c1d2e3f4a5b/pdf',
+      // « Plan à long terme » (D-127).
+      '/classes/0b5e7c1a-2f3d-4e5f-8a9b-0c1d2e3f4a5b/planning/year/pdf',
     ]) {
       const headers = headersFor(path, true);
       expect(headers['Content-Security-Policy'], path).toBeUndefined();

@@ -3671,7 +3671,9 @@
           "year": "“My year” in each class’s planning: the units on the weeks of the year, with holidays, liturgical seasons and report card dates.",
           "unitPlan": "Plan a unit: its weeks and the expectations it addresses.",
           "today": "“Today” shows the planned unit and starts it in one tap.",
-          "reportPeriods": "Board: the report card periods of each school year."
+          "reportPeriods": "Board: the report card periods of each school year.",
+          "coverage": "“Coverage”: for each expectation, what the class planned and taught, for the whole year, a report card period or chosen dates.",
+          "pdf": "“Long-range plan (PDF)”: the class’s year on one page, then the units and their expectations, to give to whoever you choose."
         }
       },
       "v060": {
@@ -3866,6 +3868,117 @@
       "overlap": "Overlap: “{first}” and “{second}” ({subject}), {from} to {to}.",
       "breaks": "“{title}” includes weeks without school: {breaks} ({weeks, plural, one {# week} other {# weeks}}).",
       "outside": "“{title}” ({start}–{end}): outside the school year."
+    },
+    "pdf": {
+      "link": "Long-range plan (PDF)",
+      "note": "This document is yours: you decide who to give it to.",
+      "withCoverage": "Include expectation coverage",
+      "title": "Long-range plan",
+      "documentTitle": "Long-range plan — {className} — {year}",
+      "fileName": "long-range-plan",
+      "subtitle": "{className} · School year {year}",
+      "team": "Class team: {names}",
+      "member": "{name} ({role})",
+      "printedOn": "Printed on {date}",
+      "glance": "The year at a glance",
+      "subject": "Subject",
+      "monthDays": "{count, plural, =0 {no school} one {# school day} other {# school days}}",
+      "dayOff": "{title} ({dates})",
+      "season": "{season} · {dates}",
+      "inferredMark": "†",
+      "inferredLegend": "† Dates from the lessons taught, not saved yet.",
+      "bySubject": "Units by subject",
+      "window": "From {start} to {end}",
+      "inferred": "Dates from the lessons taught",
+      "toVerify": "to be checked",
+      "unplaced": "Units without dates: {titles}",
+      "noUnits": "No units yet.",
+      "coverageTitle": "Expectation coverage",
+      "coverageIntro": "As of {date}, for the whole year: what the class’s units and lessons planned and taught, by subject.",
+      "coverageHow": "Counted as in “Coverage”: an expectation is taught when a lesson linked to it was taught or a completed unit addresses it; planned when a unit addresses it or a linked lesson is still to be taught. Skipped lessons don’t count.",
+      "coverageNone": "No expectations are loaded for this class’s grades.",
+      "columns": {
+        "subject": "Subject",
+        "total": "Expectations",
+        "taught": "Taught",
+        "planned": "Planned",
+        "notPlanned": "Not yet planned"
+      },
+      "footerToVerify": "Expectations marked “to be checked” are summaries.",
+      "failed": "The long-range plan couldn’t be created. Try again in a moment.",
+      "failedBack": "Back to My year"
+    }
+  },
+  "classCoverage": {
+    "metaTitle": "Coverage · {className}",
+    "title": "Expectation coverage · {year}",
+    "intro": "What you planned and taught in this class, by expectation. Private to the class team.",
+    "failed": "Coverage couldn’t be loaded. Try again in a moment.",
+    "counts": "{total, plural, one {# expectation} other {# expectations}} · {taught} taught · {planned} planned · {notPlanned} not yet planned",
+    "countsEarlier": "{count} taught before the period",
+    "overview": {
+      "title": "Overview",
+      "intro": "The whole year, by subject. Choose a subject to see its expectations.",
+      "without": "No expectations loaded: {subjects}.",
+      "empty": "No expectations are loaded for this class’s grades."
+    },
+    "filters": {
+      "legend": "What you want to see",
+      "subject": "Subject",
+      "overview": "Overview (all subjects)",
+      "grade": "Grade",
+      "period": "Period",
+      "year": "Whole year",
+      "reportPeriod": "{kind} ({from}–{to})",
+      "custom": "Chosen dates",
+      "from": "From",
+      "to": "To",
+      "customHint": "For “Chosen dates”: the first day, then the last.",
+      "apply": "Show coverage",
+      "showLabel": "Show",
+      "show": {
+        "all": "All",
+        "not_planned": "Not yet planned",
+        "planned": "Planned",
+        "taught": "Taught"
+      },
+      "invalidDates": "Choose two dates, the first before the second. Coverage for the whole year is shown."
+    },
+    "list": {
+      "heading": "{subject} · {grade}",
+      "periodYear": "Period: whole year",
+      "periodReport": "Period: {kind}, from {from} to {to}",
+      "periodCustom": "Period: from {from} to {to}",
+      "overallCount": "{taught, plural, one {# of {total} taught} other {# of {total} taught}}",
+      "empty": "No expectations are loaded for this subject and grade.",
+      "emptyFilter": "No expectations match “{show}”.",
+      "unverified": "Summarized expectations, to be checked against the official curriculum; the list may be incomplete."
+    },
+    "status": {
+      "taught": "Taught",
+      "taught_pending": "Taught (to confirm)",
+      "taught_unit": "Taught (unit completed)",
+      "planned": "Planned",
+      "taught_earlier": "Taught before the period",
+      "not_planned": "Not yet planned"
+    },
+    "evidence": {
+      "lessons": "{count, plural, one {# lesson taught} other {# lessons taught}} (last on {date})",
+      "lessonsNoDate": "{count, plural, one {# lesson taught} other {# lessons taught}}",
+      "pending": "{count, plural, one {# lesson reported by a substitute, to confirm} other {# lessons reported by a substitute, to confirm}}",
+      "unit": "Unit “{title}” ({dates})",
+      "unitNoDates": "Unit “{title}” (no dates)"
+    },
+    "howCounted": {
+      "title": "How it’s counted",
+      "taught": "“Taught”: a lesson linked to the expectation was taught. “Taught (to confirm)”: a substitute reported such a lesson and you haven’t confirmed it yet.",
+      "unit": "“Taught (unit completed)”: a completed unit addresses the expectation, even if none of its lessons is linked to it.",
+      "planned": "“Planned”: a unit addresses the expectation, or a lesson linked to it hasn’t been taught yet.",
+      "ignored": "Skipped lessons and archived units don’t count.",
+      "period": "With a period, only lessons taught during the period and units whose weeks touch it count; a unit without dates counts for the whole year only. “Taught before the period”: taught only before it.",
+      "units": "An overall expectation with specific expectations is a heading: its specific expectations are counted.",
+      "loaded": "Only the expectations loaded in the app for this grade are counted.",
+      "private": "It is worked out again on each visit from your units and lessons; nothing is saved, and neither the principal nor the board sees it."
     }
   }
 }

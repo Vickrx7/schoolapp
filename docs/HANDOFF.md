@@ -4,7 +4,8 @@ Written 2026-09-28 by the session that built Phases 1 and 2 (branch `claude/nift
 updated 2026-10-02 by the session that built Phases 3, 4, 5 and 6 (branch `claude/serene-ride-3n2fa1`).
 Read `SPEC.md` and `DECISIONS.md` first; this file covers what they don't: the conversation with
 Mike, the current state, how to run things in these containers, and what's next. Phase notes:
-`docs/phase-1.md` to `docs/phase-6.md` (and `docs/content-packs.md` for a board's IT). For the pilot:
+`docs/phase-1.md` to `docs/phase-6.md`, then `docs/mon-annee.md` (the year planner built after
+them; and `docs/content-packs.md` for a board's IT). For the pilot:
 `PRIVACY.md` (a board's privacy officer), `DEPLOYMENT.md` (installing), `docs/PILOT.md` (for Mike)
 and `docs/demo-script.md` (the board demo).
 
@@ -115,31 +116,34 @@ Mon Tableau, Cartable, Ardoise). No availability or trademark check has been don
 | `de7b798` | Round A: staff sign-in throttled, no names in feedback, signed backups                      |
 | `00e1343` | Final review, round B: privacy wording, terms `2026-10-pilote-2`, the journal, audit export |
 | `d2dad5a` | « Mon année » S1: report periods, unit windows and attentes, the planning actions' gate     |
-| (latest)  | « Mon année » S2: the year view, and « Aujourd'hui » starting a planned unit                |
+| `3615f3e` | « Mon année » S2: the year view, and « Aujourd'hui » starting a planned unit                |
+| (latest)  | « Mon année » S3: « Couverture » and the « Plan à long terme » PDF, `docs/mon-annee.md`     |
 
-**Verified (locally, from an empty database, and in CI on each pushed commit):** 1372 unit tests
+**Verified (locally, from an empty database, and in CI on each pushed commit):** 1398 unit tests
 (none skipped), 1796 pgTAP tests, 93 integration tests (plus the 3 of `restore-smoke`, which run
 after a restore: the `backup-restore` CI job and the local drill; the staff-account tests talk to
-the stack's real Auth server), 137 Playwright tests (desktop, phone and tablet, axe on every Phase
+the stack's real Auth server), 140 Playwright tests (desktop, phone and tablet, axe on every Phase
 3, 4 and 5 page, every « Conseil » page, the direction's dashboard and « Journal d'audit »,
 « Bienvenue », « Pour bien commencer », each step of the board demo, a unit's planning, the
-report periods, « Mon année » on a desktop and at 360 px, and starting a planned unit), lint,
-typecheck, format, generated DB types up to date, the demo curriculum and library seeds up to date
-(`pnpm library:seed:check`), web build with no setting built in; in CI also a backup restored
-into an empty database, and both Docker images run as a board-hosted install (`docker-smoke`).
+report periods, « Mon année » on a desktop and at 360 px, starting a planned unit, « Couverture »
+and the long-range plan PDF), lint, typecheck, format, generated DB types up to date, the demo
+curriculum and library seeds up to date (`pnpm library:seed:check`), web build with no setting
+built in; in CI also a backup restored into an empty database, and both Docker images run as a
+board-hosted install (`docker-smoke`).
 
-**« Mon année » is being built** (feature #1 after the pilot build; DECISIONS « Mon année »,
-D-123 to D-128): slice S1 is done: the board's « Périodes de bulletin » in « Années scolaires »
-(with « Préremplir avec les dates habituelles » and a checklist item), a unit's planned weeks and
-attentes on its page (« Modifier la planification »), the lesson form listing the unit's attentes
-first, the domain code for the year view and coverage (`packages/domain/src/year-plan`), and the
-planning, progress, roster and timetable actions gated by `requireSession()` like the others.
-Slice S2 is done (D-126): « Unités · Mon année » inside the class's « Planification » tab; the
-year view `/classes/[id]/planning/year` (a grid of weeks by subject on larger screens, with the
-calendar, report dates and liturgical seasons; a list of months on phones; units dated from their
-lessons to confirm, units without dates to place, warnings in words; « Planifier une unité »); and
-on « Aujourd'hui » the planned unit due that week with « Commencer l'unité ». Slice S3
-(« Couverture » and the « Plan à long terme » PDF) is next; AI is deferred (D-128).
+**« Mon année » is built** (feature #1 after the pilot build; `docs/mon-annee.md`; DECISIONS
+« Mon année », D-123 to D-128): the board's « Périodes de bulletin » in « Années scolaires » (with
+« Préremplir avec les dates habituelles » and a checklist item); a unit's planned weeks and
+attentes (« Modifier la planification »); inside a class's « Planification », « Unités · Mon année
+· Couverture »: the year view `/classes/[id]/planning/year` (a grid of weeks by subject on larger
+screens with the calendar, report dates and liturgical seasons; a list of months on phones; units
+dated from their lessons to confirm, units without dates to place, warnings in words; « Planifier
+une unité »; « Plan à long terme (PDF) », coverage only when ticked), « Couverture »
+`/classes/[id]/planning/coverage` (what the class planned and taught, per attente, for the year, a
+report period or chosen dates, computed from the class's own units and lessons, private to the
+class team), and on « Aujourd'hui » the planned unit due that week with « Commencer l'unité ». AI
+for the year plan is deferred (D-128). Next: test it with pilot teachers (`docs/mon-annee.md`, « What
+to test »); marketing may claim it once Mike has seen it.
 
 **Phase 3 is complete** (3a and 3b; see `docs/phase-3.md`): absence button, plans built in the
 request and kept current by the worker, review and editing, release at 07:30, codes, the
@@ -298,8 +302,9 @@ that checks the signature). `docs/phase-6.md` « Final review » has the list an
 - **Screenshots:** Phase 1 screens in `marketing/promo/screens/`. None of Phases 2 to 4 are kept;
   retake them from the running app if needed.
 - **Marketing site and board fact sheet** (`marketing/site`, `marketing/one-pager`, promo script
-  v2): they claim only what ships and still label the library « En construction ». Update that
-  once Mike has seen Phase 4.
+  v2): they claim only what ships; marketing v3 (`a214ac0`, `638e425`) shows Phases 1 to 6 as
+  available, with the Phase 6 screens. « Mon année » is not claimed there yet: the marketing pages
+  are updated once Mike has seen it.
 
 ## 3. How to run it (in these containers)
 
@@ -474,6 +479,13 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   soustraction jusqu'à 1 000 » starts two weeks after the reset, so a spec that opens
   « Aujourd'hui » two or more weeks ahead sees « Prochaine unité prévue » on 3e Mathématiques.
   `e2e/year-plan.spec.ts` makes « E2E-… » units (one started from « Aujourd'hui ») and deletes them.
+- **« Couverture » in browser tests:** `e2e/year-plan.spec.ts` pins the demo's 3e Français (32
+  attentes; C1.1 and C1.3 « Enseignée », C1.2 and D1.1 « Prévue »). It clears the progress of that
+  unit's lessons 4 to 8 first (the seed has none), gives lesson 4 and takes it back; a spec that
+  leaves one of them given changes the counts. Its « Dates choisies » step assumes the seeded windows are around
+  the current week (the year has six weeks to go). The long-range plan PDF is checked by its pages
+  (`/Type /Page`), not its text (compressed). Coverage reads a class's curriculum in pages of
+  1 000 rows, PostgREST's `max_rows`.
 - **Unit tests of the web app's server code** can import `@/…`: the root `vitest.config.ts`
   aliases it (`server/actions/session-gate.test.ts` mocks the session and the database).
 - **New accounts in browser tests go through « Bienvenue ».** The seed's demo accounts have
@@ -615,8 +627,10 @@ Where an item is already in `DECISIONS.md`, the D-number is given. Don't add dup
    hosted checks. « Essayer comme les élèves » (a Phase 4 hook, D-081) was not built in Phase 5.
 7. **Name.** Once chosen: check availability, then rename `APP_NAME`, the icon, the
    login email template and the promo.
-8. **« Mon année » slice S3** (« Couverture » and the long-range plan PDF), on top of slices S1
-   and S2 (D-123 to D-128).
+8. **« Mon année » with pilot teachers** (`docs/mon-annee.md`, « What to test »): one teacher
+   checking the « à vérifier » attentes of her grade, the report dates for each pilot board, the
+   long-range plan with a principal. « Reprendre le plan de l'an dernier » is needed before August
+   2027; AI for the year plan waits for real curriculum (D-128).
 
 **Known issues and risks:**
 

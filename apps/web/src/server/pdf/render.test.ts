@@ -5,7 +5,7 @@ import { sheetBodySize } from './activities-document';
 import { buildActivitiesPdfModel } from './activities-model';
 import { registerPdfFonts } from './fonts';
 import { buildPlanPdfModel } from './model';
-import { renderActivitiesPdf, renderPlanPdf } from './render';
+import { renderActivitiesPdf, renderPlanPdf, renderYearPlanPdf } from './render';
 import {
   activityLayer,
   composed,
@@ -18,6 +18,8 @@ import {
   ROSTER,
   withScience,
 } from './test-fixtures';
+import { YEAR_PLAN_EN, YEAR_PLAN_FR, yearPlanInput } from './year-plan-fixtures';
+import { buildYearPlanPdfModel } from './year-plan-model';
 
 // The server runs from apps/web; the tests run from the repository root.
 registerPdfFonts(fileURLToPath(new URL('../../../assets/fonts', import.meta.url)));
@@ -132,5 +134,51 @@ describe('renderActivitiesPdf', () => {
     const model = buildActivitiesPdfModel(composed('pdf'), ROSTER, LEVELS);
     expect(model.sheets).toEqual([]);
     await expect(renderActivitiesPdf(model)).rejects.toThrow(/No activity sheet/);
+  });
+});
+
+describe('renderYearPlanPdf', () => {
+  /** The pages' sizes: Letter, landscape (792 × 612) or portrait (612 × 792). */
+  const mediaBoxes = (pdf: Buffer) =>
+    [...pdf.toString('latin1').matchAll(/\/MediaBox\s*\[\s*0 0 ([\d.]+) ([\d.]+)\s*\]/g)].map(
+      (m) => `${Math.round(Number(m[1]))}x${Math.round(Number(m[2]))}`,
+    );
+
+  it('renders the year at a glance in landscape, then the units by subject', async () => {
+    const pdf = await renderYearPlanPdf(buildYearPlanPdfModel(yearPlanInput(), YEAR_PLAN_FR));
+    expectPdf(pdf);
+    expect(pages(pdf)).toBe(2);
+    expect(mediaBoxes(pdf)).toEqual(['792x612', '612x792']);
+    const raw = pdf.toString('latin1');
+    expect(raw).toMatch(/\/BaseFont\s*\/[A-Z]{6}\+NotoSans-Regular/);
+    expect(raw).toMatch(/\/BaseFont\s*\/[A-Z]{6}\+NotoSans-Bold/);
+  });
+
+  it('adds the coverage page only when asked, in English too', async () => {
+    const model = buildYearPlanPdfModel(
+      yearPlanInput({
+        coverage: {
+          rows: [
+            {
+              label: 'Mathématiques',
+              counts: { total: 34, taught: 3, planned: 5, taughtEarlier: 0, notPlanned: 26 },
+            },
+          ],
+          unverified: true,
+        },
+      }),
+      YEAR_PLAN_EN,
+    );
+    const pdf = await renderYearPlanPdf(model);
+    expectPdf(pdf);
+    expect(pages(pdf)).toBe(3);
+  });
+
+  it('renders a class without units', async () => {
+    const pdf = await renderYearPlanPdf(
+      buildYearPlanPdfModel(yearPlanInput({ units: [] }), YEAR_PLAN_FR),
+    );
+    expectPdf(pdf);
+    expect(pages(pdf)).toBe(2);
   });
 });

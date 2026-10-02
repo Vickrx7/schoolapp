@@ -14,6 +14,12 @@
  * Pure so it is unit-tested; loaded by `server/queries/library-coverage.ts`.
  */
 import type { LibraryItemType } from '@lynx/content';
+import { isCoverageUnit } from '@lynx/domain';
+import {
+  groupExpectationsByDomaine,
+  type CurriculumStrand,
+  type DomaineEntry,
+} from '../curriculum-groups';
 import { subjectsForGrade } from './search-params';
 
 /** « Seuil » : an attente with fewer approved resources has « Peu de ressources ». */
@@ -76,12 +82,7 @@ export interface CoverageRow {
 }
 
 /** A domaine of the subject (`strands`). */
-export interface CoverageStrand {
-  id: string;
-  code: string;
-  label: string;
-  sortOrder: number;
-}
+export type CoverageStrand = CurriculumStrand;
 
 export interface CoverageExpectation extends CoverageRow {
   /** Counted in the totals: a specific attente, or an overall attente without children. */
@@ -90,10 +91,7 @@ export interface CoverageExpectation extends CoverageRow {
 }
 
 /** An overall attente with its specific attentes, or an attente on its own. */
-export interface CoverageEntry {
-  expectation: CoverageExpectation;
-  children: CoverageExpectation[];
-}
+export type CoverageEntry = DomaineEntry<CoverageExpectation>;
 
 export interface CoverageCounts {
   units: number;
@@ -124,11 +122,6 @@ function addTo(counts: CoverageCounts, e: CoverageExpectation) {
   counts[e.level]++;
 }
 
-const byOrder = (a: CoverageRow, b: CoverageRow) =>
-  a.sortOrder - b.sortOrder ||
-  a.code.localeCompare(b.code, 'fr', { numeric: true }) ||
-  (a.expectationId < b.expectationId ? -1 : a.expectationId > b.expectationId ? 1 : 0);
-
 function matches(e: CoverageExpectation, show: CoverageFilter): boolean {
   if (!e.unit) return false;
   if (show === 'none') return e.level === 'none';
@@ -149,56 +142,27 @@ export function groupCoverage(
 ): CoverageView {
   const view = (row: CoverageRow): CoverageExpectation => ({
     ...row,
-    unit: row.kind === 'specific' || !row.hasChildren,
+    unit: isCoverageUnit(row.kind, row.hasChildren),
     level: coverageLevel(row.approvedCount, min),
   });
-  const all = [...rows].sort(byOrder).map(view);
-  const byId = new Map(all.map((e) => [e.expectationId, e]));
-
-  // Specific attentes go under their overall attente when it is listed; the rest stand alone.
-  const childrenOf = new Map<string, CoverageExpectation[]>();
-  const tops: CoverageExpectation[] = [];
-  for (const e of all) {
-    const parent = e.parentId ? byId.get(e.parentId) : undefined;
-    if (e.kind === 'specific' && parent && parent.kind === 'overall') {
-      childrenOf.set(parent.expectationId, [...(childrenOf.get(parent.expectationId) ?? []), e]);
-    } else {
-      tops.push(e);
-    }
-  }
-
-  const strandById = new Map(strands.map((s) => [s.id, s]));
-  const groups = new Map<string | null, CoverageGroup>();
   const total = emptyCounts();
-  for (const top of tops) {
-    const strand = (top.strandId && strandById.get(top.strandId)) || null;
-    const key = strand?.id ?? null;
-    let group = groups.get(key);
-    if (!group) {
-      group = { strand, entries: [], counts: emptyCounts() };
-      groups.set(key, group);
+  const groups: CoverageGroup[] = [];
+  for (const group of groupExpectationsByDomaine(rows.map(view), strands)) {
+    const counts = emptyCounts();
+    const entries: CoverageEntry[] = [];
+    for (const { expectation: top, children } of group.entries) {
+      for (const e of [top, ...children]) {
+        addTo(counts, e);
+        addTo(total, e);
+      }
+      const shown = children.filter((c) => matches(c, show));
+      if (show === 'all' || matches(top, show) || shown.length) {
+        entries.push({ expectation: top, children: show === 'all' ? children : shown });
+      }
     }
-    const children = childrenOf.get(top.expectationId) ?? [];
-    for (const e of [top, ...children]) {
-      addTo(group.counts, e);
-      addTo(total, e);
-    }
-    const shown = children.filter((c) => matches(c, show));
-    if (show === 'all' || matches(top, show) || shown.length) {
-      group.entries.push({ expectation: top, children: show === 'all' ? children : shown });
-    }
+    if (entries.length) groups.push({ strand: group.strand, entries, counts });
   }
-
-  const ordered = [...groups.values()]
-    .filter((g) => g.entries.length > 0)
-    .sort((a, b) => {
-      if (!a.strand || !b.strand) return a.strand ? -1 : b.strand ? 1 : 0;
-      return (
-        a.strand.sortOrder - b.strand.sortOrder ||
-        a.strand.code.localeCompare(b.strand.code, 'fr', { numeric: true })
-      );
-    });
-  return { groups: ordered, counts: total };
+  return { groups, counts: total };
 }
 
 /** The number of units with at least one approved resource (« 14 attentes sur 22 »). */

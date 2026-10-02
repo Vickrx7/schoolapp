@@ -1,19 +1,21 @@
 import { addDays, localDateIn, mondayOf } from '@lynx/domain';
 import { expect, test, type Locator, type Page } from '@playwright/test';
-import { SEED, closeDb, query } from './db';
+import { SEED, clearProgress, closeDb, query, setProgress } from './db';
 import { UNITS, deleteUnitsTitled, insertPlannedUnit, unitPlan, unitStatus } from './db-year-plan';
 import { DEMO, e2ePrefix, expectAccessible, isSeededSchoolDay, login, schoolDay } from './helpers';
 
 /**
- * « Mon année », slice S2 (DECISIONS D-126), on a desktop: Isabelle's 3e année on the weeks of
- * 2026-2027, with the calendar (« Pas d'école » over the holidays), the report dates and the
- * liturgical seasons; « Planifier une unité » from the year, its cell and the overlap it makes;
- * and « Aujourd'hui », where a planned unit due that week is started with « Commencer l'unité ».
- * The units the spec makes are deleted at the end.
+ * « Mon année », slices S2 and S3 (DECISIONS D-125 to D-127), on a desktop: Isabelle's 3e année
+ * on the weeks of 2026-2027, with the calendar (« Pas d'école » over the holidays), the report
+ * dates and the liturgical seasons; « Planifier une unité » from the year, its cell and the
+ * overlap it makes; « Couverture », each attente taught or planned from the class's own lessons
+ * and units; « Plan à long terme (PDF) »; and « Aujourd'hui », where a planned unit due that week
+ * is started with « Commencer l'unité ». The units the spec makes are deleted at the end.
  */
 
 const PREFIX = e2ePrefix('an-');
 const YEAR_PAGE = `/classes/${SEED.class3}/planning/year`;
+const COVERAGE_PAGE = `/classes/${SEED.class3}/planning/coverage`;
 const TODAY = localDateIn('America/Toronto');
 
 test.afterAll(async () => {
@@ -188,6 +190,212 @@ test('« Planifier une unité » from the year: its cell and the overlap it make
     planned_end_on: addDays(last, 4),
     codes: ['C1.1', 'D1.1'],
   });
+});
+
+/** The seeded 3e Français unit's lessons 4 to 8: none is given in the seed (lesson 4 aims at C1.2). */
+async function fraLessonsLeft(): Promise<{ id: string; seq: number }[]> {
+  return query<{ id: string; seq: number }>(
+    `select id, sequence_number as seq from public.unit_lessons
+     where unit_id = $1 and sequence_number >= 4 order by sequence_number`,
+    [UNITS.fra3],
+  );
+}
+
+/** An attente's item in the coverage list, by its code. */
+const attente = (page: Page, code: string) =>
+  page.locator(`[data-testid="coverage-expectation"][data-code="${code}"]`);
+
+test('« Couverture » shows each attente taught or planned, from the lessons and units', async ({
+  page,
+}) => {
+  test.setTimeout(120_000);
+  const left = await fraLessonsLeft();
+  // As the seed left them (lessons 1 to 3 given), whatever ran before.
+  await clearProgress(left.map((l) => l.id));
+  const lesson4 = left.find((l) => l.seq === 4)!.id;
+  try {
+    await login(page, DEMO.teacher3);
+    await page.goto(YEAR_PAGE);
+    const tabs = page.getByRole('navigation', { name: 'Sections de la planification' });
+    await tabs.getByRole('link', { name: 'Couverture' }).click();
+    await page.waitForURL(new RegExp(`${escape(COVERAGE_PAGE)}$`));
+    await expect(page).toHaveTitle(/^Couverture · 3e année/);
+    await expect(tabs.getByRole('link', { name: 'Couverture' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
+    await expect(
+      page.getByRole('heading', { level: 2, name: 'Couverture des attentes · 2026-2027' }),
+    ).toBeVisible();
+
+    // « Vue d'ensemble »: the whole year per subject with attentes loaded (32 counted in the
+    // demo's 3e Français: the specific attentes; the overall ones are headings).
+    const overview = page.getByRole('region', { name: 'Vue d’ensemble' });
+    const overviewOf = (subject: string) =>
+      overview
+        .getByRole('listitem')
+        .filter({ has: page.getByRole('link', { name: subject, exact: true }) })
+        .getByTestId('coverage-overview-counts');
+    await expect(overviewOf('Français')).toHaveText(
+      '32 attentes · 2 enseignées · 2 prévues · 28 pas encore prévues',
+    );
+    await expect(overviewOf('Mathématiques')).toHaveText(/^\d+ attentes · /);
+    await expect(
+      overview.getByText(/^Aucune attente chargée\s:\s.*Éducation artistique/),
+    ).toBeVisible();
+    await expectAccessible(page);
+
+    // Français, the whole year.
+    await overview.getByRole('link', { name: 'Français', exact: true }).click();
+    await page.waitForURL(/\/planning\/coverage\?subject=/);
+    const list = page.getByRole('region', { name: 'Français · 3e année' });
+    await expect(list.getByText('Période\u00a0: toute l’année')).toBeVisible();
+    await expect(page.getByTestId('coverage-counts')).toHaveText(
+      '32 attentes · 2 enseignées · 2 prévues · 28 pas encore prévues',
+    );
+    // Lessons 2 and 3 were given; lesson 4 (C1.2) not yet, and the unit aims at it.
+    await expect(attente(page, 'C1.1')).toContainText('Enseignée');
+    await expect(attente(page, 'C1.1')).toContainText(
+      /1 leçon donnée \(dernière le \d+(er)? \S+\)/,
+    );
+    await expect(
+      attente(page, 'C1.1').getByRole('link', {
+        name: /^Unité «\sLire pour s'informer : les animaux de l'Ontario\s» \(/,
+      }),
+    ).toBeVisible();
+    await expect(attente(page, 'C1.3')).toContainText('Enseignée');
+    await expect(attente(page, 'C1.2').getByText('Prévue', { exact: true })).toBeVisible();
+    await expect(
+      attente(page, 'C1.4').getByText('Pas encore prévue', { exact: true }),
+    ).toBeVisible();
+    // An overall attente with contenus is their heading.
+    await expect(list.getByText('2 sur 4 enseignées')).toBeVisible();
+    await expect(
+      list.getByText(/^Attentes résumées, à vérifier contre le programme officiel/),
+    ).toBeVisible();
+    await list.getByText('Comment on compte').click();
+    await expect(list.getByText(/^«\sEnseignée \(unité terminée\)\s»\s:/)).toBeVisible();
+    await expectAccessible(page);
+
+    // « Afficher : Prévues »: the planned attentes only; the counts stay.
+    await list.getByRole('link', { name: 'Prévues', exact: true }).click();
+    await page.waitForURL(/show=planned/);
+    await expect(page.getByTestId('coverage-expectation')).toHaveCount(2);
+    await expect(attente(page, 'C1.2')).toBeVisible();
+    await expect(attente(page, 'D1.1')).toBeVisible();
+    await expect(page.getByTestId('coverage-counts')).toHaveText(
+      '32 attentes · 2 enseignées · 2 prévues · 28 pas encore prévues',
+    );
+    await list.getByRole('link', { name: 'Toutes', exact: true }).click();
+    await page.waitForURL((url) => !url.search.includes('show='));
+
+    // Lesson 4 given: C1.2 « Enseignée ».
+    await setProgress(lesson4, TODAY);
+    await page.reload();
+    await expect(attente(page, 'C1.2').getByText('Enseignée', { exact: true })).toBeVisible();
+    await expect(page.getByTestId('coverage-counts')).toHaveText(
+      '32 attentes · 3 enseignées · 1 prévue · 28 pas encore prévues',
+    );
+    await clearProgress([lesson4]);
+
+    // The periods: the board's report periods, and « Dates choisies ».
+    const period = page.getByLabel('Période');
+    await expect(period.locator('option')).toHaveText([
+      'Toute l’année',
+      'Bulletin de progrès (2 sept.–30 oct.)',
+      'Bulletin scolaire — 1re étape (2 sept.–29 janv.)',
+      'Bulletin scolaire — 2e étape (1er févr.–11 juin)',
+      'Dates choisies',
+    ]);
+    await period.selectOption({ label: 'Bulletin de progrès (2 sept.–30 oct.)' });
+    await page.getByRole('button', { name: 'Afficher la couverture' }).click();
+    await page.waitForURL(/period=progress/);
+    await expect(
+      page.getByText('Période\u00a0: Bulletin de progrès, du 2 septembre au 30 octobre'),
+    ).toBeVisible();
+
+    // After the seeded windows: what was given is « Enseignée avant la période ».
+    const from = addDays(TODAY, 70);
+    const to = addDays(TODAY, 100);
+    await page.getByLabel('Période').selectOption({ label: 'Dates choisies' });
+    await page.getByLabel('Du', { exact: true }).fill(from);
+    await page.getByLabel('Au', { exact: true }).fill(to);
+    await page.getByRole('button', { name: 'Afficher la couverture' }).click();
+    await page.waitForURL(new RegExp(`period=custom&from=${from}&to=${to}`));
+    await expect(attente(page, 'C1.1').getByText('Enseignée avant la période')).toBeVisible();
+    await expect(
+      attente(page, 'C1.2').getByText('Pas encore prévue', { exact: true }),
+    ).toBeVisible();
+    await expect(page.getByTestId('coverage-counts')).toContainText(
+      '2 enseignées avant la période',
+    );
+    await expectAccessible(page);
+
+    // Dates in the wrong order: the whole year, and why.
+    await page.goto(
+      `${COVERAGE_PAGE}?${new URLSearchParams({
+        subject: new URL(page.url()).searchParams.get('subject')!,
+        period: 'custom',
+        from: to,
+        to: from,
+      }).toString()}`,
+    );
+    await expect(
+      page.getByText(/^Choisissez deux dates, la première avant la seconde\./),
+    ).toBeVisible();
+    await expect(page.getByText('Période\u00a0: toute l’année')).toBeVisible();
+  } finally {
+    await clearProgress([lesson4]);
+  }
+});
+
+test('« Plan à long terme (PDF) »: built on demand, never cached, coverage only when asked', async ({
+  page,
+}) => {
+  await login(page, DEMO.teacher3);
+  await page.goto(YEAR_PAGE);
+  const button = page.getByRole('button', { name: 'Plan à long terme (PDF)' });
+  await expect(button).toBeVisible();
+  await expect(button).toHaveAccessibleDescription(
+    /^Ce document est à vous\s:\svous décidez à qui le remettre\.$/,
+  );
+  const withCoverage = page.getByRole('checkbox', { name: 'Inclure la couverture des attentes' });
+  await expect(withCoverage).not.toBeChecked();
+
+  const pages = (body: Buffer) => body.toString('latin1').match(/\/Type\s*\/Page\b/g)?.length ?? 0;
+  const sizes: number[] = [];
+  for (const query of ['', '?coverage=1', '?download=1']) {
+    const response = await page.request.get(`${YEAR_PAGE}/pdf${query}`);
+    expect(response.status(), query).toBe(200);
+    const headers = response.headers();
+    expect(headers['content-type']).toBe('application/pdf');
+    expect(headers['cache-control']).toBe('private, no-store');
+    // A PDF route carries no page security policy (it would stop the browser's viewer).
+    expect(headers['content-security-policy']).toBeUndefined();
+    expect(headers['content-disposition']).toMatch(
+      new RegExp(
+        `^${query === '?download=1' ? 'attachment' : 'inline'}; filename="plan-a-long-terme-3e-annee-[a-z0-9-]+-2026-2027\\.pdf"$`,
+      ),
+    );
+    const body = await response.body();
+    expect(body.subarray(0, 5).toString('latin1')).toBe('%PDF-');
+    sizes.push(pages(body));
+  }
+  // The year at a glance and the units; « Couverture des attentes » only when asked.
+  expect(sizes[1]).toBe(sizes[0]! + 1);
+  expect(sizes[2]).toBe(sizes[0]);
+
+  // Only the class team: Marc's 5e année is not Isabelle's.
+  expect((await page.request.get(`/classes/${SEED.class5}/planning/year/pdf`)).status()).toBe(404);
+  expect((await page.request.get('/classes/not-a-class/planning/year/pdf')).status()).toBe(404);
+
+  // The form asks for the coverage when it is ticked.
+  await withCoverage.check();
+  const [request] = await Promise.all([
+    page.waitForRequest((r) => r.url().includes('/planning/year/pdf')),
+    button.click(),
+  ]);
+  expect(new URL(request.url()).search).toBe('?coverage=1');
 });
 
 test('« Aujourd’hui » offers to start a planned unit due that week', async ({ page }) => {

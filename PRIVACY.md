@@ -124,6 +124,13 @@ Teachers' units and lessons are free text. A teacher may type a student's name t
 stays until the teacher deletes it, also after the students' first names are purged. The notice
 shown 60 days before the purge says so.
 
+« Couverture » (D-125) is worked out on each visit from the class's units, lessons and progress;
+nothing about it is stored, and only the class team sees it. The long-range plan PDF (« Plan à
+long terme », D-127) prints the class's units (titles as typed), their dates and attentes and the
+class team's names, and, only if the teacher asks, the year's coverage counts; it reads no student
+data and is built when asked, never stored and not sent anywhere: the teacher decides whom to give
+it to.
+
 ### Substitute hand-off
 
 | Data                                                                                            | Purpose                        | Who sees it                                                                                          | Kept                                                                |
@@ -494,10 +501,11 @@ kept 730 days.
   (`PRIVACY_CONTACT_EMAIL`), or the board's own privacy office.
 - **Support:** the address shown in the app (`SUPPORT_EMAIL`).
 - **Decisions behind this document:** `DECISIONS.md` (D-012 to D-019, D-037 to D-046, D-049 to
-  D-059, D-065, D-083 to D-093, D-102 to D-124).
+  D-059, D-065, D-083 to D-093, D-102 to D-127).
 
 | Date       | Release | Change                                                                                                                                                                                                                                                                                                                                                             |
 | ---------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | 2026-10-02 | 0.6     | First version, written for the pilot. Pending a privacy lawyer's review.                                                                                                                                                                                                                                                                                           |
 | 2026-10-02 | 0.6     | After the final review: the AI limit (names the app does not know), what the sign-in service and the database write to the journal, the hosting facts still to confirm, IP Lynx as a pilot board's administrator, the full audit export before a board is deleted, the monthly restore test. The in-app notice changed with it (terms version `2026-10-pilote-2`). |
 | 2026-10-02 | 0.7     | « Mon année »: a unit's planned dates and the attentes it aims at (the class team's, kept with the class), and the board's report card periods (no personal data). No new personal data and no AI, so the pilot terms are unchanged.                                                                                                                               |
+| 2026-10-02 | 0.7     | « Couverture » (worked out on each visit; nothing stored) and the long-range plan PDF (no student data; built when asked, never stored, the teacher's to give). No new personal data, so the pilot terms are unchanged.                                                                                                                                            |

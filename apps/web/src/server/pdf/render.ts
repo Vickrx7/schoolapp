@@ -1,9 +1,10 @@
 /**
- * Renders the plan PDF, the students' activity sheets and the library's PDFs in memory (DECISIONS
- * D-053, D-075): nothing is stored, every download is built from the plan or the resource as it
- * is now. The fonts are warmed before the first render of the process (`warmPdfFonts`: without
- * it, an accented capital in one PDF could drop the plain letter from later ones). Not
- * server-only, so it can be unit tested; only route handlers import it.
+ * Renders the plan PDF, the students' activity sheets, the library's PDFs and the long-range plan
+ * in memory (DECISIONS D-053, D-075, D-127): nothing is stored, every download is built from the
+ * plan, the resource or the year as it is now. The fonts are warmed before the first render of
+ * the process (`warmPdfFonts`: without it, an accented capital in one PDF could drop the plain
+ * letter from later ones). Not server-only, so it can be unit tested; only route handlers import
+ * it.
  */
 import { renderToBuffer } from '@react-pdf/renderer';
 import { ActivitiesDocument } from './activities-document';
@@ -13,6 +14,8 @@ import { LibraryDocument } from './library-document';
 import type { LibraryPdfModel } from './library-model';
 import type { PlanPdfModel } from './model';
 import { PlanDocument } from './plan-document';
+import { YearPlanDocument } from './year-plan-document';
+import type { YearPlanPdfModel } from './year-plan-model';
 
 export async function renderPlanPdf(model: PlanPdfModel): Promise<Buffer> {
   registerPdfFonts();
@@ -35,4 +38,11 @@ export async function renderLibraryPdf(model: LibraryPdfModel): Promise<Buffer> 
   registerPdfFonts();
   await warmPdfFonts();
   return renderToBuffer(LibraryDocument({ model }));
+}
+
+/** « Plan à long terme » (D-127): the year at a glance, the units by subject, coverage if asked. */
+export async function renderYearPlanPdf(model: YearPlanPdfModel): Promise<Buffer> {
+  registerPdfFonts();
+  await warmPdfFonts();
+  return renderToBuffer(YearPlanDocument({ model }));
 }

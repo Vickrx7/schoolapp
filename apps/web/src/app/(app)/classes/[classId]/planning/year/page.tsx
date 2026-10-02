@@ -8,6 +8,7 @@ import { YearGrid } from '@/components/year-plan/year-grid';
 import { YearMonthList } from '@/components/year-plan/year-month-list';
 import { PlanUnitButton, YearPlanDialogs } from '@/components/year-plan/year-plan-dialogs';
 import { UnitsToPlace, YearWarnings } from '@/components/year-plan/year-plan-lists';
+import { YearPlanPdfForm } from '@/components/year-plan/year-plan-pdf-form';
 import { buildYearView } from '@/server/planning/year-view';
 import { loadClass } from '@/server/queries/classes';
 import { loadYearPlan } from '@/server/queries/year-plan';
@@ -32,6 +33,7 @@ export async function generateMetadata({
  * months on phones. Units dated from their lessons are shown and saved only when the teacher
  * confirms; units without dates are listed to place. Private to the class team (the class
  * layout admits only them, D-013). No drag and drop: the planning dialog places a unit.
+ * « Plan à long terme (PDF) » prints it (D-127).
  */
 export default async function YearPlanPage({ params }: { params: Promise<{ classId: string }> }) {
   const { classId } = await params;
@@ -87,6 +89,7 @@ export default async function YearPlanPage({ params }: { params: Promise<{ class
           </div>
           <PlanUnitButton />
         </div>
+        <YearPlanPdfForm classId={classId} />
         {toPlace > 0 ? (
           <Notice tone="info" className="flex flex-wrap items-center gap-x-3 gap-y-1">
             <span>{t('toPlace', { count: toPlace })}</span>
