@@ -1566,6 +1566,28 @@ time, including five the plan did not: `library_item.deleted` (Phase 5 hardening
 `library_bulk_run.planned`, `.cancel_requested` and `.failed` (`board`); `library_bulk_run.completed`,
 `.cancelled` and `.failed` are written as `'library_bulk_run.' || p_status`, which a scan of
 literals cannot see.
+As built (slice S2, `20261201090200_audit_retention.sql`, pgTAP `05` and `28`):
+`public.list_audit_entries(p_filters, p_before_id, p_limit)` takes the filters `schoolId`,
+`boardId`, `from`, `to` (`to` excluded when given; without it the period runs up to now, included;
+`from` defaults to 30 days before `to`; at most 366 days), `category`, `actorUserId`, `actorType`
+and `entityId`; a malformed filter, an unknown category or a limit outside 1–1000 is `22023`;
+newest first, `p_before_id` pages by id. Teachers, office staff, people with no role and anyone
+whose access was removed get `42501`. The viewer's scope (colleagues, classes, schools, boards) is
+computed once per call (`app.audit_viewer`) and every label is checked against it: a person's
+display name for colleagues **and the admins of the viewer's boards** (so a principal reads which
+board admin changed a role at the school; otherwise « Personne qui n'a plus accès »); a class's
+name for classes in `app.my_schedule_class_ids()`, or, once the class is gone, the name its
+`class.deleted` entry recorded; a student as their class's name, never theirs; a plan, report or
+absence as « 2026-11-12 · Mme Tremblay » (an absence « 2026-11-12–2026-11-13 · … ») for the
+school's direction only; a resource's title when `app.library_item_readable_by`; an invitation's
+name for the board's admins; a school's name for its staff and the board's admins; a board's name
+for its members. The details whitelist also keeps keys written since the plan (`status`,
+`ever_approved`, `usage_count` of `library_item.deleted`; `covered`, `error_code` of bulk runs;
+the counts of `retention.purged`). `public.log_audit_export(board, school, filters, rows)` (the
+school's direction, or an admin of the board; the school's own board) audits `audit_log.exported
+{rows, category, from, to}` with at most 10,000 rows. The guard is a plain `before insert`
+trigger, so it applies to every writer; every audit write of Phases 1–6 passes it (the whole
+pgTAP suite runs with it).
 
 **D-104 — AI usage rows are private to their author; totals are served by definer functions
 (amends D-040 and D-046).** `ai_generations_select` becomes `user_id = app.active_user_id()`. The
@@ -1574,6 +1596,12 @@ per school, requests, failures and cost, with the board's bulk runs (no school, 
 line, month boundaries in each school's time zone. No screen or API shows who used AI how much.
 _Why:_ per-person AI use is a teacher's professional activity (D-013); the web app never read the
 rows, and the admin CLI uses the service role.
+As built (slice S2): `board_ai_usage(board, 'YYYY-MM')` returns every school of the board (zeros
+included), then the bulk line (null school, in `boards.default_timezone`) only when it has
+requests; failures count `failed` and `invalid_output`. The library's item details embed
+`ai_generations(feature)` for the provenance line: since this change only the item's author reads
+the feature, and everyone else sees the prompt version alone, as teachers already did for
+colleagues' items.
 
 **D-105 — Retention implemented (implements D-018 and D-059; per-board settings, operator-only;
 Assumptions on the defaults, pending a lawyer's review).** The worker's nightly
@@ -1606,6 +1634,25 @@ and a fraction is rounded as SQL rounds it. `studentPurgeDate` is the day after 
 `classDaysAfterYearEnd` (the job purges once that sum is before the school's date),
 `samplePurgeDate` the creation date plus 60 days, and `showsPurgeNotice` covers the 60 days before
 a purge and the day itself (`packages/domain/src/retention.ts`).
+As built (slice S2, `20261201090200_audit_retention.sql`, pgTAP `29`, worker
+`src/retention.ts`): the bounds live once in `app.retention_limits()` (a unit test compares them
+with `RETENTION_LIMITS`); `app.retention_days(settings, key)` reads a setting as the app does. The
+guard refuses API users (`42501`) and, for the operator, unknown keys, fractions, strings and
+anything but an object (`22023`); `pnpm admin set-retention --board … --audit-days …` checks the
+same bounds first, merges the given keys into `settings.retention` and prints what the board keeps.
+`app.retention_maintenance()` takes an advisory lock (one run at a time) and works board by board:
+plans (`app.purge_sub_plan(plan, reason)`, also usable by other purges), absences, classes
+(`app.purge_class_students(class)` returns the students and plans it removed; a class is purged
+again if students, a class link or a plan came back after its purge), sample classes (local dates,
+as `samplePurgeDate`), usage, feedback, invitations (expired through `app.fail_staff_invitation`),
+then the board's audit rows, and writes `retention.purged {sub_plans, absences, classes, students,
+sample_classes, ai_usage, feedback, invitations_expired, invitations_deleted, audit_rows}` when
+something went; then for everyone the outbox, usage and audit rows without a (live) board after the
+defaults, and Supabase Auth's log (`app.auth_log_maintenance(90)`, `-1` when refused). It returns
+and records in the heartbeat `{boards, subPlans, absences, classes, students, sampleClasses,
+aiUsage, feedback, invitationsExpired, invitationsDeleted, auditRows, outbox, authLogs}`; the
+worker logs exactly these. A class keeps its « Fiche de suppléance » and its kept class-mode
+results (aggregates without names; D-089 has their own retention) with its planning.
 
 **D-106 — Operator actions are visible to the board.** Triggers audit changes to `boards.settings`
 keys `ai` and `retention` (`board.settings_changed {keys}`), to `module_entitlements`
@@ -1617,6 +1664,11 @@ before any access to production data. The board's admins see all of these (D-103
 the operator holds the service role; the board must be able to see what was done to its data.
 As built (slice S1): `public.log_operator_access(board, reason)` (service role only) refuses any
 other reason (`22023`) and writes `operator.access {reason}` for the board with actor `service`.
+As built (slice S2): the actor is `service` when the `role` setting is `service_role` (it stays
+visible inside definer functions), otherwise the signed-in user, or the system for the database
+owner. Modules are audited on insert, delete and a change of `enabled` or of their validity dates
+(so creating a school writes one entry per module), but not while their school is being deleted;
+budgets on insert and on a change of either amount.
 
 **D-107 — Board admins manage the staff of their own board in the web; the worker creates Auth
 accounts; the inviter sends the message (amends D-004; D-012 unchanged, as it already allows the
@@ -1741,6 +1793,16 @@ counts (service role, `pnpm admin status`). Monitoring runs off the server: an H
 `/api/health/ready` and heartbeat checks for the worker and backups, which receive only URLs and
 pings. One named on-call person gets the alerts: urgent when the web is down 06:00–17:00 on school
 days; next morning when the worker is down (publishing still works, D-047) or a backup was missed.
+As built (slice S2, worker `src/health.ts`, pgTAP `29`): the worker beats once at start, then every
+60 s; a beat still running is not started twice; the release is cut to 40 characters; a failed
+beat is logged once per run of failures, with its error code only; the monitor is pinged only after
+a beat the database took. `/healthz` answers `{"status": "ok"}` or `{"status": "unavailable"}`
+(`no-store`) and 404 for anything else; it is healthy while the last successful beat is less than
+180 s old. `system_status()` returns `{state, worker: {ok, at}, backup: {ok, at}, retention: {ok,
+at}}`; a backup or retention job that never ran counts as a problem only once the install (its
+oldest board) is more than 26 hours old. `operator_status()` returns `{at, heartbeats[], outbox
+{pending, oldestPendingAt, failing}, aiJobs {queued, running, failedLastDay}, invitations
+{pending}}`, printed by `pnpm admin status`.
 
 **D-113 — Run-time configuration: no `NEXT_PUBLIC_*` in the web app (amends D-002).** The server
 reads `SUPABASE_URL`, `SUPABASE_ANON_KEY` and `APP_NAME` through `serverEnv()` at run time; Next's

@@ -32,6 +32,8 @@ const AVAILABLE = new Set([
   'log-operator-access',
   'delete-user',
   'delete-board',
+  'set-retention',
+  'status',
 ]);
 
 describe('admin commands', () => {

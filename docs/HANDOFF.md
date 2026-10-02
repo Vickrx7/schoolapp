@@ -94,10 +94,11 @@ Mon Tableau, Cartable, Ardoise). No availability or trademark check has been don
 | `24ad631` | Phase 5 hardening (14 review findings) and the Phase 5 docs                              |
 | `3aaf668` | Marketing: app screenshots; `88bb93b` the library and class mode shown as available      |
 | `3e3f1bb` | Phase 6 foundation: D-102 to D-120, shared schema, settings, navigation, stubs           |
-| (latest)  | Phase 6 S1: invitations, roles, access, deletions, sample classes, settings (database)   |
+| `ca21d2c` | Phase 6 S1: invitations, roles, access, deletions, sample classes, settings (database)   |
+| (latest)  | Phase 6 S2: audit viewer, AI usage totals, retention, heartbeats (database, worker, CLI) |
 
-**Verified (locally, from an empty database, and in CI on each pushed commit):** 1042 unit tests
-(none skipped), 1503 pgTAP tests, 75 integration tests, 94 Playwright tests (desktop, phone and
+**Verified (locally, from an empty database, and in CI on each pushed commit):** 1056 unit tests
+(none skipped), 1611 pgTAP tests, 78 integration tests, 94 Playwright tests (desktop, phone and
 tablet, axe on every Phase 3, 4 and 5 page), lint, typecheck, format, generated DB types up to
 date, the demo curriculum and library seeds up to date (`pnpm library:seed:check`), web build.
 
@@ -164,7 +165,7 @@ heartbeats, the terms and sample-class columns), renames the web settings (`SUPA
 `SUPABASE_ANON_KEY`, `APP_NAME`, read at run time; the `NEXT_PUBLIC_*` names still work), adds
 « Direction » and « Conseil » to the navigation with each role's landing page (both pages say
 « arrive bientôt » until their slices), and registers the new worker tasks and admin commands as
-stubs (« pas encore disponible »). Slice S1 (latest commit,
+stubs (« pas encore disponible »). Slice S1 (`ca21d2c`,
 `20261201090100_pilot_accounts.sql`, pgTAP `27`) puts accounts, onboarding, settings and feedback
 in the database: board admins invite staff within their own board (the worker creates the account
 in slice S4), grant and revoke roles, remove and restore access, set a school's contact details and
@@ -173,6 +174,19 @@ board (no function a signed-in user may run takes a user id); the alerts switch 
 settings stay the direction's; the pilot terms, sample classes (never in a substitute plan) and
 feedback have their functions; and the operator's `pnpm admin log-operator-access`, `delete-user`
 and `delete-board` work (D-106, D-107 « As built »). There are no screens for them yet (S4, S6).
+Slice S2 (latest commit, `20261201090200_audit_retention.sql`, pgTAP `28` and `29`) closes the raw
+audit table to the API and serves the « Journal d'audit » through `list_audit_entries` (the
+school's direction reads alerts, absences and substitute days; board admins read administrative
+and approval entries only; labels per viewer, never a student's name; the export is audited), adds
+a guard that refuses free text in audit entries, audits the operator's settings, modules and
+budgets for the board, makes AI usage rows private to their author with per-school totals for board
+admins (`board_ai_usage`), and implements retention: the nightly `retention_maintenance` purges
+plans, absences, classes' students (the planning stays), sample classes, usage, feedback,
+invitations, the outbox, Supabase Auth's log and the audit log, per board within
+`settings.retention` (`pnpm admin set-retention`, a year at least). The worker beats every minute
+on its own timer and answers `/healthz` (`WORKER_HEALTH_PORT`); board admins get
+`system_status()` and the operator `pnpm admin status` (D-103 to D-106, D-112 « As built »). The
+screens come in S4 and S5.
 
 **Other deliverables:**
 
@@ -259,7 +273,7 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   `SUB_PORTAL_DATABASE_URL` (in `.env.example`).
 - **Migrations are applied once.** The lite stack does not re-apply an edited migration: after
   editing one that is not committed yet, `stack.sh reset`. Never edit a committed migration; add
-  a new one (the latest is `20261201090100_pilot_accounts.sql`, pgTAP file `27`).
+  a new one (the latest is `20261201090200_audit_retention.sql`, pgTAP file `29`).
 - **Seeds come in two parts.** `supabase/seed.sql`, then `supabase/seeds/*.sql` by name
   (`config.toml` `sql_paths` for the CLI, `cmd_seed` in `stack.sh`). `seeds/20_library_demo.sql`
   is generated from `content/library/demo`: after changing the pack, run `pnpm library:seed`
@@ -427,8 +441,11 @@ Where an item is already in `DECISIONS.md`, the D-number is given. Don't add dup
   drops its device cookie; the 50-bit code and the global cap of 300 failures a minute remain
   (D-051).
 - **The worker must run** for plans to follow later changes; publishing does not need it.
-  Monitoring comes in Phase 6.
-- **Plans and structured reports are kept without a purge job yet** (1 year proposed; Phase 6).
+  It records a heartbeat every minute and answers `/healthz` (D-112); the external checks and the
+  on-call person are deployment steps (S3b, S7).
+- **Retention runs nightly** (D-105): plans and structured reports a year after their date,
+  students' first names a year after their school year (units and lessons stay, and may hold names
+  a teacher typed), the audit log two years. The bounds are Assumptions pending a lawyer.
 - **The preview can under-report replacements.** The worker de-identifies with at least everyone
   the preview knows, so the preview can under-report replacements but never over-promise.
 - **Unknown names** (a parent, a student from a school where the teacher doesn't work) only get

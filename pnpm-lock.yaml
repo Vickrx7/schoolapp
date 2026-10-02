@@ -65,6 +65,9 @@ importers:
       '@lynx/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@lynx/domain':
+        specifier: workspace:*
+        version: link:../../packages/domain
       '@supabase/supabase-js':
         specifier: ^2.117.2
         version: 2.117.2

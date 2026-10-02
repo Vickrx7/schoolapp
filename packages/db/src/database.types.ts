@@ -3630,6 +3630,10 @@ export type Database = {
           requests_this_month: number;
         }[];
       };
+      board_ai_usage: {
+        Args: { p_board_id: string; p_month: string };
+        Returns: { school_id: string; requests: number; failed: number; cost_usd: number }[];
+      };
       board_staff_sign_ins: {
         Args: { p_board_id: string };
         Returns: { user_id: string; has_signed_in: boolean }[];
@@ -3943,6 +3947,27 @@ export type Database = {
         };
         Returns: undefined;
       };
+      list_audit_entries: {
+        Args: { p_filters: Json; p_before_id?: number; p_limit?: number };
+        Returns: {
+          id: number;
+          occurred_at: string;
+          action: string;
+          category: string;
+          actor_type: Database['public']['Enums']['audit_actor_type'];
+          actor_user_id: string;
+          actor_label: string;
+          issuer_label: string;
+          subject_label: string;
+          school_id: string;
+          school_name: string;
+          entity_type: string;
+          entity_id: string;
+          entity_label: string;
+          details: Json;
+          flags: string[];
+        }[];
+      };
       list_school_sub_days: {
         Args: { p_school_id: string; p_from: string; p_to: string };
         Returns: {
@@ -3969,6 +3994,10 @@ export type Database = {
         Args: { p_plan_id: string };
         Returns: Json;
       };
+      log_audit_export: {
+        Args: { p_board_id: string; p_school_id: string; p_filters: Json; p_rows: number };
+        Returns: undefined;
+      };
       log_operator_access: {
         Args: { p_board_id: string; p_reason: string };
         Returns: undefined;
@@ -3991,6 +4020,10 @@ export type Database = {
       };
       operator_delete_staff_account: {
         Args: { p_user_id: string; p_all_boards?: boolean };
+        Returns: Json;
+      };
+      operator_status: {
+        Args: never;
         Returns: Json;
       };
       provision_board_defaults: {
@@ -4149,6 +4182,10 @@ export type Database = {
           p_may_contact: boolean;
         };
         Returns: string;
+      };
+      system_status: {
+        Args: never;
+        Returns: Json;
       };
       unmark_lesson: {
         Args: { p_lesson_id: string };
