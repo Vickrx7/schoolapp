@@ -1615,6 +1615,8 @@ keys `ai` and `retention` (`board.settings_changed {keys}`), to `module_entitlem
 support|incident|restore|migration` writes `operator.access`; `DEPLOYMENT.md` makes it mandatory
 before any access to production data. The board's admins see all of these (D-103, `board`). _Why:_
 the operator holds the service role; the board must be able to see what was done to its data.
+As built (slice S1): `public.log_operator_access(board, reason)` (service role only) refuses any
+other reason (`22023`) and writes `operator.access {reason}` for the board with actor `service`.
 
 **D-107 — Board admins manage the staff of their own board in the web; the worker creates Auth
 accounts; the inviter sends the message (amends D-004; D-012 unchanged, as it already allows the
@@ -1640,6 +1642,30 @@ for a person in several boards unless `--all-boards` (`LXU02`); deleting a board
 (`delete-board`). Principals do not invite (**Assumption**). _Why:_ one e-mail path (Supabase
 Auth's sign-in codes), no one-time link for mail scanners to use up (D-019), and the service role
 stays out of the web server.
+As built (slice S1, `20261201090100_pilot_accounts.sql`, pgTAP `27`): a person works in a board
+through a role, a class team or an absence (`app.staff_board_ids`); someone with no role at all
+counts as working elsewhere. `invite_staff` returns `(invitation_id, status, error_code)`; a person
+whose access this board removed is restored by the worker's `app.complete_staff_invitation`
+(`staff.access_restored {via: 'invitation'}` per board and school of their roles), which answers
+`ready`, `cancelled`, `conflict`, `failed` or `gone`; `app.fail_staff_invitation` records
+`authNotConfigured`, `authRefused`, `emailConflict` or `expired`. Both are the database owner's
+only. **A person is named by one of their roles in the caller's board** (`user_roles.id`), never by
+a user id: `grant_staff_role(p_role_id, p_role, p_school_id)` adds a role in that role's board,
+`revoke_staff_role(p_role_id)`, `set_staff_active(p_role_id, p_active)` and
+`set_library_reviewer(p_role_id, …)`; so no function signed-in users may run takes a user id (the
+Phase 4 rule; pinned by pgTAP `27`, the one exception being Phase 1's class-team check). An admin
+may give up their own roles while another active admin remains (`LXU01`) and the person keeps a role
+(`LXU08`); only granting oneself a role is `LXU07`. Revoking a person's last role in a board also
+removes their reviewer designation there. Board admins designate the board's library reviewers in
+the web (amends D-064). `set_staff_active` changes nothing when the person is already in that state,
+and changes to a board's admins are serialized so two admins cannot remove each other.
+`board_staff_sign_ins(board)` says whether each person ever signed in, never when. The operator's
+`delete-user` finds the account with `operator_account_id(email)` (the address in the request body,
+D-119); `operator_delete_staff_account` also deletes the plans of the person's absences (the
+report's unconfirmed lessons first, `sub_plan.deleted {reason: 'account_deleted'}`) and their sample
+classes; `operator_delete_board` deletes the board's resources and classes, then the board, the
+profiles of the people who worked only there, and the board's audit rows; the CLI then deletes their
+Auth accounts.
 
 **D-108 — What board admins may change on a school (amends D-039).** Allowed: contact details and
 bell times, through `public.merge_school_settings`, which merges keys atomically (no
@@ -1649,6 +1675,12 @@ switch (a trigger raises `42501` when an API user without a direction role at th
 `student_alerts_enabled`) and the substitute settings. The operator only (CLI): school creation,
 modules, budgets and retention; school creation stays in the CLI because every new AI-enabled
 school adds its allowance to the board's pool (D-040).
+As built (slice S1): `merge_school_settings(school, patch)` takes `contact` (`officePhone`: at most
+40 of `0-9 +().-`; `officeEmail`; blank or null clears a value), `dayStart` and `dayEnd` (`HH:MM`,
+the first bell before dismissal, a missing value read as the app's default) and `substitute` (the
+direction only; at most 8 KB of short strings or nulls, its times `HH:MM`), merged under a row lock.
+The guard trigger (`app.schools_guard_direction_settings`) covers the alerts switch and the
+substitute settings, so a board admin cannot change either through a direct update either.
 
 **D-109 — Teacher onboarding: the terms at first sign-in, a checklist computed from data, a sample
 class kept out of plans (Assumption on its content).** `requireSession()` sends a person who has
@@ -1669,6 +1701,11 @@ and they are deleted 60 days after creation (D-105). As built (slice S0): the se
 have accepted the current terms (`supabase/seed.sql`), so demos and browser tests go straight in;
 `termsState(version)` (`packages/domain/src/legal.ts`) says `required`, `outdated` or `accepted`;
 `terms_version` and `terms_accepted_at` are set together or not at all (a check).
+As built (slice S1): `accept_terms(version)` (active users; the version's pattern, else `22023`)
+sets both columns and audits `user.terms_accepted {version}` for no board. `create_sample_class`
+refuses who does not teach at the school (`42501`), uses the board's current school year (else the
+latest; none is `LXO01`), and checks the payload's shape and size; `app.mark_sample_class` accepts
+only a class the teacher created in the last 10 minutes, without students.
 
 **D-110 — Pilot terms and privacy notice.** The public page « Confidentialité et conditions »
 (`/confidentialite`) holds the plain-language notice (from `PRIVACY.md`) and the pilot terms, in
@@ -1758,6 +1795,10 @@ release, the device class and the locale. The message is checked for students' f
 (`findPersonalInfo`) and each name confirmed, as when sharing. It is stored in Canada; the board
 admins of the sender's board read it and mark it « Nouveau », « Lu », « Traité ». At most 20 a
 person a day (`LXF01`); kept 365 days (D-105).
+As built (slice S1): `submit_feedback` takes the board (one the sender belongs to) and, if given, a
+school where the sender works in that board (`42501` otherwise); the 20 count over the last 24
+hours; the table's checks refuse a route with a query, and unknown kinds, devices or locales
+(`23514`).
 
 **D-117 — « Nouveautés » and the version.** `APP_RELEASE` is set when the image is built and shown
 in the footer, in `/api/health` and in logs and heartbeats. `/nouveautes` is a static page of

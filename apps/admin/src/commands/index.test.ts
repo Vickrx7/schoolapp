@@ -29,6 +29,9 @@ const AVAILABLE = new Set([
   'export-pack',
   'import-pack',
   'list-packs',
+  'log-operator-access',
+  'delete-user',
+  'delete-board',
 ]);
 
 describe('admin commands', () => {

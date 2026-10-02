@@ -3609,6 +3609,10 @@ export type Database = {
     };
     Views: { [_ in never]: never };
     Functions: {
+      accept_terms: {
+        Args: { p_version: string };
+        Returns: undefined;
+      };
       add_library_item_to_unit: {
         Args: { p_item_id: string; p_unit_id: string; p_position: number; p_lesson: Json };
         Returns: string;
@@ -3626,8 +3630,16 @@ export type Database = {
           requests_this_month: number;
         }[];
       };
+      board_staff_sign_ins: {
+        Args: { p_board_id: string };
+        Returns: { user_id: string; has_signed_in: boolean }[];
+      };
       cancel_absence: {
         Args: { p_absence_id: string };
+        Returns: undefined;
+      };
+      cancel_staff_invitation: {
+        Args: { p_invitation_id: string };
         Returns: undefined;
       };
       class_mode_link: {
@@ -3712,6 +3724,10 @@ export type Database = {
         };
         Returns: string;
       };
+      create_sample_class: {
+        Args: { p_school_id: string; p_sample: Json };
+        Returns: string;
+      };
       delete_student_alert: {
         Args: { p_alert_id: string };
         Returns: undefined;
@@ -3746,6 +3762,25 @@ export type Database = {
       get_sub_report_for_staff: {
         Args: { p_plan_id: string };
         Returns: Json;
+      };
+      grant_staff_role: {
+        Args: {
+          p_role_id: string;
+          p_role: Database['public']['Enums']['app_role'];
+          p_school_id: string;
+        };
+        Returns: string;
+      };
+      invite_staff: {
+        Args: {
+          p_board_id: string;
+          p_school_id: string;
+          p_email: string;
+          p_display_name: string;
+          p_honorific: string;
+          p_role: Database['public']['Enums']['app_role'];
+        };
+        Returns: { invitation_id: string; status: string; error_code: string }[];
       };
       issue_sub_access_code: {
         Args: { p_plan_id: string; p_code_mac: string };
@@ -3934,9 +3969,29 @@ export type Database = {
         Args: { p_plan_id: string };
         Returns: Json;
       };
+      log_operator_access: {
+        Args: { p_board_id: string; p_reason: string };
+        Returns: undefined;
+      };
       mark_lesson_taught: {
         Args: { p_lesson_id: string; p_taught_on: string };
         Returns: undefined;
+      };
+      merge_school_settings: {
+        Args: { p_school_id: string; p_patch: Json };
+        Returns: undefined;
+      };
+      operator_account_id: {
+        Args: { p_email: string };
+        Returns: string;
+      };
+      operator_delete_board: {
+        Args: { p_board_id: string; p_confirm_slug: string };
+        Returns: Json;
+      };
+      operator_delete_staff_account: {
+        Args: { p_user_id: string; p_all_boards?: boolean };
+        Returns: Json;
       };
       provision_board_defaults: {
         Args: { p_board_id: string };
@@ -3996,6 +4051,10 @@ export type Database = {
         Args: { p_plan_id: string; p_input: Json; p_expected_version?: number };
         Returns: string;
       };
+      revoke_staff_role: {
+        Args: { p_role_id: string };
+        Returns: undefined;
+      };
       revoke_sub_access_code: {
         Args: { p_code_id: string };
         Returns: undefined;
@@ -4049,6 +4108,14 @@ export type Database = {
         Args: { p_session_id: string; p_keep: boolean };
         Returns: undefined;
       };
+      set_library_reviewer: {
+        Args: { p_role_id: string; p_approves_content: boolean; p_reviews_faith: boolean };
+        Returns: undefined;
+      };
+      set_staff_active: {
+        Args: { p_role_id: string; p_active: boolean };
+        Returns: undefined;
+      };
       start_class_session: {
         Args: {
           p_class_id: string;
@@ -4067,6 +4134,21 @@ export type Database = {
       sub_plan_access_ended: {
         Args: { p_plan_id: string };
         Returns: boolean;
+      };
+      submit_feedback: {
+        Args: {
+          p_board_id: string;
+          p_school_id: string;
+          p_kind: string;
+          p_message: string;
+          p_route: string;
+          p_error_ref: string;
+          p_release: string;
+          p_device: string;
+          p_locale: string;
+          p_may_contact: boolean;
+        };
+        Returns: string;
       };
       unmark_lesson: {
         Args: { p_lesson_id: string };

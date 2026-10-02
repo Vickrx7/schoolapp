@@ -93,10 +93,11 @@ Mon Tableau, Cartable, Ardoise). No availability or trademark check has been don
 | `587a0e1` | Phase 5: bulk generation of board drafts and content packs (admin CLI)                   |
 | `24ad631` | Phase 5 hardening (14 review findings) and the Phase 5 docs                              |
 | `3aaf668` | Marketing: app screenshots; `88bb93b` the library and class mode shown as available      |
-| (latest)  | Phase 6 foundation: D-102 to D-120, shared schema, settings, navigation, stubs (below)   |
+| `3e3f1bb` | Phase 6 foundation: D-102 to D-120, shared schema, settings, navigation, stubs           |
+| (latest)  | Phase 6 S1: invitations, roles, access, deletions, sample classes, settings (database)   |
 
-**Verified (locally, from an empty database, and in CI on each pushed commit):** 1004 unit tests
-(none skipped), 1346 pgTAP tests, 75 integration tests, 93 Playwright tests (desktop, phone and
+**Verified (locally, from an empty database, and in CI on each pushed commit):** 1042 unit tests
+(none skipped), 1503 pgTAP tests, 75 integration tests, 94 Playwright tests (desktop, phone and
 tablet, axe on every Phase 3, 4 and 5 page), lint, typecheck, format, generated DB types up to
 date, the demo curriculum and library seeds up to date (`pnpm library:seed:check`), web build.
 
@@ -163,7 +164,15 @@ heartbeats, the terms and sample-class columns), renames the web settings (`SUPA
 `SUPABASE_ANON_KEY`, `APP_NAME`, read at run time; the `NEXT_PUBLIC_*` names still work), adds
 « Direction » and « Conseil » to the navigation with each role's landing page (both pages say
 « arrive bientôt » until their slices), and registers the new worker tasks and admin commands as
-stubs (« pas encore disponible »).
+stubs (« pas encore disponible »). Slice S1 (latest commit,
+`20261201090100_pilot_accounts.sql`, pgTAP `27`) puts accounts, onboarding, settings and feedback
+in the database: board admins invite staff within their own board (the worker creates the account
+in slice S4), grant and revoke roles, remove and restore access, set a school's contact details and
+bell times, and designate library reviewers, each naming a person by one of their roles in the
+board (no function a signed-in user may run takes a user id); the alerts switch and the substitute
+settings stay the direction's; the pilot terms, sample classes (never in a substitute plan) and
+feedback have their functions; and the operator's `pnpm admin log-operator-access`, `delete-user`
+and `delete-board` work (D-106, D-107 « As built »). There are no screens for them yet (S4, S6).
 
 **Other deliverables:**
 
@@ -250,7 +259,7 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   `SUB_PORTAL_DATABASE_URL` (in `.env.example`).
 - **Migrations are applied once.** The lite stack does not re-apply an edited migration: after
   editing one that is not committed yet, `stack.sh reset`. Never edit a committed migration; add
-  a new one (the latest is `20261101090500_phase5_review_fixes.sql`, pgTAP file `26`).
+  a new one (the latest is `20261201090100_pilot_accounts.sql`, pgTAP file `27`).
 - **Seeds come in two parts.** `supabase/seed.sql`, then `supabase/seeds/*.sql` by name
   (`config.toml` `sql_paths` for the CLI, `cmd_seed` in `stack.sh`). `seeds/20_library_demo.sql`
   is generated from `content/library/demo`: after changing the pack, run `pnpm library:seed`
