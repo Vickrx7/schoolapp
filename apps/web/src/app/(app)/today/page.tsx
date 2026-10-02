@@ -20,12 +20,16 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { AbsenceList } from '@/components/absences/absence-list';
 import { CheckOffButton } from '@/components/app/check-off-button';
+import { PurgeNotice } from '@/components/onboarding/class-notices';
+import { SampleBadge } from '@/components/onboarding/sample-badge';
+import { TeacherChecklist } from '@/components/onboarding/teacher-checklist';
 import { Button } from '@/components/ui/button';
 import { Badge, Card, CardBody, CardHeader, CardTitle, Notice } from '@/components/ui/card';
 import { EmptyState, PageHeader } from '@/components/ui/page';
 import { formatLocalDate, formatTime, formatTimeRange } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import { loadMyAbsences } from '@/server/queries/absences';
+import { loadTeacherOnboarding } from '@/server/queries/onboarding';
 import { loadPendingReports } from '@/server/queries/sub-reports';
 import { loadToday, type TodayBlock } from '@/server/queries/today';
 import {
@@ -68,12 +72,17 @@ export default async function TodayPage({
   const today = localDateIn(timezone);
   const { date: requested } = await searchParams;
   const date = requested && isLocalDate(requested) ? requested : today;
-  const [data, upcomingAbsences, pendingReports] = await Promise.all([
+  const [data, upcomingAbsences, pendingReports, onboarding] = await Promise.all([
     loadToday(session, date, locale),
     loadMyAbsences(session, { from: today, limit: 5 }),
     loadPendingReports(),
+    loadTeacherOnboarding(session),
   ]);
+  // « Pour bien commencer » until it is done or hidden (D-109); sample classes carry « Exemple ».
+  const showChecklist = !onboarding.dismissed && onboarding.done < onboarding.total;
+  const samples = new Set(onboarding.sampleClassIds);
   const tReport = await getTranslations('subReport');
+  const tOnboarding = await getTranslations('onboarding');
   const isToday = date === today;
   const nowMinutes = isToday ? localMinutesIn(timezone) : null;
   const multipleClasses = new Set(data.blocks.map((b) => b.classId)).size > 1;
@@ -164,6 +173,39 @@ export default async function TodayPage({
         </div>
       ) : null}
 
+      {onboarding.purgeNotices.length > 0 ? (
+        <div className="mb-4 space-y-2">
+          {/* Students' first names are erased after the school year (D-105). */}
+          {onboarding.purgeNotices.map((n) => (
+            <PurgeNotice key={n.classId} className={n.className} purgeOn={n.purgeOn} />
+          ))}
+        </div>
+      ) : null}
+
+      {showChecklist ? (
+        <TeacherChecklist data={onboarding} variant="card" />
+      ) : (
+        // The checklist says it too; without it, each sample class is still announced.
+        onboarding.samples.map((sample) => (
+          <Notice key={sample.id} tone="info" className="mb-4" data-testid="sample-notice">
+            <Link
+              href={`/classes/${sample.id}/students`}
+              className="font-medium underline underline-offset-2"
+            >
+              {sample.name}
+            </Link>{' '}
+            ·{' '}
+            {tOnboarding('sample.notice', {
+              date: formatLocalDate(sample.purgeOn, locale, {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+              }),
+            })}
+          </Notice>
+        ))
+      )}
+
       {upcomingAbsences.length > 0 ? (
         <Card className="mb-4">
           <CardHeader>
@@ -248,6 +290,7 @@ export default async function TodayPage({
                   block={block}
                   date={date}
                   showClass={multipleClasses}
+                  sample={samples.has(block.classId)}
                   current={
                     nowMinutes !== null &&
                     nowMinutes >= timeToMinutes(block.effectiveStart) &&
@@ -267,11 +310,14 @@ async function BlockCard({
   block,
   date,
   showClass,
+  sample,
   current,
 }: {
   block: TodayBlock;
   date: string;
   showClass: boolean;
+  /** A sample class's block (D-109): « Exemple ». */
+  sample: boolean;
   current: boolean;
 }) {
   const t = await getTranslations();
@@ -322,6 +368,7 @@ async function BlockCard({
             </span>
             <h2 className={cn('font-semibold', inactive && 'line-through')}>{heading}</h2>
             {showClass ? <Badge>{block.className}</Badge> : null}
+            {sample ? <SampleBadge /> : null}
             {statusLabel ? (
               <Badge tone="warning">
                 {block.affectedBy

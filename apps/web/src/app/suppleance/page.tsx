@@ -25,6 +25,7 @@ export default async function PortalAccessPage({
 }) {
   const { ended, done } = await searchParams;
   const t = await getTranslations('subPortal');
+  const tLegal = await getTranslations('legal');
   const configured = subPortalConfigured() && subCodeKeys() !== null;
   const signedIn = configured && !ended && !done && (await readSubToken()) !== null;
 
@@ -52,6 +53,10 @@ export default async function PortalAccessPage({
           ) : null}
           <p className="text-slate-600">{t('intro')}</p>
           <CodeForm />
+          {/* One line, no click-through (D-110). */}
+          <p className="text-sm text-slate-600" data-testid="portal-privacy-line">
+            {tLegal('portalNotice')}
+          </p>
         </>
       )}
     </div>

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { NarrowNotice } from '@/components/class-mode/presenter/narrow-notice';
+import { FeedbackProvider } from '@/components/feedback/feedback-provider';
 import { requireSession } from '@/server/session';
 
 export const metadata: Metadata = {
@@ -15,13 +16,16 @@ export const metadata: Metadata = {
  * au projecteur » shows.
  */
 export default async function ProjectorLayout({ children }: { children: ReactNode }) {
-  await requireSession();
+  const session = await requireSession();
   return (
-    <main className="min-h-dvh bg-white text-slate-950">
-      <div className="hidden md:landscape:block">{children}</div>
-      <div className="md:landscape:hidden">
-        <NarrowNotice />
-      </div>
-    </main>
+    // An error page's « Signaler ce problème » opens « Commentaires » (D-111, D-116).
+    <FeedbackProvider userId={session.userId}>
+      <main className="min-h-dvh bg-white text-slate-950">
+        <div className="hidden md:landscape:block">{children}</div>
+        <div className="md:landscape:hidden">
+          <NarrowNotice />
+        </div>
+      </main>
+    </FeedbackProvider>
   );
 }

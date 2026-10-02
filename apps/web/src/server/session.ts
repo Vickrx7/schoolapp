@@ -4,12 +4,15 @@ import {
   localDateIn,
   parseBoardSettings,
   parseSchoolSettings,
+  termsState,
   type BoardSettings,
   type SchoolSettings,
 } from '@lynx/domain';
+import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import { landingPath, type LandingPath } from '@/lib/landing';
+import { REQUEST_PATH_HEADER, welcomeHref } from '@/lib/request-path';
 import type { LibraryReviewerRole } from './library/view-model';
 import { createSupabaseServerClient } from './supabase';
 
@@ -167,11 +170,21 @@ export async function getSession(): Promise<SessionContext | null> {
   return state.status === 'active' ? state.session : null;
 }
 
-/** For pages and actions that require a signed-in, active user. */
-export async function requireSession(): Promise<SessionContext> {
+/**
+ * For pages, actions and route handlers that require a signed-in, active user who has accepted
+ * the pilot terms (DECISIONS D-109): until then, « Bienvenue » (`/bienvenue?next=…`, back to the
+ * page asked for). Only « Bienvenue » and its actions pass `beforeTerms`. A newer version of the
+ * terms never blocks: the app shows a banner instead (`termsState` is then `outdated`).
+ */
+export async function requireSession(
+  options: { beforeTerms?: boolean } = {},
+): Promise<SessionContext> {
   const state = await loadSessionState();
   if (state.status === 'anonymous') redirect('/login');
   if (state.status === 'inactive') redirect('/auth/no-access');
+  if (!options.beforeTerms && termsState(state.session.termsVersion) === 'required') {
+    redirect(welcomeHref((await headers()).get(REQUEST_PATH_HEADER)));
+  }
   return state.session;
 }
 

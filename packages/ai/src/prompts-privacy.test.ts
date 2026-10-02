@@ -9,6 +9,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { SAMPLE_FIRST_NAMES, SAMPLE_GRADES, buildSampleClass } from '@lynx/domain';
 import { describe, expect, it } from 'vitest';
 import { CHARACTER_NAMES } from './features/library-shared';
 import { DEMO_PEOPLE } from './fixtures/demo-people';
@@ -16,6 +17,15 @@ import { Redactor, type KnownPerson } from './privacy';
 
 const repo = fileURLToPath(new URL('../../../', import.meta.url));
 const promptsDir = path.join(repo, 'prompts');
+
+/**
+ * The students of a « classe exemple » (DECISIONS D-109): once a teacher makes one, they are
+ * students of her school, so every board can have them.
+ */
+const SAMPLE_PEOPLE: readonly KnownPerson[] = SAMPLE_FIRST_NAMES.map((name) => ({
+  name,
+  kind: 'student' as const,
+}));
 
 /** Every `prompts/<feature>/<version>.md`, relative to `prompts/`. */
 function promptFiles(dir = promptsDir): string[] {
@@ -73,6 +83,13 @@ describe('system prompts and the privacy check', () => {
     expect(() => new Redactor(DEMO_PEOPLE).assertSafeOutbound(text)).not.toThrow();
   });
 
+  it.each(files)('%s passes the check with the students of a sample class too', (file) => {
+    const text = readFileSync(path.join(promptsDir, file), 'utf8');
+    expect(() =>
+      new Redactor([...DEMO_PEOPLE, ...SAMPLE_PEOPLE]).assertSafeOutbound(text),
+    ).not.toThrow();
+  });
+
   it.each(files)('%s holds no list of character first names', (file) => {
     // The list is sent per request, less the names of people the request knows.
     const text = readFileSync(path.join(promptsDir, file), 'utf8');
@@ -80,5 +97,29 @@ describe('system prompts and the privacy check', () => {
       new RegExp(`(^|[^\\p{L}])${name}([^\\p{L}]|$)`, 'u').test(text),
     );
     expect(found).toEqual([]);
+  });
+});
+
+describe('the sample class’s students and the privacy check (D-109)', () => {
+  it('are none of the AI’s character names, so characters stay available', () => {
+    const redactor = new Redactor(SAMPLE_PEOPLE);
+    expect(CHARACTER_NAMES.filter((name) => redactor.mentionsKnownPerson(name))).toEqual([]);
+  });
+
+  it('are found in a teacher’s text, and nothing else of the sample class is', () => {
+    const redactor = new Redactor(SAMPLE_PEOPLE);
+    redactor.redact('Anouk et Timéo ont fini la lecture.');
+    expect(redactor.replacements().map((r) => r.original)).toEqual(['Anouk', 'Timéo']);
+    for (const grade of SAMPLE_GRADES) {
+      const sample = buildSampleClass({ gradeCode: grade, today: '2026-11-12' });
+      const strings = sample.units.flatMap((unit) => [
+        unit.title,
+        unit.description ?? '',
+        ...unit.lessons.flatMap((l) => [l.title, l.objectives, l.materials, l.content, l.subNotes]),
+      ]);
+      const check = new Redactor(SAMPLE_PEOPLE);
+      for (const text of strings) if (text) check.redact(text);
+      expect(check.replacements()).toEqual([]);
+    }
   });
 });

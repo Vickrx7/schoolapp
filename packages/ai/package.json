@@ -20,5 +20,7 @@
     "@lynx/content": "workspace:*",
     "zod": "^4.6.5"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@lynx/domain": "workspace:*"
+  }
 }

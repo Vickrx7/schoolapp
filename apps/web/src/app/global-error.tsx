@@ -6,7 +6,9 @@ import './globals.css';
 /**
  * The last resort, when the root layout itself failed (DECISIONS D-111): it replaces the whole
  * page, without the translations (they come from the root layout), so it speaks both languages.
- * The reference matches the server's log line.
+ * The reference matches the server's log line; « Signaler ce problème » opens « Commentaires »
+ * with it filled in (`/commentaires?ref=…`, D-116), a page of its own since nothing of the app's
+ * shell is left here.
  */
 export default function GlobalError({
   error,
@@ -45,6 +47,15 @@ export default function GlobalError({
           <p className="text-xs text-slate-500" data-testid="error-reference">
             Référence : {reference} · <span lang="en-CA">Reference: {reference}</span>
           </p>
+          {/* A plain link: the app's router may be what failed. */}
+          <a
+            href={`/commentaires?ref=${encodeURIComponent(reference)}`}
+            className="inline-flex min-h-11 items-center text-sm font-medium text-slate-900 underline underline-offset-2"
+          >
+            <span>
+              Signaler ce problème · <span lang="en-CA">Report this problem</span>
+            </span>
+          </a>
         </main>
       </body>
     </html>

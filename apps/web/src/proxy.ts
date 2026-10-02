@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import { REQUEST_PATH_HEADER, requestPath } from './lib/request-path';
 import { SURFACE_HEADER, surfaceOf, type Surface } from './lib/surface';
 import { serverEnv } from './server/env';
 
@@ -24,12 +25,13 @@ const PORTAL_PATHS = ['/suppleance', '/s'];
 const under = (path: string, prefix: string) => path === prefix || path.startsWith(`${prefix}/`);
 
 /**
- * Continues with the request's (possibly updated) headers and the surface header set, whatever
- * the client sent in it (lib/surface.ts).
+ * Continues with the request's (possibly updated) headers, the surface header and the page's
+ * address set, whatever the client sent in them (lib/surface.ts, lib/request-path.ts).
  */
 function forward(request: NextRequest, surface: Surface): NextResponse {
   const headers = new Headers(request.headers);
   headers.set(SURFACE_HEADER, surface);
+  headers.set(REQUEST_PATH_HEADER, requestPath(request.nextUrl.pathname, request.nextUrl.search));
   return NextResponse.next({ request: { headers } });
 }
 

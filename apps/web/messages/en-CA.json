@@ -3446,18 +3446,218 @@
     }
   },
   "onboarding": {
-    "title": "Getting started"
+    "title": "Getting started",
+    "intro": "Four steps so that “Today” shows your lessons and your substitute plans prepare themselves.",
+    "progress": "{done} of {total}",
+    "progressLabel": "{done} of {total} steps done",
+    "hide": "Hide",
+    "hidden": "The list is hidden on “Today”. It stays here.",
+    "showOnToday": "Show on “Today”",
+    "open": "See all the steps",
+    "allDone": "Everything is ready. Have a great school year!",
+    "done": "Done",
+    "todo": "To do",
+    "optional": "Optional, for your real classes",
+    "steps": {
+      "class": "Create your class",
+      "students": "Add your students (first names only)",
+      "timetable": "Enter your timetable",
+      "unit": "Create a unit and its lessons",
+      "subProfile": "Fill in the substitute information"
+    },
+    "sample": {
+      "intro": "Or try the app first with a sample class: 20 made-up students, a timetable and two units. It does not count toward the steps.",
+      "create": "Try with a sample class (grade {grade})",
+      "created": "Sample class created.",
+      "creating": "Creating the sample class…",
+      "badge": "Sample",
+      "yours": "Your sample class: {name}",
+      "notice": "Sample class: it is never included in a substitute plan and will be deleted on {date}.",
+      "delete": "Delete the sample class",
+      "deleteConfirm": "The sample class, its made-up students, its timetable and its units will be deleted. Your real classes do not change.",
+      "deleted": "Sample class deleted.",
+      "absence": "Your sample class is not included in substitute plans."
+    },
+    "purge": {
+      "notice": "The first names of the students of {className} will be erased on {date}. Your units and lessons stay."
+    }
   },
   "welcome": {
-    "title": "Welcome"
+    "title": "Welcome",
+    "intro": "Before you start, take a minute to read how {appName} protects your students’ information.",
+    "privacyHeading": "Your privacy and the pilot project",
+    "points": {
+      "firstNames": "Students’ first names only: never a last name, a birth date or an address. During the pilot, use made-up first names or initials until your principal agrees in writing.",
+      "alerts": "Safety and medical alerts stay hidden until someone chooses to show them, and every viewing is logged.",
+      "ai": "Artificial intelligence never sees names: they are removed before anything is sent.",
+      "canada": "The data stays in Canada.",
+      "feedback": "Your feedback is welcome: the “Feedback” button is at the top of every page."
+    },
+    "readTerms": "Read “Privacy and terms”",
+    "accept": "I have read and accept the terms of the pilot project",
+    "acceptRequired": "Check the box to accept the terms.",
+    "profileHeading": "Your profile",
+    "displayName": "Display name",
+    "honorific": "How do students address you?",
+    "honorificHint": "Used in substitute plans, for example “Mme Tremblay”.",
+    "honorificNone": "None (name only)",
+    "start": "Get started",
+    "updatedTitle": "The terms have changed",
+    "updatedIntro": "The terms of the pilot project were updated. Read them, then accept them to make this message go away.",
+    "acceptUpdated": "Accept the terms",
+    "accepted": "Terms accepted.",
+    "version": "Terms version: {version}"
   },
   "legal": {
-    "title": "Privacy and terms"
+    "title": "Privacy and terms",
+    "intro": "{appName} is used in a pilot project with French-language Catholic schools in Ontario. Here, in plain words, is what the app collects, why, and the terms for using it.",
+    "pilotNote": "Pilot wording, to be reviewed by a privacy lawyer.",
+    "contents": "On this page",
+    "noticeHeading": "Privacy notice",
+    "termsHeading": "Terms of the pilot project",
+    "notice": {
+      "who": {
+        "title": "Who is responsible",
+        "body": "Your school board is responsible for the information, under the Municipal Freedom of Information and Protection of Privacy Act. IP Lynx provides the app and follows the board’s instructions."
+      },
+      "collected": {
+        "title": "What the app collects",
+        "body": "For staff: name, email, roles and chosen language. For students: first name only, language level and, if the principal turns them on, encrypted safety or medical alerts. Never a student’s last name, Ontario Education Number, birth date, address, photo or email. Students have no accounts."
+      },
+      "use": {
+        "title": "What the information is for",
+        "body": "To plan teaching, prepare substitute plans and share resources with colleagues. It is never sold, never used for advertising and never used to train artificial intelligence."
+      },
+      "ai": {
+        "title": "Artificial intelligence",
+        "body": "When you ask artificial intelligence for help, people’s names are removed before anything is sent. The text without names is processed by Anthropic, in the United States. Artificial intelligence makes no decision about a student: you always check what it suggests."
+      },
+      "where": {
+        "title": "Where the data is",
+        "body": "The database, the servers and the encrypted backups are in Canada. The providers used are named in the privacy document given to the board."
+      },
+      "access": {
+        "title": "Who can see it",
+        "body": "Everyone sees only what their role allows: a teacher sees their classes, the principal sees the school’s absences and log. Alert viewings and substitute activity are written to the audit log. IP Lynx accesses the data only for support, and every access is written to the board’s log."
+      },
+      "retention": {
+        "title": "How long",
+        "body": "Students’ first names are erased one year after the end of the school year (units and lessons stay). Substitute plans are erased one year after their date, the audit log after two years, feedback after one year, a sample class after 60 days and backups after 30 days."
+      },
+      "rights": {
+        "title": "Your rights",
+        "body": "To see or correct information, contact your school board. IP Lynx helps it answer."
+      }
+    },
+    "terms": {
+      "pilot": "{appName} is under development: the app may change or be interrupted during the pilot project, which is free of charge.",
+      "names": "Until your principal agrees in writing, use made-up first names or initials, or the sample class.",
+      "personal": "Enter no personal information about a student other than their first name, except in alerts, when the principal has turned them on.",
+      "account": "Your access is personal. Sign out on a shared computer.",
+      "ai": "Check what artificial intelligence suggests before using it with your students.",
+      "feedback": "The feedback you send is read by your board’s administration and by IP Lynx to improve the app.",
+      "changes": "These terms may change. A banner will tell you, and you can read them again before accepting them."
+    },
+    "contactHeading": "Contact us",
+    "privacyContact": "Privacy questions: {email}",
+    "supportContact": "Support: {email}",
+    "contactBoard": "For any question, contact your school board’s administration.",
+    "version": "Terms version: {version}",
+    "footerLink": "Privacy",
+    "loginLink": "Privacy and terms",
+    "portalNotice": "By using this code, you access confidential information for this day only; every viewing is logged.",
+    "bannerText": "The terms of the pilot project have changed.",
+    "bannerAction": "Read and accept",
+    "footer": "Footer"
   },
   "feedback": {
-    "button": "Feedback"
+    "button": "Feedback",
+    "title": "Send feedback",
+    "intro": "A problem, an idea, a question? Your board’s administration and IP Lynx read every message.",
+    "kindLegend": "It is…",
+    "kinds": {
+      "problem": "A problem",
+      "idea": "An idea",
+      "question": "A question"
+    },
+    "message": "Your message",
+    "messageHint": "Avoid students’ first names: they are almost never needed.",
+    "counter": "{count} of {max} characters",
+    "reference": "Error reference (optional)",
+    "referenceHint": "The reference shown on an error page, for example “7f3a2c9d”.",
+    "mayContact": "You may contact me about this",
+    "send": "Send",
+    "sending": "Sending…",
+    "sent": "Thank you! Your feedback was sent.",
+    "names": {
+      "intro": "This message contains first names of students at your school: {names}. Your board’s administration will read it. Remove them if you can, or confirm each one.",
+      "confirm": "Send “{name}” anyway",
+      "blocked": "First remove this personal information:"
+    },
+    "pageIntro": "Describe what happened. The error reference helps find the problem."
   },
   "releaseNotes": {
-    "title": "What’s new"
+    "title": "What’s new",
+    "intro": "What changed in the app, from the newest version to the oldest.",
+    "current": "Installed version: {version}",
+    "versions": {
+      "v060": {
+        "title": "Version 0.6 · Ready for the pilot",
+        "date": "November 2026",
+        "items": {
+          "welcome": "“Welcome” at the first sign-in: the pilot terms and your profile.",
+          "start": "“Getting started”: four steps and a sample class to try the app.",
+          "feedback": "The “Feedback” button, at the top of every page.",
+          "direction": "The principal’s dashboard and the audit log.",
+          "board": "“Board” for administrators: staff, schools, school years, resource approval, AI usage and feedback.",
+          "retention": "Data retention: students’ first names are erased one year after the school year."
+        }
+      },
+      "v050": {
+        "title": "Version 0.5 · Class mode",
+        "date": "November 2026",
+        "items": {
+          "present": "“Present to the class” on the projector, and the quiz on students’ devices.",
+          "growth": "Resource adaptations, colleagues’ opinions and curriculum coverage.",
+          "bulk": "Bulk generation and resource packs for the board."
+        }
+      },
+      "v040": {
+        "title": "Version 0.4 · Resource bank",
+        "date": "October 2026",
+        "items": {
+          "library": "Create, review, share and approve resources with colleagues.",
+          "ai": "AI to prepare a resource and its levels.",
+          "planning": "Add a resource to a lesson."
+        }
+      },
+      "v030": {
+        "title": "Version 0.3 · Substitutes",
+        "date": "October 2026",
+        "items": {
+          "absences": "Report an absence in seconds; the substitute plan prepares itself.",
+          "portal": "A code for the substitute, and the day’s follow-up."
+        }
+      },
+      "v020": {
+        "title": "Version 0.2 · Differentiated text",
+        "date": "September 2026",
+        "items": {
+          "differentiate": "A text adapted to each language level, prepared by AI."
+        }
+      },
+      "v010": {
+        "title": "Version 0.1 · Today",
+        "date": "September 2026",
+        "items": {
+          "today": "“Today”, classes, students, timetable, planning and calendar."
+        }
+      }
+    }
+  },
+  "problemReport": {
+    "officeHelp": "If the problem continues, give this reference to the school office: {ref}.",
+    "deviceButton": "Report this problem",
+    "deviceHelp": "Show this reference to your teacher: {ref}."
   }
 }

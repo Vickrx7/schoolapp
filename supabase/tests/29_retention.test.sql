@@ -327,10 +327,11 @@ select results_eq(
   $$select id from public.classes where id in (tests.id('sample_old'), tests.id('sample_keep'))$$,
   $$values (tests.id('sample_keep'))$$,
   'a sample class goes 60 days after it was created (D-109)');
-select is(
-  (select details ->> 'name' from public.audit_log
-   where action = 'class.deleted' and entity_id = tests.id('sample_old')),
-  'Classe exemple (3e année)', 'its deletion is audited as any class''s');
+select results_eq(
+  $$select action, actor_type::text, details from public.audit_log
+    where entity_id = tests.id('sample_old') and action like '%class%deleted'$$,
+  $$values ('sample_class.deleted', 'system', '{}'::jsonb)$$,
+  'its deletion is logged for the operator only, never « Classe supprimée » (D-103, D-109)');
 
 -- Supabase Auth's log.
 select ok(

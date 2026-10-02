@@ -1831,6 +1831,32 @@ sets both columns and audits `user.terms_accepted {version}` for no board. `crea
 refuses who does not teach at the school (`42501`), uses the board's current school year (else the
 latest; none is `LXO01`), and checks the payload's shape and size; `app.mark_sample_class` accepts
 only a class the teacher created in the last 10 minutes, without students.
+As built (slice S6): `requireSession()` reads the page asked for from the `x-lynx-path` header,
+which `proxy.ts` sets on every request (overwriting a client's value, without Next's `_rsc`), so
+the gate sends to `/bienvenue?next=<page>`; `next` is kept only when it is a local page other than
+« Bienvenue » (`lib/request-path.ts`), else the person's landing page. « Bienvenue » is one page
+with two sections (« Votre vie privée et le projet pilote », then « Votre profil ») and one
+« Commencer »; its inputs are uncontrolled and the button waits for the page to be ready, so what is
+ticked before then is kept and the form never submits itself as a GET. `acceptTerms` saves the
+profile first, then `accept_terms` (only `CURRENT_TERMS_VERSION`, the text shown); newer terms show
+`TermsBanner` at the top of every app page, and « Lire et accepter » opens « Bienvenue » with the
+terms alone. The checklist (`loadTeacherOnboarding`) is a card on « Aujourd'hui » until it is done
+or hidden, and the page `/demarrage`; « Essayer avec une classe exemple (3e) » / « (5e) » builds
+the class for the school's schedule (`buildSampleClass({gradeCode, today, dayCount})`: 5 day keys
+at a weekly school, the cycle's length at a rotating-day school, where the week repeats; long
+cycles keep only the periods, within the 80 blocks `create_sample_class` accepts). Its 20 names
+(`SAMPLE_FIRST_NAMES`) are none of the demo's people or the AI's character names, and every prompt
+passes the outbound check with them (`packages/ai/src/prompts-privacy.test.ts`). « Exemple » shows
+on the class list, the class pages (so Planification) and the sample's lessons on « Aujourd'hui »;
+the class pages say when it is deleted, with « Supprimer la classe exemple »; the absence form says
+it is not in substitute plans; the year-end notice (D-105) shows on the class pages and
+« Aujourd'hui » 60 days before. **A sample class never shows in the direction's « Journal
+d'audit »** (lead's decision): its deletion, by the teacher or the nightly purge, is logged as
+`sample_class.deleted` (audience `operator`, no details), never `class.deleted` (« Classe
+supprimée »), and its class team is not logged (`app.class_teachers_guard` skips sample classes,
+and `create_sample_class` names the teacher being added in the transaction-local
+`app.sample_class_setup` around `create_class`, before the class is marked)
+(`20261201090300_onboarding_feedback.sql`; pgTAP 30).
 
 **D-110 — Pilot terms and privacy notice.** The public page « Confidentialité et conditions »
 (`/confidentialite`) holds the plain-language notice (from `PRIVACY.md`) and the pilot terms, in
@@ -1838,6 +1864,9 @@ French and English. The acceptance is stored (version and time) and audited as
 `user.terms_accepted` (`operator`). Substitutes see one line on the code screen (« …chaque
 consultation est enregistrée. »), no click-through. `PRIVACY_CONTACT_EMAIL` and `SUPPORT_EMAIL` are
 shown when set. **Assumption:** the wording is ours until an Ontario privacy lawyer reviews it.
+As built (slice S6): `/confidentialite` (public, dynamic for `APP_NAME`) is linked from the login
+page, « Bienvenue », the app's footer and the substitute portal's footer; the code screen carries
+the one line. The texts are the `legal` messages; `PRIVACY.md` (slice S7) must say the same.
 
 **D-111 — Error monitoring for the pilot: scrubbed structured logs and error references; no
 third-party error service.** `@lynx/observability` gives `createLogger` (JSON lines on stdout),
@@ -1868,6 +1897,12 @@ The worker's graphile-worker logger is replaced (its metadata holds the job's pa
 error is kept), its console is guarded the same way, and a job that failed for good gets one line. Every error page shows « Référence :
 … » (`global-error.tsx` in both languages, since it has no translations); route templates turn
 ids into `[id]` and any segment that is not a route name into `[x]`.
+As built (slice S6): « Signaler ce problème » on every error page. In the app and on the projector,
+it opens « Commentaires » with the reference filled in (one `FeedbackProvider` per signed-in shell);
+on the substitute portal it says to give the reference to the school office, and on class devices
+to show it to the teacher (the `problemReport` messages, served on `/jouer` with `classPortal`);
+`global-error.tsx` links to `/commentaires?ref=…`, a page of its own (the reference is kept only
+when `isReference`). `feedback.error_ref` now accepts a Next digest's `@E…` suffix.
 
 **D-112 — Health, heartbeats, external checks and « État du système ».** `/api/health` is liveness
 only; `/api/health/ready` checks Auth (`/auth/v1/health`), PostgREST and the portals' pools when
@@ -2024,11 +2059,20 @@ hours; the table's checks refuse a route with a query, and unknown kinds, device
 (`23514`).
 As built (slice S4): « Commentaires reçus » (`/board/feedback`, filtered « Nouveau », « Lu »,
 « Traité ») shows the sender's name and address only when they agreed to be contacted.
+As built (slice S6): « Commentaires » is a button in the top bar (an icon alone on phones) and the
+page `/commentaires`; the form keeps a draft per person (D-035). `sendFeedback(input,
+confirmedNames)` runs `findPersonalInfo` with the people the sender can see: each student's name is
+confirmed (« Envoyer « Samuel » quand même ») and other personal details must be removed before
+anything is sent. The server fills the rest: the route template of the page the action was posted
+from, the release, the language, and the sender's first school (else board); the browser sends
+only the kind of device (by width).
 
 **D-117 — « Nouveautés » and the version.** `APP_RELEASE` is set when the image is built and shown
 in the footer, in `/api/health` and in logs and heartbeats. `/nouveautes` is a static page of
 release notes from the message files (`releaseNotes.versions`), checked for French/English parity.
 No per-user unread state.
+As built (slice S6): the footer of every app page shows « Confidentialité », « Nouveautés » and
+« Version … »; `/nouveautes` lists `releaseNotes.versions` in the order of the French file.
 
 **D-118 — Navigation and landing pages (amends D-078).** Two new items: « Direction »
 (`/direction`, principals and vice-principals) and « Conseil » (`/board`, board admins). The order

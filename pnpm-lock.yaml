@@ -223,6 +223,10 @@ importers:
       zod:
         specifier: ^4.6.5
         version: 4.6.5
+    devDependencies:
+      '@lynx/domain':
+        specifier: workspace:*
+        version: link:../domain
 
   packages/config:
     dependencies:

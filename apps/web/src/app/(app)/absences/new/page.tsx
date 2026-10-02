@@ -6,8 +6,10 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { AbsenceForm } from '@/components/absences/absence-form';
 import { FAITH_COOKIE } from '@/components/absences/types';
+import { Notice } from '@/components/ui/card';
 import { PageHeader } from '@/components/ui/page';
 import { loadAbsenceFormContext } from '@/server/queries/absences';
+import { hasSampleClass } from '@/server/queries/onboarding';
 import { requireSession, teachingSchools } from '@/server/session';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -19,7 +21,11 @@ export default async function NewAbsencePage() {
   const session = await requireSession();
   if (teachingSchools(session).length === 0) redirect('/today');
   const t = await getTranslations();
-  const [schools, cookieStore] = await Promise.all([loadAbsenceFormContext(session), cookies()]);
+  const [schools, cookieStore, sample] = await Promise.all([
+    loadAbsenceFormContext(session),
+    cookies(),
+    hasSampleClass(session),
+  ]);
 
   return (
     <div className="mx-auto max-w-xl">
@@ -35,6 +41,12 @@ export default async function NewAbsencePage() {
         }
         title={t('absences.new')}
       />
+      {sample ? (
+        // A sample class never reaches a substitute plan (DECISIONS D-109).
+        <Notice tone="info" className="mb-4" data-testid="sample-absence-notice">
+          {t('onboarding.sample.absence')}
+        </Notice>
+      ) : null}
       <AbsenceForm
         userId={session.userId}
         schools={schools}

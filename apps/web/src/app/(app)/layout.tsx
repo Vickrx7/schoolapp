@@ -1,9 +1,12 @@
+import { termsState } from '@lynx/domain';
 import { getTranslations } from 'next-intl/server';
 import type { ReactNode } from 'react';
 import { AppNav } from '@/components/app/app-nav';
 import { FooterSlot } from '@/components/app/footer-slot';
 import { HeaderActionsSlot } from '@/components/app/header-actions-slot';
 import { SignOutForm } from '@/components/app/sign-out-form';
+import { FeedbackProvider } from '@/components/feedback/feedback-provider';
+import { TermsBanner } from '@/components/onboarding/terms-banner';
 import { Notice } from '@/components/ui/card';
 import { APP_NAME } from '@/lib/app-name';
 import {
@@ -43,7 +46,8 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
   const showBoard = adminBoards(session).length > 0;
 
   return (
-    <>
+    // « Commentaires » (D-116): the header's button and the error page open one dialog.
+    <FeedbackProvider userId={session.userId}>
       <AppNav
         appName={APP_NAME}
         showTeaching={showTeaching}
@@ -55,10 +59,13 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
         showBoard={showBoard}
         headerActions={<HeaderActionsSlot session={session} />}
       />
-      <main className="mx-auto max-w-5xl px-4 pt-6 pb-28 md:pb-12 print:max-w-none print:p-0">
+      {/* The footer clears the phone's bottom tab bar. */}
+      <main className="mx-auto max-w-5xl px-4 pt-6 pb-10 md:pb-12 print:max-w-none print:p-0">
+        {/* Newer pilot terms: a banner, never a block (D-109). */}
+        {termsState(session.termsVersion) === 'outdated' ? <TermsBanner /> : null}
         {children}
       </main>
       <FooterSlot session={session} />
-    </>
+    </FeedbackProvider>
   );
 }

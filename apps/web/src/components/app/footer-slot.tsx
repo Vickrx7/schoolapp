@@ -1,10 +1,11 @@
+import { appReleaseFrom } from '@lynx/config';
 import type { SessionContext } from '@/server/session';
+import { AppFooter } from './app-footer';
 
 /**
  * The footer of the signed-in app: « Confidentialité », « Nouveautés » and the version (DECISIONS
- * D-110, D-117), and the banner when the pilot terms changed (D-109). Phase 6's slice S6 fills
- * it, so only this file changes; empty until then.
+ * D-110, D-117). The banner for newer terms (D-109) is at the top of the page (`TermsBanner`).
  */
 export async function FooterSlot({ session: _session }: { session: SessionContext }) {
-  return null;
+  return <AppFooter release={appReleaseFrom(process.env)} />;
 }

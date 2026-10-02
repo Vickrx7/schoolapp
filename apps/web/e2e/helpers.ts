@@ -75,7 +75,9 @@ export async function login(page: Page, email: string, { stayOnPage = false } = 
 /**
  * « Bienvenue » at a first sign-in (D-109, D-110): accepts the pilot terms, optionally picks how
  * students address the person, then « Commencer ». Waits until the app's landing page shows.
- * (Written to the plan's French copy; the onboarding slice's form decides the final labels.)
+ * Every account that has not accepted the terms (`createStaffUser`, an invitation) needs it: the
+ * app sends every page there until then. The form is one page, so the « Continuer » step below
+ * finds nothing to click.
  */
 export async function acceptWelcome(page: Page, profile: { honorific?: string } = {}) {
   await page.waitForURL(/\/bienvenue(?:[/?#]|$)/);

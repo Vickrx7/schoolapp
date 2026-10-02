@@ -6,6 +6,7 @@ import { useState, useTransition, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Notice } from '@/components/ui/card';
 import { Field, Input } from '@/components/ui/field';
+import { welcomeHref } from '@/lib/request-path';
 import { requestLoginCode, verifyLoginCode } from '@/server/actions/auth';
 
 export function LoginForm({ next }: { next: string }) {
@@ -44,7 +45,8 @@ export function LoginForm({ next }: { next: string }) {
       try {
         const result = await verifyLoginCode(email, code);
         if (result.ok) {
-          router.replace(next);
+          // The pilot terms first, then the page asked for (D-109).
+          router.replace(result.data.termsRequired ? welcomeHref(next) : next);
           router.refresh();
         } else setError(message(result.error));
       } catch {

@@ -1,9 +1,10 @@
 'use server';
 
+import { termsState } from '@lynx/domain';
 import { scrubError } from '@lynx/observability';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
-import { fail, okVoid, type ActionResult } from '@/lib/action-result';
+import { fail, ok, okVoid, type ActionResult } from '@/lib/action-result';
 import { safeNextPath } from '@/lib/safe-path';
 import { webLogger } from '../observability';
 import { createSupabaseServerClient } from '../supabase';
@@ -42,20 +43,36 @@ export async function requestLoginCode(rawEmail: string): Promise<ActionResult> 
   return okVoid();
 }
 
-export async function verifyLoginCode(rawEmail: string, rawCode: string): Promise<ActionResult> {
+/**
+ * Checks the emailed code. Answers whether the person still has to accept the pilot terms
+ * (DECISIONS D-109), so the form goes straight to « Bienvenue » instead of through a page that
+ * would send them there.
+ */
+export async function verifyLoginCode(
+  rawEmail: string,
+  rawCode: string,
+): Promise<ActionResult<{ termsRequired: boolean }>> {
   const email = emailSchema.safeParse(rawEmail.trim().toLowerCase());
   const code = codeSchema.safeParse(rawCode.replace(/\s/g, ''));
   if (!email.success || !code.success) return fail('invalidCode');
 
   const supabase = await createSupabaseServerClient();
-  const { error } = await supabase.auth.verifyOtp({
+  const { data, error } = await supabase.auth.verifyOtp({
     email: email.data,
     token: code.data,
     type: 'email',
   });
   if (error) return fail(error.status === 429 ? 'tooManyAttempts' : 'invalidCode');
   await syncLocaleAtSignIn(supabase);
-  return okVoid();
+  const userId = data.user?.id;
+  if (!userId) return ok({ termsRequired: false });
+  const { data: profile } = await supabase
+    .from('users')
+    .select('terms_version')
+    .eq('id', userId)
+    .maybeSingle();
+  // No profile (or no access): the app's pages say so.
+  return ok({ termsRequired: profile ? termsState(profile.terms_version) === 'required' : false });
 }
 
 /**

@@ -3446,18 +3446,218 @@
     }
   },
   "onboarding": {
-    "title": "Pour bien commencer"
+    "title": "Pour bien commencer",
+    "intro": "Quatre étapes pour que « Aujourd’hui » montre vos leçons et que vos plans de suppléance se préparent seuls.",
+    "progress": "{done} sur {total}",
+    "progressLabel": "{done} étapes faites sur {total}",
+    "hide": "Masquer",
+    "hidden": "La liste est masquée sur « Aujourd’hui ». Elle reste ici.",
+    "showOnToday": "Afficher sur « Aujourd’hui »",
+    "open": "Voir toutes les étapes",
+    "allDone": "Tout est prêt. Bonne année scolaire!",
+    "done": "Fait",
+    "todo": "À faire",
+    "optional": "Facultatif, pour vos vraies classes",
+    "steps": {
+      "class": "Créer votre classe",
+      "students": "Ajouter vos élèves (prénoms seulement)",
+      "timetable": "Entrer votre horaire",
+      "unit": "Créer une unité et ses leçons",
+      "subProfile": "Remplir la fiche de suppléance"
+    },
+    "sample": {
+      "intro": "Ou essayez d’abord l’application avec une classe exemple : 20 élèves inventés, un horaire et deux unités. Elle ne compte pas dans les étapes.",
+      "create": "Essayer avec une classe exemple ({grade}e)",
+      "created": "Classe exemple créée.",
+      "creating": "Création de la classe exemple…",
+      "badge": "Exemple",
+      "yours": "Votre classe exemple : {name}",
+      "notice": "Classe exemple : elle n’est jamais incluse dans un plan de suppléance et sera supprimée le {date}.",
+      "delete": "Supprimer la classe exemple",
+      "deleteConfirm": "La classe exemple, ses élèves inventés, son horaire et ses unités seront supprimés. Vos vraies classes ne changent pas.",
+      "deleted": "Classe exemple supprimée.",
+      "absence": "Votre classe exemple n’est pas incluse dans les plans de suppléance."
+    },
+    "purge": {
+      "notice": "Les prénoms des élèves de {className} seront effacés le {date}. Vos unités et leçons restent."
+    }
   },
   "welcome": {
-    "title": "Bienvenue"
+    "title": "Bienvenue",
+    "intro": "Avant de commencer, prenez une minute pour lire comment {appName} protège les renseignements de vos élèves.",
+    "privacyHeading": "Votre vie privée et le projet pilote",
+    "points": {
+      "firstNames": "Seulement des prénoms d’élèves : jamais de nom de famille, de date de naissance ni d’adresse. Pendant le projet pilote, utilisez des prénoms inventés ou des initiales tant que votre direction n’a pas donné son accord par écrit.",
+      "alerts": "Les alertes de sécurité et médicales restent cachées jusqu’à ce qu’on choisisse de les afficher, et chaque consultation est enregistrée.",
+      "ai": "L’intelligence artificielle ne voit jamais les noms : ils sont retirés avant chaque envoi.",
+      "canada": "Les données restent au Canada.",
+      "feedback": "Vos commentaires sont les bienvenus : le bouton « Commentaires » est en haut de chaque page."
+    },
+    "readTerms": "Lire « Confidentialité et conditions »",
+    "accept": "J’ai lu et j’accepte les conditions du projet pilote",
+    "acceptRequired": "Cochez la case pour accepter les conditions.",
+    "profileHeading": "Votre profil",
+    "displayName": "Nom affiché",
+    "honorific": "Comment les élèves vous appellent-ils?",
+    "honorificHint": "Utilisé dans les plans de suppléance, par exemple « Mme Tremblay ».",
+    "honorificNone": "Aucun (seulement le nom)",
+    "start": "Commencer",
+    "updatedTitle": "Les conditions ont changé",
+    "updatedIntro": "Les conditions du projet pilote ont été mises à jour. Lisez-les, puis acceptez-les pour que ce message disparaisse.",
+    "acceptUpdated": "Accepter les conditions",
+    "accepted": "Conditions acceptées.",
+    "version": "Version des conditions : {version}"
   },
   "legal": {
-    "title": "Confidentialité et conditions"
+    "title": "Confidentialité et conditions",
+    "intro": "{appName} est utilisé dans un projet pilote avec des écoles catholiques de langue française de l’Ontario. Voici, en mots simples, ce que l’application recueille, pourquoi, et les conditions de son utilisation.",
+    "pilotNote": "Texte du projet pilote, qui sera revu par une ou un juriste spécialisé en protection de la vie privée.",
+    "contents": "Sur cette page",
+    "noticeHeading": "Avis de confidentialité",
+    "termsHeading": "Conditions du projet pilote",
+    "notice": {
+      "who": {
+        "title": "Qui est responsable",
+        "body": "Votre conseil scolaire est responsable des renseignements, selon la Loi sur l’accès à l’information municipale et la protection de la vie privée. IP Lynx fournit l’application et suit les instructions du conseil."
+      },
+      "collected": {
+        "title": "Ce que l’application recueille",
+        "body": "Pour le personnel : le nom, le courriel, les rôles et la langue choisie. Pour les élèves : le prénom seulement, le niveau de langue et, si la direction les active, des alertes de sécurité ou médicales chiffrées. Jamais de nom de famille, de numéro d’immatriculation scolaire, de date de naissance, d’adresse, de photo ni de courriel d’élève. Les élèves n’ont pas de compte."
+      },
+      "use": {
+        "title": "À quoi servent ces renseignements",
+        "body": "À planifier l’enseignement, à préparer les plans de suppléance et à partager des ressources entre collègues. Ils ne sont jamais vendus, jamais utilisés pour de la publicité et jamais utilisés pour entraîner une intelligence artificielle."
+      },
+      "ai": {
+        "title": "L’intelligence artificielle",
+        "body": "Quand vous demandez de l’aide à l’intelligence artificielle, les noms des personnes sont retirés avant l’envoi. Le texte sans noms est traité par Anthropic, aux États-Unis. L’intelligence artificielle ne prend aucune décision au sujet d’un élève : vous vérifiez toujours ce qu’elle propose."
+      },
+      "where": {
+        "title": "Où sont les données",
+        "body": "La base de données, les serveurs et les copies de sauvegarde chiffrées sont au Canada. Les fournisseurs utilisés sont nommés dans le document de confidentialité remis au conseil."
+      },
+      "access": {
+        "title": "Qui y a accès",
+        "body": "Chaque personne voit seulement ce que son rôle permet : une enseignante ou un enseignant voit ses classes, la direction voit les absences et le journal de son école. Les consultations d’alertes et la suppléance sont inscrites au journal d’audit. IP Lynx accède aux données seulement pour le soutien, et chaque accès est inscrit au journal du conseil."
+      },
+      "retention": {
+        "title": "Combien de temps",
+        "body": "Les prénoms des élèves sont effacés un an après la fin de l’année scolaire (les unités et leçons restent). Les plans de suppléance sont effacés un an après leur date, le journal d’audit après deux ans, les commentaires après un an, une classe exemple après 60 jours et les copies de sauvegarde après 30 jours."
+      },
+      "rights": {
+        "title": "Vos droits",
+        "body": "Pour consulter ou corriger des renseignements, adressez-vous à votre conseil scolaire. IP Lynx l’aide à répondre."
+      }
+    },
+    "terms": {
+      "pilot": "{appName} est en développement : l’application peut changer ou être interrompue pendant le projet pilote, qui est sans frais.",
+      "names": "Tant que votre direction n’a pas donné son accord par écrit, utilisez des prénoms inventés ou des initiales, ou la classe exemple.",
+      "personal": "N’entrez aucun autre renseignement personnel sur un élève que son prénom, sauf dans les alertes, lorsque la direction les a activées.",
+      "account": "Votre accès est personnel. Déconnectez-vous sur un ordinateur partagé.",
+      "ai": "Vérifiez ce que propose l’intelligence artificielle avant de l’utiliser avec vos élèves.",
+      "feedback": "Les commentaires que vous envoyez sont lus par l’administration de votre conseil et par IP Lynx pour améliorer l’application.",
+      "changes": "Ces conditions peuvent changer. Une bannière vous le dira, et vous pourrez les relire avant de les accepter."
+    },
+    "contactHeading": "Pour nous joindre",
+    "privacyContact": "Questions sur la vie privée : {email}",
+    "supportContact": "Soutien : {email}",
+    "contactBoard": "Pour toute question, adressez-vous à l’administration de votre conseil scolaire.",
+    "version": "Version des conditions : {version}",
+    "footerLink": "Confidentialité",
+    "loginLink": "Confidentialité et conditions",
+    "portalNotice": "En utilisant ce code, vous accédez à des renseignements confidentiels réservés à cette journée ; chaque consultation est enregistrée.",
+    "bannerText": "Les conditions du projet pilote ont changé.",
+    "bannerAction": "Lire et accepter",
+    "footer": "Pied de page"
   },
   "feedback": {
-    "button": "Commentaires"
+    "button": "Commentaires",
+    "title": "Envoyer un commentaire",
+    "intro": "Un problème, une idée, une question? L’administration de votre conseil et IP Lynx lisent chaque message.",
+    "kindLegend": "C’est…",
+    "kinds": {
+      "problem": "Un problème",
+      "idea": "Une idée",
+      "question": "Une question"
+    },
+    "message": "Votre message",
+    "messageHint": "Évitez les prénoms d’élèves : ce n’est presque jamais nécessaire.",
+    "counter": "{count} sur {max} caractères",
+    "reference": "Référence de l’erreur (facultatif)",
+    "referenceHint": "La référence affichée sur une page d’erreur, par exemple « 7f3a2c9d ».",
+    "mayContact": "On peut me contacter à ce sujet",
+    "send": "Envoyer",
+    "sending": "Envoi…",
+    "sent": "Merci! Votre commentaire a été envoyé.",
+    "names": {
+      "intro": "Ce message contient des prénoms d’élèves de votre école : {names}. L’administration de votre conseil le lira. Retirez-les si vous le pouvez, ou confirmez chacun.",
+      "confirm": "Envoyer « {name} » quand même",
+      "blocked": "Retirez d’abord ces renseignements personnels :"
+    },
+    "pageIntro": "Décrivez ce qui s’est passé. La référence de l’erreur aide à trouver le problème."
   },
   "releaseNotes": {
-    "title": "Nouveautés"
+    "title": "Nouveautés",
+    "intro": "Ce qui a changé dans l’application, de la version la plus récente à la plus ancienne.",
+    "current": "Version installée : {version}",
+    "versions": {
+      "v060": {
+        "title": "Version 0.6 · Prêt pour le projet pilote",
+        "date": "Novembre 2026",
+        "items": {
+          "welcome": "« Bienvenue » à la première connexion : les conditions du projet pilote et votre profil.",
+          "start": "« Pour bien commencer » : quatre étapes et une classe exemple pour essayer l’application.",
+          "feedback": "Le bouton « Commentaires », en haut de chaque page.",
+          "direction": "Le tableau de bord de la direction et le journal d’audit.",
+          "board": "« Conseil » pour l’administration : personnel, écoles, années scolaires, approbation des ressources, utilisation de l’IA et commentaires.",
+          "retention": "La conservation des données : les prénoms des élèves sont effacés un an après l’année scolaire."
+        }
+      },
+      "v050": {
+        "title": "Version 0.5 · Mode classe",
+        "date": "Novembre 2026",
+        "items": {
+          "present": "« Présenter à la classe » au projecteur, et le quiz sur les appareils des élèves.",
+          "growth": "Adaptations de ressources, avis des collègues et couverture du curriculum.",
+          "bulk": "Génération en lot et ensembles de ressources pour le conseil."
+        }
+      },
+      "v040": {
+        "title": "Version 0.4 · Banque de ressources",
+        "date": "Octobre 2026",
+        "items": {
+          "library": "Créer, réviser, partager et approuver des ressources avec ses collègues.",
+          "ai": "L’IA pour préparer une ressource et ses niveaux.",
+          "planning": "Ajouter une ressource à une leçon."
+        }
+      },
+      "v030": {
+        "title": "Version 0.3 · Suppléance",
+        "date": "Octobre 2026",
+        "items": {
+          "absences": "Déclarer une absence en quelques secondes; le plan de suppléance se prépare seul.",
+          "portal": "Un code pour la personne suppléante, et le suivi de la journée."
+        }
+      },
+      "v020": {
+        "title": "Version 0.2 · Texte différencié",
+        "date": "Septembre 2026",
+        "items": {
+          "differentiate": "Un texte adapté à chaque niveau de langue, préparé par l’IA."
+        }
+      },
+      "v010": {
+        "title": "Version 0.1 · Aujourd’hui",
+        "date": "Septembre 2026",
+        "items": {
+          "today": "« Aujourd’hui », les classes, les élèves, l’horaire, la planification et le calendrier."
+        }
+      }
+    }
+  },
+  "problemReport": {
+    "officeHelp": "Si le problème continue, donnez cette référence au secrétariat de l’école : {ref}.",
+    "deviceButton": "Signaler ce problème",
+    "deviceHelp": "Montre cette référence à ton enseignante ou à ton enseignant : {ref}."
   }
 }
