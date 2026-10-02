@@ -216,7 +216,12 @@ insert into public.unit_lessons (id, unit_id, sequence_number, title)
 values (tests.remember('lesson_old', gen_random_uuid()), tests.id('unit_old'), 1, 'Old lesson');
 insert into public.lesson_progress (class_id, lesson_id, status, taught_on)
 values (tests.id('class_old'), tests.id('lesson_old'), 'completed', tests.local_day(-400));
--- A plan covering the old class, ten days ago (its plan date alone would keep it).
+-- Its year-end notice first showed 61 days ago (D-105: never purged before 60 days of notice;
+-- 32_phase6_review_fixes covers a class that was never announced).
+update public.classes set students_purge_notice_on = tests.local_day(-61)
+where id = tests.id('class_old');
+-- A plan dated after the old class's year (ten days ago) that still lists it: built before plans
+-- kept to their year's classes (Phase 6 review). Its date alone keeps it.
 select tests.past_plan('plan_cover', tests.local_day(-10), 'class_old');
 
 -- Sample classes: created 61 days ago (deleted) and 59 days ago (kept).
@@ -295,8 +300,9 @@ select ok(
   not exists (select 1 from public.students where class_id = tests.id('class_old'))
   and not exists (select 1 from public.student_alerts where class_id = tests.id('class_old'))
   and not exists (select 1 from public.class_mode_links where class_id = tests.id('class_old'))
-  and not exists (select 1 from public.sub_plans where id = tests.id('plan_cover')),
-  'a class whose year ended over a year ago loses its students, alerts, class link and plans');
+  and exists (select 1 from public.sub_plans where id = tests.id('plan_cover'))
+  and not exists (select 1 from public.sub_plan_classes where class_id = tests.id('class_old')),
+  'a class whose year ended over a year ago loses its students, alerts and class link; a later plan only loses its link to it');
 select ok(
   exists (select 1 from public.classes where id = tests.id('class_old') and students_purged_at = now())
   and exists (select 1 from public.units where id = tests.id('unit_old'))
@@ -349,7 +355,7 @@ select ok(
 select results_eq(
   $$select actor_type::text, entity_type, details from public.audit_log
     where action = 'retention.purged' and board_id = tests.id('board_a')$$,
-  $$values ('system', 'board', '{"sub_plans": 2, "absences": 2, "classes": 1, "students": 2,
+  $$values ('system', 'board', '{"sub_plans": 1, "absences": 2, "classes": 1, "students": 2,
       "sample_classes": 1, "ai_usage": 1, "feedback": 1, "invitations_expired": 1,
       "invitations_deleted": 1, "audit_rows": 1}'::jsonb)$$,
   'one entry per board says what was removed');
@@ -360,13 +366,14 @@ select is(
 select ok(
   (select beat_at = now() and release is null
      and details ->> 'subPlans' = (select totals ->> 'subPlans' from first_run)
-     and (details ->> 'subPlans')::int >= 2 and (details ->> 'outbox')::int >= 1
+     and (details ->> 'subPlans')::int >= 1 and (details ->> 'outbox')::int >= 1
    from public.system_heartbeats where component = 'retention'),
   'the retention heartbeat records the totals');
 select ok(
   (select array(select jsonb_object_keys(totals) order by 1) from first_run)
   = array['absences', 'aiUsage', 'auditRows', 'authLogs', 'boards', 'classes', 'feedback',
-    'invitationsDeleted', 'invitationsExpired', 'outbox', 'sampleClasses', 'students', 'subPlans'],
+    'invitationsDeleted', 'invitationsExpired', 'outbox', 'sampleClasses', 'signInAttempts',
+    'students', 'subPlans'],
   'the run returns counts only');
 
 -- A second run (the same connection) finds nothing more of board A's.

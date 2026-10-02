@@ -227,6 +227,30 @@ describe('coverageForDay', () => {
     expect(alone.blocks).toHaveLength(cover(twoClassSources(), WEEK.mon).blocks.length);
   });
 
+  it('covers only the classes whose school year includes the day (D-055, Phase 6 review)', () => {
+    // The 5e class is from last year: kept, with its timetable, after its students were purged.
+    const raw: Raw = {
+      ...twoClassSources(),
+      classes: twoClassSources().classes!.map((c) =>
+        c.id === C5
+          ? { ...c, yearStartsOn: '2025-09-02', yearEndsOn: '2026-06-26' }
+          : { ...c, yearStartsOn: '2026-09-02', yearEndsOn: '2027-06-25' },
+      ),
+    };
+    const day = cover(raw, WEEK.mon);
+    expect(day.classIds).toEqual([C3]);
+    expect(day.blocks.every((b) => b.classId === C3)).toBe(true);
+    const [built] = buildAbsencePlans(
+      parse(raw),
+      { startsOn: WEEK.mon, endsOn: WEEK.mon, part: 'full_day', catholicConnection: true },
+      { now: NOW },
+    ).plans;
+    expect(built!.classIds).toEqual([C3]);
+    // Last year's class alone on a day of last year; sources without the dates cover both.
+    expect(cover(raw, '2026-06-22').classIds).toEqual([C5]);
+    expect(cover(twoClassSources(), WEEK.mon).classIds).toEqual([C3, C5]);
+  });
+
   it('gives a teacher with no classes an empty plan with no_classes', () => {
     const raw: Raw = {
       ...isabelleSources(),

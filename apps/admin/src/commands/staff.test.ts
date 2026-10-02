@@ -66,11 +66,12 @@ describe('delete-user', () => {
           plans: 0,
           libraryItems: 3,
           feedback: 1,
+          invitations: 2,
         },
         true,
       ),
     ).toBe(
-      'Deleted a@b.ca (1 board): 2 role(s), 1 class(es) they alone led (with their students and plans), 0 other substitute plan(s), 3 private resource(s), 1 feedback message(s). Shared resources stay, without an author. Its sign-in account is deleted.',
+      'Deleted a@b.ca (1 board): 2 role(s), 1 class(es) they alone led (with their students and plans), 0 other substitute plan(s), 3 private resource(s), 1 feedback message(s), 2 invitation(s). Shared resources stay, without an author. Its sign-in account is deleted.',
     );
     expect(deletedAccountSummary('a@b.ca', { profile: false }, true)).toBe(
       'a@b.ca had no profile, only a sign-in account. Its sign-in account is deleted.',

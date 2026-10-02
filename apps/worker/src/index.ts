@@ -10,6 +10,7 @@ import pg from 'pg';
 import { createAiRuntime } from './ai';
 import { createAuthAdmin } from './auth-admin';
 import { CRONTAB_LINES } from './crontab';
+import { workerPoolConfig } from './db';
 import { buildSubscriptions } from './handlers';
 import { startHealth } from './health';
 import { graphileLogOptions, reportJobFailures } from './job-errors';
@@ -22,7 +23,7 @@ guardWorkerConsole();
 
 const env = loadEnv(workerEnvSchema);
 const logger = createLogger('worker');
-const pool = new pg.Pool({ connectionString: env.DATABASE_URL, max: env.WORKER_CONCURRENCY + 3 });
+const pool = new pg.Pool(workerPoolConfig(env));
 pool.on('error', (err) =>
   logger.error('idle database connection failed', { error: scrubError(err) }),
 );

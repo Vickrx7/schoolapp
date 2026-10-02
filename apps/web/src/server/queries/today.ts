@@ -86,13 +86,20 @@ export async function loadToday(
 
   const { data: teamRows } = await supabase
     .from('class_teachers')
-    .select('class_id, role, classes!inner(id, name, school_id)')
+    .select('class_id, role, classes!inner(id, name, school_id, school_years(starts_on, ends_on))')
     .eq('user_id', session.userId);
-  const myClasses = (teamRows ?? []).filter((r) =>
+  const teachingClasses = (teamRows ?? []).filter((r) =>
     schools.some((s) => s.id === r.classes.school_id),
   );
+  if (teachingClasses.length === 0) return { date, hasClasses: false, schoolDays: [], blocks: [] };
+  // The day's classes are those of its school year (D-055, as amended in the Phase 6 review): a
+  // class kept from an earlier year, with its timetable, shows no block today.
+  const myClasses = teachingClasses.filter((r) => {
+    const year = r.classes.school_years;
+    return !year || (year.starts_on <= date && date <= year.ends_on);
+  });
   const classIds = myClasses.map((r) => r.class_id);
-  if (classIds.length === 0) return { date, hasClasses: false, schoolDays: [], blocks: [] };
+  if (classIds.length === 0) return { date, hasClasses: true, schoolDays: [], blocks: [] };
 
   const homeroom = new Set(myClasses.filter((r) => r.role === 'homeroom').map((r) => r.class_id));
   const classById = new Map(myClasses.map((r) => [r.class_id, r.classes]));

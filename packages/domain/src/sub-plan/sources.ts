@@ -120,13 +120,18 @@ export const subPlanSourcesSchema = z.object({
     /** The raw schools.settings, parsed leniently (invalid values fall back to defaults). */
     settings: z.unknown().transform((v) => parseSchoolSettings(v)),
   }),
-  /** The teacher's classes at the school, with her role in each. */
+  /**
+   * The teacher's classes at the school whose school year overlaps the dates, with her role in
+   * each and their year's first and last day (a plan day covers only the classes of its year).
+   */
   classes: list(
     z.object({
       id: uuid,
       name: z.string(),
       roomId: orNull(uuid),
       role: teamRole,
+      yearStartsOn: orNull(localDateSchema),
+      yearEndsOn: orNull(localDateSchema),
       grades: list(z.object({ code: z.string(), ordinal: z.number().int(), labelFr: z.string() })),
     }),
   ),

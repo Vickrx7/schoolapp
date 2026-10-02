@@ -977,7 +977,8 @@ select tests.clear_authentication();
 
 select is(
   (select val from tests.results where key = 'del_a'),
-  '{"profile": true, "boards": 1, "roles": 2, "classes": 3, "plans": 1, "libraryItems": 1, "feedback": 1}'::jsonb,
+  '{"profile": true, "boards": 1, "roles": 2, "classes": 3, "plans": 1, "libraryItems": 1, "feedback": 1,
+    "invitations": 0}'::jsonb,
   'the deletion reports what it removed'
 );
 select results_eq(

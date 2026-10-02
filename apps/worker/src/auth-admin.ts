@@ -15,14 +15,20 @@ import type { WorkerEnv } from '@lynx/config';
 import { createClient } from '@supabase/supabase-js';
 import type { Pool } from 'pg';
 
+/** A pool or one of its connections. */
+export type Queryable = Pick<Pool, 'query'>;
+
 export interface AuthAdmin {
   /** Creates a confirmed account (no e-mail is sent) and returns its id. */
   createUser(email: string): Promise<{ id: string }>;
   /** Bans (`ban_duration` 876000h) or unbans an account. */
   setBanned(userId: string, banned: boolean): Promise<void>;
   deleteUser(userId: string): Promise<void>;
-  /** The account with this address, read from `auth.users` through the worker's pool. */
-  findUserId(email: string): Promise<string | null>;
+  /**
+   * The account with this address, read from `auth.users` through `db` (the connection a caller
+   * holding a lock already has) or the worker's pool.
+   */
+  findUserId(email: string, db?: Queryable): Promise<string | null>;
 }
 
 export type AuthAdminErrorKind = 'transient' | 'exists' | 'notFound' | 'refused';
@@ -76,7 +82,7 @@ const BANNED = '876000h';
 
 export function createAuthAdmin(
   env: Pick<WorkerEnv, 'SUPABASE_URL' | 'SUPABASE_SERVICE_ROLE_KEY'>,
-  pool: Pick<Pool, 'query'>,
+  pool: Queryable,
 ): AuthAdmin | null {
   if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) return null;
   const admin = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, {
@@ -110,8 +116,8 @@ export function createAuthAdmin(
       if (error) throw toAuthAdminError(error);
     },
 
-    async findUserId(email) {
-      const { rows } = await pool.query<{ id: string }>(
+    async findUserId(email, db = pool) {
+      const { rows } = await db.query<{ id: string }>(
         `select id from auth.users where lower(email) = lower($1)
          order by created_at, id limit 1`,
         [email],

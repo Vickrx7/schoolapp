@@ -8,7 +8,9 @@
  * local date:
  *
  * - a class's students go once `school year end + classDaysAfterYearEnd` is before today, so on
- *   the day after (`studentPurgeDate`). Units, lessons, timetable and progress stay;
+ *   the day after (`studentPurgeDate`), but never before their notice showed for
+ *   `PURGE_NOTICE_DAYS` (`classPurgeDate`: a year moved into the past, or a shorter setting,
+ *   delays the purge). Units, lessons, timetable and progress stay;
  * - a sample class goes once it is `SAMPLE_CLASS_DAYS` old (`samplePurgeDate`).
  *
  * Teachers are told `PURGE_NOTICE_DAYS` before, on the class page and on « Aujourd'hui ».
@@ -31,6 +33,26 @@ export function studentPurgeDate(
   settings: Pick<BoardSettings, 'retention'>,
 ): LocalDate {
   return addDays(yearEndsOn, settings.retention.classDaysAfterYearEnd + 1);
+}
+
+/**
+ * The day a class's students actually go (D-105, as amended in the Phase 6 review): its
+ * `studentPurgeDate`, or later when its notice could not show for `PURGE_NOTICE_DAYS` before it.
+ * The nightly job records the first night it found the class within the notice window
+ * (`classes.students_purge_notice_on`, `noticeOn`) and purges no earlier than `PURGE_NOTICE_DAYS`
+ * after it. Before that night, the class's earliest date is counted from `today`.
+ */
+export function classPurgeDate(
+  yearEndsOn: LocalDate,
+  settings: Pick<BoardSettings, 'retention'>,
+  noticeOn: LocalDate | null,
+  today: LocalDate,
+): LocalDate {
+  const base = studentPurgeDate(yearEndsOn, settings);
+  // Not within the window yet: the job will record the first day of the window.
+  if (daysBetween(today, base) > PURGE_NOTICE_DAYS) return base;
+  const earliest = addDays(noticeOn ?? today, PURGE_NOTICE_DAYS);
+  return earliest > base ? earliest : base;
 }
 
 /** The day a sample class created on `createdOn` is deleted. */

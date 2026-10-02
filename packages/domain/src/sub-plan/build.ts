@@ -9,6 +9,7 @@ import type { CalendarEventType } from '../calendar';
 import { pickCatholicReference } from './catholic';
 import {
   absenceSchoolDays,
+  classesOn,
   coverageForDay,
   scheduleOf,
   type CoverageBlock,
@@ -531,7 +532,7 @@ export function buildMinimalSubPlan(
   let base = bare;
   try {
     const ctx = contextOf(sources);
-    const homeroom = [...sources.classes]
+    const homeroom = classesOn(sources, date)
       .filter((c) => c.role === 'homeroom')
       .sort((a, b) => compareFr(a.name, b.name))
       .map((c) => c.id);

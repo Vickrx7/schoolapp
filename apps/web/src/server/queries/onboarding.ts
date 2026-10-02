@@ -1,9 +1,9 @@
 import 'server-only';
 import {
+  classPurgeDate,
   localDateIn,
   samplePurgeDate,
   showsPurgeNotice,
-  studentPurgeDate,
   type LocalDate,
 } from '@lynx/domain';
 import type { SessionContext } from '../session';
@@ -36,7 +36,7 @@ export interface SampleClassInfo {
 export interface PurgeNotice {
   classId: string;
   className: string;
-  /** The first day its students' first names are gone (`studentPurgeDate`). */
+  /** The first day its students' first names are gone (`classPurgeDate`). */
   purgeOn: LocalDate;
 }
 
@@ -64,6 +64,7 @@ interface ClassRow {
   sample_owner_id: string | null;
   created_at: string;
   students_purged_at: string | null;
+  students_purge_notice_on: string | null;
   school_years: { ends_on: string } | null;
 }
 
@@ -74,7 +75,7 @@ async function myClasses(session: SessionContext) {
   const { data } = await supabase
     .from('class_teachers')
     .select(
-      'class_id, classes!inner(id, name, school_id, sample_owner_id, created_at, students_purged_at, school_years(ends_on))',
+      'class_id, classes!inner(id, name, school_id, sample_owner_id, created_at, students_purged_at, students_purge_notice_on, school_years(ends_on))',
     )
     .eq('user_id', session.userId);
   const rows = (data ?? [])
@@ -163,8 +164,14 @@ function purgeDateOf(session: SessionContext, c: ClassRow): LocalDate | null {
   const school = session.schools.find((s) => s.id === c.school_id);
   const board = session.boards.find((b) => b.id === school?.boardId);
   if (!school || !board) return null;
-  const purgeOn = studentPurgeDate(c.school_years.ends_on, board.settings);
-  return showsPurgeNotice(localDateIn(school.timezone), purgeOn) ? purgeOn : null;
+  const today = localDateIn(school.timezone);
+  const purgeOn = classPurgeDate(
+    c.school_years.ends_on,
+    board.settings,
+    c.students_purge_notice_on,
+    today,
+  );
+  return showsPurgeNotice(today, purgeOn) ? purgeOn : null;
 }
 
 /** What the class page says about a class (D-105, D-109): a sample, or students erased soon. */
@@ -181,7 +188,7 @@ export async function loadClassNotices(
   const { data } = await supabase
     .from('classes')
     .select(
-      'id, name, school_id, sample_owner_id, created_at, students_purged_at, school_years(ends_on)',
+      'id, name, school_id, sample_owner_id, created_at, students_purged_at, students_purge_notice_on, school_years(ends_on)',
     )
     .eq('id', classId)
     .maybeSingle();

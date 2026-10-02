@@ -9,6 +9,7 @@ import { readFileSync } from 'node:fs';
 import pg from 'pg';
 import { afterAll, describe, expect, it } from 'vitest';
 import { AuthAdminError, createAuthAdmin, type AuthAdmin } from './auth-admin';
+import { workerPoolConfig } from './db';
 import type { Logger } from './logger';
 import { provisionInvitation, syncStaffAuth, type StaffContext } from './staff';
 
@@ -137,12 +138,14 @@ describe('provisionInvitation (D-107)', () => {
       },
     ]);
 
-    // The event delivered again (a retry, or a restore handing it back): nothing changes.
+    // The event delivered again (a retry, or a restore handing it back): the account follows
+    // the profile again, and nothing else changes.
     await provisionInvitation(id, ctx);
-    expect(await authAccounts(email)).toHaveLength(1);
+    expect(await authAccounts(email)).toEqual([{ id: userId, banned: false }]);
     expect((await invitationRow(id)).status).toBe('ready');
     expect(logger.entries.map((e) => e.message)).toEqual([
       'invitation processed',
+      'staff sign-in updated',
       'invitation already processed',
     ]);
     // Ids, results and codes only: never the address or the name.
@@ -228,6 +231,64 @@ describe('provisionInvitation (D-107)', () => {
     );
     expect(rows[0]!.deactivated_at).toBeNull();
   });
+
+  it('lifts the ban on a retry when Auth did not answer after the invitation completed', async () => {
+    const email = newEmail();
+    await provisionInvitation(await invite(email), context().ctx);
+    const userId = (await authAccounts(email))[0]!.id;
+    await setDeactivated(userId, true);
+    await syncStaffAuth(userId, context().ctx);
+    expect((await authAccounts(email))[0]!.banned).toBe(true);
+
+    // Invited again; the first unban gets no answer from Auth (the job throws, and
+    // graphile-worker delivers it again later).
+    const again = await invite(email, 'vice_principal');
+    const calls: boolean[] = [];
+    const flaky: AuthAdmin = {
+      ...authAdmin,
+      async setBanned(id, banned) {
+        calls.push(banned);
+        if (calls.length === 1) throw new AuthAdminError('transient', 503, null);
+        await authAdmin.setBanned(id, banned);
+      },
+    };
+    await expect(provisionInvitation(again, context(flaky).ctx)).rejects.toThrow(AuthAdminError);
+    expect((await invitationRow(again)).status).toBe('ready');
+    expect((await authAccounts(email))[0]!.banned).toBe(true);
+
+    // The retry finds the invitation completed and still lifts the ban.
+    await provisionInvitation(again, context(flaky).ctx);
+    expect(calls).toEqual([false, false]);
+    expect(await authAccounts(email)).toEqual([{ id: userId, banned: false }]);
+  });
+
+  it('runs four invitations of existing accounts at once on the worker’s pool', async () => {
+    // As apps/worker/src/index.ts: WORKER_CONCURRENCY 4, one connection listening for good.
+    const workerPool = new pg.Pool(
+      workerPoolConfig({ DATABASE_URL: connectionString, WORKER_CONCURRENCY: 4 }),
+    );
+    const listener = await workerPool.connect();
+    try {
+      const emails = [newEmail(), newEmail(), newEmail(), newEmail()];
+      // Accounts that exist already (an access restored, or a retry after a creation timed out).
+      for (const email of emails) await authAdmin.createUser(email);
+      const ids = await Promise.all(emails.map((email) => invite(email)));
+      const ctx = { pool: workerPool, authAdmin, logger: recordingLogger() };
+      const all = Promise.all(ids.map((id) => provisionInvitation(id, ctx))).then(() => 'done');
+      let timer: NodeJS.Timeout | undefined;
+      const stuck = new Promise((resolve) => {
+        timer = setTimeout(() => resolve('stuck'), 20_000);
+      });
+      expect(await Promise.race([all, stuck])).toBe('done');
+      clearTimeout(timer);
+      for (const id of ids) expect((await invitationRow(id)).status).toBe('ready');
+      // The heartbeat still gets a connection.
+      expect((await workerPool.query('select 1 as ok')).rows).toEqual([{ ok: 1 }]);
+    } finally {
+      listener.release();
+      await workerPool.end();
+    }
+  }, 30_000);
 
   it('fails as authRefused when Auth refuses the address', async () => {
     const id = await invite(newEmail());

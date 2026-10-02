@@ -58,6 +58,8 @@ export interface DeletedAccount {
   plans?: number;
   libraryItems?: number;
   feedback?: number;
+  /** Their invitations, in every board (they hold the address and the name). */
+  invitations?: number;
 }
 
 export function deletedAccountSummary(
@@ -72,7 +74,8 @@ export function deletedAccountSummary(
     `Deleted ${email} (${n(result.boards)} board${n(result.boards) === 1 ? '' : 's'}): ${n(result.roles)} role(s),`,
     `${n(result.classes)} class(es) they alone led (with their students and plans),`,
     `${n(result.plans)} other substitute plan(s), ${n(result.libraryItems)} private resource(s),`,
-    `${n(result.feedback)} feedback message(s). Shared resources stay, without an author. ${auth}`,
+    `${n(result.feedback)} feedback message(s), ${n(result.invitations)} invitation(s).`,
+    `Shared resources stay, without an author. ${auth}`,
   ].join(' ');
 }
 

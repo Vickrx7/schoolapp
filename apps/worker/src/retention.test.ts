@@ -27,6 +27,7 @@ describe('toRetentionTotals (D-105)', () => {
       invitationsDeleted: 0,
       auditRows: 0,
       outbox: 7,
+      signInAttempts: 0,
       authLogs: 12,
     });
   });

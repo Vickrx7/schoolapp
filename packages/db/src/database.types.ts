@@ -832,6 +832,7 @@ export type Database = {
           updated_at: string;
           sample_owner_id: string | null;
           students_purged_at: string | null;
+          students_purge_notice_on: string | null;
         };
         Insert: {
           id?: string;
@@ -844,6 +845,7 @@ export type Database = {
           updated_at?: string;
           sample_owner_id?: string | null;
           students_purged_at?: string | null;
+          students_purge_notice_on?: string | null;
         };
         Update: {
           id?: string;
@@ -856,6 +858,7 @@ export type Database = {
           updated_at?: string;
           sample_owner_id?: string | null;
           students_purged_at?: string | null;
+          students_purge_notice_on?: string | null;
         };
         Relationships: [
           {
@@ -2566,6 +2569,33 @@ export type Database = {
           },
         ];
       };
+      sign_in_attempts: {
+        Row: {
+          id: number;
+          kind: string;
+          email_key: string;
+          ip_key: string | null;
+          succeeded: boolean;
+          attempted_at: string;
+        };
+        Insert: {
+          id?: never;
+          kind: string;
+          email_key: string;
+          ip_key?: string | null;
+          succeeded?: boolean;
+          attempted_at?: string;
+        };
+        Update: {
+          id?: never;
+          kind?: string;
+          email_key?: string;
+          ip_key?: string | null;
+          succeeded?: boolean;
+          attempted_at?: string;
+        };
+        Relationships: [];
+      };
       staff_invitations: {
         Row: {
           id: string;
@@ -3740,6 +3770,10 @@ export type Database = {
         Args: { p_session_id: string; p_keep: boolean };
         Returns: Json;
       };
+      feedback_student_names: {
+        Args: { p_text: string };
+        Returns: string[];
+      };
       get_class_alerts: {
         Args: { p_class_id: string };
         Returns: {
@@ -4159,6 +4193,14 @@ export type Database = {
       };
       set_staff_active: {
         Args: { p_role_id: string; p_active: boolean };
+        Returns: undefined;
+      };
+      sign_in_attempt: {
+        Args: { p_kind: string; p_email: string; p_ip: string };
+        Returns: { outcome: string; retry_after: number }[];
+      };
+      sign_in_succeeded: {
+        Args: never;
         Returns: undefined;
       };
       start_class_session: {

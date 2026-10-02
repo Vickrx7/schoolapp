@@ -74,6 +74,19 @@ export function halfDaySplit(
   return { time: minutesToTime(Math.floor(middle / 5) * 5), guessed: true };
 }
 
+/**
+ * The teacher's classes whose school year includes `date` (DECISIONS D-055, as amended in the
+ * Phase 6 review): a class kept from an earlier year, with its timetable, is never covered on a
+ * later day. A class without its year's dates (older sources) counts.
+ */
+export function classesOn(sources: SubPlanSources, date: LocalDate): SubPlanSources['classes'] {
+  return sources.classes.filter(
+    (c) =>
+      (c.yearStartsOn === null || c.yearStartsOn <= date) &&
+      (c.yearEndsOn === null || date <= c.yearEndsOn),
+  );
+}
+
 /** A block of the plan day, with the names the plan shows. */
 export interface CoverageBlock extends ResolvedBlock {
   /** 'covered': the substitute teaches or supervises; 'handover': another adult takes the group. */
@@ -130,7 +143,7 @@ export function coverageForDay(input: {
   const schedule = scheduleOf(sources);
   const day = dayKeyFor(date, schedule, sources.events);
 
-  const classes = [...sources.classes].sort((a, b) => compareFr(a.name, b.name));
+  const classes = classesOn(sources, date).sort((a, b) => compareFr(a.name, b.name));
   const homeroom = new Set(classes.filter((c) => c.role === 'homeroom').map((c) => c.id));
   const rooms = new Map(sources.rooms.map((r) => [r.id, r.name]));
   const subjects = new Map(sources.subjects.map((s) => [s.id, s.labelFr]));

@@ -597,6 +597,12 @@ still sequenced. Co-homeroom classes list the other homeroom teacher as a contac
 _Amended in Phase 6 (2026-10-02):_ sample classes (« Classe exemple », D-109) are never covered:
 `app.teacher_class_ids` leaves them out, so they never reach a plan, a code or the plan-source
 check, and the absence form says so.
+_Amended in Phase 6 review (2026-10-02):_ a plan day covers only the classes whose school year
+includes it. `app.sub_plan_sources` takes the teacher's classes whose year overlaps the plan's dates
+and gives each its `yearStartsOn` and `yearEndsOn`; the builder skips a class on a day outside its
+year (`classesOn`); « Aujourd'hui » (`loadToday`) does the same. A class a teacher keeps from an
+earlier year (its timetable stays after the year-end purge) is never in a later plan. Changing a
+year's dates refreshes the plans of its classes' teachers (`school_years_flag_absences`).
 
 **D-056 — Who sees what for the substitute hand-off (amends D-013 and D-016).** A released plan
 is a hand-off document; the teacher's units and progress otherwise stay private.
@@ -1763,6 +1769,16 @@ and records in the heartbeat `{boards, subPlans, absences, classes, students, sa
 aiUsage, feedback, invitationsExpired, invitationsDeleted, auditRows, outbox, authLogs}`; the
 worker logs exactly these. A class keeps its « Fiche de suppléance » and its kept class-mode
 results (aggregates without names; D-089 has their own retention) with its planning.
+_Amended in Phase 6 review (2026-10-02):_ the class purge deletes only the plans of the class's own
+school year (`plan_date <= ends_on`); a later plan that still lists the class (built before D-055's
+amendment) only loses that `sub_plan_classes` link, and the « purge again » check looks at plans of
+that year only, so a current plan is never deleted night after night. Teachers always get their 60
+days of notice: the first night a class is within 60 days of its purge date is recorded
+(`classes.students_purge_notice_on`, cleared if the dates move the purge out of the window again)
+and its students go once both the purge date and that night plus 60 days have come
+(`classPurgeDate`, used by the notices). A year edited into the past, or a shorter setting, delays
+the purge instead of running it that night. The run also deletes staff sign-in attempts after two
+days (D-121) and returns `signInAttempts`. pgTAP `32`.
 
 **D-106 — Operator actions are visible to the board.** Triggers audit changes to `boards.settings`
 keys `ai` and `retention` (`board.settings_changed {keys}`), to `module_entitlements`
@@ -1864,6 +1880,16 @@ command that takes an e-mail address (`invite`, `deactivate`, `set-library-revie
 body) and names it by id afterwards (`accountIdByEmail`, `apps/admin/src/context.ts`; a unit test
 runs each command against a recording fake of the API and finds no address in any URL). `invite`
 creates the Auth account with the `authenticated` role, as the worker does.
+_Amended in Phase 6 review (2026-10-02):_ a job holds one database connection at most: everything
+under an advisory lock runs on the lock's connection, and the ban sync of an invitation runs on the
+connection holding the address's lock (nested checkouts could take the whole pool, stop every job
+and the heartbeat); the pool fails a checkout after 30 s (`CONNECTION_TIMEOUT_MS`) instead of
+waiting forever. A delivery of `staff_invitation.created` for an invitation already `ready` syncs
+its account's ban again, so an unban that failed after the invitation completed is retried with the
+job (and a restore's hand-back repairs it too). `app.complete_staff_invitation` reads the inviter's
+admin boards from active roles only: an invitation left pending by someone who no longer administers
+its board is cancelled (`staff.invitation_cancelled`, actor system). `pnpm admin delete-user` also
+deletes the person's invitations, in every board, by account and by address.
 
 **D-108 — What board admins may change on a school (amends D-039).** Allowed: contact details and
 bell times, through `public.merge_school_settings`, which merges keys atomically (no
@@ -1959,6 +1985,11 @@ As built (slice S7): `PRIVACY.md` is written from the `legal` messages and says 
 detail for a board's privacy officer. The notice's « Qui y a accès » now names every reason IP Lynx
 may access the data (support, an incident, a restore, an upgrade), as `log-operator-access` records
 them; the terms did not change, so `CURRENT_TERMS_VERSION` stays.
+_Amended in Phase 6 review (2026-10-02):_ newer terms say what changed in one line (« Ce qui a
+changé : … »): each version has a key in `TERMS_CHANGES` (`packages/domain/src/legal.ts`) and its
+line under `welcome.changes` in both catalogues (unit tests check both). The newer-terms page has «
+Plus tard », back to the page the person came from with the banner still shown: it never blocks,
+even in the installed app, which has no Back button.
 
 **D-111 — Error monitoring for the pilot: scrubbed structured logs and error references; no
 third-party error service.** `@lynx/observability` gives `createLogger` (JSON lines on stdout),
@@ -2043,6 +2074,9 @@ As built (slice S7): the card said « IP Lynx a été avisé », which nothing g
 notifies nobody, and on a board's own servers IP Lynx does not run the install); it now says « Un
 problème a été détecté : signalez-le à la personne qui gère le serveur. » The external monitors and
 the on-call person are deployment steps (`DEPLOYMENT.md`).
+_Amended in Phase 6 review (2026-10-02):_ on a new install, a backup or clean-up that has not run
+yet (and that the database does not count as a problem yet) reads « pas encore (… cette nuit) » with
+« prévu », never « jamais » next to « normal » (`systemLineState`).
 
 **D-113 — Run-time configuration: no `NEXT_PUBLIC_*` in the web app (amends D-002).** The server
 reads `SUPABASE_URL`, `SUPABASE_ANON_KEY` and `APP_NAME` through `serverEnv()` at run time; Next's
@@ -2150,6 +2184,18 @@ and two recent events (`deploy/ci/restore-fixture.sql`), a fingerprint (`deploy/
 the backup, an empty database, the restore, the same fingerprint, `RESTORE_SMOKE=1 pnpm test:int
 restore-smoke` (the person is banned, only the idempotent event is handed back, a restored teacher
 signs in with an e-mailed code) and the pgTAP suite on the restored database.
+_Amended in Phase 6 review (2026-10-02):_ backups are signed. `backup.sh` writes a third file,
+`signature`: an HMAC-SHA256 with `BACKUP_SIGNING_KEY` (32 random bytes in hex, made by
+`generate-secrets.mjs`; computed in bash, so the key is never on a command line) over both encrypted
+files' SHA-256. The operator keeps a copy of the key with the age identity, off the server.
+`restore.sh` needs it (`--signing-key <file>` or `BACKUP_SIGNING_KEY`) and refuses an unsigned or
+altered backup before decrypting anything (the age public key alone lets anyone make an encrypted
+file); it then checks that every manifest count is a table of `public` or `auth` with a whole
+number, and reads the whole dump before loading it, refusing any line that is not what pg_dump
+writes for data (comments, SET, the search path, sequence values, COPY blocks, pg_dump's
+`\restrict`/`\unrestrict`): a psql command or another statement never runs on the operator's
+machine. The load runs with `--single-transaction` and `ON_ERROR_STOP`.
+`deploy/ci/restore-refusals.sh` checks the refusals in the backup CI job.
 
 **D-116 — Pilot feedback in the app (Assumption on who reads it).** « Commentaires » records a kind
 (problem, idea, question), up to 2,000 characters, the route's template, the error reference, the
@@ -2170,6 +2216,12 @@ confirmed (« Envoyer « Samuel » quand même ») and other personal details mu
 anything is sent. The server fills the rest: the route template of the page the action was posted
 from, the release, the language, and the sender's first school (else board); the browser sends
 only the kind of device (by width).
+_Amended in Phase 6 review (2026-10-02):_ feedback keeps no student's first name. Before it is
+stored, the web server replaces the first names of the students of the sender's schools with «
+[élève] » (« [student] » in English) with the AI privacy tools' matching; the roster comes from
+`feedback_student_names(text)` (a definer function: office staff, who cannot read students, are
+covered; it returns only names whose letters are in the text). Other personal details still block
+sending. The dialog says names are replaced; there is nothing to confirm.
 
 **D-117 — « Nouveautés » and the version.** `APP_RELEASE` is set when the image is built and shown
 in the footer, in `/api/health` and in logs and heartbeats. `/nouveautes` is a static page of
@@ -2200,6 +2252,10 @@ content), « État du système » and « Conservation des données », with the 
 (« Aperçu », « Personnel », « Écoles », « Années scolaires », « Approbation des ressources » with
 the Library module, « Utilisation de l'IA », « Commentaires »); the « Journal d'audit » tab comes
 with slice S5. A person who administers several boards picks one (`?board=`, a plain form).
+_Amended in Phase 6 review (2026-10-02):_ a principal who does not teach gets five items on the
+phone bar: « Suppléances » is left out (her dashboard opens it), because six labels at 360 px
+touched each other. « Journal d'audit » highlights « Direction » when the person has it, else «
+Conseil ».
 
 **D-119 — Security headers, logs and sessions.** In production, a Content Security Policy
 (`default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';
@@ -2237,6 +2293,25 @@ substitute's alert reveal is real, so the « Journal d'audit » step shows the o
 the demo itself; the invited teacher goes through « Bienvenue » and makes a sample class; everything
 is removed at the end.
 
+**D-121 — Staff sign-in is throttled by the app (Phase 6 review).** Supabase Auth keeps no count of
+wrong codes per address, and applies its per-address limits only when it can tell the client's
+address. Before every code request and code check, the web server asks `sign_in_attempt(kind, email,
+ip)` (the only function `anon` may run): code requests, 5 an hour per address and 30 every 15
+minutes per network; code checks, 5 wrong codes per code (then only a new code, or the e-mail's
+link, works: « Trop de codes erronés. Demandez un nouveau code, ou ouvrez le lien reçu par courriel.
+»), 20 a day per address and 30 every 15 minutes per network (« Trop de tentatives de connexion.
+Réessayez dans N minutes… »). A sign-in (code or link) clears the address's attempts
+(`sign_in_succeeded`, as the signed-in person). Attempts are stored as HMACs with a random key of
+the install (`app.install_secrets`, never in backups), never as addresses, and deleted after two
+days. An unknown network (`CLIENT_IP_HEADER`, `TRUSTED_PROXY_HOPS` not set up) gets no shared
+bucket: one person's wrong codes must not lock out a whole install. The link in the e-mail is not
+throttled (it cannot be guessed). On board-hosted installs Auth's own limits are on as well: Auth
+reads the client's address from `X-Lynx-Client-Ip` (`GOTRUE_RATE_LIMIT_HEADER`), which the web
+server sets on its sign-in calls; Auth is reachable only from inside, so nobody else can set it
+(`AUTH_RATE_LIMIT_OTP`, `AUTH_RATE_LIMIT_VERIFY`: 60 per address per 5 minutes, room for a school's
+morning). Hosted Supabase cannot be given the header; there the app's throttle is what counts, and
+Supabase's per-address limits apply to the web server's address (docs/phase-6.md, S7).
+
 **Amendments to existing decisions** (slice S7 wrote each one into its entry, as « Amended in Phase 6 »):
 
 | Decision     | Amendment                                                                                     |
@@ -2254,6 +2329,12 @@ is removed at the end.
 | D-056        | the office-issued flag exists; board admins see no substitute audit (D-103)                   |
 | D-078        | navigation (D-118)                                                                            |
 | SPEC §5      | deviation: no Vercel (D-114)                                                                  |
+
+**Amended in the Phase 6 review (round A):** D-055 (classes of the plan's year), D-105 (the class
+purge keeps to its year; 60 days of notice whatever the dates), D-107 (one connection per job, the
+unban retried, inviters who left, deleted accounts' invitations), D-110 (what changed; « Plus tard
+»), D-112 (« prévu »), D-115 (signed backups, checked restores), D-116 (no first names in feedback),
+D-118 (the direction's phone bar; « Journal d'audit »); new D-121 (the sign-in throttle).
 
 ## Schema additions beyond SPEC section 8
 

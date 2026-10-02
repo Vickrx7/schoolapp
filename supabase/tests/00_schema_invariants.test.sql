@@ -15,10 +15,12 @@ select is_empty(
   'anon has no privileges on any public table'
 );
 
-select is_empty(
-  $$select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace
-    where n.nspname = 'public' and has_function_privilege('anon', p.oid, 'execute')$$,
-  'anon cannot execute any public function'
+select is(
+  array(select p.proname::text from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+    where n.nspname = 'public' and has_function_privilege('anon', p.oid, 'execute')
+    order by 1),
+  array['sign_in_attempt'],
+  'anon executes no public function but the sign-in throttle (D-121)'
 );
 
 select is_empty(

@@ -29,6 +29,8 @@ export const RETENTION_COUNT_KEYS = [
   'invitationsDeleted',
   'auditRows',
   'outbox',
+  /** Staff sign-in attempts older than two days (D-121). */
+  'signInAttempts',
 ] as const;
 
 export type RetentionCountKey = (typeof RETENTION_COUNT_KEYS)[number];
