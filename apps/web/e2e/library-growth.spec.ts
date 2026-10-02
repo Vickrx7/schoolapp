@@ -47,7 +47,7 @@ async function openDialog(page: Page, trigger: Locator) {
 /** What the opinion line says for a number of opinions (the average's value is not checked). */
 function opinionLine(count: number): RegExp {
   if (count === 0) return /^Aucun avis pour l’instant$/;
-  if (count < 5) return new RegExp(`^${count} avis : pas encore assez pour une moyenne$`);
+  if (count < 5) return new RegExp(`^${count} avis\\s: pas encore assez pour une moyenne$`);
   return new RegExp(`sur 5 \\(${count} avis\\)$`);
 }
 
@@ -70,7 +70,7 @@ test('a teacher adapts a board resource: a private copy, credited, in the editor
 
   // The copy opens in the editor, credited to the original (read live: the demo pack's).
   await page.waitForURL(/\/library\/items\/[0-9a-f-]{36}\/edit$/);
-  await expect(page.getByText(/^Adaptation créée : modifiez-la à votre goût/)).toBeVisible();
+  await expect(page.getByText(/^Adaptation créée\s: modifiez-la à votre goût/)).toBeVisible();
   await expect(
     page.getByRole('link', { name: `Adaptée de « ${huard.title} »`, exact: true }),
   ).toBeVisible();

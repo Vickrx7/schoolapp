@@ -163,7 +163,7 @@ test.describe('on a Chromebook', () => {
     await expectAccessible(page);
     await joinWithCode(page, code);
     await page.waitForURL(/\/jouer\/partie$/);
-    await expect(page.getByText(/^Ton équipe : Les /)).toBeVisible();
+    await expect(page.getByText(/^Ton équipe\s: Les /)).toBeVisible();
     await noSidewaysScroll(page);
     await expectAccessible(page);
   });

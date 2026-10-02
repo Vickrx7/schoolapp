@@ -36,7 +36,7 @@ test('a teacher sees the day and checks off a lesson in one tap, with undo', asy
 
   await french.getByRole('button', { name: 'Leçon donnée' }).click();
   await expect(
-    page.getByText(/« Trouver l.idée principale » est marquée comme donnée\./),
+    page.getByText(/«\sTrouver l.idée principale\s» est marquée comme donnée\./),
   ).toBeVisible();
   await expect(french.getByRole('button', { name: 'Donnée' })).toBeVisible();
 

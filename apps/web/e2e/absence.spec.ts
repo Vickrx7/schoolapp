@@ -228,7 +228,7 @@ test('a multi-day plan skips a PA day added later and continues the lessons (wor
       await page.reload();
       await expect(page.getByRole('tab')).toHaveCount(2, { timeout: 1000 });
     }).toPass({ timeout: 20_000 });
-    await expect(page.getByText(/^Ven\. .+ : Journée pédagogique — pas de plan$/)).toBeVisible();
+    await expect(page.getByText(/^Ven\. .+\s: Journée pédagogique — pas de plan$/)).toBeVisible();
 
     // Monday's French continues where Thursday's ends.
     const tabs = page.getByRole('tab');

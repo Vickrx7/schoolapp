@@ -263,7 +263,7 @@ test('a resource is attached to the next lesson that shares its attente', async 
   await expect(dialog.getByLabel('Unité')).toContainText('Français');
   await expect(dialog.getByLabel('Leçon', { exact: true })).toHaveValue(/[0-9a-f-]{36}/);
   await expect(dialog.getByLabel('Leçon', { exact: true }).locator('option:checked')).toHaveText(
-    /^Leçon 4 : .*\(prochaine leçon\)$/,
+    /^Leçon 4\s: .*\(prochaine leçon\)$/,
   );
   await expectAccessible(page);
   await dialog.getByRole('button', { name: 'Joindre à la leçon 4' }).click();

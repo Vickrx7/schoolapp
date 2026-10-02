@@ -164,7 +164,7 @@ test('a team quiz on two tablets: join, play every kind, answers shown, end dele
       await expect(
         device.getByRole('heading', { name: /^Tu es l’appareil [12]\.$/ }),
       ).toBeVisible();
-      await expect(device.getByText(/^Ton équipe : Les (Huards|Castors)$/)).toBeVisible();
+      await expect(device.getByText(/^Ton équipe\s: Les (Huards|Castors)$/)).toBeVisible();
       await expect(device.getByText('Regarde l’écran : la partie va commencer.')).toBeVisible();
     }
     await expectAccessible(a!);
@@ -352,7 +352,7 @@ test('answers hidden: devices learn nothing until the end; kept class results', 
 
     // At the end the device learns its own total (answers were hidden).
     await page.getByRole('button', { name: 'Terminer', exact: true }).click();
-    await expect(device.getByText(/^Ton total : \d+ points?$/)).toBeVisible();
+    await expect(device.getByText(/^Ton total\s: \d+ points?$/)).toBeVisible();
 
     // Keep the class results.
     await page.getByRole('button', { name: 'Terminer la séance' }).click();

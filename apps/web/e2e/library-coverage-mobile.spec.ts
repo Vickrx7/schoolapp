@@ -10,7 +10,7 @@ import { DEMO, expectAccessible, login } from './helpers';
  */
 
 /** The level badges of attentes that have approved resources (« Peu : 1 … », « 3 … »). */
-const WITH_APPROVED = /^(Peu : )?\d+ ressources? approuvées?$/;
+const WITH_APPROVED = /^(Peu\s: )?\d+ ressources? approuvées?$/;
 
 async function noHorizontalScroll(page: Page) {
   const overflow = await page.evaluate(

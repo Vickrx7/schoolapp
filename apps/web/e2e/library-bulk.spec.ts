@@ -72,7 +72,7 @@ test('the reviewer approves a board draft in one step, and teachers find it appr
   await expect(
     run.getByRole('heading', {
       level: 3,
-      name: /^Lot du .+ : \d+ créées? · \d+ titres? semblables? · \d+ échecs? · [\d,]+ \$ US sur 5,00 \$ US$/,
+      name: /^Lot du .+\s: \d+ créées? · \d+ titres? semblables? · \d+ échecs? · [\d,]+ \$ US sur 5,00 \$ US$/,
     }),
   ).toBeVisible();
   await expect(run.getByText(/^\d+ brouillons? à réviser$/)).toBeVisible();
@@ -138,7 +138,7 @@ test('a board draft from a content pack waits under « Autres brouillons du cons
   await page.goto('/library/review?queue=drafts');
   const others = page.getByRole('region', { name: 'Autres brouillons du conseil' });
   const card = others.getByRole('article').filter({ has: page.getByRole('link', { name: title }) });
-  await expect(card.getByText(/^Ensemble : .+ 2026\.1$/)).toBeVisible();
+  await expect(card.getByText(/^Ensemble\s: .+ 2026\.1$/)).toBeVisible();
   await expect(card.getByText('Brouillon', { exact: true })).toBeVisible();
   await expectAccessible(page);
 

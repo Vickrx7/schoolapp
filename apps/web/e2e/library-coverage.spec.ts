@@ -14,7 +14,7 @@ import { DEMO, e2ePrefix, expectAccessible, login } from './helpers';
 
 const PREFIX = e2ePrefix('coverage');
 /** The level badges of attentes that have approved resources (« Peu : 1 … », « 3 … »). */
-const WITH_APPROVED = /^(Peu : )?\d+ ressources? approuvées?$/;
+const WITH_APPROVED = /^(Peu\s: )?\d+ ressources? approuvées?$/;
 
 const overview = (page: Page) =>
   page.getByRole('region', { name: /^Attentes qui ont au moins une ressource approuvée/ });
@@ -71,7 +71,7 @@ test('a teacher finds the attentes without approved resources', async ({ page })
   ).toBeVisible();
   // The overview marks the grade and subject shown.
   await expect(
-    overview(page).getByRole('link', { name: /^Mathématiques, 3e année :/ }),
+    overview(page).getByRole('link', { name: /^Mathématiques, 3e année\s:/ }),
   ).toHaveAttribute('aria-current', 'page');
 
   // An attente without approved resources, and what to do about it.
@@ -89,7 +89,9 @@ test('a teacher finds the attentes without approved resources', async ({ page })
   await expect(
     page.getByText(/^Seules les ressources approuvées par le conseil comptent/),
   ).toBeVisible();
-  await expect(page.getByText(/^« Parcourir le curriculum » peut donner un nombre/)).toBeVisible();
+  await expect(
+    page.getByText(/^«\sParcourir le curriculum\s» peut donner un nombre/),
+  ).toBeVisible();
 
   // « Sans ressource approuvée » narrows the list to the attentes without any.
   const withApproved = page.getByRole('main').getByRole('listitem').getByText(WITH_APPROVED);
@@ -131,6 +133,6 @@ test('the board’s content reviewer also sees what is in review', async ({ page
   // She works at no school, so she is offered no « Créer une ressource ».
   await expect(page.getByRole('link', { name: /^Créer une ressource/ })).toHaveCount(0);
   await page.getByText('Comment on compte', { exact: true }).click();
-  await expect(page.getByText(/^« En révision » compte/)).toBeVisible();
+  await expect(page.getByText(/^«\sEn révision\s» compte/)).toBeVisible();
   await expectAccessible(page);
 });
