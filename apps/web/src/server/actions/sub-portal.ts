@@ -10,6 +10,7 @@ import { fail, ok, okVoid, type ActionResult } from '@/lib/action-result';
 import { decryptAlert, parseKeyRing } from '../alerts-crypto';
 import { serverEnv } from '../env';
 import { reportError } from '../errors';
+import { webLogger } from '../observability';
 import { writeLocaleCookie } from '../locale';
 import { clientIp } from '../sub-portal/client-ip';
 import { codeMacs, deviceKey, ipKey } from '../sub-portal/crypto';
@@ -83,15 +84,11 @@ export async function redeemSubCode(_prev: RedeemState, form: FormData): Promise
       return redirect('/suppleance/plan');
     case 'wait':
       // A short prefix of the keyed hashes only: enough to follow one device or network.
-      console.warn(
-        JSON.stringify({
-          level: 'warn',
-          event: 'sub_portal.throttled',
-          device: device.slice(0, 8),
-          network: network.slice(0, 8),
-          retryAfter: result.retryAfter,
-        }),
-      );
+      webLogger.warn('sub_portal.throttled', {
+        device: device.slice(0, 8),
+        network: network.slice(0, 8),
+        retryAfter: result.retryAfter ?? null,
+      });
       return { outcome: 'wait', retryAfter: Math.max(1, result.retryAfter ?? 30) };
     case 'not_yet':
       return result.validOn && result.validFrom

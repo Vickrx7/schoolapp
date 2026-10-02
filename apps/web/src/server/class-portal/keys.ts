@@ -1,5 +1,7 @@
 import 'server-only';
+import { scrubError } from '@lynx/observability';
 import { serverEnv } from '../env';
+import { webLogger } from '../observability';
 import { classPortalKey } from './crypto';
 
 let reported = false;
@@ -14,13 +16,7 @@ export function classPortalHmacKey(): Buffer | null {
   } catch (e) {
     if (!reported) {
       reported = true;
-      console.error(
-        JSON.stringify({
-          level: 'error',
-          context: 'classPortalHmacKey',
-          message: (e as Error).message,
-        }),
-      );
+      webLogger.error('setting unusable', { context: 'classPortalHmacKey', error: scrubError(e) });
     }
     return null;
   }

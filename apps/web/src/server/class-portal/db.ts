@@ -1,6 +1,8 @@
 import 'server-only';
 import pg from 'pg';
+import { scrubError } from '@lynx/observability';
 import { serverEnv } from '../env';
+import { webLogger } from '../observability';
 import { createGate, createNegativeCache, type GateResult } from './gate';
 import { classPortalHmacKey } from './keys';
 import { CLASS_PORTAL_POOL_OPTIONS } from './pool-options';
@@ -37,9 +39,10 @@ function pool(): pg.Pool {
     const created = new pg.Pool({ connectionString: url, ...CLASS_PORTAL_POOL_OPTIONS });
     // A connection dropped while idle must not take the web server down.
     created.on('error', (err) => {
-      console.error(
-        JSON.stringify({ level: 'error', context: 'classPortalPool', message: err.message }),
-      );
+      webLogger.error('idle connection failed', {
+        context: 'classPortalPool',
+        error: scrubError(err),
+      });
     });
     holder.lynxClassPortalPool = created;
   }
@@ -47,6 +50,14 @@ function pool(): pg.Pool {
 }
 
 const gate = () => (holder.lynxClassPortalGate ??= createGate());
+
+/**
+ * `select 1` as the portal role, for the readiness check (`/api/health/ready`, D-112). It does
+ * not wait for a turn at the gate: a busy class is not an outage.
+ */
+export async function pingClassPortal(): Promise<void> {
+  await pool().query('select 1');
+}
 
 /**
  * Device tokens (their SHA-256, never the token) the database called gone in the last minute:

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   adminEnvSchema,
   appNameFrom,
+  appReleaseFrom,
   EnvError,
   loadEnv,
   webServerEnvSchema,
@@ -158,6 +159,14 @@ describe('loadEnv', () => {
     expect(appNameFrom({ APP_NAME: '  ' })).toBe('Lynx École');
     expect(appNameFrom({ NEXT_PUBLIC_APP_NAME: 'Ardoise' })).toBe('Ardoise');
     expect(appNameFrom({ APP_NAME: 'Présent!', NEXT_PUBLIC_APP_NAME: 'Ardoise' })).toBe('Présent!');
+  });
+
+  it('reads the release for log lines without failing (D-111)', () => {
+    expect(appReleaseFrom({})).toBe('dev');
+    expect(appReleaseFrom({ APP_RELEASE: '' })).toBe('dev');
+    expect(appReleaseFrom({ APP_RELEASE: '0.6.0+build.7' })).toBe('0.6.0+build.7');
+    expect(appReleaseFrom({ APP_RELEASE: 'not a release; rm -rf' })).toBe('dev');
+    expect(appReleaseFrom({ APP_RELEASE: 'x'.repeat(41) })).toBe('dev');
   });
 
   it('checks the release name and the contact addresses (D-110, D-117)', () => {

@@ -18,6 +18,7 @@ import {
   type ModelPrice,
 } from '@lynx/ai';
 import type { WorkerEnv } from '@lynx/config';
+import { scrubError } from '@lynx/observability';
 import type { Pool } from 'pg';
 import type { Logger } from './logger';
 
@@ -278,10 +279,7 @@ export async function runAiJob(
       problems: run.problems,
     });
   } catch (error) {
-    logger.error('ai job crashed', {
-      jobId: job.id,
-      error: error instanceof Error ? error.message : String(error),
-    });
+    logger.error('ai job crashed', { jobId: job.id, error: scrubError(error) });
     await finishJob(pool, job.id, { status: 'failed', errorCode: 'aiError' }).catch(
       () => undefined,
     );

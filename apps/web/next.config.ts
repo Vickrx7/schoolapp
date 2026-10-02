@@ -1,23 +1,8 @@
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
+import { headerRules } from './src/lib/security-headers';
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
-
-const securityHeaders = [
-  { key: 'X-Content-Type-Options', value: 'nosniff' },
-  { key: 'X-Frame-Options', value: 'DENY' },
-  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-  { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
-];
-
-// The substitute portal (DECISIONS D-049): never cached, never sent as a referrer (the plan's
-// address must not leak to a site a substitute follows a link to), never indexed. Later
-// entries override the same header from the global list.
-const portalHeaders = [
-  { key: 'Cache-Control', value: 'no-store' },
-  { key: 'Referrer-Policy', value: 'no-referrer' },
-  { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
-];
 
 const nextConfig: NextConfig = {
   // Self-contained server bundle for the Docker image (board-hosted installs).
@@ -40,17 +25,10 @@ const nextConfig: NextConfig = {
   // `next dev` would otherwise write AGENTS.md and CLAUDE.md into apps/web; the repo keeps its
   // own contributor notes (docs/HANDOFF.md).
   agentRules: false,
+  // Security headers and the portals' rules (src/lib/security-headers.ts, DECISIONS D-119): the
+  // Content Security Policy is built into production builds only.
   async headers() {
-    return [
-      { source: '/:path*', headers: securityHeaders },
-      { source: '/suppleance/:path*', headers: portalHeaders },
-      { source: '/s', headers: portalHeaders },
-      // Class devices (« Quiz sur les appareils », DECISIONS D-083 to D-090): the same rules. A
-      // class link's token travels in the fragment (`/jouer#k=…`), which never reaches the
-      // server, and the pages and the device API are never cached or indexed.
-      { source: '/jouer', headers: portalHeaders },
-      { source: '/jouer/:path*', headers: portalHeaders },
-    ];
+    return headerRules({ production: process.env.NODE_ENV === 'production' });
   },
 };
 

@@ -14,6 +14,7 @@ import { networkPrefix } from '@/server/class-portal/network';
 import { joinClassSession } from '@/server/class-portal/portal';
 import { deviceCookieValue, setDeviceTokenCookie } from '@/server/class-portal/session';
 import { serverEnv } from '@/server/env';
+import { webLogger } from '@/server/observability';
 import { clientIp } from '@/server/sub-portal/client-ip';
 
 export const runtime = 'nodejs';
@@ -75,15 +76,11 @@ export async function POST(request: Request) {
       return jsonResponse({ outcome: 'ok' });
     case 'wait':
       // A short prefix of the keyed hashes only: enough to follow one device or network.
-      console.warn(
-        JSON.stringify({
-          level: 'warn',
-          event: 'class_portal.throttled',
-          device: device.slice(0, 8),
-          network: network.slice(0, 8),
-          retryAfter: row.retry_after,
-        }),
-      );
+      webLogger.warn('class_portal.throttled', {
+        device: device.slice(0, 8),
+        network: network.slice(0, 8),
+        retryAfter: row.retry_after ?? null,
+      });
       return jsonResponse({ outcome: 'wait', retryAfter: Math.max(1, row.retry_after ?? 30) });
     default:
       return jsonResponse({ outcome: row.outcome });

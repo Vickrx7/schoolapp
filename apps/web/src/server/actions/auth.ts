@@ -1,9 +1,11 @@
 'use server';
 
+import { scrubError } from '@lynx/observability';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import { fail, okVoid, type ActionResult } from '@/lib/action-result';
 import { safeNextPath } from '@/lib/safe-path';
+import { webLogger } from '../observability';
 import { createSupabaseServerClient } from '../supabase';
 import { syncLocaleAtSignIn } from '../locale';
 
@@ -28,14 +30,13 @@ export async function requestLoginCode(rawEmail: string): Promise<ActionResult> 
     // auth server) is reported, not hidden behind "a code was sent".
     if (error.code === 'otp_disabled' || /signups not allowed/i.test(error.message))
       return okVoid();
-    console.error(
-      JSON.stringify({
-        level: 'error',
-        context: 'requestLoginCode',
-        status: error.status,
-        message: error.message,
-      }),
-    );
+    // The status and Auth's error code; the message is scrubbed (it can quote the address).
+    webLogger.error('login code not sent', {
+      context: 'requestLoginCode',
+      status: error.status ?? null,
+      authCode: typeof error.code === 'string' ? error.code : null,
+      error: scrubError(error),
+    });
     return fail('unexpected');
   }
   return okVoid();

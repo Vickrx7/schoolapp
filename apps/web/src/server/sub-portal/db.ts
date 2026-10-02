@@ -1,6 +1,8 @@
 import 'server-only';
 import pg from 'pg';
+import { scrubError } from '@lynx/observability';
 import { serverEnv } from '../env';
+import { webLogger } from '../observability';
 
 /**
  * The substitute portal's own database connection (DECISIONS D-049). Substitutes have no
@@ -34,13 +36,19 @@ function pool(): pg.Pool {
     });
     // A connection dropped while idle must not take the web server down.
     created.on('error', (err) => {
-      console.error(
-        JSON.stringify({ level: 'error', context: 'subPortalPool', message: err.message }),
-      );
+      webLogger.error('idle connection failed', {
+        context: 'subPortalPool',
+        error: scrubError(err),
+      });
     });
     holder.lynxSubPortalPool = created;
   }
   return holder.lynxSubPortalPool;
+}
+
+/** `select 1` as the portal role, for the readiness check (`/api/health/ready`, D-112). */
+export async function pingSubPortal(): Promise<void> {
+  await pool().query('select 1');
 }
 
 /** Runs one parameterized statement as the portal role. */

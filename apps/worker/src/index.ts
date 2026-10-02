@@ -4,6 +4,7 @@
  */
 import { loadEnv, workerEnvSchema } from '@lynx/config';
 import { createIntegrations } from '@lynx/integrations';
+import { scrubError } from '@lynx/observability';
 import { run } from 'graphile-worker';
 import pg from 'pg';
 import { createAiRuntime } from './ai';
@@ -12,14 +13,26 @@ import { CRONTAB_LINES } from './crontab';
 import { buildSubscriptions } from './handlers';
 import { startHealth } from './health';
 import { graphileLogOptions, reportJobFailures } from './job-errors';
-import { createLogger } from './logger';
+import { createLogger, guardWorkerConsole } from './logger';
 import { checkSchema } from './schema-guard';
 import { buildTaskList } from './tasks';
+
+// Libraries' console output is scrubbed like the worker's own lines (D-111).
+guardWorkerConsole();
 
 const env = loadEnv(workerEnvSchema);
 const logger = createLogger('worker');
 const pool = new pg.Pool({ connectionString: env.DATABASE_URL, max: env.WORKER_CONCURRENCY + 3 });
-pool.on('error', (err) => logger.error('idle database connection failed', { error: err.message }));
+pool.on('error', (err) =>
+  logger.error('idle database connection failed', { error: scrubError(err) }),
+);
+// A connection that fails while checked out is logged too, instead of crashing the process
+// (graphile-worker asks for both handlers).
+pool.on('connect', (client) =>
+  client.on('error', (err) =>
+    logger.error('database connection failed', { error: scrubError(err) }),
+  ),
+);
 
 // A database without this release's migrations: stop before taking any job (D-114).
 const missing = await checkSchema({ pool, logger });
@@ -65,7 +78,7 @@ reportJobFailures(runner, createLogger('jobs'));
 const wake = () =>
   runner
     .addJob('dispatch_outbox', {}, { jobKey: 'dispatch_outbox', jobKeyMode: 'preserve_run_at' })
-    .catch((err: unknown) => logger.error('could not queue dispatch', { error: String(err) }));
+    .catch((err: unknown) => logger.error('could not queue dispatch', { error: scrubError(err) }));
 
 // Dispatch immediately when app.emit_event() sends a notification.
 const listener = await pool.connect();
@@ -85,7 +98,7 @@ listener.on('notification', () => void wake());
 listener.on('error', (err) => {
   // The one-minute cron sweep keeps events flowing; exit so the process manager restarts us
   // with a fresh LISTEN connection.
-  logger.error('notification connection lost', { error: err.message });
+  logger.error('notification connection lost', { error: scrubError(err) });
   process.exitCode = 1;
   void shutdown('listener-error');
 });

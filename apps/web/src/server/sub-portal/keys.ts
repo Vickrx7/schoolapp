@@ -1,6 +1,8 @@
 import 'server-only';
 import type { KeyRing } from '../alerts-crypto';
+import { scrubError } from '@lynx/observability';
 import { serverEnv } from '../env';
+import { webLogger } from '../observability';
 import { subCodeRing } from './crypto';
 
 let reported = false;
@@ -15,9 +17,7 @@ export function subCodeKeys(): KeyRing | null {
   } catch (e) {
     if (!reported) {
       reported = true;
-      console.error(
-        JSON.stringify({ level: 'error', context: 'subCodeKeys', message: (e as Error).message }),
-      );
+      webLogger.error('setting unusable', { context: 'subCodeKeys', error: scrubError(e) });
     }
     return null;
   }

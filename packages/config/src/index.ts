@@ -49,6 +49,15 @@ const appRelease = z
   .regex(/^[A-Za-z0-9][A-Za-z0-9._+-]{0,39}$/, 'letters, digits, . _ + - (at most 40)')
   .default('dev');
 
+/**
+ * `APP_RELEASE` for log lines (D-111, D-117), read at run time without validating the rest of the
+ * environment, so a logger never fails: `dev` when unset or not a valid release name.
+ */
+export function appReleaseFrom(source: EnvSource = process.env): string {
+  const parsed = appRelease.safeParse(source.APP_RELEASE || undefined);
+  return parsed.success ? parsed.data : 'dev';
+}
+
 /** Settings the web app needs on the server. */
 export const webServerEnvSchema = z.preprocess(
   withLegacyNames,

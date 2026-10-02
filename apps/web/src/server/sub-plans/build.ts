@@ -6,6 +6,7 @@ import {
   type SubPlanSources,
 } from '@lynx/domain';
 import type { Json } from '@lynx/db';
+import { webLogger } from '../observability';
 
 /**
  * Builds every school day of an absence in the request (DECISIONS D-047): a day whose build
@@ -20,15 +21,12 @@ export function buildForAbsence(
   return buildAbsencePlans(sources, absence, {
     now: new Date(),
     onError: (date, error) =>
-      console.warn(
-        JSON.stringify({
-          level: 'warn',
-          context: 'buildAbsencePlans',
-          absenceId: context.absenceId ?? null,
-          date,
-          error: error instanceof Error ? error.name : 'unknown',
-        }),
-      ),
+      webLogger.warn('plan day fell back to the minimal plan', {
+        context: 'buildAbsencePlans',
+        absenceId: context.absenceId ?? null,
+        date,
+        error: error instanceof Error ? error.name : 'unknown',
+      }),
   });
 }
 

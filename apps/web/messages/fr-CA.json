@@ -2756,6 +2756,7 @@
     "loading": "Chargement…",
     "errorTitle": "Oups!",
     "errorBody": "Quelque chose n’a pas marché. Réessaie.",
+    "errorReference": "Référence : {ref}",
     "retry": "Réessayer",
     "teams": {
       "huards": "Les Huards",

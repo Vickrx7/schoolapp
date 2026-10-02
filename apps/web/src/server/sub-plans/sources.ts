@@ -1,6 +1,7 @@
 import 'server-only';
 import { subPlanSourcesSchema, type LocalDate, type SubPlanSources } from '@lynx/domain';
 import { reportError } from '../errors';
+import { webLogger } from '../observability';
 import type { createSupabaseServerClient } from '../supabase';
 
 type Supabase = Awaited<ReturnType<typeof createSupabaseServerClient>>;
@@ -64,14 +65,10 @@ export async function loadSubPlanSources(
   const parsed = subPlanSourcesSchema.safeParse(record ? { ...record, library } : data);
   if (!parsed.success) {
     // Paths only: the sources hold lesson text.
-    console.error(
-      JSON.stringify({
-        level: 'error',
-        context: 'loadSubPlanSources',
-        message: 'unexpected sources shape',
-        paths: parsed.error.issues.slice(0, 5).map((i) => i.path.join('.')),
-      }),
-    );
+    webLogger.error('unexpected sources shape', {
+      context: 'loadSubPlanSources',
+      paths: parsed.error.issues.slice(0, 5).map((i) => i.path.join('.')),
+    });
     return { ok: false, error: 'unexpected' };
   }
   const fingerprint = record && typeof record.fingerprint === 'string' ? record.fingerprint : null;

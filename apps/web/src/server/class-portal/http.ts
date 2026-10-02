@@ -4,6 +4,7 @@
  * on POSTs, and a request body read with a size limit. Pure (no server-only import) so it is
  * unit-tested; the route handlers pass their own request and settings.
  */
+import { webLogger } from '../observability';
 import { BUSY_RETRY_AFTER_SECONDS } from './gate';
 
 /** A device's POST body is tiny (a code, a team or one answer). */
@@ -30,14 +31,11 @@ export function busyResponse(): Response {
  */
 export function portalErrorResponse(context: string, error: unknown): Response {
   const code = (error as { code?: unknown } | null)?.code;
-  console.error(
-    JSON.stringify({
-      level: 'error',
-      context: `classPortal.${context}`,
-      code: typeof code === 'string' ? code : null,
-      error: error instanceof Error ? error.name : 'unknown',
-    }),
-  );
+  webLogger.error('class portal call failed', {
+    context: `classPortal.${context}`,
+    code: typeof code === 'string' ? code : null,
+    error: error instanceof Error ? error.name : 'unknown',
+  });
   return jsonResponse({ status: 'error' }, 500);
 }
 

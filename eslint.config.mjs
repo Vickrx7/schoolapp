@@ -51,6 +51,25 @@ export default defineConfig([
     files: webFiles,
     languageOptions: { globals: { ...globals.browser } },
   },
+  // The web app reads its settings on the server at run time (DECISIONS D-113): Next would
+  // build a `NEXT_PUBLIC_*` value into the app, tying an image to one install.
+  {
+    files: ['apps/web/src/**/*.{js,jsx,ts,tsx}'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        ...[
+          'Identifier[name=/^NEXT_PUBLIC_/]',
+          'Literal[value=/^NEXT_PUBLIC_/]',
+          'TemplateElement[value.raw=/^NEXT_PUBLIC_/]',
+        ].map((selector) => ({
+          selector,
+          message:
+            'No NEXT_PUBLIC_ settings in the web app: read them on the server with serverEnv() (D-113).',
+        })),
+      ],
+    },
+  },
   // Student devices (« Quiz sur les appareils », DECISIONS D-083, D-086): the device pages, their
   // components and the class portal's server code reach the database only through the portal
   // role. They may not import a Supabase client, the staff session, the library's queries or

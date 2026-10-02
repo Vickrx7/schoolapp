@@ -95,7 +95,8 @@ Mon Tableau, Cartable, Ardoise). No availability or trademark check has been don
 | `3aaf668` | Marketing: app screenshots; `88bb93b` the library and class mode shown as available      |
 | `3e3f1bb` | Phase 6 foundation: D-102 to D-120, shared schema, settings, navigation, stubs           |
 | `ca21d2c` | Phase 6 S1: invitations, roles, access, deletions, sample classes, settings (database)   |
-| (latest)  | Phase 6 S2: audit viewer, AI usage totals, retention, heartbeats (database, worker, CLI) |
+| `0d85e15` | Phase 6 S2: audit viewer, AI usage totals, retention, heartbeats (database, worker, CLI) |
+| (latest)  | Phase 6 S3a: scrubbed logs, error references, health checks, security headers            |
 
 **Verified (locally, from an empty database, and in CI on each pushed commit):** 1056 unit tests
 (none skipped), 1611 pgTAP tests, 78 integration tests, 94 Playwright tests (desktop, phone and
@@ -174,7 +175,7 @@ board (no function a signed-in user may run takes a user id); the alerts switch 
 settings stay the direction's; the pilot terms, sample classes (never in a substitute plan) and
 feedback have their functions; and the operator's `pnpm admin log-operator-access`, `delete-user`
 and `delete-board` work (D-106, D-107 « As built »). There are no screens for them yet (S4, S6).
-Slice S2 (latest commit, `20261201090200_audit_retention.sql`, pgTAP `28` and `29`) closes the raw
+Slice S2 (`0d85e15`, `20261201090200_audit_retention.sql`, pgTAP `28` and `29`) closes the raw
 audit table to the API and serves the « Journal d'audit » through `list_audit_entries` (the
 school's direction reads alerts, absences and substitute days; board admins read administrative
 and approval entries only; labels per viewer, never a student's name; the export is audited), adds
@@ -186,7 +187,16 @@ invitations, the outbox, Supabase Auth's log and the audit log, per board within
 `settings.retention` (`pnpm admin set-retention`, a year at least). The worker beats every minute
 on its own timer and answers `/healthz` (`WORKER_HEALTH_PORT`); board admins get
 `system_status()` and the operator `pnpm admin status` (D-103 to D-106, D-112 « As built »). The
-screens come in S4 and S5.
+screens come in S4 and S5. Slice S3a (latest commit) adds the web operations: `@lynx/observability`
+writes every log line of the web server and the worker as scrubbed JSON (no e-mail, phone number,
+postal code, identification number, token, quoted text or value Postgres echoes back; errors keep
+their name, SQLSTATE, digest, scrubbed message and frames, never their other properties), Next's
+own console output included; error pages show « Référence : … », the digest or reference that is
+in the matching log line, and browsers report their errors to `/api/client-error` (name,
+reference, route template, a hash of the message); `/api/health` and `/api/health/ready` for
+monitors; the Content Security Policy and `X-Robots-Tag` on every page (not on PDFs); and an ESLint
+rule against `NEXT_PUBLIC_` (D-111, D-112, D-113, D-119 « As built »). No third-party error
+service: logs stay on the server.
 
 **Other deliverables:**
 
@@ -307,6 +317,18 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   later ones, and a ligature could split words. Every render in `server/pdf/render.ts` calls
   `warmPdfFonts()` first (`server/pdf/fonts.ts`); a new PDF must go through `render.ts` too.
 - **Deletes:** `rm -rf *` style commands are refused by a safety check. Use explicit paths.
+- **Production logs are JSON lines** (D-111): `next start`, the standalone server and the worker
+  print every console message, Next's error reports included, as scrubbed JSON (from the web
+  server's first request on), so quoted values and addresses in error messages read « … » and
+  « [courriel] ». To debug, match a user's « Référence » to the `digest` or `ref` of a log line,
+  then reproduce with `pnpm dev`, which does not scrub.
+- **Security headers:** the Content Security Policy is built into production builds only
+  (`apps/web/src/lib/security-headers.ts`); a new third-party script, font, image host or API
+  call from the browser will be blocked and must be a deliberate change there (the browser never
+  calls Supabase).
+- **Inlined settings check (D-113):** delete `apps/web/.next/dev` (left by `next dev`, it holds
+  the development value), build with `SUPABASE_URL=http://build.invalid`, then
+  `grep -rl build.invalid apps/web/.next` must find nothing.
 - **Next warning:** "next start does not work with output: standalone" is harmless in tests. The
   standalone server is at `apps/web/.next/standalone/apps/web/server.js` (monorepo tracing root);
   there is no production or Docker setup yet (Phase 6, D-029).

@@ -3,7 +3,8 @@ import fr from '../../messages/fr-CA.json';
 
 // errors.ts is server-only; the marker package throws outside a React server bundle.
 vi.mock('server-only', () => ({}));
-const { errorKey, readinessFieldErrors, READINESS_CODES } = await import('./errors');
+const { errorKey, readinessFieldErrors, READINESS_CODES, reportError } = await import('./errors');
+const { originalConsole } = await import('@lynx/observability');
 
 describe('database errors shown to users', () => {
   it('maps the substitute hand-off codes to their messages', () => {
@@ -134,5 +135,41 @@ describe('database errors shown to users', () => {
     expect(errorKey({ code: '22023' })).toBe('invalid');
     expect(errorKey({ code: 'XX000' })).toBe('unexpected');
     expect(errorKey(null)).toBe('unexpected');
+  });
+
+  it('logs unexpected errors as one scrubbed line (D-111)', () => {
+    const lines: string[] = [];
+    const spy = vi
+      .spyOn(originalConsole, 'error')
+      .mockImplementation((line) => void lines.push(String(line)));
+    try {
+      expect(
+        reportError('inviteStaff', {
+          code: 'XX000',
+          message:
+            'duplicate key value violates unique constraint "users_email_key": Key (email)=(isabelle.tremblay@demo.lynx.test) already exists',
+          details: 'Failing row contains (Léa, 613-555-0142)',
+        }),
+      ).toBe('unexpected');
+      // Known errors are the user's message, not a fault: nothing is logged.
+      expect(reportError('saveUnit', { code: '42501', message: 'Léa' })).toBe('forbidden');
+    } finally {
+      spy.mockRestore();
+    }
+    expect(lines).toHaveLength(1);
+    for (const sentinel of ['isabelle', 'tremblay', 'Léa', '555-0142', 'users_email_key']) {
+      expect(lines[0]).not.toContain(sentinel);
+    }
+    expect(JSON.parse(lines[0]!)).toMatchObject({
+      level: 'error',
+      component: 'web',
+      message: 'unexpected',
+      context: 'inviteStaff',
+      error: {
+        code: 'XX000',
+        message:
+          'duplicate key value violates unique constraint "…": Key (email)=(…) already exists',
+      },
+    });
   });
 });

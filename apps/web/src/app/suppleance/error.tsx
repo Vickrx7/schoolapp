@@ -1,19 +1,18 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
-import { Button } from '@/components/ui/button';
-import { EmptyState } from '@/components/ui/page';
+import { ErrorPanel } from '@/components/app/error-panel';
 
 /** Something failed on a portal page: the plan was not lost; try again or call the office. */
-export default function PortalError({ reset }: { error: Error; reset: () => void }) {
-  const t = useTranslations();
+export default function PortalError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
   return (
     <div className="py-4">
-      <EmptyState
-        title={t('errors.title')}
-        body={t('errors.unexpected')}
-        action={<Button onClick={reset}>{t('common.retry')}</Button>}
-      />
+      <ErrorPanel error={error} reset={reset} />
     </div>
   );
 }

@@ -1,4 +1,6 @@
 import 'server-only';
+import { scrubText } from '@lynx/observability';
+import { webLogger } from './observability';
 
 interface PgLikeError {
   code?: string;
@@ -144,13 +146,21 @@ export function readinessFieldErrors(
   return { [`readiness.${code}`]: `readiness.${code}` };
 }
 
-/** Logs unexpected errors server-side (never student data) and returns the error key. */
+/**
+ * Logs unexpected errors server-side and returns the error key. The line holds the context, the
+ * error's code and its scrubbed message (DECISIONS D-111): never a value Postgres echoed back, a
+ * quoted name or an e-mail.
+ */
 export function reportError(context: string, error: PgLikeError | null | undefined): string {
   const key = errorKey(error);
   if (key === 'unexpected') {
-    console.error(
-      JSON.stringify({ level: 'error', context, code: error?.code, message: error?.message }),
-    );
+    webLogger.error('unexpected', {
+      context,
+      error: {
+        code: typeof error?.code === 'string' ? error.code.slice(0, 12) : null,
+        message: scrubText(error?.message ?? ''),
+      },
+    });
   }
   return key;
 }

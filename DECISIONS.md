@@ -1779,6 +1779,22 @@ scrubText(message), frames[]}` and never enumerates an error's own properties (a
 `NEXT_TELEMETRY_DISABLED=1` and `DO_NOT_TRACK=1` in every image. _Why no GlitchTip:_ it needs
 Postgres and Valkey on the pilot server for a handful of users; the logs stay in Canada for 14
 days (D-119). `ERROR_REPORTING_DSN` is documented as a later hook.
+As built (slice S3a): `createLogger` scrubs every string of a line (`scrubText`) and reduces every
+error to `scrubError`, whatever a caller passes, so a careless `{ error: err.message }` cannot
+reach the logs; only the error reference (`digest`, `ref`) and a browser's `messageHash` are kept
+as they are when they have the expected shape. In production, `register()` also replaces the
+console (`guardConsole`): Next prints a failed request's error with `console.error(error)`, which
+shows its raw message and every own property, so console output becomes scrubbed lines too, and
+the copy of an error `onRequestError` already logged is dropped (Next 16 prints first, so a printed
+error is held 250 ms; held lines are written at exit). The result is one line per failed request
+with the route template (`/classes/[classId]`), its type and the digest the page shows. Browser
+reports are sent with `fetch(…, { keepalive: true })`, not `sendBeacon`: a beacon's `Origin` is
+`null` on pages sent with `Referrer-Policy: no-referrer` (the substitute portal, class devices),
+and the endpoint accepts its own origin only; it also refuses any report with a message field.
+The worker's graphile-worker logger is replaced (its metadata holds the job's payload: only the
+error is kept), its console is guarded the same way, and a job that failed for good gets one line. Every error page shows « Référence :
+… » (`global-error.tsx` in both languages, since it has no translations); route templates turn
+ids into `[id]` and any segment that is not a route name into `[x]`.
 
 **D-112 — Health, heartbeats, external checks and « État du système ».** `/api/health` is liveness
 only; `/api/health/ready` checks Auth (`/auth/v1/health`), PostgREST and the portals' pools when
@@ -1803,6 +1819,12 @@ at}}`; a backup or retention job that never ran counts as a problem only once th
 oldest board) is more than 26 hours old. `operator_status()` returns `{at, heartbeats[], outbox
 {pending, oldestPendingAt, failing}, aiJobs {queued, running, failedLastDay}, invitations
 {pending}}`, printed by `pnpm admin status`.
+As built (slice S3a): `/api/health` answers `{"status": "ok", "release": …}`; `/api/health/ready`
+checks Auth's `/auth/v1/health` (200), PostgREST with a `HEAD` of `/rest/v1/` (up below 500, so a
+refusal of the anonymous key still counts as up) and `select 1` on each configured portal pool
+(without waiting at the class portal's gate), each cut off after 2 s, and answers `{"status":
+"ok"}` or 503 `{"status": "unavailable"}`; the server logs which checks fail, once each time
+that set changes. Both are `no-store`, dynamic, and skip the session (`proxy.ts`).
 
 **D-113 — Run-time configuration: no `NEXT_PUBLIC_*` in the web app (amends D-002).** The server
 reads `SUPABASE_URL`, `SUPABASE_ANON_KEY` and `APP_NAME` through `serverEnv()` at run time; Next's
@@ -1816,6 +1838,9 @@ S0): `lib/app-name.ts` reads `appNameFrom(process.env)` (`@lynx/config`) when th
 not `serverEnv()`, because the PDF renderer that prints the name is unit-tested without the web
 server's settings; the admin CLI and the worker read `SUPABASE_URL` with the same fallback; the
 CI workflow writes the live local-stack values under the new names.
+As built (slice S3a): the ESLint rule (`no-restricted-syntax`, `apps/web/src`) refuses any
+identifier, string or template text starting with `NEXT_PUBLIC_` (a unit test pins it), and the
+build with `SUPABASE_URL=http://build.invalid` leaves no trace of that address in `.next`.
 
 **D-114 — Deployment: two images configured at run time; hosted is Supabase Pro in Canada Central
 plus one Canadian server running Docker Compose; board-hosted is the same Compose plus a minimal
@@ -1893,6 +1918,12 @@ addresses are masked to /24 and /64. Container logs go to journald, kept 14 days
 a 7-day time box and a 12-hour inactivity timeout (**Assumption**; shared classroom computers).
 No personal value in an API query string: lookups by e-mail or name use RPC bodies, because the
 hosted gateway's logs record URLs.
+As built (slice S3a): the headers come from `apps/web/src/lib/security-headers.ts`; PDF routes
+(a last segment `pdf`) carry every header but the policy, because a PDF opened in the browser is a
+plugin document that Chrome checks against its own `object-src`. The portal rules (`no-store`,
+`no-referrer`) still apply on top. The browser tests run on the production build, so every page
+family (app, portal, `/jouer`, projector) is exercised under the policy; `e2e/operations.spec.ts`
+also fails on any policy violation the browser reports.
 
 **D-120 — The demo is scripted and tested; a hosted demo site is deferred.** `docs/demo-script.md`
 is the script (15 and 5 minutes); `e2e/demo.spec.ts` clicks through it on the lite stack with the

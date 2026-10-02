@@ -2756,6 +2756,7 @@
     "loading": "Loading…",
     "errorTitle": "Oops!",
     "errorBody": "Something went wrong. Try again.",
+    "errorReference": "Reference: {ref}",
     "retry": "Try again",
     "teams": {
       "huards": "The Loons",
