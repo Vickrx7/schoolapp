@@ -115,6 +115,19 @@ export async function expectAccessible(page: Page) {
   // A client refresh (after a server action) replaces the page's head: wait until it has its
   // title again, so axe checks a settled page (axe checks the title too).
   await expect(page).toHaveTitle(/\S/);
+  // axe measures contrast on what is painted at that instant: let finite animations and
+  // transitions end first (a toast fading in after a save, a colour changing after a tap).
+  // Endless ones (a spinner, a loading pulse) are left running.
+  await page.waitForFunction(
+    () =>
+      document
+        .getAnimations()
+        .every(
+          (a) => a.playState !== 'running' || a.effect?.getComputedTiming().iterations === Infinity,
+        ),
+    undefined,
+    { timeout: 5_000 },
+  );
   const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
   expect(
     results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical'),
