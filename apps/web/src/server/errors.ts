@@ -122,6 +122,11 @@ export function errorKey(error: PgLikeError | null | undefined): string {
     // « Commentaires de bulletin » (supabase/migrations/20270118090100_report_comments.sql; D-129).
     case 'LXK01':
       return 'reportBankNotTeaching';
+    // « Info-parents » (supabase/migrations/20270125090000_class_newsletters.sql; D-137, D-138).
+    case 'LXN01':
+      return 'newsletterWeek';
+    case 'LXN02':
+      return 'newsletterPurged';
     default:
       return 'unexpected';
   }

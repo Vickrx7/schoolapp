@@ -136,6 +136,8 @@ the class team's like its units: the direction, office staff and the board's adm
 unit's planned weeks, its attentes or a class's coverage, and there is no view of coverage across
 classes or teachers. The long-range plan PDF (D-127) is the teacher's to hand over; the app sends
 it to no one.
+_Amended for « Info-parents » (2026-10-03):_ a class's weekly messages to families are the
+class team's, like its planning: never the direction's, the office's or the board's (D-136).
 
 **D-014 — Students are stored by a single first-name/nickname field.** The column is
 `students.first_name` (max 40 characters). There is no last-name field anywhere. For two students
@@ -296,6 +298,9 @@ language; curriculum strands stay French. Times read "8 h 45" in French and "8:4
 The login email stays in French for now (the auth server sends one template). Inclusive writing:
 neutral wording where possible ("la direction", "la personne suppléante"), the middle dot only where
 unavoidable ("Enseignant·e").
+_Amended for « Info-parents » (2026-10-03):_ the sentences a message to families is drafted
+with come from both catalogues whatever the interface's language (`newsletterText`: French from
+`fr-CA.json`, English from `en-CA.json`), since the message goes out in both (D-136, D-137).
 
 **D-034 — Phone-first, accessible.** Tap targets are at least 44 px, bottom navigation on phones,
 native pickers for dates, times and selects. Target: WCAG 2.0 AA (Ontario's AODA). The end-to-end
@@ -310,6 +315,8 @@ the teacher screens; their oversight views come in Phase 6.
 _Amended in Phase 6 (2026-10-02):_ the oversight views now exist for principals and vice-principals:
 « Direction » (`/direction`) and « Journal d'audit » (`/audit`), D-102 and D-103. Class pages stay
 the teaching team's.
+_Amended for « Info-parents » (2026-10-03):_ « Info-parents » is a class page of the teaching
+team too (D-136).
 
 ## AI (Phase 2)
 
@@ -1859,6 +1866,10 @@ library resources (kept until the author deletes them; « Créer une banque avec
 `ai_jobs`, 30 days). Report card comments never reach the server: the device removes them at
 sign-out, when another account signs in on that browser, or 60 days after the « remise » (D-130).
 The class purge cannot reach a device and does not need to: the expiry comes long before.
+_Amended for « Info-parents » (2026-10-03):_ the class purge also deletes the class's
+« Info-parents » messages (`class_newsletters`; the `class.students_purged` entry counts them as
+`newsletters` when there were some), and a purged class takes no new message (`LXN02`), so the
+« purge again » check needs no new clause (D-138). No new job or setting.
 
 **D-106 — Operator actions are visible to the board.** Triggers audit changes to `boards.settings`
 keys `ai` and `retention` (`board.settings_changed {keys}`), to `module_entitlements`
@@ -2885,6 +2896,121 @@ As built (slice S3): `app/(app)/classes/[classId]/bulletins/`, `ClassTabs`' `bul
 `server/report-comments/view-model.ts`, `components/today/report-reminder.tsx`,
 `loadReportReminders`; e2e `report-comments.spec.ts` and `report-comments-mobile.spec.ts` (360 px).
 
+## « Info-parents » (post-MVP 3)
+
+Feature #3 after the pilot build: a weekly message from a class to its families, in French and in
+English, drafted by the app from the class's own data, edited by the class team, then copied (or,
+from slice S2, printed) by the teacher into the board's own channels. The app sends nothing to
+families, stores no parent data and has no parent accounts. Built in three slices: S1 (the data,
+the draft, the editor, copying; D-136 to D-138, D-140), S2 (the PDF and the « Aujourd'hui »
+reminder; D-141, D-142) and S3 (« Traduire en anglais (IA) », the terms and the docs; D-139,
+D-143). The lead answered the plan's questions for Mike (2026-10-03), and the slices build on
+them: (1) the app sends nothing: copy or print only, no parent data, no parent accounts; (2)
+« Traduire en anglais (IA) » in v1, with stricter rules than D-038 (a paragraph naming « M. » or
+« Mme » someone the app does not know is never sent; capitalized words are shown to check; off
+wherever AI is off; the preview shows exactly what is sent); (3) no « Améliorer le texte (IA) »
+in v1, a typography fix without AI instead; (4) other languages after the pilot; (5) messages are
+kept with the students' first names (a year after the school year) and deletable at any time; (6)
+« Moment de foi » included by default, one click removes it.
+
+**D-136 — Info-parents: one message per class and week, the class team's; the app sends nothing
+(amends D-013, D-033 and D-036).** A class has at most one message per week
+(`class_newsletters`, `week_of` a Monday of the class's school year), read and written by the class
+team with a teacher role at the class's school (row level security through `app.my_class_ids()`:
+never the direction, the office, the board's admins, a removed member or a deactivated account;
+the tab « Info-parents » after « Bulletins »). `/classes/[id]/info-parents` lists them, newest week
+first (« Brouillon · modifié le 8 oct. par Mme Tremblay », « Envoyé le 9 oct. »), and offers
+« Préparer la semaine du … » for this week and the next (this week's Monday from the school's date;
+on a weekend, the week that ends) when they have none; `/classes/[id]/info-parents/[weekOf]`
+prepares a week (« Préparer le message ») or edits it. The first draft is built from the class's
+own data, without AI (D-137). Nothing is sent: « Copier le français », « Copy the English » and
+« Copier les deux » put plain text on the browser's clipboard (the header, the sections with their
+headings, the signature; French first), and « Marquer comme envoyé » only records that the teacher
+sent it (`status`, `sent_at`). No parent data, no parent account, no e-mail or text message, no
+read receipt (SPEC §12 « Parents » stays Vision). The family-facing sentences come from both
+catalogues whatever the interface's language (`newsletterText` in `fr-CA.json` and `en-CA.json`).
+No event and no audit: drafting a message is a teacher's private professional activity (D-024,
+D-103). _Why:_ teachers already write this message every week by hand; the class's planning and
+calendar hold most of it; and sending would need parent contact data, the Parents module and a
+privacy review (Q1). As built (slice S1): migration `20270125090000_class_newsletters.sql`; pgTAP
+`36_class_newsletters`; `packages/domain/src/newsletter/`; `server/queries/newsletters.ts`,
+`server/actions/newsletters.ts`, `server/newsletter/`; `components/info-parents/`; e2e
+`info-parents.spec.ts` and `info-parents-mobile.spec.ts`.
+
+**D-137 — The content of a message.** `content` is `{v: 1, signature, sections}`: the eight sections
+in a fixed order (`message`, `thisWeek` « Cette semaine en classe », `nextWeek` « La semaine
+prochaine », `dates` « Dates à retenir », `reminders` « Rappels », `atHome` « Pour aider à la
+maison », `faith` « Moment de foi », `closing`), each with `off` (« Retirer la section »: kept,
+not copied) and at most 12 paragraphs, at most 60 in all. A paragraph has an id (eight lowercase
+letters or digits), its French (1,000 characters) and English (1,500), `enFrom` (the French its
+English was written from), `enBy` (`app`, `teacher` or `ai`) and `from` (one of the app's lines,
+with the id it came from, or `typed`). So the English of each paragraph says where it stands, in
+words: « à écrire », « préparé par l'application », « traduit par l'IA — à relire » (slice S3),
+« à mettre à jour (le français a changé) » or « écrit par vous » (a French that differs only by
+spaces or apostrophes is the same French). The header (the school, the class, « Semaine du 5
+octobre 2026 ») is rendered, never stored; the signature (« Mme Tremblay », the creator's
+`formalStaffName` by default, **Assumption**, at most 120 characters) is kept apart from the
+paragraphs. The app checks the content (`newsletterContentSchema`, at most 60,000 bytes); the
+database checks its kind and size (64 KB, as D-048), sets the revision, the status's date and who
+wrote it, and a save is an update on the expected `revision` (zero rows: « Une ou un collègue a
+modifié ce message entre-temps », the device draft is kept and offered after a reload, D-035). The
+first draft (`newsletterFacts`, then `buildNewsletterDraft`) holds, in both languages: the greeting;
+this week's lessons per subject and unit (taught or reported by a substitute this week, never
+skipped, then those the timetable still gives until Friday); next week's (the timetable's slots
+from the preparation date, so the sequence carries on across days off; on a cycle school without an
+anchor, the next three lessons of each unit, « prochaines leçons »); a planned unit starting next
+week (« Mon année », D-126); the dates from the day after the preparation (or the week's Monday,
+for a week to come) to the Friday two weeks later (**Assumption**): days off, early dismissals and
+late starts with their times, masses, liturgies, assemblies and field trips (never `other`, never
+another class's event), a report card going home (« remise ») and a liturgical season starting; at
+most two family guides of the library (`parent_guide`, the ones a lesson of these units uses, then
+those about one of their attentes by D-069's rule; the board's approved first) with three of their
+« À la maison » tips each, the English tip beside its French one (**Assumption**); a faith moment
+(D-058's ranking for the class's grades, the week's season and the week's subjects, lessons and
+event titles; the reference's English when it has one); and the closing. Only the teacher's own
+subjects by default (her blocks, or the blocks without a teacher for the homeroom teacher, D-006;
+« Inclure les matières enseignées par mes collègues » adds the others); the faith moment and the
+tips are on by default (**Assumptions**; tips only with the Library module). Titles the staff
+typed are quoted as typed, with the app's typography (typographic apostrophes, French spacing).
+Never an event's notes (staff-facing), an attente, the coverage (D-125), a level, an alert or
+anything about a student. « Préremplir à nouveau » replaces the app's paragraphs from today's data
+and keeps the typed ones in their place, the signature and the removed sections (`mergeRefill`).
+_Why:_ per-paragraph English provenance shows exactly what is out of date after a French edit,
+without a translation table, and a fixed set of sections keeps the copy readable. The seed's demo
+Catholic references have an English text of our own, so the demo shows an English faith moment.
+
+**D-138 — Names and retention (amends D-105).** Before a message is copied or marked sent, « Des
+élèves sont nommés » lists the class's students it names (« Ce message nomme Samuel et Aïcha. Il
+ira à toutes les familles de la classe. ») and the personal details it holds (« Ce message contient
+un numéro de téléphone (613-555-1234) : vérifiez qu'il peut être partagé avec toutes les
+familles. »), with the AI privacy tools (`findPersonalInfo` with the class roster, students only,
+and `findBlockedDetails`), as the library's first-name guard (D-066) does; before the English is
+copied, it says how many paragraphs will appear in French. It blocks nothing and nothing about it
+is stored; the editor's notice says, always: « Ce message ira à toutes les familles de la classe.
+Ne nommez un élève que pour une nouvelle à partager avec tout le monde ; jamais un comportement, la
+santé ou une évaluation. » Copying and marking sent wait for a save. Messages are erased with the
+students' first names: `app.purge_class_students` also deletes the class's messages (the audit
+entry counts them, `newsletters`, when there were some), and a class whose students were purged
+takes no new message (`LXN02`), so nothing comes back after a purge; a message also goes with its
+class (and a sample class), its board, or « Supprimer » at any time (Q5). The editor's device draft
+(`lynx-draft:newsletter:{userId}:{id}`) is a crash backup only (D-035, D-044): it goes at sign-out,
+and the janitor of the signed-in shell (D-130) removes another account's when someone else opens
+the app on that browser. _Why:_ a message to every family may name a child for good news, never
+for anything personal, and the teacher is the last check; the messages are about the class's
+students and go when their names go.
+
+**D-140 — No AI rewriting in v1: « Corriger la typographie ».** « Améliorer le texte (IA) » is not
+built: rewriting the teacher's French would send more text out and risk invented facts for little
+gain (Q3). « Corriger la typographie » fixes the French of every paragraph without changing words,
+as the app's own messages are written (`frenchTypography`: typographic apostrophes, « 3e », no-break
+spaces inside « » and before the colon, a narrow one before the semicolon, none before ? and !), keeps
+an English version written for the French up to date, and lists the words to change by hand
+(« week-end », `notCanadianWords`). Nothing is saved until the teacher saves. _Why:_ the families
+read the message as written; typography is mechanical, wording is the teacher's.
+
+D-139 (« Traduire en anglais (IA) »), D-141 (the PDF), D-142 (the « Aujourd'hui » reminder) and
+D-143 (the pilot terms) come with slices S2 and S3.
+
 ## Schema additions beyond SPEC section 8
 
 `school_years`, `rooms`, `class_grades`, `school_cycle_anchors`, `unit_lesson_expectations`,
@@ -2908,4 +3034,5 @@ cap, `no_derivatives`, `bulk_run_id` and the pack columns (`pack_slug`, `pack_it
 terms' version and acceptance and the checklist's dismissal; on `classes` `sample_owner_id` and
 `students_purged_at`. « Mon année » adds `report_periods` and `unit_expectations`, and on `units`
 the planned window (`planned_start_on`, `planned_end_on`). « Commentaires de bulletin » adds no
-table, only the `library_item_type` value `report_comments` (D-129).
+table, only the `library_item_type` value `report_comments` (D-129). « Info-parents » adds
+`class_newsletters` (D-136, D-137).

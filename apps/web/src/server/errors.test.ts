@@ -104,6 +104,15 @@ describe('database errors shown to users', () => {
     expect(fr.errors).toHaveProperty('reportBankNotTeaching');
   });
 
+  it('maps the « Info-parents » codes to their messages (D-137, D-138)', () => {
+    expect(errorKey({ code: 'LXN01' })).toBe('newsletterWeek');
+    expect(errorKey({ code: 'LXN02' })).toBe('newsletterPurged');
+    // newsletterConflict: a save on a revision a colleague changed (server/actions/newsletters.ts).
+    for (const key of ['newsletterWeek', 'newsletterPurged', 'newsletterConflict']) {
+      expect(fr.errors, key).toHaveProperty(key);
+    }
+  });
+
   it('maps the Phase 6 codes to their messages', () => {
     const phase6 = {
       LXU01: 'lastBoardAdmin',

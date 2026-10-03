@@ -458,17 +458,18 @@ join (values
 ) as v (unit_id, done, teacher_id) on v.unit_id = l.unit_id and l.sequence_number <= v.done;
 
 -- ---------------------------------------------------------------------------------------
--- Catholic references (board-editable). Short original texts written for the demo.
+-- Catholic references (board-editable). Short original texts written for the demo, each with an
+-- English version of our own (« Info-parents » writes the English faith moment from it, D-137).
 -- ---------------------------------------------------------------------------------------
 
-insert into public.catholic_references (board_id, type, title, text_fr, grade_min, grade_max, liturgical_season, tags, source_note) values
-  ('b0000000-0000-4000-8000-000000000001', 'virtue', 'Le respect', 'Je traite les autres comme j''aimerais être traité, en paroles et en gestes.', -1, 8, null, '{respect,communauté}', 'Texte original de démonstration.'),
-  ('b0000000-0000-4000-8000-000000000001', 'virtue', 'La persévérance', 'Quand une tâche est difficile, je continue d''essayer et je demande de l''aide au besoin.', 1, 8, null, '{persévérance,effort}', 'Texte original de démonstration.'),
-  ('b0000000-0000-4000-8000-000000000001', 'virtue', 'La compassion', 'Je remarque quand quelqu''un a de la peine et je cherche une façon de l''aider.', -1, 8, null, '{compassion,entraide}', 'Texte original de démonstration.'),
-  ('b0000000-0000-4000-8000-000000000001', 'reflection', 'Prendre soin de la création', 'Comment peux-tu prendre soin de la nature et des animaux autour de toi cette semaine?', 1, 8, null, '{création,environnement,sciences}', 'Texte original de démonstration.'),
-  ('b0000000-0000-4000-8000-000000000001', 'reflection', 'Dire merci', 'Nomme trois personnes ou trois choses pour lesquelles tu veux dire merci aujourd''hui.', -1, 8, 'temps_ordinaire', '{gratitude,action de grâce}', 'Texte original de démonstration.'),
-  ('b0000000-0000-4000-8000-000000000001', 'prayer', 'Prière avant le travail', 'Seigneur, aide-moi à bien écouter, à faire de mon mieux et à aider mes amis aujourd''hui. Amen.', -1, 6, null, '{prière,journée}', 'Texte original de démonstration.'),
-  ('b0000000-0000-4000-8000-000000000001', 'prayer', 'Prière de l’Avent', 'Seigneur, pendant ce temps d’attente, rends nos cœurs prêts à t’accueillir et à partager avec les autres. Amen.', -1, 8, 'avent', '{avent,partage}', 'Texte original de démonstration.');
+insert into public.catholic_references (board_id, type, title, text_fr, text_en, grade_min, grade_max, liturgical_season, tags, source_note) values
+  ('b0000000-0000-4000-8000-000000000001', 'virtue', 'Le respect', 'Je traite les autres comme j''aimerais être traité, en paroles et en gestes.', 'I treat others the way I would like to be treated, in words and in actions.', -1, 8, null, '{respect,communauté}', 'Texte original de démonstration.'),
+  ('b0000000-0000-4000-8000-000000000001', 'virtue', 'La persévérance', 'Quand une tâche est difficile, je continue d''essayer et je demande de l''aide au besoin.', 'When a task is hard, I keep trying and I ask for help when I need it.', 1, 8, null, '{persévérance,effort}', 'Texte original de démonstration.'),
+  ('b0000000-0000-4000-8000-000000000001', 'virtue', 'La compassion', 'Je remarque quand quelqu''un a de la peine et je cherche une façon de l''aider.', 'I notice when someone is sad and I look for a way to help.', -1, 8, null, '{compassion,entraide}', 'Texte original de démonstration.'),
+  ('b0000000-0000-4000-8000-000000000001', 'reflection', 'Prendre soin de la création', 'Comment peux-tu prendre soin de la nature et des animaux autour de toi cette semaine?', 'How can you take care of nature and the animals around you this week?', 1, 8, null, '{création,environnement,sciences}', 'Texte original de démonstration.'),
+  ('b0000000-0000-4000-8000-000000000001', 'reflection', 'Dire merci', 'Nomme trois personnes ou trois choses pour lesquelles tu veux dire merci aujourd''hui.', 'Name three people or three things you want to say thank you for today.', -1, 8, 'temps_ordinaire', '{gratitude,action de grâce}', 'Texte original de démonstration.'),
+  ('b0000000-0000-4000-8000-000000000001', 'prayer', 'Prière avant le travail', 'Seigneur, aide-moi à bien écouter, à faire de mon mieux et à aider mes amis aujourd''hui. Amen.', 'Lord, help me to listen well, to do my best and to help my friends today. Amen.', -1, 6, null, '{prière,journée}', 'Texte original de démonstration.'),
+  ('b0000000-0000-4000-8000-000000000001', 'prayer', 'Prière de l’Avent', 'Seigneur, pendant ce temps d’attente, rends nos cœurs prêts à t’accueillir et à partager avec les autres. Amen.', 'Lord, during this time of waiting, make our hearts ready to welcome you and to share with others. Amen.', -1, 8, 'avent', '{avent,partage}', 'Texte original de démonstration.');
 
 -- ---------------------------------------------------------------------------------------
 -- Library reviewer designated by the board (DECISIONS D-064): Nathalie Roy approves resources

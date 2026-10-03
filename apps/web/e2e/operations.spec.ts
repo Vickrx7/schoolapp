@@ -1,6 +1,7 @@
 import { seedItemId } from '@lynx/content';
 import { expect, test, type Page } from '@playwright/test';
 import { closeDb, query, SEED } from './db';
+import { deleteNewsletters, demoWeeks, insertNewsletter } from './db-newsletters';
 import { DEMO, expectAccessible, login } from './helpers';
 
 /**
@@ -72,6 +73,10 @@ test('every page family carries the security policy and works under it', async (
   const [math] = await query<{ id: string }>(
     "select id from public.subjects where code = 'mat' and board_id is null",
   );
+  // « Info-parents » (D-136): a message to open in the editor, deleted afterwards.
+  const { thisWeek, nextWeek } = await demoWeeks();
+  await deleteNewsletters(SEED.class3);
+  await insertNewsletter(SEED.class3, thisWeek, 'Bonjour chères familles,');
   for (const path of [
     '/today',
     '/classes',
@@ -91,10 +96,17 @@ test('every page family carries the security policy and works under it', async (
     // « Bulletins » (D-130): the composer, with a bank (copying and printing are not requests).
     `/classes/${SEED.class3}/bulletins`,
     `/classes/${SEED.class3}/bulletins?period=term1&subject=${math!.id}`,
+    // « Info-parents » (D-136): the list, « Préparer le message » and the editor (copying is the
+    // browser's clipboard, not a request).
+    `/classes/${SEED.class3}/info-parents`,
+    `/classes/${SEED.class3}/info-parents/${nextWeek}`,
+    `/classes/${SEED.class3}/info-parents/${thisWeek}`,
   ]) {
     await expectPolicy(page, path);
     await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();
   }
+  await expect(page.getByTestId('newsletter-editor')).toHaveAttribute('data-ready', 'true');
+  await deleteNewsletters(SEED.class3);
   // The projector (« Présenter à la classe »): its player runs under the policy too.
   await expectPolicy(page, `/projector/items/${seedItemId('demo', 'pause-jeu-du-miroir')}`);
   await expect(page.getByRole('heading', { level: 2 }).first()).toBeVisible();

@@ -185,7 +185,10 @@
     "reportPeriodOutsideYear": "The period must be within the school year.",
     "datesBoth": "Choose both the first and the last week, or neither.",
     "beforePeriodStart": "This date must come after the start of the period.",
-    "reportBankNotTeaching": "A report card comment bank can’t be added to a lesson."
+    "reportBankNotTeaching": "A report card comment bank can’t be added to a lesson.",
+    "newsletterWeek": "This week is not in the class’s school year.",
+    "newsletterPurged": "The first names of this class’s students were erased: no message can be prepared for it any more.",
+    "newsletterConflict": "A colleague edited this message in the meantime. Your changes stay on this device: reload the page to see their version, then take yours back."
   },
   "days": {
     "1": "Monday",
@@ -270,7 +273,8 @@
       "planning": "Planning",
       "substitute": "Substitute",
       "settings": "Settings",
-      "bulletins": "Report cards"
+      "bulletins": "Report cards",
+      "infoParents": "Family newsletter"
     },
     "role": {
       "homeroom": "Homeroom teacher",
@@ -3401,7 +3405,7 @@
       "intro": "This data is deleted automatically, every night, after these periods. The person who manages the server sets the periods at the board’s request.",
       "auditDays": "Audit log",
       "subPlanDays": "Substitute plans and absences, after the day",
-      "classDaysAfterYearEnd": "Students’ first names, after the end of the school year",
+      "classDaysAfterYearEnd": "Students’ first names and family newsletters, after the end of the school year",
       "aiUsageDays": "AI usage",
       "feedbackDays": "Feedback received",
       "days": "{count, plural, one {# day} other {# days}}",
@@ -3687,7 +3691,7 @@
       "absence": "Your sample class is not included in substitute plans."
     },
     "purge": {
-      "notice": "The first names of the students of {className} will be erased on {date}. Your units and lessons stay."
+      "notice": "The first names of the students of {className} and its family newsletters will be erased on {date}. Your units and lessons stay."
     }
   },
   "welcome": {
@@ -4279,6 +4283,162 @@
       "copy": "Copy each comment into your board’s official report card: that is the record. “Plain spaces when copying” replaces no-break spaces, which some systems count wrongly.",
       "erase": "Your comments are erased from this device when you sign out, when someone else signs in on this browser, and 60 days after the report card goes home at the latest. They do not follow you to another device.",
       "spellcheck": "Good to know: some browsers’ enhanced spell check and some extensions send what you type to their maker."
+    }
+  },
+  "newsletter": {
+    "title": "Family newsletter",
+    "metaTitle": "Family newsletter · {className}",
+    "metaWeek": "Family newsletter · {className} · week of {date}",
+    "intro": "Prepare a message for the class’s families each week, in French and in English. The app writes a first draft from your planning and the calendar; you read it over, then copy it into your school’s communication channel. The app sends nothing to families.",
+    "prepareWeek": "Prepare the week of {date}",
+    "listHeading": "The class’s messages",
+    "weekOf": "Week of {date}",
+    "status": {
+      "draft": "Draft · edited on {date} by {name}",
+      "draftNoName": "Draft · edited on {date}",
+      "sent": "Sent on {date}"
+    },
+    "empty": "No messages yet.",
+    "help": {
+      "summary": "How it works",
+      "sources": "The first draft comes from the class: the lessons in “Planning” (checked off this week, then those of the timetable), a unit planned in “My year”, the school calendar (never the notes for staff), the dates report cards go home, the library’s family guides and a Catholic reference from your board.",
+      "review": "Read everything over: you can edit, move or remove each paragraph, add your own and write the English version yourself.",
+      "channel": "Use the communication channel your board approves (e-mail, portal, agenda). The app sends nothing and keeps no family contact details.",
+      "team": "The whole class team sees and edits its messages; the principal and the office do not see them.",
+      "erase": "Messages are erased with the class’s students’ first names, one year after the end of the school year. You can delete one at any time."
+    },
+    "prepare": {
+      "title": "Prepare the message for the week of {date}",
+      "colleagues": "Include the subjects my colleagues teach",
+      "faith": "Include a faith moment",
+      "guides": "Include tips from the family guides",
+      "submit": "Prepare the message",
+      "note": "Nothing is sent: you read everything over before you share it.",
+      "outside": "This week is not in the class’s school year."
+    },
+    "back": "All messages",
+    "editor": {
+      "header": "Header",
+      "headerHint": "Added at the top of the copied message; it is not saved in the paragraphs.",
+      "notice": "This message goes to every family in the class. Name a student only for news to share with everyone; never behaviour, health or an evaluation.",
+      "signature": "Signature",
+      "frenchLabel": "Français",
+      "englishLabel": "English",
+      "languages": "Paragraph language",
+      "paragraph": "Paragraph {n}",
+      "moveUp": "Move paragraph {n} up",
+      "moveDown": "Move paragraph {n} down",
+      "remove": "Remove paragraph {n}",
+      "add": "Add a paragraph",
+      "removeSection": "Remove the section",
+      "restoreSection": "Put the section back",
+      "sectionOff": "Section removed: it does not appear in the message.",
+      "sectionEmpty": "No paragraphs.",
+      "sectionFull": "A section holds at most 12 paragraphs.",
+      "placeholder": "Write your paragraph…",
+      "englishState": {
+        "missing": "English: to write",
+        "app": "English: prepared by the app",
+        "ai": "English: translated by AI — to read over",
+        "stale": "English: to update (the French changed)",
+        "teacher": "English: written by you"
+      },
+      "save": "Save",
+      "saved": "Saved",
+      "unsaved": "Unsaved changes",
+      "saveFirst": "Save your changes first.",
+      "refill": "Prefill again",
+      "refillMessage": "Replace the paragraphs the app prepared? The paragraphs you typed are kept.",
+      "refillConfirm": "Replace",
+      "refilled": "The app’s paragraphs were prepared again.",
+      "typography": "Fix the typography",
+      "typographyDone": "Typography fixed. Save the message to keep it.",
+      "typographyNone": "The typography is already correct.",
+      "wordNotes": "To change by hand: {words}.",
+      "copy": "Copy",
+      "copyFr": "Copy the French",
+      "copyEn": "Copy the English",
+      "copyBoth": "Copy both",
+      "copied": "Message copied. Paste it into your school’s communication channel.",
+      "copyFailed": "Copying failed. Select the text below, then copy it yourself.",
+      "copyText": "Text to copy",
+      "markSent": "Mark as sent",
+      "markDraft": "Back to draft",
+      "markedSent": "Message marked as sent.",
+      "markedDraft": "Message back to draft.",
+      "sent": "Sent on {date}. Put it back to draft to edit it.",
+      "delete": "Delete",
+      "deleteMessage": "Delete the message for the week of {date}? This cannot be undone.",
+      "deleted": "Message deleted.",
+      "missingEnglish": "{count, plural, one {# paragraph has no up-to-date English version: it will appear in French.} other {# paragraphs have no up-to-date English version: they will appear in French.}}",
+      "copyAnyway": "Copy anyway",
+      "unreadable": "This message cannot be read. Delete it, then prepare it again.",
+      "tooMany": "A message holds at most 60 paragraphs.",
+      "share": "Share",
+      "draftOlder": "You had unsaved changes on an older version of this message: a colleague has saved it since.",
+      "recoverDraft": "Recover my changes"
+    },
+    "names": {
+      "title": "Students are named",
+      "detailsTitle": "Check before sharing",
+      "body": "This message names {names}. It will go to every family in the class.",
+      "detail": "This message contains {kind} ({match}): check that it can be shared with every family.",
+      "continue": "Continue",
+      "back": "Back to the message",
+      "kinds": {
+        "email": "an e-mail address",
+        "phone": "a phone number",
+        "identifier": "an identification number",
+        "postalCode": "a postal code",
+        "address": "an address",
+        "birthDate": "a date of birth"
+      }
+    }
+  },
+  "newsletterText": {
+    "header": "{school} · {className} · Week of {date}",
+    "sections": {
+      "message": "Message",
+      "thisWeek": "This week in class",
+      "nextWeek": "Next week",
+      "dates": "Dates to remember",
+      "reminders": "Reminders",
+      "atHome": "Helping at home",
+      "faith": "Faith moment",
+      "closing": "Closing"
+    },
+    "greeting": "Dear families,",
+    "closing": "Have a good weekend!",
+    "lessons": "{subject} (unit “{unit}”): {lessons}",
+    "nextLessons": "{subject} (unit “{unit}”), next lessons: {lessons}",
+    "unitStart": "{subject}: we will start a new unit, “{title}”",
+    "withTitle": "{line} (“{title}”)",
+    "dayOff": "{date}: {title} (no school)",
+    "dayOffRange": "{from} to {to}: {title} (no school)",
+    "earlyDismissal": "{date}: early dismissal at {time}",
+    "earlyDismissalNoTime": "{date}: early dismissal",
+    "lateStart": "{date}: late start, classes begin at {time}",
+    "lateStartNoTime": "{date}: late start",
+    "event": "{date} at {time}: {title}",
+    "eventNoTime": "{date}: {title}",
+    "eventRange": "{from} to {to}: {title}",
+    "report": {
+      "progress": "{date}: the Progress Report Card goes home",
+      "term1": "{date}: the Report Card (Term 1) goes home",
+      "term2": "{date}: the Report Card (Term 2) goes home"
+    },
+    "season": {
+      "avent": "{date}: First Sunday of Advent",
+      "noel": "{date}: Christmas",
+      "careme": "{date}: Ash Wednesday, the beginning of Lent",
+      "paques": "{date}: Easter Sunday"
+    },
+    "faith": {
+      "prayer": "This week, we pray together: “{text}”",
+      "virtue": "Our value of the week: “{text}”",
+      "reflection": "A question to talk about as a family: {text}",
+      "scripture": "God’s Word this week: {text}",
+      "graduate_expectation": "This week, we are working on a Catholic Graduate Expectation: {text}"
     }
   }
 }

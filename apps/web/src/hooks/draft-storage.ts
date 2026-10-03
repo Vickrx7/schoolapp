@@ -209,3 +209,37 @@ export function forgetReportDrafts({
   }, storage);
   return removed;
 }
+
+// ---------------------------------------------------------------------------------------
+// « Info-parents » (D-138)
+// ---------------------------------------------------------------------------------------
+
+/** The editor's crash backup: `newsletter:{userId}:{newsletterId}` (it can name students). */
+export const NEWSLETTER_DRAFT_PREFIX = 'newsletter:';
+
+export function newsletterDraftKey(userId: string, newsletterId: string): string {
+  return `${NEWSLETTER_DRAFT_PREFIX}${userId}:${newsletterId}`;
+}
+
+/**
+ * Removes every other account's « Info-parents » drafts from this browser (the janitor, as for
+ * report comments): a message can name the class's students, and its draft must not stay behind
+ * for the next person on a shared computer. Returns how many were removed.
+ */
+export function forgetNewsletterDrafts({
+  userId,
+  storage = draftStorage(),
+}: {
+  userId: string;
+  storage?: Storage | null;
+}): number {
+  if (!storage) return 0;
+  let removed = 0;
+  removeDrafts((key) => {
+    if (!key.startsWith(NEWSLETTER_DRAFT_PREFIX)) return false;
+    const gone = !key.startsWith(`${NEWSLETTER_DRAFT_PREFIX}${userId}:`);
+    if (gone) removed += 1;
+    return gone;
+  }, storage);
+  return removed;
+}

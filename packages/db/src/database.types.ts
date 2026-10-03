@@ -545,6 +545,70 @@ export type Database = {
           },
         ];
       };
+      class_newsletters: {
+        Row: {
+          id: string;
+          class_id: string;
+          week_of: string;
+          content: Json;
+          status: string;
+          sent_at: string | null;
+          revision: number;
+          created_by: string | null;
+          updated_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          class_id: string;
+          week_of: string;
+          content: Json;
+          status?: string;
+          sent_at?: string | null;
+          revision?: number;
+          created_by?: string | null;
+          updated_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          class_id?: string;
+          week_of?: string;
+          content?: Json;
+          status?: string;
+          sent_at?: string | null;
+          revision?: number;
+          created_by?: string | null;
+          updated_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'class_newsletters_class_id_fkey';
+            columns: ['class_id'];
+            isOneToOne: false;
+            referencedRelation: 'classes';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'class_newsletters_created_by_fkey';
+            columns: ['created_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'class_newsletters_updated_by_fkey';
+            columns: ['updated_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       class_session_keys: {
         Row: {
           session_id: string;

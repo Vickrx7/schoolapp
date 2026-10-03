@@ -90,6 +90,9 @@ sees the exact text before it is sent and must remove such a name (section 5).
 - Report card comments (« Bulletins », D-130): composed in the teacher's browser and copied into
   the board's own report card system; never sent to our servers or the AI. Comment banks hold
   phrases with a first-name placeholder (`{prénom}`), no student data.
+- Nothing about families: the app sends nothing to families (no e-mail, text message or parent
+  account). A teacher copies « Info-parents », the class's weekly message (D-136), herself into
+  the board's own channels. No parent contact is stored.
 
 ## 4. Data inventory
 
@@ -112,20 +115,28 @@ board can change.
 
 ### Classes, students and teaching
 
-| Data                                                                                                                                              | Purpose                                                                        | Who sees it                                                                                                        | Kept                                                                                                    |
-| ------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
-| Classes: name, grades, room, teaching team (`classes`, `class_grades`, `class_teachers`)                                                          | Planning                                                                       | The class team; the school's direction and office                                                                  | Until the teacher deletes the class                                                                     |
-| Students: first name or nickname, default language level (`students`)                                                                             | Groups in plans, differentiated texts                                          | The class team; the school's direction; office staff only in a released substitute plan (audited)                  | One year after the school year ends (then deleted, with their alerts), or when the teacher deletes them |
-| Safety or medical alerts, encrypted (`student_alerts`)                                                                                            | A substitute's or colleague's safety information                               | The class team and the school's direction, hidden until tapped; a substitute on screen that day; every read logged | With the student                                                                                        |
-| Timetable, units, lessons, progress, notes for substitutes (`timetable_blocks`, `units`, `unit_lessons`, `lesson_progress`, `class_sub_profiles`) | The teacher's planning                                                         | The class team (the direction never sees units, lessons or progress)                                               | Until the teacher deletes the class; kept when the students are purged                                  |
-| Planned dates and the attentes a unit aims at (`units`, `unit_expectations`)                                                                      | The teacher's year plan (« Mon année », D-123)                                 | The class team (never the direction, office staff or the board)                                                    | With the class; kept when the students are purged                                                       |
-| Calendar events: PA days, holidays, masses, outings (`school_calendar_events`)                                                                    | « Aujourd'hui » and plans                                                      | Staff of the school or board                                                                                       | Until deleted                                                                                           |
-| Report card periods: each school year's evaluation windows, « saisie » and « remise » dates; no personal data (`report_periods`)                  | Report card dates in the board's calendar and the teachers' year plans (D-124) | The board's staff; written by its admins                                                                           | Until the school year is deleted                                                                        |
-| Sample class (« Classe exemple »): 20 invented first names and sample lessons                                                                     | Trying the app without real data                                               | The teacher who made it                                                                                            | 60 days after creation                                                                                  |
+| Data                                                                                                                                                                            | Purpose                                                                                | Who sees it                                                                                                        | Kept                                                                                                    |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| Classes: name, grades, room, teaching team (`classes`, `class_grades`, `class_teachers`)                                                                                        | Planning                                                                               | The class team; the school's direction and office                                                                  | Until the teacher deletes the class                                                                     |
+| Students: first name or nickname, default language level (`students`)                                                                                                           | Groups in plans, differentiated texts                                                  | The class team; the school's direction; office staff only in a released substitute plan (audited)                  | One year after the school year ends (then deleted, with their alerts), or when the teacher deletes them |
+| Safety or medical alerts, encrypted (`student_alerts`)                                                                                                                          | A substitute's or colleague's safety information                                       | The class team and the school's direction, hidden until tapped; a substitute on screen that day; every read logged | With the student                                                                                        |
+| Timetable, units, lessons, progress, notes for substitutes (`timetable_blocks`, `units`, `unit_lessons`, `lesson_progress`, `class_sub_profiles`)                               | The teacher's planning                                                                 | The class team (the direction never sees units, lessons or progress)                                               | Until the teacher deletes the class; kept when the students are purged                                  |
+| Planned dates and the attentes a unit aims at (`units`, `unit_expectations`)                                                                                                    | The teacher's year plan (« Mon année », D-123)                                         | The class team (never the direction, office staff or the board)                                                    | With the class; kept when the students are purged                                                       |
+| Calendar events: PA days, holidays, masses, outings (`school_calendar_events`)                                                                                                  | « Aujourd'hui » and plans                                                              | Staff of the school or board                                                                                       | Until deleted                                                                                           |
+| Family newsletters (« Info-parents »): each week's paragraphs in French and English, who wrote each English paragraph, status, signature, who last edited (`class_newsletters`) | Informing families: the teacher sends it herself, through the board's channels (D-136) | The class team (never the direction, office staff or the board)                                                    | Until deleted; erased with the students' first names (D-138)                                            |
+| Report card periods: each school year's evaluation windows, « saisie » and « remise » dates; no personal data (`report_periods`)                                                | Report card dates in the board's calendar and the teachers' year plans (D-124)         | The board's staff; written by its admins                                                                           | Until the school year is deleted                                                                        |
+| Sample class (« Classe exemple »): 20 invented first names and sample lessons                                                                                                   | Trying the app without real data                                                       | The teacher who made it                                                                                            | 60 days after creation                                                                                  |
 
 Teachers' units and lessons are free text. A teacher may type a student's name there; that text
 stays until the teacher deletes it, also after the students' first names are purged. The notice
 shown 60 days before the purge says so.
+
+An « Info-parents » message is free text too, drafted by the app from the class's own planning
+and calendar (never an event's notes for staff, an attente, the coverage or anything about a
+student) and edited by the teacher. It goes to every family of the class, so it may name a student
+for news everyone can read; before it is copied or marked sent the app lists the students it names
+and the personal details it holds (nothing is stored about that check). The messages are erased
+with the students' first names, and can be deleted at any time.
 
 « Couverture » (D-125) is worked out on each visit from the class's units, lessons and progress;
 nothing about it is stored, and only the class team sees it. The long-range plan PDF (« Plan à
@@ -379,33 +390,34 @@ MFIPPA Regulation 823 may require keeping personal information for a year after 
 which is why no per-board setting of personal data goes below 365 days (kept class results hold
 counts only, and may be kept less).
 
-| Data                                                                           | Kept by default                                        | Per board (bounds) |
-| ------------------------------------------------------------------------------ | ------------------------------------------------------ | ------------------ |
-| Audit log                                                                      | 730 days                                               | 365 to 3,650 days  |
-| Substitute plans, with their codes, sessions and structured report             | 365 days after the plan's date                         | 365 to 1,095 days  |
-| Absences with no plan left                                                     | 365 days after their last day                          | as above           |
-| Report notes and absent-student list                                           | 60 days after the teacher confirms (or after the date) | no                 |
-| Substitute codes and sessions                                                  | 30 days after they expire                              | no                 |
-| Code attempts, class join failures                                             | 1 day                                                  | no                 |
-| Students' first names, levels and alerts (the class's teaching material stays) | 365 days after the school year ends                    | 365 to 1,095 days  |
-| Sample classes                                                                 | 60 days after creation                                 | no                 |
-| Report card comment drafts (device only, never on our servers)                 | sign-out, or 60 days after the remise                  | no                 |
-| AI requests (text, answer, text sent)                                          | 30 days                                                | no                 |
-| AI usage ledger                                                                | 730 days                                               | 365 to 3,650 days  |
-| Feedback                                                                       | 365 days                                               | 365 to 1,095 days  |
-| Invitations                                                                    | pending: 14 days; processed: 90 days                   | no                 |
-| Event outbox                                                                   | 90 days after handling                                 | no                 |
-| Sign-in service log (e-mails, actions)                                         | 90 days                                                | no                 |
-| Class mode answers and devices                                                 | until the session ends (at most 2 h 5 min)             | no                 |
-| Kept class results (counts only)                                               | 365 days                                               | 1 to 3,650 days    |
-| Bulk generation runs; the text they sent                                       | 1 year; the text 30 days                               | no                 |
-| Server and proxy logs                                                          | 14 days                                                | no                 |
-| Our backups                                                                    | 30 days                                                | no                 |
-| Supabase's own daily backups (hosted)                                          | 7 days                                                 | no                 |
-| Accounts, classes, planning, library resources                                 | until deleted (section 10)                             | no                 |
+| Data                                                                                                                  | Kept by default                                        | Per board (bounds) |
+| --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ | ------------------ |
+| Audit log                                                                                                             | 730 days                                               | 365 to 3,650 days  |
+| Substitute plans, with their codes, sessions and structured report                                                    | 365 days after the plan's date                         | 365 to 1,095 days  |
+| Absences with no plan left                                                                                            | 365 days after their last day                          | as above           |
+| Report notes and absent-student list                                                                                  | 60 days after the teacher confirms (or after the date) | no                 |
+| Substitute codes and sessions                                                                                         | 30 days after they expire                              | no                 |
+| Code attempts, class join failures                                                                                    | 1 day                                                  | no                 |
+| Students' first names, levels, alerts and the class's « Info-parents » messages (the class's teaching material stays) | 365 days after the school year ends                    | 365 to 1,095 days  |
+| Sample classes                                                                                                        | 60 days after creation                                 | no                 |
+| Report card comment drafts (device only, never on our servers)                                                        | sign-out, or 60 days after the remise                  | no                 |
+| AI requests (text, answer, text sent)                                                                                 | 30 days                                                | no                 |
+| AI usage ledger                                                                                                       | 730 days                                               | 365 to 3,650 days  |
+| Feedback                                                                                                              | 365 days                                               | 365 to 1,095 days  |
+| Invitations                                                                                                           | pending: 14 days; processed: 90 days                   | no                 |
+| Event outbox                                                                                                          | 90 days after handling                                 | no                 |
+| Sign-in service log (e-mails, actions)                                                                                | 90 days                                                | no                 |
+| Class mode answers and devices                                                                                        | until the session ends (at most 2 h 5 min)             | no                 |
+| Kept class results (counts only)                                                                                      | 365 days                                               | 1 to 3,650 days    |
+| Bulk generation runs; the text they sent                                                                              | 1 year; the text 30 days                               | no                 |
+| Server and proxy logs                                                                                                 | 14 days                                                | no                 |
+| Our backups                                                                                                           | 30 days                                                | no                 |
+| Supabase's own daily backups (hosted)                                                                                 | 7 days                                                 | no                 |
+| Accounts, classes, planning, library resources                                                                        | until deleted (section 10)                             | no                 |
 
 - The class purge removes the students' first names and levels, their alerts, the substitute plans
-  of the class's own school year that covered the class and its class mode link. It keeps the
+  of the class's own school year that covered the class, its class mode link and its « Info-parents »
+  messages (D-138); none can be added afterwards. It keeps the
   teacher's units, lessons, timetable, progress and « Fiche de suppléance », and the kept class
   results (counts only, with their own retention). Teachers see a notice 60 days before; if a
   school year's dates or the setting change so that the date has already passed, the purge waits
@@ -529,7 +541,7 @@ kept 730 days.
   (`PRIVACY_CONTACT_EMAIL`), or the board's own privacy office.
 - **Support:** the address shown in the app (`SUPPORT_EMAIL`).
 - **Decisions behind this document:** `DECISIONS.md` (D-012 to D-019, D-037 to D-046, D-049 to
-  D-059, D-065, D-083 to D-093, D-102 to D-135).
+  D-059, D-065, D-083 to D-093, D-102 to D-138, D-140).
 
 | Date       | Release | Change                                                                                                                                                                                                                                                                                                                                                                                                |
 | ---------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

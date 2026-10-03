@@ -100,6 +100,12 @@ export const KNOWN_ERRORS: ReadonlySet<string> = new Set([
   'reportPeriodOutsideYear',
   'datesBoth',
   'beforePeriodStart',
+  // « Commentaires de bulletin » (server/errors.ts, LXK01; D-129).
+  'reportBankNotTeaching',
+  // « Info-parents » (server/errors.ts and server/actions/newsletters.ts; D-137, D-138).
+  'newsletterWeek',
+  'newsletterPurged',
+  'newsletterConflict',
   // What a resource is missing (readinessFieldErrors, D-067).
   'readiness.grades',
   'readiness.subject',

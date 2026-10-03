@@ -58,11 +58,13 @@ export default async function ClassLayout({
         />
         {/* A sample class, or students' first names erased soon (D-105, D-109). */}
         <ClassNoticesBlock classId={classId} className={cls.name} notices={notices} />
-        {/* « Mode classe »: the class team with a teacher role, with the Library module (D-090). */}
+        {/* « Mode classe »: the class team with a teacher role, with the Library module (D-090);
+            « Info-parents »: the class team with a teacher role (D-136). */}
         <ClassTabs
           classId={classId}
           classMode={hasModule(school, 'library') && hasRole(school, 'teacher')}
           bulletins={bulletins}
+          infoParents={hasRole(school, 'teacher')}
         />
       </div>
       <div className="mt-5 print:mt-0">{children}</div>

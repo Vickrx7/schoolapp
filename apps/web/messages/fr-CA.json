@@ -185,7 +185,10 @@
     "reportPeriodOutsideYear": "La période doit être comprise dans l’année scolaire.",
     "datesBoth": "Choisissez la première et la dernière semaine, ou ni l’une ni l’autre.",
     "beforePeriodStart": "Cette date doit suivre le début de la période.",
-    "reportBankNotTeaching": "Une banque de commentaires de bulletin ne s’ajoute pas à une leçon."
+    "reportBankNotTeaching": "Une banque de commentaires de bulletin ne s’ajoute pas à une leçon.",
+    "newsletterWeek": "Cette semaine n’est pas dans l’année scolaire de la classe.",
+    "newsletterPurged": "Les prénoms des élèves de cette classe ont été effacés : on ne peut plus y préparer de message.",
+    "newsletterConflict": "Une ou un collègue a modifié ce message entre-temps. Vos modifications restent sur cet appareil : rechargez la page pour voir sa version, puis reprenez les vôtres."
   },
   "days": {
     "1": "lundi",
@@ -270,7 +273,8 @@
       "planning": "Planification",
       "substitute": "Suppléance",
       "settings": "Paramètres",
-      "bulletins": "Bulletins"
+      "bulletins": "Bulletins",
+      "infoParents": "Info-parents"
     },
     "role": {
       "homeroom": "Titulaire",
@@ -3401,7 +3405,7 @@
       "intro": "Ces données sont effacées automatiquement, chaque nuit, après ces durées. La personne qui gère le serveur règle les durées à la demande du conseil.",
       "auditDays": "Journal d’audit",
       "subPlanDays": "Plans de suppléance et absences, après la journée",
-      "classDaysAfterYearEnd": "Prénoms des élèves, après la fin de l’année scolaire",
+      "classDaysAfterYearEnd": "Prénoms des élèves et messages Info-parents, après la fin de l’année scolaire",
       "aiUsageDays": "Utilisation de l’IA",
       "feedbackDays": "Commentaires reçus",
       "days": "{count, plural, one {# jour} other {# jours}}",
@@ -3687,7 +3691,7 @@
       "absence": "Votre classe exemple n’est pas incluse dans les plans de suppléance."
     },
     "purge": {
-      "notice": "Les prénoms des élèves de {className} seront effacés le {date}. Vos unités et leçons restent."
+      "notice": "Les prénoms des élèves de {className} et ses messages Info-parents seront effacés le {date}. Vos unités et leçons restent."
     }
   },
   "welcome": {
@@ -4279,6 +4283,162 @@
       "copy": "Copiez chaque commentaire dans le bulletin officiel de votre conseil : c’est lui qui fait foi. « Espaces simples à la copie » remplace les espaces insécables, que certains systèmes comptent mal.",
       "erase": "Vos commentaires sont effacés de cet appareil à la déconnexion, quand une autre personne se connecte sur ce navigateur, et au plus tard 60 jours après la remise du bulletin. Ils ne vous suivent pas sur un autre appareil.",
       "spellcheck": "Bon à savoir : la vérification orthographique avancée de certains navigateurs et certaines extensions envoient le texte que vous tapez à leur éditeur."
+    }
+  },
+  "newsletter": {
+    "title": "Info-parents",
+    "metaTitle": "Info-parents · {className}",
+    "metaWeek": "Info-parents · {className} · semaine du {date}",
+    "intro": "Préparez chaque semaine un message pour les familles de la classe, en français et en anglais. L’application prépare un premier jet à partir de votre planification et du calendrier ; vous le relisez, puis vous le copiez dans le moyen de communication de votre école. L’application n’envoie rien aux familles.",
+    "prepareWeek": "Préparer la semaine du {date}",
+    "listHeading": "Messages de la classe",
+    "weekOf": "Semaine du {date}",
+    "status": {
+      "draft": "Brouillon · modifié le {date} par {name}",
+      "draftNoName": "Brouillon · modifié le {date}",
+      "sent": "Envoyé le {date}"
+    },
+    "empty": "Aucun message pour l’instant.",
+    "help": {
+      "summary": "Comment ça marche",
+      "sources": "Le premier jet vient de la classe : les leçons de « Planification » (cochées cette semaine, puis celles de l’horaire), une unité prévue dans « Mon année », le calendrier de l’école (jamais les notes au personnel), les dates de remise des bulletins, les guides pour les familles de la bibliothèque et une référence catholique de votre conseil.",
+      "review": "Relisez tout : vous pouvez modifier, déplacer ou retirer chaque paragraphe, en ajouter et écrire vous-même la version anglaise.",
+      "channel": "Utilisez le moyen de communication approuvé par votre conseil (courriel, portail, agenda). L’application n’envoie rien et ne garde aucune coordonnée des familles.",
+      "team": "Toute l’équipe de la classe voit et modifie ses messages ; la direction et le secrétariat ne les voient pas.",
+      "erase": "Les messages sont effacés avec les prénoms des élèves de la classe, un an après la fin de l’année scolaire. Vous pouvez en supprimer un en tout temps."
+    },
+    "prepare": {
+      "title": "Préparer le message de la semaine du {date}",
+      "colleagues": "Inclure les matières enseignées par mes collègues",
+      "faith": "Inclure un moment de foi",
+      "guides": "Inclure des conseils des guides pour les familles",
+      "submit": "Préparer le message",
+      "note": "Rien n’est envoyé : vous relisez tout avant de le partager.",
+      "outside": "Cette semaine n’est pas dans l’année scolaire de la classe."
+    },
+    "back": "Tous les messages",
+    "editor": {
+      "header": "En-tête",
+      "headerHint": "Ajouté au début du message copié ; il n’est pas enregistré dans les paragraphes.",
+      "notice": "Ce message ira à toutes les familles de la classe. Ne nommez un élève que pour une nouvelle à partager avec tout le monde ; jamais un comportement, la santé ou une évaluation.",
+      "signature": "Signature",
+      "frenchLabel": "Français",
+      "englishLabel": "English",
+      "languages": "Langue des paragraphes",
+      "paragraph": "Paragraphe {n}",
+      "moveUp": "Monter le paragraphe {n}",
+      "moveDown": "Descendre le paragraphe {n}",
+      "remove": "Retirer le paragraphe {n}",
+      "add": "Ajouter un paragraphe",
+      "removeSection": "Retirer la section",
+      "restoreSection": "Remettre la section",
+      "sectionOff": "Section retirée : elle ne paraît pas dans le message.",
+      "sectionEmpty": "Aucun paragraphe.",
+      "sectionFull": "Une section compte au plus 12 paragraphes.",
+      "placeholder": "Écrivez votre paragraphe…",
+      "englishState": {
+        "missing": "English : à écrire",
+        "app": "English : préparé par l’application",
+        "ai": "English : traduit par l’IA — à relire",
+        "stale": "English : à mettre à jour (le français a changé)",
+        "teacher": "English : écrit par vous"
+      },
+      "save": "Enregistrer",
+      "saved": "Enregistré",
+      "unsaved": "Modifications non enregistrées",
+      "saveFirst": "Enregistrez vos modifications d’abord.",
+      "refill": "Préremplir à nouveau",
+      "refillMessage": "Remplacer les paragraphes préparés par l’application? Vos paragraphes tapés sont gardés.",
+      "refillConfirm": "Remplacer",
+      "refilled": "Les paragraphes de l’application ont été préparés de nouveau.",
+      "typography": "Corriger la typographie",
+      "typographyDone": "Typographie corrigée. Enregistrez le message pour la garder.",
+      "typographyNone": "La typographie est déjà correcte.",
+      "wordNotes": "À changer à la main : {words}.",
+      "copy": "Copier",
+      "copyFr": "Copier le français",
+      "copyEn": "Copy the English",
+      "copyBoth": "Copier les deux",
+      "copied": "Message copié. Collez-le dans le moyen de communication de votre école.",
+      "copyFailed": "La copie a échoué. Sélectionnez le texte ci-dessous, puis copiez-le vous-même.",
+      "copyText": "Texte à copier",
+      "markSent": "Marquer comme envoyé",
+      "markDraft": "Remettre en brouillon",
+      "markedSent": "Message marqué comme envoyé.",
+      "markedDraft": "Message remis en brouillon.",
+      "sent": "Envoyé le {date}. Remettez-le en brouillon pour le modifier.",
+      "delete": "Supprimer",
+      "deleteMessage": "Supprimer le message de la semaine du {date}? Cette action est définitive.",
+      "deleted": "Message supprimé.",
+      "missingEnglish": "{count, plural, one {# paragraphe n’a pas de version anglaise à jour : il paraîtra en français.} other {# paragraphes n’ont pas de version anglaise à jour : ils paraîtront en français.}}",
+      "copyAnyway": "Copier quand même",
+      "unreadable": "Ce message ne peut pas être lu. Supprimez-le, puis préparez-le de nouveau.",
+      "tooMany": "Un message compte au plus 60 paragraphes.",
+      "share": "Partager",
+      "draftOlder": "Vous aviez des modifications non enregistrées sur une version plus ancienne de ce message : une ou un collègue l’a enregistré depuis.",
+      "recoverDraft": "Récupérer mes modifications"
+    },
+    "names": {
+      "title": "Des élèves sont nommés",
+      "detailsTitle": "Vérifiez avant de partager",
+      "body": "Ce message nomme {names}. Il ira à toutes les familles de la classe.",
+      "detail": "Ce message contient {kind} ({match}) : vérifiez qu’il peut être partagé avec toutes les familles.",
+      "continue": "Continuer",
+      "back": "Revenir au message",
+      "kinds": {
+        "email": "une adresse courriel",
+        "phone": "un numéro de téléphone",
+        "identifier": "un numéro d’identification",
+        "postalCode": "un code postal",
+        "address": "une adresse",
+        "birthDate": "une date de naissance"
+      }
+    }
+  },
+  "newsletterText": {
+    "header": "{school} · {className} · Semaine du {date}",
+    "sections": {
+      "message": "Message",
+      "thisWeek": "Cette semaine en classe",
+      "nextWeek": "La semaine prochaine",
+      "dates": "Dates à retenir",
+      "reminders": "Rappels",
+      "atHome": "Pour aider à la maison",
+      "faith": "Moment de foi",
+      "closing": "Mot de la fin"
+    },
+    "greeting": "Bonjour chères familles,",
+    "closing": "Bonne fin de semaine!",
+    "lessons": "{subject} (unité « {unit} ») : {lessons}",
+    "nextLessons": "{subject} (unité « {unit} »), prochaines leçons : {lessons}",
+    "unitStart": "{subject} : nous commencerons l’unité « {title} »",
+    "withTitle": "{line} ({title})",
+    "dayOff": "{date} : {title} (pas d’école)",
+    "dayOffRange": "Du {from} au {to} : {title} (pas d’école)",
+    "earlyDismissal": "{date} : départ hâtif à {time}",
+    "earlyDismissalNoTime": "{date} : départ hâtif",
+    "lateStart": "{date} : entrée retardée, les classes commencent à {time}",
+    "lateStartNoTime": "{date} : entrée retardée",
+    "event": "{date} à {time} : {title}",
+    "eventNoTime": "{date} : {title}",
+    "eventRange": "Du {from} au {to} : {title}",
+    "report": {
+      "progress": "{date} : remise du bulletin de progrès",
+      "term1": "{date} : remise du bulletin scolaire (1re étape)",
+      "term2": "{date} : remise du bulletin scolaire (2e étape)"
+    },
+    "season": {
+      "avent": "{date} : premier dimanche de l’Avent",
+      "noel": "{date} : Noël",
+      "careme": "{date} : mercredi des Cendres, début du Carême",
+      "paques": "{date} : dimanche de Pâques"
+    },
+    "faith": {
+      "prayer": "Cette semaine, nous prions ensemble : « {text} »",
+      "virtue": "Notre valeur de la semaine : « {text} »",
+      "reflection": "Une question à discuter en famille : {text}",
+      "scripture": "La Parole de Dieu de la semaine : {text}",
+      "graduate_expectation": "Cette semaine, nous travaillons une attente de l’élève diplômée ou diplômé de l’école catholique : {text}"
     }
   }
 }

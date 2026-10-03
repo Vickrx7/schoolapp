@@ -15,3 +15,6 @@ export * from './sample-class';
 export * from './year-plan';
 // « Commentaires de bulletin »: the « Bulletins » composer, on the device (D-130, D-135).
 export * from './report-comments';
+// « Info-parents »: the class's weekly message to families, drafted from its own data (D-136 to
+// D-138).
+export * from './newsletter';

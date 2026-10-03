@@ -32,7 +32,7 @@ describe('known action errors', () => {
     }
   });
 
-  it('include the Phase 6 errors, but not the error pages’ texts', () => {
+  it('include the Phase 6 and later errors, but not the error pages’ texts', () => {
     for (const key of [
       'lastBoardAdmin',
       'staffOtherBoard',
@@ -48,6 +48,15 @@ describe('known action errors', () => {
       'noSchoolYear',
       'sampleClassExists',
       'feedbackLimit',
+    ]) {
+      expect(KNOWN_ERRORS.has(key), key).toBe(true);
+    }
+    // « Commentaires de bulletin » and « Info-parents » (D-129, D-137, D-138).
+    for (const key of [
+      'reportBankNotTeaching',
+      'newsletterWeek',
+      'newsletterPurged',
+      'newsletterConflict',
     ]) {
       expect(KNOWN_ERRORS.has(key), key).toBe(true);
     }

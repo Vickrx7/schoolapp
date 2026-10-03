@@ -80,7 +80,7 @@ describe('retention_maintenance (D-105)', () => {
   });
 });
 
-describe('the class purge and next week’s plans (D-055, D-105; Phase 6 review)', () => {
+describe('the class purge and next week’s plans (D-055, D-105, D-138; Phase 6 review)', () => {
   const ISABELLE = 'd0000000-0000-4000-8000-000000000001';
   const SCHOOL = 'c0000000-0000-4000-8000-000000000001';
   const BOARD = 'b0000000-0000-4000-8000-000000000001';
@@ -113,6 +113,13 @@ describe('the class purge and next week’s plans (D-055, D-105; Phase 6 review)
       await q(`insert into public.students (class_id, first_name) values ($1, 'Ancien')`, [
         old!.id,
       ]);
+      // Its « Info-parents » message of that year names a student (D-138).
+      await q(
+        `insert into public.class_newsletters (class_id, week_of, content)
+         values ($1, date_trunc('week', current_date - 450)::date,
+           '{"v": 1, "signature": "", "sections": []}'::jsonb)`,
+        [old!.id],
+      );
       await q(
         `insert into public.timetable_blocks (class_id, day_key, start_time, end_time, kind, subject_id)
          select $1, d, '08:55', '09:45', 'subject',
@@ -179,6 +186,19 @@ describe('the class purge and next week’s plans (D-055, D-105; Phase 6 review)
           [old!.id],
         ),
       ).toEqual([{ n: 1 }]);
+      // Its message went with the first names, counted in the audit entry (D-138).
+      expect(
+        await q(`select count(*)::int as n from public.class_newsletters where class_id = $1`, [
+          old!.id,
+        ]),
+      ).toEqual([{ n: 0 }]);
+      expect(
+        await q(
+          `select details from public.audit_log
+           where action = 'class.students_purged' and entity_id = $1`,
+          [old!.id],
+        ),
+      ).toEqual([{ details: { students: 1, newsletters: 1 } }]);
     } finally {
       await client.query('rollback').catch(() => undefined);
       client.release();

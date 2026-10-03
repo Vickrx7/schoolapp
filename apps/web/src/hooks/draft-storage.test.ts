@@ -6,8 +6,10 @@ import {
   DRAFT_PREFIX,
   draftsClosed,
   draftStorage,
+  forgetNewsletterDrafts,
   forgetReportDrafts,
   forgetSentDrafts,
+  newsletterDraftKey,
   readReportDraft,
   removeDrafts,
   serializeDraft,
@@ -212,6 +214,26 @@ describe('report card comments on the device (« Bulletins », D-130)', () => {
     // The day after the expiry, hers go too.
     expect(forgetReportDrafts({ userId: me, today: '2027-04-14', storage })).toBe(1);
     expect(forgetReportDrafts({ userId: me, today: '2027-04-14', storage: null })).toBe(0);
+  });
+
+  it('removes another account’s « Info-parents » drafts, and nothing else (D-138)', () => {
+    const storage = memoryStorage({
+      [DRAFT_PREFIX + newsletterDraftKey(me, 'n1')]: serializeDraft({ v: 1 }),
+      [DRAFT_PREFIX + newsletterDraftKey(other, 'n1')]: serializeDraft({ v: 1 }),
+      [DRAFT_PREFIX + newsletterDraftKey(other, 'n2')]: serializeDraft({ v: 1 }),
+      [`${DRAFT_PREFIX}lesson:${other}:u1:new`]: serializeDraft({ title: 'Le castor' }),
+      unrelated: 'kept',
+    });
+    expect(forgetNewsletterDrafts({ userId: me, storage })).toBe(2);
+    const left = Array.from({ length: storage.length }, (_, i) => storage.key(i)).sort();
+    expect(left).toEqual(
+      [
+        DRAFT_PREFIX + newsletterDraftKey(me, 'n1'),
+        `${DRAFT_PREFIX}lesson:${other}:u1:new`,
+        'unrelated',
+      ].sort(),
+    );
+    expect(forgetNewsletterDrafts({ userId: me, storage: null })).toBe(0);
   });
 
   it('refuses any write once every draft was cleared for a sign-out', () => {
