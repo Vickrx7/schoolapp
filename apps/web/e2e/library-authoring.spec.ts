@@ -212,9 +212,27 @@ test('a teacher writes a comment bank by hand, marks it reviewed without duratio
   await page.getByLabel('Titre', { exact: true }).fill(title);
   await expect(page.getByRole('checkbox', { name: '3e année' })).toBeChecked();
   await page.getByLabel('Matière', { exact: true }).selectOption({ label: 'Mathématiques' });
-  // Every field of a teacher's document says « Enseignant·e seulement ».
+  // « Contenu » in a bank's words, « Pour » first: nothing about students, a student sheet or a
+  // learning goal (all for the staff, so no « Enseignant·e seulement » badges either).
   await expect(page.getByRole('combobox', { name: /^Pour\b/ })).toHaveValue('subject');
   await expect(page.getByRole('combobox', { name: /^Bulletin\b/ })).toHaveValue('term');
+  await expect(
+    page.getByText(/^Banque de commentaires de bulletin\s:\sréservée au personnel/),
+  ).toBeVisible();
+  // « Contenu » and « Foi »: the sections of the content and of the faith.
+  const form = page
+    .locator('details')
+    .filter({ has: page.getByRole('heading', { name: /^(Contenu|Foi)$/ }) });
+  await expect(form).toHaveCount(2);
+  for (const text of [
+    'élèves qui',
+    'Intention d’apprentissage',
+    'Titre sur la feuille',
+    'Enseignant·e seulement',
+    'Afficher le lien sur la feuille de l’élève',
+  ]) {
+    await expect(form.getByText(text, { exact: false }), text).toHaveCount(0);
+  }
   await page.getByLabel('Mots-clés').fill('bulletin, numération');
 
   // Two entries in « Commentaires généraux », with {prénom} where the first name goes.
@@ -271,8 +289,8 @@ test('a teacher writes a comment bank by hand, marks it reviewed without duratio
       .getByText('Partagée avec l’école', { exact: true }),
   ).toBeVisible();
   // The teacher's document groups the entries.
-  await page.getByRole('tab', { name: 'Guide et corrigé' }).click();
-  const doc = page.getByRole('tabpanel', { name: 'Guide et corrigé' });
+  await page.getByRole('tab', { name: 'Contenu' }).click();
+  const doc = page.getByRole('tabpanel', { name: 'Contenu' });
   await expect(doc.getByRole('heading', { name: 'Commentaires généraux' })).toBeVisible();
   await expect(doc).toContainText(/Au féminin\s:\s\{prénom\} est de plus en plus confiante\./);
   await expect(doc).toContainText(/Niveau 2\s:\s\{prénom\} gagnerait à vérifier/);

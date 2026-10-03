@@ -53,10 +53,13 @@ export function SectionEditor({
       <div className="flex flex-wrap items-start justify-between gap-2">
         <h3 id={headingId} className="font-semibold text-slate-900">
           <span lang="fr">{heading.fr}</span>
-          <span className="font-normal text-slate-600" lang="en">
-            {' · '}
-            {heading.en}
-          </span>
+          {/* Once when both languages say the same (« Message »). */}
+          {heading.en !== heading.fr ? (
+            <span className="font-normal text-slate-600" lang="en">
+              {' · '}
+              {heading.en}
+            </span>
+          ) : null}
         </h3>
         {readOnly ? null : (
           <Button

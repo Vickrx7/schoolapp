@@ -1,6 +1,11 @@
 'use client';
 
-import { type AuthoringQuestion, type FieldSpec, type LibraryItemType } from '@lynx/content';
+import {
+  TYPE_INFO,
+  type AuthoringQuestion,
+  type FieldSpec,
+  type LibraryItemType,
+} from '@lynx/content';
 import { useTranslations } from 'next-intl';
 import { useCallback } from 'react';
 import { Badge } from '@/components/ui/card';
@@ -134,23 +139,26 @@ export function ContentFields({
   const errors = useEditorErrors();
   const labels = useFieldLabels(type, subjectCode);
   const set = (key: string, next: unknown) => onChange({ ...value, [key]: next });
+  // A type with no student sheet says nothing about one (a comment bank is all for the staff).
+  const sheet = TYPE_INFO[type].audience !== 'teacher';
+  const teacherOnly = (spec: FieldSpec) => sheet && spec.audience === 'teacher';
 
   return (
     <div className="space-y-4">
       {specs.map((spec) => {
+        if (spec.hidden) return null;
         const { label, item, add, hint } = labels(spec);
         const fieldPath = `${path}.${spec.path}`;
         const limits = limitsOf(type, limitsPath ? `${limitsPath}.${spec.path}` : spec.path);
         const error = errors.at(fieldPath);
-        const shownLabel =
-          spec.audience === 'teacher' ? (
-            <span className="inline-flex flex-wrap items-center gap-2">
-              {label}
-              <Badge tone="warning">{t('teacherOnly')}</Badge>
-            </span>
-          ) : (
-            label
-          );
+        const shownLabel = teacherOnly(spec) ? (
+          <span className="inline-flex flex-wrap items-center gap-2">
+            {label}
+            <Badge tone="warning">{t('teacherOnly')}</Badge>
+          </span>
+        ) : (
+          label
+        );
         const current = value[spec.path];
         const fieldLang = spec.lang ?? lang;
 
@@ -248,7 +256,7 @@ export function ContentFields({
             return (
               <StringListEditor
                 key={spec.path}
-                label={spec.audience === 'teacher' ? `${label} (${t('teacherOnly')})` : label}
+                label={teacherOnly(spec) ? `${label} (${t('teacherOnly')})` : label}
                 itemLabel={item}
                 addLabel={add}
                 hint={hint}
@@ -267,7 +275,7 @@ export function ContentFields({
             return (
               <ObjectListEditor
                 key={spec.path}
-                label={spec.audience === 'teacher' ? `${label} (${t('teacherOnly')})` : label}
+                label={teacherOnly(spec) ? `${label} (${t('teacherOnly')})` : label}
                 itemLabel={item}
                 addLabel={add}
                 hint={hint}

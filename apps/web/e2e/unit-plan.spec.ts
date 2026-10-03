@@ -70,7 +70,7 @@ test('a teacher plans a unit’s weeks and attentes on its page', async ({ page 
 
   // The attentes: summaries to be checked, by domaine.
   await expect(
-    dialog.getByText('Attentes résumées, à vérifier contre le programme officiel', {
+    dialog.getByText('Attentes résumées, à vérifier dans le curriculum officiel de l’Ontario', {
       exact: false,
     }),
   ).toBeVisible();

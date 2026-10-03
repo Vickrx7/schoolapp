@@ -374,7 +374,8 @@ describe('comment bank: the AI shape, documents and readiness', () => {
       renderTeacherDoc({ itemTitle: 'Banque' }, 'report_comments', content),
     );
     expect(text).toContain('Banque de commentaires de bulletin');
-    expect(text).toContain('Pour : Une matière');
+    // A subject's bank: no « Pour : Une matière » (its subject is the item's).
+    expect(text).not.toContain('Pour :');
     expect(text).toContain('Bulletin : Bulletin scolaire');
     expect(text.indexOf('Attente B1.2')).toBeLessThan(text.indexOf('Commentaires généraux'));
     expect(text.indexOf('Points forts')).toBeLessThan(text.indexOf('Prochaines étapes'));

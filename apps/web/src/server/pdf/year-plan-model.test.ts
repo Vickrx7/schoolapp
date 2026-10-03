@@ -42,7 +42,7 @@ describe('buildYearPlanPdfModel', () => {
       'Action de grâce (12\u00a0oct.)',
       'Messe de l’Action de grâce (8\u00a0oct.)',
     ]);
-    expect(october('reports').map((i) => i.text)).toEqual(['Progrès\u00a0: Fin 30\u00a0oct.']);
+    expect(october('reports').map((i) => i.text)).toEqual(['Progrès\u00a0: fin 30\u00a0oct.']);
     expect(model.glance.rows[2]!.cells[3]!.map((i) => i.text)).toEqual([
       'Avent · 29\u00a0nov.–24\u00a0déc.',
       'Temps de Noël · 25\u00a0déc.–10\u00a0janv.',
@@ -141,7 +141,7 @@ describe('buildYearPlanPdfModel', () => {
       title: 'Plan à long terme',
       subtitle: '3e année · Année scolaire 2026-2027',
       lines: [
-        'Équipe de la classe\u00a0: Mme Isabelle Tremblay (Titulaire)',
+        'Équipe de la classe\u00a0: Mme Isabelle Tremblay (titulaire)',
         'Imprimé le 2\u00a0octobre\u00a02026',
       ],
     });
@@ -171,11 +171,12 @@ describe('buildYearPlanPdfModel', () => {
     );
     expect(model.coverage).toEqual({
       title: 'Couverture des attentes',
+      // The paper says what the screen says: a partial list, to check (post-MVP review).
       intro:
-        'Au 2\u00a0octobre\u00a02026, pour toute l’année\u00a0: ce que les unités et les leçons de la classe ont prévu et enseigné, par matière.',
+        'Au 2\u00a0octobre\u00a02026, pour toute l’année\u00a0: ce que les unités et les leçons de la classe ont prévu et enseigné, par matière. Seules les attentes chargées dans l’application sont comptées\u00a0: une liste résumée, à vérifier, qui peut être incomplète.',
       columns: ['Matière', 'Attentes', 'Enseignées', 'Prévues', 'Pas encore prévues'],
       rows: [{ key: '0', label: 'Mathématiques', values: ['34', '3', '5', '26'] }],
-      notes: [expect.stringMatching(/^Compté comme dans «\u00a0Couverture\u00a0»/)],
+      notes: [expect.stringMatching(/^Mode de calcul\u00a0: une attente est enseignée/)],
     });
     const none = buildYearPlanPdfModel(input({ coverage: { rows: [], unverified: false } }), FR);
     expect(none.coverage?.notes).toEqual([

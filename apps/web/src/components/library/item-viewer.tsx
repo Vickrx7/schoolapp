@@ -10,7 +10,8 @@ import { ITEM_TABS, type ItemTab } from './item-tabs';
 import { VersionPicker, type VersionChoice } from './version-picker';
 
 /**
- * The item page's versions and tabs (« Pour les élèves », « Guide et corrigé », « Détails »).
+ * The item page's versions and tabs (« Pour les élèves », « Guide et corrigé », « Détails »; a
+ * type with no student sheet shows « Contenu » and « Détails »).
  * Every document is rendered on the server; this only chooses which one shows, so no content
  * package code reaches the browser. The choice is kept in the address (`?v=…&tab=…`) so a
  * reload or « Retour à la ressource » comes back to it. « Imprimer » prints what is on screen:
@@ -55,7 +56,12 @@ export function ItemViewer({
   const versionId = versions.some((v) => v.id === chosenVersion)
     ? chosenVersion
     : (versions[0]?.id ?? '');
-  const [tab, setTab] = useState<ItemTab>(initialTab);
+  // A type with no student sheet has no « Pour les élèves » tab; its document is « Contenu ».
+  const tabs: readonly ItemTab[] = hasStudentSheet
+    ? ITEM_TABS
+    : ITEM_TABS.filter((x) => x !== 'student');
+  const [chosenTab, setTab] = useState<ItemTab>(initialTab);
+  const tab: ItemTab = tabs.includes(chosenTab) ? chosenTab : tabs[0]!;
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const remember = (v: string, x: ItemTab) => {
@@ -74,12 +80,12 @@ export function ItemViewer({
   };
 
   const onKeyDown = (e: KeyboardEvent, index: number) => {
-    const last = ITEM_TABS.length - 1;
+    const last = tabs.length - 1;
     const next =
       e.key === 'ArrowRight'
-        ? (index + 1) % ITEM_TABS.length
+        ? (index + 1) % tabs.length
         : e.key === 'ArrowLeft'
-          ? (index + last) % ITEM_TABS.length
+          ? (index + last) % tabs.length
           : e.key === 'Home'
             ? 0
             : e.key === 'End'
@@ -87,7 +93,7 @@ export function ItemViewer({
               : null;
     if (next === null) return;
     e.preventDefault();
-    chooseTab(ITEM_TABS[next]!);
+    chooseTab(tabs[next]!);
     refs.current[next]?.focus();
   };
 
@@ -119,7 +125,7 @@ export function ItemViewer({
         aria-label={t('tabs.label')}
         className="-mx-4 flex gap-1 overflow-x-auto border-b border-slate-200 px-4 md:mx-0 md:px-0"
       >
-        {ITEM_TABS.map((x, i) => {
+        {tabs.map((x, i) => {
           const active = x === tab;
           return (
             <button
@@ -140,13 +146,13 @@ export function ItemViewer({
                 active && 'border-brand-600 text-brand-700',
               )}
             >
-              {t(`tabs.${x}`)}
+              {x === 'teacher' && !hasStudentSheet ? t('tabs.content') : t(`tabs.${x}`)}
             </button>
           );
         })}
       </div>
 
-      {ITEM_TABS.map((x) => (
+      {tabs.map((x) => (
         <div
           key={x}
           role="tabpanel"

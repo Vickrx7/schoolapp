@@ -199,6 +199,7 @@ export function ReportPeriodsEditor({
                 <Button
                   variant="ghost"
                   size="sm"
+                  className="min-h-11"
                   aria-label={t('clearLabel', { kind: tKinds(`kinds.${kind}`) })}
                   onClick={() => setFields((f) => ({ ...f, [kind]: BLANK }))}
                 >

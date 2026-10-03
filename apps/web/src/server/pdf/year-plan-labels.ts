@@ -59,6 +59,9 @@ export interface YearPlanPdfLabels {
   failedBack: string;
 }
 
+const lowerFirst = (s: string, locale: string) =>
+  s.charAt(0).toLocaleLowerCase(locale) + s.slice(1);
+
 export function yearPlanPdfLabels(locale: AppLocale, catalog: typeof messages): YearPlanPdfLabels {
   const t = createTranslator({ locale, messages: catalog });
   return {
@@ -68,7 +71,9 @@ export function yearPlanPdfLabels(locale: AppLocale, catalog: typeof messages): 
     fileName: t('yearPlan.pdf.fileName'),
     subtitle: (className, year) => t('yearPlan.pdf.subtitle', { className, year }),
     team: (names) => t('yearPlan.pdf.team', { names }),
-    member: (name, role) => t('yearPlan.pdf.member', { name, role: t(`classes.role.${role}`) }),
+    // A document for the principal: roles in the sentence's words (« titulaire »).
+    member: (name, role) =>
+      t('yearPlan.pdf.member', { name, role: t(`yearPlan.pdf.roles.${role}`) }),
     printedOn: (date) => t('yearPlan.pdf.printedOn', { date }),
     glance: t('yearPlan.pdf.glance'),
     subject: t('yearPlan.pdf.subject'),
@@ -79,10 +84,11 @@ export function yearPlanPdfLabels(locale: AppLocale, catalog: typeof messages): 
     dayOff: (title, dates) => t('yearPlan.pdf.dayOff', { title, dates }),
     season: (season, dates) =>
       t('yearPlan.pdf.season', { season: t(`yearPlan.seasons.${season}`), dates }),
+    // « Progrès : fin 30 oct. »: no capital after the colon on one line (the grid has two).
     marker: (marker, date) =>
       t('yearPlan.reports.marker', {
         kind: t(`yearPlan.reports.short.${marker.kind as ReportPeriodKind}`),
-        what: t(`yearPlan.reports.whatShort.${marker.what}`, { date }),
+        what: lowerFirst(t(`yearPlan.reports.whatShort.${marker.what}`, { date }), locale),
       }),
     inferredMark: t('yearPlan.pdf.inferredMark'),
     inferredLegend: t('yearPlan.pdf.inferredLegend'),

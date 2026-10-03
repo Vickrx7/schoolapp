@@ -88,7 +88,7 @@ export function ComposerFilters({
       <fieldset className="space-y-3">
         <legend className="mb-2 text-sm font-semibold text-slate-900">{t('legend')}</legend>
         <div className="flex flex-wrap items-end gap-4">
-          <div className="min-w-0 flex-[3] basis-[34rem] space-y-1.5">
+          <div className="min-w-0 flex-[3] basis-[34rem] space-y-1.5 max-sm:basis-full">
             <Label htmlFor={`${id}-period`}>{t('period')}</Label>
             <Select
               id={`${id}-period`}
@@ -136,7 +136,7 @@ export function ComposerFilters({
               </div>
             </>
           ) : null}
-          <div className="min-w-0 flex-[2] basis-56 space-y-1.5">
+          <div className="min-w-0 flex-[2] basis-72 space-y-1.5 max-sm:basis-full">
             <Label htmlFor={`${id}-subject`}>{t('subject')}</Label>
             <Select
               id={`${id}-subject`}
@@ -167,7 +167,7 @@ export function ComposerFilters({
             </Select>
           </div>
           {banks.length > 0 ? (
-            <div className="min-w-0 flex-[2] basis-[28rem] space-y-1.5">
+            <div className="min-w-0 flex-[2] basis-[28rem] space-y-1.5 max-sm:basis-full">
               <Label htmlFor={`${id}-bank`}>{t('bank')}</Label>
               <Select
                 id={`${id}-bank`}

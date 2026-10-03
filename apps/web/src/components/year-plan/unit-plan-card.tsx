@@ -72,7 +72,7 @@ export async function UnitPlanCard({
             year={year}
             expectations={expectations}
             trigger={
-              <Button variant="secondary" size="sm">
+              <Button variant="secondary" size="sm" className="min-h-11">
                 <CalendarRange aria-hidden />
                 {t('edit')}
               </Button>

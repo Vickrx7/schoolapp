@@ -291,7 +291,7 @@ test('« Couverture » shows each attente taught or planned, from the lessons an
     // An overall attente with contenus is their heading.
     await expect(list.getByText('2 sur 4 enseignées')).toBeVisible();
     await expect(
-      list.getByText(/^Attentes résumées, à vérifier contre le programme officiel/),
+      list.getByText(/^Attentes résumées, à vérifier dans le curriculum officiel de l’Ontario/),
     ).toBeVisible();
     await list.getByText('Comment on compte').click();
     await expect(list.getByText(/^«\sEnseignée \(unité terminée\)\s»\s:/)).toBeVisible();

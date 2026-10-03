@@ -58,9 +58,18 @@ export interface FieldSpec {
   lang?: 'fr-CA' | 'en-CA';
   /** Maximum characters of a text field (from the schema). */
   maxLength?: number;
+  /**
+   * Kept as stored, never shown in the editor: a field a type does not use (a comment bank's
+   * « Intention d'apprentissage » and sheet title; post-MVP review).
+   */
+  hidden?: boolean;
 }
 
-type Draft = Omit<FieldSpec, 'labelKey' | 'fields' | 'maxLength'> & { fields?: Draft[] };
+type Draft = Omit<FieldSpec, 'labelKey' | 'fields' | 'maxLength'> & {
+  fields?: Draft[];
+  /** Its own label (`content.<labelGroup>.<path>`) where the shared one does not fit. */
+  labelGroup?: string;
+};
 type Options = Partial<Omit<Draft, 'path' | 'kind'>>;
 
 const field =
@@ -235,11 +244,14 @@ const SPECS: Record<LibraryItemType, Draft[]> = {
       ],
     }),
   ],
-  // Teacher-only (no student sheet): the editor shows the entries with their own editor.
+  // Teacher-only (no student sheet): « Pour » and « Bulletin » first, the note in a bank's words,
+  // the entries with their own editor; no sheet title and no « Intention d'apprentissage ».
   report_comments: [
-    ...common(),
     select('scope', REPORT_BANK_SCOPES, 'reportBankScopes'),
     select('period', REPORT_BANK_PERIODS, 'reportBankPeriods'),
+    text('title', { hidden: true }),
+    textarea('objective', { hidden: true }),
+    textarea('teacherNote', { ...teacher, labelGroup: 'bank' }),
     field('commentEntries')('entries', {
       fields: [
         select('kind', REPORT_ENTRY_KINDS, 'reportEntryKinds'),
@@ -321,11 +333,12 @@ function finish(
 ): FieldSpec[] {
   const shape = (schema?.shape ?? {}) as Record<string, z.ZodType>;
   return drafts.map((d) => {
-    const labelKey = `${prefix}.${d.path}`;
+    const labelKey = d.labelGroup ? `${prefix}.${d.labelGroup}.${d.path}` : `${prefix}.${d.path}`;
     const fieldSchema = shape[d.path];
     const plain =
       fieldSchema instanceof z.ZodNullable ? (fieldSchema.unwrap() as z.ZodType) : fieldSchema;
-    const { fields, ...rest } = d;
+    const { fields, labelGroup, ...rest } = d;
+    void labelGroup;
     const own = audience ?? rest.audience;
     const spec: FieldSpec = { ...rest, labelKey, audience: own };
     if (plain instanceof z.ZodString && plain.maxLength !== null) spec.maxLength = plain.maxLength;

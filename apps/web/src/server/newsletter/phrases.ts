@@ -29,6 +29,9 @@ const lowerFirst = (s: string, locale: string) =>
 const upperFirst = (s: string, locale: string) =>
   s.charAt(0).toLocaleUpperCase(locale) + s.slice(1);
 
+/** An app line ends as a sentence does (« … (pas d’école). »), like the tips under it. */
+const ended = (s: string) => (/[.!?…]$/u.test(s.trimEnd()) ? s : `${s.trimEnd()}.`);
+
 /** A guide's tip (« chercher des nombres… ») as a sentence. */
 export function tipSentence(text: string, locale: string): string {
   const trimmed = text.trim();
@@ -81,43 +84,56 @@ export function newsletterPhrases(
     greeting: t('greeting'),
     closing: t('closing'),
     lessons: ({ subject, unit, lessons, more }) =>
-      t('lessons', { subject, unit, lessons: list(lessons, more) }),
+      ended(t('lessons', { subject, unit, lessons: list(lessons, more) })),
     nextLessons: ({ subject, unit, lessons, more }) =>
-      t('nextLessons', { subject, unit, lessons: list(lessons, more) }),
-    unitStart: ({ subject, title }) => t('unitStart', { subject, title }),
+      ended(t('nextLessons', { subject, unit, lessons: list(lessons, more) })),
+    unitStart: ({ subject, title }) => ended(t('unitStart', { subject, title })),
     dayOff: ({ from, to, title, type }) => {
       const name = eventName(title, type);
-      return from === to
-        ? t('dayOff', { date: lineDate(from), title: name })
-        : t('dayOffRange', { from: day(from), to: day(to), title: name });
+      return ended(
+        from === to
+          ? t('dayOff', { date: lineDate(from), title: name })
+          : t('dayOffRange', { from: day(from), to: day(to), title: name }),
+      );
     },
     earlyDismissal: ({ date, time: at, title }) =>
-      titled(
-        at
-          ? t('earlyDismissal', { date: lineDate(date), time: time(at) })
-          : t('earlyDismissalNoTime', { date: lineDate(date) }),
-        title,
-        'early_dismissal',
+      ended(
+        titled(
+          at
+            ? t('earlyDismissal', { date: lineDate(date), time: time(at) })
+            : t('earlyDismissalNoTime', { date: lineDate(date) }),
+          title,
+          'early_dismissal',
+        ),
       ),
     lateStart: ({ date, time: at, title }) =>
-      titled(
-        at
-          ? t('lateStart', { date: lineDate(date), time: time(at) })
-          : t('lateStartNoTime', { date: lineDate(date) }),
-        title,
-        'late_start',
+      ended(
+        titled(
+          at
+            ? t('lateStart', { date: lineDate(date), time: time(at) })
+            : t('lateStartNoTime', { date: lineDate(date) }),
+          title,
+          'late_start',
+        ),
       ),
     event: ({ from, to, time: at, title, type }) => {
       const name = eventName(title, type);
-      if (from !== to) return t('eventRange', { from: day(from), to: day(to), title: name });
-      return at
-        ? t('event', { date: lineDate(from), time: time(at), title: name })
-        : t('eventNoTime', { date: lineDate(from), title: name });
+      if (from !== to) return ended(t('eventRange', { from: day(from), to: day(to), title: name }));
+      return ended(
+        at
+          ? t('event', { date: lineDate(from), time: time(at), title: name })
+          : t('eventNoTime', { date: lineDate(from), title: name }),
+      );
     },
-    report: ({ date, period }) => t(`report.${period}`, { date: lineDate(date) }),
-    season: ({ date, season }) => t(`season.${season}`, { date: lineDate(date) }),
+    report: ({ date, period }) => ended(t(`report.${period}`, { date: lineDate(date) })),
+    season: ({ date, season }) => ended(t(`season.${season}`, { date: lineDate(date) })),
     tip: (text) => tipSentence(text, locale),
-    faith: ({ type, title, text }) => t(`faith.${type}`, { title, text: text.trim() }),
+    // « Notre vertu de la semaine, le respect : « … » »: the reference's French title, mid-sentence.
+    faith: ({ type, title, text }) =>
+      t(`faith.${type}`, {
+        title: fr ? lowerFirst(title.trim(), locale) : title.trim(),
+        text: text.trim(),
+      }),
   };
 }
 

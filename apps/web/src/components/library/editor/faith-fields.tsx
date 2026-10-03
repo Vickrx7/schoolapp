@@ -1,6 +1,6 @@
 'use client';
 
-import { frenchStrings, suggestsFaithContent } from '@lynx/content';
+import { TYPE_INFO, frenchStrings, suggestsFaithContent } from '@lynx/content';
 import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
 import { Button } from '@/components/ui/button';
@@ -114,15 +114,18 @@ export function FaithFields({
           onChange={(e) => patch({ catholicConnection: e.target.value })}
         />
       </Field>
-      <label className="flex min-h-11 items-center gap-2 text-sm text-slate-800">
-        <input
-          type="checkbox"
-          className="size-5"
-          checked={form.faithOnStudentSheet}
-          onChange={(e) => patch({ faithOnStudentSheet: e.target.checked })}
-        />
-        {t('onStudentSheet')}
-      </label>
+      {/* A type with no student sheet (a comment bank, a lesson plan) has nothing to print it on. */}
+      {TYPE_INFO[form.type].audience !== 'teacher' ? (
+        <label className="flex min-h-11 items-center gap-2 text-sm text-slate-800">
+          <input
+            type="checkbox"
+            className="size-5"
+            checked={form.faithOnStudentSheet}
+            onChange={(e) => patch({ faithOnStudentSheet: e.target.checked })}
+          />
+          {t('onStudentSheet')}
+        </label>
+      ) : null}
       <p className="text-sm text-slate-500">{t('reviewHint')}</p>
     </div>
   );

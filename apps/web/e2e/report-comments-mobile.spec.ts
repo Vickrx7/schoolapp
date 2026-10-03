@@ -49,6 +49,13 @@ test('« Bulletins » on a phone: the list, one student, Back to the list, 44 px
   );
   const list = page.getByRole('navigation', { name: /^Élèves/ });
   await expect(list).toBeVisible();
+  // The class's tabs: « Bulletins » scrolled into view, an arrow says more tabs are to its left.
+  const tab = page
+    .getByRole('navigation', { name: 'Aperçu' })
+    .getByRole('link', { name: 'Bulletins' });
+  await expect(tab).toHaveAttribute('aria-current', 'page');
+  await expect(tab).toBeInViewport({ ratio: 1 });
+  await expect(page.getByTestId('class-tabs-more-before')).toBeVisible();
   // The list is its own screen: no student is open yet.
   await expect(page.getByRole('article')).toHaveCount(0);
   await expectNoSidewaysScroll(page);

@@ -81,13 +81,13 @@ describe('the « Info-parents » PDF model (D-141)', () => {
       'Quelle belle semaine! Nous avons visité la bibliothèque municipale et chaque élève a choisi un livre sur les animaux du Canada.',
     ]);
     expect(texts(fr, 'dates')).toEqual([
-      'Vendredi 9 octobre : journée pédagogique (pas d’école)',
-      'Lundi 12 octobre : Action de grâce (pas d’école)',
-      'Mardi 13 octobre à 13 h 15 : Spectacle de la chorale',
-      'Jeudi 22 octobre : remise du bulletin de progrès',
+      'Vendredi 9 octobre : journée pédagogique (pas d’école).',
+      'Lundi 12 octobre : Action de grâce (pas d’école).',
+      'Mardi 13 octobre à 13 h 15 : Spectacle de la chorale.',
+      'Jeudi 22 octobre : remise du bulletin de progrès.',
     ]);
     expect(texts(en, 'dates')).toContain(
-      'Tuesday, October 13 at 1:15 p.m.: Assembly, “Spectacle de la chorale”',
+      'Tuesday, October 13 at 1:15 p.m.: Assembly, “Spectacle de la chorale”.',
     );
     expect(texts(fr, 'faith')).toEqual([
       'Cette semaine, nous prions ensemble : « Seigneur, aide-moi à bien écouter, à faire de mon mieux et à aider mes amis aujourd’hui. Amen. »',
@@ -114,7 +114,7 @@ describe('the « Info-parents » PDF model (D-141)', () => {
       /^Mathématiques \(unité « Les nombres.*Bravo à toute la classe!$/,
     );
     expect(other).toEqual({
-      text: 'French (unit “Les animaux du Canada”): “Le castor, bâtisseur de barrages”',
+      text: 'French (unit “Les animaux du Canada”): “Le castor, bâtisseur de barrages”.',
       inFrench: false,
     });
     // A reminder without English.

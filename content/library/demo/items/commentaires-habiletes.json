@@ -2,7 +2,7 @@
   "slug": "commentaires-habiletes",
   "type": "report_comments",
   "title": "Commentaires de bulletin : habiletés d’apprentissage et habitudes de travail",
-  "summary": "Des points forts et des prochaines étapes pour les six habiletés d’apprentissage et habitudes de travail (3e à 5e année), pour chaque cote : E, T, S et N. Pour le bulletin de progrès et le bulletin scolaire. À valider en classe.",
+  "summary": "Des points forts et des prochaines étapes pour les six habiletés d’apprentissage et habitudes de travail (3e et 5e année), pour chaque cote : E, T, S et N. Pour le bulletin de progrès et le bulletin scolaire. À valider en classe.",
   "source": "board_created",
   "status": "board_approved",
   "shareScope": "board",
@@ -146,7 +146,7 @@
             "rating": "good",
             "category": null,
             "expectationCodes": [],
-            "neutral": "{prénom} planifie bien son travail et gère son temps de façon appropriée la plupart du temps.",
+            "neutral": "{prénom} planifie son travail et gère généralement bien son temps.",
             "feminine": "",
             "masculine": ""
           },

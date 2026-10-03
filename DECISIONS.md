@@ -2779,6 +2779,15 @@ approval for free, and a 26th type costs less than a new store. As built (slice 
 `types/report-comments.ts` and `report-comments.ts`; the editor's `CommentEntriesEditor`. A bank
 never counts in « Couverture du curriculum » (D-094): it is not a resource for teaching an attente.
 
+_Amended in the post-MVP review (2026-10-03), round A:_ the editor and the item page speak of a
+bank, not of a student sheet: « Contenu » opens on « Pour » and « Bulletin », then « Notes sur la
+banque » and the entries (the sheet title and « Intention d'apprentissage » stay in the content but
+are not shown, `FieldSpec.hidden`); a type with no student sheet shows no « Enseignant·e
+seulement » badge, no « Afficher le lien sur la feuille de l'élève » box and the intro « … :
+réservée au personnel, aucune feuille pour les élèves. »; its page has the tabs « Contenu » and
+« Détails » (no « Pour les élèves »); a subject's bank no longer prints « Pour : Une matière »; the
+general kind is « Autres commentaires » and the field « Type d'entrée ».
+
 **D-130 — Comments are composed on the device only (amends D-044).** « Bulletins »
 (`/classes/[id]/bulletins`, D-135) composes report card comments in the teacher's browser. There is
 no table for them, no server action, no route handler, no form that carries them and no PDF (a
@@ -3057,7 +3066,10 @@ and ends « et 6 autres leçons », instead of refusing the whole draft. (3) A m
 « Envoyé » keeps its text: any change of its content is refused by the database (LXN07,
 `20270201090000_post_mvp_review_fixes.sql`, pgTAP `38_post_mvp_review`) until « Remettre en
 brouillon »; a stale tab's « Enregistrer » or « Préremplir à nouveau » says so
-(`newsletterSent`) and the page shows the message as sent.
+(`newsletterSent`) and the page shows the message as sent. (4) Wording: the app's lines (lessons, a unit
+starting, the dates) end with a period; the faith moment names the virtue (« Notre vertu de la
+semaine, le respect : « … » », in English with its French name) and quotes the reflection (« À
+discuter en famille : « … » »).
 
 **D-138 — Names and retention (amends D-105).** Before a message is copied, printed (D-141) or
 marked sent, « Des élèves sont nommés » lists the class's students it names (« Ce message nomme
@@ -3157,7 +3169,10 @@ abbreviated titles, `NEVER_A_PERSON` (which no longer holds Grace, April, May, J
 a short list of little words that start a sentence or a quotation (« Les », « Demain », days and
 months). The limit that remains: a name the app does not know, without a title, that is
 lowercase, or that is also one of those little words or in `NEVER_A_PERSON` (« Noël » alone), is
-neither blocked nor listed; the teacher's confirmation covers it.
+neither blocked nor listed; the teacher's confirmation covers it. When every paragraph already has up-to-date
+English, « Traduire en anglais (IA) » says so (« Tous les paragraphes ont déjà une version anglaise à
+jour ») and preselects nothing: a retranslation is sent only if the teacher picks « Tout
+retraduire ».
 
 **D-140 — No AI rewriting in v1: « Corriger la typographie ».** « Améliorer le texte (IA) » is not
 built: rewriting the teacher's French would send more text out and risk invented facts for little

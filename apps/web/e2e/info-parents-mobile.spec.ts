@@ -48,6 +48,13 @@ test('« Info-parents » on a phone: the list, preparing, one language at a time
   await login(page, DEMO.teacher3);
   await page.goto(`/classes/${SEED.class3}/info-parents`);
   await expect(page.getByText('Aucun message pour l’instant.')).toBeVisible();
+  // The class's tabs: « Info-parents » scrolled into view, an arrow says more tabs are to its left.
+  const tab = page
+    .getByRole('navigation', { name: 'Aperçu' })
+    .getByRole('link', { name: 'Info-parents' });
+  await expect(tab).toHaveAttribute('aria-current', 'page');
+  await expect(tab).toBeInViewport({ ratio: 1 });
+  await expect(page.getByTestId('class-tabs-more-before')).toBeVisible();
   await expectNoSidewaysScroll(page);
   await expectTargets(page.getByTestId('prepare-weeks'));
   await expectAccessible(page);

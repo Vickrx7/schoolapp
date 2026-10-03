@@ -1,6 +1,7 @@
 import { localDateIn } from '@lynx/domain';
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import { SEED, closeDb } from './db';
+import { UNITS } from './db-year-plan';
 import { DEMO, expectAccessible, isSeededSchoolDay, login } from './helpers';
 
 /**
@@ -131,6 +132,11 @@ test('the year as a list of months on a phone', async ({ page }) => {
   await expectAccessible(page);
   await page.keyboard.press('Escape');
   await expect(create).toBeHidden();
+
+  // A unit's page: « Modifier la planification » is a 44 px target too.
+  await page.goto(`/classes/${SEED.class3}/planning/${UNITS.fra3}`);
+  await tall(page.getByRole('button', { name: 'Modifier la planification' }));
+  await noHorizontalScroll(page);
 });
 
 test('« Couverture » on a phone: the subjects, the filters and the attentes', async ({ page }) => {

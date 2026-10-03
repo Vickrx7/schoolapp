@@ -181,7 +181,7 @@
       "scope": "Choose a subject that matches “For”: none for learning skills, Religious education for religious education, another subject otherwise."
     },
     "yearPlanWindow": "These dates are outside the class’s school year.",
-    "yearPlanExpectation": "An expectation you chose is not of the unit’s subject or the class’s grades.",
+    "yearPlanExpectation": "An expectation you chose is not in the unit’s subject or the class’s grades.",
     "reportPeriodOutsideYear": "The period must be within the school year.",
     "datesBoth": "Choose both the first and the last week, or neither.",
     "beforePeriodStart": "This date must come after the start of the period.",
@@ -189,7 +189,7 @@
     "reportBankUnconfirmed": "Tick “I checked” to confirm that your details name no one.",
     "newsletterWeek": "This week is not in the class’s school year.",
     "newsletterPurged": "The first names of this class’s students were erased: no message can be prepared for it any more.",
-    "newsletterConflict": "A colleague edited this message in the meantime. Your changes stay on this device: reload the page to see their version, then take yours back.",
+    "newsletterConflict": "A colleague edited this message in the meantime. Your changes stay on this device: reload the page to see their version, then make your changes again.",
     "newsletterSent": "This message is marked as sent: its text no longer changes. To edit it, first put it back to a draft (“Back to draft”). Your changes stay on this device.",
     "newsletterTooLargeForAi": "This message is too long for automatic translation: translate only the paragraphs without an up-to-date translation, or write the English yourself.",
     "newsletterNothingToTranslate": "Every paragraph already has an up-to-date English version.",
@@ -1379,7 +1379,8 @@
       "label": "Resource content",
       "student": "For students",
       "teacher": "Guide and answer key",
-      "details": "Details"
+      "details": "Details",
+      "content": "Content"
     },
     "versions": {
       "label": "Versions",
@@ -1573,6 +1574,7 @@
     "none": "None",
     "include": "Include: {label}",
     "contentIntro": "{type}. The base version is what students get when there is no version for their level.",
+    "contentIntroTeacher": "{type}: for staff only, no sheet for students.",
     "solutionHint": "Stays in the answer key: never on the student sheet.",
     "draftOlder": "This resource was saved elsewhere since your draft: you are seeing the saved version.",
     "recoverDraft": "Recover my changes",
@@ -1634,6 +1636,9 @@
       "title": "Title on the sheet",
       "objective": "Learning goal",
       "teacherNote": "Note for the teacher",
+      "bank": {
+        "teacherNote": "Notes about the bank"
+      },
       "successCriteria": {
         "_label": "Success criteria",
         "_item": "Criterion",
@@ -1962,7 +1967,7 @@
         "_label": "Entries",
         "_item": "Entry",
         "_add": "Add an entry",
-        "kind": "Kind of entry",
+        "kind": "Entry type",
         "skill": "Skill",
         "level": "Achievement level",
         "progress": "Progress",
@@ -2349,7 +2354,7 @@
       "kindHeadings": {
         "strength": "Strengths",
         "next_step": "Next steps",
-        "general": "Comments"
+        "general": "Other comments"
       }
     }
   },
@@ -2555,7 +2560,7 @@
     }
   },
   "reportBankAi": {
-    "title": "Create a bank with AI",
+    "title": "Create a comment bank with AI",
     "intro": "Choose the grade, the subject, the report and, if you like, the expectations. The AI prepares strengths and next steps, with {token} in place of the student’s first name: a private draft to review before you use or share it.",
     "hubTitle": "Create a comment bank (AI)",
     "hubHint": "Strengths and next steps for the report card, from the curriculum only: a private draft to review.",
@@ -3721,7 +3726,7 @@
       "ai": "The app replaces the names of your schools’ students and staff before anything is sent to artificial intelligence; remove any other name yourself (a parent’s, for example).",
       "canada": "The data is stored in Canada. Only the text sent to artificial intelligence is processed in the United States.",
       "feedback": "Your feedback is welcome: the “Feedback” button is at the top of every page.",
-      "reportComments": "The report card comments you write stay in your device’s browser: never on our servers or with artificial intelligence. They are erased when you sign out."
+      "reportComments": "The report card comments you write stay in your device’s browser: they are never sent to our servers or to artificial intelligence. They are erased when you sign out."
     },
     "readTerms": "Read “Privacy and terms”",
     "accept": "I have read and accept the terms of the pilot project",
@@ -3738,7 +3743,7 @@
     "changes": {
       "pilote1": "the first complete version of the pilot project’s terms.",
       "pilote2": "the app replaces only the names it knows (your schools’ students and staff) before anything is sent to artificial intelligence: remove any other name yourself. The notice also says who reads your feedback and how IP Lynx accesses the data.",
-      "pilote3": "report card comments stay on your device: never on our servers or with artificial intelligence, and they are erased when you sign out.",
+      "pilote3": "report card comments stay on your device: they are never sent to our servers or to artificial intelligence, and they are erased when you sign out.",
       "pilote4": "family newsletters: the app helps you prepare a message to families, never sends it, and erases it with the students’ first names."
     },
     "acceptUpdated": "Accept the terms",
@@ -3970,7 +3975,7 @@
       "noneLoaded": "No expectations are loaded for this subject and grade.",
       "selected": "{count, plural, =0 {No expectations chosen} one {# expectation chosen} other {# expectations chosen}}",
       "unverified": "To be checked",
-      "unverifiedNotice": "Summarized expectations, to be checked against the official curriculum; the list may be incomplete.",
+      "unverifiedNotice": "Summarized expectations, to be checked in Ontario’s official curriculum; the list may be incomplete.",
       "description": "Description (optional)",
       "save": "Save",
       "openUnit": "Open the unit",
@@ -3979,7 +3984,8 @@
     "page": {
       "title": "My year · {year}",
       "metaTitle": "My year · {className}",
-      "intro": "Place your units on the weeks of the year. PA days and holidays are greyed out. This plan is private: only the class team sees it.",
+      "intro": "Place your units on the weeks of the year. Days without school are listed in the Calendar row; weeks without school are greyed out. This plan is private: only the class team sees it.",
+      "introPhone": "Place your units on the weeks of the year. Days without school are shown for each month. This plan is private: only the class team sees it.",
       "noYear": "This class’s school year can’t be found.",
       "empty": "No units yet. Plan the first one: its subject, its weeks and the expectations it addresses.",
       "toPlace": "{count, plural, one {# unit has no saved dates yet.} other {# units have no saved dates yet.}}",
@@ -4075,6 +4081,11 @@
       "subtitle": "{className} · School year {year}",
       "team": "Class team: {names}",
       "member": "{name} ({role})",
+      "roles": {
+        "homeroom": "homeroom teacher",
+        "subject": "subject teacher",
+        "support": "support"
+      },
       "printedOn": "Printed on {date}",
       "glance": "The year at a glance",
       "subject": "Subject",
@@ -4092,8 +4103,8 @@
       "outsideYearLength": "Dates outside the school year: to plan again",
       "noUnits": "No units yet.",
       "coverageTitle": "Expectation coverage",
-      "coverageIntro": "As of {date}, for the whole year: what the class’s units and lessons planned and taught, by subject.",
-      "coverageHow": "Counted as in “Coverage”: an expectation is taught when a lesson linked to it was taught or a completed unit addresses it; planned when a unit addresses it or a linked lesson is still to be taught. Skipped lessons don’t count.",
+      "coverageIntro": "As of {date}, for the whole year: what the class’s units and lessons planned and taught, by subject. Only the expectations loaded in the app are counted: a summarized list, to be checked, that may be incomplete.",
+      "coverageHow": "How it is counted: an expectation is taught when a lesson linked to it was taught or a completed unit addresses it; planned when a unit addresses it or a linked lesson is still to be taught. Skipped lessons don’t count.",
       "coverageNone": "No expectations are loaded for this class’s grades.",
       "columns": {
         "subject": "Subject",
@@ -4150,7 +4161,7 @@
       "overallCount": "{taught, plural, one {# of {total} taught} other {# of {total} taught}}",
       "empty": "No expectations are loaded for this subject and grade.",
       "emptyFilter": "No expectations match “{show}”.",
-      "unverified": "Summarized expectations, to be checked against the official curriculum; the list may be incomplete."
+      "unverified": "Summarized expectations, to be checked in Ontario’s official curriculum; the list may be incomplete."
     },
     "status": {
       "taught": "Taught",
@@ -4232,7 +4243,9 @@
       "summary": "Expectations taught during the period ({count})",
       "intro": "From your units and lessons. The bank’s entries tied to these expectations come first; the others are still offered, folded away under each student.",
       "none": "No expectation taught was found for this period: every entry in the bank is offered.",
-      "notLoaded": "No expectations are loaded for this subject: every entry in the bank is offered."
+      "noneNoBank": "No expectation taught was found for this period.",
+      "notLoaded": "No expectations are loaded for this subject: every entry in the bank is offered.",
+      "notLoadedNoBank": "No expectations are loaded for this subject."
     },
     "students": {
       "heading": "Students ({count})",
@@ -4443,6 +4456,7 @@
       "scope": "Paragraphs to translate",
       "scopeMissing": "Only the paragraphs without an up-to-date translation ({count})",
       "scopeAll": "Translate everything again ({count})",
+      "upToDate": "Every paragraph already has an up-to-date English version: nothing needs translating. To replace their English with the AI’s, choose “Translate everything again”.",
       "sentCount": "{count, plural, =0 {No paragraph will be sent.} one {# paragraph will be sent.} other {# paragraphs will be sent.}}",
       "replacedCount": "{count, plural, =0 {No name to replace.} one {# name replaced.} other {# names replaced.}}",
       "sentText": "Text sent",
@@ -4514,8 +4528,8 @@
     },
     "faith": {
       "prayer": "This week, we pray together: “{text}”",
-      "virtue": "Our value of the week: “{text}”",
-      "reflection": "A question to talk about as a family: {text}",
+      "virtue": "Our virtue of the week, “{title}” (in French): “{text}”",
+      "reflection": "To talk about as a family: “{text}”",
       "scripture": "God’s Word this week: {text}",
       "graduate_expectation": "This week, we are working on a Catholic Graduate Expectation: {text}"
     },

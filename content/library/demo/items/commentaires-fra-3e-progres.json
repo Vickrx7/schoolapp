@@ -43,7 +43,7 @@
       "content": {
         "title": "",
         "objective": "",
-        "teacherNote": "Banque de démonstration à valider en classe. Choisissez au plus un point fort et une prochaine étape par attente travaillée pendant l’étape, puis adaptez le texte à l’élève. Les entrées sont rédigées au neutre (épicène); {prénom} est remplacé par le prénom de l’élève, et « de {prénom} » devient « d’Éloïse » ou « de Bastien » selon le prénom. Au bulletin de progrès, le commentaire décrit les forces et les prochaines étapes de l’élève depuis la rentrée; l’appréciation (progresse avec difficulté, bien ou très bien) est inscrite dans le bulletin officiel.",
+        "teacherNote": "Banque de démonstration à valider en classe. Choisissez au plus un point fort et une prochaine étape par attente travaillée pendant la période, puis adaptez le texte à l’élève. Les entrées sont rédigées au neutre (épicène); {prénom} est remplacé par le prénom de l’élève, et « de {prénom} » devient « d’Éloïse » ou « de Bastien » selon le prénom. Au bulletin de progrès, le commentaire décrit les forces et les prochaines étapes de l’élève depuis la rentrée; l’appréciation (progresse avec difficulté, bien ou très bien) est inscrite dans le bulletin officiel.",
         "scope": "subject",
         "period": "progress",
         "entries": [

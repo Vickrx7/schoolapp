@@ -282,10 +282,14 @@ const RENDERERS: Record<LibraryItemType, Renderer> = {
   },
   /** Teacher-only: entries by attente (or learning skill), then kind, then level or mark. */
   report_comments(c, r) {
-    r.line(
-      L.reportBankScope,
-      REPORT_BANK_SCOPE_LABELS_FR[str(c.scope) as keyof typeof REPORT_BANK_SCOPE_LABELS_FR],
-    );
+    // A subject's bank: its subject is the item's, shown with it (« Pour : Une matière » said
+    // nothing, post-MVP review).
+    if (str(c.scope) !== 'subject') {
+      r.line(
+        L.reportBankScope,
+        REPORT_BANK_SCOPE_LABELS_FR[str(c.scope) as keyof typeof REPORT_BANK_SCOPE_LABELS_FR],
+      );
+    }
     r.line(
       L.reportBankPeriod,
       REPORT_BANK_PERIOD_LABELS_FR[str(c.period) as keyof typeof REPORT_BANK_PERIOD_LABELS_FR],

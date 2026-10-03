@@ -37,6 +37,14 @@ export async function schoolAi(schoolId: string, on?: boolean): Promise<boolean>
   return row!.ai_enabled;
 }
 
+/** Deletes a class's message for a week. */
+export async function deleteNewsletter(classId: string, weekOf: string): Promise<void> {
+  await query('delete from public.class_newsletters where class_id = $1 and week_of = $2', [
+    classId,
+    weekOf,
+  ]);
+}
+
 /** A class's message for a week, as stored. */
 export async function newsletterOf(
   classId: string,
@@ -50,10 +58,21 @@ export async function newsletterOf(
   return row;
 }
 
-/** A minimal message (one typed paragraph), as the owner (no author). */
-export async function insertNewsletter(classId: string, weekOf: string, text: string) {
+/**
+ * A minimal message (one typed paragraph), as the owner (no author); with `english`, the
+ * paragraph's English is up to date (written by the teacher for that French).
+ */
+export async function insertNewsletter(
+  classId: string,
+  weekOf: string,
+  text: string,
+  english?: string,
+) {
   const content = emptyNewsletterContent('Mme Tremblay');
-  content.sections[0]!.items.push(typedItem('e2eitem1', text));
+  const item = typedItem('e2eitem1', text);
+  content.sections[0]!.items.push(
+    english === undefined ? item : { ...item, en: english, enFrom: item.fr, enBy: 'teacher' },
+  );
   await query(
     `insert into public.class_newsletters (class_id, week_of, content) values ($1, $2, $3)
      on conflict (class_id, week_of) do update set content = excluded.content`,

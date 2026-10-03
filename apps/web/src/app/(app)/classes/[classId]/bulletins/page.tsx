@@ -153,7 +153,8 @@ export default async function BulletinsPage({
             }))}
             banks={data.banks.map((b) => ({
               id: b.id,
-              label: `${b.title} (${bankStatus(t, b.status)})`,
+              // Every bank is one: its title without « Commentaires de bulletin : » fits a phone.
+              label: `${b.title.replace(/^commentaires de bulletin\s*:\s*/iu, '')} (${bankStatus(t, b.status)})`,
             }))}
             year={data.year}
             values={{
@@ -263,8 +264,14 @@ async function BankPanel({
 async function TaughtPanel({ data }: { data: ReportComposerData }) {
   const t = await getTranslations('reportComments.taught');
   if (data.scope === 'learning_skills') return null;
-  if (data.taughtIds === null) return <p className="text-sm text-slate-600">{t('notLoaded')}</p>;
-  if (data.taughtIds.length === 0) return <p className="text-sm text-slate-600">{t('none')}</p>;
+  // Without a bank, nothing is « proposé »: the sentence stops at the attentes.
+  const bank = data.bank !== null;
+  if (data.taughtIds === null) {
+    return <p className="text-sm text-slate-600">{bank ? t('notLoaded') : t('notLoadedNoBank')}</p>;
+  }
+  if (data.taughtIds.length === 0) {
+    return <p className="text-sm text-slate-600">{bank ? t('none') : t('noneNoBank')}</p>;
+  }
   const taught = new Set(data.taughtIds);
   const rows = data.expectations.filter((e) => taught.has(e.id));
   const several = data.grades.length > 1;

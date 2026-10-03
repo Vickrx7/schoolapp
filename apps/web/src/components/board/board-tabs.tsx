@@ -1,10 +1,9 @@
 'use client';
 
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { ScrollingTabs } from '@/components/app/scrolling-tabs';
 import { cn } from '@/lib/utils';
 
 const TABS = [
@@ -39,80 +38,28 @@ export function BoardTabs({
   const t = useTranslations('board.tabs');
   const pathname = usePathname();
   const tabs = TABS.filter((tab) => library || tab.key !== 'reviewers');
-  const nav = useRef<HTMLElement>(null);
-  const [more, setMore] = useState({ before: false, after: false });
-
-  useEffect(() => {
-    const row = nav.current;
-    if (!row) return;
-    // The current section in the middle of the row (the page itself does not move).
-    const active = row.querySelector<HTMLElement>('[aria-current="page"]');
-    if (active) {
-      row.scrollLeft = active.offsetLeft - (row.clientWidth - active.offsetWidth) / 2;
-    }
-    const update = () =>
-      setMore({
-        before: row.scrollLeft > 1,
-        after: row.scrollLeft + row.clientWidth < row.scrollWidth - 1,
-      });
-    update();
-    row.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
-    return () => {
-      row.removeEventListener('scroll', update);
-      window.removeEventListener('resize', update);
-    };
-  }, [pathname]);
-
-  const edge =
-    'pointer-events-none absolute inset-y-0 z-10 flex w-10 items-center text-slate-500 md:hidden';
   return (
-    <div className="relative -mx-4 mb-5">
-      {more.before ? (
-        <span
-          className={cn(edge, 'left-0 justify-start bg-gradient-to-r from-slate-50 pl-1')}
-          aria-hidden
-          data-testid="board-tabs-more-before"
-        >
-          <ChevronLeft className="size-4" />
-        </span>
-      ) : null}
-      {more.after ? (
-        <span
-          className={cn(edge, 'right-0 justify-end bg-gradient-to-l from-slate-50 pr-1')}
-          aria-hidden
-          data-testid="board-tabs-more-after"
-        >
-          <ChevronRight className="size-4" />
-        </span>
-      ) : null}
-      <nav
-        ref={nav}
-        className="relative overflow-x-auto border-b border-slate-200 px-4"
-        aria-label={t('label')}
-      >
-        <ul className="flex gap-1">
-          {tabs.map((tab) => {
-            const active =
-              pathname === tab.href ||
-              (tab.href !== '/board' && pathname.startsWith(`${tab.href}/`));
-            return (
-              <li key={tab.key}>
-                <Link
-                  href={tab.key === 'audit' ? `/audit?board=${boardId}` : `${tab.href}${query}`}
-                  aria-current={active ? 'page' : undefined}
-                  className={cn(
-                    'inline-flex min-h-11 items-center border-b-2 border-transparent px-3 text-sm font-medium whitespace-nowrap text-slate-600 hover:text-slate-900',
-                    active && 'border-brand-600 text-brand-700',
-                  )}
-                >
-                  {t(tab.key)}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
-    </div>
+    <ScrollingTabs label={t('label')} testId="board-tabs" className="mb-5">
+      <ul className="flex gap-1">
+        {tabs.map((tab) => {
+          const active =
+            pathname === tab.href || (tab.href !== '/board' && pathname.startsWith(`${tab.href}/`));
+          return (
+            <li key={tab.key}>
+              <Link
+                href={tab.key === 'audit' ? `/audit?board=${boardId}` : `${tab.href}${query}`}
+                aria-current={active ? 'page' : undefined}
+                className={cn(
+                  'inline-flex min-h-11 items-center border-b-2 border-transparent px-3 text-sm font-medium whitespace-nowrap text-slate-600 hover:text-slate-900',
+                  active && 'border-brand-600 text-brand-700',
+                )}
+              >
+                {t(tab.key)}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </ScrollingTabs>
   );
 }

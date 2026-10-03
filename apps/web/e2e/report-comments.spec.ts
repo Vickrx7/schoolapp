@@ -59,7 +59,7 @@ test('« Créer une banque avec l’IA »: checked before sending, no student da
   await page.getByRole('link', { name: /^Créer une banque de commentaires \(IA\)/ }).click();
   await page.waitForURL(/\/library\/generate\/comments$/);
   await expect(
-    page.getByRole('heading', { name: 'Créer une banque avec l’IA', level: 1 }),
+    page.getByRole('heading', { name: 'Créer une banque de commentaires avec l’IA', level: 1 }),
   ).toBeVisible();
 
   // Her grade is chosen; a subject's report card bank by default.
@@ -579,6 +579,8 @@ test('Paul, a subject teacher: his subject first, then the learning skills', asy
   await expect(page.getByTestId('no-bank')).toContainText(
     'Aucune banque de commentaires pour Éducation physique et santé, 3e année.',
   );
+  // Without a bank, no « toutes les entrées de la banque sont proposées ».
+  await expect(page.locator('main')).not.toContainText('toutes les entrées de la banque');
   await expect(page.getByRole('link', { name: 'Créer une banque', exact: true })).toHaveAttribute(
     'href',
     /^\/library\/new\?type=report_comments&grade=3&subject=[0-9a-f-]{36}$/,

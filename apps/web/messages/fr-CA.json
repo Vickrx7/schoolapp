@@ -1379,7 +1379,8 @@
       "label": "Contenu de la ressource",
       "student": "Pour les élèves",
       "teacher": "Guide et corrigé",
-      "details": "Détails"
+      "details": "Détails",
+      "content": "Contenu"
     },
     "versions": {
       "label": "Versions",
@@ -1573,6 +1574,7 @@
     "none": "Aucun",
     "include": "Inclure : {label}",
     "contentIntro": "{type}. La version de base est celle que reçoivent les élèves qui n’ont pas de version pour leur niveau.",
+    "contentIntroTeacher": "{type} : réservée au personnel, aucune feuille pour les élèves.",
     "solutionHint": "Reste dans le corrigé : jamais sur la feuille de l’élève.",
     "draftOlder": "Cette ressource a été enregistrée ailleurs depuis votre brouillon : vous voyez la version enregistrée.",
     "recoverDraft": "Récupérer mes changements",
@@ -1634,6 +1636,9 @@
       "title": "Titre sur la feuille",
       "objective": "Intention d’apprentissage",
       "teacherNote": "Note pour l’enseignant·e",
+      "bank": {
+        "teacherNote": "Notes sur la banque"
+      },
       "successCriteria": {
         "_label": "Critères de réussite",
         "_item": "Critère",
@@ -1962,7 +1967,7 @@
         "_label": "Entrées",
         "_item": "Entrée",
         "_add": "Ajouter une entrée",
-        "kind": "Sorte d’entrée",
+        "kind": "Type d’entrée",
         "skill": "Habileté",
         "level": "Niveau de rendement",
         "progress": "Progrès",
@@ -2349,7 +2354,7 @@
       "kindHeadings": {
         "strength": "Points forts",
         "next_step": "Prochaines étapes",
-        "general": "Commentaires"
+        "general": "Autres commentaires"
       }
     }
   },
@@ -2555,7 +2560,7 @@
     }
   },
   "reportBankAi": {
-    "title": "Créer une banque avec l’IA",
+    "title": "Créer une banque de commentaires avec l’IA",
     "intro": "Choisissez l’année, la matière, le bulletin et, si vous le voulez, les attentes. L’IA prépare des points forts et des prochaines étapes, avec {token} à la place du prénom de l’élève : un brouillon privé, à relire avant de l’utiliser ou de le partager.",
     "hubTitle": "Créer une banque de commentaires (IA)",
     "hubHint": "Des points forts et des prochaines étapes pour le bulletin, à partir du curriculum seulement : un brouillon privé, à relire.",
@@ -3721,7 +3726,7 @@
       "ai": "L’application remplace les noms des élèves et du personnel de vos écoles avant chaque envoi à l’intelligence artificielle ; retirez vous-même tout autre nom (celui d’un parent, par exemple).",
       "canada": "Les données sont conservées au Canada. Seul le texte envoyé à l’intelligence artificielle est traité aux États-Unis.",
       "feedback": "Vos commentaires sont les bienvenus : le bouton « Commentaires » est en haut de chaque page.",
-      "reportComments": "Les commentaires de bulletin que vous rédigez restent dans le navigateur de votre appareil : jamais sur nos serveurs ni à l’intelligence artificielle. Ils sont effacés à la déconnexion."
+      "reportComments": "Les commentaires de bulletin que vous rédigez restent dans le navigateur de votre appareil : ils ne sont jamais envoyés à nos serveurs ni à l’intelligence artificielle. Ils sont effacés à la déconnexion."
     },
     "readTerms": "Lire « Confidentialité et conditions »",
     "accept": "J’ai lu et j’accepte les conditions du projet pilote",
@@ -3738,7 +3743,7 @@
     "changes": {
       "pilote1": "la première version complète des conditions du projet pilote.",
       "pilote2": "l’application remplace seulement les noms qu’elle connaît (les élèves et le personnel de vos écoles) avant l’envoi à l’intelligence artificielle : retirez vous-même tout autre nom. L’avis précise aussi qui lit vos commentaires et comment IP Lynx accède aux données.",
-      "pilote3": "les commentaires de bulletin restent sur votre appareil : jamais sur nos serveurs ni à l’intelligence artificielle, et ils sont effacés à la déconnexion.",
+      "pilote3": "les commentaires de bulletin restent sur votre appareil : ils ne sont jamais envoyés à nos serveurs ni à l’intelligence artificielle, et ils sont effacés à la déconnexion.",
       "pilote4": "les messages Info-parents : l’application vous aide à préparer un message aux familles, sans jamais l’envoyer, et il est effacé avec les prénoms des élèves."
     },
     "acceptUpdated": "Accepter les conditions",
@@ -3970,7 +3975,7 @@
       "noneLoaded": "Aucune attente n’est chargée pour cette matière et cette année d’études.",
       "selected": "{count, plural, =0 {Aucune attente choisie} one {# attente choisie} other {# attentes choisies}}",
       "unverified": "À vérifier",
-      "unverifiedNotice": "Attentes résumées, à vérifier contre le programme officiel ; la liste peut être incomplète.",
+      "unverifiedNotice": "Attentes résumées, à vérifier dans le curriculum officiel de l’Ontario ; la liste peut être incomplète.",
       "description": "Description (facultatif)",
       "save": "Enregistrer",
       "openUnit": "Ouvrir l’unité",
@@ -3979,7 +3984,8 @@
     "page": {
       "title": "Mon année · {year}",
       "metaTitle": "Mon année · {className}",
-      "intro": "Placez vos unités sur les semaines de l’année. Les journées pédagogiques et les congés sont grisés. Ce plan est privé : seule l’équipe de la classe le voit.",
+      "intro": "Placez vos unités sur les semaines de l’année. Les journées sans école sont inscrites dans la ligne Calendrier ; les semaines sans école sont grisées. Ce plan est privé : seule l’équipe de la classe le voit.",
+      "introPhone": "Placez vos unités sur les semaines de l’année. Les journées sans école sont indiquées pour chaque mois. Ce plan est privé : seule l’équipe de la classe le voit.",
       "noYear": "L’année scolaire de cette classe est introuvable.",
       "empty": "Aucune unité pour l’instant. Planifiez la première : sa matière, ses semaines et les attentes visées.",
       "toPlace": "{count, plural, one {# unité n’a pas encore de dates enregistrées.} other {# unités n’ont pas encore de dates enregistrées.}}",
@@ -4075,6 +4081,11 @@
       "subtitle": "{className} · Année scolaire {year}",
       "team": "Équipe de la classe : {names}",
       "member": "{name} ({role})",
+      "roles": {
+        "homeroom": "titulaire",
+        "subject": "enseignement d’une matière",
+        "support": "soutien"
+      },
       "printedOn": "Imprimé le {date}",
       "glance": "L’année en un coup d’œil",
       "subject": "Matière",
@@ -4092,8 +4103,8 @@
       "outsideYearLength": "Dates hors de l’année scolaire : à replanifier",
       "noUnits": "Aucune unité pour l’instant.",
       "coverageTitle": "Couverture des attentes",
-      "coverageIntro": "Au {date}, pour toute l’année : ce que les unités et les leçons de la classe ont prévu et enseigné, par matière.",
-      "coverageHow": "Compté comme dans « Couverture » : une attente est enseignée quand une leçon qui y est liée a été donnée ou qu’une unité terminée la vise ; prévue quand une unité la vise ou qu’une leçon liée reste à donner. Les leçons sautées ne comptent pas.",
+      "coverageIntro": "Au {date}, pour toute l’année : ce que les unités et les leçons de la classe ont prévu et enseigné, par matière. Seules les attentes chargées dans l’application sont comptées : une liste résumée, à vérifier, qui peut être incomplète.",
+      "coverageHow": "Mode de calcul : une attente est enseignée quand une leçon qui y est liée a été donnée ou qu’une unité terminée la vise ; prévue quand une unité la vise ou qu’une leçon liée reste à donner. Les leçons sautées ne comptent pas.",
       "coverageNone": "Aucune attente n’est chargée pour les années d’études de cette classe.",
       "columns": {
         "subject": "Matière",
@@ -4150,7 +4161,7 @@
       "overallCount": "{taught, plural, one {# sur {total} enseignée} other {# sur {total} enseignées}}",
       "empty": "Aucune attente n’est chargée pour cette matière et cette année d’études.",
       "emptyFilter": "Aucune attente ne correspond à « {show} ».",
-      "unverified": "Attentes résumées, à vérifier contre le programme officiel ; la liste peut être incomplète."
+      "unverified": "Attentes résumées, à vérifier dans le curriculum officiel de l’Ontario ; la liste peut être incomplète."
     },
     "status": {
       "taught": "Enseignée",
@@ -4232,7 +4243,9 @@
       "summary": "Attentes enseignées pendant la période ({count})",
       "intro": "D’après vos unités et vos leçons. Les entrées de la banque liées à ces attentes sont proposées en premier ; les autres restent offertes, repliées sous chaque élève.",
       "none": "Aucune attente enseignée trouvée pour cette période : toutes les entrées de la banque sont proposées.",
-      "notLoaded": "Aucune attente n’est chargée pour cette matière : toutes les entrées de la banque sont proposées."
+      "noneNoBank": "Aucune attente enseignée trouvée pour cette période.",
+      "notLoaded": "Aucune attente n’est chargée pour cette matière : toutes les entrées de la banque sont proposées.",
+      "notLoadedNoBank": "Aucune attente n’est chargée pour cette matière."
     },
     "students": {
       "heading": "Élèves ({count})",
@@ -4443,6 +4456,7 @@
       "scope": "Paragraphes à traduire",
       "scopeMissing": "Seulement les paragraphes sans traduction à jour ({count})",
       "scopeAll": "Tout retraduire ({count})",
+      "upToDate": "Tous les paragraphes ont déjà une version anglaise à jour : rien n’est à traduire. Pour remplacer leur anglais par celui de l’IA, choisissez « Tout retraduire ».",
       "sentCount": "{count, plural, =0 {Aucun paragraphe ne sera envoyé.} one {# paragraphe sera envoyé.} other {# paragraphes seront envoyés.}}",
       "replacedCount": "{count, plural, =0 {Aucun nom à remplacer.} one {# nom remplacé.} other {# noms remplacés.}}",
       "sentText": "Texte envoyé",
@@ -4514,8 +4528,8 @@
     },
     "faith": {
       "prayer": "Cette semaine, nous prions ensemble : « {text} »",
-      "virtue": "Notre valeur de la semaine : « {text} »",
-      "reflection": "Une question à discuter en famille : {text}",
+      "virtue": "Notre vertu de la semaine, {title} : « {text} »",
+      "reflection": "À discuter en famille : « {text} »",
       "scripture": "La Parole de Dieu de la semaine : {text}",
       "graduate_expectation": "Cette semaine, nous travaillons une attente de l’élève diplômée ou diplômé de l’école catholique : {text}"
     },

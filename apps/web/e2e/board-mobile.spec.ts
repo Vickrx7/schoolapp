@@ -92,6 +92,7 @@ test('a board admin runs the board from a phone', async ({ page }) => {
     const progress = periods.getByRole('group', { name: 'Bulletin de progrès', exact: true });
     await tall(progress.getByLabel('Début de la période d’évaluation'));
     await tall(progress.getByLabel('Remise aux familles (facultatif)'));
+    await tall(progress.getByRole('button', { name: /^Effacer les dates\s:/ }));
     await noHorizontalScroll(page);
     await expectAccessible(page);
     await page.keyboard.press('Escape');

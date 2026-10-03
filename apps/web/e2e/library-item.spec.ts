@@ -156,11 +156,10 @@ test('a comment bank is a teacher document, never planned, presented or used by 
   await login(page, DEMO.teacher3);
   await page.goto(`/library/items/${bankId}`);
   await expect(page.getByRole('heading', { level: 1, name: BANK })).toBeVisible();
-  // Its entries, by attente, kind and level (D-129): the teacher's document opens first.
-  await expect(page.getByRole('tab', { name: 'Guide et corrigé' })).toHaveAttribute(
-    'aria-selected',
-    'true',
-  );
+  // Its entries, by attente, kind and level (D-129): no student sheet, so no « Pour les élèves »;
+  // its document is « Contenu », open first.
+  await expect(page.getByRole('tab', { name: 'Contenu' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByRole('tab', { name: 'Pour les élèves' })).toHaveCount(0);
   const panel = page.getByRole('tabpanel');
   await expect(panel.getByRole('heading', { name: 'Attente B1.2' })).toBeVisible();
   await expect(panel.getByRole('heading', { name: 'Points forts' }).first()).toBeVisible();

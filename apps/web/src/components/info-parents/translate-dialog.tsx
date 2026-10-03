@@ -20,7 +20,9 @@ import type { NewsletterTranslatePreview } from '@/server/newsletter/ai-preview'
  * would be sent (the saved message's paragraphs to translate, names the app knows replaced and
  * highlighted), the paragraphs left out (« Non envoyé — traduisez-le vous-même ») and why, and the
  * capitalized words to check; « Envoyer à l'IA » waits for « J'ai vérifié ». The scope: the
- * paragraphs without an up-to-date English version, or all of them again.
+ * paragraphs without an up-to-date English version, or all of them again. When every paragraph
+ * already has up-to-date English, the dialog says so and sends nothing unless the teacher chooses
+ * « Tout retraduire » (post-MVP review).
  */
 export function TranslateButton({
   newsletterId,
@@ -39,7 +41,8 @@ export function TranslateButton({
   const locale = useLocale();
   const id = useId();
   const [open, setOpen] = useState(false);
-  const [scope, setScope] = useState<NewsletterTranslateScope>('missing');
+  // Null: nothing chosen yet (every paragraph already has up-to-date English).
+  const [scope, setScope] = useState<NewsletterTranslateScope | null>(null);
   const [preview, setPreview] = useState<NewsletterTranslatePreview | null>(null);
   const [checked, setChecked] = useState(false);
   const check = useAction(previewNewsletterTranslation, {
@@ -64,10 +67,15 @@ export function TranslateButton({
   };
   const start = () => {
     setOpen(true);
-    void load(counts.missing > 0 ? 'missing' : 'all');
+    if (counts.missing > 0) {
+      void load('missing');
+    } else {
+      setScope(null);
+      setPreview(null);
+    }
   };
   const submit = async () => {
-    if (!preview) return;
+    if (!preview || !scope) return;
     const result = await send.run(newsletterId, scope, preview.revision, preview.sendKeys, checked);
     // The message (or what would be left out) changed since: check it again, in place.
     if (result && !result.ok && result.error === 'newsletterStale') await load(scope);
@@ -123,7 +131,11 @@ export function TranslateButton({
               ))}
             </fieldset>
 
-            {preview === null ? (
+            {scope === null ? (
+              <Notice tone="info" data-testid="translate-up-to-date">
+                {t('ai.upToDate')}
+              </Notice>
+            ) : preview === null ? (
               <p className="text-sm text-slate-600" role="status">
                 {tCommon('loading')}
               </p>

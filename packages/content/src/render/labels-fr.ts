@@ -179,7 +179,7 @@ export const REPORT_BANK_PERIOD_LABELS_FR: Record<ReportBankPeriod, string> = {
 export const REPORT_ENTRY_KIND_LABELS_FR: Record<ReportEntryKind, string> = {
   strength: 'Points forts',
   next_step: 'Prochaines étapes',
-  general: 'Commentaires',
+  general: 'Autres commentaires',
 };
 
 export const LEARNING_SKILL_LABELS_FR: Record<LearningSkill, string> = {

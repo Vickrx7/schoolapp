@@ -11,8 +11,10 @@ import {
   setProgress,
 } from './db';
 import {
+  deleteNewsletter,
   deleteNewsletters,
   demoWeeks,
+  insertNewsletter,
   newsletterOf,
   newsletterReminderDueToday,
   schoolAi,
@@ -151,11 +153,11 @@ test('« Préparer le message »: a first draft from the class’s week, in Fren
   );
   // Next week's assembly with its time; never its notes for staff.
   expect(await values(section(page, 'dates'), 'fr')).toContainEqual(
-    expect.stringMatching(new RegExp(`^Mardi \\d+(?:er)? \\S+ à 13 h 15\\s:\\s${TITLE}$`)),
+    expect.stringMatching(new RegExp(`^Mardi \\d+(?:er)? \\S+ à 13 h 15\\s:\\s${TITLE}\\.$`)),
   );
   expect(await values(section(page, 'dates'), 'en')).toContainEqual(
     expect.stringMatching(
-      new RegExp(`^Tuesday, \\S+ \\d+ at 1:15 p\\.m\\.: Assembly, “${TITLE}”$`),
+      new RegExp(`^Tuesday, \\S+ \\d+ at 1:15 p\\.m\\.: Assembly, “${TITLE}”\\.$`),
     ),
   );
   expect(await allText(page)).not.toContain('arriver à 8 h 30');
@@ -271,6 +273,31 @@ test('« Traduire en anglais (IA) »: exactly what is sent, an unknown name neve
   await expect(page.getByRole('button', { name: 'Traduire en anglais (IA)' })).toHaveCount(0);
 
   await schoolAi(SEED.school, true);
+  // Every paragraph's English already up to date: nothing is preselected, nothing sent unless she
+  // chooses « Tout retraduire ».
+  await insertNewsletter(SEED.class3, weeks.nextWeek, 'Bonne semaine!', 'Have a good week!');
+  try {
+    await openEditor(page, weeks.nextWeek);
+    await page.getByRole('button', { name: 'Traduire en anglais (IA)' }).click();
+    const fresh = page.getByRole('dialog', { name: 'Vérifier avant d’envoyer' });
+    await expect(fresh.getByTestId('translate-up-to-date')).toContainText(
+      'Tous les paragraphes ont déjà une version anglaise à jour',
+    );
+    await expect(
+      fresh.getByRole('radio', { name: 'Seulement les paragraphes sans traduction à jour (0)' }),
+    ).toBeDisabled();
+    const again = fresh.getByRole('radio', { name: 'Tout retraduire (1)' });
+    await expect(again).not.toBeChecked();
+    await expect(fresh.getByRole('button', { name: 'Envoyer à l’IA' })).toBeDisabled();
+    await expectAccessible(page);
+    await again.check();
+    await expect(fresh.getByTestId('translate-count')).toHaveText(/^1 paragraphe sera envoyé\./);
+    await fresh.getByRole('button', { name: 'Annuler' }).click();
+    await expect(fresh).toBeHidden();
+  } finally {
+    await deleteNewsletter(SEED.class3, weeks.nextWeek);
+  }
+
   await openEditor(page, weeks.thisWeek);
   // A thank-you to a parent the app does not know, and news with a student and a place.
   const reminders = section(page, 'reminders');

@@ -85,7 +85,9 @@ export default async function YearPlanPage({ params }: { params: Promise<{ class
             <h2 className="text-xl font-bold text-slate-900">
               {t('title', { year: plan.year.name })}
             </h2>
-            <p className="max-w-prose text-slate-600">{t('intro')}</p>
+            {/* What the grid (desktop) and the month list (phone) each show of the calendar. */}
+            <p className="hidden max-w-prose text-slate-600 md:block">{t('intro')}</p>
+            <p className="max-w-prose text-slate-600 md:hidden">{t('introPhone')}</p>
           </div>
           <PlanUnitButton />
         </div>

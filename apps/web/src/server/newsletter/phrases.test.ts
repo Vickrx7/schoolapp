@@ -22,7 +22,7 @@ describe('the family-facing sentences (D-137), from the real catalogues', () => 
   it('writes dates in words with « 1er », and times as families read them', () => {
     expect(
       pair.fr.earlyDismissal({ date: '2026-12-01', time: '13:35', title: 'Départ hâtif' }),
-    ).toBe(`Mardi 1er décembre${NBSP}: départ hâtif à 13 h 35`);
+    ).toBe(`Mardi 1er décembre${NBSP}: départ hâtif à 13 h 35.`);
     expect(
       pair.en.earlyDismissal({ date: '2026-12-01', time: '13:35', title: 'Départ hâtif' }),
     ).toBe('Tuesday, December 1: early dismissal at 1:35 p.m.');
@@ -33,7 +33,7 @@ describe('the family-facing sentences (D-137), from the real catalogues', () => 
         time: '13:35',
         title: 'Rencontres parents-enseignants',
       }),
-    ).toBe(`Jeudi 19 novembre${NBSP}: départ hâtif à 13 h 35 (Rencontres parents-enseignants)`);
+    ).toBe(`Jeudi 19 novembre${NBSP}: départ hâtif à 13 h 35 (Rencontres parents-enseignants).`);
     expect(
       pair.en.earlyDismissal({
         date: '2026-11-19',
@@ -41,10 +41,10 @@ describe('the family-facing sentences (D-137), from the real catalogues', () => 
         title: 'Rencontres parents-enseignants',
       }),
     ).toBe(
-      'Thursday, November 19: early dismissal at 1:35 p.m. (“Rencontres parents-enseignants”)',
+      'Thursday, November 19: early dismissal at 1:35 p.m. (“Rencontres parents-enseignants”).',
     );
     expect(pair.fr.lateStart({ date: '2026-10-07', time: '10:00', title: 'Entrée retardée' })).toBe(
-      `Mercredi 7 octobre${NBSP}: entrée retardée, les classes commencent à 10 h`,
+      `Mercredi 7 octobre${NBSP}: entrée retardée, les classes commencent à 10 h.`,
     );
   });
 
@@ -56,7 +56,7 @@ describe('the family-facing sentences (D-137), from the real catalogues', () => 
         title: 'Journée pédagogique',
         type: 'pa_day',
       }),
-    ).toBe(`Vendredi 9 octobre${NBSP}: journée pédagogique (pas d’école)`);
+    ).toBe(`Vendredi 9 octobre${NBSP}: journée pédagogique (pas d’école).`);
     expect(
       pair.en.dayOff({
         from: '2026-10-09',
@@ -64,7 +64,7 @@ describe('the family-facing sentences (D-137), from the real catalogues', () => 
         title: 'Journée pédagogique',
         type: 'pa_day',
       }),
-    ).toBe('Friday, October 9: PA day (no school)');
+    ).toBe('Friday, October 9: PA day (no school).');
     expect(
       pair.en.dayOff({
         from: '2026-10-12',
@@ -72,7 +72,7 @@ describe('the family-facing sentences (D-137), from the real catalogues', () => 
         title: 'Action de grâce',
         type: 'holiday',
       }),
-    ).toBe('Monday, October 12: Holiday, “Action de grâce” (no school)');
+    ).toBe('Monday, October 12: Holiday, “Action de grâce” (no school).');
     expect(
       pair.fr.dayOff({
         from: '2026-12-21',
@@ -80,7 +80,7 @@ describe('the family-facing sentences (D-137), from the real catalogues', () => 
         title: 'Congé des Fêtes',
         type: 'holiday',
       }),
-    ).toBe(`Du lundi 21 décembre au vendredi 1er janvier${NBSP}: Congé des Fêtes (pas d’école)`);
+    ).toBe(`Du lundi 21 décembre au vendredi 1er janvier${NBSP}: Congé des Fêtes (pas d’école).`);
   });
 
   it('events: the title as typed, the type first in English; never the event’s notes', () => {
@@ -91,12 +91,12 @@ describe('the family-facing sentences (D-137), from the real catalogues', () => 
       title: 'Messe de l’Action de grâce',
       type: 'mass' as const,
     };
-    expect(pair.fr.event(mass)).toBe(`Jeudi 8 octobre à 10 h${NBSP}: Messe de l’Action de grâce`);
+    expect(pair.fr.event(mass)).toBe(`Jeudi 8 octobre à 10 h${NBSP}: Messe de l’Action de grâce.`);
     expect(pair.en.event(mass)).toBe(
-      'Thursday, October 8 at 10:00 a.m.: Mass, “Messe de l’Action de grâce”',
+      'Thursday, October 8 at 10:00 a.m.: Mass, “Messe de l’Action de grâce”.',
     );
     expect(pair.fr.event({ ...mass, time: null, title: 'Messe' })).toBe(
-      `Jeudi 8 octobre${NBSP}: messe`,
+      `Jeudi 8 octobre${NBSP}: messe.`,
     );
   });
 
@@ -107,25 +107,25 @@ describe('the family-facing sentences (D-137), from the real catalogues', () => 
       lessons: ['Comparer des nombres', 'Ordonner des nombres'],
     };
     expect(pair.fr.lessons(line)).toBe(
-      `Mathématiques (unité «${NBSP}Les nombres jusqu’à 1 000${NBSP}»)${NBSP}: «${NBSP}Comparer des nombres${NBSP}» et «${NBSP}Ordonner des nombres${NBSP}»`,
+      `Mathématiques (unité «${NBSP}Les nombres jusqu’à 1 000${NBSP}»)${NBSP}: «${NBSP}Comparer des nombres${NBSP}» et «${NBSP}Ordonner des nombres${NBSP}».`,
     );
     expect(pair.en.lessons({ ...line, subject: 'Mathematics' })).toBe(
-      'Mathematics (unit “Les nombres jusqu’à 1 000”): “Comparer des nombres” and “Ordonner des nombres”',
+      'Mathematics (unit “Les nombres jusqu’à 1 000”): “Comparer des nombres” and “Ordonner des nombres”.',
     );
     expect(
       pair.fr.unitStart({ subject: 'Mathématiques', title: 'L’addition', date: '2026-10-13' }),
-    ).toBe(`Mathématiques${NBSP}: nous commencerons l’unité «${NBSP}L’addition${NBSP}»`);
+    ).toBe(`Mathématiques${NBSP}: nous commencerons l’unité «${NBSP}L’addition${NBSP}».`);
     expect(pair.fr.report({ date: '2026-11-13', period: 'progress' })).toBe(
-      `Vendredi 13 novembre${NBSP}: remise du bulletin de progrès`,
+      `Vendredi 13 novembre${NBSP}: remise du bulletin de progrès.`,
     );
     expect(pair.en.report({ date: '2026-11-13', period: 'progress' })).toBe(
-      'Friday, November 13: the Progress Report Card goes home',
+      'Friday, November 13: the Progress Report Card goes home.',
     );
     expect(pair.fr.season({ date: '2026-11-29', season: 'avent' })).toBe(
-      `Dimanche 29 novembre${NBSP}: premier dimanche de l’Avent`,
+      `Dimanche 29 novembre${NBSP}: premier dimanche de l’Avent.`,
     );
     expect(pair.en.season({ date: '2026-11-29', season: 'avent' })).toBe(
-      'Sunday, November 29: First Sunday of Advent',
+      'Sunday, November 29: First Sunday of Advent.',
     );
   });
 
@@ -138,9 +138,25 @@ describe('the family-facing sentences (D-137), from the real catalogues', () => 
     expect(pair.en.faith({ type: 'prayer', title: 'Prière', text: 'Lord, help me. Amen.' })).toBe(
       'This week, we pray together: “Lord, help me. Amen.”',
     );
+    // The virtue is named, and the reflection is quoted (UX review 7), with the seeded references.
+    expect(
+      pair.fr.faith({
+        type: 'virtue',
+        title: 'Le respect',
+        text: 'Je traite les autres comme j’aimerais être traité, en paroles et en gestes.',
+      }),
+    ).toBe(
+      `Notre vertu de la semaine, le respect${NBSP}: «${NBSP}Je traite les autres comme j’aimerais être traité, en paroles et en gestes.${NBSP}»`,
+    );
+    expect(
+      pair.en.faith({ type: 'virtue', title: 'Le respect', text: 'I treat others with respect.' }),
+    ).toBe('Our virtue of the week, “Le respect” (in French): “I treat others with respect.”');
     expect(
       pair.fr.faith({ type: 'reflection', title: 'Dire merci', text: 'Nomme trois personnes.' }),
-    ).toBe(`Une question à discuter en famille${NBSP}: Nomme trois personnes.`);
+    ).toBe(`À discuter en famille${NBSP}: «${NBSP}Nomme trois personnes.${NBSP}»`);
+    expect(
+      pair.en.faith({ type: 'reflection', title: 'Dire merci', text: 'Name three people.' }),
+    ).toBe('To talk about as a family: “Name three people.”');
   });
 
   it('the header and the headings, in each language', () => {
@@ -191,10 +207,10 @@ describe('a week with many long lessons (post-MVP review)', () => {
     expect(line.fr.length).toBeLessThanOrEqual(1000);
     expect(line.en.length).toBeLessThanOrEqual(1500);
     // Ten titles fit in French's 1,000 characters; the eleventh is counted.
-    expect(line.fr).toMatch(/» et 1 autre leçon$/);
+    expect(line.fr).toMatch(/» et 1 autre leçon\.$/);
     expect(line.fr).toMatch(/«\sLecture guidée 10\s/u);
     expect(line.fr).not.toMatch(/Lecture guidée 11\s/u);
-    expect(line.en).toMatch(/ other lessons?$/);
+    expect(line.en).toMatch(/ other lessons?\.$/);
   });
 });
 

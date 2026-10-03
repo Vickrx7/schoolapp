@@ -330,7 +330,9 @@ function EditorBody({
           flagged={baseFlag || within('readiness.content', 'readiness.key', 'readiness.base')}
         >
           <p className="mb-4 text-sm text-slate-600">
-            {t('contentIntro', { type: tc(`types.${form.type}`) })}
+            {info.audience === 'teacher'
+              ? t('contentIntroTeacher', { type: tc(`types.${form.type}`) })
+              : t('contentIntro', { type: tc(`types.${form.type}`) })}
           </p>
           <VersionContent
             form={form}

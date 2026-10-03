@@ -47,7 +47,7 @@
       "content": {
         "title": "",
         "objective": "",
-        "teacherNote": "Banque de démonstration à valider en classe. Choisissez au plus un point fort et une prochaine étape par attente travaillée pendant l’étape, puis adaptez le texte à l’élève. Les entrées sont rédigées au neutre (épicène); {prénom} est remplacé par le prénom de l’élève, et « de {prénom} » devient « d’Éloïse » ou « de Bastien » selon le prénom. Les qualificatifs suivent la grille d’évaluation du rendement, comme les grilles d’évaluation de la bibliothèque (une compréhension limitée, partielle, générale ou approfondie; avec une efficacité limitée, avec une certaine efficacité, avec efficacité, avec beaucoup d’efficacité) : à vérifier contre le document officiel en vigueur.",
+        "teacherNote": "Banque de démonstration à valider en classe. Choisissez au plus un point fort et une prochaine étape par attente travaillée pendant l’étape, puis adaptez le texte à l’élève. Les entrées sont rédigées au neutre (épicène); {prénom} est remplacé par le prénom de l’élève, et « de {prénom} » devient « d’Éloïse » ou « de Bastien » selon le prénom. Les qualificatifs suivent la grille d’évaluation du rendement, comme les grilles d’évaluation de la bibliothèque (une compréhension limitée, partielle, générale ou approfondie; avec une efficacité limitée, avec une certaine efficacité, avec efficacité, avec beaucoup d’efficacité) : à comparer avec le document officiel en vigueur.",
         "scope": "subject",
         "period": "term",
         "entries": [
@@ -167,7 +167,7 @@
             "rating": null,
             "category": "application",
             "expectationCodes": ["B1.2"],
-            "neutral": "{prénom} compare et ordonne des nombres jusqu’à 1 000 avec une certaine efficacité, surtout lorsque les nombres ont autant de chiffres.",
+            "neutral": "{prénom} compare et ordonne des nombres jusqu’à 1 000 avec une certaine efficacité, surtout lorsque les nombres ont le même nombre de chiffres.",
             "feminine": "",
             "masculine": ""
           },
@@ -215,7 +215,7 @@
             "rating": null,
             "category": null,
             "expectationCodes": ["B1.2"],
-            "neutral": "Pour progresser, {prénom} pourrait s’exercer à ordonner des nombres qui n’ont pas autant de chiffres, comme 98, 405 et 450.",
+            "neutral": "Pour progresser, {prénom} pourrait s’exercer à ordonner des nombres qui n’ont pas le même nombre de chiffres, comme 98, 405 et 450.",
             "feminine": "",
             "masculine": ""
           },
@@ -563,7 +563,7 @@
             "rating": null,
             "category": null,
             "expectationCodes": [],
-            "neutral": "{prénom} fait preuve de confiance en mathématiques.",
+            "neutral": "{prénom} fait preuve d’une confiance grandissante en mathématiques.",
             "feminine": "{prénom} est de plus en plus confiante en mathématiques.",
             "masculine": "{prénom} est de plus en plus confiant en mathématiques."
           },

@@ -52,7 +52,7 @@ test('a new teacher accepts the terms, then tries the app with a sample class', 
     // Report card comments stay on the device (« Commentaires de bulletin », D-134).
     await expect(
       page.getByText(
-        /^Les commentaires de bulletin que vous rédigez restent dans le navigateur de votre appareil\s:\sjamais sur nos serveurs ni à l’intelligence artificielle\. Ils sont effacés à la déconnexion\.$/,
+        /^Les commentaires de bulletin que vous rédigez restent dans le navigateur de votre appareil\s:\sils ne sont jamais envoyés à nos serveurs ni à l’intelligence artificielle\. Ils sont effacés à la déconnexion\.$/,
       ),
     ).toBeVisible();
     await expect(
