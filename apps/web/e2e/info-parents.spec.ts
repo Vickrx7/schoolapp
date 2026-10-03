@@ -9,7 +9,12 @@ import {
   nextLesson,
   setProgress,
 } from './db';
-import { deleteNewsletters, demoWeeks, newsletterOf } from './db-newsletters';
+import {
+  deleteNewsletters,
+  demoWeeks,
+  newsletterOf,
+  newsletterReminderDueToday,
+} from './db-newsletters';
 import { DEMO, e2ePrefix, expectAccessible, login } from './helpers';
 
 /**
@@ -18,7 +23,8 @@ import { DEMO, e2ePrefix, expectAccessible, login } from './helpers';
  * staff that never appear, a tip from the library's family guide with its English, an English
  * greeting), then edited (a student named, the typography fixed, the English written by hand, an
  * app line edited so its English is « à mettre à jour »), copied in both languages after « Des
- * élèves sont nommés », and marked sent. The app sends nothing: the clipboard is the browser's.
+ * élèves sont nommés », printed (PDF, D-141) and marked sent. The app sends nothing: the clipboard
+ * is the browser's and the PDF is opened by the teacher.
  * The messages, the event and the progress made here are deleted.
  */
 test.describe.configure({ mode: 'serial' });
@@ -78,6 +84,12 @@ test('« Préparer le message »: a first draft from the class’s week, in Fren
 }) => {
   test.setTimeout(120_000);
   await login(page, DEMO.teacher3);
+  // A class without a message is never reminded about on « Aujourd'hui » (D-142).
+  await page.goto('/today');
+  await expect(
+    page.getByRole('heading', { name: 'Aujourd’hui', level: 1, exact: true }),
+  ).toBeVisible();
+  await expect(page.getByTestId('newsletter-reminder')).toHaveCount(0);
   await page.goto(`/classes/${SEED.class3}/students`);
   await page.getByRole('link', { name: 'Info-parents', exact: true }).click();
   await page.waitForURL(/\/info-parents$/);
@@ -177,8 +189,9 @@ test('editing: a student named, the typography, the English by hand; copied afte
   await expect(page.getByTestId('newsletter-save-bar')).toContainText(
     'Modifications non enregistrées',
   );
-  // Nothing is copied or marked sent before a save.
+  // Nothing is copied, printed or marked sent before a save.
   await expect(page.getByRole('button', { name: 'Copier les deux' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Imprimer les deux (PDF)' })).toBeDisabled();
   await expect(page.getByText('Enregistrez vos modifications d’abord.')).toBeVisible();
 
   // « Corriger la typographie »: no space before « ! » in the catalogue's Canadian usage.
@@ -238,6 +251,108 @@ test('editing: a student named, the typography, the English by hand; copied afte
   await expect(page.getByText('Brouillon non enregistré récupéré.')).toHaveCount(0);
 });
 
+test('« Imprimer (PDF) »: the saved message, after the check, rendered on demand, never cached', async ({
+  page,
+}) => {
+  await login(page, DEMO.teacher3);
+  await openEditor(page, weeks.thisWeek);
+  const base = `/classes/${SEED.class3}/info-parents/${weeks.thisWeek}/pdf`;
+  const slug = '3e-annee-mme-tremblay';
+  const pages = (body: Buffer) => body.toString('latin1').match(/\/Type\s*\/Page\b/g)?.length ?? 0;
+  const counts = new Map<string, number>();
+  for (const [query, file] of [
+    ['', `info-parents-${slug}-${weeks.thisWeek}.pdf`],
+    ['?lang=both', `info-parents-${slug}-${weeks.thisWeek}.pdf`],
+    ['?lang=fr', `info-parents-${slug}-${weeks.thisWeek}-fr.pdf`],
+    ['?lang=en&download=1', `family-newsletter-${slug}-${weeks.thisWeek}.pdf`],
+  ] as const) {
+    const response = await page.request.get(`${base}${query}`);
+    expect(response.status(), query).toBe(200);
+    const headers = response.headers();
+    expect(headers['content-type']).toBe('application/pdf');
+    expect(headers['cache-control']).toBe('private, no-store');
+    expect(headers['x-robots-tag']).toBe('noindex, nofollow');
+    // A PDF route carries no page security policy (it would stop the browser's viewer).
+    expect(headers['content-security-policy']).toBeUndefined();
+    expect(headers['content-disposition']).toBe(
+      `${query.includes('download=1') ? 'attachment' : 'inline'}; filename="${file}"`,
+    );
+    const body = await response.body();
+    expect(body.subarray(0, 5).toString('latin1'), query).toBe('%PDF-');
+    counts.set(query, pages(body));
+  }
+  // Each language on pages of its own, French first: one each when the week's message fits (the
+  // demo week does; render.test.ts checks it on a fixed message).
+  const french = counts.get('?lang=fr')!;
+  const english = counts.get('?lang=en&download=1')!;
+  expect(french).toBeGreaterThanOrEqual(1);
+  expect(english).toBeGreaterThanOrEqual(1);
+  expect(counts.get('')).toBe(french + english);
+  expect(counts.get('?lang=both')).toBe(french + english);
+  // Only a week's message, in a language it has, for the class team.
+  for (const path of [
+    `${base}?lang=es`,
+    `/classes/${SEED.class3}/info-parents/${weeks.nextWeek}/pdf`,
+    `/classes/${SEED.class3}/info-parents/${addDays(weeks.thisWeek, 1)}/pdf`,
+    `/classes/${SEED.class5}/info-parents/${weeks.thisWeek}/pdf`,
+    `/classes/not-a-class/info-parents/${weeks.thisWeek}/pdf`,
+  ]) {
+    const response = await page.request.get(path);
+    expect(response.status(), path).toBe(404);
+    expect(response.headers()['cache-control'], path).toBe('private, no-store');
+  }
+
+  // The buttons check first, as copying does, then open the chosen language's PDF.
+  const share = page.getByRole('group', { name: 'Imprimer (PDF)' });
+  await expect(share.getByRole('button')).toHaveText([
+    'Imprimer le français (PDF)',
+    'Print the English (PDF)',
+    'Imprimer les deux (PDF)',
+  ]);
+  await share.getByRole('button', { name: 'Print the English (PDF)' }).click();
+  const check = page.getByRole('dialog', { name: 'Des élèves sont nommés' });
+  await expect(check.getByText(/^Ce message nomme Samuel\./)).toBeVisible();
+  await expect(
+    check.getByText(
+      /^1 paragraphe n’a pas de version anglaise à jour\s:\sil paraîtra en français\.$/,
+    ),
+  ).toBeVisible();
+  await expectAccessible(page);
+  const [request] = await Promise.all([
+    page.waitForRequest((r) => r.url().includes('/pdf')),
+    check.getByRole('button', { name: 'Continuer' }).click(),
+  ]);
+  expect(new URL(request.url()).pathname).toBe(base);
+  expect(new URL(request.url()).search).toBe('?lang=en');
+});
+
+test('« Aujourd’hui »: the reminder on the week’s last two school days, while not sent', async ({
+  page,
+}) => {
+  // The class has this week's draft. Whether today is one of the week's last two school days
+  // depends on the day the test runs: the demo calendar says (newsletterReminderDue is unit
+  // tested).
+  const due = await newsletterReminderDueToday(SEED.class3);
+  test.info().annotations.push({ type: 'reminder', description: due ? 'due today' : 'not today' });
+  await login(page, DEMO.teacher3);
+  await page.goto('/today');
+  await expect(
+    page.getByRole('heading', { name: 'Aujourd’hui', level: 1, exact: true }),
+  ).toBeVisible();
+  const reminder = page.getByTestId('newsletter-reminder');
+  if (!due) {
+    await expect(reminder).toHaveCount(0);
+    return;
+  }
+  await expect(reminder).toHaveText(
+    /^Info-parents\s:\spréparez le message de la semaine pour 3e année – Mme Tremblay\.Préparer le message$/,
+  );
+  await expectAccessible(page);
+  await reminder.getByRole('link', { name: 'Préparer le message' }).click();
+  await page.waitForURL(new RegExp(`/info-parents/${weeks.thisWeek}$`));
+  await expect(page.getByTestId('newsletter-editor')).toHaveAttribute('data-ready', 'true');
+});
+
 test('« Marquer comme envoyé »: checked first, then « Envoyé » in the list', async ({ page }) => {
   await login(page, DEMO.teacher3);
   await openEditor(page, weeks.thisWeek);
@@ -260,4 +375,10 @@ test('« Marquer comme envoyé »: checked first, then « Envoyé » in the list
   await expect(row).toContainText(/Envoyé le /);
   // The week is no longer offered; next week still is.
   await expect(page.getByRole('link', { name: /^Préparer la semaine du / })).toHaveCount(1);
+  // Sent: « Aujourd'hui » no longer reminds about it.
+  await page.goto('/today');
+  await expect(
+    page.getByRole('heading', { name: 'Aujourd’hui', level: 1, exact: true }),
+  ).toBeVisible();
+  await expect(page.getByTestId('newsletter-reminder')).toHaveCount(0);
 });

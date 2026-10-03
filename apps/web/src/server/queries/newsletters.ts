@@ -4,8 +4,11 @@ import {
   formalStaffName,
   isTeachersBlock,
   localDateIn,
+  mondayOf,
   newsletterContentSchema,
   newsletterFacts,
+  newsletterReminders,
+  schoolWeeks,
   type LocalDate,
   type NewsletterContent,
   type NewsletterFacts,
@@ -15,13 +18,14 @@ import {
   type ProgressStatus,
   type ReportPeriod,
   type ReportPeriodKind,
+  type YearCalendarEvent,
 } from '@lynx/domain';
 import { z } from 'zod';
 import { instantInZone } from '@/lib/format';
 import { reportError } from '../errors';
 import { newsletterNames, type NewsletterNames } from '../newsletter/names';
 import { sortNewsletterRows, type NewsletterListRow } from '../newsletter/view-model';
-import { findSchool, type SessionContext } from '../session';
+import { findSchool, teachingSchools, type SessionContext } from '../session';
 import { createSupabaseServerClient } from '../supabase';
 import type { ClassDetail } from './classes';
 import { eventsForSchool, scheduleFor, toCalendarEvent, toTimetableBlock } from './mappers';
@@ -140,11 +144,15 @@ export interface NewsletterData {
   names: NewsletterNames;
 }
 
-/** The class's message for a week; null when there is none. */
+/**
+ * The class's message for a week; null when there is none. `names: false` (the PDF) reads no
+ * roster: the names are then left empty.
+ */
 export async function loadNewsletter(
   session: SessionContext,
   cls: ClassDetail,
   weekOf: LocalDate,
+  options: { names?: boolean } = {},
 ): Promise<NewsletterData | null> {
   const school = findSchool(session, cls.schoolId);
   if (!school) return null;
@@ -166,9 +174,10 @@ export async function loadNewsletter(
     sentOn: data.sent_at ? instantInZone(data.sent_at, school.timezone).date : null,
     revision: data.revision,
     content,
-    names: content
-      ? newsletterNames(content, await loadRoster(cls.id))
-      : { studentNames: [], details: [] },
+    names:
+      content && options.names !== false
+        ? newsletterNames(content, await loadRoster(cls.id))
+        : { studentNames: [], details: [] },
   };
 }
 
@@ -477,4 +486,94 @@ async function loadGuides(
     for (const e of data ?? []) parents.set(e.id, e.parent_id);
   }
   return { guides, parents };
+}
+
+// ---------------------------------------------------------------------------------------
+// « Aujourd'hui »: « Info-parents : préparez le message de la semaine » (D-142)
+// ---------------------------------------------------------------------------------------
+
+export interface NewsletterReminderRow {
+  classId: string;
+  className: string;
+  /** The week to prepare: its Monday. */
+  weekOf: LocalDate;
+}
+
+/**
+ * The classes to remind about today (`newsletterReminders`): each class where the teacher is
+ * homeroom, at a school where she teaches with the Teaching module (never a sample class), that
+ * already has a message; on the last two school days of its week (the board's and the school's
+ * days off counted), until this week's message is marked sent. Classes by name. The calendar is
+ * read only when a class could be reminded.
+ */
+export async function loadNewsletterReminders(
+  session: SessionContext,
+): Promise<NewsletterReminderRow[]> {
+  const schools = new Map(teachingSchools(session).map((s) => [s.id, s]));
+  if (schools.size === 0) return [];
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from('class_teachers')
+    .select(
+      'classes!inner(id, name, school_id, sample_owner_id, school_years(starts_on, ends_on), class_newsletters(week_of, status))',
+    )
+    .eq('user_id', session.userId)
+    .eq('role', 'homeroom');
+  if (error) {
+    reportError('loadNewsletterReminders', error);
+    return [];
+  }
+  const candidates = (data ?? []).flatMap(({ classes: c }) => {
+    const school = schools.get(c.school_id);
+    const year = c.school_years;
+    if (!school || !year || c.sample_owner_id !== null || c.class_newsletters.length === 0) {
+      return [];
+    }
+    const today = localDateIn(school.timezone);
+    const monday = mondayOf(today);
+    // This week, inside the class's school year (empty outside it).
+    const friday = addDays(monday, 4);
+    const startsOn = year.starts_on > monday ? year.starts_on : monday;
+    const endsOn = year.ends_on < friday ? year.ends_on : friday;
+    if (endsOn < startsOn) return [];
+    const messages = c.class_newsletters.map((m) => ({
+      weekOf: m.week_of,
+      status: m.status === 'sent' ? ('sent' as const) : ('draft' as const),
+    }));
+    if (messages.some((m) => m.weekOf === monday && m.status === 'sent')) return [];
+    return [{ id: c.id, name: c.name, school, today, startsOn, endsOn, messages }];
+  });
+  if (candidates.length === 0) return [];
+
+  const from = candidates.reduce((min, c) => (c.startsOn < min ? c.startsOn : min), '9999-12-31');
+  const until = candidates.reduce((max, c) => (c.endsOn > max ? c.endsOn : max), '0000-01-01');
+  const { data: events, error: eventsError } = await supabase
+    .from('school_calendar_events')
+    .select(
+      'id, board_id, school_id, class_id, event_type, title, starts_on, ends_on, start_time, end_time, affects_schedule',
+    )
+    .in('board_id', [...new Set(candidates.map((c) => c.school.boardId))])
+    .lte('starts_on', until)
+    .gte('ends_on', from)
+    .limit(PAGE);
+  if (eventsError) {
+    reportError('loadNewsletterReminders', eventsError);
+    return [];
+  }
+  return candidates
+    .flatMap((c) => {
+      const calendar: YearCalendarEvent[] = (events ?? [])
+        .filter((e) => e.board_id === c.school.boardId)
+        .map((e) => ({ ...toCalendarEvent(e), schoolId: e.school_id }));
+      const [week] = schoolWeeks({
+        startsOn: c.startsOn,
+        endsOn: c.endsOn,
+        events: calendar,
+        schoolId: c.school.id,
+        classId: c.id,
+      });
+      return newsletterReminders([{ cls: c, week: week ?? null, messages: c.messages }], c.today);
+    })
+    .map(({ cls, weekOf }) => ({ classId: cls.id, className: cls.name, weekOf }))
+    .sort((a, b) => a.className.localeCompare(b.className, 'fr-CA'));
 }

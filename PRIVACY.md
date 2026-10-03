@@ -91,8 +91,8 @@ sees the exact text before it is sent and must remove such a name (section 5).
   the board's own report card system; never sent to our servers or the AI. Comment banks hold
   phrases with a first-name placeholder (`{prénom}`), no student data.
 - Nothing about families: the app sends nothing to families (no e-mail, text message or parent
-  account). A teacher copies « Info-parents », the class's weekly message (D-136), herself into
-  the board's own channels. No parent contact is stored.
+  account). A teacher copies or prints « Info-parents », the class's weekly message (D-136,
+  D-141), herself, through the board's own channels. No parent contact is stored.
 
 ## 4. Data inventory
 
@@ -134,9 +134,10 @@ shown 60 days before the purge says so.
 An « Info-parents » message is free text too, drafted by the app from the class's own planning
 and calendar (never an event's notes for staff, an attente, the coverage or anything about a
 student) and edited by the teacher. It goes to every family of the class, so it may name a student
-for news everyone can read; before it is copied or marked sent the app lists the students it names
-and the personal details it holds (nothing is stored about that check). The messages are erased
-with the students' first names, and can be deleted at any time.
+for news everyone can read; before it is copied, printed or marked sent the app lists the students
+it names and the personal details it holds (nothing is stored about that check). Its PDF (D-141)
+is built from the saved message when the teacher asks, never stored and not sent anywhere. The
+messages are erased with the students' first names, and can be deleted at any time.
 
 « Couverture » (D-125) is worked out on each visit from the class's units, lessons and progress;
 nothing about it is stored, and only the class team sees it. The long-range plan PDF (« Plan à

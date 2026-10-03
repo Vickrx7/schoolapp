@@ -1,11 +1,23 @@
-import { composeSubPlan } from '@lynx/domain';
+import { composeSubPlan, typedItem, withTeacherEnglish } from '@lynx/domain';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { sheetBodySize } from './activities-document';
 import { buildActivitiesPdfModel } from './activities-model';
 import { registerPdfFonts } from './fonts';
 import { buildPlanPdfModel } from './model';
-import { renderActivitiesPdf, renderPlanPdf, renderYearPlanPdf } from './render';
+import {
+  NEWSLETTER_BODY_SIZES,
+  NEWSLETTER_PAGE_ROOM,
+  newsletterPageHeight,
+} from './newsletter-document';
+import { editedNewsletter, newsletterModel } from './newsletter-fixtures';
+import {
+  pdfPageCount,
+  renderActivitiesPdf,
+  renderNewsletterPdf,
+  renderPlanPdf,
+  renderYearPlanPdf,
+} from './render';
 import {
   activityLayer,
   composed,
@@ -178,6 +190,79 @@ describe('renderYearPlanPdf', () => {
     const pdf = await renderYearPlanPdf(
       buildYearPlanPdfModel(yearPlanInput({ units: [] }), YEAR_PLAN_FR),
     );
+    expectPdf(pdf);
+    expect(pages(pdf)).toBe(2);
+  });
+});
+
+describe('renderNewsletterPdf', () => {
+  const mediaBoxes = (pdf: Buffer) =>
+    [...pdf.toString('latin1').matchAll(/\/MediaBox\s*\[\s*0 0 ([\d.]+) ([\d.]+)\s*\]/g)].map(
+      (m) => `${Math.round(Number(m[1]))}x${Math.round(Number(m[2]))}`,
+    );
+  const short = ['Merci pour votre aide à la fête de l’automne!', 'Thanks for your help!'] as const;
+  const long = [
+    'Nous avons préparé une belle surprise pour la fête de l’automne, avec des chansons à 13 h 35. '
+      .repeat(3)
+      .trim(),
+    'We prepared a lovely surprise for the fall party, with songs at 1:35 p.m. '.repeat(3).trim(),
+  ] as const;
+  /** The week's message with `n` more paragraphs of the teacher's (at most 12 in a section). */
+  const longer = (n: number, [fr, en]: readonly [string, string] = short) => {
+    const content = editedNewsletter();
+    for (let i = 0; i < n; i++) {
+      content.sections[0]!.items.push(
+        withTeacherEnglish(typedItem(`more${String(i).padStart(4, '0')}`, fr), en),
+      );
+    }
+    return content;
+  };
+
+  it('prints the week’s message on one Letter page per language, French then English', async () => {
+    const pdf = await renderNewsletterPdf(newsletterModel());
+    expectPdf(pdf);
+    expect(pages(pdf)).toBe(2);
+    expect(pdfPageCount(pdf)).toBe(2);
+    expect(mediaBoxes(pdf)).toEqual(['612x792', '612x792']);
+    const raw = pdf.toString('latin1');
+    expect(raw).toMatch(/\/BaseFont\s*\/[A-Z]{6}\+NotoSans-Regular/);
+    expect(raw).toMatch(/\/BaseFont\s*\/[A-Z]{6}\+NotoSans-Bold/);
+    for (const lang of ['fr', 'en'] as const) {
+      expect(pages(await renderNewsletterPdf(newsletterModel({ lang }))), lang).toBe(1);
+    }
+  });
+
+  it('keeps a longer message on one page per language with a smaller print', async () => {
+    // The most paragraphs whose estimate fits a page at the smallest size.
+    const fitsSmallest = (n: number) =>
+      newsletterModel({ content: longer(n) }).pages.every(
+        (p) => newsletterPageHeight(p, NEWSLETTER_BODY_SIZES.at(-1)!) <= NEWSLETTER_PAGE_ROOM,
+      );
+    let n = 0;
+    while (n < 10 && fitsSmallest(n + 1)) n += 1;
+    expect(n).toBeGreaterThan(0);
+    const model = newsletterModel({ content: longer(n) });
+    // Too long for the largest print, yet on one page per language.
+    expect(newsletterPageHeight(model.pages[0]!, NEWSLETTER_BODY_SIZES[0])).toBeGreaterThan(
+      NEWSLETTER_PAGE_ROOM,
+    );
+    expect(pages(await renderNewsletterPdf(model))).toBe(2);
+  });
+
+  it('flows a message too long for one page over more, each language on pages of its own', async () => {
+    const content = longer(10, long);
+    const pdf = await renderNewsletterPdf(newsletterModel({ content }));
+    expectPdf(pdf);
+    expect(pages(pdf)).toBe(4);
+    expect(pages(await renderNewsletterPdf(newsletterModel({ content, lang: 'en' })))).toBe(2);
+  });
+
+  it('renders a message with nothing but its header and signature', async () => {
+    const content = editedNewsletter();
+    for (const s of content.sections) s.off = true;
+    const model = newsletterModel({ content });
+    expect(model.pages.every((p) => p.sections.length === 0)).toBe(true);
+    const pdf = await renderNewsletterPdf(model);
     expectPdf(pdf);
     expect(pages(pdf)).toBe(2);
   });

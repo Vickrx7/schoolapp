@@ -4,9 +4,10 @@ import { deleteNewsletters } from './db-newsletters';
 import { DEMO, expectAccessible, login } from './helpers';
 
 /**
- * « Info-parents » on a phone (DECISIONS D-136, D-137), 360 × 740: the list, « Préparer le
- * message », then the editor with « Français · English » per section (one language at a time),
- * every target at least 44 px and no sideways scroll. The message made here is deleted.
+ * « Info-parents » on a phone (DECISIONS D-136, D-137, D-141), 360 × 740: the list, « Préparer le
+ * message », then the editor with « Français · English » per section (one language at a time) and
+ * « Partager » (copy, print), every target at least 44 px and no sideways scroll. The message made
+ * here is deleted.
  */
 test.use({ viewport: { width: 360, height: 740 } });
 
@@ -87,6 +88,9 @@ test('« Info-parents » on a phone: the list, preparing, one language at a time
   ).toBeVisible();
   await expectTargets(thisWeek);
   await expectTargets(page.getByTestId('newsletter-save-bar'));
+  // « Partager »: copying and printing (D-141), one tap each.
+  await expectTargets(editor.getByRole('group', { name: 'Copier' }));
+  await expectTargets(editor.getByRole('group', { name: 'Imprimer (PDF)' }));
   await expectNoSidewaysScroll(page);
   await expectAccessible(page);
 

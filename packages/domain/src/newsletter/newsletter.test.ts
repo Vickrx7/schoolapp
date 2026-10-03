@@ -25,7 +25,7 @@ import {
   type NewsletterReference,
   type NewsletterUnit,
 } from './facts';
-import { newsletterPlainText } from './text';
+import { NEWSLETTER_LIST_SECTIONS, newsletterParagraph, newsletterPlainText } from './text';
 
 // ---------------------------------------------------------------------------------------
 // Fixtures: a 3e année class, Monday 5 October 2026, prepared on Thursday the 8th.
@@ -914,5 +914,35 @@ describe('newsletterPlainText (« Copier »)', () => {
     const text = newsletterPlainText(content, { lang: 'both', header, headings });
     expect(text.indexOf('Semaine du 5 octobre')).toBeLessThan(text.indexOf('Week of October 5'));
     expect(text).toContain('Mme Tremblay\n\n* * *\n\nÉcole · 3e année · Week of October 5, 2026');
+  });
+
+  it('newsletterParagraph: what copying and printing show of a paragraph, in each language', () => {
+    const [greeting, typed] = content.sections[0]!.items;
+    const stale = content.sections[3]!.items[0]!;
+    expect(newsletterParagraph(greeting!, 'fr')).toEqual({
+      text: 'Bonjour chères familles,',
+      inFrench: false,
+    });
+    expect(newsletterParagraph(greeting!, 'en')).toEqual({
+      text: 'Dear families,',
+      inFrench: false,
+    });
+    // No English yet, or English for an older French: the French, marked as such.
+    expect(newsletterParagraph(typed!, 'en')).toEqual({ text: 'Bravo à Samuel!', inFrench: true });
+    expect(newsletterParagraph(stale, 'en')).toEqual({
+      text: 'Vendredi : pas d’école',
+      inFrench: true,
+    });
+    // English the teacher wrote for an empty French: shown in English only.
+    const englishOnly = {
+      ...typedItem('typed002'),
+      en: '  Thank you!  ',
+      enFrom: '',
+      enBy: 'teacher' as const,
+    };
+    expect(newsletterParagraph(englishOnly, 'en')).toEqual({ text: 'Thank you!', inFrench: false });
+    expect(newsletterParagraph(englishOnly, 'fr')).toEqual({ text: '', inFrench: false });
+    expect(NEWSLETTER_LIST_SECTIONS.has('dates')).toBe(true);
+    expect(NEWSLETTER_LIST_SECTIONS.has('faith')).toBe(false);
   });
 });

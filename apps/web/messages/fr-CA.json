@@ -249,6 +249,10 @@
       "ends": "{kind} : la période se termine le {date}",
       "action": "Préparer mes commentaires",
       "actionFor": "Préparer mes commentaires · {className}"
+    },
+    "newsletter": {
+      "due": "Info-parents : préparez le message de la semaine pour {className}.",
+      "action": "Préparer le message"
     }
   },
   "classes": {
@@ -4289,7 +4293,7 @@
     "title": "Info-parents",
     "metaTitle": "Info-parents · {className}",
     "metaWeek": "Info-parents · {className} · semaine du {date}",
-    "intro": "Préparez chaque semaine un message pour les familles de la classe, en français et en anglais. L’application prépare un premier jet à partir de votre planification et du calendrier ; vous le relisez, puis vous le copiez dans le moyen de communication de votre école. L’application n’envoie rien aux familles.",
+    "intro": "Préparez chaque semaine un message pour les familles de la classe, en français et en anglais. L’application prépare un premier jet à partir de votre planification et du calendrier ; vous le relisez, puis vous le copiez dans le moyen de communication de votre école, ou vous l’imprimez. L’application n’envoie rien aux familles.",
     "prepareWeek": "Préparer la semaine du {date}",
     "listHeading": "Messages de la classe",
     "weekOf": "Semaine du {date}",
@@ -4319,7 +4323,7 @@
     "back": "Tous les messages",
     "editor": {
       "header": "En-tête",
-      "headerHint": "Ajouté au début du message copié ; il n’est pas enregistré dans les paragraphes.",
+      "headerHint": "Ajouté au début du message copié ou imprimé ; il n’est pas enregistré dans les paragraphes.",
       "notice": "Ce message ira à toutes les familles de la classe. Ne nommez un élève que pour une nouvelle à partager avec tout le monde ; jamais un comportement, la santé ou une évaluation.",
       "signature": "Signature",
       "frenchLabel": "Français",
@@ -4393,6 +4397,14 @@
         "address": "une adresse",
         "birthDate": "une date de naissance"
       }
+    },
+    "pdf": {
+      "group": "Imprimer (PDF)",
+      "fr": "Imprimer le français (PDF)",
+      "en": "Print the English (PDF)",
+      "both": "Imprimer les deux (PDF)",
+      "failed": "Le PDF n’a pas pu être créé. Le message reste dans l’application : réessayez dans un moment.",
+      "failedBack": "Retour au message"
     }
   },
   "newsletterText": {
@@ -4439,6 +4451,13 @@
       "reflection": "Une question à discuter en famille : {text}",
       "scripture": "La Parole de Dieu de la semaine : {text}",
       "graduate_expectation": "Cette semaine, nous travaillons une attente de l’élève diplômée ou diplômé de l’école catholique : {text}"
+    },
+    "pdf": {
+      "title": "Info-parents",
+      "week": "Semaine du {date}",
+      "inFrench": "(en français)",
+      "machineTranslated": "Certaines parties de la version anglaise ont été traduites automatiquement.",
+      "fileName": "info-parents"
     }
   }
 }

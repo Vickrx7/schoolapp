@@ -12,7 +12,7 @@ import {
   type NewsletterSectionKey,
   type NewsletterTextLanguage,
 } from '@lynx/domain';
-import { Copy, RefreshCw, Type } from 'lucide-react';
+import { Copy, Printer, RefreshCw, Type } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useEffect, useId, useRef, useState } from 'react';
@@ -25,6 +25,7 @@ import { Field, Input, Label, Textarea } from '@/components/ui/field';
 import { useAction } from '@/hooks/use-action';
 import { newsletterDraftKey } from '@/hooks/draft-storage';
 import { useDraft } from '@/hooks/use-draft';
+import { openAsNewDocument } from '@/lib/new-document';
 import { markNewsletterSent, refillNewsletter, saveNewsletter } from '@/server/actions/newsletters';
 import type { NewsletterNames } from '@/server/newsletter/names';
 import { CheckDialog, needsCheck } from './check-dialog';
@@ -35,6 +36,8 @@ export interface NewsletterEditorProps {
   userId: string;
   classId: string;
   id: string;
+  /** The week's Monday (the PDF's address). */
+  weekOf: string;
   /** « 5 octobre », for « Supprimer le message de la semaine du … ». */
   weekLabel: string;
   status: 'draft' | 'sent';
@@ -53,10 +56,12 @@ export interface NewsletterEditorProps {
 /**
  * The week's message (DECISIONS D-136 to D-138): the header and the signature, the notice, every
  * section's paragraphs in French and English, « Préremplir à nouveau », « Corriger la
- * typographie », « Copier » and « Marquer comme envoyé ». The content is a device draft until it is
- * saved (D-035); a save is refused when a colleague saved first (`newsletterConflict`): the page
- * then reloads the newer version and offers « Récupérer mes modifications ». Copying and marking
- * sent wait for a save, then check the names (« Des élèves sont nommés »).
+ * typographie », « Copier », « Imprimer (PDF) » (D-141) and « Marquer comme envoyé ». The content
+ * is a device draft until it is saved (D-035); a save is refused when a colleague saved first
+ * (`newsletterConflict`): the page then reloads the newer version and offers « Récupérer mes
+ * modifications ». Copying, printing and marking sent wait for a save, then check the names
+ * (« Des élèves sont nommés »); the PDF is the saved message, opened in the browser to print or
+ * save (a plain navigation: nothing is prefetched).
  */
 export function NewsletterEditor(props: NewsletterEditorProps) {
   const router = useRouter();
@@ -89,12 +94,26 @@ export function NewsletterEditor(props: NewsletterEditorProps) {
   );
 }
 
-type Pending = { kind: 'copy'; lang: NewsletterTextLanguage } | { kind: 'sent' };
+type Pending =
+  | { kind: 'copy'; lang: NewsletterTextLanguage }
+  | { kind: 'pdf'; lang: NewsletterTextLanguage }
+  | { kind: 'sent' };
+
+/** Paragraphs that will appear in French in what is shared (none for the French or « envoyé »). */
+const missingFor = (next: Pending | null, content: NewsletterContent) =>
+  next && next.kind !== 'sent' && next.lang !== 'fr' ? itemsNeedingEnglish(content).length : 0;
+
+const LANGUAGES = [
+  ['fr', 'copyFr', 'fr'],
+  ['en', 'copyEn', 'en'],
+  ['both', 'copyBoth', 'both'],
+] as const;
 
 function EditorBody({
   userId,
   classId,
   id,
+  weekOf,
   weekLabel,
   status,
   sentLabel,
@@ -164,13 +183,16 @@ function EditorBody({
   const mark = useAction(markNewsletterSent);
 
   const share = (next: Pending) => {
-    const missing =
-      next.kind === 'copy' && next.lang !== 'fr' ? itemsNeedingEnglish(content).length : 0;
-    if (needsCheck(names, missing)) setPending(next);
+    if (needsCheck(names, missingFor(next, content))) setPending(next);
     else void act(next);
   };
   const act = async (next: Pending) => {
     setPending(null);
+    if (next.kind === 'pdf') {
+      // The saved message, rendered by the route: the browser opens it to print or save.
+      openAsNewDocument(`/classes/${classId}/info-parents/${weekOf}/pdf?lang=${next.lang}`);
+      return;
+    }
     if (next.kind === 'sent') {
       const result = await mark.run(id, true);
       if (result?.ok) toast.success(t('editor.markedSent'));
@@ -322,13 +344,7 @@ function EditorBody({
         </h3>
         {shareBlocked ? <p className="text-sm text-slate-600">{t('editor.saveFirst')}</p> : null}
         <div role="group" aria-label={t('editor.copy')} className="flex flex-wrap gap-2">
-          {(
-            [
-              ['fr', 'copyFr'],
-              ['en', 'copyEn'],
-              ['both', 'copyBoth'],
-            ] as const
-          ).map(([lang, key]) => (
+          {LANGUAGES.map(([lang, key]) => (
             <Button
               key={lang}
               variant="secondary"
@@ -339,6 +355,21 @@ function EditorBody({
             >
               <Copy aria-hidden />
               {t(`editor.${key}`)}
+            </Button>
+          ))}
+        </div>
+        <div role="group" aria-label={t('pdf.group')} className="flex flex-wrap gap-2">
+          {LANGUAGES.map(([lang, , key]) => (
+            <Button
+              key={lang}
+              variant="secondary"
+              disabled={shareBlocked}
+              // « Print the English (PDF) » too is written in English in the French interface.
+              lang={lang === 'en' && locale.startsWith('fr') ? 'en' : undefined}
+              onClick={() => share({ kind: 'pdf', lang })}
+            >
+              <Printer aria-hidden />
+              {t(`pdf.${key}`)}
             </Button>
           ))}
         </div>
@@ -389,11 +420,7 @@ function EditorBody({
       <CheckDialog
         open={pending !== null}
         names={names}
-        missingEnglish={
-          pending?.kind === 'copy' && pending.lang !== 'fr'
-            ? itemsNeedingEnglish(content).length
-            : 0
-        }
+        missingEnglish={missingFor(pending, content)}
         onClose={() => setPending(null)}
         onContinue={() => pending && void act(pending)}
       />

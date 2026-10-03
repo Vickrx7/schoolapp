@@ -23,6 +23,7 @@ import { CheckOffButton } from '@/components/app/check-off-button';
 import { PurgeNotice } from '@/components/onboarding/class-notices';
 import { SampleBadge } from '@/components/onboarding/sample-badge';
 import { TeacherChecklist } from '@/components/onboarding/teacher-checklist';
+import { NewsletterReminders } from '@/components/today/newsletter-reminder';
 import { ReportReminders } from '@/components/today/report-reminder';
 import { Button } from '@/components/ui/button';
 import { StartUnitButton } from '@/components/year-plan/start-unit-button';
@@ -31,6 +32,7 @@ import { EmptyState, PageHeader } from '@/components/ui/page';
 import { formatLocalDate, formatTime, formatTimeRange } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import { loadMyAbsences } from '@/server/queries/absences';
+import { loadNewsletterReminders } from '@/server/queries/newsletters';
 import { loadTeacherOnboarding } from '@/server/queries/onboarding';
 import { loadReportReminders } from '@/server/queries/report-comments';
 import { loadPendingReports } from '@/server/queries/sub-reports';
@@ -75,14 +77,17 @@ export default async function TodayPage({
   const today = localDateIn(timezone);
   const { date: requested } = await searchParams;
   const date = requested && isLocalDate(requested) ? requested : today;
-  const [data, upcomingAbsences, pendingReports, onboarding, reminders] = await Promise.all([
-    loadToday(session, date, locale),
-    loadMyAbsences(session, { from: today, limit: 5 }),
-    loadPendingReports(),
-    loadTeacherOnboarding(session),
-    // « Préparer mes commentaires » (« Bulletins », D-135): on today's page only.
-    date === today ? loadReportReminders(session) : Promise.resolve([]),
-  ]);
+  const [data, upcomingAbsences, pendingReports, onboarding, reminders, newsletterReminders] =
+    await Promise.all([
+      loadToday(session, date, locale),
+      loadMyAbsences(session, { from: today, limit: 5 }),
+      loadPendingReports(),
+      loadTeacherOnboarding(session),
+      // « Préparer mes commentaires » (« Bulletins », D-135) and « Info-parents » (D-142): on
+      // today's page only.
+      date === today ? loadReportReminders(session) : Promise.resolve([]),
+      date === today ? loadNewsletterReminders(session) : Promise.resolve([]),
+    ]);
   // « Pour bien commencer » until it is done or hidden (D-109); sample classes carry « Exemple ».
   const showChecklist = !onboarding.dismissed && onboarding.done < onboarding.total;
   const samples = new Set(onboarding.sampleClassIds);
@@ -188,6 +193,7 @@ export default async function TodayPage({
       ) : null}
 
       <ReportReminders reminders={reminders} />
+      <NewsletterReminders reminders={newsletterReminders} />
 
       {showChecklist ? (
         <TeacherChecklist data={onboarding} variant="card" />

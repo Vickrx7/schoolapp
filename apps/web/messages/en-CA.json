@@ -249,6 +249,10 @@
       "ends": "{kind}: the period ends on {date}",
       "action": "Prepare my comments",
       "actionFor": "Prepare my comments · {className}"
+    },
+    "newsletter": {
+      "due": "Family newsletter: prepare this week’s message for {className}.",
+      "action": "Prepare the message"
     }
   },
   "classes": {
@@ -4289,7 +4293,7 @@
     "title": "Family newsletter",
     "metaTitle": "Family newsletter · {className}",
     "metaWeek": "Family newsletter · {className} · week of {date}",
-    "intro": "Prepare a message for the class’s families each week, in French and in English. The app writes a first draft from your planning and the calendar; you read it over, then copy it into your school’s communication channel. The app sends nothing to families.",
+    "intro": "Prepare a message for the class’s families each week, in French and in English. The app writes a first draft from your planning and the calendar; you read it over, then copy it into your school’s communication channel, or print it. The app sends nothing to families.",
     "prepareWeek": "Prepare the week of {date}",
     "listHeading": "The class’s messages",
     "weekOf": "Week of {date}",
@@ -4319,7 +4323,7 @@
     "back": "All messages",
     "editor": {
       "header": "Header",
-      "headerHint": "Added at the top of the copied message; it is not saved in the paragraphs.",
+      "headerHint": "Added at the top of the copied or printed message; it is not saved in the paragraphs.",
       "notice": "This message goes to every family in the class. Name a student only for news to share with everyone; never behaviour, health or an evaluation.",
       "signature": "Signature",
       "frenchLabel": "Français",
@@ -4393,6 +4397,14 @@
         "address": "an address",
         "birthDate": "a date of birth"
       }
+    },
+    "pdf": {
+      "group": "Print (PDF)",
+      "fr": "Print the French (PDF)",
+      "en": "Print the English (PDF)",
+      "both": "Print both (PDF)",
+      "failed": "The PDF could not be created. The message is still in the app: try again in a moment.",
+      "failedBack": "Back to the message"
     }
   },
   "newsletterText": {
@@ -4439,6 +4451,13 @@
       "reflection": "A question to talk about as a family: {text}",
       "scripture": "God’s Word this week: {text}",
       "graduate_expectation": "This week, we are working on a Catholic Graduate Expectation: {text}"
+    },
+    "pdf": {
+      "title": "Family newsletter",
+      "week": "Week of {date}",
+      "inFrench": "(in French)",
+      "machineTranslated": "Some parts of this English version were translated automatically.",
+      "fileName": "family-newsletter"
     }
   }
 }

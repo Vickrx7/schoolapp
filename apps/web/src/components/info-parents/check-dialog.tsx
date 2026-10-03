@@ -12,10 +12,10 @@ export function needsCheck(names: NewsletterNames, missingEnglish: number): bool
 }
 
 /**
- * « Des élèves sont nommés » (DECISIONS D-138), before the message is copied or marked sent: the
- * class's students it names and the personal details it holds, since it goes to every family;
- * and, before the English is copied, how many paragraphs will appear in French. Nothing blocks
- * and nothing is stored: « Continuer » or « Revenir au message ».
+ * « Des élèves sont nommés » (DECISIONS D-138), before the message is copied, printed (D-141) or
+ * marked sent: the class's students it names and the personal details it holds, since it goes to
+ * every family; and, before the English is copied or printed, how many paragraphs will appear in
+ * French. Nothing blocks and nothing is stored: « Continuer » or « Revenir au message ».
  */
 export function CheckDialog({
   open,

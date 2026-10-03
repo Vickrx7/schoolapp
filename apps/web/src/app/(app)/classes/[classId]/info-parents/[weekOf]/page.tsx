@@ -97,6 +97,7 @@ export default async function NewsletterWeekPage({ params }: { params: Params })
           userId={session.userId}
           classId={classId}
           id={newsletter.id}
+          weekOf={weekOf}
           weekLabel={week}
           status={newsletter.status}
           sentLabel={newsletter.sentOn ? longDate(newsletter.sentOn, locale) : null}

@@ -601,6 +601,12 @@ rendered on demand in the web server (`runtime = 'nodejs'`), never stored, `priv
 path ending in `/pdf` (no page security policy), opened through a plain GET form (never
 prefetched), `?download=1` to save it, a failure page with a way back to « Mon année ». It holds
 no student data and no alert, and it is not audited: it is the teacher's own planning.
+_Amended for « Info-parents » (2026-10-03):_ the week's message to families (D-141) follows the same
+rules: rendered on demand from the saved message (Node runtime), never stored, `private, no-store`,
+a path ending in `/pdf` (no page security policy), `?download=1` to save it, a failure page with a
+way back to the message. It is in French and in English (a page per language, from each language's
+catalogue), holds only what the editor shows (no roster is read; « Des élèves sont nommés » comes
+before it), and it is not audited: the teacher decides whom to give it to.
 
 **D-054 — The end-of-day report writes pending progress; the teacher confirms through one
 path.** The report autosaves to the server during the day and to the browser tab
@@ -2389,6 +2395,8 @@ touched each other. « Journal d'audit » highlights « Direction » when the pe
 Conseil ».
 _Amended for « Mon année » (2026-10-02):_ « Pour bien démarrer le conseil » has one more item,
 « Périodes de bulletin » (D-124); the navigation and the phone bar are unchanged.
+_Amended for « Info-parents » (2026-10-03):_ no navigation item either: « Info-parents » is a class
+tab with a reminder on « Aujourd'hui » (D-142); the navigation and the phone bar are unchanged.
 
 **D-119 — Security headers, logs and sessions.** In production, a Content Security Policy
 (`default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';
@@ -2899,8 +2907,8 @@ As built (slice S3): `app/(app)/classes/[classId]/bulletins/`, `ClassTabs`' `bul
 ## « Info-parents » (post-MVP 3)
 
 Feature #3 after the pilot build: a weekly message from a class to its families, in French and in
-English, drafted by the app from the class's own data, edited by the class team, then copied (or,
-from slice S2, printed) by the teacher into the board's own channels. The app sends nothing to
+English, drafted by the app from the class's own data, edited by the class team, then copied or
+printed by the teacher for the board's own channels. The app sends nothing to
 families, stores no parent data and has no parent accounts. Built in three slices: S1 (the data,
 the draft, the editor, copying; D-136 to D-138, D-140), S2 (the PDF and the « Aujourd'hui »
 reminder; D-141, D-142) and S3 (« Traduire en anglais (IA) », the terms and the docs; D-139,
@@ -2979,25 +2987,25 @@ _Why:_ per-paragraph English provenance shows exactly what is out of date after 
 without a translation table, and a fixed set of sections keeps the copy readable. The seed's demo
 Catholic references have an English text of our own, so the demo shows an English faith moment.
 
-**D-138 — Names and retention (amends D-105).** Before a message is copied or marked sent, « Des
-élèves sont nommés » lists the class's students it names (« Ce message nomme Samuel et Aïcha. Il
-ira à toutes les familles de la classe. ») and the personal details it holds (« Ce message contient
-un numéro de téléphone (613-555-1234) : vérifiez qu'il peut être partagé avec toutes les
-familles. »), with the AI privacy tools (`findPersonalInfo` with the class roster, students only,
-and `findBlockedDetails`), as the library's first-name guard (D-066) does; before the English is
-copied, it says how many paragraphs will appear in French. It blocks nothing and nothing about it
-is stored; the editor's notice says, always: « Ce message ira à toutes les familles de la classe.
-Ne nommez un élève que pour une nouvelle à partager avec tout le monde ; jamais un comportement, la
-santé ou une évaluation. » Copying and marking sent wait for a save. Messages are erased with the
-students' first names: `app.purge_class_students` also deletes the class's messages (the audit
-entry counts them, `newsletters`, when there were some), and a class whose students were purged
-takes no new message (`LXN02`), so nothing comes back after a purge; a message also goes with its
-class (and a sample class), its board, or « Supprimer » at any time (Q5). The editor's device draft
-(`lynx-draft:newsletter:{userId}:{id}`) is a crash backup only (D-035, D-044): it goes at sign-out,
-and the janitor of the signed-in shell (D-130) removes another account's when someone else opens
-the app on that browser. _Why:_ a message to every family may name a child for good news, never
-for anything personal, and the teacher is the last check; the messages are about the class's
-students and go when their names go.
+**D-138 — Names and retention (amends D-105).** Before a message is copied, printed (D-141) or
+marked sent, « Des élèves sont nommés » lists the class's students it names (« Ce message nomme
+Samuel et Aïcha. Il ira à toutes les familles de la classe. ») and the personal details it holds («
+Ce message contient un numéro de téléphone (613-555-1234) : vérifiez qu'il peut être partagé avec
+toutes les familles. »), with the AI privacy tools (`findPersonalInfo` with the class roster,
+students only, and `findBlockedDetails`), as the library's first-name guard (D-066) does; before the
+English is copied or printed, it says how many paragraphs will appear in French. It blocks nothing
+and nothing about it is stored; the editor's notice says, always: « Ce message ira à toutes les
+familles de la classe. Ne nommez un élève que pour une nouvelle à partager avec tout le monde ;
+jamais un comportement, la santé ou une évaluation. » Copying, printing and marking sent wait for a
+save. Messages are erased with the students' first names: `app.purge_class_students` also deletes
+the class's messages (the audit entry counts them, `newsletters`, when there were some), and a class
+whose students were purged takes no new message (`LXN02`), so nothing comes back after a purge; a
+message also goes with its class (and a sample class), its board, or « Supprimer » at any time (Q5).
+The editor's device draft (`lynx-draft:newsletter:{userId}:{id}`) is a crash backup only (D-035,
+D-044): it goes at sign-out, and the janitor of the signed-in shell (D-130) removes another
+account's when someone else opens the app on that browser. _Why:_ a message to every family may name
+a child for good news, never for anything personal, and the teacher is the last check; the messages
+are about the class's students and go when their names go.
 
 **D-140 — No AI rewriting in v1: « Corriger la typographie ».** « Améliorer le texte (IA) » is not
 built: rewriting the teacher's French would send more text out and risk invented facts for little
@@ -3008,8 +3016,60 @@ an English version written for the French up to date, and lists the words to cha
 (« week-end », `notCanadianWords`). Nothing is saved until the teacher saves. _Why:_ the families
 read the message as written; typography is mechanical, wording is the teacher's.
 
-D-139 (« Traduire en anglais (IA) »), D-141 (the PDF), D-142 (the « Aujourd'hui » reminder) and
-D-143 (the pilot terms) come with slices S2 and S3.
+**D-141 — The « Info-parents » PDF (amends D-053).** « Partager » offers « Imprimer le français
+(PDF) », « Print the English (PDF) » and « Imprimer les deux (PDF) » beside the copy buttons, with
+their rules: disabled until the message is saved, then « Des élèves sont nommés » (D-138) and, for
+the English, how many paragraphs will appear in French; the browser then opens
+`/classes/[id]/info-parents/[weekOf]/pdf?lang=fr|en|both` (both by default; `?download=1` saves it)
+as a new document. The PDF is the saved message as the families read it, the same as the copied
+text: a page per language, French first, each with the school, « Info-parents » (in English,
+"Family newsletter"), the class and « Semaine du 5 octobre 2026 » at the top; the sections the
+editor shows (removed and empty ones left out; the list sections with a bullet per paragraph; the
+« Moment de foi » in a soft box); the closing and the signature together at the end; and, in the
+footer, the document's name, and its page only when a language takes more than one. Its words come
+from each language's catalogue (`newsletterText.pdf`), whatever the interface's language. On the
+English page, a paragraph without an up-to-date English version is printed in French, in a muted
+colour, with « (in French) » (there is no italic face, D-053); when an English paragraph printed
+was translated by the AI (slice S3), the footer says "Some parts of this English version were
+translated automatically." The body size steps down from 11.5 to 10 points so that each language
+stays on one page where it can (estimated, then checked on the rendered file); a longer message
+flows over more pages at 11.5 points. Paragraphs are printed as typed: only the spaces a line must
+not break at become no-break spaces (inside « », before French punctuation, in times, numbers and
+dates). D-053's rules: rendered on demand in the web server (Node runtime), never stored, `private,
+no-store`, a path ending in `/pdf` (no page security policy), a failure page with a way back to
+the message. For the class team with a teacher role (a 404 for anyone else, a day that is not a
+Monday, a week without a message or another language); the route reads no roster. Not audited
+(D-103): the teacher decides whom to give it to, as with the copied text. _Why:_ the week's message
+often goes home on paper or as an attachment in the board's e-mail or portal; built from the saved
+message, paper and screen say the same. As built (slice S2): `server/pdf/newsletter-model.ts`
+(pure; unit tests with the real catalogues), `newsletter-document.tsx`, `renderNewsletterPdf` in
+`render.ts` (`render.test.ts`: a page per language, a longer message on one page in smaller print,
+a long one over more pages), the route `app/(app)/classes/[classId]/info-parents/[weekOf]/pdf/`;
+`newsletterParagraph` and `NEWSLETTER_LIST_SECTIONS` (`@lynx/domain`) are shared with the copied
+text. Browser test: `info-parents.spec.ts` (`%PDF`, one page per language, `private, no-store`, no
+page policy, the 404s, the check before the PDF opens).
+
+**D-142 — The tab and the « Aujourd'hui » reminder.** « Info-parents » is a class tab (D-136), with
+no navigation item: D-118 is unchanged (`nav-items.ts` and `PHONE_BAR_MAX` untouched). On
+« Aujourd'hui » (today's page only), « Info-parents : préparez le message de la semaine pour
+{classe}. » with « Préparer le message » (the week's page: its message, or « Préparer le message »
+when it has none) shows on the week's last two school days (**Assumption**): not a fixed Thursday
+and Friday, since a PA Friday makes them Wednesday and Thursday (the board's and the school's days
+off count; a class's own event never closes the school; a week with one school day has that one).
+It shows for each class where the teacher is homeroom, at a school where she teaches with the
+Teaching module, in the class's school year, never a sample class, that already has a message
+(**Assumption**: no nagging those who do not use it), until the week's message is marked sent (a
+draft still reminds; next week's sent early does not count). One card per class, after « Préparer
+mes commentaires » (D-135). The query reads the class team's own rows (row level security) and the
+calendar only when a class could be reminded. _Why:_ teachers write the message at the end of the
+week; reminding someone who never used it would be noise. As built (slice S2):
+`packages/domain/src/newsletter/reminder.ts` (`newsletterReminderDue`, `newsletterReminders`;
+unit tests with the demo calendar), `loadNewsletterReminders` (`server/queries/newsletters.ts`),
+`components/today/newsletter-reminder.tsx`. The browser test (`info-parents.spec.ts`) checks the
+page against the demo calendar whatever the day it runs: no card without a message; with this
+week's draft, the card on the last two school days and none otherwise; none once sent.
+
+D-139 (« Traduire en anglais (IA) ») and D-143 (the pilot terms) come with slice S3.
 
 ## Schema additions beyond SPEC section 8
 
