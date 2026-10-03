@@ -28,7 +28,13 @@ test('the privacy notice and the pilot terms are public, in French and English',
   ).toBeVisible();
   await expect(
     page.getByText(
-      /Les commentaires de bulletin sont effacés de votre appareil à la déconnexion, quand une autre personne se connecte sur ce navigateur, ou au plus tard 60 jours après la remise du bulletin\.$/,
+      /Les commentaires de bulletin sont effacés de votre appareil à la déconnexion\. Sans déconnexion, ils le sont la première fois que l’application s’ouvre dans ce navigateur pour une autre personne, ou plus de 60 jours après la remise du bulletin\s;\sun navigateur où l’application ne s’ouvre plus les garde jusqu’à ce que ses données soient effacées\.$/,
+    ),
+  ).toBeVisible();
+  // The feedback kept a year is the « Commentaires » button's, not the report card comments.
+  await expect(
+    page.getByText(
+      /le journal d’audit après deux ans, les commentaires envoyés avec le bouton «\sCommentaires\s» après un an,/,
     ),
   ).toBeVisible();
   await expect(

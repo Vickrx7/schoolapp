@@ -81,7 +81,7 @@ test('« Créer une banque avec l’IA »: checked before sending, no student da
   await expect(page.getByText('Ce qui sera envoyé à l’IA')).toBeVisible();
   await expect(
     page.getByText(
-      /^Aucun renseignement sur vos élèves n’est envoyé\s:\sseulement l’année, la matière, les attentes choisies et vos précisions\.$/,
+      /^L’application n’ajoute aucun renseignement sur vos élèves\s:\selle envoie seulement l’année, la matière, les attentes choisies et vos précisions\.$/,
     ),
   ).toBeVisible();
   // Exactly what is sent: the grade, the subject, the report, the attentes with their keys, the
@@ -335,7 +335,7 @@ test('« Bulletins »: comments composed on the device from the demo bank, copie
   ).toBeVisible();
   await expect(page).toHaveTitle(/^Commentaires de bulletin · 3e année – Mme Tremblay/);
   await expect(page.getByTestId('device-notice')).toContainText(
-    /^Vos commentaires restent sur cet appareil\. Ils ne sont jamais envoyés à nos serveurs ni à l’intelligence artificielle\. Ils seront effacés quand vous vous déconnecterez, ou au plus tard le \d+\S*\s\S+\s\d{4}\. Copiez-les dans le bulletin officiel\./,
+    /^Vos commentaires restent sur cet appareil\. Ils ne sont jamais envoyés à nos serveurs ni à l’intelligence artificielle\. Ils sont effacés à la déconnexion, ou la première fois que l’application s’ouvre dans ce navigateur après le \d+\S*\s\S+\s\d{4}\. Copiez-les dans le bulletin officiel\./,
   );
   // The homeroom teacher: the learning skills first, then her subjects.
   const subject = page.getByLabel('Matière', { exact: true });

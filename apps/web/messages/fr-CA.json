@@ -186,7 +186,7 @@
     "datesBoth": "Choisissez la première et la dernière semaine, ou ni l’une ni l’autre.",
     "beforePeriodStart": "Cette date doit suivre le début de la période.",
     "reportBankNotTeaching": "Une banque de commentaires de bulletin ne s’ajoute pas à une leçon.",
-    "reportBankUnconfirmed": "Cochez « J’ai vérifié » pour confirmer que vos précisions ne nomment personne.",
+    "reportBankUnconfirmed": "Cochez « J’ai vérifié » pour confirmer que vos précisions ne nomment personne et ne disent rien sur un élève en particulier.",
     "newsletterWeek": "Cette semaine n’est pas dans l’année scolaire de la classe.",
     "newsletterPurged": "Les prénoms des élèves de cette classe ont été effacés : on ne peut plus y préparer de message.",
     "newsletterConflict": "Une ou un collègue a modifié ce message entre-temps. Vos modifications restent sur cet appareil : rechargez la page pour voir sa version, puis reprenez les vôtres.",
@@ -2594,11 +2594,11 @@
     },
     "preview": "Vérifier avant d’envoyer",
     "previewTitle": "Ce qui sera envoyé à l’IA",
-    "previewNoStudents": "Aucun renseignement sur vos élèves n’est envoyé : seulement l’année, la matière, les attentes choisies et vos précisions.",
+    "previewNoStudents": "L’application n’ajoute aucun renseignement sur vos élèves : elle envoie seulement l’année, la matière, les attentes choisies et vos précisions.",
     "previewNoStudentsNoNote": "Aucun renseignement sur vos élèves n’est envoyé : seulement l’année, la matière et les attentes choisies.",
     "previewIntro": "Voici exactement ce qui sera envoyé, avec vos précisions. Les noms connus sont remplacés par des marqueurs. La banque écrira seulement {token} à la place du prénom de l’élève.",
     "previewCheck": "Vérifiez qu’aucun nom ni aucun autre renseignement personnel ne reste dans vos précisions.",
-    "noteLimit": "Un titre suivi d’un nom que l’application ne connaît pas (« Mme Dupuis ») bloque l’envoi. Un nom sans titre (« Sophie ») ne le bloque pas : relisez vos précisions.",
+    "noteLimit": "Un titre suivi d’un nom que l’application ne connaît pas (« Mme Dupuis ») bloque l’envoi. Un nom sans titre (« Sophie ») ne le bloque pas, et l’application ne le liste pas toujours : relisez vos précisions.",
     "noteConfirm": "J’ai vérifié : mes précisions ne nomment personne et ne disent rien sur un élève en particulier.",
     "reviewNote": "Relisez chaque entrée avant de l’utiliser.",
     "job": {
@@ -3744,7 +3744,8 @@
       "pilote1": "la première version complète des conditions du projet pilote.",
       "pilote2": "l’application remplace seulement les noms qu’elle connaît (les élèves et le personnel de vos écoles) avant l’envoi à l’intelligence artificielle : retirez vous-même tout autre nom. L’avis précise aussi qui lit vos commentaires et comment IP Lynx accède aux données.",
       "pilote3": "les commentaires de bulletin restent sur votre appareil : ils ne sont jamais envoyés à nos serveurs ni à l’intelligence artificielle, et ils sont effacés à la déconnexion.",
-      "pilote4": "les messages Info-parents : l’application vous aide à préparer un message aux familles, sans jamais l’envoyer, et il est effacé avec les prénoms des élèves."
+      "pilote4": "les messages Info-parents : l’application vous aide à préparer un message aux familles, sans jamais l’envoyer, et il est effacé avec les prénoms des élèves.",
+      "pilote5": "les commentaires de bulletin sont effacés de votre appareil à la déconnexion ; sans déconnexion, seulement quand l’application s’ouvre de nouveau dans ce navigateur, pour une autre personne ou plus de 60 jours après la remise du bulletin."
     },
     "acceptUpdated": "Accepter les conditions",
     "later": "Plus tard",
@@ -3785,7 +3786,7 @@
       },
       "retention": {
         "title": "Combien de temps",
-        "body": "Par défaut, les prénoms des élèves et les messages Info-parents de la classe sont effacés un an après la fin de l’année scolaire (les unités et leçons restent). Les plans de suppléance sont effacés un an après leur date, le journal d’audit après deux ans, les commentaires après un an, une classe exemple après 60 jours et les copies de sauvegarde après 30 jours. Votre conseil peut demander d’autres durées. Les commentaires de bulletin sont effacés de votre appareil à la déconnexion, quand une autre personne se connecte sur ce navigateur, ou au plus tard 60 jours après la remise du bulletin."
+        "body": "Par défaut, les prénoms des élèves et les messages Info-parents de la classe sont effacés un an après la fin de l’année scolaire (les unités et leçons restent). Les plans de suppléance sont effacés un an après leur date, le journal d’audit après deux ans, les commentaires envoyés avec le bouton « Commentaires » après un an, une classe exemple après 60 jours et les copies de sauvegarde après 30 jours. Votre conseil peut demander d’autres durées. Les commentaires de bulletin sont effacés de votre appareil à la déconnexion. Sans déconnexion, ils le sont la première fois que l’application s’ouvre dans ce navigateur pour une autre personne, ou plus de 60 jours après la remise du bulletin ; un navigateur où l’application ne s’ouvre plus les garde jusqu’à ce que ses données soient effacées."
       },
       "rights": {
         "title": "Vos droits",
@@ -3848,10 +3849,10 @@
         "items": {
           "message": "« Info-parents » dans chaque classe : le message de la semaine aux familles, en français et en anglais, préparé à partir de votre planification et du calendrier. Vous le relisez, puis vous le copiez ou l’imprimez : l’application n’envoie rien aux familles.",
           "pdf": "« Imprimer (PDF) » : le message en français, en anglais ou dans les deux langues, une page par langue.",
-          "translate": "« Traduire en anglais (IA) » : l’anglais des paragraphes sans traduction à jour, après une vérification de ce qui est envoyé. Un paragraphe qui nomme, après un titre, une personne que l’application ne connaît pas n’est jamais envoyé.",
+          "translate": "« Traduire en anglais (IA) » : l’anglais des paragraphes sans traduction à jour, après une vérification de ce qui est envoyé. Un paragraphe où l’application reconnaît un titre suivi d’un nom qu’elle ne connaît pas (« Mme Dupuis ») n’est pas envoyé ; relisez tout de même le texte avant d’envoyer.",
           "typography": "« Corriger la typographie » : les espaces et les apostrophes du français, sans changer vos mots.",
           "today": "« Aujourd’hui » rappelle le message de la semaine pendant les deux derniers jours d’école, pour les classes qui utilisent Info-parents.",
-          "terms": "Les conditions du projet pilote parlent maintenant des messages Info-parents."
+          "terms": "Les conditions du projet pilote parlent maintenant des messages Info-parents, et disent plus précisément quand les commentaires de bulletin sont effacés de votre appareil."
         }
       },
       "v080": {
@@ -3859,7 +3860,7 @@
         "date": "Octobre 2026",
         "items": {
           "bank": "« Banque de commentaires de bulletin » dans la bibliothèque : des points forts et des prochaines étapes par attente et par niveau, avec la place du prénom de l’élève.",
-          "ai": "« Créer une banque avec l’IA » : une banque préparée à partir de l’année, de la matière et des attentes choisies seulement, jamais de renseignements sur vos élèves.",
+          "ai": "« Créer une banque de commentaires avec l’IA » : une banque préparée à partir de l’année, de la matière, des attentes choisies et de vos précisions, vérifiées avant l’envoi ; l’application n’y ajoute aucun renseignement sur vos élèves.",
           "composer": "« Bulletins » dans chaque classe : pour chaque élève, un niveau, des entrées de la banque et le commentaire à copier dans le bulletin officiel. Vos commentaires restent sur votre appareil.",
           "today": "« Aujourd’hui » rappelle la date de saisie de chaque bulletin, trois semaines avant.",
           "terms": "Les conditions du projet pilote précisent que les commentaires de bulletin restent sur votre appareil."
@@ -4196,7 +4197,7 @@
     "intro": "Pour chaque élève, choisissez un niveau et des entrées de la banque, ajustez le texte, puis copiez-le dans le bulletin officiel.",
     "failed": "Les données de cette classe n’ont pas pu être chargées. Réessayez dans un moment.",
     "notice": {
-      "body": "Vos commentaires restent sur cet appareil. Ils ne sont jamais envoyés à nos serveurs ni à l’intelligence artificielle. Ils seront effacés quand vous vous déconnecterez, ou au plus tard le {date}. Copiez-les dans le bulletin officiel.",
+      "body": "Vos commentaires restent sur cet appareil. Ils ne sont jamais envoyés à nos serveurs ni à l’intelligence artificielle. Ils sont effacés à la déconnexion, ou la première fois que l’application s’ouvre dans ce navigateur après le {date}. Copiez-les dans le bulletin officiel.",
       "bodyExpired": "Vos commentaires restent sur cet appareil et ne sont jamais envoyés à nos serveurs ni à l’intelligence artificielle. Cette période est terminée depuis plus de 60 jours : ce que vous écrivez ici n’est plus conservé. Copiez-le au fur et à mesure dans le bulletin officiel.",
       "shared": "Sur un ordinateur partagé, déconnectez-vous quand vous avez terminé.",
       "writeFailed": "L’espace de cet appareil est plein : copiez vos commentaires maintenant.",
@@ -4323,11 +4324,11 @@
     "help": {
       "summary": "Comment ça marche",
       "device": "Vos commentaires, vos niveaux, vos choix et vos notes restent dans le navigateur de cet appareil : rien n’est envoyé à nos serveurs ni à l’intelligence artificielle, et aucune intelligence artificielle ne lit un commentaire sur un élève.",
-      "name": "Le prénom n’est jamais enregistré avec le commentaire : l’appareil garde « {token} » à sa place et l’ajoute à l’affichage, à la copie et à l’impression (« d’Aïcha », « de Samuel »).",
+      "name": "Les prénoms des élèves de la classe ne sont pas enregistrés dans vos commentaires ni dans vos notes : l’appareil garde « {token} » à la place de celui de l’élève et une marque à la place de celui d’une ou d’un camarade, puis les remet à l’affichage, à la copie et à l’impression (« d’Aïcha », « de Samuel »). Un autre nom que vous tapez (celui d’un parent, un surnom) reste tel quel sur l’appareil.",
       "banks": "Les entrées viennent des banques de commentaires de la bibliothèque. Une banque approuvée par le conseil passe en premier ; un brouillon est à relire avant usage.",
       "taught": "Les attentes enseignées pendant la période viennent de vos unités et de vos leçons (« Couverture »). Les entrées liées aux autres attentes restent offertes, repliées.",
       "copy": "Copiez chaque commentaire dans le bulletin officiel de votre conseil : c’est lui qui fait foi. « Espaces simples à la copie » remplace les espaces insécables, que certains systèmes comptent mal.",
-      "erase": "Vos commentaires sont effacés de cet appareil à la déconnexion, quand une autre personne se connecte sur ce navigateur, et au plus tard 60 jours après la remise du bulletin. Ils ne vous suivent pas sur un autre appareil.",
+      "erase": "Vos commentaires sont effacés de cet appareil à la déconnexion. Sans déconnexion, ils le sont la première fois que l’application s’ouvre dans ce navigateur pour une autre personne, ou plus de 60 jours après la remise du bulletin (ou après la dernière des dates choisies). Un navigateur où l’application ne s’ouvre plus les garde : sur un ordinateur partagé, déconnectez-vous. Ils ne vous suivent pas sur un autre appareil.",
       "spellcheck": "Bon à savoir : la vérification orthographique avancée de certains navigateurs et certaines extensions envoient le texte que vous tapez à leur éditeur."
     }
   },
@@ -4456,7 +4457,7 @@
       "scope": "Paragraphes à traduire",
       "scopeMissing": "Seulement les paragraphes sans traduction à jour ({count})",
       "scopeAll": "Tout retraduire ({count})",
-      "upToDate": "Tous les paragraphes ont déjà une version anglaise à jour : rien n’est à traduire. Pour remplacer leur anglais par celui de l’IA, choisissez « Tout retraduire ».",
+      "upToDate": "Tous les paragraphes ont déjà une version anglaise à jour : il n’y a rien à traduire. Pour remplacer leur anglais par celui de l’IA, choisissez « Tout retraduire ».",
       "sentCount": "{count, plural, =0 {Aucun paragraphe ne sera envoyé.} one {# paragraphe sera envoyé.} other {# paragraphes seront envoyés.}}",
       "replacedCount": "{count, plural, =0 {Aucun nom à remplacer.} one {# nom remplacé.} other {# noms remplacés.}}",
       "sentText": "Texte envoyé",
@@ -4473,9 +4474,9 @@
         "titledName": "un nom que l’application ne connaît pas après un titre"
       },
       "nothingSent": "Aucun paragraphe ne peut être envoyé : écrivez l’anglais vous-même.",
-      "words": "Mots avec majuscule à vérifier : {words} — si l’un d’eux est le nom d’une personne (un parent, une ou un bénévole), retirez-le avant d’envoyer.",
+      "words": "Mots avec majuscule à vérifier : {words}. Si l’un d’eux est le nom d’une personne (un parent, une ou un bénévole), retirez-le avant d’envoyer.",
       "noWords": "Aucun mot avec majuscule à vérifier.",
-      "limit": "L’application ne bloque pas un nom écrit sans titre (« Sophie ») : elle le liste ci-dessus s’il commence par une majuscule. Relisez le texte.",
+      "limit": "L’application ne bloque pas un nom écrit sans titre (« Sophie ») : elle le liste ci-dessus s’il commence par une majuscule, mais pas toujours (« Noël » seul, par exemple). Relisez tout le texte.",
       "confirm": "J’ai vérifié : le texte ne nomme aucune autre personne que l’application ne connaît pas.",
       "send": "Envoyer à l’IA",
       "sending": "Envoi…",

@@ -237,10 +237,12 @@ test('newer terms show a banner and never block', async ({ page }) => {
     ).toBeVisible();
     // What changed, in one line, and « Plus tard »: back to the page, the banner still there.
     await expect(page.getByTestId('terms-change')).toContainText('Ce qui a changé');
-    // « Info-parents » (terms 2026-10-pilote-4, D-143).
-    await expect(page.getByTestId('terms-change')).toContainText('les messages Info-parents');
+    // When report card comments leave the device (terms 2026-10-pilote-5, D-144).
     await expect(page.getByTestId('terms-change')).toContainText(
-      'sans jamais l’envoyer, et il est effacé avec les prénoms des élèves.',
+      'les commentaires de bulletin sont effacés de votre appareil à la déconnexion',
+    );
+    await expect(page.getByTestId('terms-change')).toContainText(
+      'seulement quand l’application s’ouvre de nouveau dans ce navigateur, pour une autre personne ou plus de 60 jours après la remise du bulletin.',
     );
     await page.getByRole('link', { name: 'Plus tard', exact: true }).click();
     await expect(page).toHaveURL(/\/classes$/);

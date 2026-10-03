@@ -186,7 +186,7 @@
     "datesBoth": "Choose both the first and the last week, or neither.",
     "beforePeriodStart": "This date must come after the start of the period.",
     "reportBankNotTeaching": "A report card comment bank can’t be added to a lesson.",
-    "reportBankUnconfirmed": "Tick “I checked” to confirm that your details name no one.",
+    "reportBankUnconfirmed": "Tick “I checked” to confirm that your details name no one and say nothing about a particular student.",
     "newsletterWeek": "This week is not in the class’s school year.",
     "newsletterPurged": "The first names of this class’s students were erased: no message can be prepared for it any more.",
     "newsletterConflict": "A colleague edited this message in the meantime. Your changes stay on this device: reload the page to see their version, then make your changes again.",
@@ -2594,11 +2594,11 @@
     },
     "preview": "Check before sending",
     "previewTitle": "What will be sent to the AI",
-    "previewNoStudents": "No information about your students is sent: only the grade, the subject, the chosen expectations and your details.",
+    "previewNoStudents": "The app adds no information about your students: it sends only the grade, the subject, the chosen expectations and your details.",
     "previewNoStudentsNoNote": "No information about your students is sent: only the grade, the subject and the chosen expectations.",
     "previewIntro": "This is exactly what will be sent, with your details. Known names are replaced by markers. The bank will only write {token} in place of the student’s first name.",
     "previewCheck": "Check that no name or other personal information remains in your details.",
-    "noteLimit": "A title followed by a name the app does not know (“Mrs. Dupuis”) blocks the request. A name without a title (“Sophie”) does not: read your details over.",
+    "noteLimit": "A title followed by a name the app does not know (“Mrs. Dupuis”) blocks the request. A name without a title (“Sophie”) does not, and the app does not always list it: read your details over.",
     "noteConfirm": "I checked: my details name no one and say nothing about a particular student.",
     "reviewNote": "Review every entry before using it.",
     "job": {
@@ -3744,7 +3744,8 @@
       "pilote1": "the first complete version of the pilot project’s terms.",
       "pilote2": "the app replaces only the names it knows (your schools’ students and staff) before anything is sent to artificial intelligence: remove any other name yourself. The notice also says who reads your feedback and how IP Lynx accesses the data.",
       "pilote3": "report card comments stay on your device: they are never sent to our servers or to artificial intelligence, and they are erased when you sign out.",
-      "pilote4": "family newsletters: the app helps you prepare a message to families, never sends it, and erases it with the students’ first names."
+      "pilote4": "family newsletters: the app helps you prepare a message to families, never sends it, and erases it with the students’ first names.",
+      "pilote5": "report card comments are erased from your device when you sign out; without a sign-out, only when the app opens again in that browser, for someone else or more than 60 days after the report card goes home."
     },
     "acceptUpdated": "Accept the terms",
     "later": "Later",
@@ -3785,7 +3786,7 @@
       },
       "retention": {
         "title": "How long",
-        "body": "By default, students’ first names and the class’s family newsletters are erased one year after the end of the school year (units and lessons stay). Substitute plans are erased one year after their date, the audit log after two years, feedback after one year, a sample class after 60 days and backups after 30 days. Your board may ask for other periods. Report card comments are erased from your device when you sign out, when someone else signs in on that browser, or 60 days after the report card goes home at the latest."
+        "body": "By default, students’ first names and the class’s family newsletters are erased one year after the end of the school year (units and lessons stay). Substitute plans are erased one year after their date, the audit log after two years, feedback sent with the “Feedback” button after one year, a sample class after 60 days and backups after 30 days. Your board may ask for other periods. Report card comments are erased from your device when you sign out. Without a sign-out, they are erased the first time the app opens in that browser for someone else, or more than 60 days after the report card goes home; a browser in which the app no longer opens keeps them until its data is cleared."
       },
       "rights": {
         "title": "Your rights",
@@ -3848,10 +3849,10 @@
         "items": {
           "message": "“Family newsletter” in each class: the week’s message to families, in French and in English, prepared from your planning and the calendar. You read it over, then copy or print it: the app sends nothing to families.",
           "pdf": "“Print (PDF)”: the message in French, in English or in both languages, one page per language.",
-          "translate": "“Translate into English (AI)”: the English of the paragraphs without an up-to-date translation, after a check of what is sent. A paragraph that names, after a title, a person the app does not know is never sent.",
+          "translate": "“Translate into English (AI)”: the English of the paragraphs without an up-to-date translation, after a check of what is sent. A paragraph where the app recognizes a title followed by a name it does not know (“Mrs. Dupuis”) is not sent; still read the text over before sending.",
           "typography": "“Fix the typography”: French spaces and apostrophes, without changing your words.",
           "today": "“Today” reminds you of the week’s message on the last two school days, for the classes that use the family newsletter.",
-          "terms": "The pilot project’s terms now cover family newsletters."
+          "terms": "The pilot project’s terms now cover family newsletters, and say more precisely when report card comments are erased from your device."
         }
       },
       "v080": {
@@ -3859,7 +3860,7 @@
         "date": "October 2026",
         "items": {
           "bank": "“Report card comment bank” in the library: strengths and next steps by expectation and level, with a place for the student’s first name.",
-          "ai": "“Create a bank with AI”: a bank prepared from the grade, the subject and the chosen expectations only, never information about your students.",
+          "ai": "“Create a comment bank with AI”: a bank prepared from the grade, the subject, the chosen expectations and your details, checked before sending; the app adds no information about your students.",
           "composer": "“Report cards” in each class: for each student, a level, entries from the bank and the comment to copy into the official report card. Your comments stay on your device.",
           "today": "“Today” reminds you of each report card’s due date, three weeks ahead.",
           "terms": "The pilot project’s terms now say that report card comments stay on your device."
@@ -4196,7 +4197,7 @@
     "intro": "For each student, choose a level and entries from the bank, adjust the text, then copy it into the official report card.",
     "failed": "This class’s information could not be loaded. Try again in a moment.",
     "notice": {
-      "body": "Your comments stay on this device. They are never sent to our servers or to the AI. They will be erased when you sign out, or on {date} at the latest. Copy them into the official report card.",
+      "body": "Your comments stay on this device. They are never sent to our servers or to the AI. They are erased when you sign out, or the first time the app opens in this browser after {date}. Copy them into the official report card.",
       "bodyExpired": "Your comments stay on this device and are never sent to our servers or to the AI. This period ended more than 60 days ago: what you write here is no longer kept. Copy it into the official report card as you go.",
       "shared": "On a shared computer, sign out when you are done.",
       "writeFailed": "This device’s storage is full: copy your comments now.",
@@ -4323,11 +4324,11 @@
     "help": {
       "summary": "How it works",
       "device": "Your comments, levels, choices and notes stay in this device’s browser: nothing is sent to our servers or to the AI, and no AI reads a comment about a student.",
-      "name": "The first name is never stored with the comment: the device keeps “{token}” in its place and adds the name for display, copying and printing (« d’Aïcha », « de Samuel »).",
+      "name": "The first names of the class’s students are not stored in your comments or your notes: the device keeps “{token}” in place of the student’s and a marker in place of a classmate’s, then puts them back for display, copying and printing (« d’Aïcha », « de Samuel »). Any other name you type (a parent’s, a nickname) stays on the device as typed.",
       "banks": "Entries come from the library’s comment banks. A bank approved by the board comes first; a draft must be read before use.",
       "taught": "The expectations taught during the period come from your units and lessons (“Coverage”). Entries tied to other expectations are still offered, folded away.",
       "copy": "Copy each comment into your board’s official report card: that is the record. “Plain spaces when copying” replaces no-break spaces, which some systems count wrongly.",
-      "erase": "Your comments are erased from this device when you sign out, when someone else signs in on this browser, and 60 days after the report card goes home at the latest. They do not follow you to another device.",
+      "erase": "Your comments are erased from this device when you sign out. Without a sign-out, they are erased the first time the app opens in this browser for someone else, or more than 60 days after the report card goes home (or after the last of the chosen dates). A browser in which the app no longer opens keeps them: on a shared computer, sign out. They do not follow you to another device.",
       "spellcheck": "Good to know: some browsers’ enhanced spell check and some extensions send what you type to their maker."
     }
   },
@@ -4473,9 +4474,9 @@
         "titledName": "a name the app does not know after a title"
       },
       "nothingSent": "No paragraph can be sent: write the English yourself.",
-      "words": "Capitalized words to check: {words} — if one of them is a person’s name (a parent, a volunteer), remove it before sending.",
+      "words": "Capitalized words to check: {words}. If one of them is a person’s name (a parent, a volunteer), remove it before sending.",
       "noWords": "No capitalized word to check.",
-      "limit": "The app does not block a name written without a title (“Sophie”): it lists it above when it starts with a capital letter. Read the text over.",
+      "limit": "The app does not block a name written without a title (“Sophie”): it lists it above when it starts with a capital letter, but not always (“Noël” alone, for example). Read the whole text over.",
       "confirm": "I checked: the text names no other person the app does not know.",
       "send": "Send to AI",
       "sending": "Sending…",
