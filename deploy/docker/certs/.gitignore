@@ -1,0 +1,4 @@
+# Supabase's certificate authority (hosted installs; DEPLOYMENT.md), mounted read-only at
+# /certs in the web, worker, migrate and backup containers. Never committed.
+*
+!.gitignore

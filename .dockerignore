@@ -1,0 +1,20 @@
+# What the image builds (deploy/docker/Dockerfile) never see: dependencies and builds (made inside),
+# local data, reports, the marketing material, and every environment file with real values.
+**/node_modules
+**/.next
+**/*.tsbuildinfo
+.git
+.github
+.claude
+marketing
+tools/lite-stack/.data
+tools/lite-stack/.bin
+supabase/.temp
+supabase/.branches
+**/playwright-report
+**/test-results
+packages/ai/eval-results
+backups
+deploy/docker/certs
+**/*.env*
+!.env.example

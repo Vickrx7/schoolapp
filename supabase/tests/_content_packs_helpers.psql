@@ -1,0 +1,182 @@
+-- Content pack fixtures (Phase 5, format v1; DECISIONS D-099, D-100). Included with \ir after
+-- _helpers.psql and after tests.build_library_fixture(), inside the test's transaction;
+-- everything here is rolled back afterwards. (The .psql extension keeps pg_prove from running it
+-- on its own.)
+--
+-- The database never recomputes an item's hash (the CLI checks it with @lynx/content); it
+-- recomputes the file's checksum from the staged keys and hashes. So the fixtures' hashes are
+-- SHA-256 of the item's JSON text, and the checksum follows packChecksum's rule.
+
+-- An item with its `hash` set from the rest of it.
+create function tests.pack_rehash(p_item jsonb)
+returns jsonb
+language sql
+as $$
+  select (p_item - 'hash')
+    || jsonb_build_object('hash', encode(sha256(convert_to((p_item - 'hash')::text, 'UTF8')), 'hex'));
+$$;
+
+-- A pack item for board A's test curriculum: Français, 3e année, the attente T1.2 (exp_a,
+-- curriculum version « test »), a duration, materials and a keyword, a base version, a key for
+-- the types that need one, and a version for every default board level for the types that need
+-- them for approval. `p_extra` replaces fields (then the hash is recomputed).
+create function tests.pack_item(
+  p_key text,
+  p_type text,
+  p_extra jsonb default '{}'::jsonb
+)
+returns jsonb
+language plpgsql
+as $$
+declare
+  v_keyed boolean := p_type in ('quiz', 'unit_test', 'diagnostic', 'exit_ticket', 'riddle');
+  v_levels text[] := case when p_type in ('reading_passage', 'worksheet', 'exit_ticket', 'quiz')
+    then array['debutant', 'intermediaire', 'avance', 'enrichi'] else '{}'::text[] end;
+  v_versions jsonb;
+begin
+  select jsonb_agg(jsonb_build_object(
+      'level', l.code, 'schemaVersion', 1,
+      'content', jsonb_build_object('title', '', 'objective', 'Trouver l’idée principale.',
+        'teacherNote', '', 'text', 'Le huard vit sur les lacs (' || coalesce(l.code, 'base') || ').'),
+      'answerKey', case when v_keyed then '{"answers": [], "solution": ""}'::jsonb end)
+    order by l.n)
+  into v_versions
+  from unnest(array[null::text] || v_levels) with ordinality l (code, n);
+  return tests.pack_rehash(jsonb_build_object(
+    'key', p_key,
+    'type', p_type,
+    'title', 'Ressource du paquet ' || p_key,
+    'summary', '',
+    'gradeCodes', jsonb_build_array('3'),
+    'subjectCode', 'fra',
+    'expectations', jsonb_build_array(jsonb_build_object('curriculumVersion', 'test',
+      'gradeCode', '3', 'code', 'T1.2')),
+    'durationMinutes', 20,
+    'materials', 'Crayons et feuilles',
+    'keywords', 'lecture',
+    'formats', jsonb_build_object('printable', true, 'projectable', true, 'interactive', false),
+    'safetyNotes', case when p_type in ('experiment', 'stem_challenge') then tests.safety_notes() end,
+    'faith', jsonb_build_object('faithContent', false, 'catholicConnection', '', 'reference', null,
+      'onStudentSheet', false),
+    'tags', '[]'::jsonb,
+    'licence', '',
+    'noDerivatives', false,
+    'provenance', jsonb_build_object('source', 'board_created', 'promptVersion', null, 'model', null),
+    'versions', v_versions) || p_extra);
+end;
+$$;
+
+-- packChecksum's rule: SHA-256 of the sorted « key hash » lines, joined with a line feed.
+create function tests.pack_checksum(p_items jsonb)
+returns text
+language sql
+as $$
+  select encode(sha256(convert_to(string_agg(line, E'\n' order by line collate "C"), 'UTF8')), 'hex')
+  from (select (x ->> 'key') || ' ' || (x ->> 'hash') as line from jsonb_array_elements(p_items) x) l;
+$$;
+
+-- The file without its items, for `content_pack_stage`: publisher « Éditeur de test », licence,
+-- the declared tags, and the checksum of `p_items`.
+create function tests.pack_header(
+  p_slug text,
+  p_version text,
+  p_items jsonb,
+  p_tags jsonb default '[]'::jsonb,
+  p_no_derivatives boolean default false
+)
+returns jsonb
+language sql
+as $$
+  select jsonb_build_object(
+    'format', 'lynx-content-pack',
+    'formatVersion', 1,
+    'pack', jsonb_build_object('slug', p_slug, 'version', p_version,
+      'title', 'Paquet de test ' || p_slug, 'publisher', 'Éditeur de test',
+      'licence', 'Licence de test', 'noDerivatives', p_no_derivatives,
+      'createdAt', '2026-11-01T12:00:00.000Z', 'contentSchemaVersion', 1),
+    'levels', '[]'::jsonb,
+    'tags', p_tags,
+    'catholicReferences', '[]'::jsonb,
+    'checksum', tests.pack_checksum(p_items));
+$$;
+
+-- Stages a pack for a board as the CLI does (the header, then the items 50 at a time), as the
+-- current role. Returns the import's id.
+create function tests.stage_pack(
+  p_board text,
+  p_slug text,
+  p_version text,
+  p_items jsonb,
+  p_tags jsonb default '[]'::jsonb,
+  p_faith_keys text[] default '{}'
+)
+returns uuid
+language plpgsql
+as $$
+declare
+  v_import uuid := public.content_pack_stage(tests.id(p_board),
+    tests.pack_header(p_slug, p_version, p_items, p_tags), repeat('ab', 32));
+  v_chunk integer := 0;
+begin
+  while v_chunk * 50 < jsonb_array_length(p_items) loop
+    perform public.content_pack_stage_items(v_import,
+      (select jsonb_agg(x order by n) from jsonb_array_elements(p_items) with ordinality e (x, n)
+       where n > v_chunk * 50 and n <= (v_chunk + 1) * 50),
+      p_faith_keys);
+    v_chunk := v_chunk + 1;
+  end loop;
+  return v_import;
+end;
+$$;
+
+-- The items of a report (preview or apply): key, outcome, whether queued and approved.
+create function tests.pack_outcomes(p_report jsonb)
+returns table (key text, outcome text, queued boolean, approved boolean)
+language sql
+as $$
+  select x ->> 'key', x ->> 'outcome', (x ->> 'queued')::boolean, (x ->> 'approved')::boolean
+  from jsonb_array_elements(p_report -> 'items') x;
+$$;
+
+-- The warnings of one item of a report.
+create function tests.pack_warnings(p_report jsonb, p_key text)
+returns text[]
+language sql
+as $$
+  select array(select jsonb_array_elements_text(x -> 'warnings'))
+  from jsonb_array_elements(p_report -> 'items') x
+  where x ->> 'key' = p_key;
+$$;
+
+-- The board's item imported with a key from a pack.
+create function tests.pack_item_id(p_slug text, p_key text, p_board text default 'board_a')
+returns uuid
+language sql
+as $$
+  select id from public.library_items
+  where board_id = tests.id(p_board) and pack_slug = p_slug and pack_item_key = p_key;
+$$;
+
+-- Saves a report in pg_temp, so later assertions can read it (results of functions that write
+-- cannot be re-run inside a test's query).
+create table pg_temp.pack_reports (name text primary key, report jsonb not null);
+
+create function tests.keep_report(p_name text, p_report jsonb)
+returns jsonb
+language sql
+as $$
+  insert into pg_temp.pack_reports (name, report) values (p_name, p_report) returning report;
+$$;
+
+create function tests.report(p_name text)
+returns jsonb
+language sql
+as $$
+  select report from pg_temp.pack_reports where name = p_name;
+$$;
+
+grant execute on all functions in schema tests to anon, authenticated;
+grant usage on schema tests to service_role;
+grant select, insert on tests.ids to service_role;
+grant execute on all functions in schema tests to service_role;
+grant all on pg_temp.pack_reports to service_role;

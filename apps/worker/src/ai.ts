@@ -2,9 +2,9 @@
  * Runs AI jobs requested through public.request_ai_job. The worker is the only place that
  * holds the provider key and the only writer of ai_generations (usage and cost).
  *
- * Privacy: the job input can name students. It is de-identified here with the whole school's
- * roster before anything is sent, and the run is refused if a personal detail remains (see
- * packages/ai/src/privacy.ts). Logs never contain inputs or answers.
+ * Privacy: the job input can name students. It is de-identified here with the roster of every
+ * school the requester works in before anything is sent, and the run is refused if a personal
+ * detail remains (see packages/ai/src/privacy.ts). Logs never contain inputs or answers.
  */
 import {
   createAnthropicProvider,
@@ -18,8 +18,18 @@ import {
   type ModelPrice,
 } from '@lynx/ai';
 import type { WorkerEnv } from '@lynx/config';
+import { scrubError } from '@lynx/observability';
 import type { Pool } from 'pg';
 import type { Logger } from './logger';
+
+/**
+ * The longest one job may take, every attempt included. It stays under the 15 minutes after
+ * which app.ai_jobs_maintenance fails a job still 'running' (a crashed worker).
+ */
+export const AI_JOB_TIMEOUT_MS = 13 * 60_000;
+
+/** Only `query` is used, so a client inside a transaction works too (tests). */
+type Db = Pick<Pool, 'query'>;
 
 export interface AiRuntime {
   provider: AiProvider;
@@ -36,6 +46,7 @@ export function createAiRuntime(env: WorkerEnv): AiRuntime | null {
           apiKey: env.ANTHROPIC_API_KEY,
           model: env.AI_MODEL,
           effort: env.AI_EFFORT,
+          timeoutMs: AI_JOB_TIMEOUT_MS,
         });
   const price = priceFor(provider.model, {
     input: env.AI_PRICE_INPUT_PER_MTOK,
@@ -53,32 +64,84 @@ interface JobRow {
   input: unknown;
 }
 
-/** Students and staff of the school, plus the requester: nobody here may leave Canada. */
+/**
+ * Everyone whose name may not leave Canada: students and people with a role in the job's school
+ * and in every other school where the requester holds a role, board-level staff of those
+ * boards, everyone in the boards the requester administers, and the requester.
+ *
+ * This must never be narrower than what the requester can see, because the web preview
+ * de-identifies with that (their classes' students and their colleagues, in every school, under
+ * RLS): a name the preview shows as replaced has to be replaced here too.
+ */
 export async function loadKnownPeople(
-  pool: Pool,
+  db: Db,
   schoolId: string,
   userId: string,
 ): Promise<KnownPerson[]> {
-  const { rows } = await pool.query<{ name: string; kind: 'student' | 'staff' }>(
-    `select s.first_name as name, 'student' as kind
+  const { rows } = await db.query<{ name: string; kind: 'student' | 'staff' }>(
+    `with my_schools as (
+       select $1::uuid as school_id
+       union
+       select ur.school_id from public.user_roles ur
+        where ur.user_id = $2 and ur.school_id is not null
+     ),
+     my_boards as (
+       select s.board_id from public.schools s where s.id in (select school_id from my_schools)
+       union
+       select ur.board_id from public.user_roles ur where ur.user_id = $2
+     ),
+     admin_boards as (
+       select ur.board_id from public.user_roles ur
+        where ur.user_id = $2 and ur.role = 'board_admin'
+     )
+     select s.first_name as name, 'student' as kind
        from public.students s
        join public.classes c on c.id = s.class_id
-      where c.school_id = $1
+      where c.school_id in (select school_id from my_schools)
      union
      select u.display_name, 'staff'
        from public.users u
        join public.user_roles ur on ur.user_id = u.id
-      where ur.school_id = $1
-         or (ur.school_id is null and ur.board_id = (select board_id from public.schools where id = $1))
+      where ur.school_id in (select school_id from my_schools)
+         or (ur.school_id is null and ur.board_id in (select board_id from my_boards))
+         or ur.board_id in (select board_id from admin_boards)
      union
-     select u.display_name, 'staff' from public.users u where u.id = $2`,
+     select u.display_name, 'staff' from public.users u where u.id = $2
+     -- A stable order; students first, so a name that is both is marked as a student.
+     order by kind desc, name`,
     [schoolId, userId],
   );
   return rows;
 }
 
+/**
+ * Everyone of a board (bulk generation, DECISIONS D-098): every student of its schools, and every
+ * person with a role at the board or at one of its schools. Bulk requests belong to no school, so
+ * their de-identification and last check use the whole board: a name that anyone of the board
+ * has never leaves, and is never put back from a marker it did not produce.
+ */
+export async function loadBoardPeople(db: Db, boardId: string): Promise<KnownPerson[]> {
+  const { rows } = await db.query<{ name: string; kind: 'student' | 'staff' }>(
+    `select s.first_name as name, 'student' as kind
+       from public.students s
+       join public.classes c on c.id = s.class_id
+       join public.schools sc on sc.id = c.school_id
+      where sc.board_id = $1
+     union
+     select u.display_name, 'staff'
+       from public.users u
+       join public.user_roles ur on ur.user_id = u.id
+      where ur.board_id = $1
+         or ur.school_id in (select sc.id from public.schools sc where sc.board_id = $1)
+     -- A stable order; students first, so a name that is both is marked as a student.
+     order by kind desc, name`,
+    [boardId],
+  );
+  return rows;
+}
+
 async function finishJob(
-  pool: Pool,
+  pool: Db,
   jobId: string,
   fields: {
     status: 'succeeded' | 'failed';
@@ -106,7 +169,7 @@ async function finishJob(
 
 export async function runAiJob(
   jobId: string,
-  deps: { pool: Pool; ai: AiRuntime | null; logger: Logger },
+  deps: { pool: Db; ai: AiRuntime | null; logger: Logger },
 ): Promise<void> {
   const { pool, ai, logger } = deps;
   // Claim the job; a retry of an already handled event finds nothing to do.
@@ -129,14 +192,27 @@ export async function runAiJob(
       await finishJob(pool, job.id, { status: 'failed', errorCode: 'aiUnavailable' });
       return;
     }
+    // Board settings are read the way request_ai_job reads them (a bad value means the default).
     const school = await pool.query<{ ai_enabled: boolean }>(
-      `select s.ai_enabled and coalesce((b.settings -> 'ai' ->> 'allowed')::boolean, true) as ai_enabled
+      `select s.ai_enabled and a.allowed as ai_enabled
          from public.schools s join public.boards b on b.id = s.board_id
+         cross join app.board_ai_settings(b.settings) a
         where s.id = $1`,
       [job.school_id],
     );
     if (!school.rows[0]?.ai_enabled) {
       await finishJob(pool, job.id, { status: 'failed', errorCode: 'aiDisabled' });
+      return;
+    }
+    // The budget was checked when the job was requested, but jobs queued or running at the same
+    // time may have used it up since: spending is recorded only after each call. This check is
+    // what limits them.
+    const budget = await pool.query<{ available: boolean }>(
+      'select available from app.ai_budget_status($1)',
+      [job.school_id],
+    );
+    if (!budget.rows[0]?.available) {
+      await finishJob(pool, job.id, { status: 'failed', errorCode: 'aiBudgetReached' });
       return;
     }
 
@@ -151,6 +227,7 @@ export async function runAiJob(
       systemPrompt,
       input: job.input,
       people,
+      timeoutMs: AI_JOB_TIMEOUT_MS,
     });
 
     // Usage is recorded whenever something was sent: failed calls cost money too.
@@ -202,10 +279,7 @@ export async function runAiJob(
       problems: run.problems,
     });
   } catch (error) {
-    logger.error('ai job crashed', {
-      jobId: job.id,
-      error: error instanceof Error ? error.message : String(error),
-    });
+    logger.error('ai job crashed', { jobId: job.id, error: scrubError(error) });
     await finishJob(pool, job.id, { status: 'failed', errorCode: 'aiError' }).catch(
       () => undefined,
     );

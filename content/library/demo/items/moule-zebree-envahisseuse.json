@@ -1,0 +1,1072 @@
+{
+  "slug": "moule-zebree-envahisseuse",
+  "type": "reading_passage",
+  "title": "La moule zébrée, une petite envahisseuse",
+  "summary": "Texte informatif de six paragraphes sur la moule zébrée dans les Grands Lacs : son arrivée, sa reproduction rapide et ses effets en chaîne sur les lacs, les villes et les poissons. Des questions pour faire des inférences sur les liens de cause à effet. Quatre versions selon le niveau de langue.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["5"],
+  "subjectCode": "fra",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "C2.3"
+    }
+  ],
+  "durationMinutes": 40,
+  "materials": "Une copie du texte par élève, dans la version prévue pour son groupe; un crayon.",
+  "keywords": "moule zébrée, espèce envahissante, Grands Lacs, eau de ballast, cause et conséquence, inférence, texte informatif, sciences, environnement",
+  "tags": ["lecture", "sciences", "ontario", "animaux"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je fais des inférences à partir d’indices du texte pour dégager des liens de cause à effet.",
+        "teacherNote": "Les quatre versions ont les mêmes six paragraphes et les mêmes liens de cause à effet. Avant la lecture, tracez au tableau une chaîne vide (cause → conséquence → conséquence) que la classe remplira avec la question 5. Le texte fait un lien avec les sciences (écosystèmes, eau) et avec l’éducation environnementale. Faits à vérifier avant l’utilisation en classe : l’origine de la moule zébrée (région de la mer Noire et de la mer Caspienne); son arrivée probable dans l’eau de ballast des navires; sa découverte dans le lac Sainte-Claire en 1988 et sa présence dans les cinq Grands Lacs quelques années plus tard; une femelle peut pondre des centaines de milliers d’œufs par année (souvent cité : jusqu’à un million); une moule filtre environ un litre d’eau par jour; le message « nettoyer, vider, sécher » pour les embarcations.",
+        "text": "1. Elle n’est pas plus grande que l’ongle de ton pouce, et pourtant, elle cause d’énormes problèmes dans les Grands Lacs. La moule zébrée est un petit mollusque dont la coquille est rayée de bandes pâles et foncées, comme le pelage d’un zèbre. Elle ne vient pas d’ici : elle vivait à l’origine dans la région de la mer Noire et de la mer Caspienne, entre l’Europe et l’Asie.\n\n2. Comment est-elle arrivée jusqu’en Ontario? Les scientifiques pensent qu’elle a voyagé dans l’eau de ballast de grands navires venus d’Europe. Pour rester stables, ces navires remplissent des réservoirs d’eau dans un port, puis les vident dans un autre port, parfois à l’autre bout du monde. Des larves de moules, trop petites pour être vues, se trouvaient dans cette eau. En 1988, on a découvert des moules zébrées dans le lac Sainte-Claire, entre le lac Huron et le lac Érié. En quelques années, elles se sont répandues dans tous les Grands Lacs.\n\n3. Pourquoi la moule zébrée se répand-elle si facilement? D’abord, elle se reproduit très vite : une seule femelle peut pondre des centaines de milliers d’œufs par année. Ensuite, elle a peu d’ennemis dans les Grands Lacs, parce que les animaux d’ici ne la connaissaient pas. Enfin, elle s’accroche solidement à toutes les surfaces dures grâce à de minces filaments : roches, quais, coques de bateaux et même d’autres moules.\n\n4. Ces petites moules ont de grosses conséquences. Elles s’entassent par milliers dans les tuyaux qui pompent l’eau des lacs vers les villes et les centrales électriques, jusqu’à les boucher. Il faut alors dépenser beaucoup d’argent pour les nettoyer. Les moules zébrées se fixent aussi sur les moules d’eau douce d’ici. Recouvertes, ces moules ne peuvent plus s’ouvrir assez pour se nourrir, et beaucoup finissent par mourir. Sur les plages, les coquilles tranchantes des moules zébrées peuvent même couper les pieds des baigneuses et des baigneurs.\n\n5. Chaque moule zébrée filtre environ un litre d’eau par jour pour se nourrir de minuscules algues. Résultat : dans certaines parties des lacs, l’eau est devenue beaucoup plus claire. Cela peut sembler une bonne nouvelle, mais ce n’est pas si simple. Comme les moules mangent une grande partie des algues, il en reste moins pour les petits animaux qui s’en nourrissent. Or, ces petits animaux sont la nourriture de nombreux jeunes poissons. De plus, la lumière du soleil descend maintenant plus profondément dans l’eau, ce qui change la vie des plantes du fond.\n\n6. Pour empêcher la moule zébrée d’envahir d’autres lacs, chaque personne peut aider. Avant de transporter un bateau, un canot ou un kayak d’un lac à un autre, il faut le nettoyer, le vider de son eau et le laisser sécher. Un petit geste peut protéger tout un lac!",
+        "glossary": [
+          {
+            "term": "un mollusque",
+            "definition": "Un animal au corps mou, souvent protégé par une coquille, comme la moule ou l’escargot."
+          },
+          {
+            "term": "l’eau de ballast",
+            "definition": "L’eau qu’un navire pompe dans ses réservoirs pour rester stable, puis qu’il rejette ailleurs."
+          },
+          {
+            "term": "une larve",
+            "definition": "La forme très jeune d’un animal, qui ne ressemble pas encore à l’adulte."
+          },
+          {
+            "term": "un filament",
+            "definition": "Un fil très fin."
+          },
+          {
+            "term": "une centrale électrique",
+            "definition": "Une grande installation qui produit de l’électricité."
+          },
+          {
+            "term": "filtrer",
+            "definition": "Faire passer un liquide à travers quelque chose qui retient les petites particules."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "matching",
+            "prompt": "Associe chaque cause à sa conséquence. Une conséquence est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "left": [
+              {
+                "id": "c1",
+                "text": "Les moules s’entassent dans les tuyaux."
+              },
+              {
+                "id": "c2",
+                "text": "Les moules filtrent beaucoup d’eau."
+              },
+              {
+                "id": "c3",
+                "text": "Les moules se fixent sur les moules d’ici."
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "Les moules d’eau douce d’ici ne peuvent plus se nourrir."
+              },
+              {
+                "id": "rb",
+                "text": "Les villes doivent payer pour nettoyer les tuyaux."
+              },
+              {
+                "id": "rc",
+                "text": "Les poissons deviennent plus gros."
+              },
+              {
+                "id": "rd",
+                "text": "L’eau des lacs devient plus claire."
+              }
+            ]
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Selon le paragraphe 3, pourquoi la moule zébrée se répand-elle si facilement? Donne deux raisons.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 3
+          },
+          {
+            "id": "q3",
+            "kind": "multiple_choice",
+            "prompt": "D’après le paragraphe 2, comment la moule zébrée a-t-elle pu traverser l’océan sans que personne la remarque?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "c",
+                "text": "Des scientifiques l’ont apportée pour nettoyer les lacs."
+              },
+              {
+                "id": "a",
+                "text": "Ses larves, trop petites pour être vues, voyageaient dans l’eau de ballast des navires."
+              },
+              {
+                "id": "d",
+                "text": "Des oiseaux l’ont transportée dans leurs plumes."
+              },
+              {
+                "id": "b",
+                "text": "Elle a nagé derrière les navires."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "Selon le texte, une eau plus claire est toujours une bonne nouvelle pour le lac.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes"
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Explique comment une moule qui mange des algues peut, sans le vouloir, nuire aux jeunes poissons. Utilise au moins une fois « parce que » ou « donc ».",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 4
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Tu as fait du canot au lac Érié pendant la fin de semaine. La semaine prochaine, tu iras pagayer sur un petit lac du Nord de l’Ontario. Que faut-il faire avec le canot avant de partir, et pourquoi?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 4
+          }
+        ],
+        "visualSupports": [
+          "Une carte des Grands Lacs où l’on situe le lac Sainte-Claire, entre le lac Huron et le lac Érié.",
+          "Une photo de moules zébrées accrochées à une roche ou à un tuyau, à côté d’une pièce de monnaie pour montrer leur taille.",
+          "Une chaîne de causes et de conséquences à remplir au tableau pendant la lecture.",
+          "L’affiche « Nettoyer, vider, sécher » d’un programme de lutte contre les espèces envahissantes, si vous en avez une."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "c1",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "c2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "c3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "Paragraphes 4 et 5. La phrase « Les poissons deviennent plus gros » est de trop : le texte laisse plutôt comprendre que les jeunes poissons trouvent moins de nourriture."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "Elle se reproduit très vite : une femelle peut pondre des centaines de milliers d’œufs par année. De plus, elle a peu d’ennemis dans les Grands Lacs.",
+            "acceptableAnswers": [],
+            "explanation": "Trois raisons possibles : elle se reproduit très vite; elle a peu d’ennemis; elle s’accroche à toutes les surfaces dures. Deux sont attendues."
+          },
+          {
+            "questionId": "q3",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Paragraphe 2 : les larves, trop petites pour être vues, se trouvaient dans l’eau de ballast. Les autres choix ne sont pas dans le texte."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : le paragraphe 5 dit que « ce n’est pas si simple » : l’eau est plus claire parce que les algues ont été mangées, et il reste moins de nourriture pour les petits animaux et les jeunes poissons."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "Les moules mangent beaucoup d’algues, donc il en reste moins pour les petits animaux. Les jeunes poissons ont moins à manger parce que ces petits animaux sont leur nourriture.",
+            "acceptableAnswers": [],
+            "explanation": "Inférence : le texte ne dit pas en une seule phrase que les moules nuisent aux poissons. L’élève doit relier trois maillons : moins d’algues → moins de petits animaux → moins de nourriture pour les jeunes poissons."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Il faut nettoyer le canot, le vider de son eau et le laisser sécher, parce que des moules zébrées ou leurs larves invisibles pourraient être dessus ou dans l’eau et envahir le petit lac.",
+            "acceptableAnswers": [],
+            "explanation": "Attendu : les trois gestes (nettoyer, vider, sécher) et la raison. Le lien avec les larves invisibles (paragraphe 2) est une inférence de plus."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "debutant",
+      "content": {
+        "title": "",
+        "objective": "Je fais des inférences à partir d’indices du texte pour dégager des liens de cause à effet.",
+        "teacherNote": "Version Débutant : phrases courtes, une idée par phrase, vocabulaire fréquent. La question 3 a trois choix, et les questions 2, 5 et 6 ont un indice. Les quatre versions ont les mêmes six paragraphes et les mêmes liens de cause à effet.",
+        "text": "1. La moule zébrée est un petit animal. Elle est aussi petite que l’ongle de ton pouce. Sa coquille a des bandes pâles et foncées, comme un zèbre. La moule zébrée ne vient pas de l’Ontario. Elle vient d’une région loin d’ici, entre l’Europe et l’Asie.\n\n2. Comment est-elle arrivée ici? De grands bateaux ont traversé l’océan. Ces bateaux avaient des réservoirs pleins d’eau. Dans cette eau, il y avait des bébés moules. Ils étaient trop petits pour être vus. Les bateaux ont vidé leur eau dans les Grands Lacs. En 1988, on a trouvé des moules zébrées dans le lac Sainte-Claire. Quelques années plus tard, il y en avait dans tous les Grands Lacs.\n\n3. La moule zébrée se répand très vite. Pourquoi? D’abord, une seule moule peut pondre beaucoup d’œufs. Ensuite, peu d’animaux d’ici la mangent. Enfin, elle s’accroche partout : sur les roches, sur les quais, sur les bateaux et même sur d’autres moules.\n\n4. Les moules zébrées causent des problèmes. Elles bouchent les tuyaux qui amènent l’eau des lacs vers les villes. Les villes doivent payer pour nettoyer les tuyaux. Les moules zébrées se collent aussi sur les moules d’ici. Les moules d’ici ne peuvent plus manger. Beaucoup meurent. Sur les plages, les coquilles coupent parfois les pieds.\n\n5. Chaque moule zébrée filtre environ un litre d’eau par jour. Elle mange de toutes petites algues. Alors, l’eau du lac devient plus claire. Mais attention! Les petits animaux du lac mangent aussi ces algues. Il reste moins d’algues pour eux. Et les jeunes poissons mangent ces petits animaux.\n\n6. Comment aider? Avant d’aller dans un autre lac, il faut nettoyer le bateau, le canot ou le kayak. Il faut le vider de son eau. Il faut le laisser sécher. Un petit geste peut protéger tout un lac!",
+        "glossary": [
+          {
+            "term": "une coquille",
+            "definition": "La partie dure qui protège le corps de la moule."
+          },
+          {
+            "term": "un réservoir",
+            "definition": "Un grand contenant pour garder de l’eau."
+          },
+          {
+            "term": "se répandre",
+            "definition": "Aller partout, à beaucoup d’endroits."
+          },
+          {
+            "term": "les algues",
+            "definition": "De toutes petites plantes qui vivent dans l’eau."
+          },
+          {
+            "term": "filtrer",
+            "definition": "Faire passer l’eau pour garder ce qu’il y a dedans."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "matching",
+            "prompt": "Relie chaque cause à sa conséquence. Une conséquence est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "left": [
+              {
+                "id": "c1",
+                "text": "Les moules bouchent les tuyaux."
+              },
+              {
+                "id": "c2",
+                "text": "Les moules filtrent beaucoup d’eau."
+              },
+              {
+                "id": "c3",
+                "text": "Les moules se collent sur les moules d’ici."
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "Les moules d’ici ne peuvent plus manger."
+              },
+              {
+                "id": "rb",
+                "text": "Les villes doivent payer pour nettoyer."
+              },
+              {
+                "id": "rc",
+                "text": "Les poissons deviennent plus gros."
+              },
+              {
+                "id": "rd",
+                "text": "L’eau du lac devient plus claire."
+              }
+            ]
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Pourquoi la moule zébrée se répand-elle très vite? Donne une raison.",
+            "hint": "Relis le paragraphe 3.",
+            "points": null,
+            "category": "connaissance",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "multiple_choice",
+            "prompt": "Comment les bébés moules sont-ils arrivés dans les Grands Lacs?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "b",
+                "text": "Ils ont nagé à travers l’océan."
+              },
+              {
+                "id": "a",
+                "text": "Ils étaient dans l’eau des réservoirs des bateaux."
+              },
+              {
+                "id": "c",
+                "text": "Des oiseaux les ont apportés."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "Selon le texte, une eau plus claire est toujours une bonne nouvelle pour le lac.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes"
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Les moules mangent des algues. Pourquoi est-ce un problème pour les jeunes poissons?",
+            "hint": "Commence par : « Les moules mangent les algues, donc… ».",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Tu vas pagayer dans un autre lac. Que faut-il faire avec le canot avant de partir?",
+            "hint": "Relis le paragraphe 6. Il y a trois gestes.",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          }
+        ],
+        "visualSupports": [
+          "Une carte des Grands Lacs où l’on situe le lac Sainte-Claire, entre le lac Huron et le lac Érié.",
+          "Une photo de moules zébrées accrochées à une roche ou à un tuyau, à côté d’une pièce de monnaie pour montrer leur taille.",
+          "Une chaîne de causes et de conséquences à remplir au tableau pendant la lecture.",
+          "L’affiche « Nettoyer, vider, sécher » d’un programme de lutte contre les espèces envahissantes, si vous en avez une."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "c1",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "c2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "c3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "« Les poissons deviennent plus gros » est de trop : les jeunes poissons ont plutôt moins à manger."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "Une seule moule peut pondre beaucoup d’œufs.",
+            "acceptableAnswers": [],
+            "explanation": "Raisons possibles : elle pond beaucoup d’œufs; peu d’animaux la mangent; elle s’accroche partout."
+          },
+          {
+            "questionId": "q3",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Paragraphe 2 : les bébés moules étaient dans l’eau des réservoirs, et les bateaux ont vidé cette eau dans les Grands Lacs."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : l’eau est plus claire parce que les algues ont été mangées, et il en reste moins pour les petits animaux."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "Les moules mangent les algues, donc les petits animaux ont moins à manger. Les jeunes poissons ont alors moins de petits animaux à manger.",
+            "acceptableAnswers": [],
+            "explanation": "Attendu : la chaîne moins d’algues → moins de petits animaux → moins de nourriture pour les jeunes poissons. Accepter une chaîne à deux maillons avec aide."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Il faut nettoyer le canot, le vider de son eau et le laisser sécher.",
+            "acceptableAnswers": [],
+            "explanation": "Les trois gestes du paragraphe 6."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "intermediaire",
+      "content": {
+        "title": "",
+        "objective": "Je fais des inférences à partir d’indices du texte pour dégager des liens de cause à effet.",
+        "teacherNote": "Version Intermédiaire : phrases simples ou composées, quelques mots nouveaux expliqués dans le glossaire, et des indices pour les questions 2, 5 et 6. Les quatre versions ont les mêmes six paragraphes et les mêmes liens de cause à effet.",
+        "text": "1. Elle n’est pas plus grande que l’ongle de ton pouce, et pourtant, elle cause de gros problèmes dans les Grands Lacs. La moule zébrée est un petit mollusque. Sa coquille est rayée de bandes pâles et foncées, comme le pelage d’un zèbre. Elle ne vient pas d’ici : elle vivait d’abord dans une région située entre l’Europe et l’Asie.\n\n2. Comment est-elle arrivée en Ontario? Les scientifiques pensent qu’elle a voyagé dans l’eau de ballast de grands navires venus d’Europe. Pour rester stables, ces navires remplissent des réservoirs d’eau dans un port, puis les vident dans un autre port. Des larves de moules, trop petites pour être vues, se trouvaient dans cette eau. En 1988, on a découvert des moules zébrées dans le lac Sainte-Claire, entre le lac Huron et le lac Érié. En quelques années, il y en avait dans tous les Grands Lacs.\n\n3. Pourquoi la moule zébrée se répand-elle si facilement? D’abord, elle se reproduit très vite : une seule femelle peut pondre des centaines de milliers d’œufs par année. Ensuite, elle a peu d’ennemis dans les Grands Lacs, parce que les animaux d’ici ne la connaissaient pas. Enfin, elle s’accroche à toutes les surfaces dures avec de minces filaments : roches, quais, bateaux et même d’autres moules.\n\n4. Ces petites moules ont de grosses conséquences. Elles s’entassent par milliers dans les tuyaux qui amènent l’eau des lacs vers les villes, jusqu’à les boucher. Il faut alors dépenser beaucoup d’argent pour les nettoyer. Les moules zébrées se fixent aussi sur les moules d’eau douce d’ici. Ces moules ne peuvent plus s’ouvrir pour se nourrir, et beaucoup meurent. Sur les plages, les coquilles tranchantes peuvent même couper les pieds des baigneuses et des baigneurs.\n\n5. Chaque moule zébrée filtre environ un litre d’eau par jour pour manger de minuscules algues. Résultat : dans certaines parties des lacs, l’eau est devenue beaucoup plus claire. Cela semble une bonne nouvelle, mais ce n’est pas si simple. Les moules mangent une grande partie des algues, donc il en reste moins pour les petits animaux qui s’en nourrissent. Or, ces petits animaux sont la nourriture de nombreux jeunes poissons. De plus, la lumière du soleil descend plus profondément dans l’eau, ce qui change la vie des plantes du fond.\n\n6. Pour empêcher la moule zébrée d’envahir d’autres lacs, chaque personne peut aider. Avant de transporter un bateau, un canot ou un kayak d’un lac à un autre, il faut le nettoyer, le vider de son eau et le laisser sécher. Un petit geste peut protéger tout un lac!",
+        "glossary": [
+          {
+            "term": "un mollusque",
+            "definition": "Un animal au corps mou, souvent protégé par une coquille, comme la moule ou l’escargot."
+          },
+          {
+            "term": "l’eau de ballast",
+            "definition": "L’eau qu’un navire garde dans ses réservoirs pour rester stable."
+          },
+          {
+            "term": "une larve",
+            "definition": "Un animal très jeune, qui ne ressemble pas encore à l’adulte."
+          },
+          {
+            "term": "un filament",
+            "definition": "Un fil très fin."
+          },
+          {
+            "term": "filtrer",
+            "definition": "Faire passer l’eau pour retenir ce qu’il y a dedans."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "matching",
+            "prompt": "Associe chaque cause à sa conséquence. Une conséquence est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "left": [
+              {
+                "id": "c1",
+                "text": "Les moules s’entassent dans les tuyaux."
+              },
+              {
+                "id": "c2",
+                "text": "Les moules filtrent beaucoup d’eau."
+              },
+              {
+                "id": "c3",
+                "text": "Les moules se fixent sur les moules d’ici."
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "Les moules d’eau douce d’ici ne peuvent plus se nourrir."
+              },
+              {
+                "id": "rb",
+                "text": "Les villes doivent payer pour nettoyer les tuyaux."
+              },
+              {
+                "id": "rc",
+                "text": "Les poissons deviennent plus gros."
+              },
+              {
+                "id": "rd",
+                "text": "L’eau des lacs devient plus claire."
+              }
+            ]
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Selon le paragraphe 3, pourquoi la moule zébrée se répand-elle si facilement? Donne deux raisons.",
+            "hint": "Cherche les mots « D’abord », « Ensuite » et « Enfin ».",
+            "points": null,
+            "category": "connaissance",
+            "lines": 3
+          },
+          {
+            "id": "q3",
+            "kind": "multiple_choice",
+            "prompt": "D’après le paragraphe 2, comment la moule zébrée a-t-elle pu traverser l’océan sans que personne la remarque?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "c",
+                "text": "Des scientifiques l’ont apportée pour nettoyer les lacs."
+              },
+              {
+                "id": "a",
+                "text": "Ses larves, trop petites pour être vues, voyageaient dans l’eau de ballast des navires."
+              },
+              {
+                "id": "d",
+                "text": "Des oiseaux l’ont transportée dans leurs plumes."
+              },
+              {
+                "id": "b",
+                "text": "Elle a nagé derrière les navires."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "Selon le texte, une eau plus claire est toujours une bonne nouvelle pour le lac.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes"
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Explique comment une moule qui mange des algues peut, sans le vouloir, nuire aux jeunes poissons. Utilise « parce que » ou « donc ».",
+            "hint": "Relis la fin du paragraphe 5 : qui mange quoi?",
+            "points": null,
+            "category": "habiletes",
+            "lines": 4
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Tu as fait du canot au lac Érié pendant la fin de semaine. La semaine prochaine, tu iras pagayer sur un petit lac du Nord de l’Ontario. Que faut-il faire avec le canot avant de partir, et pourquoi?",
+            "hint": "Relis le paragraphe 6, puis pense aux larves du paragraphe 2.",
+            "points": null,
+            "category": "application",
+            "lines": 4
+          }
+        ],
+        "visualSupports": [
+          "Une carte des Grands Lacs où l’on situe le lac Sainte-Claire, entre le lac Huron et le lac Érié.",
+          "Une photo de moules zébrées accrochées à une roche ou à un tuyau, à côté d’une pièce de monnaie pour montrer leur taille.",
+          "Une chaîne de causes et de conséquences à remplir au tableau pendant la lecture.",
+          "L’affiche « Nettoyer, vider, sécher » d’un programme de lutte contre les espèces envahissantes, si vous en avez une."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "c1",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "c2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "c3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "Paragraphes 4 et 5. « Les poissons deviennent plus gros » est de trop."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "Elle se reproduit très vite, et elle a peu d’ennemis dans les Grands Lacs.",
+            "acceptableAnswers": [],
+            "explanation": "Trois raisons possibles : elle se reproduit très vite; elle a peu d’ennemis; elle s’accroche à toutes les surfaces dures."
+          },
+          {
+            "questionId": "q3",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Paragraphe 2 : les larves, trop petites pour être vues, se trouvaient dans l’eau de ballast."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : « ce n’est pas si simple » : il reste moins d’algues pour les petits animaux, qui nourrissent les jeunes poissons."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "Les moules mangent beaucoup d’algues, donc il en reste moins pour les petits animaux. Les jeunes poissons ont moins à manger parce que ces petits animaux sont leur nourriture.",
+            "acceptableAnswers": [],
+            "explanation": "L’élève relie trois maillons : moins d’algues → moins de petits animaux → moins de nourriture pour les jeunes poissons."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Il faut nettoyer le canot, le vider de son eau et le laisser sécher, parce que des larves de moules zébrées, trop petites pour être vues, pourraient envahir le petit lac.",
+            "acceptableAnswers": [],
+            "explanation": "Attendu : les trois gestes et la raison."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "avance",
+      "content": {
+        "title": "",
+        "objective": "Je fais des inférences à partir d’indices du texte pour dégager des liens de cause à effet.",
+        "teacherNote": "Version Avancé : même texte que la version de base, écrit dans le français attendu en 5e année. Les quatre versions ont les mêmes six paragraphes et les mêmes liens de cause à effet.",
+        "text": "1. Elle n’est pas plus grande que l’ongle de ton pouce, et pourtant, elle cause d’énormes problèmes dans les Grands Lacs. La moule zébrée est un petit mollusque dont la coquille est rayée de bandes pâles et foncées, comme le pelage d’un zèbre. Elle ne vient pas d’ici : elle vivait à l’origine dans la région de la mer Noire et de la mer Caspienne, entre l’Europe et l’Asie.\n\n2. Comment est-elle arrivée jusqu’en Ontario? Les scientifiques pensent qu’elle a voyagé dans l’eau de ballast de grands navires venus d’Europe. Pour rester stables, ces navires remplissent des réservoirs d’eau dans un port, puis les vident dans un autre port, parfois à l’autre bout du monde. Des larves de moules, trop petites pour être vues, se trouvaient dans cette eau. En 1988, on a découvert des moules zébrées dans le lac Sainte-Claire, entre le lac Huron et le lac Érié. En quelques années, elles se sont répandues dans tous les Grands Lacs.\n\n3. Pourquoi la moule zébrée se répand-elle si facilement? D’abord, elle se reproduit très vite : une seule femelle peut pondre des centaines de milliers d’œufs par année. Ensuite, elle a peu d’ennemis dans les Grands Lacs, parce que les animaux d’ici ne la connaissaient pas. Enfin, elle s’accroche solidement à toutes les surfaces dures grâce à de minces filaments : roches, quais, coques de bateaux et même d’autres moules.\n\n4. Ces petites moules ont de grosses conséquences. Elles s’entassent par milliers dans les tuyaux qui pompent l’eau des lacs vers les villes et les centrales électriques, jusqu’à les boucher. Il faut alors dépenser beaucoup d’argent pour les nettoyer. Les moules zébrées se fixent aussi sur les moules d’eau douce d’ici. Recouvertes, ces moules ne peuvent plus s’ouvrir assez pour se nourrir, et beaucoup finissent par mourir. Sur les plages, les coquilles tranchantes des moules zébrées peuvent même couper les pieds des baigneuses et des baigneurs.\n\n5. Chaque moule zébrée filtre environ un litre d’eau par jour pour se nourrir de minuscules algues. Résultat : dans certaines parties des lacs, l’eau est devenue beaucoup plus claire. Cela peut sembler une bonne nouvelle, mais ce n’est pas si simple. Comme les moules mangent une grande partie des algues, il en reste moins pour les petits animaux qui s’en nourrissent. Or, ces petits animaux sont la nourriture de nombreux jeunes poissons. De plus, la lumière du soleil descend maintenant plus profondément dans l’eau, ce qui change la vie des plantes du fond.\n\n6. Pour empêcher la moule zébrée d’envahir d’autres lacs, chaque personne peut aider. Avant de transporter un bateau, un canot ou un kayak d’un lac à un autre, il faut le nettoyer, le vider de son eau et le laisser sécher. Un petit geste peut protéger tout un lac!",
+        "glossary": [
+          {
+            "term": "un mollusque",
+            "definition": "Un animal au corps mou, souvent protégé par une coquille, comme la moule ou l’escargot."
+          },
+          {
+            "term": "l’eau de ballast",
+            "definition": "L’eau qu’un navire pompe dans ses réservoirs pour rester stable, puis qu’il rejette ailleurs."
+          },
+          {
+            "term": "une larve",
+            "definition": "La forme très jeune d’un animal, qui ne ressemble pas encore à l’adulte."
+          },
+          {
+            "term": "un filament",
+            "definition": "Un fil très fin."
+          },
+          {
+            "term": "une centrale électrique",
+            "definition": "Une grande installation qui produit de l’électricité."
+          },
+          {
+            "term": "filtrer",
+            "definition": "Faire passer un liquide à travers quelque chose qui retient les petites particules."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "matching",
+            "prompt": "Associe chaque cause à sa conséquence. Une conséquence est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "left": [
+              {
+                "id": "c1",
+                "text": "Les moules s’entassent dans les tuyaux."
+              },
+              {
+                "id": "c2",
+                "text": "Les moules filtrent beaucoup d’eau."
+              },
+              {
+                "id": "c3",
+                "text": "Les moules se fixent sur les moules d’ici."
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "Les moules d’eau douce d’ici ne peuvent plus se nourrir."
+              },
+              {
+                "id": "rb",
+                "text": "Les villes doivent payer pour nettoyer les tuyaux."
+              },
+              {
+                "id": "rc",
+                "text": "Les poissons deviennent plus gros."
+              },
+              {
+                "id": "rd",
+                "text": "L’eau des lacs devient plus claire."
+              }
+            ]
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Selon le paragraphe 3, pourquoi la moule zébrée se répand-elle si facilement? Donne deux raisons.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 3
+          },
+          {
+            "id": "q3",
+            "kind": "multiple_choice",
+            "prompt": "D’après le paragraphe 2, comment la moule zébrée a-t-elle pu traverser l’océan sans que personne la remarque?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "c",
+                "text": "Des scientifiques l’ont apportée pour nettoyer les lacs."
+              },
+              {
+                "id": "a",
+                "text": "Ses larves, trop petites pour être vues, voyageaient dans l’eau de ballast des navires."
+              },
+              {
+                "id": "d",
+                "text": "Des oiseaux l’ont transportée dans leurs plumes."
+              },
+              {
+                "id": "b",
+                "text": "Elle a nagé derrière les navires."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "Selon le texte, une eau plus claire est toujours une bonne nouvelle pour le lac.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes"
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Explique comment une moule qui mange des algues peut, sans le vouloir, nuire aux jeunes poissons. Utilise au moins une fois « parce que » ou « donc ».",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 4
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Tu as fait du canot au lac Érié pendant la fin de semaine. La semaine prochaine, tu iras pagayer sur un petit lac du Nord de l’Ontario. Que faut-il faire avec le canot avant de partir, et pourquoi?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 4
+          }
+        ],
+        "visualSupports": [
+          "Une carte des Grands Lacs où l’on situe le lac Sainte-Claire, entre le lac Huron et le lac Érié.",
+          "Une photo de moules zébrées accrochées à une roche ou à un tuyau, à côté d’une pièce de monnaie pour montrer leur taille.",
+          "Une chaîne de causes et de conséquences à remplir au tableau pendant la lecture.",
+          "L’affiche « Nettoyer, vider, sécher » d’un programme de lutte contre les espèces envahissantes, si vous en avez une."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "c1",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "c2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "c3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "Paragraphes 4 et 5. La phrase « Les poissons deviennent plus gros » est de trop : le texte laisse plutôt comprendre que les jeunes poissons trouvent moins de nourriture."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "Elle se reproduit très vite : une femelle peut pondre des centaines de milliers d’œufs par année. De plus, elle a peu d’ennemis dans les Grands Lacs.",
+            "acceptableAnswers": [],
+            "explanation": "Trois raisons possibles : elle se reproduit très vite; elle a peu d’ennemis; elle s’accroche à toutes les surfaces dures. Deux sont attendues."
+          },
+          {
+            "questionId": "q3",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Paragraphe 2 : les larves, trop petites pour être vues, se trouvaient dans l’eau de ballast. Les autres choix ne sont pas dans le texte."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : le paragraphe 5 dit que « ce n’est pas si simple » : l’eau est plus claire parce que les algues ont été mangées, et il reste moins de nourriture pour les petits animaux et les jeunes poissons."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "Les moules mangent beaucoup d’algues, donc il en reste moins pour les petits animaux. Les jeunes poissons ont moins à manger parce que ces petits animaux sont leur nourriture.",
+            "acceptableAnswers": [],
+            "explanation": "Inférence : l’élève doit relier trois maillons : moins d’algues → moins de petits animaux → moins de nourriture pour les jeunes poissons."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Il faut nettoyer le canot, le vider de son eau et le laisser sécher, parce que des moules zébrées ou leurs larves invisibles pourraient être dessus ou dans l’eau et envahir le petit lac.",
+            "acceptableAnswers": [],
+            "explanation": "Attendu : les trois gestes (nettoyer, vider, sécher) et la raison. Le lien avec les larves invisibles (paragraphe 2) est une inférence de plus."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "enrichi",
+      "content": {
+        "title": "",
+        "objective": "Je fais des inférences à partir d’indices du texte pour dégager des liens de cause à effet.",
+        "teacherNote": "Version Enrichi : vocabulaire plus riche et plus précis, phrases plus variées, et deux questions d’approfondissement (questions 7 et 8). La question 7 fait construire une chaîne de causes et de conséquences de trois maillons ou plus; la question 8 fait écrire un court texte persuasif. Les quatre versions ont les mêmes six paragraphes.",
+        "text": "1. Elle ne dépasse pas la taille de l’ongle de ton pouce, et pourtant, elle bouleverse l’équilibre des Grands Lacs. La moule zébrée est un petit mollusque dont la coquille est striée de bandes claires et sombres, à la manière du pelage d’un zèbre. Cette espèce n’est pas indigène : elle est originaire de la région de la mer Noire et de la mer Caspienne, aux confins de l’Europe et de l’Asie.\n\n2. Comment a-t-elle atteint l’Ontario? Selon les scientifiques, elle aurait voyagé clandestinement dans l’eau de ballast de navires en provenance d’Europe. Pour assurer leur stabilité, ces navires pompent de l’eau dans leurs réservoirs à un port, puis la rejettent dans un autre, parfois à des milliers de kilomètres. Des larves de moules, invisibles à l’œil nu, dérivaient dans cette eau. En 1988, on a repéré des moules zébrées dans le lac Sainte-Claire, entre le lac Huron et le lac Érié. En l’espace de quelques années, elles avaient colonisé l’ensemble des Grands Lacs.\n\n3. Qu’est-ce qui explique une propagation aussi rapide? Premièrement, l’espèce est d’une fécondité remarquable : une seule femelle peut pondre des centaines de milliers d’œufs par année. Deuxièmement, elle compte peu de prédateurs dans les Grands Lacs, puisque la faune locale ne la connaissait pas. Troisièmement, elle adhère solidement à toute surface dure au moyen de minces filaments : roches, quais, coques de bateaux et même coquilles d’autres moules.\n\n4. Cette minuscule envahisseuse entraîne des conséquences considérables. Les moules zébrées s’agglutinent par milliers dans les conduites qui acheminent l’eau des lacs vers les villes et les centrales électriques, au point de les obstruer. Leur nettoyage coûte des sommes importantes. Elles se fixent également sur les moules d’eau douce indigènes, qui, ainsi recouvertes, ne parviennent plus à s’ouvrir suffisamment pour se nourrir; bon nombre d’entre elles finissent par périr. Sur les plages, leurs coquilles tranchantes peuvent même entailler les pieds des baigneuses et des baigneurs.\n\n5. Chaque moule zébrée filtre environ un litre d’eau par jour afin de se nourrir d’algues microscopiques. Conséquence : dans certains secteurs des lacs, l’eau est devenue remarquablement limpide. On pourrait s’en réjouir, mais la réalité est plus complexe. En consommant une grande partie des algues, les moules privent de nourriture les petits animaux qui s’en alimentent. Or, ces petits animaux constituent la nourriture de nombreux jeunes poissons. De plus, la lumière du soleil pénètre désormais plus profondément dans l’eau, ce qui transforme la vie des plantes du fond.\n\n6. Pour freiner l’invasion d’autres plans d’eau, chacun et chacune peut agir. Avant de transporter une embarcation, qu’il s’agisse d’un bateau, d’un canot ou d’un kayak, d’un lac à un autre, il faut la nettoyer, la vider de son eau et la laisser sécher complètement. Un simple geste peut préserver tout un lac!",
+        "glossary": [
+          {
+            "term": "indigène",
+            "definition": "Qui vit naturellement dans une région depuis toujours."
+          },
+          {
+            "term": "clandestinement",
+            "definition": "En cachette, sans que personne le sache."
+          },
+          {
+            "term": "la fécondité",
+            "definition": "La capacité d’avoir beaucoup de petits."
+          },
+          {
+            "term": "s’agglutiner",
+            "definition": "Se coller les uns aux autres en grand nombre."
+          },
+          {
+            "term": "obstruer",
+            "definition": "Boucher, bloquer le passage."
+          },
+          {
+            "term": "une embarcation",
+            "definition": "Un petit bateau, comme un canot ou un kayak."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "matching",
+            "prompt": "Associe chaque cause à sa conséquence. Une conséquence est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "left": [
+              {
+                "id": "c1",
+                "text": "Les moules s’agglutinent dans les conduites."
+              },
+              {
+                "id": "c2",
+                "text": "Les moules filtrent de grandes quantités d’eau."
+              },
+              {
+                "id": "c3",
+                "text": "Les moules se fixent sur les moules indigènes."
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "Les moules d’eau douce indigènes ne parviennent plus à se nourrir."
+              },
+              {
+                "id": "rb",
+                "text": "Les villes doivent payer cher pour nettoyer les conduites."
+              },
+              {
+                "id": "rc",
+                "text": "Les poissons deviennent plus gros."
+              },
+              {
+                "id": "rd",
+                "text": "L’eau des lacs devient plus limpide."
+              }
+            ]
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Selon le paragraphe 3, qu’est-ce qui explique la propagation rapide de la moule zébrée? Donne deux raisons.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 3
+          },
+          {
+            "id": "q3",
+            "kind": "multiple_choice",
+            "prompt": "D’après le paragraphe 2, comment la moule zébrée a-t-elle pu traverser l’océan sans être remarquée?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "c",
+                "text": "Des scientifiques l’ont introduite pour nettoyer les lacs."
+              },
+              {
+                "id": "a",
+                "text": "Ses larves, invisibles à l’œil nu, dérivaient dans l’eau de ballast des navires."
+              },
+              {
+                "id": "d",
+                "text": "Des oiseaux migrateurs l’ont transportée dans leurs plumes."
+              },
+              {
+                "id": "b",
+                "text": "Elle a nagé dans le sillage des navires."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "Selon le texte, une eau plus limpide est toujours une bonne nouvelle pour le lac.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes"
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Explique comment une moule qui se nourrit d’algues peut, sans le vouloir, nuire aux jeunes poissons. Emploie au moins deux marqueurs de cause ou de conséquence (parce que, donc, puisque, c’est pourquoi…).",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 4
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Tu as fait du canot au lac Érié pendant la fin de semaine. La semaine prochaine, tu iras pagayer sur un petit lac du Nord de l’Ontario. Que faut-il faire avec le canot avant de partir? Justifie ta réponse à l’aide de deux paragraphes du texte.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 4
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Construis une chaîne d’au moins trois causes et conséquences qui commence par : « Un navire rejette son eau de ballast dans un port de l’Ontario… ».",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 5
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Rédige un court message de deux ou trois phrases pour une affiche installée au quai d’un lac. Ton message doit convaincre les personnes qui font du bateau de nettoyer, de vider et de sécher leur embarcation.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 4
+          }
+        ],
+        "visualSupports": [
+          "Une carte des Grands Lacs où l’on situe le lac Sainte-Claire, entre le lac Huron et le lac Érié.",
+          "Une photo de moules zébrées accrochées à une roche ou à un tuyau, à côté d’une pièce de monnaie pour montrer leur taille.",
+          "Une chaîne de causes et de conséquences à remplir au tableau pendant la lecture.",
+          "L’affiche « Nettoyer, vider, sécher » d’un programme de lutte contre les espèces envahissantes, si vous en avez une."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "c1",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "c2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "c3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "Paragraphes 4 et 5. « Les poissons deviennent plus gros » est de trop : les jeunes poissons trouvent plutôt moins de nourriture."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "L’espèce est très féconde : une femelle peut pondre des centaines de milliers d’œufs par année. De plus, elle a peu de prédateurs, car la faune locale ne la connaissait pas.",
+            "acceptableAnswers": [],
+            "explanation": "Trois raisons possibles : la fécondité; le peu de prédateurs; l’adhérence aux surfaces dures."
+          },
+          {
+            "questionId": "q3",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Paragraphe 2 : des larves invisibles à l’œil nu dérivaient dans l’eau de ballast."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : « la réalité est plus complexe » : les algues consommées manquent aux petits animaux, qui nourrissent les jeunes poissons, et la lumière transforme la vie des plantes du fond."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "Puisque les moules consomment une grande partie des algues, les petits animaux qui s’en nourrissent ont moins à manger. C’est pourquoi les jeunes poissons, qui mangent ces petits animaux, trouvent eux aussi moins de nourriture.",
+            "acceptableAnswers": [],
+            "explanation": "Attendu : la chaîne complète en trois maillons et deux marqueurs de cause ou de conséquence."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Il faut nettoyer le canot, le vider de son eau et le laisser sécher complètement (paragraphe 6). En effet, des larves invisibles à l’œil nu pourraient se trouver dans l’eau du canot (paragraphe 2) et coloniser le petit lac.",
+            "acceptableAnswers": [],
+            "explanation": "Attendu : les trois gestes et une justification tirée de deux paragraphes."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "Un navire rejette son eau de ballast dans un port de l’Ontario, donc des larves de moules zébrées se retrouvent dans le lac. Comme elles ont peu de prédateurs et pondent énormément, elles se multiplient. Elles s’agglutinent alors dans les conduites, qui se bouchent, et la ville doit payer pour les nettoyer.",
+            "acceptableAnswers": [],
+            "explanation": "Question d’approfondissement. Accepter toute chaîne logique d’au moins trois maillons, appuyée sur le texte (vers les conduites, les moules indigènes ou les jeunes poissons)."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "Arrêtez les envahisseuses invisibles! Avant de quitter ce lac, nettoyez, videz et séchez votre embarcation. Trois gestes simples pour garder nos lacs en santé.",
+            "acceptableAnswers": [],
+            "explanation": "Question d’approfondissement. Attendu : un message clair, persuasif, qui nomme les trois gestes et s’adresse directement aux personnes qui font du bateau."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

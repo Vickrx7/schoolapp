@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { fail, okVoid, type ActionResult } from '@/lib/action-result';
 import { reportError } from '../errors';
+import { requireSession } from '../session';
 import { createSupabaseServerClient } from '../supabase';
 
 const lessonId = z.uuid();
@@ -14,6 +15,7 @@ export async function markLessonTaught(
   rawLessonId: string,
   rawDate: string,
 ): Promise<ActionResult> {
+  await requireSession();
   const id = lessonId.safeParse(rawLessonId);
   const date = localDateSchema.safeParse(rawDate);
   if (!id.success || !date.success) return fail('invalid');
@@ -30,6 +32,7 @@ export async function markLessonTaught(
 }
 
 export async function unmarkLesson(rawLessonId: string): Promise<ActionResult> {
+  await requireSession();
   const id = lessonId.safeParse(rawLessonId);
   if (!id.success) return fail('invalid');
 

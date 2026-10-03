@@ -20,6 +20,10 @@ export type Database = {
           published_at: string | null;
           created_at: string;
           updated_at: string;
+          catholic_connection: boolean;
+          client_request_id: string;
+          cancelled_at: string | null;
+          sources_changed_at: string | null;
         };
         Insert: {
           id?: string;
@@ -33,6 +37,10 @@ export type Database = {
           published_at?: string | null;
           created_at?: string;
           updated_at?: string;
+          catholic_connection?: boolean;
+          client_request_id?: string;
+          cancelled_at?: string | null;
+          sources_changed_at?: string | null;
         };
         Update: {
           id?: string;
@@ -46,6 +54,10 @@ export type Database = {
           published_at?: string | null;
           created_at?: string;
           updated_at?: string;
+          catholic_connection?: boolean;
+          client_request_id?: string;
+          cancelled_at?: string | null;
+          sources_changed_at?: string | null;
         };
         Relationships: [
           {
@@ -261,6 +273,50 @@ export type Database = {
           },
         ];
       };
+      ai_request_log: {
+        Row: {
+          job_id: string;
+          user_id: string;
+          created_at: string;
+        };
+        Insert: {
+          job_id: string;
+          user_id: string;
+          created_at?: string;
+        };
+        Update: {
+          job_id?: string;
+          user_id?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'ai_request_log_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      audit_action_catalog: {
+        Row: {
+          action: string;
+          category: string;
+          audience: string;
+        };
+        Insert: {
+          action: string;
+          category: string;
+          audience: string;
+        };
+        Update: {
+          action?: string;
+          category?: string;
+          audience?: string;
+        };
+        Relationships: [];
+      };
       audit_log: {
         Row: {
           id: number;
@@ -432,6 +488,150 @@ export type Database = {
           },
         ];
       };
+      class_join_failures: {
+        Row: {
+          id: number;
+          device_key: string;
+          network_key: string | null;
+          failed_at: string;
+        };
+        Insert: {
+          id?: never;
+          device_key: string;
+          network_key?: string | null;
+          failed_at?: string;
+        };
+        Update: {
+          id?: never;
+          device_key?: string;
+          network_key?: string | null;
+          failed_at?: string;
+        };
+        Relationships: [];
+      };
+      class_mode_links: {
+        Row: {
+          class_id: string;
+          token: string;
+          created_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          class_id: string;
+          token: string;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          class_id?: string;
+          token?: string;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'class_mode_links_class_id_fkey';
+            columns: ['class_id'];
+            isOneToOne: true;
+            referencedRelation: 'classes';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'class_mode_links_created_by_fkey';
+            columns: ['created_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      class_newsletters: {
+        Row: {
+          id: string;
+          class_id: string;
+          week_of: string;
+          content: Json;
+          status: string;
+          sent_at: string | null;
+          revision: number;
+          created_by: string | null;
+          updated_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          class_id: string;
+          week_of: string;
+          content: Json;
+          status?: string;
+          sent_at?: string | null;
+          revision?: number;
+          created_by?: string | null;
+          updated_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          class_id?: string;
+          week_of?: string;
+          content?: Json;
+          status?: string;
+          sent_at?: string | null;
+          revision?: number;
+          created_by?: string | null;
+          updated_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'class_newsletters_class_id_fkey';
+            columns: ['class_id'];
+            isOneToOne: false;
+            referencedRelation: 'classes';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'class_newsletters_created_by_fkey';
+            columns: ['created_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'class_newsletters_updated_by_fkey';
+            columns: ['updated_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      class_session_keys: {
+        Row: {
+          session_id: string;
+          answers: Json;
+        };
+        Insert: {
+          session_id: string;
+          answers: Json;
+        };
+        Update: {
+          session_id?: string;
+          answers?: Json;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'class_session_keys_session_id_fkey';
+            columns: ['session_id'];
+            isOneToOne: true;
+            referencedRelation: 'class_sessions';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       class_session_results: {
         Row: {
           session_id: string;
@@ -470,6 +670,23 @@ export type Database = {
           expires_at: string;
           ended_at: string | null;
           keep_aggregate_results: boolean;
+          version_id: string | null;
+          item_title: string | null;
+          content_lang: string;
+          mode: string;
+          team_count: number | null;
+          team_choice: string;
+          seconds_per_question: number | null;
+          reveal_answers: boolean;
+          score_short_answers: boolean;
+          questions: Json;
+          phase: string;
+          question_index: number;
+          question_closes_at: string | null;
+          joining_open: boolean;
+          joining_closes_at: string | null;
+          state_version: number;
+          device_seq: number;
         };
         Insert: {
           id?: string;
@@ -482,6 +699,23 @@ export type Database = {
           expires_at: string;
           ended_at?: string | null;
           keep_aggregate_results?: boolean;
+          version_id?: string | null;
+          item_title?: string | null;
+          content_lang?: string;
+          mode?: string;
+          team_count?: number | null;
+          team_choice?: string;
+          seconds_per_question?: number | null;
+          reveal_answers?: boolean;
+          score_short_answers?: boolean;
+          questions?: Json;
+          phase?: string;
+          question_index?: number;
+          question_closes_at?: string | null;
+          joining_open?: boolean;
+          joining_closes_at?: string | null;
+          state_version?: number;
+          device_seq?: number;
         };
         Update: {
           id?: string;
@@ -494,6 +728,23 @@ export type Database = {
           expires_at?: string;
           ended_at?: string | null;
           keep_aggregate_results?: boolean;
+          version_id?: string | null;
+          item_title?: string | null;
+          content_lang?: string;
+          mode?: string;
+          team_count?: number | null;
+          team_choice?: string;
+          seconds_per_question?: number | null;
+          reveal_answers?: boolean;
+          score_short_answers?: boolean;
+          questions?: Json;
+          phase?: string;
+          question_index?: number;
+          question_closes_at?: string | null;
+          joining_open?: boolean;
+          joining_closes_at?: string | null;
+          state_version?: number;
+          device_seq?: number;
         };
         Relationships: [
           {
@@ -515,6 +766,74 @@ export type Database = {
             columns: ['library_item_id'];
             isOneToOne: false;
             referencedRelation: 'library_items';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'class_sessions_version_id_fkey';
+            columns: ['version_id'];
+            isOneToOne: false;
+            referencedRelation: 'library_item_versions';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      class_sub_profiles: {
+        Row: {
+          class_id: string;
+          arrival_notes: string | null;
+          routines_notes: string | null;
+          classroom_management_notes: string | null;
+          dismissal_notes: string | null;
+          fallback_activities: string | null;
+          neighbour_teacher_id: string | null;
+          neighbour_note: string | null;
+          updated_by: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          class_id: string;
+          arrival_notes?: string | null;
+          routines_notes?: string | null;
+          classroom_management_notes?: string | null;
+          dismissal_notes?: string | null;
+          fallback_activities?: string | null;
+          neighbour_teacher_id?: string | null;
+          neighbour_note?: string | null;
+          updated_by?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          class_id?: string;
+          arrival_notes?: string | null;
+          routines_notes?: string | null;
+          classroom_management_notes?: string | null;
+          dismissal_notes?: string | null;
+          fallback_activities?: string | null;
+          neighbour_teacher_id?: string | null;
+          neighbour_note?: string | null;
+          updated_by?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'class_sub_profiles_class_id_fkey';
+            columns: ['class_id'];
+            isOneToOne: true;
+            referencedRelation: 'classes';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'class_sub_profiles_neighbour_teacher_id_fkey';
+            columns: ['neighbour_teacher_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'class_sub_profiles_updated_by_fkey';
+            columns: ['updated_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
             referencedColumns: ['id'];
           },
         ];
@@ -575,6 +894,9 @@ export type Database = {
           created_by: string | null;
           created_at: string;
           updated_at: string;
+          sample_owner_id: string | null;
+          students_purged_at: string | null;
+          students_purge_notice_on: string | null;
         };
         Insert: {
           id?: string;
@@ -585,6 +907,9 @@ export type Database = {
           created_by?: string | null;
           created_at?: string;
           updated_at?: string;
+          sample_owner_id?: string | null;
+          students_purged_at?: string | null;
+          students_purge_notice_on?: string | null;
         };
         Update: {
           id?: string;
@@ -595,6 +920,9 @@ export type Database = {
           created_by?: string | null;
           created_at?: string;
           updated_at?: string;
+          sample_owner_id?: string | null;
+          students_purged_at?: string | null;
+          students_purge_notice_on?: string | null;
         };
         Relationships: [
           {
@@ -609,6 +937,13 @@ export type Database = {
             columns: ['room_id'];
             isOneToOne: false;
             referencedRelation: 'rooms';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'classes_sample_owner_id_fkey';
+            columns: ['sample_owner_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
             referencedColumns: ['id'];
           },
           {
@@ -718,6 +1053,108 @@ export type Database = {
           },
         ];
       };
+      content_pack_import_items: {
+        Row: {
+          import_id: string;
+          key: string;
+          item: Json;
+          faith_suggested: boolean;
+        };
+        Insert: {
+          import_id: string;
+          key: string;
+          item: Json;
+          faith_suggested?: boolean;
+        };
+        Update: {
+          import_id?: string;
+          key?: string;
+          item?: Json;
+          faith_suggested?: boolean;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'content_pack_import_items_import_id_fkey';
+            columns: ['import_id'];
+            isOneToOne: false;
+            referencedRelation: 'content_pack_imports';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      content_pack_imports: {
+        Row: {
+          id: string;
+          board_id: string;
+          slug: string;
+          version: string;
+          header: Json;
+          file_sha256: string;
+          status: string;
+          created_at: string;
+          applied_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          board_id: string;
+          slug: string;
+          version: string;
+          header: Json;
+          file_sha256: string;
+          status?: string;
+          created_at?: string;
+          applied_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          board_id?: string;
+          slug?: string;
+          version?: string;
+          header?: Json;
+          file_sha256?: string;
+          status?: string;
+          created_at?: string;
+          applied_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'content_pack_imports_board_id_fkey';
+            columns: ['board_id'];
+            isOneToOne: false;
+            referencedRelation: 'boards';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      content_pack_removed_items: {
+        Row: {
+          board_id: string;
+          pack_slug: string;
+          pack_item_key: string;
+          removed_at: string;
+        };
+        Insert: {
+          board_id: string;
+          pack_slug: string;
+          pack_item_key: string;
+          removed_at?: string;
+        };
+        Update: {
+          board_id?: string;
+          pack_slug?: string;
+          pack_item_key?: string;
+          removed_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'content_pack_removed_items_board_id_fkey';
+            columns: ['board_id'];
+            isOneToOne: false;
+            referencedRelation: 'boards';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       content_packs: {
         Row: {
           id: string;
@@ -729,6 +1166,12 @@ export type Database = {
           manifest: Json;
           imported_at: string;
           imported_by: string | null;
+          format_version: number;
+          file_sha256: string | null;
+          licence: string | null;
+          item_count: number;
+          approved_by: string | null;
+          report: Json | null;
         };
         Insert: {
           id?: string;
@@ -740,6 +1183,12 @@ export type Database = {
           manifest?: Json;
           imported_at?: string;
           imported_by?: string | null;
+          format_version?: number;
+          file_sha256?: string | null;
+          licence?: string | null;
+          item_count?: number;
+          approved_by?: string | null;
+          report?: Json | null;
         };
         Update: {
           id?: string;
@@ -751,8 +1200,21 @@ export type Database = {
           manifest?: Json;
           imported_at?: string;
           imported_by?: string | null;
+          format_version?: number;
+          file_sha256?: string | null;
+          licence?: string | null;
+          item_count?: number;
+          approved_by?: string | null;
+          report?: Json | null;
         };
         Relationships: [
+          {
+            foreignKeyName: 'content_packs_approved_by_fkey';
+            columns: ['approved_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
           {
             foreignKeyName: 'content_packs_board_id_fkey';
             columns: ['board_id'];
@@ -891,6 +1353,79 @@ export type Database = {
         };
         Relationships: [];
       };
+      feedback: {
+        Row: {
+          id: string;
+          board_id: string;
+          school_id: string | null;
+          user_id: string | null;
+          kind: string;
+          message: string;
+          route: string | null;
+          error_ref: string | null;
+          app_release: string | null;
+          device: string | null;
+          locale: string | null;
+          may_contact: boolean;
+          status: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          board_id: string;
+          school_id?: string | null;
+          user_id?: string | null;
+          kind: string;
+          message: string;
+          route?: string | null;
+          error_ref?: string | null;
+          app_release?: string | null;
+          device?: string | null;
+          locale?: string | null;
+          may_contact?: boolean;
+          status?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          board_id?: string;
+          school_id?: string | null;
+          user_id?: string | null;
+          kind?: string;
+          message?: string;
+          route?: string | null;
+          error_ref?: string | null;
+          app_release?: string | null;
+          device?: string | null;
+          locale?: string | null;
+          may_contact?: boolean;
+          status?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'feedback_board_id_fkey';
+            columns: ['board_id'];
+            isOneToOne: false;
+            referencedRelation: 'boards';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'feedback_school_id_fkey';
+            columns: ['school_id'];
+            isOneToOne: false;
+            referencedRelation: 'schools';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'feedback_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       grades: {
         Row: {
           code: string;
@@ -985,6 +1520,7 @@ export type Database = {
           note: string | null;
           created_at: string;
           updated_at: string;
+          sub_report_id: string | null;
         };
         Insert: {
           id?: string;
@@ -998,6 +1534,7 @@ export type Database = {
           note?: string | null;
           created_at?: string;
           updated_at?: string;
+          sub_report_id?: string | null;
         };
         Update: {
           id?: string;
@@ -1011,6 +1548,7 @@ export type Database = {
           note?: string | null;
           created_at?: string;
           updated_at?: string;
+          sub_report_id?: string | null;
         };
         Relationships: [
           {
@@ -1032,6 +1570,173 @@ export type Database = {
             columns: ['lesson_id'];
             isOneToOne: true;
             referencedRelation: 'unit_lessons';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'lesson_progress_sub_report_id_fkey';
+            columns: ['sub_report_id'];
+            isOneToOne: false;
+            referencedRelation: 'sub_reports';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      library_bulk_requests: {
+        Row: {
+          id: string;
+          run_id: string;
+          expectation_id: string | null;
+          item_type: Database['public']['Enums']['library_item_type'];
+          input: Json;
+          status: string;
+          reason: string | null;
+          worst_case_usd: number | null;
+          cost_usd: number;
+          sent_sha256: string | null;
+          sent_text: string | null;
+          problems: string[];
+          item_id: string | null;
+          ai_generation_id: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          run_id: string;
+          expectation_id?: string | null;
+          item_type: Database['public']['Enums']['library_item_type'];
+          input: Json;
+          status?: string;
+          reason?: string | null;
+          worst_case_usd?: number | null;
+          cost_usd?: number;
+          sent_sha256?: string | null;
+          sent_text?: string | null;
+          problems?: string[];
+          item_id?: string | null;
+          ai_generation_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          run_id?: string;
+          expectation_id?: string | null;
+          item_type?: Database['public']['Enums']['library_item_type'];
+          input?: Json;
+          status?: string;
+          reason?: string | null;
+          worst_case_usd?: number | null;
+          cost_usd?: number;
+          sent_sha256?: string | null;
+          sent_text?: string | null;
+          problems?: string[];
+          item_id?: string | null;
+          ai_generation_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'library_bulk_requests_ai_generation_id_fkey';
+            columns: ['ai_generation_id'];
+            isOneToOne: false;
+            referencedRelation: 'ai_generations';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'library_bulk_requests_expectation_id_fkey';
+            columns: ['expectation_id'];
+            isOneToOne: false;
+            referencedRelation: 'curriculum_expectations';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'library_bulk_requests_item_id_fkey';
+            columns: ['item_id'];
+            isOneToOne: false;
+            referencedRelation: 'library_items';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'library_bulk_requests_run_id_fkey';
+            columns: ['run_id'];
+            isOneToOne: false;
+            referencedRelation: 'library_bulk_runs';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      library_bulk_runs: {
+        Row: {
+          id: string;
+          board_id: string;
+          status: string;
+          params: Json;
+          note: string | null;
+          max_cost_usd: number;
+          worst_case_usd: number | null;
+          spent_usd: number;
+          request_count: number;
+          batch_id: string | null;
+          submit_started_at: string | null;
+          cancel_requested_at: string | null;
+          cancel_sent_at: string | null;
+          report: Json | null;
+          error_code: string | null;
+          created_at: string;
+          started_at: string | null;
+          finished_at: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          board_id: string;
+          status?: string;
+          params: Json;
+          note?: string | null;
+          max_cost_usd: number;
+          worst_case_usd?: number | null;
+          spent_usd?: number;
+          request_count?: number;
+          batch_id?: string | null;
+          submit_started_at?: string | null;
+          cancel_requested_at?: string | null;
+          cancel_sent_at?: string | null;
+          report?: Json | null;
+          error_code?: string | null;
+          created_at?: string;
+          started_at?: string | null;
+          finished_at?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          board_id?: string;
+          status?: string;
+          params?: Json;
+          note?: string | null;
+          max_cost_usd?: number;
+          worst_case_usd?: number | null;
+          spent_usd?: number;
+          request_count?: number;
+          batch_id?: string | null;
+          submit_started_at?: string | null;
+          cancel_requested_at?: string | null;
+          cancel_sent_at?: string | null;
+          report?: Json | null;
+          error_code?: string | null;
+          created_at?: string;
+          started_at?: string | null;
+          finished_at?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'library_bulk_runs_board_id_fkey';
+            columns: ['board_id'];
+            isOneToOne: false;
+            referencedRelation: 'boards';
             referencedColumns: ['id'];
           },
         ];
@@ -1128,18 +1833,21 @@ export type Database = {
           rater_id: string;
           rating: number;
           created_at: string;
+          updated_at: string;
         };
         Insert: {
           item_id: string;
           rater_id: string;
           rating: number;
           created_at?: string;
+          updated_at?: string;
         };
         Update: {
           item_id?: string;
           rater_id?: string;
           rating?: number;
           created_at?: string;
+          updated_at?: string;
         };
         Relationships: [
           {
@@ -1265,6 +1973,30 @@ export type Database = {
           usage_count: number;
           created_at: string;
           updated_at: string;
+          content_revision: number;
+          keywords: string | null;
+          faith_content: boolean;
+          faith_flagged_by: string | null;
+          faith_on_student_sheet: boolean;
+          catholic_reference_id: string | null;
+          review_requested_at: string | null;
+          review_requested_by: string | null;
+          approved_at: string | null;
+          approved_by: string | null;
+          faith_reviewed_at: string | null;
+          faith_reviewed_by: string | null;
+          review_note: string | null;
+          search_document: string;
+          board_owned: boolean;
+          parent_title: string | null;
+          share_cap: Database['public']['Enums']['share_scope'] | null;
+          share_cap_school_id: string | null;
+          no_derivatives: boolean;
+          bulk_run_id: string | null;
+          pack_slug: string | null;
+          pack_item_key: string | null;
+          pack_content_hash: string | null;
+          pack_revision: number | null;
         };
         Insert: {
           id?: string;
@@ -1297,6 +2029,30 @@ export type Database = {
           usage_count?: number;
           created_at?: string;
           updated_at?: string;
+          content_revision?: number;
+          keywords?: string | null;
+          faith_content?: boolean;
+          faith_flagged_by?: string | null;
+          faith_on_student_sheet?: boolean;
+          catholic_reference_id?: string | null;
+          review_requested_at?: string | null;
+          review_requested_by?: string | null;
+          approved_at?: string | null;
+          approved_by?: string | null;
+          faith_reviewed_at?: string | null;
+          faith_reviewed_by?: string | null;
+          review_note?: string | null;
+          search_document?: string;
+          board_owned?: boolean;
+          parent_title?: string | null;
+          share_cap?: Database['public']['Enums']['share_scope'] | null;
+          share_cap_school_id?: string | null;
+          no_derivatives?: boolean;
+          bulk_run_id?: string | null;
+          pack_slug?: string | null;
+          pack_item_key?: string | null;
+          pack_content_hash?: string | null;
+          pack_revision?: number | null;
         };
         Update: {
           id?: string;
@@ -1329,6 +2085,30 @@ export type Database = {
           usage_count?: number;
           created_at?: string;
           updated_at?: string;
+          content_revision?: number;
+          keywords?: string | null;
+          faith_content?: boolean;
+          faith_flagged_by?: string | null;
+          faith_on_student_sheet?: boolean;
+          catholic_reference_id?: string | null;
+          review_requested_at?: string | null;
+          review_requested_by?: string | null;
+          approved_at?: string | null;
+          approved_by?: string | null;
+          faith_reviewed_at?: string | null;
+          faith_reviewed_by?: string | null;
+          review_note?: string | null;
+          search_document?: string;
+          board_owned?: boolean;
+          parent_title?: string | null;
+          share_cap?: Database['public']['Enums']['share_scope'] | null;
+          share_cap_school_id?: string | null;
+          no_derivatives?: boolean;
+          bulk_run_id?: string | null;
+          pack_slug?: string | null;
+          pack_item_key?: string | null;
+          pack_content_hash?: string | null;
+          pack_revision?: number | null;
         };
         Relationships: [
           {
@@ -1336,6 +2116,13 @@ export type Database = {
             columns: ['ai_generation_id'];
             isOneToOne: false;
             referencedRelation: 'ai_generations';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'library_items_approved_by_fkey';
+            columns: ['approved_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
             referencedColumns: ['id'];
           },
           {
@@ -1353,6 +2140,20 @@ export type Database = {
             referencedColumns: ['id'];
           },
           {
+            foreignKeyName: 'library_items_bulk_run_id_fkey';
+            columns: ['bulk_run_id'];
+            isOneToOne: false;
+            referencedRelation: 'library_bulk_runs';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'library_items_catholic_reference_id_fkey';
+            columns: ['catholic_reference_id'];
+            isOneToOne: false;
+            referencedRelation: 'catholic_references';
+            referencedColumns: ['id'];
+          },
+          {
             foreignKeyName: 'library_items_content_pack_id_fkey';
             columns: ['content_pack_id'];
             isOneToOne: false;
@@ -1360,10 +2161,31 @@ export type Database = {
             referencedColumns: ['id'];
           },
           {
+            foreignKeyName: 'library_items_faith_flagged_by_fkey';
+            columns: ['faith_flagged_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'library_items_faith_reviewed_by_fkey';
+            columns: ['faith_reviewed_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
             foreignKeyName: 'library_items_parent_item_id_fkey';
             columns: ['parent_item_id'];
             isOneToOne: false;
             referencedRelation: 'library_items';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'library_items_review_requested_by_fkey';
+            columns: ['review_requested_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
             referencedColumns: ['id'];
           },
           {
@@ -1378,6 +2200,45 @@ export type Database = {
             columns: ['subject_id'];
             isOneToOne: false;
             referencedRelation: 'subjects';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      library_reviewers: {
+        Row: {
+          board_id: string;
+          user_id: string;
+          approves_content: boolean;
+          reviews_faith: boolean;
+          created_at: string;
+        };
+        Insert: {
+          board_id: string;
+          user_id: string;
+          approves_content?: boolean;
+          reviews_faith?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          board_id?: string;
+          user_id?: string;
+          approves_content?: boolean;
+          reviews_faith?: boolean;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'library_reviewers_board_id_fkey';
+            columns: ['board_id'];
+            isOneToOne: false;
+            referencedRelation: 'boards';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'library_reviewers_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
             referencedColumns: ['id'];
           },
         ];
@@ -1422,6 +2283,50 @@ export type Database = {
             columns: ['school_id'];
             isOneToOne: false;
             referencedRelation: 'schools';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      report_periods: {
+        Row: {
+          id: string;
+          school_year_id: string;
+          kind: string;
+          starts_on: string;
+          ends_on: string;
+          due_on: string | null;
+          issued_on: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          school_year_id: string;
+          kind: string;
+          starts_on: string;
+          ends_on: string;
+          due_on?: string | null;
+          issued_on?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          school_year_id?: string;
+          kind?: string;
+          starts_on?: string;
+          ends_on?: string;
+          due_on?: string | null;
+          issued_on?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'report_periods_school_year_id_fkey';
+            columns: ['school_year_id'];
+            isOneToOne: false;
+            referencedRelation: 'school_years';
             referencedColumns: ['id'];
           },
         ];
@@ -1681,6 +2586,11 @@ export type Database = {
           nickname: string;
           team: string | null;
           joined_at: string;
+          device_number: number;
+          token_hash: string | null;
+          device_key: string;
+          last_seen_at: string;
+          left_at: string | null;
         };
         Insert: {
           id?: string;
@@ -1688,6 +2598,11 @@ export type Database = {
           nickname: string;
           team?: string | null;
           joined_at?: string;
+          device_number: number;
+          token_hash?: string | null;
+          device_key: string;
+          last_seen_at?: string;
+          left_at?: string | null;
         };
         Update: {
           id?: string;
@@ -1695,6 +2610,11 @@ export type Database = {
           nickname?: string;
           team?: string | null;
           joined_at?: string;
+          device_number?: number;
+          token_hash?: string | null;
+          device_key?: string;
+          last_seen_at?: string;
+          left_at?: string | null;
         };
         Relationships: [
           {
@@ -1715,6 +2635,8 @@ export type Database = {
           response: Json;
           is_correct: boolean | null;
           created_at: string;
+          question_index: number;
+          score: number | null;
         };
         Insert: {
           id?: string;
@@ -1724,6 +2646,8 @@ export type Database = {
           response: Json;
           is_correct?: boolean | null;
           created_at?: string;
+          question_index: number;
+          score?: number | null;
         };
         Update: {
           id?: string;
@@ -1733,6 +2657,8 @@ export type Database = {
           response?: Json;
           is_correct?: boolean | null;
           created_at?: string;
+          question_index?: number;
+          score?: number | null;
         };
         Relationships: [
           {
@@ -1747,6 +2673,110 @@ export type Database = {
             columns: ['session_id'];
             isOneToOne: false;
             referencedRelation: 'class_sessions';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      sign_in_attempts: {
+        Row: {
+          id: number;
+          kind: string;
+          email_key: string;
+          ip_key: string | null;
+          succeeded: boolean;
+          attempted_at: string;
+        };
+        Insert: {
+          id?: never;
+          kind: string;
+          email_key: string;
+          ip_key?: string | null;
+          succeeded?: boolean;
+          attempted_at?: string;
+        };
+        Update: {
+          id?: never;
+          kind?: string;
+          email_key?: string;
+          ip_key?: string | null;
+          succeeded?: boolean;
+          attempted_at?: string;
+        };
+        Relationships: [];
+      };
+      staff_invitations: {
+        Row: {
+          id: string;
+          board_id: string;
+          school_id: string | null;
+          email: string;
+          display_name: string;
+          honorific: string | null;
+          role: Database['public']['Enums']['app_role'];
+          status: string;
+          error_code: string | null;
+          user_id: string | null;
+          invited_by: string | null;
+          created_at: string;
+          processed_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          board_id: string;
+          school_id?: string | null;
+          email: string;
+          display_name: string;
+          honorific?: string | null;
+          role: Database['public']['Enums']['app_role'];
+          status?: string;
+          error_code?: string | null;
+          user_id?: string | null;
+          invited_by?: string | null;
+          created_at?: string;
+          processed_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          board_id?: string;
+          school_id?: string | null;
+          email?: string;
+          display_name?: string;
+          honorific?: string | null;
+          role?: Database['public']['Enums']['app_role'];
+          status?: string;
+          error_code?: string | null;
+          user_id?: string | null;
+          invited_by?: string | null;
+          created_at?: string;
+          processed_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'staff_invitations_board_id_fkey';
+            columns: ['board_id'];
+            isOneToOne: false;
+            referencedRelation: 'boards';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'staff_invitations_invited_by_fkey';
+            columns: ['invited_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'staff_invitations_school_id_board_id_fkey';
+            columns: ['school_id', 'board_id'];
+            isOneToOne: false;
+            referencedRelation: 'schools';
+            referencedColumns: ['id', 'board_id'];
+          },
+          {
+            foreignKeyName: 'staff_invitations_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
             referencedColumns: ['id'];
           },
         ];
@@ -1920,11 +2950,13 @@ export type Database = {
           valid_on: string;
           expires_at: string;
           revoked_at: string | null;
-          failed_attempts: number;
-          locked_until: string | null;
           last_used_at: string | null;
           created_by: string | null;
           created_at: string;
+          valid_from: string;
+          max_devices: number;
+          revoked_by: string | null;
+          issued_by_role: string | null;
         };
         Insert: {
           id?: string;
@@ -1933,11 +2965,13 @@ export type Database = {
           valid_on: string;
           expires_at: string;
           revoked_at?: string | null;
-          failed_attempts?: number;
-          locked_until?: string | null;
           last_used_at?: string | null;
           created_by?: string | null;
           created_at?: string;
+          valid_from: string;
+          max_devices?: number;
+          revoked_by?: string | null;
+          issued_by_role?: string | null;
         };
         Update: {
           id?: string;
@@ -1946,16 +2980,25 @@ export type Database = {
           valid_on?: string;
           expires_at?: string;
           revoked_at?: string | null;
-          failed_attempts?: number;
-          locked_until?: string | null;
           last_used_at?: string | null;
           created_by?: string | null;
           created_at?: string;
+          valid_from?: string;
+          max_devices?: number;
+          revoked_by?: string | null;
+          issued_by_role?: string | null;
         };
         Relationships: [
           {
             foreignKeyName: 'sub_access_codes_created_by_fkey';
             columns: ['created_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'sub_access_codes_revoked_by_fkey';
+            columns: ['revoked_by'];
             isOneToOne: false;
             referencedRelation: 'users';
             referencedColumns: ['id'];
@@ -1969,48 +3012,129 @@ export type Database = {
           },
         ];
       };
+      sub_code_attempts: {
+        Row: {
+          id: number;
+          device_key: string;
+          ip_key: string;
+          succeeded: boolean;
+          attempted_at: string;
+        };
+        Insert: {
+          id?: never;
+          device_key: string;
+          ip_key: string;
+          succeeded: boolean;
+          attempted_at?: string;
+        };
+        Update: {
+          id?: never;
+          device_key?: string;
+          ip_key?: string;
+          succeeded?: boolean;
+          attempted_at?: string;
+        };
+        Relationships: [];
+      };
+      sub_plan_classes: {
+        Row: {
+          sub_plan_id: string;
+          class_id: string;
+        };
+        Insert: {
+          sub_plan_id: string;
+          class_id: string;
+        };
+        Update: {
+          sub_plan_id?: string;
+          class_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'sub_plan_classes_class_id_fkey';
+            columns: ['class_id'];
+            isOneToOne: false;
+            referencedRelation: 'classes';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'sub_plan_classes_sub_plan_id_fkey';
+            columns: ['sub_plan_id'];
+            isOneToOne: false;
+            referencedRelation: 'sub_plans';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       sub_plans: {
         Row: {
           id: string;
           absence_id: string;
           plan_date: string;
-          plan: Json | null;
+          plan: Json;
           pdf_path: string | null;
           status: Database['public']['Enums']['sub_plan_status'];
-          review_deadline: string | null;
+          review_deadline: string;
           reviewed_by: string | null;
           reviewed_at: string | null;
           released_at: string | null;
           created_at: string;
           updated_at: string;
+          generated_at: string;
+          content_version: number;
+          edits: Json | null;
+          edits_revision: number;
+          edited_by: string | null;
+          edited_at: string | null;
+          released_by: string | null;
+          ai: Json | null;
+          ai_job_id: string | null;
         };
         Insert: {
           id?: string;
           absence_id: string;
           plan_date: string;
-          plan?: Json | null;
+          plan: Json;
           pdf_path?: string | null;
           status?: Database['public']['Enums']['sub_plan_status'];
-          review_deadline?: string | null;
+          review_deadline: string;
           reviewed_by?: string | null;
           reviewed_at?: string | null;
           released_at?: string | null;
           created_at?: string;
           updated_at?: string;
+          generated_at?: string;
+          content_version?: number;
+          edits?: Json | null;
+          edits_revision?: number;
+          edited_by?: string | null;
+          edited_at?: string | null;
+          released_by?: string | null;
+          ai?: Json | null;
+          ai_job_id?: string | null;
         };
         Update: {
           id?: string;
           absence_id?: string;
           plan_date?: string;
-          plan?: Json | null;
+          plan?: Json;
           pdf_path?: string | null;
           status?: Database['public']['Enums']['sub_plan_status'];
-          review_deadline?: string | null;
+          review_deadline?: string;
           reviewed_by?: string | null;
           reviewed_at?: string | null;
           released_at?: string | null;
           created_at?: string;
           updated_at?: string;
+          generated_at?: string;
+          content_version?: number;
+          edits?: Json | null;
+          edits_revision?: number;
+          edited_by?: string | null;
+          edited_at?: string | null;
+          released_by?: string | null;
+          ai?: Json | null;
+          ai_job_id?: string | null;
         };
         Relationships: [
           {
@@ -2018,6 +3142,27 @@ export type Database = {
             columns: ['absence_id'];
             isOneToOne: false;
             referencedRelation: 'absences';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'sub_plans_ai_job_id_fkey';
+            columns: ['ai_job_id'];
+            isOneToOne: false;
+            referencedRelation: 'ai_jobs';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'sub_plans_edited_by_fkey';
+            columns: ['edited_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'sub_plans_released_by_fkey';
+            columns: ['released_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
             referencedColumns: ['id'];
           },
           {
@@ -2035,27 +3180,45 @@ export type Database = {
           sub_plan_id: string;
           content: Json;
           status: Database['public']['Enums']['sub_report_status'];
-          submitted_at: string;
+          submitted_at: string | null;
           confirmed_by: string | null;
           confirmed_at: string | null;
+          session_id: string | null;
+          notes_ciphertext: string | null;
+          notes_key_version: number | null;
+          notes_purged_at: string | null;
+          created_at: string;
+          updated_at: string;
         };
         Insert: {
           id?: string;
           sub_plan_id: string;
           content: Json;
           status?: Database['public']['Enums']['sub_report_status'];
-          submitted_at?: string;
+          submitted_at?: string | null;
           confirmed_by?: string | null;
           confirmed_at?: string | null;
+          session_id?: string | null;
+          notes_ciphertext?: string | null;
+          notes_key_version?: number | null;
+          notes_purged_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
         };
         Update: {
           id?: string;
           sub_plan_id?: string;
           content?: Json;
           status?: Database['public']['Enums']['sub_report_status'];
-          submitted_at?: string;
+          submitted_at?: string | null;
           confirmed_by?: string | null;
           confirmed_at?: string | null;
+          session_id?: string | null;
+          notes_ciphertext?: string | null;
+          notes_key_version?: number | null;
+          notes_purged_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
         };
         Relationships: [
           {
@@ -2063,6 +3226,13 @@ export type Database = {
             columns: ['confirmed_by'];
             isOneToOne: false;
             referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'sub_reports_session_id_fkey';
+            columns: ['session_id'];
+            isOneToOne: false;
+            referencedRelation: 'sub_sessions';
             referencedColumns: ['id'];
           },
           {
@@ -2082,6 +3252,11 @@ export type Database = {
           created_at: string;
           expires_at: string;
           revoked_at: string | null;
+          sub_plan_id: string;
+          device_key: string;
+          last_seen_at: string | null;
+          last_viewed_version: number | null;
+          revoked_by: string | null;
         };
         Insert: {
           id?: string;
@@ -2090,6 +3265,11 @@ export type Database = {
           created_at?: string;
           expires_at: string;
           revoked_at?: string | null;
+          sub_plan_id: string;
+          device_key: string;
+          last_seen_at?: string | null;
+          last_viewed_version?: number | null;
+          revoked_by?: string | null;
         };
         Update: {
           id?: string;
@@ -2098,6 +3278,11 @@ export type Database = {
           created_at?: string;
           expires_at?: string;
           revoked_at?: string | null;
+          sub_plan_id?: string;
+          device_key?: string;
+          last_seen_at?: string | null;
+          last_viewed_version?: number | null;
+          revoked_by?: string | null;
         };
         Relationships: [
           {
@@ -2105,6 +3290,20 @@ export type Database = {
             columns: ['access_code_id'];
             isOneToOne: false;
             referencedRelation: 'sub_access_codes';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'sub_sessions_revoked_by_fkey';
+            columns: ['revoked_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'sub_sessions_sub_plan_id_fkey';
+            columns: ['sub_plan_id'];
+            isOneToOne: false;
+            referencedRelation: 'sub_plans';
             referencedColumns: ['id'];
           },
         ];
@@ -2155,6 +3354,27 @@ export type Database = {
             referencedColumns: ['id'];
           },
         ];
+      };
+      system_heartbeats: {
+        Row: {
+          component: string;
+          beat_at: string;
+          release: string | null;
+          details: Json;
+        };
+        Insert: {
+          component: string;
+          beat_at?: string;
+          release?: string | null;
+          details?: Json;
+        };
+        Update: {
+          component?: string;
+          beat_at?: string;
+          release?: string | null;
+          details?: Json;
+        };
+        Relationships: [];
       };
       tags: {
         Row: {
@@ -2258,6 +3478,39 @@ export type Database = {
             columns: ['teacher_id'];
             isOneToOne: false;
             referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      unit_expectations: {
+        Row: {
+          unit_id: string;
+          expectation_id: string;
+          created_at: string;
+        };
+        Insert: {
+          unit_id: string;
+          expectation_id: string;
+          created_at?: string;
+        };
+        Update: {
+          unit_id?: string;
+          expectation_id?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'unit_expectations_expectation_id_fkey';
+            columns: ['expectation_id'];
+            isOneToOne: false;
+            referencedRelation: 'curriculum_expectations';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'unit_expectations_unit_id_fkey';
+            columns: ['unit_id'];
+            isOneToOne: false;
+            referencedRelation: 'units';
             referencedColumns: ['id'];
           },
         ];
@@ -2374,6 +3627,8 @@ export type Database = {
           created_by: string | null;
           created_at: string;
           updated_at: string;
+          planned_start_on: string | null;
+          planned_end_on: string | null;
         };
         Insert: {
           id?: string;
@@ -2386,6 +3641,8 @@ export type Database = {
           created_by?: string | null;
           created_at?: string;
           updated_at?: string;
+          planned_start_on?: string | null;
+          planned_end_on?: string | null;
         };
         Update: {
           id?: string;
@@ -2398,6 +3655,8 @@ export type Database = {
           created_by?: string | null;
           created_at?: string;
           updated_at?: string;
+          planned_start_on?: string | null;
+          planned_end_on?: string | null;
         };
         Relationships: [
           {
@@ -2492,6 +3751,9 @@ export type Database = {
           deactivated_at: string | null;
           created_at: string;
           updated_at: string;
+          terms_version: string | null;
+          terms_accepted_at: string | null;
+          onboarding_dismissed_at: string | null;
         };
         Insert: {
           id: string;
@@ -2502,6 +3764,9 @@ export type Database = {
           deactivated_at?: string | null;
           created_at?: string;
           updated_at?: string;
+          terms_version?: string | null;
+          terms_accepted_at?: string | null;
+          onboarding_dismissed_at?: string | null;
         };
         Update: {
           id?: string;
@@ -2512,12 +3777,23 @@ export type Database = {
           deactivated_at?: string | null;
           created_at?: string;
           updated_at?: string;
+          terms_version?: string | null;
+          terms_accepted_at?: string | null;
+          onboarding_dismissed_at?: string | null;
         };
         Relationships: [];
       };
     };
     Views: { [_ in never]: never };
     Functions: {
+      accept_terms: {
+        Args: { p_version: string };
+        Returns: undefined;
+      };
+      add_library_item_to_unit: {
+        Args: { p_item_id: string; p_unit_id: string; p_position: number; p_lesson: Json };
+        Returns: string;
+      };
       ai_usage_summary: {
         Args: { p_school_id: string };
         Returns: {
@@ -2531,6 +3807,94 @@ export type Database = {
           requests_this_month: number;
         }[];
       };
+      board_ai_usage: {
+        Args: { p_board_id: string; p_month: string };
+        Returns: { school_id: string; requests: number; failed: number; cost_usd: number }[];
+      };
+      board_staff_sign_ins: {
+        Args: { p_board_id: string };
+        Returns: { user_id: string; has_signed_in: boolean }[];
+      };
+      cancel_absence: {
+        Args: { p_absence_id: string };
+        Returns: undefined;
+      };
+      cancel_staff_invitation: {
+        Args: { p_invitation_id: string };
+        Returns: undefined;
+      };
+      class_mode_link: {
+        Args: { p_class_id: string; p_replace?: boolean };
+        Returns: string;
+      };
+      class_mode_overview: {
+        Args: { p_class_id: string };
+        Returns: Json;
+      };
+      class_session_control: {
+        Args: {
+          p_session_id: string;
+          p_action: string;
+          p_expected_version: number;
+          p_participant_id?: string;
+          p_team?: string;
+        };
+        Returns: Json;
+      };
+      class_session_live: {
+        Args: { p_session_id: string };
+        Returns: Json;
+      };
+      clear_sub_plan_ai: {
+        Args: { p_plan_id: string };
+        Returns: undefined;
+      };
+      confirm_sub_report: {
+        Args: { p_report_id: string; p_decisions: Json; p_expected_updated_at?: string };
+        Returns: undefined;
+      };
+      content_pack_apply: {
+        Args: { p_import_id: string; p_options: Json };
+        Returns: Json;
+      };
+      content_pack_discard: {
+        Args: { p_import_id: string };
+        Returns: undefined;
+      };
+      content_pack_export_items: {
+        Args: { p_board_id: string; p_filters: Json; p_after: string; p_limit: number };
+        Returns: Json;
+      };
+      content_pack_list: {
+        Args: { p_board_id: string };
+        Returns: Json;
+      };
+      content_pack_people: {
+        Args: { p_board_id: string };
+        Returns: Json;
+      };
+      content_pack_preview: {
+        Args: { p_import_id: string; p_options: Json };
+        Returns: Json;
+      };
+      content_pack_record_export: {
+        Args: {
+          p_board_id: string;
+          p_slug: string;
+          p_version: string;
+          p_item_count: number;
+          p_file_sha256: string;
+        };
+        Returns: undefined;
+      };
+      content_pack_stage: {
+        Args: { p_board_id: string; p_header: Json; p_file_sha256: string };
+        Returns: string;
+      };
+      content_pack_stage_items: {
+        Args: { p_import_id: string; p_items: Json; p_faith_keys?: string[] };
+        Returns: number;
+      };
       create_class: {
         Args: {
           p_school_id: string;
@@ -2541,9 +3905,21 @@ export type Database = {
         };
         Returns: string;
       };
+      create_sample_class: {
+        Args: { p_school_id: string; p_sample: Json };
+        Returns: string;
+      };
       delete_student_alert: {
         Args: { p_alert_id: string };
         Returns: undefined;
+      };
+      end_class_session: {
+        Args: { p_session_id: string; p_keep: boolean };
+        Returns: Json;
+      };
+      feedback_student_names: {
+        Args: { p_text: string };
+        Returns: string[];
       };
       get_class_alerts: {
         Args: { p_class_id: string };
@@ -2556,9 +3932,318 @@ export type Database = {
           updated_at: string;
         }[];
       };
+      get_sub_plan_for_staff: {
+        Args: { p_plan_id: string; p_purpose?: string };
+        Returns: Json;
+      };
+      get_sub_plan_library_sources: {
+        Args: { p_school_id: string };
+        Returns: Json;
+      };
+      get_sub_plan_sources: {
+        Args: { p_school_id: string; p_from: string; p_to: string; p_absence_id?: string };
+        Returns: Json;
+      };
+      get_sub_report_for_staff: {
+        Args: { p_plan_id: string };
+        Returns: Json;
+      };
+      grant_staff_role: {
+        Args: {
+          p_role_id: string;
+          p_role: Database['public']['Enums']['app_role'];
+          p_school_id: string;
+        };
+        Returns: string;
+      };
+      invite_staff: {
+        Args: {
+          p_board_id: string;
+          p_school_id: string;
+          p_email: string;
+          p_display_name: string;
+          p_honorific: string;
+          p_role: Database['public']['Enums']['app_role'];
+        };
+        Returns: { invitation_id: string; status: string; error_code: string }[];
+      };
+      issue_sub_access_code: {
+        Args: { p_plan_id: string; p_code_mac: string };
+        Returns: { code_id: string; valid_from: string; expires_at: string }[];
+      };
+      library_approve_board_draft: {
+        Args: { p_item_id: string; p_expected_revision: number; p_originality_confirmed: boolean };
+        Returns: string;
+      };
+      library_archive: {
+        Args: { p_item_id: string };
+        Returns: undefined;
+      };
+      library_bulk_cancel: {
+        Args: { p_run_id: string };
+        Returns: undefined;
+      };
+      library_bulk_plan: {
+        Args: { p_board_id: string; p_params: Json; p_max_cost_usd: number; p_note: string };
+        Returns: Json;
+      };
+      library_bulk_start: {
+        Args: { p_run_id: string };
+        Returns: undefined;
+      };
+      library_cancel_request: {
+        Args: { p_item_id: string };
+        Returns: undefined;
+      };
+      library_coverage: {
+        Args: { p_board_id: string; p_grade_code: string; p_subject_id: string };
+        Returns: {
+          expectation_id: string;
+          parent_id: string;
+          strand_id: string;
+          kind: Database['public']['Enums']['expectation_kind'];
+          code: string;
+          text_fr: string;
+          text_en: string;
+          is_verified: boolean;
+          sort_order: number;
+          has_children: boolean;
+          approved_count: number;
+          in_review_count: number;
+          approved_types: string[];
+        }[];
+      };
+      library_coverage_summary: {
+        Args: { p_board_id: string; p_min_approved?: number };
+        Returns: {
+          grade_code: string;
+          subject_id: string;
+          unit_count: number;
+          none_count: number;
+          few_count: number;
+          covered_count: number;
+        }[];
+      };
+      library_decide: {
+        Args: {
+          p_item_id: string;
+          p_decision: string;
+          p_note: string;
+          p_expected_revision: number;
+        };
+        Returns: undefined;
+      };
+      library_expectation_counts: {
+        Args: { p_grade_code: string; p_subject_id: string };
+        Returns: { expectation_id: string; item_count: number; approved_count: number }[];
+      };
+      library_faith_decide: {
+        Args: {
+          p_item_id: string;
+          p_decision: string;
+          p_note: string;
+          p_expected_revision: number;
+        };
+        Returns: undefined;
+      };
+      library_flag_faith: {
+        Args: { p_item_id: string };
+        Returns: undefined;
+      };
+      library_item_ai_preview: {
+        Args: { p_school_id: string; p_request: Json };
+        Returns: Json;
+      };
+      library_item_lineage: {
+        Args: { p_item_id: string };
+        Returns: {
+          parent_id: string;
+          title: string;
+          available: boolean;
+          credit_kind: string;
+          credit_name: string;
+          school_name: string;
+          pack_title: string;
+        }[];
+      };
+      library_item_stats: {
+        Args: { p_item_ids: string[] };
+        Returns: {
+          item_id: string;
+          rating_average: number;
+          rating_count: number;
+          my_rating: number;
+          usage_count: number;
+        }[];
+      };
+      library_levels_ai_preview: {
+        Args: { p_item_id: string; p_school_id: string; p_level_ids: string[] };
+        Returns: Json;
+      };
+      library_mark_reviewed: {
+        Args: { p_item_id: string; p_originality_confirmed: boolean };
+        Returns: undefined;
+      };
+      library_refresh_search_all: {
+        Args: never;
+        Returns: number;
+      };
+      library_request_approval: {
+        Args: { p_item_id: string };
+        Returns: undefined;
+      };
+      library_restore: {
+        Args: { p_item_id: string };
+        Returns: undefined;
+      };
+      library_retract: {
+        Args: { p_item_id: string; p_note: string };
+        Returns: undefined;
+      };
+      library_return_to_draft: {
+        Args: { p_item_id: string };
+        Returns: undefined;
+      };
+      library_review_queue: {
+        Args: { p_kind: string };
+        Returns: {
+          item_id: string;
+          title: string;
+          type: Database['public']['Enums']['library_item_type'];
+          content_revision: number;
+          requested_at: string;
+          author_name: string;
+          school_name: string;
+          grade_codes: string[];
+          requires_faith_review: boolean;
+          faith_reviewed: boolean;
+        }[];
+      };
+      library_share: {
+        Args: {
+          p_item_id: string;
+          p_scope: Database['public']['Enums']['share_scope'];
+          p_school_id?: string;
+          p_names_confirmed?: number;
+        };
+        Returns: undefined;
+      };
+      list_audit_entries: {
+        Args: { p_filters: Json; p_before_id?: number; p_limit?: number };
+        Returns: {
+          id: number;
+          occurred_at: string;
+          action: string;
+          category: string;
+          actor_type: Database['public']['Enums']['audit_actor_type'];
+          actor_user_id: string;
+          actor_label: string;
+          issuer_label: string;
+          subject_label: string;
+          school_id: string;
+          school_name: string;
+          entity_type: string;
+          entity_id: string;
+          entity_label: string;
+          details: Json;
+          flags: string[];
+        }[];
+      };
+      list_school_sub_days: {
+        Args: { p_school_id: string; p_from: string; p_to: string };
+        Returns: {
+          absence_id: string;
+          plan_id: string;
+          plan_date: string;
+          part: Database['public']['Enums']['absence_part'];
+          note: string;
+          teacher_name: string;
+          class_names: string[];
+          room_names: string[];
+          released: boolean;
+          release_at: string;
+          released_by_name: string;
+          refreshing: boolean;
+          active_codes: number;
+          devices: number;
+          first_session_at: string;
+          last_seen_at: string;
+          report_status: string;
+        }[];
+      };
+      list_sub_plan_access: {
+        Args: { p_plan_id: string };
+        Returns: Json;
+      };
+      log_audit_export: {
+        Args: { p_board_id: string; p_school_id: string; p_filters: Json; p_rows: number };
+        Returns: undefined;
+      };
+      log_operator_access: {
+        Args: { p_board_id: string; p_reason: string };
+        Returns: undefined;
+      };
       mark_lesson_taught: {
         Args: { p_lesson_id: string; p_taught_on: string };
         Returns: undefined;
+      };
+      merge_school_settings: {
+        Args: { p_school_id: string; p_patch: Json };
+        Returns: undefined;
+      };
+      my_onboarding_state: {
+        Args: never;
+        Returns: {
+          terms_version: string;
+          terms_accepted_at: string;
+          onboarding_dismissed_at: string;
+        }[];
+      };
+      newsletter_ai_preview: {
+        Args: { p_newsletter_id: string; p_scope: string };
+        Returns: Json;
+      };
+      operator_account_id: {
+        Args: { p_email: string };
+        Returns: string;
+      };
+      operator_delete_board: {
+        Args: { p_board_id: string; p_confirm_slug: string };
+        Returns: Json;
+      };
+      operator_delete_staff_account: {
+        Args: { p_user_id: string; p_all_boards?: boolean };
+        Returns: Json;
+      };
+      operator_export_audit: {
+        Args: { p_board_id: string; p_after_id?: number; p_limit?: number };
+        Returns: {
+          id: number;
+          occurred_at: string;
+          action: string;
+          audience: string;
+          category: string;
+          school_id: string;
+          school_name: string;
+          actor_type: Database['public']['Enums']['audit_actor_type'];
+          actor_user_id: string;
+          actor_name: string;
+          entity_type: string;
+          entity_id: string;
+          details: Json;
+        }[];
+      };
+      operator_log_audit_export: {
+        Args: { p_board_id: string; p_last_id: number; p_rows: number };
+        Returns: undefined;
+      };
+      operator_set_staff_active: {
+        Args: { p_user_id: string; p_active: boolean };
+        Returns: boolean;
+      };
+      operator_status: {
+        Args: never;
+        Returns: Json;
       };
       provision_board_defaults: {
         Args: { p_board_id: string };
@@ -2568,13 +4253,88 @@ export type Database = {
         Args: { p_school_id: string };
         Returns: undefined;
       };
+      publish_absence: {
+        Args: {
+          p_school_id: string;
+          p_starts_on: string;
+          p_ends_on: string;
+          p_part: Database['public']['Enums']['absence_part'];
+          p_note: string;
+          p_catholic_connection: boolean;
+          p_client_request_id: string;
+          p_plans: Json;
+          p_sources_fingerprint?: string;
+        };
+        Returns: string;
+      };
+      rate_library_item: {
+        Args: { p_item_id: string; p_rating: number };
+        Returns: undefined;
+      };
+      refresh_sub_plans: {
+        Args: { p_absence_id: string; p_plans: Json; p_sources_fingerprint?: string };
+        Returns: undefined;
+      };
+      release_sub_plan: {
+        Args: { p_plan_id: string };
+        Returns: undefined;
+      };
+      remix_library_item: {
+        Args: { p_item_id: string; p_new_id: string };
+        Returns: string;
+      };
       reorder_unit_lessons: {
         Args: { p_unit_id: string; p_lesson_ids: string[] };
         Returns: undefined;
       };
+      report_comment_bank_ai_preview: {
+        Args: { p_school_id: string; p_request: Json };
+        Returns: Json;
+      };
       request_ai_job: {
         Args: { p_school_id: string; p_feature: string; p_input: Json };
         Returns: string;
+      };
+      request_library_item: {
+        Args: { p_school_id: string; p_request: Json };
+        Returns: string;
+      };
+      request_library_levels: {
+        Args: { p_item_id: string; p_school_id: string; p_level_ids: string[] };
+        Returns: string;
+      };
+      request_newsletter_translation: {
+        Args: {
+          p_newsletter_id: string;
+          p_scope: string;
+          p_expected_revision: number;
+          p_send_keys: string[];
+        };
+        Returns: string;
+      };
+      request_report_comment_bank: {
+        Args: { p_school_id: string; p_request: Json };
+        Returns: string;
+      };
+      request_sub_plan_ai: {
+        Args: { p_plan_id: string; p_input: Json; p_expected_version?: number };
+        Returns: string;
+      };
+      revoke_staff_role: {
+        Args: { p_role_id: string };
+        Returns: undefined;
+      };
+      revoke_sub_access_code: {
+        Args: { p_code_id: string };
+        Returns: undefined;
+      };
+      revoke_sub_plan_access: {
+        Args: { p_plan_id: string };
+        Returns: undefined;
+      };
+      revoke_sub_session: {
+        Args: { p_session_id: string };
+        Returns: undefined;
       };
       save_ai_job_to_library: {
         Args: {
@@ -2587,6 +4347,10 @@ export type Database = {
         };
         Returns: string;
       };
+      save_library_item: {
+        Args: { p_item_id: string; p_expected_revision: number; p_item: Json };
+        Returns: { item_id: string; content_revision: number }[];
+      };
       save_student_alert: {
         Args: {
           p_student_id: string;
@@ -2597,12 +4361,107 @@ export type Database = {
         };
         Returns: string;
       };
+      save_sub_plan_edits: {
+        Args: { p_plan_id: string; p_edits: Json; p_expected_revision: number };
+        Returns: number;
+      };
+      save_unit_plan: {
+        Args: {
+          p_unit_id: string;
+          p_class_id: string;
+          p_subject_id: string;
+          p_title: string;
+          p_description: string;
+          p_starts_on: string;
+          p_ends_on: string;
+          p_expectation_ids: string[];
+        };
+        Returns: string;
+      };
+      search_library: {
+        Args: { p_filters: Json; p_limit?: number; p_offset?: number };
+        Returns: Json;
+      };
       set_active_unit: {
         Args: { p_unit_id: string };
         Returns: undefined;
       };
+      set_class_session_keep: {
+        Args: { p_session_id: string; p_keep: boolean };
+        Returns: undefined;
+      };
+      set_library_reviewer: {
+        Args: { p_role_id: string; p_approves_content: boolean; p_reviews_faith: boolean };
+        Returns: undefined;
+      };
+      set_staff_active: {
+        Args: { p_role_id: string; p_active: boolean };
+        Returns: undefined;
+      };
+      sign_in_attempt: {
+        Args: { p_kind: string; p_email: string; p_ip: string };
+        Returns: { outcome: string; retry_after: number }[];
+      };
+      sign_in_succeeded: {
+        Args: never;
+        Returns: undefined;
+      };
+      start_class_session: {
+        Args: {
+          p_class_id: string;
+          p_item_id: string;
+          p_version_id: string;
+          p_mode: string;
+          p_team_count?: number;
+          p_team_choice?: string;
+          p_seconds_per_question?: number;
+          p_reveal_answers?: boolean;
+          p_score_short_answers?: boolean;
+          p_replace_open?: boolean;
+        };
+        Returns: { session_id: string; join_code: string }[];
+      };
+      start_unit: {
+        Args: { p_unit_id: string; p_finish_current: boolean };
+        Returns: undefined;
+      };
+      sub_plan_access_ended: {
+        Args: { p_plan_id: string };
+        Returns: boolean;
+      };
+      submit_feedback: {
+        Args: {
+          p_board_id: string;
+          p_school_id: string;
+          p_kind: string;
+          p_message: string;
+          p_route: string;
+          p_error_ref: string;
+          p_release: string;
+          p_device: string;
+          p_locale: string;
+          p_may_contact: boolean;
+        };
+        Returns: string;
+      };
+      system_status: {
+        Args: never;
+        Returns: Json;
+      };
       unmark_lesson: {
         Args: { p_lesson_id: string };
+        Returns: undefined;
+      };
+      update_absence: {
+        Args: {
+          p_absence_id: string;
+          p_ends_on: string;
+          p_part: Database['public']['Enums']['absence_part'];
+          p_note: string;
+          p_catholic_connection: boolean;
+          p_plans: Json;
+          p_sources_fingerprint?: string;
+        };
         Returns: undefined;
       };
     };
@@ -2660,6 +4519,7 @@ export type Database = {
         | 'unit_test'
         | 'diagnostic'
         | 'rubric'
+        | 'report_comments'
         | 'game'
         | 'brain_break'
         | 'song'
@@ -2676,7 +4536,7 @@ export type Database = {
       schedule_type: 'weekly' | 'cycle';
       share_scope: 'private' | 'school' | 'board';
       sub_plan_status: 'pending' | 'generating' | 'ready' | 'released' | 'failed';
-      sub_report_status: 'submitted' | 'confirmed';
+      sub_report_status: 'draft' | 'submitted' | 'confirmed';
       unit_status: 'planned' | 'active' | 'completed' | 'archived';
     };
     CompositeTypes: { [_ in never]: never };
@@ -2848,6 +4708,7 @@ export const Constants = {
         'unit_test',
         'diagnostic',
         'rubric',
+        'report_comments',
         'game',
         'brain_break',
         'song',
@@ -2864,7 +4725,7 @@ export const Constants = {
       schedule_type: ['weekly', 'cycle'],
       share_scope: ['private', 'school', 'board'],
       sub_plan_status: ['pending', 'generating', 'ready', 'released', 'failed'],
-      sub_report_status: ['submitted', 'confirmed'],
+      sub_report_status: ['draft', 'submitted', 'confirmed'],
       unit_status: ['planned', 'active', 'completed', 'archived'],
     },
   },

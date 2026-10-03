@@ -1,0 +1,1406 @@
+{
+  "slug": "dixiemes-centiemes-argent",
+  "type": "worksheet",
+  "title": "Dixièmes et centièmes avec l’argent",
+  "summary": "Fiche d’exercices qui relie les fractions et les nombres décimaux (dixièmes et centièmes) à l’aide de montants d’argent : fractions de dollar, écriture décimale, comparaison et erreurs fréquentes.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["5"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "B1.7"
+    }
+  ],
+  "durationMinutes": 40,
+  "materials": "Une copie de la fiche par élève, dans la version prévue pour son groupe; un crayon. Facultatif : de la monnaie de jeu (pièces de 10 ¢, de 25 ¢ et de 1 $).",
+  "keywords": "dixièmes, centièmes, nombres décimaux, fractions, argent, monnaie, dollar, cents",
+  "tags": ["decimaux", "fractions"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "J’établis des liens entre les fractions et les nombres décimaux (dixièmes et centièmes) à l’aide de l’argent.",
+        "teacherNote": "Les montants des questions sont les mêmes dans toutes les versions : seuls la langue et les appuis changent, et la version enrichie ajoute deux défis. Au Canada, la pièce de 1 ¢ n’est plus fabriquée depuis 2012 ni distribuée depuis 2013, mais les prix et les paiements électroniques s’écrivent encore au cent près : le cent sert ici d’unité de mesure. Les questions 8 et 9 se corrigent à la main.",
+        "instructions": "Dans cette fiche, un dollar représente un tout. Lis le rappel, puis réponds aux questions.",
+        "text": "Rappel : il faut 10 pièces de 10 ¢ pour faire 1 $. Une pièce de 10 ¢ vaut donc un dixième de dollar : 1/10 de dollar = 0,10 $.\n\nIl faut 100 cents pour faire 1 $. Un cent vaut donc un centième de dollar : 1/100 de dollar = 0,01 $.\n\nDans 0,37 $, le 3 est à la position des dixièmes (3 dixièmes = 30 ¢) et le 7 est à la position des centièmes (7 centièmes = 7 ¢).",
+        "glossary": [
+          {
+            "term": "un dixième",
+            "definition": "Une des 10 parties égales d’un tout (1/10 = 0,1)."
+          },
+          {
+            "term": "un centième",
+            "definition": "Une des 100 parties égales d’un tout (1/100 = 0,01)."
+          },
+          {
+            "term": "un nombre décimal",
+            "definition": "Un nombre écrit avec une virgule, comme 0,45."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "matching",
+            "prompt": "Associe chaque montant à la fraction de dollar qui lui correspond. Une fraction est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "l1",
+                "text": "0,10 $"
+              },
+              {
+                "id": "l2",
+                "text": "0,25 $"
+              },
+              {
+                "id": "l3",
+                "text": "0,50 $"
+              },
+              {
+                "id": "l4",
+                "text": "0,01 $"
+              }
+            ],
+            "right": [
+              {
+                "id": "r1",
+                "text": "1/2"
+              },
+              {
+                "id": "r2",
+                "text": "1/100"
+              },
+              {
+                "id": "r3",
+                "text": "1/10"
+              },
+              {
+                "id": "r4",
+                "text": "1/4"
+              },
+              {
+                "id": "r5",
+                "text": "1/5"
+              }
+            ]
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Combien de pièces de 10 ¢ faut-il pour faire 0,70 $?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Écris 45 centièmes de dollar sous forme de nombre décimal.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q4",
+            "kind": "multiple_choice",
+            "prompt": "Coche toutes les fractions de dollar qui valent 0,30 $.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "3/10"
+              },
+              {
+                "id": "b",
+                "text": "3/100"
+              },
+              {
+                "id": "c",
+                "text": "30/100"
+              },
+              {
+                "id": "d",
+                "text": "1/3"
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "q5",
+            "kind": "true_false",
+            "prompt": "0,5 $ et 0,50 $ représentent le même montant.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q6",
+            "kind": "true_false",
+            "prompt": "0,09 $ est plus grand que 0,10 $.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes"
+          },
+          {
+            "id": "q7",
+            "kind": "ordering",
+            "prompt": "Place ces montants du plus petit au plus grand.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "items": [
+              {
+                "id": "a",
+                "text": "0,75 $"
+              },
+              {
+                "id": "b",
+                "text": "0,07 $"
+              },
+              {
+                "id": "c",
+                "text": "0,57 $"
+              },
+              {
+                "id": "d",
+                "text": "0,70 $"
+              }
+            ]
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Capucine a 3 pièces de 25 ¢ et 2 pièces de 10 ¢. Quelle fraction de dollar a-t-elle? Écris ta réponse en centièmes, puis sous forme de nombre décimal.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "q9",
+            "kind": "short_answer",
+            "prompt": "Bastien dit que 0,4 $, c’est 4 cents. Explique son erreur.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Des pièces de monnaie de jeu (10 ¢, 25 ¢ et 1 $) pour manipuler les montants.",
+          "Une grille de 100 cases où chaque case vaut 1 ¢ et chaque rangée de 10 cases vaut 10 ¢.",
+          "Un tableau de valeur de position avec les colonnes « unités », « dixièmes » et « centièmes »."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "r3"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "r4"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "r1"
+              },
+              {
+                "leftId": "l4",
+                "rightId": "r2"
+              }
+            ],
+            "explanation": "0,10 $ = 10/100 = 1/10; 0,25 $ = 25/100 = 1/4; 0,50 $ = 50/100 = 1/2; 0,01 $ = 1/100. La fraction 1/5 (0,20 $) est de trop."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "7 pièces",
+            "acceptableAnswers": ["7", "sept", "7 pièces", "sept pièces"],
+            "explanation": "0,70 $ = 7 dixièmes de dollar = 7 pièces de 10 ¢."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "0,45 $",
+            "acceptableAnswers": ["0,45 $", "0,45$", "0,45"],
+            "explanation": "45 centièmes = 45/100 = 0,45. Le 4 est à la position des dixièmes et le 5, à la position des centièmes."
+          },
+          {
+            "questionId": "q4",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "c"],
+            "explanation": "0,30 $ = 30/100 = 3/10. 3/100 vaut 0,03 $, et 1/3 de dollar ne s’écrit pas exactement en centièmes (environ 0,33 $)."
+          },
+          {
+            "questionId": "q5",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Vrai : 5 dixièmes = 50 centièmes. En argent, on écrit habituellement deux chiffres après la virgule (0,50 $)."
+          },
+          {
+            "questionId": "q6",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : 0,09 $ = 9 centièmes et 0,10 $ = 10 centièmes. 9 ¢ est moins que 10 ¢."
+          },
+          {
+            "questionId": "q7",
+            "kind": "ordering",
+            "orderedIds": ["b", "c", "d", "a"],
+            "explanation": "0,07 $ < 0,57 $ < 0,70 $ < 0,75 $. On compare d’abord les dixièmes, puis les centièmes."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "95/100 de dollar = 0,95 $ (75 ¢ + 20 ¢ = 95 ¢).",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : attendre 95/100 et 0,95 $. Accepter une démarche qui montre 3 × 25 = 75 et 2 × 10 = 20."
+          },
+          {
+            "questionId": "q9",
+            "kind": "short_answer",
+            "sampleAnswer": "Le 4 est à la position des dixièmes. 0,4 $, c’est 4 dixièmes de dollar, donc 40 ¢. 4 cents s’écrit 0,04 $.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit parler des dixièmes (0,4 $ = 40 ¢) ou montrer que 4 ¢ = 0,04 $."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "debutant",
+      "content": {
+        "title": "",
+        "objective": "J’établis des liens entre les fractions et les nombres décimaux (dixièmes et centièmes) à l’aide de l’argent.",
+        "teacherNote": "Version Débutant : rappel en phrases très courtes, exemples, indices et glossaire. Mêmes montants que les autres versions. Faire manipuler de la monnaie de jeu au besoin.",
+        "instructions": "Un dollar = un tout. Lis le rappel. Ensuite, réponds aux questions.",
+        "text": "Rappel : 1 $ = 10 pièces de 10 ¢. Une pièce de 10 ¢ = 1/10 de dollar = 0,10 $.\n\n1 $ = 100 ¢. 1 ¢ = 1/100 de dollar = 0,01 $.\n\nExemple : 0,37 $. Le 3 est aux dixièmes : 30 ¢. Le 7 est aux centièmes : 7 ¢.",
+        "glossary": [
+          {
+            "term": "un dixième",
+            "definition": "Une partie sur 10 (1/10)."
+          },
+          {
+            "term": "un centième",
+            "definition": "Une partie sur 100 (1/100)."
+          },
+          {
+            "term": "un cent",
+            "definition": "Un centième de dollar (1 ¢)."
+          },
+          {
+            "term": "un nombre décimal",
+            "definition": "Un nombre avec une virgule, comme 0,45."
+          },
+          {
+            "term": "une pièce",
+            "definition": "Une pièce de monnaie, comme une pièce de 10 ¢."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "matching",
+            "prompt": "Relie chaque montant à la bonne fraction de dollar. Une fraction est de trop.",
+            "hint": "1 $ = 100 ¢.",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "l1",
+                "text": "0,10 $"
+              },
+              {
+                "id": "l2",
+                "text": "0,25 $"
+              },
+              {
+                "id": "l3",
+                "text": "0,50 $"
+              },
+              {
+                "id": "l4",
+                "text": "0,01 $"
+              }
+            ],
+            "right": [
+              {
+                "id": "r1",
+                "text": "1/2"
+              },
+              {
+                "id": "r2",
+                "text": "1/100"
+              },
+              {
+                "id": "r3",
+                "text": "1/10"
+              },
+              {
+                "id": "r4",
+                "text": "1/4"
+              },
+              {
+                "id": "r5",
+                "text": "1/5"
+              }
+            ]
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Combien de pièces de 10 ¢ faut-il pour avoir 0,70 $?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Écris 45 centièmes de dollar avec une virgule.",
+            "hint": "Un exemple : 30 centièmes de dollar = 0,30 $.",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q4",
+            "kind": "multiple_choice",
+            "prompt": "Coche toutes les fractions de dollar égales à 0,30 $.",
+            "hint": "Il y a deux bonnes réponses.",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "3/10"
+              },
+              {
+                "id": "b",
+                "text": "3/100"
+              },
+              {
+                "id": "c",
+                "text": "30/100"
+              },
+              {
+                "id": "d",
+                "text": "1/3"
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "q5",
+            "kind": "true_false",
+            "prompt": "0,5 $ et 0,50 $ représentent le même montant.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q6",
+            "kind": "true_false",
+            "prompt": "0,09 $ est plus grand que 0,10 $.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes"
+          },
+          {
+            "id": "q7",
+            "kind": "ordering",
+            "prompt": "Place ces montants du plus petit au plus grand.",
+            "hint": "Compare d’abord le chiffre des dixièmes.",
+            "points": null,
+            "category": "connaissance",
+            "items": [
+              {
+                "id": "a",
+                "text": "0,75 $"
+              },
+              {
+                "id": "b",
+                "text": "0,07 $"
+              },
+              {
+                "id": "c",
+                "text": "0,57 $"
+              },
+              {
+                "id": "d",
+                "text": "0,70 $"
+              }
+            ]
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Capucine a 3 pièces de 25 ¢ et 2 pièces de 10 ¢. Combien de centièmes de dollar a-t-elle? Écris la fraction et le nombre décimal.",
+            "hint": "Calcule d’abord le total en cents.",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "q9",
+            "kind": "short_answer",
+            "prompt": "Bastien dit : « 0,4 $, c’est 4 cents. » Il se trompe. Explique pourquoi.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Des pièces de monnaie de jeu (10 ¢, 25 ¢ et 1 $) pour manipuler les montants.",
+          "Une grille de 100 cases où chaque case vaut 1 ¢ et chaque rangée de 10 cases vaut 10 ¢.",
+          "Un tableau de valeur de position avec les colonnes « unités », « dixièmes » et « centièmes »."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "r3"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "r4"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "r1"
+              },
+              {
+                "leftId": "l4",
+                "rightId": "r2"
+              }
+            ],
+            "explanation": "0,10 $ = 10/100 = 1/10; 0,25 $ = 25/100 = 1/4; 0,50 $ = 50/100 = 1/2; 0,01 $ = 1/100. La fraction 1/5 (0,20 $) est de trop."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "7 pièces",
+            "acceptableAnswers": ["7", "sept", "7 pièces", "sept pièces"],
+            "explanation": "0,70 $ = 7 dixièmes de dollar = 7 pièces de 10 ¢."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "0,45 $",
+            "acceptableAnswers": ["0,45 $", "0,45$", "0,45"],
+            "explanation": "45 centièmes = 45/100 = 0,45. Le 4 est à la position des dixièmes et le 5, à la position des centièmes."
+          },
+          {
+            "questionId": "q4",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "c"],
+            "explanation": "0,30 $ = 30/100 = 3/10. 3/100 vaut 0,03 $, et 1/3 de dollar ne s’écrit pas exactement en centièmes (environ 0,33 $)."
+          },
+          {
+            "questionId": "q5",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Vrai : 5 dixièmes = 50 centièmes. En argent, on écrit habituellement deux chiffres après la virgule (0,50 $)."
+          },
+          {
+            "questionId": "q6",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : 0,09 $ = 9 centièmes et 0,10 $ = 10 centièmes. 9 ¢ est moins que 10 ¢."
+          },
+          {
+            "questionId": "q7",
+            "kind": "ordering",
+            "orderedIds": ["b", "c", "d", "a"],
+            "explanation": "0,07 $ < 0,57 $ < 0,70 $ < 0,75 $. On compare d’abord les dixièmes, puis les centièmes."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "95/100 de dollar = 0,95 $ (75 ¢ + 20 ¢ = 95 ¢).",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : attendre 95/100 et 0,95 $. Accepter une démarche qui montre 3 × 25 = 75 et 2 × 10 = 20."
+          },
+          {
+            "questionId": "q9",
+            "kind": "short_answer",
+            "sampleAnswer": "Le 4 est à la position des dixièmes. 0,4 $, c’est 4 dixièmes de dollar, donc 40 ¢. 4 cents s’écrit 0,04 $.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit parler des dixièmes (0,4 $ = 40 ¢) ou montrer que 4 ¢ = 0,04 $."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "intermediaire",
+      "content": {
+        "title": "",
+        "objective": "J’établis des liens entre les fractions et les nombres décimaux (dixièmes et centièmes) à l’aide de l’argent.",
+        "teacherNote": "Version Intermédiaire : phrases simples, indices pour les questions 1, 3, 7, 8 et 9. Mêmes montants que les autres versions.",
+        "instructions": "Dans cette fiche, un dollar représente un tout. Lis le rappel, puis réponds aux questions.",
+        "text": "Rappel : il faut 10 pièces de 10 ¢ pour faire 1 $. Une pièce de 10 ¢ vaut donc 1/10 de dollar, soit 0,10 $.\n\nIl faut 100 cents pour faire 1 $. Un cent vaut donc 1/100 de dollar, soit 0,01 $.\n\nDans 0,37 $, le 3 est aux dixièmes (30 ¢) et le 7 est aux centièmes (7 ¢).",
+        "glossary": [
+          {
+            "term": "un dixième",
+            "definition": "Une des 10 parties égales d’un tout (1/10)."
+          },
+          {
+            "term": "un centième",
+            "definition": "Une des 100 parties égales d’un tout (1/100)."
+          },
+          {
+            "term": "un nombre décimal",
+            "definition": "Un nombre écrit avec une virgule, comme 0,45."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "matching",
+            "prompt": "Associe chaque montant à la fraction de dollar qui lui correspond. Une fraction est de trop.",
+            "hint": "1 $ = 100 ¢.",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "l1",
+                "text": "0,10 $"
+              },
+              {
+                "id": "l2",
+                "text": "0,25 $"
+              },
+              {
+                "id": "l3",
+                "text": "0,50 $"
+              },
+              {
+                "id": "l4",
+                "text": "0,01 $"
+              }
+            ],
+            "right": [
+              {
+                "id": "r1",
+                "text": "1/2"
+              },
+              {
+                "id": "r2",
+                "text": "1/100"
+              },
+              {
+                "id": "r3",
+                "text": "1/10"
+              },
+              {
+                "id": "r4",
+                "text": "1/4"
+              },
+              {
+                "id": "r5",
+                "text": "1/5"
+              }
+            ]
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Combien de pièces de 10 ¢ faut-il pour faire 0,70 $?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Écris 45 centièmes de dollar sous forme de nombre décimal.",
+            "hint": "Un exemple : 30 centièmes de dollar = 0,30 $.",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q4",
+            "kind": "multiple_choice",
+            "prompt": "Coche toutes les fractions de dollar qui valent 0,30 $.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "3/10"
+              },
+              {
+                "id": "b",
+                "text": "3/100"
+              },
+              {
+                "id": "c",
+                "text": "30/100"
+              },
+              {
+                "id": "d",
+                "text": "1/3"
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "q5",
+            "kind": "true_false",
+            "prompt": "0,5 $ et 0,50 $ représentent le même montant.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q6",
+            "kind": "true_false",
+            "prompt": "0,09 $ est plus grand que 0,10 $.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes"
+          },
+          {
+            "id": "q7",
+            "kind": "ordering",
+            "prompt": "Place ces montants du plus petit au plus grand.",
+            "hint": "Compare d’abord le chiffre des dixièmes.",
+            "points": null,
+            "category": "connaissance",
+            "items": [
+              {
+                "id": "a",
+                "text": "0,75 $"
+              },
+              {
+                "id": "b",
+                "text": "0,07 $"
+              },
+              {
+                "id": "c",
+                "text": "0,57 $"
+              },
+              {
+                "id": "d",
+                "text": "0,70 $"
+              }
+            ]
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Capucine a 3 pièces de 25 ¢ et 2 pièces de 10 ¢. Quelle fraction de dollar a-t-elle? Écris ta réponse en centièmes, puis sous forme de nombre décimal.",
+            "hint": "Calcule d’abord le total en cents.",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "q9",
+            "kind": "short_answer",
+            "prompt": "Bastien dit que 0,4 $, c’est 4 cents. Explique son erreur.",
+            "hint": "Dans 0,4 $, à quelle position est le chiffre 4?",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Des pièces de monnaie de jeu (10 ¢, 25 ¢ et 1 $) pour manipuler les montants.",
+          "Une grille de 100 cases où chaque case vaut 1 ¢ et chaque rangée de 10 cases vaut 10 ¢.",
+          "Un tableau de valeur de position avec les colonnes « unités », « dixièmes » et « centièmes »."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "r3"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "r4"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "r1"
+              },
+              {
+                "leftId": "l4",
+                "rightId": "r2"
+              }
+            ],
+            "explanation": "0,10 $ = 10/100 = 1/10; 0,25 $ = 25/100 = 1/4; 0,50 $ = 50/100 = 1/2; 0,01 $ = 1/100. La fraction 1/5 (0,20 $) est de trop."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "7 pièces",
+            "acceptableAnswers": ["7", "sept", "7 pièces", "sept pièces"],
+            "explanation": "0,70 $ = 7 dixièmes de dollar = 7 pièces de 10 ¢."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "0,45 $",
+            "acceptableAnswers": ["0,45 $", "0,45$", "0,45"],
+            "explanation": "45 centièmes = 45/100 = 0,45. Le 4 est à la position des dixièmes et le 5, à la position des centièmes."
+          },
+          {
+            "questionId": "q4",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "c"],
+            "explanation": "0,30 $ = 30/100 = 3/10. 3/100 vaut 0,03 $, et 1/3 de dollar ne s’écrit pas exactement en centièmes (environ 0,33 $)."
+          },
+          {
+            "questionId": "q5",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Vrai : 5 dixièmes = 50 centièmes. En argent, on écrit habituellement deux chiffres après la virgule (0,50 $)."
+          },
+          {
+            "questionId": "q6",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : 0,09 $ = 9 centièmes et 0,10 $ = 10 centièmes. 9 ¢ est moins que 10 ¢."
+          },
+          {
+            "questionId": "q7",
+            "kind": "ordering",
+            "orderedIds": ["b", "c", "d", "a"],
+            "explanation": "0,07 $ < 0,57 $ < 0,70 $ < 0,75 $. On compare d’abord les dixièmes, puis les centièmes."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "95/100 de dollar = 0,95 $ (75 ¢ + 20 ¢ = 95 ¢).",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : attendre 95/100 et 0,95 $. Accepter une démarche qui montre 3 × 25 = 75 et 2 × 10 = 20."
+          },
+          {
+            "questionId": "q9",
+            "kind": "short_answer",
+            "sampleAnswer": "Le 4 est à la position des dixièmes. 0,4 $, c’est 4 dixièmes de dollar, donc 40 ¢. 4 cents s’écrit 0,04 $.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit parler des dixièmes (0,4 $ = 40 ¢) ou montrer que 4 ¢ = 0,04 $."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "avance",
+      "content": {
+        "title": "",
+        "objective": "J’établis des liens entre les fractions et les nombres décimaux (dixièmes et centièmes) à l’aide de l’argent.",
+        "teacherNote": "Version Avancé : même fiche que la version de base, écrite dans le français attendu en 5e année.",
+        "instructions": "Dans cette fiche, un dollar représente un tout. Lis le rappel, puis réponds aux questions.",
+        "text": "Rappel : il faut 10 pièces de 10 ¢ pour faire 1 $. Une pièce de 10 ¢ vaut donc un dixième de dollar : 1/10 de dollar = 0,10 $.\n\nIl faut 100 cents pour faire 1 $. Un cent vaut donc un centième de dollar : 1/100 de dollar = 0,01 $.\n\nDans 0,37 $, le 3 est à la position des dixièmes (3 dixièmes = 30 ¢) et le 7 est à la position des centièmes (7 centièmes = 7 ¢).",
+        "glossary": [
+          {
+            "term": "un dixième",
+            "definition": "Une des 10 parties égales d’un tout (1/10 = 0,1)."
+          },
+          {
+            "term": "un centième",
+            "definition": "Une des 100 parties égales d’un tout (1/100 = 0,01)."
+          },
+          {
+            "term": "un nombre décimal",
+            "definition": "Un nombre écrit avec une virgule, comme 0,45."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "matching",
+            "prompt": "Associe chaque montant à la fraction de dollar qui lui correspond. Une fraction est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "l1",
+                "text": "0,10 $"
+              },
+              {
+                "id": "l2",
+                "text": "0,25 $"
+              },
+              {
+                "id": "l3",
+                "text": "0,50 $"
+              },
+              {
+                "id": "l4",
+                "text": "0,01 $"
+              }
+            ],
+            "right": [
+              {
+                "id": "r1",
+                "text": "1/2"
+              },
+              {
+                "id": "r2",
+                "text": "1/100"
+              },
+              {
+                "id": "r3",
+                "text": "1/10"
+              },
+              {
+                "id": "r4",
+                "text": "1/4"
+              },
+              {
+                "id": "r5",
+                "text": "1/5"
+              }
+            ]
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Combien de pièces de 10 ¢ faut-il pour faire 0,70 $?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Écris 45 centièmes de dollar sous forme de nombre décimal.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q4",
+            "kind": "multiple_choice",
+            "prompt": "Coche toutes les fractions de dollar qui valent 0,30 $.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "3/10"
+              },
+              {
+                "id": "b",
+                "text": "3/100"
+              },
+              {
+                "id": "c",
+                "text": "30/100"
+              },
+              {
+                "id": "d",
+                "text": "1/3"
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "q5",
+            "kind": "true_false",
+            "prompt": "0,5 $ et 0,50 $ représentent le même montant.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q6",
+            "kind": "true_false",
+            "prompt": "0,09 $ est plus grand que 0,10 $.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes"
+          },
+          {
+            "id": "q7",
+            "kind": "ordering",
+            "prompt": "Place ces montants du plus petit au plus grand.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "items": [
+              {
+                "id": "a",
+                "text": "0,75 $"
+              },
+              {
+                "id": "b",
+                "text": "0,07 $"
+              },
+              {
+                "id": "c",
+                "text": "0,57 $"
+              },
+              {
+                "id": "d",
+                "text": "0,70 $"
+              }
+            ]
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Capucine a 3 pièces de 25 ¢ et 2 pièces de 10 ¢. Quelle fraction de dollar a-t-elle? Écris ta réponse en centièmes, puis sous forme de nombre décimal.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "q9",
+            "kind": "short_answer",
+            "prompt": "Bastien dit que 0,4 $, c’est 4 cents. Explique son erreur.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Des pièces de monnaie de jeu (10 ¢, 25 ¢ et 1 $) pour manipuler les montants.",
+          "Une grille de 100 cases où chaque case vaut 1 ¢ et chaque rangée de 10 cases vaut 10 ¢.",
+          "Un tableau de valeur de position avec les colonnes « unités », « dixièmes » et « centièmes »."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "r3"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "r4"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "r1"
+              },
+              {
+                "leftId": "l4",
+                "rightId": "r2"
+              }
+            ],
+            "explanation": "0,10 $ = 10/100 = 1/10; 0,25 $ = 25/100 = 1/4; 0,50 $ = 50/100 = 1/2; 0,01 $ = 1/100. La fraction 1/5 (0,20 $) est de trop."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "7 pièces",
+            "acceptableAnswers": ["7", "sept", "7 pièces", "sept pièces"],
+            "explanation": "0,70 $ = 7 dixièmes de dollar = 7 pièces de 10 ¢."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "0,45 $",
+            "acceptableAnswers": ["0,45 $", "0,45$", "0,45"],
+            "explanation": "45 centièmes = 45/100 = 0,45. Le 4 est à la position des dixièmes et le 5, à la position des centièmes."
+          },
+          {
+            "questionId": "q4",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "c"],
+            "explanation": "0,30 $ = 30/100 = 3/10. 3/100 vaut 0,03 $, et 1/3 de dollar ne s’écrit pas exactement en centièmes (environ 0,33 $)."
+          },
+          {
+            "questionId": "q5",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Vrai : 5 dixièmes = 50 centièmes. En argent, on écrit habituellement deux chiffres après la virgule (0,50 $)."
+          },
+          {
+            "questionId": "q6",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : 0,09 $ = 9 centièmes et 0,10 $ = 10 centièmes. 9 ¢ est moins que 10 ¢."
+          },
+          {
+            "questionId": "q7",
+            "kind": "ordering",
+            "orderedIds": ["b", "c", "d", "a"],
+            "explanation": "0,07 $ < 0,57 $ < 0,70 $ < 0,75 $. On compare d’abord les dixièmes, puis les centièmes."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "95/100 de dollar = 0,95 $ (75 ¢ + 20 ¢ = 95 ¢).",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : attendre 95/100 et 0,95 $. Accepter une démarche qui montre 3 × 25 = 75 et 2 × 10 = 20."
+          },
+          {
+            "questionId": "q9",
+            "kind": "short_answer",
+            "sampleAnswer": "Le 4 est à la position des dixièmes. 0,4 $, c’est 4 dixièmes de dollar, donc 40 ¢. 4 cents s’écrit 0,04 $.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit parler des dixièmes (0,4 $ = 40 ¢) ou montrer que 4 ¢ = 0,04 $."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "enrichi",
+      "content": {
+        "title": "",
+        "objective": "J’établis des liens entre les fractions et les nombres décimaux (dixièmes et centièmes) à l’aide de l’argent.",
+        "teacherNote": "Version Enrichi : vocabulaire mathématique plus précis (équivalent, supérieur, exprimer) et deux défis (questions 10 et 11). Mêmes montants que les autres versions pour les questions 1 à 9.",
+        "instructions": "Dans cette fiche, un dollar représente un tout. Lis attentivement le rappel, puis réponds aux questions. Les deux dernières questions sont des défis.",
+        "text": "Rappel : un dollar se partage en 10 dixièmes ou en 100 centièmes. Une pièce de 10 ¢ représente un dixième de dollar (1/10 = 0,10 $), et un cent représente un centième de dollar (1/100 = 0,01 $).\n\nDans 0,37 $, le chiffre 3 occupe la position des dixièmes (3 dixièmes = 30 ¢) et le chiffre 7, celle des centièmes (7 centièmes = 7 ¢). Ainsi, 0,37 $ = 37/100 de dollar.",
+        "glossary": [
+          {
+            "term": "équivalent",
+            "definition": "Qui a la même valeur, même s’il s’écrit autrement."
+          },
+          {
+            "term": "exprimer",
+            "definition": "Écrire une quantité sous une certaine forme."
+          },
+          {
+            "term": "supérieur à",
+            "definition": "Plus grand que (symbole >)."
+          },
+          {
+            "term": "un nombre décimal",
+            "definition": "Un nombre écrit avec une virgule, comme 0,45."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "matching",
+            "prompt": "Associe chaque montant à la fraction de dollar équivalente. Une fraction est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "l1",
+                "text": "0,10 $"
+              },
+              {
+                "id": "l2",
+                "text": "0,25 $"
+              },
+              {
+                "id": "l3",
+                "text": "0,50 $"
+              },
+              {
+                "id": "l4",
+                "text": "0,01 $"
+              }
+            ],
+            "right": [
+              {
+                "id": "r1",
+                "text": "1/2"
+              },
+              {
+                "id": "r2",
+                "text": "1/100"
+              },
+              {
+                "id": "r3",
+                "text": "1/10"
+              },
+              {
+                "id": "r4",
+                "text": "1/4"
+              },
+              {
+                "id": "r5",
+                "text": "1/5"
+              }
+            ]
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Combien de pièces de 10 ¢ faut-il pour obtenir 0,70 $?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Exprime 45 centièmes de dollar sous forme de nombre décimal.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q4",
+            "kind": "multiple_choice",
+            "prompt": "Coche toutes les fractions de dollar équivalentes à 0,30 $.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "3/10"
+              },
+              {
+                "id": "b",
+                "text": "3/100"
+              },
+              {
+                "id": "c",
+                "text": "30/100"
+              },
+              {
+                "id": "d",
+                "text": "1/3"
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "q5",
+            "kind": "true_false",
+            "prompt": "Les montants 0,5 $ et 0,50 $ sont égaux.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q6",
+            "kind": "true_false",
+            "prompt": "0,09 $ est supérieur à 0,10 $.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes"
+          },
+          {
+            "id": "q7",
+            "kind": "ordering",
+            "prompt": "Range ces montants en ordre croissant.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "items": [
+              {
+                "id": "a",
+                "text": "0,75 $"
+              },
+              {
+                "id": "b",
+                "text": "0,07 $"
+              },
+              {
+                "id": "c",
+                "text": "0,57 $"
+              },
+              {
+                "id": "d",
+                "text": "0,70 $"
+              }
+            ]
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Capucine possède 3 pièces de 25 ¢ et 2 pièces de 10 ¢. Quelle fraction de dollar cela représente-t-il? Exprime-la en centièmes, puis sous forme de nombre décimal.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "q9",
+            "kind": "short_answer",
+            "prompt": "Bastien affirme que 0,4 $ représente 4 cents. Explique son erreur en parlant de la position des chiffres.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          },
+          {
+            "id": "q10",
+            "kind": "short_answer",
+            "prompt": "Défi : un crayon coûte 0,85 $. Fabien paie avec une pièce de 1 $. Quelle fraction de dollar lui rend-on? Exprime-la en centièmes, puis sous forme de nombre décimal.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "q11",
+            "kind": "short_answer",
+            "prompt": "Défi : écris 3/5 de dollar en centièmes, puis sous forme de nombre décimal. Explique ta démarche.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Des pièces de monnaie de jeu (10 ¢, 25 ¢ et 1 $) pour manipuler les montants.",
+          "Une grille de 100 cases où chaque case vaut 1 ¢ et chaque rangée de 10 cases vaut 10 ¢.",
+          "Un tableau de valeur de position avec les colonnes « unités », « dixièmes » et « centièmes »."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "r3"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "r4"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "r1"
+              },
+              {
+                "leftId": "l4",
+                "rightId": "r2"
+              }
+            ],
+            "explanation": "0,10 $ = 10/100 = 1/10; 0,25 $ = 25/100 = 1/4; 0,50 $ = 50/100 = 1/2; 0,01 $ = 1/100. La fraction 1/5 (0,20 $) est de trop."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "7 pièces",
+            "acceptableAnswers": ["7", "sept", "7 pièces", "sept pièces"],
+            "explanation": "0,70 $ = 7 dixièmes de dollar = 7 pièces de 10 ¢."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "0,45 $",
+            "acceptableAnswers": ["0,45 $", "0,45$", "0,45"],
+            "explanation": "45 centièmes = 45/100 = 0,45. Le 4 est à la position des dixièmes et le 5, à la position des centièmes."
+          },
+          {
+            "questionId": "q4",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "c"],
+            "explanation": "0,30 $ = 30/100 = 3/10. 3/100 vaut 0,03 $, et 1/3 de dollar ne s’écrit pas exactement en centièmes (environ 0,33 $)."
+          },
+          {
+            "questionId": "q5",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Vrai : 5 dixièmes = 50 centièmes. En argent, on écrit habituellement deux chiffres après la virgule (0,50 $)."
+          },
+          {
+            "questionId": "q6",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : 0,09 $ = 9 centièmes et 0,10 $ = 10 centièmes. 9 ¢ est moins que 10 ¢."
+          },
+          {
+            "questionId": "q7",
+            "kind": "ordering",
+            "orderedIds": ["b", "c", "d", "a"],
+            "explanation": "0,07 $ < 0,57 $ < 0,70 $ < 0,75 $. On compare d’abord les dixièmes, puis les centièmes."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "95/100 de dollar = 0,95 $ (75 ¢ + 20 ¢ = 95 ¢).",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : attendre 95/100 et 0,95 $. Accepter une démarche qui montre 3 × 25 = 75 et 2 × 10 = 20."
+          },
+          {
+            "questionId": "q9",
+            "kind": "short_answer",
+            "sampleAnswer": "Le 4 est à la position des dixièmes. 0,4 $, c’est 4 dixièmes de dollar, donc 40 ¢. 4 cents s’écrit 0,04 $.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit parler des dixièmes (0,4 $ = 40 ¢) ou montrer que 4 ¢ = 0,04 $."
+          },
+          {
+            "questionId": "q10",
+            "kind": "short_answer",
+            "sampleAnswer": "15/100 de dollar = 0,15 $ (100 ¢ − 85 ¢ = 15 ¢).",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : attendre 15/100 et 0,15 $."
+          },
+          {
+            "questionId": "q11",
+            "kind": "short_answer",
+            "sampleAnswer": "3/5 = 6/10 = 60/100, donc 0,60 $. J’ai multiplié le numérateur et le dénominateur par 2, puis encore par 10.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : attendre 60/100 et 0,60 $, avec une démarche de fractions équivalentes."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

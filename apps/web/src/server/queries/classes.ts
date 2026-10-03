@@ -54,6 +54,8 @@ export interface ClassSummary {
   role: 'homeroom' | 'subject' | 'support';
   gradeLabels: string[];
   studentCount: number;
+  /** A « classe exemple » (DECISIONS D-109): « Exemple » on the list. */
+  sample: boolean;
 }
 
 export async function listMyClasses(
@@ -64,7 +66,7 @@ export async function listMyClasses(
   const { data } = await supabase
     .from('class_teachers')
     .select(
-      'role, classes!inner(id, name, school_id, class_grades(grade_code, grades(label_fr, label_en, ordinal)), students(count))',
+      'role, classes!inner(id, name, school_id, sample_owner_id, class_grades(grade_code, grades(label_fr, label_en, ordinal)), students(count))',
     )
     .eq('user_id', session.userId);
   return (data ?? [])
@@ -79,6 +81,7 @@ export async function listMyClasses(
           g.grades ? localized(locale, g.grades.label_fr, g.grades.label_en) : g.grade_code,
         ),
       studentCount: (row.classes.students as unknown as { count: number }[])[0]?.count ?? 0,
+      sample: row.classes.sample_owner_id !== null,
     }))
     .sort((a, b) => a.name.localeCompare(b.name, 'fr-CA'));
 }

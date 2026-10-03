@@ -10,7 +10,18 @@ import { Field, Input, Select, Textarea } from '@/components/ui/field';
 import { useAction } from '@/hooks/use-action';
 import { saveCalendarEvent } from '@/server/actions/calendar';
 
-type Scope = { key: string; schoolId: string; classId: string | null; label: string };
+/** Board-wide (`boardId`), a school, or one of its classes (`schoolId` and `classId`). */
+type Scope = {
+  key: string;
+  boardId: string | null;
+  schoolId: string | null;
+  classId: string | null;
+  label: string;
+};
+
+/** What a new event of this scope starts as: a board adds PA days and holidays. */
+const defaultType = (scope: Scope | undefined) =>
+  scope?.classId ? 'field_trip' : scope?.boardId ? 'pa_day' : 'assembly';
 
 export function EventForm({ scopes, defaultDate }: { scopes: Scope[]; defaultDate: string }) {
   const t = useTranslations('calendar');
@@ -23,7 +34,7 @@ export function EventForm({ scopes, defaultDate }: { scopes: Scope[]; defaultDat
     ? (['field_trip', 'mass', 'liturgy', 'other'] as const)
     : calendarEventTypes;
   const [eventType, setEventType] = useState<(typeof calendarEventTypes)[number]>(
-    classOnly ? 'field_trip' : 'assembly',
+    defaultType(scope),
   );
   const [title, setTitle] = useState('');
   const [startsOn, setStartsOn] = useState(defaultDate);
@@ -45,6 +56,7 @@ export function EventForm({ scopes, defaultDate }: { scopes: Scope[]; defaultDat
   const submit = (e: FormEvent) => {
     e.preventDefault();
     void save.run({
+      boardId: scope.boardId,
       schoolId: scope.schoolId,
       classId: scope.classId,
       eventType,
@@ -75,8 +87,7 @@ export function EventForm({ scopes, defaultDate }: { scopes: Scope[]; defaultDat
                 value={scopeKey}
                 onChange={(e) => {
                   setScopeKey(e.target.value);
-                  const next = scopes.find((s) => s.key === e.target.value);
-                  setEventType(next?.classId ? 'field_trip' : 'assembly');
+                  setEventType(defaultType(scopes.find((s) => s.key === e.target.value)));
                 }}
               >
                 {scopes.map((s) => (
@@ -86,6 +97,9 @@ export function EventForm({ scopes, defaultDate }: { scopes: Scope[]; defaultDat
                 ))}
               </Select>
             </Field>
+          ) : scope.boardId ? (
+            // A board admin's only choice: say the event is for the whole board.
+            <p className="text-sm text-slate-700">{t('scopeLine', { scope: scope.label })}</p>
           ) : null}
           <Field label={t('type')} htmlFor="event-type">
             <Select

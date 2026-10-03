@@ -41,6 +41,7 @@ export default async function StudentsPage({ params }: { params: Promise<{ class
     <div className="space-y-4">
       <Notice>{t('privacy')}</Notice>
       <StudentsManager
+        userId={session.userId}
         classId={classId}
         students={(students.data ?? [])
           .map((s) => ({

@@ -1,0 +1,267 @@
+{
+  "slug": "devinettes-prefixes-suffixes",
+  "type": "riddle",
+  "title": "Devinettes : les mots qui se construisent",
+  "summary": "Douze devinettes « Qui suis-je? » pour trouver des mots formés d’un préfixe ou d’un suffixe (impossible, ourson, revenir, lavable…), dont des mots de l’identité franco-ontarienne comme « francophone », « bilingue » et « Franco-Ontarienne ».",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["5"],
+  "subjectCode": "fra",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "B2.2"
+    }
+  ],
+  "durationMinutes": 15,
+  "materials": "Une copie par élève ou les devinettes projetées, un crayon et des crayons de deux couleurs.",
+  "keywords": "devinettes, préfixes, suffixes, mot de base, familles de mots, formation des mots, francophone, bilingue, Franco-Ontarien",
+  "tags": ["vocabulaire", "jeu", "francophonie"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "J’utilise les préfixes, les suffixes et les mots de base pour trouver le sens et l’orthographe de mots nouveaux.",
+        "teacherNote": "Rappelez d’abord les trois morceaux d’un mot construit : le préfixe (au début), le mot de base et le suffixe (à la fin). Après chaque devinette, faites souligner le préfixe ou le suffixe d’une couleur et le mot de base d’une autre. Pour prolonger, chaque équipe cherche deux autres mots avec le même préfixe ou le même suffixe (par exemple : anglophone, téléphone, microphone pour -phone). Les devinettes 5, 6 et 12 ouvrent une courte discussion sur la francophonie ontarienne : accueillez toutes les langues parlées par les élèves et leurs familles. Conçue pour une personne suppléante : les élèves répondent en dyades sur la feuille; ramassez ensuite les feuilles, car le corrigé reste avec l’enseignante ou l’enseignant.",
+        "riddles": [
+          {
+            "id": "r1",
+            "kind": "short_answer",
+            "prompt": "Je suis le contraire de « possible ». On m’a formé en ajoutant un préfixe au début du mot. Qui suis-je?",
+            "hint": "Mon préfixe commence par la lettre i.",
+            "points": null,
+            "category": null,
+            "lines": 1
+          },
+          {
+            "id": "r2",
+            "kind": "short_answer",
+            "prompt": "Je suis une toute petite maison. Mon suffixe -ette montre que je suis petite. Qui suis-je?",
+            "hint": "J’ai deux n.",
+            "points": null,
+            "category": null,
+            "lines": 1
+          },
+          {
+            "id": "r3",
+            "kind": "short_answer",
+            "prompt": "Je suis le petit de l’ours. Mon suffixe -on veut souvent dire « petit ». Qui suis-je?",
+            "hint": "J’ai six lettres.",
+            "points": null,
+            "category": null,
+            "lines": 1
+          },
+          {
+            "id": "r4",
+            "kind": "short_answer",
+            "prompt": "Je veux dire « venir encore une fois » ou « retourner ». Mon préfixe re- veut dire « de nouveau ». Qui suis-je?",
+            "hint": "Je suis un verbe à l’infinitif.",
+            "points": null,
+            "category": null,
+            "lines": 1
+          },
+          {
+            "id": "r5",
+            "kind": "short_answer",
+            "prompt": "Je désigne une personne qui parle français. Mon mot commence comme « France » et se termine par -phone, qui veut dire « voix » ou « son ». Qui suis-je?",
+            "hint": "Au Canada, des millions de personnes peuvent dire ce mot pour se décrire.",
+            "points": null,
+            "category": null,
+            "lines": 1
+          },
+          {
+            "id": "r6",
+            "kind": "short_answer",
+            "prompt": "Je décris une personne qui parle deux langues. Mon préfixe bi- veut dire « deux ». Qui suis-je?",
+            "hint": "Ma deuxième partie vient d’un mot latin qui veut dire « langue ».",
+            "points": null,
+            "category": null,
+            "lines": 1
+          },
+          {
+            "id": "r7",
+            "kind": "short_answer",
+            "prompt": "Je suis le contraire de « heureux ». Mon préfixe est mal-. Qui suis-je?",
+            "hint": "Au féminin, je me termine par -euse.",
+            "points": null,
+            "category": null,
+            "lines": 1
+          },
+          {
+            "id": "r8",
+            "kind": "short_answer",
+            "prompt": "Je suis la très longue période qui a précédé l’invention de l’écriture. Mon préfixe pré- veut dire « avant ». Qui suis-je?",
+            "hint": "C’est l’époque des premiers outils de pierre.",
+            "points": null,
+            "category": null,
+            "lines": 1
+          },
+          {
+            "id": "r9",
+            "kind": "short_answer",
+            "prompt": "Je soigne les dents. Mon mot de base est « dent », et mon suffixe -iste désigne une personne qui pratique un métier. Qui suis-je?",
+            "hint": "Il est conseillé de me rendre visite une ou deux fois par année.",
+            "points": null,
+            "category": null,
+            "lines": 1
+          },
+          {
+            "id": "r10",
+            "kind": "short_answer",
+            "prompt": "Je décris un vêtement qu’on peut laver. Mon suffixe -able veut dire « qu’on peut ». Qui suis-je?",
+            "hint": "Je suis un adjectif.",
+            "points": null,
+            "category": null,
+            "lines": 1
+          },
+          {
+            "id": "r11",
+            "kind": "short_answer",
+            "prompt": "Je suis l’action de ranger. Ici, mon suffixe -ment transforme un verbe en nom. Qui suis-je?",
+            "hint": "Après un bricolage, c’est mon heure!",
+            "points": null,
+            "category": null,
+            "lines": 1
+          },
+          {
+            "id": "r12",
+            "kind": "short_answer",
+            "prompt": "Je désigne une personne francophone de l’Ontario. Mon nom est formé de deux mots reliés par un trait d’union, et le premier vient de « français ». Qui suis-je?",
+            "hint": "Le 25 septembre, c’est ma fête!",
+            "points": null,
+            "category": null,
+            "lines": 1
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "r1",
+            "kind": "short_answer",
+            "sampleAnswer": "Impossible (im- + possible).",
+            "acceptableAnswers": ["impossible"],
+            "explanation": "Le préfixe in- veut dire « pas » ou « le contraire de ». Devant un p, il s’écrit im-."
+          },
+          {
+            "questionId": "r2",
+            "kind": "short_answer",
+            "sampleAnswer": "Une maisonnette (maison + -ette).",
+            "acceptableAnswers": ["maisonnette", "une maisonnette", "la maisonnette"],
+            "explanation": "On double le n devant -ette : maison, maisonnette."
+          },
+          {
+            "questionId": "r3",
+            "kind": "short_answer",
+            "sampleAnswer": "Un ourson (ours + -on).",
+            "acceptableAnswers": ["ourson", "un ourson", "l’ourson"],
+            "explanation": "D’autres mots avec le suffixe -on qui veut dire « petit » : chaton, raton, caneton."
+          },
+          {
+            "questionId": "r4",
+            "kind": "short_answer",
+            "sampleAnswer": "Revenir (re- + venir).",
+            "acceptableAnswers": ["revenir"],
+            "explanation": "D’autres mots avec re- : refaire, relire, reprendre."
+          },
+          {
+            "questionId": "r5",
+            "kind": "short_answer",
+            "sampleAnswer": "Une ou un francophone (franco- + -phone).",
+            "acceptableAnswers": [
+              "francophone",
+              "un francophone",
+              "une francophone",
+              "une ou un francophone"
+            ],
+            "explanation": "Le suffixe -phone se retrouve dans anglophone, téléphone et microphone."
+          },
+          {
+            "questionId": "r6",
+            "kind": "short_answer",
+            "sampleAnswer": "Bilingue (bi- + -lingue).",
+            "acceptableAnswers": ["bilingue", "une personne bilingue"],
+            "explanation": "Le préfixe bi- (deux) se retrouve dans bicyclette et bimensuel; « lingue » vient du latin lingua, la langue. Une personne qui parle trois langues est trilingue."
+          },
+          {
+            "questionId": "r7",
+            "kind": "short_answer",
+            "sampleAnswer": "Malheureux ou malheureuse (mal- + heureux).",
+            "acceptableAnswers": ["malheureux", "malheureuse"],
+            "explanation": "Le préfixe mal- donne un sens contraire ou négatif : maladroit, malhonnête."
+          },
+          {
+            "questionId": "r8",
+            "kind": "short_answer",
+            "sampleAnswer": "La préhistoire (pré- + histoire).",
+            "acceptableAnswers": ["préhistoire", "la préhistoire", "prehistoire"],
+            "explanation": "Le préfixe pré- (avant) se retrouve dans prévoir et préparer."
+          },
+          {
+            "questionId": "r9",
+            "kind": "short_answer",
+            "sampleAnswer": "Une ou un dentiste (dent + -iste).",
+            "acceptableAnswers": [
+              "dentiste",
+              "le dentiste",
+              "la dentiste",
+              "un dentiste",
+              "une dentiste"
+            ],
+            "explanation": "D’autres métiers avec -iste : fleuriste, pianiste, journaliste."
+          },
+          {
+            "questionId": "r10",
+            "kind": "short_answer",
+            "sampleAnswer": "Lavable (laver + -able).",
+            "acceptableAnswers": ["lavable"],
+            "explanation": "D’autres adjectifs en -able : jetable, mangeable, pliable."
+          },
+          {
+            "questionId": "r11",
+            "kind": "short_answer",
+            "sampleAnswer": "Le rangement (ranger + -ment).",
+            "acceptableAnswers": ["rangement", "le rangement"],
+            "explanation": "D’autres noms en -ment formés à partir d’un verbe : changement, lancement, déménagement."
+          },
+          {
+            "questionId": "r12",
+            "kind": "short_answer",
+            "sampleAnswer": "Une Franco-Ontarienne ou un Franco-Ontarien.",
+            "acceptableAnswers": [
+              "Franco-Ontarienne",
+              "Franco-Ontarien",
+              "une Franco-Ontarienne",
+              "un Franco-Ontarien",
+              "franco-ontarienne",
+              "franco-ontarien"
+            ],
+            "explanation": "Comme nom, il prend deux majuscules (une Franco-Ontarienne); comme adjectif, il n’en prend pas (la culture franco-ontarienne). Le 25 septembre est le Jour des Franco-Ontariens et des Franco-Ontariennes."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

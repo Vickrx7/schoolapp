@@ -1,0 +1,831 @@
+{
+  "slug": "huard-oiseau-des-lacs",
+  "type": "reading_passage",
+  "title": "Le huard, oiseau des lacs",
+  "summary": "Texte informatif de quatre paragraphes sur le huard, avec des questions sur l’idée principale et les détails importants. Quatre versions selon le niveau de langue, avec les mêmes idées principales.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["3"],
+  "subjectCode": "fra",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "C1.2"
+    }
+  ],
+  "durationMinutes": 30,
+  "materials": "Une copie du texte par élève, dans la version prévue pour son groupe; un crayon.",
+  "keywords": "huard, oiseau, lac, idée principale, détails importants, texte informatif, Ontario",
+  "tags": ["lecture", "animaux", "ontario"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je trouve l’idée principale d’un paragraphe et des détails importants qui l’appuient.",
+        "teacherNote": "Les quatre versions ont les mêmes quatre paragraphes et les mêmes idées principales, ce qui permet de faire la leçon « Trouver l’idée principale d’un paragraphe » avec toute la classe. Faits à vérifier avant l’utilisation en classe : le huard est l’oiseau officiel de l’Ontario; ses os sont pleins et plus lourds que ceux de la plupart des oiseaux; les deux parents couvent les œufs; la femelle pond un ou deux œufs; les poussins nagent peu après l’éclosion et montent sur le dos de leurs parents.",
+        "text": "1. Le huard est un grand oiseau qui vit sur les lacs. Au printemps et en été, on le trouve sur des milliers de lacs de l’Ontario. Le soir, on entend souvent son cri, qui ressemble à un long rire tremblant. Les gens d’ici connaissent bien cet oiseau : c’est l’oiseau officiel de l’Ontario, et on le voit même sur la pièce d’un dollar. D’ailleurs, cette pièce porte son nom : on l’appelle un « huard ».\n\n2. En été, le huard est facile à reconnaître. Sa tête et son cou sont d’un noir brillant, et ses yeux sont rouges. Il porte autour du cou un collier de fines rayures blanches. Son dos est couvert de petites taches blanches et noires qui forment un damier. Son bec est long, noir et pointu.\n\n3. Le huard est un excellent plongeur. Il plonge pour attraper des poissons, qu’il poursuit sous l’eau. Ses pattes palmées sont placées tout au bout de son corps. Elles le poussent dans l’eau comme des palmes de plongée. Contrairement à la plupart des oiseaux, le huard a des os pleins et lourds, ce qui l’aide à s’enfoncer dans l’eau. Par contre, sur la terre ferme, il marche très mal.\n\n4. Le huard fait son nid tout près de l’eau, souvent sur une petite île. La femelle pond un ou deux œufs. Le mâle et la femelle couvent les œufs chacun leur tour. Les poussins savent nager presque tout de suite après leur naissance. Pour se reposer ou se protéger, ils montent souvent sur le dos de leurs parents.",
+        "glossary": [
+          {
+            "term": "officiel",
+            "definition": "Choisi pour représenter un pays, une province ou une ville."
+          },
+          {
+            "term": "un damier",
+            "definition": "Une surface faite de petits carrés de deux couleurs, comme un jeu de dames."
+          },
+          {
+            "term": "des pattes palmées",
+            "definition": "Des pattes dont les doigts sont reliés par une peau, comme celles du canard."
+          },
+          {
+            "term": "couver",
+            "definition": "Rester couché sur ses œufs pour les garder au chaud."
+          },
+          {
+            "term": "un poussin",
+            "definition": "Un bébé oiseau qui vient de sortir de l’œuf."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quelle phrase dit l’idée principale du paragraphe 3?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "b",
+                "text": "Le huard marche très mal sur la terre ferme."
+              },
+              {
+                "id": "a",
+                "text": "Le huard est un excellent plongeur."
+              },
+              {
+                "id": "d",
+                "text": "Le huard a des pattes palmées."
+              },
+              {
+                "id": "c",
+                "text": "Le huard mange des poissons."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Écris dans tes mots l’idée principale du paragraphe 4.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Nomme deux détails du paragraphe 2 qui aident à reconnaître le huard.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 2
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "Les poussins du huard doivent attendre plusieurs semaines avant de savoir nager.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Pourquoi, selon toi, le huard fait-il son nid tout près de l’eau? Appuie ta réponse sur un indice du texte.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Une photo d’un huard adulte en été : tête noire, yeux rouges, collier blanc, dos en damier.",
+          "Une pièce d’un dollar à faire circuler dans la classe.",
+          "Un enregistrement du cri du huard, à faire écouter avant la lecture.",
+          "Une photo d’un poussin sur le dos d’un parent."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Toutes les phrases du paragraphe 3 expliquent pourquoi le huard plonge si bien. Les autres choix sont des détails ou viennent d’un autre paragraphe."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "Le huard élève ses petits près de l’eau et en prend bien soin.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter toute phrase qui parle des petits du huard et des soins que les parents leur donnent. Une réponse qui ne nomme qu’un détail (par exemple, les œufs) est trop petite."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "Il a la tête noire et les yeux rouges.",
+            "acceptableAnswers": [],
+            "explanation": "Détails possibles : tête et cou noirs, yeux rouges, collier de rayures blanches, dos en damier, long bec noir et pointu."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : le texte dit que les poussins savent nager presque tout de suite après leur naissance."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "Parce qu’il marche très mal sur la terre ferme : près de l’eau, il peut aller facilement de son nid à l’eau.",
+            "acceptableAnswers": [],
+            "explanation": "Réponse par inférence : l’indice est dans le paragraphe 3 (il marche très mal sur la terre ferme). Accepter aussi l’idée de protéger les œufs sur une petite île, si l’élève s’appuie sur le texte."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "debutant",
+      "content": {
+        "title": "",
+        "objective": "Je trouve l’idée principale d’un paragraphe et des détails importants qui l’appuient.",
+        "teacherNote": "Version Débutant : phrases courtes, une idée par phrase, vocabulaire fréquent et glossaire illustrable. L’idée principale est travaillée par un choix multiple et un appariement plutôt que par une phrase à écrire. Les quatre versions ont les mêmes quatre paragraphes et les mêmes idées principales, ce qui permet de faire la leçon « Trouver l’idée principale d’un paragraphe » avec toute la classe.",
+        "text": "1. Le huard est un grand oiseau. Il vit sur les lacs. En été, il y a des huards sur beaucoup de lacs de l’Ontario. Le soir, on entend le cri du huard. Son cri ressemble à un rire. Le huard est l’oiseau officiel de l’Ontario. On le voit aussi sur la pièce d’un dollar. On appelle cette pièce un « huard ».\n\n2. En été, on reconnaît bien le huard. Sa tête est noire. Ses yeux sont rouges. Il a un collier blanc autour du cou. Son dos a de petits carrés noirs et blancs. Son bec est long et pointu.\n\n3. Le huard plonge très bien. Il va sous l’eau pour attraper des poissons. Ses pattes sont au bout de son corps. Ses pattes sont palmées. Elles l’aident à nager vite. Ses os sont lourds. Ils l’aident à rester sous l’eau. Sur la terre, le huard marche mal.\n\n4. Le huard fait son nid près de l’eau. La femelle pond un ou deux œufs. Les deux parents couvent les œufs. Les bébés huards s’appellent des poussins. Les poussins savent nager très tôt. Ils montent sur le dos de leurs parents pour se reposer.",
+        "glossary": [
+          {
+            "term": "officiel",
+            "definition": "Choisi pour représenter la province."
+          },
+          {
+            "term": "plonger",
+            "definition": "Aller sous l’eau, la tête en premier."
+          },
+          {
+            "term": "des pattes palmées",
+            "definition": "Des pattes avec de la peau entre les doigts, comme chez le canard."
+          },
+          {
+            "term": "un nid",
+            "definition": "L’endroit où l’oiseau pond ses œufs."
+          },
+          {
+            "term": "la femelle",
+            "definition": "L’oiseau qui pond les œufs. Ici, c’est la maman huard."
+          },
+          {
+            "term": "couver",
+            "definition": "Rester sur les œufs pour les garder au chaud."
+          },
+          {
+            "term": "un poussin",
+            "definition": "Un bébé oiseau."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "De quoi parle surtout le paragraphe 3?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "b",
+                "text": "Le huard marche mal."
+              },
+              {
+                "id": "a",
+                "text": "Le huard plonge très bien."
+              },
+              {
+                "id": "d",
+                "text": "Le huard a les yeux rouges."
+              },
+              {
+                "id": "c",
+                "text": "Le huard a des os lourds."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "matching",
+            "prompt": "Relie chaque paragraphe à son idée principale. Une phrase de droite est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "left": [
+              {
+                "id": "l1",
+                "text": "Paragraphe 1"
+              },
+              {
+                "id": "l2",
+                "text": "Paragraphe 2"
+              },
+              {
+                "id": "l4",
+                "text": "Paragraphe 4"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "Le huard prend soin de ses petits."
+              },
+              {
+                "id": "rb",
+                "text": "Le huard est un oiseau connu en Ontario."
+              },
+              {
+                "id": "rc",
+                "text": "Le huard mange des plantes."
+              },
+              {
+                "id": "rd",
+                "text": "On reconnaît le huard à ses couleurs."
+              }
+            ]
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Écris deux couleurs du huard.",
+            "hint": "Relis le paragraphe 2.",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "Les poussins du huard savent nager très tôt.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Pourquoi le huard fait-il son nid près de l’eau?",
+            "hint": "Relis la dernière phrase du paragraphe 3.",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Une photo d’un huard adulte en été : tête noire, yeux rouges, collier blanc, dos en damier.",
+          "Une pièce d’un dollar à faire circuler dans la classe.",
+          "Un enregistrement du cri du huard, à faire écouter avant la lecture.",
+          "Une photo d’un poussin sur le dos d’un parent."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Toutes les phrases du paragraphe 3 expliquent pourquoi le huard plonge si bien. Les autres choix sont des détails ou viennent d’un autre paragraphe."
+          },
+          {
+            "questionId": "q2",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l4",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "La phrase « Le huard mange des plantes » ne dit pas l’idée principale d’un paragraphe (et le texte dit qu’il mange des poissons)."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "Noir et blanc (ses yeux sont rouges).",
+            "acceptableAnswers": [
+              "noir et blanc",
+              "blanc et noir",
+              "noir et rouge",
+              "rouge et noir",
+              "blanc et rouge",
+              "rouge et blanc"
+            ],
+            "explanation": "Couleurs possibles : noir, blanc, rouge (les yeux)."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Vrai : le paragraphe 4 dit que les poussins savent nager très tôt."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "Parce qu’il marche très mal sur la terre ferme : près de l’eau, il peut aller facilement de son nid à l’eau.",
+            "acceptableAnswers": [],
+            "explanation": "Réponse par inférence : l’indice est dans le paragraphe 3 (il marche très mal sur la terre ferme). Accepter aussi l’idée de protéger les œufs sur une petite île, si l’élève s’appuie sur le texte."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "intermediaire",
+      "content": {
+        "title": "",
+        "objective": "Je trouve l’idée principale d’un paragraphe et des détails importants qui l’appuient.",
+        "teacherNote": "Version Intermédiaire : phrases simples ou composées, quelques mots nouveaux expliqués dans le glossaire, indices pour les questions d’idée principale et d’inférence. Les quatre versions ont les mêmes quatre paragraphes et les mêmes idées principales, ce qui permet de faire la leçon « Trouver l’idée principale d’un paragraphe » avec toute la classe.",
+        "text": "1. Le huard est un grand oiseau qui vit sur les lacs. Au printemps et en été, on le trouve sur des milliers de lacs de l’Ontario. Le soir, on entend souvent son cri. Ce cri ressemble à un long rire qui tremble. Le huard est l’oiseau officiel de l’Ontario. On le voit même sur la pièce d’un dollar, qu’on appelle un « huard ».\n\n2. En été, le huard est facile à reconnaître. Sa tête et son cou sont noirs, et ses yeux sont rouges. Il a un collier de rayures blanches autour du cou. Son dos est couvert de petits carrés blancs et noirs, comme un damier. Son bec est long, noir et pointu.\n\n3. Le huard est un excellent plongeur. Il plonge sous l’eau pour attraper des poissons. Ses pattes palmées sont placées tout au bout de son corps. Elles le poussent dans l’eau, comme des palmes de plongée. Ses os sont plus lourds que ceux de la plupart des oiseaux. Cela l’aide à rester sous l’eau. Par contre, sur la terre, il marche très mal.\n\n4. Le huard fait son nid tout près de l’eau, souvent sur une petite île. La femelle pond un ou deux œufs. Le mâle et la femelle couvent les œufs chacun leur tour. Les poussins savent nager très tôt après leur naissance. Pour se reposer, ils montent souvent sur le dos de leurs parents.",
+        "glossary": [
+          {
+            "term": "officiel",
+            "definition": "Choisi pour représenter un pays, une province ou une ville."
+          },
+          {
+            "term": "un damier",
+            "definition": "Une surface faite de petits carrés de deux couleurs."
+          },
+          {
+            "term": "des pattes palmées",
+            "definition": "Des pattes dont les doigts sont reliés par une peau, comme chez le canard."
+          },
+          {
+            "term": "couver",
+            "definition": "Rester couché sur ses œufs pour les garder au chaud."
+          },
+          {
+            "term": "un poussin",
+            "definition": "Un bébé oiseau."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quelle phrase dit l’idée principale du paragraphe 3?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "b",
+                "text": "Le huard marche très mal sur la terre ferme."
+              },
+              {
+                "id": "a",
+                "text": "Le huard est un excellent plongeur."
+              },
+              {
+                "id": "d",
+                "text": "Le huard a des pattes palmées."
+              },
+              {
+                "id": "c",
+                "text": "Le huard mange des poissons."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Quelle est l’idée principale du paragraphe 4? Écris-la en une phrase.",
+            "hint": "Demande-toi de quoi parlent toutes les phrases du paragraphe.",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Nomme deux détails du paragraphe 2 qui aident à reconnaître le huard.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 2
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "Les poussins du huard doivent attendre plusieurs semaines avant de savoir nager.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Pourquoi le huard fait-il son nid tout près de l’eau? Trouve un indice dans le paragraphe 3.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Une photo d’un huard adulte en été : tête noire, yeux rouges, collier blanc, dos en damier.",
+          "Une pièce d’un dollar à faire circuler dans la classe.",
+          "Un enregistrement du cri du huard, à faire écouter avant la lecture.",
+          "Une photo d’un poussin sur le dos d’un parent."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Toutes les phrases du paragraphe 3 expliquent pourquoi le huard plonge si bien. Les autres choix sont des détails ou viennent d’un autre paragraphe."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "Le huard élève ses petits près de l’eau et en prend bien soin.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter toute phrase qui parle des petits du huard et des soins que les parents leur donnent."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "Il a la tête noire et les yeux rouges.",
+            "acceptableAnswers": [],
+            "explanation": "Détails possibles : tête et cou noirs, yeux rouges, collier de rayures blanches, dos en damier, long bec noir et pointu."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : le texte dit que les poussins savent nager très tôt après leur naissance."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "Parce qu’il marche très mal sur la terre ferme : près de l’eau, il peut aller facilement de son nid à l’eau.",
+            "acceptableAnswers": [],
+            "explanation": "Réponse par inférence : l’indice est dans le paragraphe 3 (il marche très mal sur la terre ferme). Accepter aussi l’idée de protéger les œufs sur une petite île, si l’élève s’appuie sur le texte."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "avance",
+      "content": {
+        "title": "",
+        "objective": "Je trouve l’idée principale d’un paragraphe et des détails importants qui l’appuient.",
+        "teacherNote": "Version Avancé : même texte que la version de base, écrit dans le français attendu en 3e année. Les quatre versions ont les mêmes quatre paragraphes et les mêmes idées principales, ce qui permet de faire la leçon « Trouver l’idée principale d’un paragraphe » avec toute la classe.",
+        "text": "1. Le huard est un grand oiseau qui vit sur les lacs. Au printemps et en été, on le trouve sur des milliers de lacs de l’Ontario. Le soir, on entend souvent son cri, qui ressemble à un long rire tremblant. Les gens d’ici connaissent bien cet oiseau : c’est l’oiseau officiel de l’Ontario, et on le voit même sur la pièce d’un dollar. D’ailleurs, cette pièce porte son nom : on l’appelle un « huard ».\n\n2. En été, le huard est facile à reconnaître. Sa tête et son cou sont d’un noir brillant, et ses yeux sont rouges. Il porte autour du cou un collier de fines rayures blanches. Son dos est couvert de petites taches blanches et noires qui forment un damier. Son bec est long, noir et pointu.\n\n3. Le huard est un excellent plongeur. Il plonge pour attraper des poissons, qu’il poursuit sous l’eau. Ses pattes palmées sont placées tout au bout de son corps. Elles le poussent dans l’eau comme des palmes de plongée. Contrairement à la plupart des oiseaux, le huard a des os pleins et lourds, ce qui l’aide à s’enfoncer dans l’eau. Par contre, sur la terre ferme, il marche très mal.\n\n4. Le huard fait son nid tout près de l’eau, souvent sur une petite île. La femelle pond un ou deux œufs. Le mâle et la femelle couvent les œufs chacun leur tour. Les poussins savent nager presque tout de suite après leur naissance. Pour se reposer ou se protéger, ils montent souvent sur le dos de leurs parents.",
+        "glossary": [
+          {
+            "term": "officiel",
+            "definition": "Choisi pour représenter un pays, une province ou une ville."
+          },
+          {
+            "term": "un damier",
+            "definition": "Une surface faite de petits carrés de deux couleurs, comme un jeu de dames."
+          },
+          {
+            "term": "des pattes palmées",
+            "definition": "Des pattes dont les doigts sont reliés par une peau, comme celles du canard."
+          },
+          {
+            "term": "couver",
+            "definition": "Rester couché sur ses œufs pour les garder au chaud."
+          },
+          {
+            "term": "un poussin",
+            "definition": "Un bébé oiseau qui vient de sortir de l’œuf."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quelle phrase dit l’idée principale du paragraphe 3?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "b",
+                "text": "Le huard marche très mal sur la terre ferme."
+              },
+              {
+                "id": "a",
+                "text": "Le huard est un excellent plongeur."
+              },
+              {
+                "id": "d",
+                "text": "Le huard a des pattes palmées."
+              },
+              {
+                "id": "c",
+                "text": "Le huard mange des poissons."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Écris dans tes mots l’idée principale du paragraphe 4.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Nomme deux détails du paragraphe 2 qui aident à reconnaître le huard.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 2
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "Les poussins du huard doivent attendre plusieurs semaines avant de savoir nager.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Pourquoi, selon toi, le huard fait-il son nid tout près de l’eau? Appuie ta réponse sur un indice du texte.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Une photo d’un huard adulte en été : tête noire, yeux rouges, collier blanc, dos en damier.",
+          "Une pièce d’un dollar à faire circuler dans la classe.",
+          "Un enregistrement du cri du huard, à faire écouter avant la lecture.",
+          "Une photo d’un poussin sur le dos d’un parent."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Toutes les phrases du paragraphe 3 expliquent pourquoi le huard plonge si bien. Les autres choix sont des détails ou viennent d’un autre paragraphe."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "Le huard élève ses petits près de l’eau et en prend bien soin.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter toute phrase qui parle des petits du huard et des soins que les parents leur donnent. Une réponse qui ne nomme qu’un détail (par exemple, les œufs) est trop petite."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "Il a la tête noire et les yeux rouges.",
+            "acceptableAnswers": [],
+            "explanation": "Détails possibles : tête et cou noirs, yeux rouges, collier de rayures blanches, dos en damier, long bec noir et pointu."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : le texte dit que les poussins savent nager presque tout de suite après leur naissance."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "Parce qu’il marche très mal sur la terre ferme : près de l’eau, il peut aller facilement de son nid à l’eau.",
+            "acceptableAnswers": [],
+            "explanation": "Réponse par inférence : l’indice est dans le paragraphe 3 (il marche très mal sur la terre ferme). Accepter aussi l’idée de protéger les œufs sur une petite île, si l’élève s’appuie sur le texte."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "enrichi",
+      "content": {
+        "title": "",
+        "objective": "Je trouve l’idée principale d’un paragraphe et des détails importants qui l’appuient.",
+        "teacherNote": "Version Enrichi : vocabulaire plus riche et plus précis, phrases plus variées, et deux questions d’approfondissement (questions 6 et 7). Les quatre versions ont les mêmes quatre paragraphes et les mêmes idées principales, ce qui permet de faire la leçon « Trouver l’idée principale d’un paragraphe » avec toute la classe.",
+        "text": "1. Le huard, qu’on appelle aussi plongeon huard, est un grand oiseau aquatique. Du printemps jusqu’à l’automne, il fréquente des milliers de lacs de l’Ontario, surtout ceux dont l’eau est claire et poissonneuse. Au crépuscule, son cri résonne sur l’eau : on dirait un long rire tremblant, parfois suivi d’une plainte qui donne des frissons. Cet oiseau fait partie du paysage et de l’identité de la province : il en est l’oiseau officiel, et il figure sur la pièce d’un dollar, que tout le monde surnomme d’ailleurs le « huard ».\n\n2. En été, son plumage le rend difficile à confondre avec un autre oiseau. Sa tête et son cou sont d’un noir aux reflets verts, et ses yeux sont d’un rouge vif. Un collier de fines rayures blanches entoure son cou. Son dos est parsemé de taches blanches disposées en rangées, comme les cases d’un damier. Enfin, son long bec noir et pointu lui permet de saisir facilement ses proies.\n\n3. Le huard est un plongeur remarquable, dont tout le corps est adapté à la vie sous l’eau. Il plonge pour poursuivre les poissons dont il se nourrit. Ses pattes palmées, placées très loin à l’arrière du corps, le propulsent comme des palmes de plongée. Contrairement à la plupart des oiseaux, dont les os sont creux et légers, le huard possède des os pleins et lourds qui l’aident à s’enfoncer dans l’eau. Cette adaptation a toutefois un prix : sur la terre ferme, il se déplace avec beaucoup de difficulté.\n\n4. Le huard installe son nid au bord de l’eau, souvent sur une petite île où les prédateurs ont du mal à l’atteindre. La femelle y pond généralement deux œufs, parfois un seul. Le mâle et la femelle se relaient pour les couver et les garder au chaud. Les poussins savent nager presque aussitôt après l’éclosion. Lorsqu’ils sont fatigués ou qu’un danger approche, ils grimpent sur le dos de l’un de leurs parents, où ils trouvent chaleur et protection.",
+        "glossary": [
+          {
+            "term": "aquatique",
+            "definition": "Qui vit dans l’eau ou sur l’eau."
+          },
+          {
+            "term": "poissonneux",
+            "definition": "Où il y a beaucoup de poissons."
+          },
+          {
+            "term": "le crépuscule",
+            "definition": "Le moment où la lumière baisse, après le coucher du soleil."
+          },
+          {
+            "term": "se relayer",
+            "definition": "Se remplacer l’un l’autre, chacun son tour."
+          },
+          {
+            "term": "l’éclosion",
+            "definition": "Le moment où le petit sort de l’œuf."
+          },
+          {
+            "term": "une adaptation",
+            "definition": "Un trait du corps ou du comportement qui aide un animal à vivre dans son milieu."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quelle phrase exprime le mieux l’idée principale du paragraphe 3?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "b",
+                "text": "Sur la terre ferme, le huard se déplace avec difficulté."
+              },
+              {
+                "id": "a",
+                "text": "Le corps du huard est adapté à la plongée et à la vie sous l’eau."
+              },
+              {
+                "id": "d",
+                "text": "Le huard possède des pattes palmées."
+              },
+              {
+                "id": "c",
+                "text": "Le huard se nourrit de poissons."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Formule dans tes mots l’idée principale du paragraphe 4.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Relève deux détails du paragraphe 2 qui permettent de reconnaître le huard.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 2
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "Les poussins du huard doivent attendre plusieurs semaines après l’éclosion avant de savoir nager.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Pourquoi le huard installe-t-il son nid au bord de l’eau? Donne deux raisons en t’appuyant sur les paragraphes 3 et 4.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Selon toi, pourquoi a-t-on choisi le huard comme oiseau officiel de l’Ontario? Donne deux raisons en t’appuyant sur le texte.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 4
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Propose un nouveau titre pour ce texte. Ton titre doit résumer l’idée principale du texte entier.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          }
+        ],
+        "visualSupports": [
+          "Une photo d’un huard adulte en été : tête noire, yeux rouges, collier blanc, dos en damier.",
+          "Une pièce d’un dollar à faire circuler dans la classe.",
+          "Un enregistrement du cri du huard, à faire écouter avant la lecture.",
+          "Une photo d’un poussin sur le dos d’un parent."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Toutes les phrases du paragraphe 3 expliquent pourquoi le huard plonge si bien. Les autres choix sont des détails ou viennent d’un autre paragraphe."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "Les parents huards élèvent leurs petits au bord de l’eau et les protègent.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter toute phrase qui porte sur l’élevage des petits et sur la protection que les parents leur offrent."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "Ses yeux sont d’un rouge vif et un collier de fines rayures blanches entoure son cou.",
+            "acceptableAnswers": [],
+            "explanation": "Détails possibles : tête et cou noirs aux reflets verts, yeux rouges, collier de rayures blanches, dos en damier, long bec noir et pointu."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : le texte dit que les poussins savent nager presque aussitôt après l’éclosion."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "Il se déplace très difficilement sur la terre ferme : au bord de l’eau, il passe facilement de son nid à l’eau. De plus, sur une petite île, les prédateurs ont du mal à atteindre le nid.",
+            "acceptableAnswers": [],
+            "explanation": "Réponse par inférence : une raison vient du paragraphe 3 (il se déplace mal sur la terre ferme) et l’autre du paragraphe 4 (les prédateurs atteignent difficilement une petite île)."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "On le trouve sur des milliers de lacs de la province, et son cri fait partie du paysage des soirs d’été. Il est aussi très connu : on le voit même sur la pièce d’un dollar.",
+            "acceptableAnswers": [],
+            "explanation": "Question d’approfondissement : accepter toute réponse justifiée par des éléments du texte."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "La vie du huard, l’oiseau de nos lacs",
+            "acceptableAnswers": [],
+            "explanation": "Le titre doit porter sur le huard en général (qui il est, à quoi il ressemble, comment il vit et élève ses petits), pas sur un seul paragraphe."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

@@ -3,20 +3,44 @@
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { ScrollingTabs } from '@/components/app/scrolling-tabs';
 import { cn } from '@/lib/utils';
 
-const TABS = ['students', 'timetable', 'planning', 'settings'] as const;
+const TABS = ['students', 'timetable', 'planning', 'substitute', 'settings'] as const;
+type Tab = (typeof TABS)[number] | 'class-mode' | 'bulletins' | 'info-parents';
 
-export function ClassTabs({ classId }: { classId: string }) {
+/**
+ * The class's tabs. « Mode classe » (quizzes on devices, DECISIONS D-090) comes after
+ * « Planification » when the school has the Library module, then « Bulletins » (report card
+ * comments, D-135) for the homeroom and subject teachers there, then « Info-parents » (the weekly
+ * message to families, D-136) for the class team. The row scrolls sideways on phones, the current
+ * tab in view and an arrow at the edge where more tabs are (`ScrollingTabs`, as the board's).
+ */
+export function ClassTabs({
+  classId,
+  classMode = false,
+  bulletins = false,
+  infoParents = false,
+}: {
+  classId: string;
+  classMode?: boolean;
+  bulletins?: boolean;
+  infoParents?: boolean;
+}) {
   const t = useTranslations('classes.tabs');
+  const tClassMode = useTranslations('classMode');
   const pathname = usePathname();
+  const tabs: Tab[] = [
+    ...TABS.slice(0, 3),
+    ...(classMode ? (['class-mode'] as const) : []),
+    ...(bulletins ? (['bulletins'] as const) : []),
+    ...(infoParents ? (['info-parents'] as const) : []),
+    ...TABS.slice(3),
+  ];
   return (
-    <nav
-      className="-mx-4 overflow-x-auto border-b border-slate-200 px-4"
-      aria-label={t('overview')}
-    >
+    <ScrollingTabs label={t('overview')} testId="class-tabs">
       <ul className="flex gap-1">
-        {TABS.map((tab) => {
+        {tabs.map((tab) => {
           const href = `/classes/${classId}/${tab}`;
           const active = pathname === href || pathname.startsWith(`${href}/`);
           return (
@@ -29,12 +53,16 @@ export function ClassTabs({ classId }: { classId: string }) {
                   active && 'border-brand-600 text-brand-700',
                 )}
               >
-                {t(tab)}
+                {tab === 'class-mode'
+                  ? tClassMode('tab')
+                  : tab === 'info-parents'
+                    ? t('infoParents')
+                    : t(tab)}
               </Link>
             </li>
           );
         })}
       </ul>
-    </nav>
+    </ScrollingTabs>
   );
 }

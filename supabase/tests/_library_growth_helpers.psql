@@ -1,0 +1,91 @@
+-- Library growth fixtures (Phase 5: board items, adaptations, opinions; DECISIONS D-091 to
+-- D-093). Included with \ir after _helpers.psql, inside the test's transaction; everything here
+-- is rolled back afterwards. (The .psql extension keeps pg_prove from running it on its own.)
+
+-- A content pack of a board (as the seed or a pack import writes it), for the « ensemble »
+-- credit. Returns its id.
+create function tests.growth_pack(p_key text, p_title text, p_board text default 'board_a')
+returns uuid
+language sql
+as $$
+  insert into public.content_packs (id, board_id, slug, version, title, publisher)
+  values (tests.remember(p_key, gen_random_uuid()), tests.id(p_board),
+    'test-' || substr(md5(random()::text), 1, 8), '2026.1', p_title, 'IP Lynx')
+  returning id;
+$$;
+
+-- A version of an item for a language level (a copy of its base version, with the base
+-- version's key), written directly (superuser): a personal level on a shared item cannot be
+-- saved through the functions, and the tests need one to prove it is never copied.
+create function tests.growth_version(p_item text, p_level uuid)
+returns uuid
+language plpgsql
+as $$
+declare
+  v_base public.library_item_versions;
+  v_id uuid;
+begin
+  select * into v_base from public.library_item_versions
+  where item_id = tests.id(p_item) and language_level_id is null;
+  insert into public.library_item_versions (item_id, language_level_id, content)
+  values (v_base.item_id, p_level, v_base.content)
+  returning id into v_id;
+  insert into public.library_item_answer_keys (version_id, answer_key)
+  select v_id, k.answer_key from public.library_item_answer_keys k where k.version_id = v_base.id;
+  return v_id;
+end;
+$$;
+
+-- A staff member of a school (a teacher role), for the opinions' averages.
+create function tests.growth_teacher(p_key text, p_school text default 'school_a1')
+returns uuid
+language plpgsql
+as $$
+declare
+  v_id uuid := tests.create_user(p_key);
+begin
+  insert into public.user_roles (user_id, role, board_id, school_id)
+  select v_id, 'teacher', s.board_id, s.id from public.schools s where s.id = tests.id(p_school);
+  return v_id;
+end;
+$$;
+
+-- An opinion given through rate_library_item as a user, a day ago or more (an opinion counts in
+-- the average once unchanged for a day, D-093); the role is back to the superuser after.
+create function tests.growth_rate(p_user text, p_item text, p_rating smallint)
+returns void
+language plpgsql
+as $$
+begin
+  perform tests.authenticate_as(p_user);
+  perform public.rate_library_item(tests.id(p_item), p_rating);
+  perform tests.clear_authentication();
+  update public.library_item_ratings set updated_at = now() - interval '2 days'
+  where item_id = tests.id(p_item) and rater_id = tests.id(p_user);
+end;
+$$;
+
+-- A day passes for every opinion on an item (they were given or changed more than a day ago).
+create function tests.settle_opinions(p_item text)
+returns void
+language sql
+as $$
+  update public.library_item_ratings set updated_at = now() - interval '2 days'
+  where item_id = tests.id(p_item);
+$$;
+
+-- How many rows a delete of an item removes as the current role (row level security decides).
+create function tests.growth_delete(p_item text)
+returns integer
+language plpgsql
+as $$
+declare
+  v_count integer;
+begin
+  delete from public.library_items where id = tests.id(p_item);
+  get diagnostics v_count = row_count;
+  return v_count;
+end;
+$$;
+
+grant execute on all functions in schema tests to anon, authenticated;

@@ -9,6 +9,44 @@ import { z } from 'zod';
 
 const hhmm = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/);
 
+/**
+ * How long each kind of data is kept, in days, per board (DECISIONS D-105; `boards.settings
+ * .retention`). The defaults are Assumptions pending a lawyer's review. Every lower bound is 365
+ * days: MFIPPA Reg. 823 s.5 may require keeping personal information a year after its use. Only
+ * the operator sets them (`pnpm admin set-retention`); the database refuses other writers and
+ * values outside these bounds, and reads them the same way (`app.retention_days`: a number within
+ * the bounds, rounded, else the default).
+ */
+export const RETENTION_LIMITS = {
+  /** The audit log. */
+  auditDays: { default: 730, min: 365, max: 3650 },
+  /** Substitute plans (with their codes, sessions and report), after the plan's date. */
+  subPlanDays: { default: 365, min: 365, max: 1095 },
+  /** A class's students (first names, levels, alerts), after its school year ends. */
+  classDaysAfterYearEnd: { default: 365, min: 365, max: 1095 },
+  /** The AI usage ledger (`ai_generations`). */
+  aiUsageDays: { default: 730, min: 365, max: 3650 },
+  /** Pilot feedback. */
+  feedbackDays: { default: 365, min: 365, max: 1095 },
+} as const;
+
+export type RetentionKey = keyof typeof RETENTION_LIMITS;
+
+export const RETENTION_KEYS = Object.keys(RETENTION_LIMITS) as RetentionKey[];
+
+export const RETENTION_DEFAULTS = Object.fromEntries(
+  RETENTION_KEYS.map((key) => [key, RETENTION_LIMITS[key].default]),
+) as { [K in RetentionKey]: number };
+
+/** One retention setting: a number within its bounds (rounded, as SQL does), else the default. */
+const retentionDays = (key: RetentionKey) =>
+  z
+    .number()
+    .min(RETENTION_LIMITS[key].min)
+    .max(RETENTION_LIMITS[key].max)
+    .transform(Math.round)
+    .catch(RETENTION_LIMITS[key].default);
+
 export const boardSettingsSchema = z.object({
   /** First grade (ordinal: K1 = -1, K2 = 0, 1..8) where Anglais is taught. */
   anglaisStartGrade: z.number().int().min(-1).max(8).catch(4),
@@ -32,9 +70,36 @@ export const boardSettingsSchema = z.object({
     .catch({ allowed: true, defaultMonthlyAllowanceUsd: 50, ceilingMultiplier: 2, pooling: true }),
   /** Retention for class-mode results kept by teachers, in days. */
   classModeResultsRetentionDays: z.number().int().min(1).max(3650).catch(365),
+  /** Retention of the board's data (D-105). Operator only; see RETENTION_LIMITS. */
+  retention: z
+    .object({
+      auditDays: retentionDays('auditDays'),
+      subPlanDays: retentionDays('subPlanDays'),
+      classDaysAfterYearEnd: retentionDays('classDaysAfterYearEnd'),
+      aiUsageDays: retentionDays('aiUsageDays'),
+      feedbackDays: retentionDays('feedbackDays'),
+    })
+    .catch({ ...RETENTION_DEFAULTS }),
 });
 
 export type BoardSettings = z.infer<typeof boardSettingsSchema>;
+
+/** Optional text shown to substitutes; blank means "not set". */
+const substituteText = z
+  .string()
+  .trim()
+  .max(500)
+  .transform((v) => (v.length === 0 ? null : v))
+  .nullable()
+  .catch(null);
+
+export const SUBSTITUTE_SETTINGS_DEFAULTS = {
+  accessFrom: '05:00',
+  accessUntil: '18:00',
+  halfDaySplit: null,
+  arrivalInstructions: null,
+  emergencyInfo: null,
+} as const;
 
 export const schoolSettingsSchema = z.object({
   contact: z
@@ -46,6 +111,24 @@ export const schoolSettingsSchema = z.object({
   /** Typical first bell and dismissal, used to prefill new timetables. */
   dayStart: hhmm.catch('08:45'),
   dayEnd: hhmm.catch('15:20'),
+  /**
+   * Substitute hand-off (DECISIONS D-050, D-055). The code window and the half-day split are
+   * school-local times; SQL reads accessFrom/accessUntil too (app.sub_access_window).
+   */
+  substitute: z
+    .object({
+      /** A substitute's code works on the plan date from this time... */
+      accessFrom: hhmm.catch(SUBSTITUTE_SETTINGS_DEFAULTS.accessFrom),
+      /** ...until this time. */
+      accessUntil: hhmm.catch(SUBSTITUTE_SETTINGS_DEFAULTS.accessUntil),
+      /** Where morning ends for half-day absences. Null: derived from the bell schedule. */
+      halfDaySplit: hhmm.nullable().catch(null),
+      /** « Présentez-vous au secrétariat... » */
+      arrivalInstructions: substituteText,
+      /** Exits and assembly point. Never medical information about a student (use alerts). */
+      emergencyInfo: substituteText,
+    })
+    .catch({ ...SUBSTITUTE_SETTINGS_DEFAULTS }),
 });
 
 export type SchoolSettings = z.infer<typeof schoolSettingsSchema>;

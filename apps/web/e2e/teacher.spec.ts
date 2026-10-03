@@ -36,7 +36,7 @@ test('a teacher sees the day and checks off a lesson in one tap, with undo', asy
 
   await french.getByRole('button', { name: 'Leçon donnée' }).click();
   await expect(
-    page.getByText(/« Trouver l.idée principale » est marquée comme donnée\./),
+    page.getByText(/«\sTrouver l.idée principale\s» est marquée comme donnée\./),
   ).toBeVisible();
   await expect(french.getByRole('button', { name: 'Donnée' })).toBeVisible();
 
@@ -171,7 +171,12 @@ test('a rotary teacher sees only their own blocks in other classes', async ({ pa
 
 test('the principal manages the school calendar but has no teaching screens', async ({ page }) => {
   await login(page, DEMO.principal);
-  await expect(page).toHaveURL(/\/calendar/);
+  // She does not teach: she lands on « Direction » (D-118), and « Aujourd'hui » sends her there.
+  await expect(page).toHaveURL(/\/direction$/);
+  await expect(page.getByRole('link', { name: 'Classes' })).toHaveCount(0);
+  await page.goto('/today');
+  await expect(page).toHaveURL(/\/direction$/);
+  await page.goto('/calendar');
   await expect(page.getByText('Journée pédagogique').first()).toBeVisible();
   await expect(page.getByRole('link', { name: 'Classes' })).toHaveCount(0);
   await page.goto('/school');

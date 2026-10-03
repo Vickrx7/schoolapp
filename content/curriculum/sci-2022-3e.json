@@ -1,0 +1,423 @@
+{
+  "official": false,
+  "verified": false,
+  "subjectCode": "sci",
+  "curriculumVersion": "sci-2022",
+  "sourceNote": "Résumé paraphrasé du curriculum de sciences et technologie de l’Ontario (2022), à vérifier contre le document officiel.",
+  "strands": [
+    {
+      "code": "A",
+      "labelFr": "Habiletés en STIM et liens",
+      "labelEn": null
+    },
+    {
+      "code": "B",
+      "labelFr": "Systèmes vivants",
+      "labelEn": null
+    },
+    {
+      "code": "C",
+      "labelFr": "Matière et énergie",
+      "labelEn": null
+    },
+    {
+      "code": "D",
+      "labelFr": "Structures et mécanismes",
+      "labelEn": null
+    },
+    {
+      "code": "E",
+      "labelFr": "Systèmes de la Terre et de l’espace",
+      "labelEn": null
+    }
+  ],
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "A1",
+      "kind": "overall",
+      "strandCode": "A",
+      "parentCode": null,
+      "textFr": "Utiliser un processus de recherche scientifique, un processus d’expérimentation scientifique et un processus de design en ingénierie pour mener des investigations, en respectant les consignes de santé et de sécurité.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "A1.1",
+      "kind": "specific",
+      "strandCode": "A",
+      "parentCode": "A1",
+      "textFr": "Utiliser un processus de recherche scientifique pour explorer des questions liées aux concepts à l’étude.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "A1.2",
+      "kind": "specific",
+      "strandCode": "A",
+      "parentCode": "A1",
+      "textFr": "Utiliser un processus d’expérimentation scientifique pour faire des prédictions, les vérifier et observer des phénomènes liés aux concepts à l’étude.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "A1.3",
+      "kind": "specific",
+      "strandCode": "A",
+      "parentCode": "A1",
+      "textFr": "Utiliser un processus de design en ingénierie pour concevoir, construire, mettre à l’essai et améliorer une solution à un problème concret.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "A1.4",
+      "kind": "specific",
+      "strandCode": "A",
+      "parentCode": "A1",
+      "textFr": "Suivre les consignes de santé et de sécurité pendant les investigations, dont le port de l’équipement de protection et l’utilisation sécuritaire des outils et du matériel.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "A1.5",
+      "kind": "specific",
+      "strandCode": "A",
+      "parentCode": "A1",
+      "textFr": "Communiquer ses résultats en utilisant le vocabulaire scientifique et technologique et des formes adaptées à l’intention et au public.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "A2",
+      "kind": "overall",
+      "strandCode": "A",
+      "parentCode": null,
+      "textFr": "Utiliser le codage dans des investigations et pour modéliser des concepts, et évaluer l’incidence du codage et des technologies émergentes sur la vie quotidienne.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "A2.1",
+      "kind": "specific",
+      "strandCode": "A",
+      "parentCode": "A2",
+      "textFr": "Écrire et exécuter du code pour mener des investigations et modéliser des concepts, par exemple à l’aide d’instructions en séquence et de boucles.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "A2.2",
+      "kind": "specific",
+      "strandCode": "A",
+      "parentCode": "A2",
+      "textFr": "Reconnaître et décrire l’incidence du codage et des technologies émergentes sur la vie quotidienne, y compris dans les métiers spécialisés.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "A3",
+      "kind": "overall",
+      "strandCode": "A",
+      "parentCode": null,
+      "textFr": "Analyser des applications de la science et de la technologie dans divers contextes et reconnaître les contributions de personnes et de communautés diverses.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "A3.1",
+      "kind": "specific",
+      "strandCode": "A",
+      "parentCode": "A3",
+      "textFr": "Décrire des applications pratiques des concepts scientifiques et technologiques à l’étude, dont des métiers qui s’y rattachent.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "A3.2",
+      "kind": "specific",
+      "strandCode": "A",
+      "parentCode": "A3",
+      "textFr": "Explorer comment la science et la technologie peuvent être combinées à d’autres matières pour répondre à des problèmes concrets.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "A3.3",
+      "kind": "specific",
+      "strandCode": "A",
+      "parentCode": "A3",
+      "textFr": "Reconnaître les contributions à la science et à la technologie de personnes de diverses communautés, dont les Premières Nations, les Métis, les Inuit et les communautés francophones.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "B1",
+      "kind": "overall",
+      "strandCode": "B",
+      "parentCode": null,
+      "textFr": "Évaluer l’importance des plantes pour les humains et l’environnement, ainsi que l’incidence des activités humaines sur les plantes.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "B1.1",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B1",
+      "textFr": "Évaluer l’importance des plantes pour les humains et les autres êtres vivants, en tenant compte de divers points de vue, et proposer des façons de protéger les plantes indigènes et leurs habitats.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "B1.2",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B1",
+      "textFr": "Évaluer l’incidence de diverses activités humaines sur les plantes et proposer des moyens d’en réduire les effets nuisibles.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "B2",
+      "kind": "overall",
+      "strandCode": "B",
+      "parentCode": null,
+      "textFr": "Démontrer une compréhension de la croissance et des changements chez les plantes, de leurs caractéristiques et de leurs besoins.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "B2.1",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B2",
+      "textFr": "Décrire les besoins essentiels des plantes (air, eau, lumière, chaleur, espace, nutriments).",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "B2.2",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B2",
+      "textFr": "Nommer les principales parties d’une plante (racine, tige, feuille, fleur, graine, fruit) et décrire le rôle de chacune dans sa survie.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "B2.3",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B2",
+      "textFr": "Décrire les changements que subissent différentes plantes au cours de leur cycle de vie.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "B2.4",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B2",
+      "textFr": "Expliquer que la plupart des plantes tirent leur énergie directement du Soleil et qu’elles fournissent de l’énergie aux autres êtres vivants.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "B2.5",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B2",
+      "textFr": "Décrire des façons dont les plantes et les animaux dépendent les uns des autres, par exemple la pollinisation, la dispersion des graines, la nourriture et l’abri.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "C1",
+      "kind": "overall",
+      "strandCode": "C",
+      "parentCode": null,
+      "textFr": "Évaluer l’incidence de diverses forces sur la société et l’environnement.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "C1.1",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C1",
+      "textFr": "Évaluer les effets de forces naturelles, comme le vent et l’eau en mouvement, sur l’environnement naturel et bâti, et proposer des façons d’en réduire les effets nuisibles.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "C1.2",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C1",
+      "textFr": "Évaluer l’utilité d’outils et de dispositifs qui utilisent des forces dans la vie quotidienne, en tenant compte de leurs effets sur les personnes et l’environnement.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "C2",
+      "kind": "overall",
+      "strandCode": "C",
+      "parentCode": null,
+      "textFr": "Démontrer une compréhension des forces qui causent le mouvement, dont les forces de contact et les forces à distance.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "C2.1",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C2",
+      "textFr": "Définir une force comme une poussée ou une traction qui peut mettre un objet en mouvement, l’arrêter ou changer sa direction.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "C2.2",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C2",
+      "textFr": "Distinguer les forces de contact, comme le frottement, et les forces à distance, comme la gravité, le magnétisme et l’électricité statique.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "C2.3",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C2",
+      "textFr": "Décrire comment une force peut changer la forme, la vitesse ou la direction d’un objet.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "D1",
+      "kind": "overall",
+      "strandCode": "D",
+      "parentCode": null,
+      "textFr": "Évaluer l’importance des structures solides et stables pour la société et l’environnement.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "D1.1",
+      "kind": "specific",
+      "strandCode": "D",
+      "parentCode": "D1",
+      "textFr": "Évaluer l’incidence de diverses structures sur la société et l’environnement, et proposer des façons d’en réduire les effets nuisibles.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "D1.2",
+      "kind": "specific",
+      "strandCode": "D",
+      "parentCode": "D1",
+      "textFr": "Évaluer l’importance de construire des structures sécuritaires et durables qui répondent aux besoins des personnes qui les utilisent.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "D2",
+      "kind": "overall",
+      "strandCode": "D",
+      "parentCode": null,
+      "textFr": "Démontrer une compréhension de la solidité et de la stabilité des structures naturelles et fabriquées.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "D2.1",
+      "kind": "specific",
+      "strandCode": "D",
+      "parentCode": "D2",
+      "textFr": "Décrire une structure comme un objet d’une forme et d’une taille précises qui sert à supporter ou à contenir quelque chose.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "D2.2",
+      "kind": "specific",
+      "strandCode": "D",
+      "parentCode": "D2",
+      "textFr": "Décrire comment les matériaux, la forme et la base d’une structure influent sur sa solidité et sa stabilité.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "D2.3",
+      "kind": "specific",
+      "strandCode": "D",
+      "parentCode": "D2",
+      "textFr": "Reconnaître des structures naturelles et fabriquées, et comparer la façon dont elles restent solides et stables.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "E1",
+      "kind": "overall",
+      "strandCode": "E",
+      "parentCode": null,
+      "textFr": "Évaluer l’importance des sols pour la société et l’environnement, ainsi que l’incidence des activités humaines sur les sols.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "E1.1",
+      "kind": "specific",
+      "strandCode": "E",
+      "parentCode": "E1",
+      "textFr": "Évaluer l’importance des sols pour les êtres vivants et pour des activités humaines comme l’agriculture et la construction, et proposer des façons de les protéger.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "E1.2",
+      "kind": "specific",
+      "strandCode": "E",
+      "parentCode": "E1",
+      "textFr": "Évaluer l’incidence d’activités humaines sur les sols, comme l’érosion et la pollution, et proposer des moyens d’en réduire les effets nuisibles.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "E2",
+      "kind": "overall",
+      "strandCode": "E",
+      "parentCode": null,
+      "textFr": "Démontrer une compréhension de la composition et des types de sols, et des liens entre les sols et les êtres vivants.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "E2.1",
+      "kind": "specific",
+      "strandCode": "E",
+      "parentCode": "E2",
+      "textFr": "Décrire la composition des sols (particules minérales, humus, air, eau, êtres vivants).",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "E2.2",
+      "kind": "specific",
+      "strandCode": "E",
+      "parentCode": "E2",
+      "textFr": "Comparer différents types de sols, comme les sols sableux, argileux et limoneux, selon leurs caractéristiques, dont leur capacité à retenir l’eau.",
+      "textEn": null
+    },
+    {
+      "grade": "3",
+      "code": "E2.3",
+      "kind": "specific",
+      "strandCode": "E",
+      "parentCode": "E2",
+      "textFr": "Décrire le rôle des êtres vivants du sol, comme les vers de terre, dans la décomposition des matières organiques et le compostage.",
+      "textEn": null
+    }
+  ]
+}

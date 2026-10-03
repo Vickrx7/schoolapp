@@ -90,9 +90,11 @@ describe('outbox dispatch', () => {
         logger: createLogger('test'),
         pool,
         ai: null,
+        authAdmin: null,
       },
       batchSize: 10,
       aiJobRetentionDays: 30,
+      bulkMaxRunUsd: 100,
     });
     const helpers = {
       withPgClient: async <T>(fn: (c: pg.PoolClient) => Promise<T>) => {

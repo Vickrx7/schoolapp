@@ -1,0 +1,814 @@
+<title>Fiche d’information Lynx École</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Lexend:wght@400..700&family=Zilla+Slab:wght@500;700&display=swap"
+/>
+<style>
+  /* Layout: a board briefing note, one sheet per language (French first). Each sheet prints on
+     one letter page: rows of label + text, two columns of facts, three real screenshots of the
+     pilot build. On a phone everything stacks to one column. */
+  :root {
+    --bg: #eef2ec;
+    --sheet: #ffffff;
+    --ink: #14231a;
+    --ink-2: #4a5a4f;
+    --line: #cbd6cd;
+    --soft: #eaf1e7;
+    --green: #0a7a3d;
+    --green-ink: #086332;
+    --on-green: #ffffff;
+    --margin: #c5443a;
+    --soon: #33537a;
+    --later: #5b665e;
+    --focus: #1a5fcc;
+    --board: #1e3a2e;
+    --frame: #9b7648;
+    --chalk: #eef2ea;
+    --shot-dim: 1;
+    --display: 'Zilla Slab', Rockwell, 'Roboto Slab', Georgia, serif;
+    --body: Lexend, 'Segoe UI', system-ui, -apple-system, sans-serif;
+    --gutter: clamp(16px, 4vw, 40px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --bg: #0c1511;
+      --sheet: #15221b;
+      --ink: #e5eee6;
+      --ink-2: #a6b6ab;
+      --line: #2d4136;
+      --soft: #1b2d23;
+      --green: #3fbf78;
+      --green-ink: #62d493;
+      --on-green: #06150d;
+      --margin: #e0776c;
+      --soon: #a2bde2;
+      --later: #a3b0a7;
+      --focus: #8ab8ff;
+      --shot-dim: 0.9;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme='dark'] {
+    --bg: #0c1511;
+    --sheet: #15221b;
+    --ink: #e5eee6;
+    --ink-2: #a6b6ab;
+    --line: #2d4136;
+    --soft: #1b2d23;
+    --green: #3fbf78;
+    --green-ink: #62d493;
+    --on-green: #06150d;
+    --margin: #e0776c;
+    --soon: #a2bde2;
+    --later: #a3b0a7;
+    --focus: #8ab8ff;
+    --shot-dim: 0.9;
+    color-scheme: dark;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    padding-inline: var(--gutter);
+    padding-block: 24px 48px;
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 0.9375rem/1.55 var(--body);
+    -webkit-text-size-adjust: 100%;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--display);
+    font-weight: 700;
+    line-height: 1.15;
+    margin: 0;
+    text-wrap: balance;
+  }
+  p,
+  ul,
+  figure {
+    margin: 0;
+  }
+  ul {
+    padding-inline-start: 1.1em;
+    display: grid;
+    gap: 4px;
+  }
+  a {
+    color: var(--green-ink);
+    text-underline-offset: 0.18em;
+  }
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  .sheet {
+    max-width: 860px;
+    margin-inline: auto;
+    background: var(--sheet);
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--green);
+    padding: clamp(20px, 4vw, 40px);
+    display: grid;
+    gap: 22px;
+  }
+  .sheet + .sheet {
+    margin-top: 32px;
+  }
+  .head {
+    display: grid;
+    gap: 6px;
+  }
+  .brandline {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font: 700 1.125rem/1 var(--display);
+  }
+  .brandline svg {
+    flex: none;
+  }
+  .brand-board {
+    fill: var(--board);
+    stroke: var(--frame);
+    stroke-width: 2;
+  }
+  .brand-chalk {
+    fill: var(--chalk);
+    font-family: var(--display);
+    font-weight: 700;
+  }
+  h1 {
+    font-size: clamp(1.6rem, 4vw, 2.1rem);
+  }
+  .meta {
+    color: var(--ink-2);
+    font-size: 0.875rem;
+  }
+  .jump {
+    font-size: 0.875rem;
+  }
+  .brief {
+    display: grid;
+    gap: 6px;
+    padding: 12px 16px;
+    background: var(--soft);
+    border-inline-start: 4px solid var(--margin);
+  }
+  .brief h2 {
+    font-size: 1.05rem;
+  }
+  section {
+    display: grid;
+    gap: 10px;
+    align-content: start;
+    min-width: 0;
+  }
+  section > h2 {
+    font-size: 1.25rem;
+    padding-bottom: 5px;
+    border-bottom: 1.5px solid var(--ink);
+  }
+  .rows {
+    display: grid;
+  }
+  .row {
+    display: grid;
+    gap: 2px 18px;
+    padding-block: 8px;
+    border-top: 1px solid var(--line);
+  }
+  .row:first-child {
+    border-top: 0;
+  }
+  @media (min-width: 640px) {
+    .row {
+      grid-template-columns: 9.5rem minmax(0, 1fr);
+    }
+  }
+  .row > :first-child {
+    font-weight: 700;
+  }
+  .row > * {
+    min-width: 0;
+  }
+  .shots {
+    display: grid;
+    gap: 14px;
+  }
+  @media (min-width: 640px) {
+    .shots {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .shots figure {
+    display: grid;
+    gap: 4px;
+    align-content: start;
+    min-width: 0;
+  }
+  .shots img {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--sheet);
+    filter: brightness(var(--shot-dim));
+  }
+  .shots figcaption,
+  .note {
+    font-size: 0.8125rem;
+    color: var(--ink-2);
+  }
+  .cols {
+    display: grid;
+    gap: 18px 28px;
+  }
+  @media (min-width: 700px) {
+    .cols {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+  }
+  .stamp {
+    display: inline-block;
+    padding: 0.2em 0.5em;
+    border: 1.5px solid currentColor;
+    border-radius: 3px;
+    font: 700 0.6875rem/1.3 var(--body);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .stamp--ok {
+    background: var(--green);
+    border-color: var(--green);
+    color: var(--on-green);
+  }
+  .stamp--soon {
+    color: var(--soon);
+    border-style: dotted;
+    border-width: 2px;
+  }
+  .soon {
+    padding: 10px 14px;
+    border: 1.5px dotted var(--soon);
+  }
+  .soon .stamp {
+    margin-inline-end: 6px;
+  }
+  .contact {
+    font-weight: 700;
+    user-select: all;
+    -webkit-user-select: all;
+  }
+  .foot {
+    font-size: 0.8125rem;
+    color: var(--ink-2);
+    border-top: 1px solid var(--line);
+    padding-top: 10px;
+  }
+
+  /* Print: one letter page per language. */
+  @media print {
+    :root:not([data-print-x]) {
+      --bg: #ffffff;
+      --sheet: #ffffff;
+      --ink: #000000;
+      --ink-2: #333333;
+      --line: #bbbbbb;
+      --soft: #f2f5f1;
+      --green: #0a7a3d;
+      --green-ink: #0a6b36;
+      --on-green: #ffffff;
+      --margin: #c5443a;
+      --soon: #1f3d63;
+      --later: #444444;
+      --shot-dim: 1;
+      color-scheme: light;
+      font-size: 10px;
+    }
+    @page {
+      size: letter;
+      margin: 10mm 12mm;
+    }
+    body {
+      padding: 0;
+      font-size: 1rem;
+      line-height: 1.32;
+    }
+    ul {
+      gap: 1pt;
+      /* Room for the disc marker, which the page edge would otherwise cut. */
+      padding-inline-start: 1.4em;
+    }
+    .sheet {
+      max-width: none;
+      border: 0;
+      border-top: 3pt solid var(--green);
+      padding: 5pt 0 0;
+      gap: 6pt;
+    }
+    .sheet + .sheet {
+      margin-top: 0;
+      break-before: page;
+    }
+    .jump {
+      display: none;
+    }
+    h1 {
+      font-size: 16pt;
+    }
+    section {
+      gap: 4pt;
+    }
+    section > h2 {
+      font-size: 11.5pt;
+      padding-bottom: 2pt;
+      break-after: avoid;
+    }
+    .brief {
+      padding: 5pt 9pt;
+      gap: 2pt;
+    }
+    .row {
+      grid-template-columns: 8.6rem minmax(0, 1fr);
+      padding-block: 2.5pt;
+    }
+    .shots {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 9pt;
+      margin-top: 2pt;
+    }
+    /* Print only: the top of each capture, so that each language stays on one page. */
+    .shots img {
+      max-height: 30mm;
+      object-fit: cover;
+      object-position: top;
+    }
+    .cols {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 6pt 16pt;
+    }
+    .soon {
+      padding: 4pt 8pt;
+    }
+    .row,
+    .brief,
+    .soon,
+    figure,
+    li {
+      break-inside: avoid;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+  }
+</style>
+
+<main>
+  <!-- ============================ FRANÇAIS ============================ -->
+  <article class="sheet" id="fr" lang="fr-CA" aria-labelledby="fr-title">
+    <header class="head">
+      <p class="brandline">
+        <svg width="30" height="24" viewBox="0 0 34 28" aria-hidden="true">
+          <rect class="brand-board" x="1" y="1" width="32" height="24" rx="3" />
+          <text class="brand-chalk" x="11" y="20" font-size="19">é</text>
+        </svg>
+        <span>Lynx École</span>
+      </p>
+      <h1 id="fr-title">Fiche d’information pour les conseils scolaires</h1>
+      <p class="meta">
+        État au 3 octobre 2026 · Version pilote, rien n’est encore en ligne · IP Lynx Inc.,
+        intégrateur ontarien en sécurité et en télécommunications
+      </p>
+      <p class="jump"><a href="#en" lang="en-CA">English version below</a></p>
+    </header>
+
+    <div class="brief">
+      <h2>En bref</h2>
+      <ul>
+        <li>
+          Une plateforme pour les écoles élémentaires catholiques de langue française de l’Ontario,
+          pensée d’abord pour le personnel enseignant, avec des écrans pour la direction et
+          l’administration du conseil.
+        </li>
+        <li>
+          Tout ce qui suit est « Disponible (version pilote) », sauf ce qui est marqué « Bientôt » :
+          construit et couvert par des tests automatisés, mais pas encore hébergé, et pas encore
+          utilisé dans une vraie école.
+        </li>
+        <li>
+          Aucun conseil scolaire n’est client ; le projet pilote gratuit n’a pas commencé. « Lynx
+          École » est un nom de travail.
+        </li>
+      </ul>
+    </div>
+
+    <section aria-labelledby="fr-today">
+      <h2 id="fr-today">Ce que fait la version pilote</h2>
+      <div class="rows">
+        <div class="row">
+          <p>Personnel enseignant</p>
+          <p>
+            « Aujourd’hui » et la prochaine leçon de chaque matière. « Je suis absent·e », puis
+            « Envoyer » : le plan de suppléance part de là où chaque classe est rendue, complet sans
+            IA. Banque de ressources par niveau de langue, mode classe au projecteur et sur les
+            tablettes. IA facultative, désactivée par défaut.
+          </p>
+        </div>
+        <div class="row">
+          <p>Année scolaire</p>
+          <ul>
+            <li>
+              « Mon année » : les unités sur les semaines de l’année ; « Couverture » par attente ;
+              un plan à long terme en PDF.
+            </li>
+            <li>
+              « Bulletins » : les commentaires à partir de banques, gardés dans le navigateur,
+              jamais envoyés à nos serveurs ni à l’IA.
+            </li>
+            <li>
+              « Info-parents » : le message de la semaine en français et en anglais, à copier ou à
+              imprimer ; rien n’est envoyé aux familles.
+            </li>
+          </ul>
+        </div>
+        <div class="row">
+          <p>Suppléance</p>
+          <p>
+            Le secrétariat remet un code d’une journée ; la personne suppléante, sans compte, voit
+            « Maintenant » et « Ensuite » et envoie son suivi. Chaque consultation est journalisée,
+            avec la personne qui a émis le code.
+          </p>
+        </div>
+        <div class="row">
+          <p>Direction</p>
+          <p>
+            « Tableau de bord de la direction » : les absences du jour et leurs plans, les
+            consultations d’alertes, les contributions à la banque et l’IA du mois, jamais la
+            planification du personnel enseignant. « Journal d’audit » filtrable, avec l’étiquette
+            « Code émis par le secrétariat » et un export CSV lui-même journalisé.
+          </p>
+        </div>
+        <div class="row">
+          <p>Conseil</p>
+          <p>
+            Invitations (nos serveurs n’envoient aucun courriel d’invitation), rôles et accès,
+            écoles, années scolaires, calendrier, approbation des ressources, utilisation de l’IA
+            par école (CSV), commentaires reçus et journal administratif.
+          </p>
+        </div>
+        <div class="row">
+          <p>Premiers pas</p>
+          <p>
+            « Bienvenue » avec les conditions du projet pilote, « Pour bien commencer » et une
+            classe exemple de 20 prénoms inventés, supprimée après 60 jours. « Commentaires » en
+            haut de chaque page.
+          </p>
+        </div>
+        <div class="row">
+          <p>Installation</p>
+          <p>
+            Sur les serveurs du conseil, avec Docker : une sauvegarde chiffrée et signée chaque
+            nuit, une restauration vérifiée, des points de contrôle de santé. Testée automatiquement
+            à chaque changement ; aucun conseil ne l’a encore installée.
+          </p>
+        </div>
+      </div>
+      <div class="shots">
+        <figure>
+          <img
+            src="assets/plan-desktop.webp"
+            width="760"
+            height="475"
+            loading="lazy"
+            decoding="async"
+            alt="Capture d’écran : le plan de suppléance, période de Français, avec la ressource « Le huard, oiseau des lacs » et une version par groupe."
+          />
+          <figcaption>Le plan de suppléance, avec une ressource de la banque.</figcaption>
+        </figure>
+        <figure>
+          <img
+            src="assets/audit-desktop.webp"
+            width="760"
+            height="475"
+            loading="lazy"
+            decoding="async"
+            alt="Capture d’écran : le journal d’audit de la direction, catégorie Alertes. En tête, une personne suppléante a consulté les alertes de la 3e année avec un code émis par Julie Bergeron, avec l’étiquette « Code émis par le secrétariat »."
+          />
+          <figcaption>Le journal d’audit : un code émis par le secrétariat.</figcaption>
+        </figure>
+        <figure>
+          <img
+            src="assets/board-desktop.webp"
+            width="760"
+            height="475"
+            loading="lazy"
+            decoding="async"
+            alt="Capture d’écran : « Administration du conseil », avec ce qui reste à régler, l’état du système (service en arrière-plan, sauvegarde, nettoyage) et les durées de conservation des données."
+          />
+          <figcaption>« Administration du conseil ». Données fictives.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <div class="cols">
+      <section aria-labelledby="fr-priv">
+        <h2 id="fr-priv">Vie privée</h2>
+        <ul>
+          <li>
+            Un prénom ou un surnom par élève, sans nom de famille, NISO, date de naissance ni
+            adresse. Alertes désactivées par défaut, chiffrées (AES-256-GCM), jamais imprimées.
+          </li>
+          <li>
+            IA : les noms des élèves et du personnel des écoles où travaille la personne deviennent
+            des marqueurs ; un autre nom (un parent) n’est pas reconnu, et elle le retire à l’aperçu
+            du texte exact. Le texte envoyé est traité aux États-Unis par Claude (Anthropic) et
+            conservé une période limitée.
+          </li>
+          <li>
+            Effacement chaque nuit : prénoms des élèves un an après l’année scolaire (avis 60 jours
+            avant), journal d’audit après deux ans.
+          </li>
+          <li>
+            Comptes sur invitation, sans mot de passe, tentatives limitées ; sécurité au niveau des
+            lignes sur chaque table. Un code de suppléance fonctionne pour quiconque le détient
+            (c’est journalisé).
+          </li>
+        </ul>
+      </section>
+      <section aria-labelledby="fr-not">
+        <h2 id="fr-not">Limites</h2>
+        <ul>
+          <li>
+            Rien n’est hébergé. Le vrai modèle d’IA n’a jamais été appelé, seulement un faux
+            fournisseur : aucune promesse de qualité.
+          </li>
+          <li>
+            Aucune certification, aucune EFVP, aucun test d’intrusion. Les conditions et les durées
+            minimales n’ont pas encore été revues par un ou une juriste. WCAG 2.0 AA est une cible.
+          </li>
+          <li>
+            Le curriculum intégré est un échantillon résumé (3e et 5e année) marqué « À vérifier » ;
+            « Couverture » ne compte que ces attentes. Les ressources et les textes de foi, écrits
+            pour la démonstration, n’ont été validés ni en classe ni par une autorité catholique.
+          </li>
+          <li>
+            Pas encore essayé dans une vraie école ni sur le matériel d’une vraie classe. Aucun lien
+            avec la sonorisation, les portes ou les caméras.
+          </li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="soon">
+      <p>
+        <span class="stamp stamp--soon">Bientôt</span>
+        <strong>Avant le projet pilote :</strong> mise en ligne de l’hébergement au Canada, réponse
+        écrite de Supabase sur ses journaux et ses sauvegardes, essai de restauration, demande de
+        non-conservation des données à Anthropic, revue des conditions par un ou une juriste,
+        premier essai du vrai modèle d’IA.
+      </p>
+    </div>
+
+    <section aria-labelledby="fr-pilot">
+      <h2 id="fr-pilot">Projet pilote</h2>
+      <p>
+        Gratuit ; il n’a pas commencé. Un conseil peut dès maintenant lire notre document de
+        confidentialité (en anglais), nous transmettre ses exigences et nommer la personne qui
+        administrera le projet pilote dans « Conseil ». Pour en parler :
+        <!-- Placeholder: nobody has confirmed this mailbox. Change it before sharing (marketing/README.md). -->
+        <span class="contact">pilote@iplynx.ca</span>
+      </p>
+    </section>
+  </article>
+
+  <!-- ============================ ENGLISH ============================ -->
+  <article class="sheet" id="en" lang="en-CA" aria-labelledby="en-title">
+    <header class="head">
+      <p class="brandline">
+        <svg width="30" height="24" viewBox="0 0 34 28" aria-hidden="true">
+          <rect class="brand-board" x="1" y="1" width="32" height="24" rx="3" />
+          <text class="brand-chalk" x="11" y="20" font-size="19">é</text>
+        </svg>
+        <span>Lynx École</span>
+      </p>
+      <h1 id="en-title">Fact sheet for school boards</h1>
+      <p class="meta">
+        Status as of October 3, 2026 · Pilot build, nothing is online yet · IP Lynx Inc., an Ontario
+        security and telecom integrator
+      </p>
+      <p class="jump"><a href="#fr" lang="fr-CA">Version française ci-dessus</a></p>
+    </header>
+
+    <div class="brief">
+      <h2>In brief</h2>
+      <ul>
+        <li>
+          A platform for Ontario’s French-language Catholic elementary schools, built for teachers
+          first, with screens for principals and the board’s administrators.
+        </li>
+        <li>
+          Everything below is “Available (pilot build)”, except what is marked “Coming soon”: built
+          and covered by automated tests, but not hosted yet, and not used in a real school yet.
+        </li>
+        <li>
+          No school board is a client; the free pilot has not started. “Lynx École” is a working
+          name.
+        </li>
+      </ul>
+    </div>
+
+    <section aria-labelledby="en-today">
+      <h2 id="en-today">What the pilot build does</h2>
+      <div class="rows">
+        <div class="row">
+          <p>Teachers</p>
+          <p>
+            “Today”: the periods, the calendar applied and the next lesson in each subject. “I’m
+            absent”, then “Send”: the substitute plan starts where each class left off, complete
+            without AI. A French resource bank with versions by language level, and class mode on
+            the projector and class tablets. AI is optional and off by default.
+          </p>
+        </div>
+        <div class="row">
+          <p>School year</p>
+          <ul>
+            <li>
+              “My year”: units on the year’s weeks; “Coverage” by expectation; a long-range plan as
+              a PDF.
+            </li>
+            <li>
+              “Report cards”: comments built from comment banks, kept in the browser, never sent to
+              our servers or the AI.
+            </li>
+            <li>
+              “Info-parents”: the week’s message in French and English, copied or printed by the
+              teacher; nothing is sent to families.
+            </li>
+          </ul>
+        </div>
+        <div class="row">
+          <p>Substitutes</p>
+          <p>
+            The office hands out a one-day code; the substitute, with no account, sees “Now” and
+            “Next” and sends a report. Every view is logged, with who issued the code.
+          </p>
+        </div>
+        <div class="row">
+          <p>Principals</p>
+          <p>
+            The principal’s dashboard: today’s absences and their plans, alert reads, contributions
+            to the bank and the month’s AI use, never teachers’ planning. A filterable audit log,
+            with the badge “Code émis par le secrétariat” (code issued by the office) and a CSV
+            export that is itself logged.
+          </p>
+        </div>
+        <div class="row">
+          <p>The board</p>
+          <p>
+            Invitations (our servers send no invitation email), roles and access, schools, school
+            years, calendar, resource approval, AI use per school (CSV), feedback received and an
+            administrative log.
+          </p>
+        </div>
+        <div class="row">
+          <p>First steps</p>
+          <p>
+            “Bienvenue” (welcome) with the pilot terms, a getting-started list and a sample class of
+            20 invented first names, deleted after 60 days. Feedback from the top of every page.
+          </p>
+        </div>
+        <div class="row">
+          <p>Install</p>
+          <p>
+            On the board’s servers, with Docker: an encrypted, signed backup every night, a checked
+            restore, health checks. Tested automatically on every change; no board has installed it
+            yet.
+          </p>
+        </div>
+      </div>
+      <div class="shots">
+        <figure>
+          <img
+            src="assets/plan-desktop.webp"
+            width="760"
+            height="475"
+            loading="lazy"
+            decoding="async"
+            alt="Screenshot: the substitute plan, the Français period, with the resource “Le huard, oiseau des lacs” and one version per group."
+          />
+          <figcaption>The substitute plan, with a resource from the bank.</figcaption>
+        </figure>
+        <figure>
+          <img
+            src="assets/audit-desktop.webp"
+            width="760"
+            height="475"
+            loading="lazy"
+            decoding="async"
+            alt="Screenshot: the principal’s audit log, alerts category. At the top, a substitute read the Grade 3 alerts with a code issued by Julie Bergeron, tagged “Code émis par le secrétariat” (code issued by the office)."
+          />
+          <figcaption>The audit log: a code issued by the office.</figcaption>
+        </figure>
+        <figure>
+          <img
+            src="assets/board-desktop.webp"
+            width="760"
+            height="475"
+            loading="lazy"
+            decoding="async"
+            alt="Screenshot: “Administration du conseil” (board administration), with what is left to set up, the system’s state (background service, backup, clean-up) and the data retention periods."
+          />
+          <figcaption>Board administration. Screens in French, fictional data.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <div class="cols">
+      <section aria-labelledby="en-priv">
+        <h2 id="en-priv">Privacy</h2>
+        <ul>
+          <li>
+            One first name or nickname per student: no last name, OEN, birthdate or address. Alerts
+            off by default, encrypted (AES-256-GCM), never printed; every view is logged.
+          </li>
+          <li>
+            AI: the names of the students and staff at the person’s schools become markers before
+            sending. Another name (a parent’s) is not recognized: the person removes it at the
+            preview of the exact text. The text is processed in the United States by Claude
+            (Anthropic), which keeps it for a limited time. Never for students.
+          </li>
+          <li>
+            Nightly deletion on default periods: students’ first names a year after the school year,
+            the audit log two years, with a notice 60 days before first names are erased.
+          </li>
+          <li>
+            Invite-only accounts, no passwords, limited sign-in attempts; Row Level Security on
+            every table. A substitute code works for whoever holds it (that use is logged).
+          </li>
+        </ul>
+      </section>
+      <section aria-labelledby="en-not">
+        <h2 id="en-not">Limits</h2>
+        <ul>
+          <li>
+            Nothing is hosted. The real AI model has never been called, only a fake provider: no
+            claim about quality.
+          </li>
+          <li>
+            No certification, no privacy impact assessment (PIA), no penetration test. No lawyer has
+            reviewed the terms or the minimum retention periods yet. WCAG 2.0 AA is a target.
+          </li>
+          <li>
+            The curriculum included is a paraphrased sample (Grades 3 and 5) marked “À vérifier” (to
+            verify); “Coverage” counts only those expectations. The resources and faith texts were
+            written for the demo; no class and no Catholic authority has validated them.
+          </li>
+          <li>
+            Not tried yet in a real school or on a real classroom’s equipment. No link with PA,
+            doors or cameras.
+          </li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="soon">
+      <p>
+        <span class="stamp stamp--soon">Coming soon</span>
+        <strong>Before the pilot:</strong> hosting in Canada goes online, Supabase’s written answer
+        on its logs and backups, a restore drill, the zero-data-retention request to Anthropic, a
+        lawyer’s review of the terms, the first run of the real AI model.
+      </p>
+    </div>
+
+    <section aria-labelledby="en-pilot">
+      <h2 id="en-pilot">The pilot</h2>
+      <p>
+        Free; it has not started. A board can already read our privacy document, send us its
+        requirements and name the person who will administer the pilot in “Conseil”. To talk about
+        it:
+        <!-- Placeholder: nobody has confirmed this mailbox. Change it before sharing (marketing/README.md). -->
+        <span class="contact">pilote@iplynx.ca</span>
+      </p>
+    </section>
+  </article>
+</main>
+
+<script>
+  document.documentElement.lang = 'fr-CA';
+</script>

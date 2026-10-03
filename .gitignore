@@ -3,7 +3,11 @@ node_modules/
 .next/
 out/
 dist/
-coverage/
+# Test coverage reports only: the library's « Couverture du curriculum » lives in source
+# directories named coverage (apps/web/src/app/(app)/library/coverage, components/library/coverage).
+/coverage/
+apps/*/coverage/
+packages/*/coverage/
 *.tsbuildinfo
 next-env.d.ts
 
@@ -18,6 +22,10 @@ supabase/.branches/
 supabase/.temp/
 supabase/.env
 
+# Backups written by deploy/backup/backup.sh with its default BACKUP_DIR (encrypted, still never
+# committed)
+/backups/
+
 # Docker-free local stack runtime data
 tools/lite-stack/.data/
 tools/lite-stack/.bin/
@@ -29,6 +37,9 @@ blob-report/
 
 .DS_Store
 *.log
+
+# Claude Code worktrees of other branches (each is a separate checkout)
+.claude/worktrees/
 
 # AI evaluation reports (may be large; share the ones worth keeping)
 packages/ai/eval-results/

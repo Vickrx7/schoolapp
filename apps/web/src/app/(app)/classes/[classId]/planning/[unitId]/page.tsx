@@ -5,11 +5,30 @@ import { notFound } from 'next/navigation';
 import { localized } from '@/i18n/config';
 import Link from 'next/link';
 import { LessonList } from '@/components/planning/lesson-list';
+import { PlanningTabs } from '@/components/planning/planning-tabs';
 import { EditUnitButton, UnitStatusButton } from '@/components/planning/unit-actions';
 import { Badge } from '@/components/ui/card';
+import { UnitPlanCard } from '@/components/year-plan/unit-plan-card';
 import { loadClass } from '@/server/queries/classes';
-import { findSchool, requireSession } from '@/server/session';
+import { loadClassYearWeeks, loadExpectationChoices } from '@/server/queries/year-plan';
+import { findSchool, librarySchools, requireSession } from '@/server/session';
 import { createSupabaseServerClient } from '@/server/supabase';
+
+/**
+ * The report a pending lesson is confirmed in (D-054): a lesson the substitute reported is
+ * confirmed there, never checked off from here.
+ */
+function pendingReportOf(
+  row:
+    | {
+        status: ProgressStatus;
+        sub_reports: { sub_plan_id: string; sub_plans: { absence_id: string } | null } | null;
+      }
+    | undefined,
+): { absenceId: string; planId: string } | null {
+  if (row?.status !== 'pending_confirmation' || !row.sub_reports?.sub_plans) return null;
+  return { absenceId: row.sub_reports.sub_plans.absence_id, planId: row.sub_reports.sub_plan_id };
+}
 
 export default async function UnitPage({
   params,
@@ -30,7 +49,7 @@ export default async function UnitPage({
   const { data: unit } = await supabase
     .from('units')
     .select(
-      'id, title, description, status, subject_id, subjects(label_fr, label_en, color), unit_lessons(id, sequence_number, title, objectives, materials, content, sub_notes, duration_minutes, unit_lesson_expectations(expectation_id))',
+      'id, title, description, status, subject_id, planned_start_on, planned_end_on, subjects(label_fr, label_en, color), unit_expectations(expectation_id), unit_lessons(id, sequence_number, title, objectives, materials, content, sub_notes, duration_minutes, library_item_id, library_items(id, title), unit_lesson_expectations(expectation_id))',
     )
     .eq('id', unitId)
     .eq('class_id', classId)
@@ -38,24 +57,25 @@ export default async function UnitPage({
   if (!unit) notFound();
 
   const lessonIds = unit.unit_lessons.map((l) => l.id);
-  const [progressRes, expectationsRes] = await Promise.all([
+  const [progressRes, expectations, classYear] = await Promise.all([
     lessonIds.length
       ? supabase
           .from('lesson_progress')
-          .select('lesson_id, status, taught_on')
+          // The substitute's report behind a pending lesson (sub_reports is the owner's, RLS).
+          .select('lesson_id, status, taught_on, sub_reports(sub_plan_id, sub_plans(absence_id))')
           .in('lesson_id', lessonIds)
       : Promise.resolve({
-          data: [] as { lesson_id: string; status: ProgressStatus; taught_on: string | null }[],
+          data: [] as {
+            lesson_id: string;
+            status: ProgressStatus;
+            taught_on: string | null;
+            sub_reports: { sub_plan_id: string; sub_plans: { absence_id: string } | null } | null;
+          }[],
         }),
-    supabase
-      .from('curriculum_expectations')
-      .select(
-        'id, code, text_fr, kind, is_verified, sort_order, strands(code, label_fr, sort_order)',
-      )
-      .eq('subject_id', unit.subject_id)
-      .in('grade_code', cls.gradeCodes)
-      .order('sort_order'),
+    loadExpectationChoices(unit.subject_id, cls.gradeCodes, locale),
+    loadClassYearWeeks(cls),
   ]);
+  const unitExpectationIds = unit.unit_expectations.map((e) => e.expectation_id);
 
   const progress = new Map((progressRes.data ?? []).map((p) => [p.lesson_id, p]));
   const lessons = [...unit.unit_lessons]
@@ -72,7 +92,15 @@ export default async function UnitPage({
       expectationIds: l.unit_lesson_expectations.map((e) => e.expectation_id),
       status: progress.get(l.id)?.status ?? null,
       taughtOn: progress.get(l.id)?.taught_on ?? null,
+      pendingReport: pendingReportOf(progress.get(l.id)),
+      // The attached library resource, when the teacher can still open it (D-076).
+      resource: l.library_items ? { id: l.library_items.id, title: l.library_items.title } : null,
+      hasHiddenResource: l.library_item_id !== null && !l.library_items,
     }));
+  // « Joindre une ressource »: at a school with the Library module (D-078).
+  const library = librarySchools(session).some((s) => s.id === cls.schoolId)
+    ? { gradeCode: cls.gradeCodes[0] ?? null, subjectId: unit.subject_id }
+    : null;
   const next = nextLessons(
     lessons,
     new Map(lessons.filter((l) => l.status).map((l) => [l.id, l.status as ProgressStatus])),
@@ -80,6 +108,7 @@ export default async function UnitPage({
 
   return (
     <div className="space-y-4">
+      <PlanningTabs classId={classId} />
       <Link
         href={`/classes/${classId}/planning`}
         className="inline-flex items-center gap-1 text-sm text-slate-600 hover:text-slate-900"
@@ -122,20 +151,44 @@ export default async function UnitPage({
           />
         </div>
       </div>
+      <UnitPlanCard
+        classId={classId}
+        unit={{
+          id: unit.id,
+          subjectId: unit.subject_id,
+          title: unit.title,
+          description: unit.description,
+          startsOn: unit.planned_start_on,
+          endsOn: unit.planned_end_on,
+          expectationIds: unitExpectationIds,
+        }}
+        year={classYear?.year ?? null}
+        // What the selects need: the weeks without their events.
+        weeks={(classYear?.weeks ?? []).map(({ monday, days, schoolDays, daysOff }) => ({
+          monday,
+          days,
+          schoolDays,
+          daysOff,
+        }))}
+        expectations={expectations}
+      />
       <LessonList
+        userId={session.userId}
         classId={classId}
         unitId={unitId}
         lessons={lessons}
         nextLessonId={next?.id ?? null}
         today={localDateIn(school.timezone)}
-        expectations={(expectationsRes.data ?? []).map((e) => ({
+        library={library}
+        expectations={expectations.map((e) => ({
           id: e.id,
           code: e.code,
-          text: e.text_fr,
+          text: e.text,
           kind: e.kind,
-          verified: e.is_verified,
-          strand: e.strands ? `${e.strands.code}. ${e.strands.label_fr}` : null,
+          verified: e.verified,
+          strand: e.strand,
         }))}
+        unitExpectationIds={unitExpectationIds}
       />
     </div>
   );

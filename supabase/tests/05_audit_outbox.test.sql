@@ -1,4 +1,4 @@
--- The audit log is append-only and scoped; the outbox is internal.
+-- The audit log is append-only and closed to the API; the outbox is internal.
 begin;
 \ir _helpers.psql
 select plan(11);
@@ -17,8 +17,11 @@ select throws_ok($$delete from public.audit_log$$, '42501', null,
   'audit entries cannot be deleted outside the retention purge');
 select throws_ok($$truncate public.audit_log$$, '42501', null, 'the audit log cannot be truncated');
 
+-- The raw table is closed to the API (D-103): everyone reads through public.list_audit_entries
+-- (supabase/tests/28_audit_viewer.test.sql pins who sees what).
 select tests.authenticate_as('teacher_a');
-select is((select count(*)::int from public.audit_log), 0, 'teachers do not see the audit log');
+select throws_ok($$select count(*) from public.audit_log$$, '42501', null,
+  'teachers cannot read the audit table');
 select throws_ok(
   $$insert into public.audit_log (action) values ('fake.entry')$$,
   '42501', null, 'nobody can write audit entries through the API'
@@ -28,16 +31,13 @@ select throws_ok($$select count(*) from public.event_outbox$$, '42501', null,
 select tests.clear_authentication();
 
 select tests.authenticate_as('principal_a');
-select ok(
-  (select bool_and(school_id = tests.id('school_a1')) from public.audit_log) and
-  (select count(*) from public.audit_log where action = 'test.event') = 1,
-  'the principal sees only their school''s audit entries'
-);
+select throws_ok($$select count(*) from public.audit_log$$, '42501', null,
+  'principals cannot read the audit table directly either');
 select tests.clear_authentication();
 
 select tests.authenticate_as('board_admin_a');
-select is((select count(*)::int from public.audit_log where action = 'test.event'), 1,
-  'a board admin sees only their board''s audit entries');
+select throws_ok($$select count(*) from public.audit_log$$, '42501', null,
+  'nor can board admins');
 select tests.clear_authentication();
 
 select is((select actor_type::text from public.audit_log where action = 'test.event' limit 1), 'system',

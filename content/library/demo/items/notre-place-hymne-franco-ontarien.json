@@ -1,0 +1,49 @@
+{
+  "slug": "notre-place-hymne-franco-ontarien",
+  "type": "culture_hook",
+  "title": "« Notre place », l’hymne franco-ontarien",
+  "summary": "Une amorce pour découvrir « Notre place », la chanson devenue l’hymne des Franco-Ontariens et des Franco-Ontariennes : son histoire, ses thèmes et ce qu’un hymne représente pour une communauté, avec une écoute guidée et l’écriture d’une strophe originale. Les paroles de la chanson ne sont pas reproduites.",
+  "source": "board_created",
+  "status": "board_approved",
+  "shareScope": "board",
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "gradeCodes": ["4", "5", "6"],
+  "subjectCode": "art",
+  "durationMinutes": 20,
+  "materials": "Un enregistrement autorisé de la chanson « Notre place » et de quoi le faire entendre. Pour l’activité : une feuille et un crayon par dyade.",
+  "keywords": "Notre place, hymne franco-ontarien, chanson franco-ontarienne, Paul Demers, François Dubé, 25 septembre, fierté, appartenance, écoute musicale, francophonie",
+  "tags": ["francophonie", "identite", "chanson"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je découvre l’hymne franco-ontarien et je réfléchis à ce qu’une chanson peut représenter pour une communauté.",
+        "teacherNote": "Amorce d’environ 20 minutes pour la 4e à la 6e année, idéale avant le 25 septembre ou avant un spectacle. Faites entendre un enregistrement autorisé (acheté ou diffusé par un organisme franco-ontarien). Ne photocopiez pas et ne projetez pas les paroles sans permission : la chanson est protégée par le droit d’auteur. Le texte ci-dessous décrit la chanson sans la citer; écoutez-la avant la leçon pour confirmer la description de ses thèmes. L’activité d’écriture prend environ 30 minutes de plus. Vérifiez les faits de la liste avant de les présenter.",
+        "hook": "Ferme les yeux et écoute bien. Dans les écoles de langue française de l’Ontario, beaucoup d’élèves connaissent cette chanson par cœur. On la chante le 25 septembre, lors des spectacles et des grandes fêtes, souvent tous ensemble. Elle s’appelle « Notre place ». Comment une chanson peut-elle devenir le symbole de toute une communauté?",
+        "context": "« Notre place » a été écrite en 1989 par Paul Demers et François Dubé, deux artistes de l’Ontario français, pour célébrer l’entrée en vigueur de la Loi sur les services en français. Avec les années, les écoles, les camps et les festivals francophones de la province l’ont adoptée. En 2017, l’Assemblée législative de l’Ontario l’a reconnue comme l’hymne officiel des Franco-Ontariens et des Franco-Ontariennes. Avec le drapeau vert et blanc, elle est devenue un des grands symboles de la communauté.\n\nUn hymne est un chant qui rassemble un groupe autour de ce qu’il a en commun. « Notre place » parle de fierté et d’appartenance. Elle dit que les francophones ont leur place en Ontario, que leur langue et leur culture leur ont été transmises par les générations d’avant, et qu’il faut continuer à les faire vivre. C’est une chanson qu’on chante ensemble, pas seulement une chanson qu’on écoute : chanter en groupe donne le sentiment de faire partie de quelque chose de plus grand que soi.\n\n« Notre place » n’est pas la seule chanson franco-ontarienne. Depuis des dizaines d’années, des autrices, des auteurs, des compositrices et des compositeurs de partout en Ontario créent en français. Chaque année, à Sudbury, le festival La Nuit sur l’étang fait découvrir des artistes d’ici. Qui sait? Une chanson écrite par ta classe fera peut-être un jour partie de cette histoire!",
+        "discussionQuestions": [
+          "Qu’as-tu ressenti en écoutant la chanson? Quels instruments as-tu entendus?",
+          "Selon toi, pourquoi une communauté choisit-elle un hymne?",
+          "Connais-tu d’autres chansons qu’on chante en groupe? À quelles occasions?",
+          "Que veut dire, pour toi, « avoir sa place »? Où sens-tu que tu as ta place?",
+          "Quelles chansons en français aimes-tu écouter? Qui les chante?"
+        ],
+        "activity": "Écoutez la chanson une deuxième fois. En dyades, notez trois mots qui décrivent son ambiance (joyeuse, fière, calme, énergique…) et les instruments que vous entendez. Ensuite, écrivez ensemble une courte strophe originale de quatre lignes sur ce qui rend votre classe fière de vivre en français. Chantez-la sur un air connu du domaine public, comme « Frère Jacques », ou lisez-la à voix haute à la classe.",
+        "factsToVerify": [
+          "« Notre place » a été écrite en 1989 par Paul Demers et François Dubé, et présentée pour la première fois en novembre 1989, lors d’un gala qui soulignait l’entrée en vigueur de la Loi sur les services en français (vérifier qui a écrit les paroles et qui a composé la musique).",
+          "Reconnaissance comme hymne officiel des Franco-Ontariens et des Franco-Ontariennes par une motion adoptée à l’Assemblée législative de l’Ontario le 2 mars 2017 (à confirmer).",
+          "Thèmes de la chanson décrits dans le texte (fierté, appartenance, langue et culture transmises par les générations d’avant) : à confirmer en écoutant la chanson.",
+          "La Nuit sur l’étang : festival de musique franco-ontarienne présenté chaque année à Sudbury depuis 1973.",
+          "Place de la chanson dans les écoles, les camps et les festivals, et le 25 septembre : à adapter aux habitudes de votre école."
+        ]
+      },
+      "answerKey": null
+    }
+  ]
+}

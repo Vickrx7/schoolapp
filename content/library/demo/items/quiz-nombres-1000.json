@@ -1,0 +1,1442 @@
+{
+  "slug": "quiz-nombres-1000",
+  "type": "quiz",
+  "title": "Quiz : les nombres jusqu’à 1 000",
+  "summary": "Un quiz de 9 questions sur les nombres jusqu’à 1 000 : lire, représenter, comparer, ordonner et arrondir. Il contient les cinq sortes de questions (choix multiple, vrai ou faux, associations, mise en ordre, réponse courte) et une version pour chaque niveau de langue.",
+  "source": "board_created",
+  "status": "board_approved",
+  "shareScope": "board",
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "gradeCodes": ["3"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "B1"
+    },
+    {
+      "grade": "3",
+      "code": "B1.1"
+    },
+    {
+      "grade": "3",
+      "code": "B1.2"
+    },
+    {
+      "grade": "3",
+      "code": "B1.3"
+    }
+  ],
+  "durationMinutes": 20,
+  "materials": "Une copie du quiz par élève (dans la version qui convient à son niveau de langue) et un crayon.",
+  "keywords": "quiz, valeur de position, comparer, ordonner, arrondir, nombres en lettres, centaines",
+  "tags": ["nombres", "evaluation"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je lis, je représente, je compare, j’ordonne et j’arrondis des nombres jusqu’à 1 000.",
+        "teacherNote": "Quiz de révision sur l’attente B1 et les contenus d’apprentissage B1.1, B1.2 et B1.3 : il contient les cinq sortes de questions. Comptez environ 20 minutes. Les versions par niveau de langue gardent les mêmes questions, les mêmes nombres et les mêmes réponses : seule la formulation change. La question 9 se corrige à la main.",
+        "instructions": "Lis chaque question attentivement et réponds sur la feuille. Tu peux faire tes calculs dans la marge.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quel nombre a 4 centaines, 0 dizaine et 7 unités?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "47"
+              },
+              {
+                "id": "b",
+                "text": "407"
+              },
+              {
+                "id": "c",
+                "text": "470"
+              },
+              {
+                "id": "d",
+                "text": "740"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "true_false",
+            "prompt": "689 est plus grand que 698.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes"
+          },
+          {
+            "id": "q3",
+            "kind": "matching",
+            "prompt": "Associe chaque nombre écrit en lettres au même nombre écrit en chiffres. Un des nombres en chiffres ne sera pas utilisé.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "l1",
+                "text": "trois cent quinze"
+              },
+              {
+                "id": "l2",
+                "text": "cinq cent quatre"
+              },
+              {
+                "id": "l3",
+                "text": "huit cent quarante"
+              },
+              {
+                "id": "l4",
+                "text": "neuf cent soixante-dix"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "840"
+              },
+              {
+                "id": "rb",
+                "text": "315"
+              },
+              {
+                "id": "rc",
+                "text": "970"
+              },
+              {
+                "id": "rd",
+                "text": "350"
+              },
+              {
+                "id": "re",
+                "text": "504"
+              }
+            ]
+          },
+          {
+            "id": "q4",
+            "kind": "ordering",
+            "prompt": "Place ces nombres dans l’ordre croissant, du plus petit au plus grand.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "items": [
+              {
+                "id": "i1",
+                "text": "562"
+              },
+              {
+                "id": "i2",
+                "text": "256"
+              },
+              {
+                "id": "i3",
+                "text": "625"
+              },
+              {
+                "id": "i4",
+                "text": "526"
+              }
+            ]
+          },
+          {
+            "id": "q5",
+            "kind": "multiple_choice",
+            "prompt": "Arrondis 347 à la dizaine près.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "choices": [
+              {
+                "id": "a",
+                "text": "340"
+              },
+              {
+                "id": "b",
+                "text": "350"
+              },
+              {
+                "id": "c",
+                "text": "300"
+              },
+              {
+                "id": "d",
+                "text": "400"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Arrondis 682 à la centaine près.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 1
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Écris en chiffres le nombre 900 + 30 + 6.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q8",
+            "kind": "multiple_choice",
+            "prompt": "Quelles représentations correspondent au nombre 250? Choisis toutes les bonnes réponses.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "2 centaines et 5 dizaines"
+              },
+              {
+                "id": "b",
+                "text": "25 dizaines"
+              },
+              {
+                "id": "c",
+                "text": "200 + 5"
+              },
+              {
+                "id": "d",
+                "text": "5 centaines et 2 dizaines"
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "q9",
+            "kind": "short_answer",
+            "prompt": "Noé dit que 509 est plus grand que 590, parce que 9 est plus grand que 0. A-t-il raison? Explique ta réponse.",
+            "hint": "",
+            "points": 2,
+            "category": "communication",
+            "lines": 4
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "4 centaines = 400, 0 dizaine = 0 et 7 unités = 7 : 400 + 7 = 407."
+          },
+          {
+            "questionId": "q2",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Les centaines sont pareilles (6). On compare les dizaines : 8 dizaines, c’est moins que 9 dizaines. Donc 689 est plus petit que 698."
+          },
+          {
+            "questionId": "q3",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "re"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "ra"
+              },
+              {
+                "leftId": "l4",
+                "rightId": "rc"
+              }
+            ],
+            "explanation": "Le nombre 350 n’est pas utilisé."
+          },
+          {
+            "questionId": "q4",
+            "kind": "ordering",
+            "orderedIds": ["i2", "i4", "i1", "i3"],
+            "explanation": "256, 526, 562, 625."
+          },
+          {
+            "questionId": "q5",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "347 est entre 340 et 350. Il est à 3 de 350 et à 7 de 340 : on arrondit à 350."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "700, car 682 est plus proche de 700 que de 600.",
+            "acceptableAnswers": ["700"],
+            "explanation": "682 est entre 600 et 700. Le chiffre des dizaines est 8 (5 ou plus) : on arrondit à 700."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "936",
+            "acceptableAnswers": ["936"],
+            "explanation": "9 centaines, 3 dizaines et 6 unités."
+          },
+          {
+            "questionId": "q8",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "b"],
+            "explanation": "2 centaines et 5 dizaines = 200 + 50 = 250; 25 dizaines = 250. Par contre, 200 + 5 = 205 et 5 centaines et 2 dizaines = 520."
+          },
+          {
+            "questionId": "q9",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. Les deux nombres ont 5 centaines. Ensuite, on compare les dizaines : 509 a 0 dizaine et 590 en a 9. Donc 590 est plus grand que 509.",
+            "acceptableAnswers": [],
+            "explanation": "Deux points : un pour la bonne conclusion (590 est plus grand), un pour une explication qui compare les centaines, puis les dizaines."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "debutant",
+      "content": {
+        "title": "",
+        "objective": "Je lis, je représente, je compare, j’ordonne et j’arrondis des nombres jusqu’à 1 000.",
+        "teacherNote": "Version avec phrases courtes, mots fréquents, petit lexique dans les consignes et indices. Lisez les questions à voix haute au besoin : on évalue les nombres, pas la lecture.",
+        "instructions": "Lis chaque question. Réponds sur la feuille.\n\nMots utiles : une centaine = 100; une dizaine = 10; une unité = 1; arrondir = trouver le nombre rond le plus proche.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quel nombre a 4 centaines, 0 dizaine et 7 unités?",
+            "hint": "0 dizaine veut dire : pas de dizaine.",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "47"
+              },
+              {
+                "id": "b",
+                "text": "407"
+              },
+              {
+                "id": "c",
+                "text": "470"
+              },
+              {
+                "id": "d",
+                "text": "740"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "true_false",
+            "prompt": "689 est plus grand que 698.",
+            "hint": "Compare les centaines. Ensuite, compare les dizaines.",
+            "points": null,
+            "category": "habiletes"
+          },
+          {
+            "id": "q3",
+            "kind": "matching",
+            "prompt": "Relie chaque nombre en lettres au même nombre en chiffres. Un nombre en chiffres est de trop.",
+            "hint": "quinze = 15; quarante = 40; soixante-dix = 70.",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "l1",
+                "text": "trois cent quinze"
+              },
+              {
+                "id": "l2",
+                "text": "cinq cent quatre"
+              },
+              {
+                "id": "l3",
+                "text": "huit cent quarante"
+              },
+              {
+                "id": "l4",
+                "text": "neuf cent soixante-dix"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "840"
+              },
+              {
+                "id": "rb",
+                "text": "315"
+              },
+              {
+                "id": "rc",
+                "text": "970"
+              },
+              {
+                "id": "rd",
+                "text": "350"
+              },
+              {
+                "id": "re",
+                "text": "504"
+              }
+            ]
+          },
+          {
+            "id": "q4",
+            "kind": "ordering",
+            "prompt": "Place les nombres du plus petit au plus grand.",
+            "hint": "Regarde d’abord les centaines.",
+            "points": null,
+            "category": "application",
+            "items": [
+              {
+                "id": "i1",
+                "text": "562"
+              },
+              {
+                "id": "i2",
+                "text": "256"
+              },
+              {
+                "id": "i3",
+                "text": "625"
+              },
+              {
+                "id": "i4",
+                "text": "526"
+              }
+            ]
+          },
+          {
+            "id": "q5",
+            "kind": "multiple_choice",
+            "prompt": "Arrondis 347 à la dizaine près.",
+            "hint": "347 est entre 340 et 350. Quel nombre est le plus proche?",
+            "points": null,
+            "category": "application",
+            "choices": [
+              {
+                "id": "a",
+                "text": "340"
+              },
+              {
+                "id": "b",
+                "text": "350"
+              },
+              {
+                "id": "c",
+                "text": "300"
+              },
+              {
+                "id": "d",
+                "text": "400"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Arrondis 682 à la centaine près.",
+            "hint": "682 est entre 600 et 700. Quel nombre est le plus proche?",
+            "points": null,
+            "category": "application",
+            "lines": 1
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Écris ce nombre en chiffres : 900 + 30 + 6.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q8",
+            "kind": "multiple_choice",
+            "prompt": "Quelles réponses montrent le nombre 250? Il y a plus d’une bonne réponse.",
+            "hint": "1 centaine = 10 dizaines.",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "2 centaines et 5 dizaines"
+              },
+              {
+                "id": "b",
+                "text": "25 dizaines"
+              },
+              {
+                "id": "c",
+                "text": "200 + 5"
+              },
+              {
+                "id": "d",
+                "text": "5 centaines et 2 dizaines"
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "q9",
+            "kind": "short_answer",
+            "prompt": "Noé dit : « 509 est plus grand que 590, parce que 9 est plus grand que 0. » A-t-il raison? Explique.",
+            "hint": "Tu peux commencer par : « Noé a raison, parce que… » ou « Noé n’a pas raison, parce que… »",
+            "points": 2,
+            "category": "communication",
+            "lines": 4
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "4 centaines = 400, 0 dizaine = 0 et 7 unités = 7 : 400 + 7 = 407."
+          },
+          {
+            "questionId": "q2",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Les centaines sont pareilles (6). On compare les dizaines : 8 dizaines, c’est moins que 9 dizaines. Donc 689 est plus petit que 698."
+          },
+          {
+            "questionId": "q3",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "re"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "ra"
+              },
+              {
+                "leftId": "l4",
+                "rightId": "rc"
+              }
+            ],
+            "explanation": "Le nombre 350 n’est pas utilisé."
+          },
+          {
+            "questionId": "q4",
+            "kind": "ordering",
+            "orderedIds": ["i2", "i4", "i1", "i3"],
+            "explanation": "256, 526, 562, 625."
+          },
+          {
+            "questionId": "q5",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "347 est entre 340 et 350. Il est à 3 de 350 et à 7 de 340 : on arrondit à 350."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "700, car 682 est plus proche de 700 que de 600.",
+            "acceptableAnswers": ["700"],
+            "explanation": "682 est entre 600 et 700. Le chiffre des dizaines est 8 (5 ou plus) : on arrondit à 700."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "936",
+            "acceptableAnswers": ["936"],
+            "explanation": "9 centaines, 3 dizaines et 6 unités."
+          },
+          {
+            "questionId": "q8",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "b"],
+            "explanation": "2 centaines et 5 dizaines = 200 + 50 = 250; 25 dizaines = 250. Par contre, 200 + 5 = 205 et 5 centaines et 2 dizaines = 520."
+          },
+          {
+            "questionId": "q9",
+            "kind": "short_answer",
+            "sampleAnswer": "Noé n’a pas raison. Les deux ont 5 centaines. 590 a 9 dizaines. 509 a 0 dizaine. 590 est plus grand.",
+            "acceptableAnswers": [],
+            "explanation": "Deux points : un pour la bonne conclusion (590 est plus grand), un pour une explication qui compare les centaines, puis les dizaines."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "intermediaire",
+      "content": {
+        "title": "",
+        "objective": "Je lis, je représente, je compare, j’ordonne et j’arrondis des nombres jusqu’à 1 000.",
+        "teacherNote": "Version avec phrases simples, un court lexique et quelques indices. Les questions et les réponses sont les mêmes que dans la version de base.",
+        "instructions": "Lis chaque question et réponds sur la feuille. Tu peux faire tes calculs dans la marge.\n\nMots utiles : centaine = 100; dizaine = 10; unité = 1.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quel nombre a 4 centaines, 0 dizaine et 7 unités?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "47"
+              },
+              {
+                "id": "b",
+                "text": "407"
+              },
+              {
+                "id": "c",
+                "text": "470"
+              },
+              {
+                "id": "d",
+                "text": "740"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "true_false",
+            "prompt": "689 est plus grand que 698.",
+            "hint": "Compare les centaines, puis les dizaines.",
+            "points": null,
+            "category": "habiletes"
+          },
+          {
+            "id": "q3",
+            "kind": "matching",
+            "prompt": "Associe chaque nombre en lettres au même nombre en chiffres. Un nombre en chiffres est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "l1",
+                "text": "trois cent quinze"
+              },
+              {
+                "id": "l2",
+                "text": "cinq cent quatre"
+              },
+              {
+                "id": "l3",
+                "text": "huit cent quarante"
+              },
+              {
+                "id": "l4",
+                "text": "neuf cent soixante-dix"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "840"
+              },
+              {
+                "id": "rb",
+                "text": "315"
+              },
+              {
+                "id": "rc",
+                "text": "970"
+              },
+              {
+                "id": "rd",
+                "text": "350"
+              },
+              {
+                "id": "re",
+                "text": "504"
+              }
+            ]
+          },
+          {
+            "id": "q4",
+            "kind": "ordering",
+            "prompt": "Place ces nombres dans l’ordre, du plus petit au plus grand.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "items": [
+              {
+                "id": "i1",
+                "text": "562"
+              },
+              {
+                "id": "i2",
+                "text": "256"
+              },
+              {
+                "id": "i3",
+                "text": "625"
+              },
+              {
+                "id": "i4",
+                "text": "526"
+              }
+            ]
+          },
+          {
+            "id": "q5",
+            "kind": "multiple_choice",
+            "prompt": "Arrondis 347 à la dizaine près.",
+            "hint": "347 est entre 340 et 350.",
+            "points": null,
+            "category": "application",
+            "choices": [
+              {
+                "id": "a",
+                "text": "340"
+              },
+              {
+                "id": "b",
+                "text": "350"
+              },
+              {
+                "id": "c",
+                "text": "300"
+              },
+              {
+                "id": "d",
+                "text": "400"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Arrondis 682 à la centaine près.",
+            "hint": "682 est entre 600 et 700.",
+            "points": null,
+            "category": "application",
+            "lines": 1
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Écris en chiffres le nombre 900 + 30 + 6.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q8",
+            "kind": "multiple_choice",
+            "prompt": "Quelles réponses représentent le nombre 250? Choisis toutes les bonnes réponses.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "2 centaines et 5 dizaines"
+              },
+              {
+                "id": "b",
+                "text": "25 dizaines"
+              },
+              {
+                "id": "c",
+                "text": "200 + 5"
+              },
+              {
+                "id": "d",
+                "text": "5 centaines et 2 dizaines"
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "q9",
+            "kind": "short_answer",
+            "prompt": "Noé dit que 509 est plus grand que 590, parce que 9 est plus grand que 0. A-t-il raison? Explique ta réponse.",
+            "hint": "Commence par comparer les centaines.",
+            "points": 2,
+            "category": "communication",
+            "lines": 4
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "4 centaines = 400, 0 dizaine = 0 et 7 unités = 7 : 400 + 7 = 407."
+          },
+          {
+            "questionId": "q2",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Les centaines sont pareilles (6). On compare les dizaines : 8 dizaines, c’est moins que 9 dizaines. Donc 689 est plus petit que 698."
+          },
+          {
+            "questionId": "q3",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "re"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "ra"
+              },
+              {
+                "leftId": "l4",
+                "rightId": "rc"
+              }
+            ],
+            "explanation": "Le nombre 350 n’est pas utilisé."
+          },
+          {
+            "questionId": "q4",
+            "kind": "ordering",
+            "orderedIds": ["i2", "i4", "i1", "i3"],
+            "explanation": "256, 526, 562, 625."
+          },
+          {
+            "questionId": "q5",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "347 est entre 340 et 350. Il est à 3 de 350 et à 7 de 340 : on arrondit à 350."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "700, car 682 est plus proche de 700 que de 600.",
+            "acceptableAnswers": ["700"],
+            "explanation": "682 est entre 600 et 700. Le chiffre des dizaines est 8 (5 ou plus) : on arrondit à 700."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "936",
+            "acceptableAnswers": ["936"],
+            "explanation": "9 centaines, 3 dizaines et 6 unités."
+          },
+          {
+            "questionId": "q8",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "b"],
+            "explanation": "2 centaines et 5 dizaines = 200 + 50 = 250; 25 dizaines = 250. Par contre, 200 + 5 = 205 et 5 centaines et 2 dizaines = 520."
+          },
+          {
+            "questionId": "q9",
+            "kind": "short_answer",
+            "sampleAnswer": "Non, Noé n’a pas raison. Les deux nombres ont 5 centaines. 590 a 9 dizaines et 509 a 0 dizaine. Donc 590 est plus grand.",
+            "acceptableAnswers": [],
+            "explanation": "Deux points : un pour la bonne conclusion (590 est plus grand), un pour une explication qui compare les centaines, puis les dizaines."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "avance",
+      "content": {
+        "title": "",
+        "objective": "Je lis, je représente, je compare, j’ordonne et j’arrondis des nombres jusqu’à 1 000.",
+        "teacherNote": "Version au niveau attendu en 3e année, sans lexique ni indices. Les questions et les réponses sont les mêmes que dans la version de base.",
+        "instructions": "Lis chaque question attentivement et réponds sur la feuille. Tu peux faire tes calculs dans la marge.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quel nombre est formé de 4 centaines, 0 dizaine et 7 unités?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "47"
+              },
+              {
+                "id": "b",
+                "text": "407"
+              },
+              {
+                "id": "c",
+                "text": "470"
+              },
+              {
+                "id": "d",
+                "text": "740"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "true_false",
+            "prompt": "689 est plus grand que 698.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes"
+          },
+          {
+            "id": "q3",
+            "kind": "matching",
+            "prompt": "Associe chaque nombre écrit en lettres au même nombre écrit en chiffres. Un nombre ne sera pas utilisé.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "l1",
+                "text": "trois cent quinze"
+              },
+              {
+                "id": "l2",
+                "text": "cinq cent quatre"
+              },
+              {
+                "id": "l3",
+                "text": "huit cent quarante"
+              },
+              {
+                "id": "l4",
+                "text": "neuf cent soixante-dix"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "840"
+              },
+              {
+                "id": "rb",
+                "text": "315"
+              },
+              {
+                "id": "rc",
+                "text": "970"
+              },
+              {
+                "id": "rd",
+                "text": "350"
+              },
+              {
+                "id": "re",
+                "text": "504"
+              }
+            ]
+          },
+          {
+            "id": "q4",
+            "kind": "ordering",
+            "prompt": "Place ces nombres dans l’ordre croissant.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "items": [
+              {
+                "id": "i1",
+                "text": "562"
+              },
+              {
+                "id": "i2",
+                "text": "256"
+              },
+              {
+                "id": "i3",
+                "text": "625"
+              },
+              {
+                "id": "i4",
+                "text": "526"
+              }
+            ]
+          },
+          {
+            "id": "q5",
+            "kind": "multiple_choice",
+            "prompt": "Arrondis 347 à la dizaine près.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "choices": [
+              {
+                "id": "a",
+                "text": "340"
+              },
+              {
+                "id": "b",
+                "text": "350"
+              },
+              {
+                "id": "c",
+                "text": "300"
+              },
+              {
+                "id": "d",
+                "text": "400"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Arrondis 682 à la centaine près.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 1
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Écris en chiffres le nombre 900 + 30 + 6.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q8",
+            "kind": "multiple_choice",
+            "prompt": "Quelles représentations sont égales au nombre 250? Choisis toutes les bonnes réponses.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "2 centaines et 5 dizaines"
+              },
+              {
+                "id": "b",
+                "text": "25 dizaines"
+              },
+              {
+                "id": "c",
+                "text": "200 + 5"
+              },
+              {
+                "id": "d",
+                "text": "5 centaines et 2 dizaines"
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "q9",
+            "kind": "short_answer",
+            "prompt": "Noé dit que 509 est plus grand que 590, parce que 9 est plus grand que 0. A-t-il raison? Explique ta réponse avec les mots « centaines » et « dizaines ».",
+            "hint": "",
+            "points": 2,
+            "category": "communication",
+            "lines": 4
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "4 centaines = 400, 0 dizaine = 0 et 7 unités = 7 : 400 + 7 = 407."
+          },
+          {
+            "questionId": "q2",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Les centaines sont pareilles (6). On compare les dizaines : 8 dizaines, c’est moins que 9 dizaines. Donc 689 est plus petit que 698."
+          },
+          {
+            "questionId": "q3",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "re"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "ra"
+              },
+              {
+                "leftId": "l4",
+                "rightId": "rc"
+              }
+            ],
+            "explanation": "Le nombre 350 n’est pas utilisé."
+          },
+          {
+            "questionId": "q4",
+            "kind": "ordering",
+            "orderedIds": ["i2", "i4", "i1", "i3"],
+            "explanation": "256, 526, 562, 625."
+          },
+          {
+            "questionId": "q5",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "347 est entre 340 et 350. Il est à 3 de 350 et à 7 de 340 : on arrondit à 350."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "700, car 682 est plus proche de 700 que de 600.",
+            "acceptableAnswers": ["700"],
+            "explanation": "682 est entre 600 et 700. Le chiffre des dizaines est 8 (5 ou plus) : on arrondit à 700."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "936",
+            "acceptableAnswers": ["936"],
+            "explanation": "9 centaines, 3 dizaines et 6 unités."
+          },
+          {
+            "questionId": "q8",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "b"],
+            "explanation": "2 centaines et 5 dizaines = 200 + 50 = 250; 25 dizaines = 250. Par contre, 200 + 5 = 205 et 5 centaines et 2 dizaines = 520."
+          },
+          {
+            "questionId": "q9",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. Les deux nombres ont le même nombre de centaines (5). On compare alors les dizaines : 590 a 9 dizaines, alors que 509 n’en a aucune. Donc 590 est plus grand que 509.",
+            "acceptableAnswers": [],
+            "explanation": "Deux points : un pour la bonne conclusion (590 est plus grand), un pour une explication qui compare les centaines, puis les dizaines."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "enrichi",
+      "content": {
+        "title": "",
+        "objective": "Je lis, je représente, je compare, j’ordonne et j’arrondis des nombres jusqu’à 1 000.",
+        "teacherNote": "Version au vocabulaire plus riche (supérieur à, décomposé, équivalentes) avec une explication plus poussée à la question 9. Les nombres et les réponses sont les mêmes que dans la version de base.",
+        "instructions": "Lis attentivement chaque question. Quand on te demande d’expliquer, justifie ta réponse à l’aide des mots « centaines », « dizaines » et « unités ».",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quel nombre est composé de 4 centaines, de 0 dizaine et de 7 unités?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "47"
+              },
+              {
+                "id": "b",
+                "text": "407"
+              },
+              {
+                "id": "c",
+                "text": "470"
+              },
+              {
+                "id": "d",
+                "text": "740"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "true_false",
+            "prompt": "Le nombre 689 est supérieur au nombre 698.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes"
+          },
+          {
+            "id": "q3",
+            "kind": "matching",
+            "prompt": "Associe chaque nombre écrit en lettres à son écriture en chiffres. Attention : un des nombres de droite ne sera pas utilisé.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "left": [
+              {
+                "id": "l1",
+                "text": "trois cent quinze"
+              },
+              {
+                "id": "l2",
+                "text": "cinq cent quatre"
+              },
+              {
+                "id": "l3",
+                "text": "huit cent quarante"
+              },
+              {
+                "id": "l4",
+                "text": "neuf cent soixante-dix"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "840"
+              },
+              {
+                "id": "rb",
+                "text": "315"
+              },
+              {
+                "id": "rc",
+                "text": "970"
+              },
+              {
+                "id": "rd",
+                "text": "350"
+              },
+              {
+                "id": "re",
+                "text": "504"
+              }
+            ]
+          },
+          {
+            "id": "q4",
+            "kind": "ordering",
+            "prompt": "Classe ces nombres dans l’ordre croissant.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "items": [
+              {
+                "id": "i1",
+                "text": "562"
+              },
+              {
+                "id": "i2",
+                "text": "256"
+              },
+              {
+                "id": "i3",
+                "text": "625"
+              },
+              {
+                "id": "i4",
+                "text": "526"
+              }
+            ]
+          },
+          {
+            "id": "q5",
+            "kind": "multiple_choice",
+            "prompt": "Arrondis 347 à la dizaine la plus proche.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "choices": [
+              {
+                "id": "a",
+                "text": "340"
+              },
+              {
+                "id": "b",
+                "text": "350"
+              },
+              {
+                "id": "c",
+                "text": "300"
+              },
+              {
+                "id": "d",
+                "text": "400"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Arrondis 682 à la centaine la plus proche.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 1
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Écris en chiffres le nombre décomposé ainsi : 900 + 30 + 6.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q8",
+            "kind": "multiple_choice",
+            "prompt": "Parmi ces représentations, lesquelles sont équivalentes au nombre 250? Choisis toutes les bonnes réponses.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "2 centaines et 5 dizaines"
+              },
+              {
+                "id": "b",
+                "text": "25 dizaines"
+              },
+              {
+                "id": "c",
+                "text": "200 + 5"
+              },
+              {
+                "id": "d",
+                "text": "5 centaines et 2 dizaines"
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "q9",
+            "kind": "short_answer",
+            "prompt": "Noé affirme que 509 est supérieur à 590, puisque 9 est plus grand que 0. Explique son erreur, puis propose-lui une stratégie pour comparer correctement deux nombres de trois chiffres.",
+            "hint": "",
+            "points": 2,
+            "category": "communication",
+            "lines": 4
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "4 centaines = 400, 0 dizaine = 0 et 7 unités = 7 : 400 + 7 = 407."
+          },
+          {
+            "questionId": "q2",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Les centaines sont pareilles (6). On compare les dizaines : 8 dizaines, c’est moins que 9 dizaines. Donc 689 est plus petit que 698."
+          },
+          {
+            "questionId": "q3",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "re"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "ra"
+              },
+              {
+                "leftId": "l4",
+                "rightId": "rc"
+              }
+            ],
+            "explanation": "Le nombre 350 n’est pas utilisé."
+          },
+          {
+            "questionId": "q4",
+            "kind": "ordering",
+            "orderedIds": ["i2", "i4", "i1", "i3"],
+            "explanation": "256, 526, 562, 625."
+          },
+          {
+            "questionId": "q5",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "347 est entre 340 et 350. Il est à 3 de 350 et à 7 de 340 : on arrondit à 350."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "700, car 682 est plus proche de 700 que de 600.",
+            "acceptableAnswers": ["700"],
+            "explanation": "682 est entre 600 et 700. Le chiffre des dizaines est 8 (5 ou plus) : on arrondit à 700."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "936",
+            "acceptableAnswers": ["936"],
+            "explanation": "9 centaines, 3 dizaines et 6 unités."
+          },
+          {
+            "questionId": "q8",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "b"],
+            "explanation": "2 centaines et 5 dizaines = 200 + 50 = 250; 25 dizaines = 250. Par contre, 200 + 5 = 205 et 5 centaines et 2 dizaines = 520."
+          },
+          {
+            "questionId": "q9",
+            "kind": "short_answer",
+            "sampleAnswer": "Noé compare les unités, alors qu’il faut commencer par le chiffre qui a la plus grande valeur. Les deux nombres ont 5 centaines; on compare donc les dizaines : 9 dizaines dans 590, aucune dans 509. Donc 590 est supérieur à 509. Stratégie : comparer les centaines, puis les dizaines, puis les unités, en s’arrêtant dès que les chiffres sont différents.",
+            "acceptableAnswers": [],
+            "explanation": "Deux points : un pour la bonne conclusion (590 est plus grand), un pour une explication qui compare les centaines, puis les dizaines."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

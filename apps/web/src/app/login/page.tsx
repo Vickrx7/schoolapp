@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
+import Link from 'next/link';
 import { LanguageSwitch } from '@/components/app/language-switch';
 import { APP_NAME } from '@/lib/app-name';
 import { safeNextPath } from '@/lib/safe-path';
@@ -17,6 +18,7 @@ export default async function LoginPage({
 }) {
   const { next } = await searchParams;
   const t = await getTranslations('auth');
+  const tLegal = await getTranslations('legal');
   return (
     <main className="flex min-h-dvh items-center justify-center px-4 py-10">
       <div className="w-full max-w-sm">
@@ -31,6 +33,15 @@ export default async function LoginPage({
         <h1 className="text-2xl font-bold">{t('title')}</h1>
         <p className="mt-2 mb-6 text-slate-600">{t('intro')}</p>
         <LoginForm next={safeNextPath(next)} />
+        {/* The privacy notice and the pilot terms, before anyone signs in (D-110). */}
+        <p className="mt-8 text-center text-sm">
+          <Link
+            href="/confidentialite"
+            className="inline-flex min-h-11 items-center text-slate-600 underline underline-offset-2 hover:text-slate-900"
+          >
+            {tLegal('loginLink')}
+          </Link>
+        </p>
       </div>
     </main>
   );

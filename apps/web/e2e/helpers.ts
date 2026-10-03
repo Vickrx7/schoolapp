@@ -1,3 +1,4 @@
+import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page } from '@playwright/test';
 
 const MAILPIT = process.env.MAILPIT_URL ?? 'http://127.0.0.1:54324';
@@ -8,9 +9,19 @@ export const DEMO = {
   rotary: 'paul.leblanc@demo.lynx.test',
   principal: 'sophie.lavoie@demo.lynx.test',
   office: 'julie.bergeron@demo.lynx.test',
+  /** Board admin with no school; the demo board's content and faith reviewer (library). */
+  boardAdmin: 'nathalie.roy@demo.lynx.test',
 };
 
-async function latestCode(email: string, after: number): Promise<string> {
+/**
+ * A title prefix unique to this run, for the « E2E-… » resources a spec makes and then deletes.
+ * The time is written in base 36: nine digits in a row read as an identification number to the
+ * privacy guard (`findBlockedDetails`), which would then refuse to share the resource or to send
+ * it to the AI.
+ */
+export const e2ePrefix = (tag = '') => `E2E-${tag}${Date.now().toString(36)}`;
+
+export async function latestCode(email: string, after: number): Promise<string> {
   for (let i = 0; i < 40; i++) {
     const res = await fetch(
       `${MAILPIT}/api/v1/search?query=${encodeURIComponent(`to:${email}`)}&limit=5`,
@@ -29,6 +40,13 @@ async function latestCode(email: string, after: number): Promise<string> {
   }
   throw new Error(`no login code arrived for ${email}`);
 }
+
+/**
+ * Where signing in can land (DECISIONS D-118): « Aujourd'hui » for teachers, « Direction »,
+ * « Suppléances » for office staff, « Conseil » for board admins, « Calendrier » for anyone else,
+ * and « Bienvenue » until the pilot terms are accepted (D-109).
+ */
+export const LANDING_URL = /\/(today|calendar|direction|board|absences|bienvenue)(?:[/?#]|$)/;
 
 /**
  * Signs in through the real email-code flow (codes are read from the local Mailpit).
@@ -51,11 +69,48 @@ export async function login(page: Page, email: string, { stayOnPage = false } = 
   const code = await latestCode(email, started);
   await codeField.fill(code);
   await page.getByRole('button', { name: /^(Me connecter|Sign in)$/ }).click();
-  await page.waitForURL(/\/(today|calendar)/);
+  await page.waitForURL(LANDING_URL);
+}
+
+/**
+ * « Bienvenue » at a first sign-in (D-109, D-110): accepts the pilot terms, optionally picks how
+ * students address the person, then « Commencer ». Waits until the app's landing page shows.
+ * Every account that has not accepted the terms (`createStaffUser`, an invitation) needs it: the
+ * app sends every page there until then. The form is one page, so the « Continuer » step below
+ * finds nothing to click.
+ */
+export async function acceptWelcome(page: Page, profile: { honorific?: string } = {}) {
+  await page.waitForURL(/\/bienvenue(?:[/?#]|$)/);
+  const accept = page.getByRole('checkbox', {
+    name: 'J’ai lu et j’accepte les conditions du projet pilote',
+  });
+  // A tap before the page is interactive is lost: retry until the box is checked.
+  await expect(async () => {
+    if (!(await accept.isChecked())) await accept.check();
+    await expect(accept).toBeChecked({ timeout: 1000 });
+  }).toPass();
+  // The profile may be a second step.
+  const next = page.getByRole('button', { name: 'Continuer', exact: true });
+  if (await next.isVisible()) await next.click();
+  if (profile.honorific !== undefined) {
+    await page
+      .getByLabel(/^Comment les élèves vous appellent-ils/)
+      .selectOption({ label: profile.honorific });
+  }
+  await page.getByRole('button', { name: 'Commencer', exact: true }).click();
+  await page.waitForURL((url) => LANDING_URL.test(url.pathname) && !/bienvenue/.test(url.pathname));
 }
 
 // Seeded Mondays without school (see supabase/seed.sql).
-const SEEDED_MONDAYS_OFF = new Set(['2026-10-12', '2026-12-21', '2026-12-28']);
+const SEEDED_MONDAYS_OFF = new Set([
+  '2026-10-12',
+  '2026-12-21',
+  '2026-12-28',
+  '2027-02-15',
+  '2027-03-15',
+  '2027-03-29',
+  '2027-05-24',
+]);
 
 /** A coming Monday with school and no seeded check-offs (as YYYY-MM-DD). */
 export function nextSchoolMonday(): string {
@@ -63,4 +118,138 @@ export function nextSchoolMonday(): string {
   d.setUTCDate(d.getUTCDate() + ((8 - (d.getUTCDay() || 7)) % 7 || 7));
   while (SEEDED_MONDAYS_OFF.has(d.toISOString().slice(0, 10))) d.setUTCDate(d.getUTCDate() + 7);
   return d.toISOString().slice(0, 10);
+}
+
+/** Fails on serious or critical WCAG 2 A/AA violations. */
+export async function expectAccessible(page: Page) {
+  // A client refresh (after a server action) replaces the page's head: wait until it has its
+  // title again, so axe checks a settled page (axe checks the title too).
+  await expect(page).toHaveTitle(/\S/);
+  // axe measures contrast on what is painted at that instant: let finite animations and
+  // transitions end first (a toast fading in after a save, a colour changing after a tap).
+  // Endless ones (a spinner, a loading pulse) are left running.
+  await page.waitForFunction(
+    () =>
+      document
+        .getAnimations()
+        .every(
+          (a) => a.playState !== 'running' || a.effect?.getComputedTiming().iterations === Infinity,
+        ),
+    undefined,
+    { timeout: 5_000 },
+  );
+  const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
+  expect(
+    results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical'),
+  ).toEqual([]);
+}
+
+/** Seeded days without school (see supabase/seed.sql): PA days and holidays. */
+const SEEDED_DAYS_OFF = new Set([
+  '2026-10-09',
+  '2026-10-12',
+  '2026-11-20',
+  ...Array.from({ length: 12 }, (_, i) => {
+    const d = new Date(Date.UTC(2026, 11, 21 + i));
+    return d.toISOString().slice(0, 10);
+  }),
+  '2027-02-15',
+  '2027-03-15',
+  '2027-03-16',
+  '2027-03-17',
+  '2027-03-18',
+  '2027-03-19',
+  '2027-03-26',
+  '2027-03-29',
+  '2027-05-24',
+  '2027-06-04',
+]);
+
+const iso = (d: Date) => d.toISOString().slice(0, 10);
+
+/** Adds days to a YYYY-MM-DD date. */
+export function addDaysIso(date: string, days: number): string {
+  const d = new Date(`${date}T12:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + days);
+  return iso(d);
+}
+
+/**
+ * A school day at least `weeksAhead` weeks from today on the given ISO weekday (2 = Tuesday ...
+ * 5 = Friday), skipping the seeded days off. Mondays are left to teacher.spec.ts, which checks
+ * off lessons on them.
+ */
+export function schoolDay({ weeksAhead, isoWeekday }: { weeksAhead: number; isoWeekday: number }) {
+  if (isoWeekday < 2 || isoWeekday > 5) throw new Error('pick Tuesday to Friday');
+  const d = new Date();
+  d.setUTCDate(d.getUTCDate() + weeksAhead * 7);
+  while ((d.getUTCDay() || 7) !== isoWeekday || SEEDED_DAYS_OFF.has(iso(d))) {
+    d.setUTCDate(d.getUTCDate() + 1);
+  }
+  return iso(d);
+}
+
+/** Whether a date is a seeded school day (a weekday that is not a seeded day off). */
+export function isSeededSchoolDay(date: string): boolean {
+  const weekday = new Date(`${date}T12:00:00Z`).getUTCDay();
+  return weekday !== 0 && weekday !== 6 && !SEEDED_DAYS_OFF.has(date);
+}
+
+/**
+ * The coming school Friday as the seed places its relative « Messe de l'école »: the first Friday
+ * from the school's date (America/Toronto; today on a Friday) that is not a seeded day off.
+ */
+export function comingSchoolFriday(now = new Date()): string {
+  const local = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Toronto' }).format(now);
+  let d = local;
+  while (new Date(`${d}T12:00:00Z`).getUTCDay() !== 5 || SEEDED_DAYS_OFF.has(d)) {
+    d = addDaysIso(d, 1);
+  }
+  return d;
+}
+
+/** A chip of the absence form (a radio button or a checkbox drawn as a button). */
+export const chip = (page: Page, name: string) =>
+  page.locator('label').filter({ hasText: new RegExp(`^${name}$`) });
+
+/**
+ * Reports an absence through « Signaler une absence »: « Autre date », « Plusieurs jours » for
+ * a range, a half day if asked, then « Envoyer ». Waits for the absence page.
+ */
+export async function reportAbsence(
+  page: Page,
+  options: { startsOn: string; endsOn?: string; part?: 'Matin' | 'Après-midi' },
+) {
+  await page.goto('/absences/new');
+  const dateField = page.getByLabel('Date', { exact: true });
+  // A tap before the page is interactive is lost: retry until the date field shows.
+  await expect(async () => {
+    if (!(await dateField.isVisible())) await chip(page, 'Autre date').click();
+    await expect(dateField).toBeVisible({ timeout: 1000 });
+  }).toPass();
+  await dateField.fill(options.startsOn);
+  if (options.endsOn) {
+    await chip(page, 'Plusieurs jours').click();
+    await page.getByLabel('Dernier jour').fill(options.endsOn);
+  }
+  if (options.part) await chip(page, options.part).click();
+  // The summary is built by the server from the same plans « Envoyer » publishes.
+  await expect(page.getByTestId('absence-summary')).toContainText('à couvrir');
+  await page.getByRole('button', { name: 'Envoyer' }).click();
+  await page.waitForURL(/\/absences\/[0-9a-f-]{36}$/);
+}
+
+/** The instant a school-local (America/Toronto) date and time falls on, e.g. for page.clock. */
+export function torontoInstant(date: string, time: string): Date {
+  for (const offset of ['-04:00', '-05:00']) {
+    const instant = new Date(`${date}T${time}:00${offset}`);
+    const local = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'America/Toronto',
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: 'h23',
+    }).format(instant);
+    if (local === time) return instant;
+  }
+  throw new Error(`no Toronto instant for ${date} ${time}`);
 }

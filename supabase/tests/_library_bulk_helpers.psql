@@ -1,0 +1,89 @@
+-- Bulk generation fixtures (Phase 5, « Génération en lot »; DECISIONS D-095 to D-098). Included with
+-- \ir after _helpers.psql and _library_coverage_helpers.psql (its test subject), inside the test's
+-- transaction; everything here is rolled back afterwards. (The .psql extension keeps pg_prove from
+-- running it on its own.)
+
+-- A plan's parameters for board A's test subject in grade 3 (tests.coverage_curriculum): the
+-- types, 30 minutes each, versions for every board level, one item per attente; `p_extra` wins.
+create function tests.bulk_params(p_types text[], p_extra jsonb default '{}')
+returns jsonb
+language sql
+as $$
+  select jsonb_build_object(
+    'gradeCodes', jsonb_build_array('3'),
+    'subjectId', tests.id('cov_subject'),
+    'types', to_jsonb(p_types),
+    'levels', 'all',
+    'perExpectation', 1,
+    'durations', (select jsonb_object_agg(t, 30) from unnest(p_types) t)
+  ) || coalesce(p_extra, '{}'::jsonb);
+$$;
+
+-- A subject of board A with `p_count` specific attentes in grade 3 (M1…), for the size limit.
+create function tests.bulk_many_attentes(p_count integer)
+returns uuid
+language plpgsql
+as $$
+declare
+  v_subject uuid := tests.remember('many_subject', gen_random_uuid());
+begin
+  insert into public.subjects (id, board_id, code, label_fr, grade_min, grade_max, sort_order)
+  values (v_subject, tests.id('board_a'), 'bulk_many', 'Matière nombreuse', 1, 8, 91);
+  insert into public.curriculum_expectations (subject_id, grade_code, kind, code, text_fr,
+    curriculum_version, sort_order)
+  select v_subject, '3', 'specific', 'M' || n, 'Attente ' || n || '.', 'test', n
+  from generate_series(1, p_count) n;
+  return v_subject;
+end;
+$$;
+
+-- An answer as the worker records it once checked: a base version and one per level of the
+-- request (L1…L4), each with a key, 30 minutes, materials and keywords (ready for approval).
+create function tests.bulk_output(p_title text, p_faith boolean default false)
+returns jsonb
+language sql
+as $$
+  select jsonb_build_object(
+    'title', p_title,
+    'summary', 'Une ressource générée pour le conseil.',
+    'keywords', 'nombres, comparer',
+    'durationMinutes', 30,
+    'materials', 'Crayons et feuilles',
+    'formats', jsonb_build_object('printable', true, 'projectable', false, 'interactive', false),
+    'safetyNotes', null,
+    'catholicConnection', '',
+    'faithContent', p_faith,
+    'base', jsonb_build_object(
+      'content', jsonb_build_object('title', '', 'objective', 'Comparer des nombres.',
+        'teacherNote', '', 'text', 'Le huard compte les poissons.'),
+      'answerKey', '{"answers": [], "solution": ""}'::jsonb),
+    'levels', (select jsonb_agg(jsonb_build_object(
+        'level', 'L' || n,
+        'content', jsonb_build_object('title', '', 'objective', 'Comparer des nombres.',
+          'teacherNote', '', 'text', 'Le huard compte.'),
+        'answerKey', '{"answers": [], "solution": ""}'::jsonb) order by n)
+      from generate_series(1, 4) n));
+$$;
+
+-- The usage row of one answer, as the worker sends it.
+create function tests.bulk_generation(p_cost numeric default 0.12, p_status text default 'succeeded')
+returns jsonb
+language sql
+as $$
+  select jsonb_build_object('provider', 'fake', 'model', 'fake', 'promptVersion', 'v1',
+    'inputTokens', 1000, 'outputTokens', 2000, 'cacheReadTokens', 0, 'costUsd', p_cost,
+    'status', p_status, 'latencyMs', 0, 'providerRequestId', null);
+$$;
+
+-- The request of the current run for an attente (by test key) and type.
+create function tests.bulk_request(p_run uuid, p_expectation text, p_type text)
+returns uuid
+language sql
+as $$
+  select id from public.library_bulk_requests
+  where run_id = p_run and expectation_id = tests.id(p_expectation) and item_type::text = p_type;
+$$;
+
+grant execute on all functions in schema tests to anon, authenticated, service_role;
+grant usage on schema tests to service_role;
+grant select, insert on tests.ids to service_role;

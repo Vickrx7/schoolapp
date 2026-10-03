@@ -5,7 +5,10 @@ import { useState, type ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 
-/** A button that asks for confirmation before running a destructive action. */
+/**
+ * A button that asks for confirmation before running an action. The confirm button is red
+ * unless `tone` is `primary` (for actions that aren't destructive, like turning AI on).
+ */
 export function ConfirmButton({
   label,
   message,
@@ -15,6 +18,7 @@ export function ConfirmButton({
   size = 'sm',
   children,
   disabled,
+  tone = 'danger',
 }: {
   label: string;
   message: ReactNode;
@@ -24,6 +28,7 @@ export function ConfirmButton({
   size?: 'sm' | 'md' | 'icon';
   children?: ReactNode;
   disabled?: boolean;
+  tone?: 'danger' | 'primary';
 }) {
   const t = useTranslations('common');
   const [open, setOpen] = useState(false);
@@ -47,7 +52,7 @@ export function ConfirmButton({
             {t('cancel')}
           </Button>
           <Button
-            variant="danger"
+            variant={tone}
             disabled={busy}
             onClick={async () => {
               setBusy(true);

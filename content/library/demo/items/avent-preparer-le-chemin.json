@@ -1,0 +1,47 @@
+{
+  "slug": "avent-preparer-le-chemin",
+  "type": "catholic_reflection",
+  "title": "Avent : préparer le chemin",
+  "summary": "Une courte réflexion pour le temps de l’Avent, de la 3e à la 5e année : attendre Noël en préparant son cœur par des gestes d’attention aux autres, avec des questions d’échange, une prière originale et une couronne de l’Avent qui se remplit de flammes de papier.",
+  "source": "board_created",
+  "status": "board_approved",
+  "shareScope": "board",
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": true,
+  "gradeCodes": ["3", "4", "5"],
+  "subjectCode": "ere",
+  "durationMinutes": 10,
+  "materials": "Une couronne de l’Avent pour la classe, avec quatre bougies électriques ou en papier (jamais de flamme nue), des flammes découpées dans du papier jaune ou orange, du ruban adhésif.",
+  "keywords": "Avent, Noël, attente, préparation, couronne de l’Avent, Jean le Baptiste, préparer le chemin, compassion, prière, geste de bonté",
+  "tags": ["foi", "priere"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "faithContent": true,
+  "catholicConnection": "Pendant l’Avent, l’Église se prépare à célébrer la naissance de Jésus. Comme Jean le Baptiste invitait les gens à préparer le chemin du Seigneur (Luc 3, 4-6), nous préparons nos cœurs par des gestes d’attention et de partage.",
+  "catholicReference": "La compassion",
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je comprends que l’Avent est un temps pour se préparer à Noël, et je choisis des gestes d’attention envers les autres.",
+        "teacherNote": "Réflexion de 10 minutes pour la 3e à la 5e année, à faire la première semaine de l’Avent, puis à reprendre au début de chaque semaine. Lisez la réflexion à voix haute, laissez un moment de silence, puis choisissez deux questions pour un échange en cercle. Terminez par la prière et présentez le geste de la semaine. Utilisez des bougies électriques ou en papier : jamais de flamme nue en classe. Accueillez les élèves de toutes les traditions : l’échange porte sur l’attente et sur les gestes de bonté. À vérifier selon les habitudes de votre paroisse : la couleur des bougies (souvent trois violettes et une rose, allumée le troisième dimanche) et le thème de chaque semaine.",
+        "theme": "L’Avent, un temps pour se préparer",
+        "scriptureReference": "Luc 3, 4-6",
+        "reflection": "Quand on attend la visite d’une personne qu’on aime, on se prépare : on range la maison, on prépare un bon repas, on a hâte de la voir. Pendant l’Avent, le temps des quatre dimanches avant Noël, les chrétiens et les chrétiennes se préparent aussi à fêter la naissance de Jésus.\n\nDans l’Évangile de Luc, Jean le Baptiste invite les gens à préparer le chemin du Seigneur. Il ne parle pas d’une route de terre ou d’asphalte! Il parle du chemin qui mène à notre cœur. Préparer ce chemin, c’est faire de la place pour Dieu et pour les autres.\n\nDans beaucoup de classes, on installe une couronne de l’Avent avec quatre bougies. Chaque semaine, on en allume une de plus. Petit à petit, la lumière grandit, comme notre joie qui grandit en attendant Noël.\n\nComment préparer le chemin? Par de petits gestes d’attention : inviter à jouer quelqu’un qui est seul à la récréation, partager, dire une parole gentille, aider sans qu’on nous le demande. Chaque geste de bonté est comme une petite lumière de plus.",
+        "questions": [
+          "Qu’est-ce que tu fais pour te préparer quand tu attends la visite d’une personne que tu aimes?",
+          "Selon toi, que veut dire « préparer son cœur »?",
+          "Quel petit geste d’attention pourrais-tu faire cette semaine pour quelqu’un de la classe ou de ta famille?",
+          "Comment te sens-tu quand quelqu’un fait un geste gentil pour toi sans que tu l’aies demandé?"
+        ],
+        "prayer": "Seigneur Jésus,\npendant ce temps de l’Avent,\nnous préparons le chemin pour t’accueillir.\nOuvre nos yeux aux personnes qui ont besoin d’aide,\nouvre nos mains pour partager,\nouvre nos cœurs pour aimer.\nQue chaque geste de bonté\nsoit une petite lumière qui brille\nen attendant Noël.\nAmen.",
+        "action": "Cette semaine, choisis un geste d’attention pour préparer le chemin : inviter quelqu’un à jouer, aider à ranger, dire merci, partager. Chaque fois que tu fais un geste, ajoute une flamme de papier autour de la couronne de l’Avent de la classe. Vendredi, on compte les flammes ensemble."
+      },
+      "answerKey": null
+    }
+  ]
+}

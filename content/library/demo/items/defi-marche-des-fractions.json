@@ -1,0 +1,72 @@
+{
+  "slug": "defi-marche-des-fractions",
+  "type": "weekly_challenge",
+  "title": "Défi de la semaine : le marché des fractions",
+  "summary": "Un défi en cinq jours au marché fermier : comparer et ordonner des fractions et des nombres décimaux jusqu’aux centièmes (tartes, bouteilles de sirop d’érable, prix, pichets de jus), avec des indices et la solution complète.",
+  "source": "teacher_created",
+  "author": "marc.gagnon@demo.lynx.test",
+  "school": "saint-exemple",
+  "status": "teacher_reviewed",
+  "shareScope": "school",
+  "gradeCodes": ["5"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "B1.6"
+    }
+  ],
+  "durationMinutes": 15,
+  "materials": "Le défi affiché ou une copie par élève, un cahier de mathématiques et un crayon. Facultatif : des bandes de fractions.",
+  "keywords": "défi de la semaine, comparer, ordonner, fractions, nombres décimaux, centièmes, argent, marché fermier",
+  "tags": ["fractions", "decimaux"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je compare et j’ordonne des fractions et des nombres décimaux jusqu’aux centièmes, et j’explique mon raisonnement.",
+        "teacherNote": "Affichez le défi le lundi. Les élèves font une tâche par jour, environ 15 minutes, au début ou à la fin du cours de mathématiques. Le vendredi, faites un retour en groupe : demandez à quelques élèves de présenter des stratégies différentes (fractions équivalentes, repères comme 1/2, droite numérique). Les fractions sont écrites avec une barre oblique (3/8). La solution de chaque jour est dans le corrigé.",
+        "challenge": "Bienvenue au marché fermier! Cette semaine, les marchandes et les marchands ont besoin de ton aide pour comparer et ordonner des fractions et des nombres décimaux. Chaque jour, fais la tâche du jour dans ton cahier de mathématiques. Explique toujours ton raisonnement avec des mots, des nombres, des bandes de fractions ou une droite numérique. Vendredi, on compare nos stratégies en groupe.",
+        "days": [
+          {
+            "label": "Lundi",
+            "task": "Au kiosque de pommes, Océane a vendu 3/8 de son panier et Bastien a vendu 5/8 du sien. Leurs paniers sont identiques. Qui a vendu la plus grande partie de son panier? Explique comment tu le sais."
+          },
+          {
+            "label": "Mardi",
+            "task": "Au kiosque de tartes, deux tartes de même grandeur sont coupées en parts égales. Il reste 2/3 de la tarte aux bleuets et 3/4 de la tarte aux pommes. De quelle tarte reste-t-il le plus? Montre ton raisonnement."
+          },
+          {
+            "label": "Mercredi",
+            "task": "Au kiosque de sirop d’érable, Capucine range trois bouteilles de 0,5 L, de 0,25 L et de 0,75 L. Place ces quantités en ordre croissant, puis écris chacune sous forme de fraction."
+          },
+          {
+            "label": "Jeudi",
+            "task": "Désiré paie 2,35 $ pour des carottes, Éloïse paie 2,53 $ pour des radis et Fabien paie 2,50 $ pour des haricots. Place les montants du plus petit au plus grand. Qui a payé le plus? Explique pourquoi 2,53 est plus grand que 2,5."
+          },
+          {
+            "label": "Vendredi",
+            "task": "Le grand défi! Inès mesure le jus qui reste dans cinq pichets identiques. Voici les quantités : 0,6 L; 1/2 L; 0,45 L; 3/4 L; 0,7 L. Place-les de la plus petite à la plus grande. Combien de pichets contiennent plus de la moitié d’un litre?"
+          }
+        ],
+        "hints": [
+          "Si deux fractions ont le même dénominateur, compare les numérateurs.",
+          "Pour comparer 2/3 et 3/4, cherche des fractions équivalentes qui ont le même dénominateur, par exemple des douzièmes.",
+          "Écris les nombres décimaux avec le même nombre de chiffres après la virgule : 0,5 = 0,50.",
+          "Retiens ces repères : 1/4 = 0,25; 1/2 = 0,5; 3/4 = 0,75."
+        ],
+        "extension": "Invente ton propre problème pour le marché : choisis trois prix ou trois quantités, écrits en fractions ou en nombres décimaux, qu’une ou un camarade devra placer en ordre. Prépare aussi la solution, puis vérifie-la avec ta ou ton camarade."
+      },
+      "answerKey": {
+        "answers": [],
+        "solution": "Lundi : Bastien. Les deux paniers sont identiques et les deux fractions sont des huitièmes. Comme 5 > 3, 5/8 > 3/8.\n\nMardi : la tarte aux pommes. 2/3 = 8/12 et 3/4 = 9/12. Comme 9/12 > 8/12, 3/4 > 2/3. Autre raisonnement : il manque 1/3 à la tarte aux bleuets et seulement 1/4 à la tarte aux pommes; comme 1/4 < 1/3, il reste plus de tarte aux pommes.\n\nMercredi : 0,25 L < 0,5 L < 0,75 L. En fractions : 0,25 = 25/100 = 1/4; 0,5 = 5/10 = 1/2; 0,75 = 75/100 = 3/4.\n\nJeudi : 2,35 $ (Désiré) < 2,50 $ (Fabien) < 2,53 $ (Éloïse). Éloïse a payé le plus. 2,5 = 2,50, et 53 centièmes > 50 centièmes, donc 2,53 > 2,5. Erreur fréquente : comparer 5 et 53 sans aligner les chiffres après la virgule.\n\nVendredi : 0,45 L < 1/2 L < 0,6 L < 0,7 L < 3/4 L (1/2 = 0,50 et 3/4 = 0,75). Trois pichets contiennent plus de la moitié d’un litre : ceux de 0,6 L, de 0,7 L et de 3/4 L. Le pichet de 1/2 L en contient exactement la moitié."
+      }
+    }
+  ]
+}

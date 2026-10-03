@@ -1,0 +1,277 @@
+# Curriculum sample (import files)
+
+This folder holds a wider curriculum sample for the demo: 3e and 5e année, in Français,
+Mathématiques and Sciences et technologie. Each file follows the curriculum import format
+(DECISIONS D-070 and D-030). The demo database loads all of them from
+`supabase/seeds/10_curriculum_demo.sql`, which `pnpm library:seed` generates from this folder
+(see « Loading »).
+
+**This is not the Ministry's text.** Every entry is a short summary, paraphrased in Canadian French
+for the demo. Every file says `"official": false` and `"verified": false`, so every row loads with
+`is_verified = false` and shows « à vérifier » in the app. The codes are the ones the entries
+correspond to in the Ontario curriculum, as far as we know. The uncertain ones are listed below
+under « À vérifier ».
+
+In the September 2026 review (branch `p4x/library-review`), the Mathématiques codes that demo
+items link to were compared with a public index of the English Mathematics (2020) expectations
+(curriculum-aligned resource pages that give each code with its topic). Several codes were
+renumbered or rewritten; they are listed under « À vérifier ». That index is not the official
+document: the files stay `"verified": false`, and no official text was copied (D-030).
+
+```
+content/curriculum/
+  README.md           this file: format, rules and the « À vérifier » list
+  fra-2023-3e.json    Français (2023), 3e année
+  fra-2023-5e.json    Français (2023), 5e année
+  mat-2020-3e.json    Mathématiques (2020), 3e année
+  mat-2020-5e.json    Mathématiques (2020), 5e année
+  sci-2022-3e.json    Sciences et technologie (2022), 3e année
+  sci-2022-5e.json    Sciences et technologie (2022), 5e année
+```
+
+| File               | Subject | Grade | Strands | Attentes | Contenus | Total |
+| ------------------ | ------- | ----- | ------- | -------- | -------- | ----- |
+| `fra-2023-3e.json` | `fra`   | 3     | A–D     | 12       | 32       | 44    |
+| `fra-2023-5e.json` | `fra`   | 5     | A–D     | 12       | 32       | 44    |
+| `mat-2020-3e.json` | `mat`   | 3     | A–F     | 12       | 34       | 46    |
+| `mat-2020-5e.json` | `mat`   | 5     | A–F     | 12       | 33       | 45    |
+| `sci-2022-3e.json` | `sci`   | 3     | A–E     | 11       | 32       | 43    |
+| `sci-2022-5e.json` | `sci`   | 5     | A–E     | 11       | 32       | 43    |
+
+Every overall attente (attente) of each subject and grade is there. Contenus d’apprentissage
+(specific expectations) cover the most-used ones, not all of them.
+
+## Format
+
+- **Schema:** `curriculumFileSchema` in `packages/content/src/curriculum-import.ts`. One file
+  per subject and grade.
+- **Codes:**
+  - Strands (domaines) are letters: `A`, `B`…
+  - Overall attentes are `B1`, `C2`… with `"kind": "overall"` and `"parentCode": null`.
+  - Contenus d’apprentissage are `B1.1`, `C2.3`… with `"kind": "specific"`. Their `parentCode` is
+    their overall attente and their `strandCode` is the code's letter.
+- **Order:** each attente is followed by its contenus, in code order. The strands are in
+  curriculum order.
+- **Strands:** both grade files of a subject list the same strands, with the same labels. The
+  labels and order match `supabase/seed.sql`. The import upserts strands by subject, version
+  and code.
+- **Versions:** `fra-2023`, `mat-2020` and `sci-2022`, as in the seed.
+- **Language:** French only. `textEn` and `labelEn` are `null`: curriculum strands stay French
+  (D-033).
+- **`sourceNote`:** a short French note for teachers, saying that the text is a paraphrase to
+  check against the official document.
+- **Formatting:** the files are formatted with Prettier, like the rest of the repository.
+
+## Relationship with the seed and the demo pack
+
+- **Superset of the seed:** the files contain every attente seeded in `supabase/seed.sql`. That
+  means 22 rows, for 3e FRA and MAT, and 5e FRA, MAT and SCI. Each keeps its code, kind, strand,
+  parent and wording, and its strand keeps its label and position. Only the typography changes:
+  `’`, and a non-breaking space in « 1 000 » and before `:`. `seed-pack.test.ts` checks all of
+  it.
+- **5e Français C1, C1.2, D1 and D1.1:** `seed.sql` has them for the demo library (D-071), with
+  the same meanings as the 3e codes, and these files use the seed's wording. 5e C1.1 and C1.3
+  were added with the 3e meanings too.
+- **Demo pack links:** every attente that a demo pack item links to exists in these files (105
+  links to 88 codes). Most of those codes are not in `supabase/seed.sql`, so the curriculum seed
+  (`10_…`) loads before the demo pack's SQL (`20_…`).
+- **Rows the seed already has:** the curriculum seed keeps them as `seed.sql` writes them (id,
+  wording, strand, parent, source note, and the seed's strand labels, which have an ordinary
+  space before `:`). Only their sort order follows these files, so the new contenus sort in
+  place. `pnpm admin import-curriculum` would also rewrite their text with the typography of the
+  files.
+
+## Writing rules
+
+- **Paraphrase only.** Write one short sentence that starts with a verb in the infinitive
+  (« Comparer et ordonner… »). Never copy or closely follow the Ministry's wording. Official
+  text needs a licence (D-030).
+- **Never invent a code.** Add a code only when you are reasonably confident that it exists with
+  that meaning. When in doubt, leave the code out: gaps in the numbering are deliberate. Add a
+  line under « À vérifier » for every code whose number or scope is uncertain.
+- **Never renumber a seeded code** in these files alone. Demo pack items, and later lessons and
+  units, link to attentes by code. A renumbering needs a coordinated change to the seed, the
+  items and any existing links.
+- **Canadian French:** follow the Ontario French-language school usage and the typography rules
+  in `content/library/README.md`. That means:
+  - `’`, never `'`;
+  - non-breaking spaces inside « » and before `:`, and in « 1 000 » and « 100 $ »;
+  - no space before `;`, `?` or `!`;
+  - no Europeanisms;
+  - neutral wording or doublets (« ce qu’elle ou il lit », « des autrices et des auteurs »).
+- **Official terms:** use the Ontario terms: attentes, contenus d’apprentissage, domaines,
+  suites, nombres naturels, disposition rectangulaire, processus de design en ingénierie,
+  métiers spécialisés, Premières Nations, Métis et Inuit.
+
+## Checking a change
+
+```bash
+# Every file parses (an empty array means no errors):
+pnpm exec tsx -e "import { readFileSync, readdirSync } from 'node:fs'; import { parseCurriculumFile } from './packages/content/src/curriculum-import'; for (const f of readdirSync('content/curriculum').filter((f) => f.endsWith('.json'))) console.log(f, parseCurriculumFile(readFileSync('content/curriculum/' + f, 'utf8')).errors);"
+pnpm exec vitest run packages/content/src/seed-pack.test.ts packages/content/src/curriculum-sql.test.ts
+pnpm exec prettier --check content
+pnpm library:seed          # regenerate supabase/seeds/10_curriculum_demo.sql (and the library seed)
+pnpm library:seed:check    # CI: fails when the SQL no longer matches these files
+```
+
+These files were first checked with a one-off script. The script did the following:
+
+- It ran `parseCurriculumFile` on every file.
+- It ran `frenchStyleProblems` on every string, and checked for straight apostrophes and for
+  breaking spaces in numbers or before `$`.
+- It checked each file's name against its subject, version and grade, and the parents and strands.
+- It checked that the files are a superset of the seeded attentes.
+- It checked that the planned 5e Français codes and the demo pack links exist.
+
+`packages/content/src/seed-pack.test.ts` now keeps most of those checks: every file parses
+without `--confirm-licence`, one subject and grade per file with a matching name, the same strands
+in both grades of a subject, the French style, every seeded attente with the same kind, strand,
+parent and wording, and every attente a demo pack item links to. The parents and strands are
+checked by `parseCurriculumFile` itself. After a database reset, `pnpm test:int`
+(`packages/content/src/seed.int.test.ts`) checks that every attente of these files is in the
+database, unverified, in its strand, under its parent and in file order.
+
+## Loading
+
+**The demo database** (local development, CI and pilot demos) loads every file:
+`pnpm library:seed` turns them into `supabase/seeds/10_curriculum_demo.sql` (`curriculumToSql` in
+`packages/content/src/curriculum-sql.ts`), and database resets load it after `supabase/seed.sql`
+and before the demo library pack (`20_library_demo.sql`), whose items link to these codes. Every
+row is `is_verified = false`, so the app shows « À vérifier » on each attente until someone checks
+it against the official document. The generator refuses a file that says `"official": true` or
+`"verified": true` (D-030), and the seed stops on any missing subject, grade, strand or overall
+attente. Regenerate and commit it whenever a file changes; CI fails on drift.
+
+**A real board's database** gets curriculum files with `pnpm admin import-curriculum`, which
+validates a file with `parseCurriculumFile` and applies it. The header of `curriculum-import.ts`
+describes it, and it is a dry run unless you pass `--apply`.
+
+- Never pass `--confirm-licence` for these files: they are paraphrases, not official text.
+- Import them into a board's database only once the reviewer has gone through « À vérifier ».
+- Import them before any content pack whose items link to these codes.
+
+## « À vérifier »
+
+**Everything in this folder is to check** against the official documents:
+
+- Le curriculum de l’Ontario, de la 1re à la 8e année – Mathématiques (2020);
+- Français (2023);
+- Sciences et technologie (2022).
+
+The lists below name the codes whose number, scope or wording we are least sure of. A reviewer
+should check these first. The general points come first:
+
+- **Français structure.** The attente topics (A1 compétences transférables, A2 littératie
+  médiatique numérique, A3 applications, liens et contributions; B1 communication orale et non
+  verbale, B2 fondements linguistiques, B3 conventions linguistiques; C1–C3; D1 élaboration et
+  organisation du contenu, D2 création de textes, D3 publication, présentation et réflexion) and
+  the numbering of the contenus follow the parallel English Language (2023) curriculum. The
+  French-language Français (2023) document may group or number them differently.
+- **Seeded Français C1 block.** The seeded 3e C1 block has predictions and prior knowledge
+  (C1.1), the main idea (C1.2) and text features (C1.3). It looks like a mix of two official
+  attentes: knowledge about texts and comprehension strategies. It is kept as seeded, and the
+  seeded 5e codes mirror it. As a result, C2 (stratégies de compréhension) overlaps C1. Fixing
+  it means renumbering the seed and the demo pack links together.
+- **Seeded Mathématiques 5e B1.5, B1.6 and B1.7.** The index used in the review gives B1.4 for
+  equivalent fractions, B1.5 for comparing and ordering fractions, B1.6 for reading, comparing and
+  ordering decimal numbers to hundredths, and B1.7 for the links among fractions, decimal numbers
+  and whole-number percents. So the seeded B1.5 (equivalent fractions) may really be B1.4, the
+  seeded B1.6 (comparing fractions and decimal numbers) mixes B1.5 and B1.6, and the seeded B1.7
+  matches apart from the percents. The seeded meanings are kept: renumbering them means changing
+  the seed, the demo items (`fractions-equivalentes-bandes`, `billet-fractions-equivalentes`,
+  `diagnostic-fractions`, `defi-marche-des-fractions`, `dixiemes-centiemes-argent`) and any lesson
+  links together. B1.4 is left out so that it does not clash.
+- **Mathématiques codes changed in the review.** Where the index clearly gave another number or
+  another topic for a code that a demo item links to, the file was corrected and the item moved
+  with it:
+  - 3e: fair-share problems solved with drawings are B1.6, not B1.5 (`billet-partage-equitable`
+    now links B1.6), and equivalent fractions in fair-share problems were added as B1.7; C2.2 is
+    about equivalent expressions and C2.3 about equality relationships up to 1 000, so the
+    missing-value problems of `valeur-manquante-collecte` now link C2.3; E2.1 is perimeter and E2.2
+    the relationships between units of length, so `mesurer-dans-la-cour` now links E2.2 only;
+    telling time is E2.6, not E2.5; F1.1 is about the change to give in cash transactions, so
+    `quiz-monnaie-canadienne` (counting collections of coins and bills) now links F1 only;
+    counting is by 200s, not 250s (B1.4).
+  - 5e: whole numbers go up to 100 000, not 200 000 (B1.1, B1.2, B2.4); multiplication is B2.6,
+    division with remainders B2.7 (`division-reste-minibus` now links B2.7) and unit fractions
+    B2.8; E2.4 is about using a protractor and benchmark angles, not about classifying angles.
+- **Strand A label in Sciences et technologie.** « Habiletés en STIM et liens » is our
+  translation of _STEM Skills and Connections_. Check the French document's title.
+- **Sciences et technologie topics.** We placed these topics in these strands:
+  - 3e: plants in B, forces that cause movement in C, strong and stable structures in D, soils in
+    E;
+  - 5e: human organ systems in B, properties of and changes in matter in C, forces acting on
+    structures in D, conservation of energy and resources in E.
+
+  These match the 2007 topics. Check that the 2022 document kept them in the same strands, and
+  check the X1 (society and environment) and X2 (understanding) split of each strand.
+
+- **Codes left out on purpose.** The following codes exist in the numbering but are not in the
+  files. We were not confident enough of their number or scope. Codes after the last one listed
+  for an attente may exist too.
+  - `mat-2020-3e`: B1.5 (place value, according to the index), E2.3–E2.5 (capacity and mass),
+    E2.7–E2.9 (area).
+  - `mat-2020-5e`: B1.4, B2.3, B2.5, C2.2, D1.4, E1.2, E1.3, E2.1–E2.3, F1.1.
+  - `fra-2023-3e` and `fra-2023-5e`: D2.2, D2.4, D2.5.
+- **Attentes without contenus.** Mathématiques A1 (apprentissage socioémotionnel) and C4
+  (modélisation mathématique) have no contenus in these files. As far as we know, the curriculum
+  has none for them either.
+
+### `mat-2020-3e.json`
+
+- **B1.4**: Corrected in the review (bonds de 200, not 250); wording to confirm.
+- **B1.6**, **B1.7**: Renumbered or added in the review from the index; wording to confirm.
+- **C2.2**, **C2.3**: Rewritten or added in the review from the index; wording to confirm.
+- **E1.2**: Number uncertain.
+- **E2.1**, **E2.2**: Rewritten in the review from the index; scope to confirm (which units of length E2.2 names). Measuring from a point other than zero, which the old E2.2 had, looks like a 2e année contenu.
+- **E2.6**: Renumbered in the review (it was E2.5).
+- **B2.7**, **D2.1**: Scope or wording uncertain.
+- **D1.4**: Scope or wording uncertain (the index suggests the official text also names the mean).
+- **F1**, **F1.1**: Rewritten in the review from the index (the change to give in cash transactions); wording to confirm.
+
+### `mat-2020-5e.json`
+
+- **B1.1**, **B1.2**, **B2.4**: Corrected in the review (up to 100 000, not 200 000); wording to confirm.
+- **B1.3**: Number uncertain; scope or wording uncertain.
+- **B1.5**, **B1.6**, **B1.7**: Seeded codes, kept as is: the official numbers for these contents may differ (see the general point on the seeded 5e B1 codes).
+- **B2.6**, **B2.7**, **B2.8**: Renumbered in the review from the index (multiplication, division, unit fractions); wording to confirm.
+- **E2.4**: Rewritten in the review from the index (protractor and benchmark angles); wording to confirm.
+- **B1.8**, **D1.1**, **D1.5**, **D1.6**, **E2.5**, **F1.2**, **F1.3**: Number uncertain (the index agrees for D1.5, E2.5, F1.2 and F1.3).
+- **C2.1**, **C2.3**, **E1.1**, **E1.4**: The index agrees with the number; wording to confirm.
+- **B2.2**, **C1.1**, **D1.2**, **D1.3**, **D2.1**, **D2.2**, **F1**: Scope or wording uncertain.
+
+### `fra-2023-3e.json`
+
+- **A1**, **B2**: Scope or wording uncertain.
+- **A1.1**, **A2.1**, **A2.2**, **A3.1**, **A3.2**, **B1.1**, **B1.2**, **B2.1**, **B2.2**, **B2.3**, **B3.1**, **B3.2**, **B3.3**, **C1.4**, **C2.1**, **C2.2**, **C2.3**, **C2.4**, **C3.1**, **C3.2**, **D1.2**, **D1.3**, **D2.1**, **D2.3**, **D2.6**, **D3.1**, **D3.2**, **D3.3**: Number estimated from the parallel English Language (2023) structure; confirm in the Français (2023) document.
+- **A2**, **A3**, **B1**, **B3**, **C3**, **D2**, **D3**: Attente topic taken from the parallel English Language (2023) structure; confirm in the Français (2023) document.
+- **C1**: Seeded code, kept as is: the seeded C1 block (C1.1 predictions and prior knowledge, C1.2 main idea, C1.3 text features) mixes what look like two official attentes (knowledge about texts and comprehension strategies); renumbering it would break the demo item links.
+- **C1.1**, **C1.2**, **C1.3**: Seeded code, kept as is: see C1.
+- **C2**: Overlaps the seeded C1 (see C1); wording to confirm.
+- **D1.1**: Seeded code, kept as is: organizing ideas may be numbered D1.4 in the official document.
+
+### `fra-2023-5e.json`
+
+- **A1**, **B2**: Scope or wording uncertain.
+- **A1.1**, **A2.1**, **A2.2**, **A3.1**, **A3.2**, **B1.1**, **B1.2**, **B2.1**, **B2.2**, **B2.3**, **B3.1**, **B3.2**, **B3.3**, **C1.4**, **C2.1**, **C2.2**, **C2.3**, **C2.4**, **C3.1**, **C3.2**, **D1.2**, **D1.3**, **D2.1**, **D2.3**, **D2.6**, **D3.1**, **D3.2**, **D3.3**: Number estimated from the parallel English Language (2023) structure; confirm in the Français (2023) document.
+- **A2**, **A3**, **B1**, **B3**, **C3**, **D2**, **D3**: Attente topic taken from the parallel English Language (2023) structure; confirm in the Français (2023) document.
+- **C1**: Seeded code (D-071), kept as is: same meaning as the seeded 3e C1; see the 3e C1 note.
+- **C1.1**: Same meaning as the seeded 3e C1.1; see the 3e C1 note.
+- **C1.2**: Seeded code (D-071), kept as is: same meaning as the seeded 3e C1.2 (used by the demo item canot-des-voyageurs); see the 3e C1 note.
+- **C1.3**: Same meaning as the seeded 3e C1.3; see the 3e C1 note.
+- **C2**: Overlaps C1 (see the 3e C1 note); wording to confirm.
+- **D1**: Seeded code (D-071), kept as is: same meaning as the seeded 3e D1.
+- **D1.1**: Seeded code (D-071), kept as is: same meaning as the seeded 3e D1.1; organizing ideas may be numbered D1.4 in the official document.
+
+### `sci-2022-3e.json`
+
+- **A2.1**: Grade-specific coding focus to confirm.
+- **A3.1**, **A3.2**, **A3.3**, **B1.1**, **B1.2**, **C1.1**, **C1.2**, **D1.1**, **D1.2**, **E1.1**, **E1.2**: Scope or wording uncertain.
+- **B2.3**, **B2.4**, **B2.5**, **C2.1**, **C2.2**, **C2.3**, **D2.1**, **D2.2**, **D2.3**, **E2.1**, **E2.2**, **E2.3**: Number uncertain.
+
+### `sci-2022-5e.json`
+
+- **A2.1**: Grade-specific coding focus to confirm.
+- **A3.1**, **A3.2**, **A3.3**, **B1.1**, **B1.2**, **C1**, **C1.1**, **C1.2**, **D1**, **D1.1**, **D1.2**, **E1.1**, **E1.2**: Scope or wording uncertain.
+- **B2.1**: Number uncertain; scope or wording uncertain (which organ systems are named).
+- **B2.2**, **B2.3**, **C2.1**, **C2.2**, **C2.3**, **C2.4**, **D2.3**, **E2.1**, **E2.2**, **E2.3**, **E2.4**: Number uncertain.

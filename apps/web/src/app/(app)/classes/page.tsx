@@ -3,6 +3,7 @@ import { getLocale, getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { NewClassButton } from '@/components/classes/new-class-button';
+import { SampleBadge } from '@/components/onboarding/sample-badge';
 import { Badge, Card } from '@/components/ui/card';
 import { EmptyState, PageHeader } from '@/components/ui/page';
 import { listMyClasses, loadClassFormOptions } from '@/server/queries/classes';
@@ -40,9 +41,12 @@ export default async function ClassesPage() {
                 <Card className="p-4 transition-shadow hover:shadow-md">
                   <div className="flex items-start justify-between gap-2">
                     <h2 className="font-semibold">{c.name}</h2>
-                    <Badge tone={c.role === 'homeroom' ? 'brand' : 'neutral'}>
-                      {t(`role.${c.role}`)}
-                    </Badge>
+                    <span className="flex shrink-0 flex-wrap justify-end gap-1">
+                      {c.sample ? <SampleBadge /> : null}
+                      <Badge tone={c.role === 'homeroom' ? 'brand' : 'neutral'}>
+                        {t(`role.${c.role}`)}
+                      </Badge>
+                    </span>
                   </div>
                   <p className="mt-1 text-sm text-slate-600">
                     {c.gradeLabels.join(' / ')} · {t('studentCount', { count: c.studentCount })}

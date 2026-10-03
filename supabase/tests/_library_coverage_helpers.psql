@@ -1,0 +1,86 @@
+-- Curriculum coverage fixtures (Phase 5, « Couverture du curriculum »; DECISIONS D-094). Included
+-- with \ir after _helpers.psql, inside the test's transaction; everything here is rolled back
+-- afterwards. (The .psql extension keeps pg_prove from running it on its own.)
+
+-- A subject of a board (its own, not a standard one), with one domaine, so the tests' attentes
+-- are the only ones of their grade and subject and the summary's numbers are exact.
+--   cov_o1   overall, with the specific attentes cov_s11 and cov_s12
+--   cov_o2   overall, without children
+create function tests.coverage_curriculum(p_board text default 'board_a', p_prefix text default 'cov')
+returns uuid
+language plpgsql
+as $$
+declare
+  v_subject uuid := tests.remember(p_prefix || '_subject', gen_random_uuid());
+  v_strand uuid := tests.remember(p_prefix || '_strand', gen_random_uuid());
+begin
+  insert into public.subjects (id, board_id, code, label_fr, grade_min, grade_max, sort_order)
+  values (v_subject, tests.id(p_board), p_prefix || '_test', 'Matière ' || p_prefix, 1, 8, 90);
+  insert into public.strands (id, subject_id, code, label_fr, curriculum_version, sort_order)
+  values (v_strand, v_subject, 'Q', 'Domaine de test', 'test', 1);
+  insert into public.curriculum_expectations (id, subject_id, grade_code, strand_id, parent_id, kind,
+    code, text_fr, curriculum_version, is_verified, sort_order) values
+    (tests.remember(p_prefix || '_o1', gen_random_uuid()), v_subject, '3', v_strand, null, 'overall',
+     'Q1', 'Attente générale avec contenus.', 'test', true, 1),
+    (tests.remember(p_prefix || '_o2', gen_random_uuid()), v_subject, '3', v_strand, null, 'overall',
+     'Q2', 'Attente générale sans contenu.', 'test', false, 2);
+  insert into public.curriculum_expectations (id, subject_id, grade_code, strand_id, parent_id, kind,
+    code, text_fr, curriculum_version, is_verified, sort_order) values
+    (tests.remember(p_prefix || '_s11', gen_random_uuid()), v_subject, '3', v_strand,
+     tests.id(p_prefix || '_o1'), 'specific', 'Q1.1', 'Premier contenu.', 'test', true, 1),
+    (tests.remember(p_prefix || '_s12', gen_random_uuid()), v_subject, '3', v_strand,
+     tests.id(p_prefix || '_o1'), 'specific', 'Q1.2', 'Deuxième contenu.', 'test', true, 2);
+  return v_subject;
+end;
+$$;
+
+-- An item of the library fixture (tests.library_item), linked to the given attentes (by test
+-- key) instead of exp_a.
+create function tests.coverage_item(
+  p_key text,
+  p_author text,
+  p_type public.library_item_type,
+  p_status public.library_item_status,
+  p_scope public.share_scope,
+  p_expectations text[],
+  p_school text default null,
+  p_board text default 'board_a'
+)
+returns uuid
+language plpgsql
+as $$
+declare
+  v_id uuid := tests.library_item(p_key, p_author, p_type, p_status, p_scope, p_school, p_board);
+begin
+  delete from public.library_item_expectations where item_id = v_id;
+  insert into public.library_item_expectations (item_id, expectation_id)
+  select v_id, tests.id(e) from unnest(p_expectations) e;
+  return v_id;
+end;
+$$;
+
+-- The coverage of the test subject in grade 3 as the current role: code, approved, in review
+-- and approved types of each attente, in curriculum order.
+create function tests.coverage_of(p_board text default 'board_a', p_prefix text default 'cov')
+returns table (code text, approved integer, in_review integer, types text[])
+language sql
+as $$
+  select c.code, c.approved_count, c.in_review_count, c.approved_types
+  from public.library_coverage(tests.id(p_board), '3', tests.id(p_prefix || '_subject')) c;
+$$;
+
+-- The summary line of the test subject in grade 3 as the current role, for a threshold.
+create function tests.coverage_summary_of(p_min integer, p_board text default 'board_a',
+  p_prefix text default 'cov')
+returns table (units integer, without_any integer, few integer, covered integer)
+language sql
+as $$
+  select s.unit_count, s.none_count, s.few_count, s.covered_count
+  from public.library_coverage_summary(tests.id(p_board), p_min) s
+  where s.grade_code = '3' and s.subject_id = tests.id(p_prefix || '_subject');
+$$;
+
+grant execute on all functions in schema tests to anon, authenticated;
+grant usage on schema tests to service_role;
+grant select on tests.ids to service_role;
+grant execute on all functions in schema tests to service_role;

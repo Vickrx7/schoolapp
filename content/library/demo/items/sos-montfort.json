@@ -1,0 +1,945 @@
+{
+  "slug": "sos-montfort",
+  "type": "reading_passage",
+  "title": "SOS Montfort : une communauté se mobilise",
+  "summary": "Texte informatif de cinq paragraphes sur la lutte de la communauté franco-ontarienne pour garder ouvert l’Hôpital Montfort, à Ottawa (1997 à 2001), avec des questions qui font des liens entre le texte, l’expérience des élèves et les enjeux de leur communauté. Quatre versions selon le niveau de langue.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["5"],
+  "subjectCode": "fra",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "C2.2"
+    },
+    {
+      "grade": "5",
+      "code": "C1.2"
+    }
+  ],
+  "durationMinutes": 40,
+  "materials": "Une copie du texte par élève, dans la version prévue pour son groupe; un crayon.",
+  "keywords": "Hôpital Montfort, SOS Montfort, Ottawa, 1997, droits des francophones, histoire franco-ontarienne, mobilisation, faire des liens, construction identitaire",
+  "tags": ["lecture", "francophonie", "ontario", "identite"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je fais des liens entre un texte, mes expériences et les enjeux de ma communauté.",
+        "teacherNote": "Les quatre versions ont les mêmes cinq paragraphes et les mêmes faits. Présentez l’histoire de façon factuelle : le texte explique les raisons du gouvernement (réduire les dépenses) et celles de la communauté, sans juger les personnes. Les questions 5 et 6 demandent des liens personnels : acceptez toutes les expériences, y compris celles des élèves qui vivent en français surtout à l’école. Faits à vérifier avant l’utilisation en classe : la recommandation de fermer Montfort par la Commission de restructuration des services de santé (février 1997); le rassemblement d’environ 10 000 personnes à Ottawa le 22 mars 1997; la décision de la Cour d’appel de l’Ontario (décembre 2001) et le fait que le gouvernement n’a pas porté la cause plus loin (début 2002); Montfort décrit comme le seul hôpital universitaire francophone de l’Ontario; les soins offerts aujourd’hui en français et en anglais.",
+        "text": "1. Dans l’est d’Ottawa se trouve l’Hôpital Montfort. On y soigne des patientes et des patients en français et en anglais. On y forme aussi de futurs médecins, infirmières, infirmiers et autres professionnels de la santé qui pourront travailler en français. Pour beaucoup de Franco-Ontariennes et de Franco-Ontariens, Montfort est bien plus qu’un hôpital : c’est un symbole de fierté. Pour comprendre pourquoi, il faut remonter à 1997.\n\n2. Au début de 1997, le gouvernement de l’Ontario veut réduire ses dépenses en santé. Une commission, chargée de réorganiser les hôpitaux de la province, recommande alors de fermer Montfort. Pour la communauté francophone, c’est un choc. Montfort est le seul hôpital de l’Ontario où l’on peut à la fois recevoir des soins en français et apprendre à soigner en français. Sans lui, il deviendrait plus difficile d’être soigné dans sa langue et de former du personnel de la santé francophone.\n\n3. La réaction ne se fait pas attendre. Des citoyennes et des citoyens forment un comité pour défendre l’hôpital : SOS Montfort. Le 22 mars 1997, environ 10 000 personnes se rassemblent à Ottawa pour demander que Montfort reste ouvert. Partout en Ontario, des élèves, des familles, des personnes âgées et des organismes francophones signent des pétitions et écrivent des lettres. Dans les rassemblements, on voit flotter partout le drapeau franco-ontarien, vert et blanc.\n\n4. La lutte se poursuit ensuite devant les tribunaux. SOS Montfort demande à des juges de décider si le gouvernement a le droit de fermer l’hôpital. En décembre 2001, après plusieurs années de procédures, la Cour d’appel de l’Ontario donne raison à la communauté. Selon les juges, le gouvernement devait tenir compte du rôle de Montfort dans la protection de la langue et de la culture de la minorité francophone. Le gouvernement accepte cette décision, et l’hôpital reste ouvert.\n\n5. Aujourd’hui, l’Hôpital Montfort continue de soigner la population et de former du personnel de la santé en français. La lutte de SOS Montfort est devenue un moment marquant de l’histoire franco-ontarienne. Elle rappelle qu’une communauté unie peut défendre ses droits. Elle montre aussi que, pour vivre pleinement en français, une communauté a besoin d’écoles, mais aussi d’hôpitaux, de centres culturels et d’autres services dans sa langue.",
+        "glossary": [
+          {
+            "term": "une commission",
+            "definition": "Un groupe de personnes chargé par le gouvernement d’étudier une question et de faire des recommandations."
+          },
+          {
+            "term": "se mobiliser",
+            "definition": "Se réunir et agir ensemble pour défendre une cause."
+          },
+          {
+            "term": "une pétition",
+            "definition": "Un texte que beaucoup de personnes signent pour demander quelque chose aux autorités."
+          },
+          {
+            "term": "un tribunal",
+            "definition": "Un lieu où des juges règlent des désaccords en appliquant les lois."
+          },
+          {
+            "term": "donner raison à quelqu’un",
+            "definition": "Reconnaître que cette personne ou ce groupe a raison."
+          },
+          {
+            "term": "une minorité",
+            "definition": "Un groupe moins nombreux que le reste de la population, par exemple par sa langue."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quelle phrase résume le mieux l’idée principale du paragraphe 3?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "b",
+                "text": "Environ 10 000 personnes se sont rassemblées à Ottawa."
+              },
+              {
+                "id": "a",
+                "text": "Partout en Ontario, la communauté francophone s’est mobilisée pour sauver Montfort."
+              },
+              {
+                "id": "d",
+                "text": "Le gouvernement a fermé Montfort en 1997."
+              },
+              {
+                "id": "c",
+                "text": "Des élèves ont signé des pétitions."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Pourquoi la fermeture de Montfort inquiétait-elle autant la communauté francophone? Donne deux raisons tirées du texte.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 3
+          },
+          {
+            "id": "q3",
+            "kind": "ordering",
+            "prompt": "Place ces événements dans l’ordre où ils se sont produits.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "items": [
+              {
+                "id": "i1",
+                "text": "La Cour d’appel de l’Ontario donne raison à la communauté."
+              },
+              {
+                "id": "i2",
+                "text": "Une commission recommande de fermer Montfort."
+              },
+              {
+                "id": "i3",
+                "text": "L’hôpital continue de soigner et de former en français."
+              },
+              {
+                "id": "i4",
+                "text": "Environ 10 000 personnes se rassemblent à Ottawa."
+              }
+            ]
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "C’est une décision de juges qui a permis à l’hôpital de rester ouvert.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Nomme un lieu ou un service de ta communauté, autre que l’école, où l’on peut vivre en français. Explique pourquoi il est important pour toi, pour ta famille ou pour d’autres personnes. Si tu n’en connais pas, nomme un service en français que tu aimerais avoir, et explique pourquoi.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 4
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Le texte dit qu’« une communauté unie peut défendre ses droits ». Pense à une autre situation, dans ta vie, dans un livre ou dans les nouvelles, où des personnes se sont unies pour une cause. Explique en quoi elle ressemble à l’histoire de Montfort.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 5
+          }
+        ],
+        "visualSupports": [
+          "Une carte d’Ottawa ou de l’Est ontarien pour situer l’Hôpital Montfort.",
+          "Une ligne du temps tracée au tableau, de 1997 à aujourd’hui, que la classe complète pendant la lecture.",
+          "Un drapeau franco-ontarien, si l’école en a un.",
+          "Une photo d’archives d’un rassemblement de SOS Montfort, choisie et vérifiée par l’enseignante ou l’enseignant."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Le choix a résume tout le paragraphe. Les choix b et c sont des détails, et le choix d est faux : l’hôpital n’a pas fermé."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "C’était le seul hôpital de l’Ontario où l’on pouvait être soigné et apprendre à soigner en français. Sans lui, il aurait été plus difficile de recevoir des soins dans sa langue et de former du personnel francophone.",
+            "acceptableAnswers": [],
+            "explanation": "Deux raisons attendues, tirées du paragraphe 2 : recevoir des soins en français; former du personnel de la santé francophone. Accepter aussi l’idée que Montfort est un symbole de fierté (paragraphe 1)."
+          },
+          {
+            "questionId": "q3",
+            "kind": "ordering",
+            "orderedIds": ["i2", "i4", "i1", "i3"],
+            "explanation": "La recommandation (début 1997), le rassemblement (22 mars 1997), la décision de la Cour d’appel (décembre 2001), puis aujourd’hui."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Vrai : au paragraphe 4, la Cour d’appel de l’Ontario donne raison à la communauté, et le gouvernement accepte la décision."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "Le centre culturel francophone de ma ville. J’y vais pour voir des spectacles en français avec ma famille, et c’est un endroit où l’on peut rencontrer d’autres francophones.",
+            "acceptableAnswers": [],
+            "explanation": "Réponse personnelle. Exemples : une bibliothèque avec des livres en français, un centre culturel, un club sportif, une radio, une clinique, un camp d’été, un festival. Évaluer le lien et la justification, pas le lieu choisi."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Dans mon quartier, des familles se sont unies pour demander un passage pour piétons près de l’école. Comme pour Montfort, elles ont signé une pétition et ont parlé ensemble aux autorités, et elles ont obtenu ce qu’elles demandaient.",
+            "acceptableAnswers": [],
+            "explanation": "Réponse personnelle. Attendu : une situation précise et au moins une ressemblance nommée (des personnes qui s’unissent, des moyens comme une pétition ou un rassemblement, une cause commune, un résultat)."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "debutant",
+      "content": {
+        "title": "",
+        "objective": "Je fais des liens entre un texte, mes expériences et les enjeux de ma communauté.",
+        "teacherNote": "Version Débutant : phrases courtes, une idée par phrase, vocabulaire fréquent et glossaire. La question 1 a trois choix, et les questions 5 et 6 ont un début de phrase en indice. Les quatre versions ont les mêmes cinq paragraphes et les mêmes faits.",
+        "text": "1. L’Hôpital Montfort est à Ottawa. Dans cet hôpital, on soigne les gens en français et en anglais. On y apprend aussi à devenir médecin, infirmière ou infirmier en français. Pour beaucoup de francophones de l’Ontario, Montfort est très important. Voici pourquoi.\n\n2. En 1997, le gouvernement de l’Ontario veut dépenser moins d’argent pour les hôpitaux. Un groupe chargé d’étudier les hôpitaux propose de fermer Montfort. Les francophones sont très inquiets. Montfort est le seul hôpital de l’Ontario où l’on peut être soigné en français et apprendre à soigner en français.\n\n3. Des citoyennes et des citoyens décident d’agir. Ensemble, ces personnes forment un groupe : SOS Montfort. Le 22 mars 1997, environ 10 000 personnes se rassemblent à Ottawa. Elles demandent que Montfort reste ouvert. Partout en Ontario, des élèves, des familles et des personnes âgées signent des pétitions et écrivent des lettres. On voit partout le drapeau franco-ontarien, vert et blanc.\n\n4. Ensuite, SOS Montfort va devant les tribunaux. Des juges doivent décider si le gouvernement a le droit de fermer l’hôpital. En décembre 2001, les juges donnent raison à la communauté. Les juges expliquent que Montfort aide à protéger la langue française en Ontario. Le gouvernement accepte la décision. L’hôpital reste ouvert!\n\n5. Aujourd’hui, l’Hôpital Montfort est toujours ouvert. On y soigne encore les gens en français. L’histoire de Montfort montre qu’une communauté unie peut défendre ses droits. Pour vivre en français, on a besoin d’écoles, mais aussi d’hôpitaux et d’autres services en français.",
+        "glossary": [
+          {
+            "term": "soigner",
+            "definition": "Aider une personne malade ou blessée à guérir."
+          },
+          {
+            "term": "le gouvernement",
+            "definition": "Le groupe de personnes qui dirige la province."
+          },
+          {
+            "term": "inquiet, inquiète",
+            "definition": "Qui a peur que quelque chose de grave arrive."
+          },
+          {
+            "term": "une pétition",
+            "definition": "Une feuille que beaucoup de gens signent pour demander quelque chose."
+          },
+          {
+            "term": "un tribunal",
+            "definition": "Un endroit où des juges règlent des désaccords."
+          },
+          {
+            "term": "les droits",
+            "definition": "Ce que la loi permet et protège pour chaque personne ou chaque groupe."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "De quoi parle surtout le paragraphe 3?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "b",
+                "text": "Du drapeau franco-ontarien."
+              },
+              {
+                "id": "a",
+                "text": "Des francophones qui agissent ensemble pour sauver Montfort."
+              },
+              {
+                "id": "c",
+                "text": "Des médecins qui travaillent à Montfort."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Pourquoi la communauté francophone ne voulait-elle pas que Montfort ferme? Donne une raison.",
+            "hint": "Relis la dernière phrase du paragraphe 2.",
+            "points": null,
+            "category": "connaissance",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "ordering",
+            "prompt": "Place ces événements dans l’ordre.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "items": [
+              {
+                "id": "i1",
+                "text": "Les juges donnent raison à la communauté."
+              },
+              {
+                "id": "i2",
+                "text": "Un groupe propose de fermer Montfort."
+              },
+              {
+                "id": "i3",
+                "text": "L’hôpital est toujours ouvert."
+              },
+              {
+                "id": "i4",
+                "text": "Environ 10 000 personnes se rassemblent à Ottawa."
+              }
+            ]
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "Ce sont des juges qui ont permis à l’hôpital de rester ouvert.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Nomme un endroit de ta communauté, autre que l’école, où l’on parle français. Pourquoi est-il important pour toi?",
+            "hint": "Tu peux commencer par : « Dans ma communauté, il y a… ».",
+            "points": null,
+            "category": "application",
+            "lines": 3
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "As-tu déjà travaillé avec d’autres personnes pour une bonne cause? Raconte, puis dis ce qui ressemble à l’histoire de Montfort.",
+            "hint": "Tu peux commencer par : « Une fois, avec… ».",
+            "points": null,
+            "category": "application",
+            "lines": 4
+          }
+        ],
+        "visualSupports": [
+          "Une carte d’Ottawa ou de l’Est ontarien pour situer l’Hôpital Montfort.",
+          "Une ligne du temps tracée au tableau, de 1997 à aujourd’hui, que la classe complète pendant la lecture.",
+          "Un drapeau franco-ontarien, si l’école en a un.",
+          "Une photo d’archives d’un rassemblement de SOS Montfort, choisie et vérifiée par l’enseignante ou l’enseignant."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Tout le paragraphe 3 parle de ce que les gens font ensemble : un groupe, un rassemblement, des pétitions, des lettres."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "C’était le seul hôpital où l’on pouvait être soigné en français et apprendre à soigner en français.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter une des deux idées : être soigné en français; apprendre à soigner en français."
+          },
+          {
+            "questionId": "q3",
+            "kind": "ordering",
+            "orderedIds": ["i2", "i4", "i1", "i3"],
+            "explanation": "1997 : la proposition, puis le rassemblement du 22 mars; 2001 : la décision des juges; aujourd’hui : l’hôpital est toujours ouvert."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Vrai : au paragraphe 4, les juges donnent raison à la communauté, et le gouvernement accepte la décision."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "Dans ma communauté, il y a une bibliothèque avec des livres en français. C’est important pour moi parce que j’aime lire en français.",
+            "acceptableAnswers": [],
+            "explanation": "Réponse personnelle : évaluer le lien et la raison, pas le lieu choisi."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Une fois, avec ma classe, nous avons ramassé des déchets au parc. Comme pour Montfort, nous avons travaillé ensemble pour une cause importante.",
+            "acceptableAnswers": [],
+            "explanation": "Réponse personnelle. Attendu : une expérience et une ressemblance (agir ensemble pour une cause)."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "intermediaire",
+      "content": {
+        "title": "",
+        "objective": "Je fais des liens entre un texte, mes expériences et les enjeux de ma communauté.",
+        "teacherNote": "Version Intermédiaire : phrases simples ou composées, quelques mots nouveaux expliqués dans le glossaire, et des indices pour les questions 2, 5 et 6. Les quatre versions ont les mêmes cinq paragraphes et les mêmes faits.",
+        "text": "1. Dans l’est d’Ottawa se trouve l’Hôpital Montfort. On y soigne des patientes et des patients en français et en anglais. On y forme aussi de futurs médecins, infirmières et infirmiers qui pourront travailler en français. Pour beaucoup de Franco-Ontariennes et de Franco-Ontariens, Montfort est bien plus qu’un hôpital : c’est un symbole de fierté. Pour comprendre pourquoi, il faut remonter à 1997.\n\n2. Au début de 1997, le gouvernement de l’Ontario veut dépenser moins d’argent en santé. Une commission, chargée de réorganiser les hôpitaux, recommande de fermer Montfort. Pour la communauté francophone, c’est un choc. Montfort est le seul hôpital de l’Ontario où l’on peut à la fois être soigné en français et apprendre à soigner en français. Sans lui, il deviendrait plus difficile de recevoir des soins dans sa langue.\n\n3. La communauté réagit vite. Des citoyennes et des citoyens forment un comité pour défendre l’hôpital : SOS Montfort. Le 22 mars 1997, environ 10 000 personnes se rassemblent à Ottawa pour demander que Montfort reste ouvert. Partout en Ontario, des élèves, des familles, des personnes âgées et des organismes francophones signent des pétitions et écrivent des lettres. Dans les rassemblements, on voit flotter le drapeau franco-ontarien, vert et blanc.\n\n4. La lutte continue ensuite devant les tribunaux. SOS Montfort demande à des juges de décider si le gouvernement a le droit de fermer l’hôpital. En décembre 2001, la Cour d’appel de l’Ontario donne raison à la communauté. Selon les juges, le gouvernement devait tenir compte du rôle de Montfort pour protéger la langue et la culture des francophones. Le gouvernement accepte cette décision, et l’hôpital reste ouvert.\n\n5. Aujourd’hui, l’Hôpital Montfort continue de soigner la population et de former du personnel de la santé en français. L’histoire de SOS Montfort est devenue un moment important de l’histoire franco-ontarienne. Elle rappelle qu’une communauté unie peut défendre ses droits. Elle montre aussi que, pour vivre en français, on a besoin d’écoles, mais aussi d’hôpitaux, de centres culturels et d’autres services dans sa langue.",
+        "glossary": [
+          {
+            "term": "une commission",
+            "definition": "Un groupe de personnes chargé par le gouvernement d’étudier une question."
+          },
+          {
+            "term": "un symbole",
+            "definition": "Une chose qui représente une idée. Par exemple, un drapeau est un symbole."
+          },
+          {
+            "term": "une pétition",
+            "definition": "Un texte que beaucoup de personnes signent pour demander quelque chose."
+          },
+          {
+            "term": "un tribunal",
+            "definition": "Un lieu où des juges règlent des désaccords en appliquant les lois."
+          },
+          {
+            "term": "donner raison à quelqu’un",
+            "definition": "Dire que cette personne ou ce groupe a raison."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quelle phrase résume le mieux l’idée principale du paragraphe 3?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "b",
+                "text": "Environ 10 000 personnes se sont rassemblées à Ottawa."
+              },
+              {
+                "id": "a",
+                "text": "Partout en Ontario, la communauté francophone s’est mobilisée pour sauver Montfort."
+              },
+              {
+                "id": "d",
+                "text": "Le gouvernement a fermé Montfort en 1997."
+              },
+              {
+                "id": "c",
+                "text": "Des élèves ont signé des pétitions."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Pourquoi la fermeture de Montfort inquiétait-elle la communauté francophone? Donne deux raisons tirées du texte.",
+            "hint": "Relis la fin du paragraphe 2.",
+            "points": null,
+            "category": "connaissance",
+            "lines": 3
+          },
+          {
+            "id": "q3",
+            "kind": "ordering",
+            "prompt": "Place ces événements dans l’ordre où ils se sont produits.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "items": [
+              {
+                "id": "i1",
+                "text": "La Cour d’appel de l’Ontario donne raison à la communauté."
+              },
+              {
+                "id": "i2",
+                "text": "Une commission recommande de fermer Montfort."
+              },
+              {
+                "id": "i3",
+                "text": "L’hôpital continue de soigner et de former en français."
+              },
+              {
+                "id": "i4",
+                "text": "Environ 10 000 personnes se rassemblent à Ottawa."
+              }
+            ]
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "C’est une décision de juges qui a permis à l’hôpital de rester ouvert.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Nomme un lieu ou un service de ta communauté, autre que l’école, où l’on peut vivre en français. Explique pourquoi il est important pour toi ou pour d’autres personnes.",
+            "hint": "Pense à une bibliothèque, un club, un centre culturel, une radio, un camp d’été…",
+            "points": null,
+            "category": "application",
+            "lines": 4
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Le texte dit qu’« une communauté unie peut défendre ses droits ». Pense à une autre situation où des personnes se sont unies pour une cause. Explique ce qui ressemble à l’histoire de Montfort.",
+            "hint": "La situation peut venir de ta vie, d’un livre ou des nouvelles.",
+            "points": null,
+            "category": "application",
+            "lines": 5
+          }
+        ],
+        "visualSupports": [
+          "Une carte d’Ottawa ou de l’Est ontarien pour situer l’Hôpital Montfort.",
+          "Une ligne du temps tracée au tableau, de 1997 à aujourd’hui, que la classe complète pendant la lecture.",
+          "Un drapeau franco-ontarien, si l’école en a un.",
+          "Une photo d’archives d’un rassemblement de SOS Montfort, choisie et vérifiée par l’enseignante ou l’enseignant."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Le choix a résume tout le paragraphe. Les choix b et c sont des détails, et le choix d est faux."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "C’était le seul hôpital où l’on pouvait être soigné en français et apprendre à soigner en français. Sans lui, il aurait été plus difficile de recevoir des soins dans sa langue.",
+            "acceptableAnswers": [],
+            "explanation": "Deux raisons attendues, tirées du paragraphe 2."
+          },
+          {
+            "questionId": "q3",
+            "kind": "ordering",
+            "orderedIds": ["i2", "i4", "i1", "i3"],
+            "explanation": "La recommandation (début 1997), le rassemblement (22 mars 1997), la décision de la Cour d’appel (décembre 2001), puis aujourd’hui."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Vrai : la Cour d’appel de l’Ontario donne raison à la communauté, et le gouvernement accepte la décision."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "Le club de hockey francophone de ma ville. J’y joue en français avec mes amis, et ça me permet de parler français en dehors de l’école.",
+            "acceptableAnswers": [],
+            "explanation": "Réponse personnelle : évaluer le lien et la justification, pas le lieu choisi."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Dans un livre, des enfants se sont unis pour sauver un parc de leur quartier. Comme pour Montfort, ils ont signé une pétition et ils ont réussi.",
+            "acceptableAnswers": [],
+            "explanation": "Réponse personnelle. Attendu : une situation précise et au moins une ressemblance nommée."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "avance",
+      "content": {
+        "title": "",
+        "objective": "Je fais des liens entre un texte, mes expériences et les enjeux de ma communauté.",
+        "teacherNote": "Version Avancé : même texte que la version de base, écrit dans le français attendu en 5e année. Les quatre versions ont les mêmes cinq paragraphes et les mêmes faits.",
+        "text": "1. Dans l’est d’Ottawa se trouve l’Hôpital Montfort. On y soigne des patientes et des patients en français et en anglais. On y forme aussi de futurs médecins, infirmières, infirmiers et autres professionnels de la santé qui pourront travailler en français. Pour beaucoup de Franco-Ontariennes et de Franco-Ontariens, Montfort est bien plus qu’un hôpital : c’est un symbole de fierté. Pour comprendre pourquoi, il faut remonter à 1997.\n\n2. Au début de 1997, le gouvernement de l’Ontario veut réduire ses dépenses en santé. Une commission, chargée de réorganiser les hôpitaux de la province, recommande alors de fermer Montfort. Pour la communauté francophone, c’est un choc. Montfort est le seul hôpital de l’Ontario où l’on peut à la fois recevoir des soins en français et apprendre à soigner en français. Sans lui, il deviendrait plus difficile d’être soigné dans sa langue et de former du personnel de la santé francophone.\n\n3. La réaction ne se fait pas attendre. Des citoyennes et des citoyens forment un comité pour défendre l’hôpital : SOS Montfort. Le 22 mars 1997, environ 10 000 personnes se rassemblent à Ottawa pour demander que Montfort reste ouvert. Partout en Ontario, des élèves, des familles, des personnes âgées et des organismes francophones signent des pétitions et écrivent des lettres. Dans les rassemblements, on voit flotter partout le drapeau franco-ontarien, vert et blanc.\n\n4. La lutte se poursuit ensuite devant les tribunaux. SOS Montfort demande à des juges de décider si le gouvernement a le droit de fermer l’hôpital. En décembre 2001, après plusieurs années de procédures, la Cour d’appel de l’Ontario donne raison à la communauté. Selon les juges, le gouvernement devait tenir compte du rôle de Montfort dans la protection de la langue et de la culture de la minorité francophone. Le gouvernement accepte cette décision, et l’hôpital reste ouvert.\n\n5. Aujourd’hui, l’Hôpital Montfort continue de soigner la population et de former du personnel de la santé en français. La lutte de SOS Montfort est devenue un moment marquant de l’histoire franco-ontarienne. Elle rappelle qu’une communauté unie peut défendre ses droits. Elle montre aussi que, pour vivre pleinement en français, une communauté a besoin d’écoles, mais aussi d’hôpitaux, de centres culturels et d’autres services dans sa langue.",
+        "glossary": [
+          {
+            "term": "une commission",
+            "definition": "Un groupe de personnes chargé par le gouvernement d’étudier une question et de faire des recommandations."
+          },
+          {
+            "term": "se mobiliser",
+            "definition": "Se réunir et agir ensemble pour défendre une cause."
+          },
+          {
+            "term": "une pétition",
+            "definition": "Un texte que beaucoup de personnes signent pour demander quelque chose aux autorités."
+          },
+          {
+            "term": "un tribunal",
+            "definition": "Un lieu où des juges règlent des désaccords en appliquant les lois."
+          },
+          {
+            "term": "donner raison à quelqu’un",
+            "definition": "Reconnaître que cette personne ou ce groupe a raison."
+          },
+          {
+            "term": "une minorité",
+            "definition": "Un groupe moins nombreux que le reste de la population, par exemple par sa langue."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quelle phrase résume le mieux l’idée principale du paragraphe 3?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "b",
+                "text": "Environ 10 000 personnes se sont rassemblées à Ottawa."
+              },
+              {
+                "id": "a",
+                "text": "Partout en Ontario, la communauté francophone s’est mobilisée pour sauver Montfort."
+              },
+              {
+                "id": "d",
+                "text": "Le gouvernement a fermé Montfort en 1997."
+              },
+              {
+                "id": "c",
+                "text": "Des élèves ont signé des pétitions."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Pourquoi la fermeture de Montfort inquiétait-elle autant la communauté francophone? Donne deux raisons tirées du texte.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 3
+          },
+          {
+            "id": "q3",
+            "kind": "ordering",
+            "prompt": "Place ces événements dans l’ordre où ils se sont produits.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "items": [
+              {
+                "id": "i1",
+                "text": "La Cour d’appel de l’Ontario donne raison à la communauté."
+              },
+              {
+                "id": "i2",
+                "text": "Une commission recommande de fermer Montfort."
+              },
+              {
+                "id": "i3",
+                "text": "L’hôpital continue de soigner et de former en français."
+              },
+              {
+                "id": "i4",
+                "text": "Environ 10 000 personnes se rassemblent à Ottawa."
+              }
+            ]
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "C’est une décision de juges qui a permis à l’hôpital de rester ouvert.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Nomme un lieu ou un service de ta communauté, autre que l’école, où l’on peut vivre en français. Explique pourquoi il est important pour toi, pour ta famille ou pour d’autres personnes. Si tu n’en connais pas, nomme un service en français que tu aimerais avoir, et explique pourquoi.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 4
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Le texte dit qu’« une communauté unie peut défendre ses droits ». Pense à une autre situation, dans ta vie, dans un livre ou dans les nouvelles, où des personnes se sont unies pour une cause. Explique en quoi elle ressemble à l’histoire de Montfort.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 5
+          }
+        ],
+        "visualSupports": [
+          "Une carte d’Ottawa ou de l’Est ontarien pour situer l’Hôpital Montfort.",
+          "Une ligne du temps tracée au tableau, de 1997 à aujourd’hui, que la classe complète pendant la lecture.",
+          "Un drapeau franco-ontarien, si l’école en a un.",
+          "Une photo d’archives d’un rassemblement de SOS Montfort, choisie et vérifiée par l’enseignante ou l’enseignant."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Le choix a résume tout le paragraphe. Les choix b et c sont des détails, et le choix d est faux : l’hôpital n’a pas fermé."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "C’était le seul hôpital de l’Ontario où l’on pouvait être soigné et apprendre à soigner en français. Sans lui, il aurait été plus difficile de recevoir des soins dans sa langue et de former du personnel francophone.",
+            "acceptableAnswers": [],
+            "explanation": "Deux raisons attendues, tirées du paragraphe 2 : recevoir des soins en français; former du personnel de la santé francophone. Accepter aussi l’idée que Montfort est un symbole de fierté (paragraphe 1)."
+          },
+          {
+            "questionId": "q3",
+            "kind": "ordering",
+            "orderedIds": ["i2", "i4", "i1", "i3"],
+            "explanation": "La recommandation (début 1997), le rassemblement (22 mars 1997), la décision de la Cour d’appel (décembre 2001), puis aujourd’hui."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Vrai : au paragraphe 4, la Cour d’appel de l’Ontario donne raison à la communauté, et le gouvernement accepte la décision."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "Le centre culturel francophone de ma ville. J’y vais pour voir des spectacles en français avec ma famille, et c’est un endroit où l’on peut rencontrer d’autres francophones.",
+            "acceptableAnswers": [],
+            "explanation": "Réponse personnelle. Exemples : une bibliothèque avec des livres en français, un centre culturel, un club sportif, une radio, une clinique, un camp d’été, un festival. Évaluer le lien et la justification, pas le lieu choisi."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Dans mon quartier, des familles se sont unies pour demander un passage pour piétons près de l’école. Comme pour Montfort, elles ont signé une pétition et ont parlé ensemble aux autorités, et elles ont obtenu ce qu’elles demandaient.",
+            "acceptableAnswers": [],
+            "explanation": "Réponse personnelle. Attendu : une situation précise et au moins une ressemblance nommée (des personnes qui s’unissent, des moyens comme une pétition ou un rassemblement, une cause commune, un résultat)."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "enrichi",
+      "content": {
+        "title": "",
+        "objective": "Je fais des liens entre un texte, mes expériences et les enjeux de ma communauté.",
+        "teacherNote": "Version Enrichi : vocabulaire plus riche et plus précis, phrases plus variées, et deux questions d’approfondissement (questions 7 et 8). La question 7 amène l’analyse critique : le texte donne surtout le point de vue de la communauté. Les quatre versions ont les mêmes cinq paragraphes et les mêmes faits.",
+        "text": "1. Dans l’est d’Ottawa s’élève l’Hôpital Montfort, où l’on soigne les patientes et les patients en français comme en anglais. Établissement d’enseignement, il forme aussi de futurs médecins, infirmières, infirmiers et autres professionnels de la santé appelés à exercer en français. Aux yeux de nombreuses Franco-Ontariennes et de nombreux Franco-Ontariens, Montfort dépasse largement le rôle d’un hôpital : c’est un véritable symbole de fierté. Pour saisir pourquoi, il faut revenir en 1997.\n\n2. Au début de 1997, le gouvernement de l’Ontario cherche à comprimer ses dépenses en santé. Une commission, mandatée pour réorganiser le réseau hospitalier de la province, recommande la fermeture de Montfort. La nouvelle frappe la communauté francophone de plein fouet. Montfort est en effet le seul hôpital ontarien où l’on peut à la fois recevoir des soins en français et apprendre à soigner en français. Sa disparition compromettrait l’accès aux soins dans sa langue et la formation de personnel de la santé francophone.\n\n3. La riposte ne tarde pas. Des citoyennes et des citoyens fondent un comité de défense : SOS Montfort. Le 22 mars 1997, quelque 10 000 personnes se rassemblent à Ottawa pour réclamer le maintien de l’hôpital. Aux quatre coins de l’Ontario, élèves, familles, personnes âgées et organismes francophones signent des pétitions et multiplient les lettres. Lors des rassemblements, le drapeau franco-ontarien, vert et blanc, flotte au-dessus de la foule.\n\n4. Le combat se transporte ensuite devant les tribunaux. SOS Montfort demande aux juges de déterminer si le gouvernement a le droit de fermer l’hôpital. En décembre 2001, au terme de plusieurs années de procédures, la Cour d’appel de l’Ontario donne raison à la communauté. Les juges estiment que le gouvernement devait tenir compte du rôle essentiel de Montfort dans la protection de la langue et de la culture de la minorité francophone. Le gouvernement se plie à cette décision, et l’hôpital demeure ouvert.\n\n5. Aujourd’hui, l’Hôpital Montfort poursuit sa double mission : soigner la population et former du personnel de la santé en français. La lutte de SOS Montfort s’est inscrite dans l’histoire franco-ontarienne comme un moment marquant. Elle rappelle qu’une communauté unie peut défendre ses droits. Elle démontre aussi que, pour vivre pleinement en français, une communauté a besoin d’écoles, certes, mais également d’hôpitaux, de centres culturels et d’autres services dans sa langue.",
+        "glossary": [
+          {
+            "term": "comprimer ses dépenses",
+            "definition": "Dépenser moins d’argent."
+          },
+          {
+            "term": "mandaté",
+            "definition": "Chargé officiellement d’une mission."
+          },
+          {
+            "term": "de plein fouet",
+            "definition": "Très durement, avec toute sa force."
+          },
+          {
+            "term": "une riposte",
+            "definition": "Une réaction rapide pour se défendre."
+          },
+          {
+            "term": "compromettre",
+            "definition": "Mettre en danger."
+          },
+          {
+            "term": "se plier à",
+            "definition": "Accepter, obéir à."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quelle phrase exprime le mieux l’idée principale du paragraphe 3?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "b",
+                "text": "Quelque 10 000 personnes se sont rassemblées à Ottawa."
+              },
+              {
+                "id": "a",
+                "text": "Partout en Ontario, la communauté francophone s’est mobilisée pour sauver Montfort."
+              },
+              {
+                "id": "d",
+                "text": "Le gouvernement a fermé Montfort en 1997."
+              },
+              {
+                "id": "c",
+                "text": "Des élèves ont signé des pétitions."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Pourquoi la fermeture de Montfort inquiétait-elle autant la communauté francophone? Donne deux raisons tirées du texte.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 3
+          },
+          {
+            "id": "q3",
+            "kind": "ordering",
+            "prompt": "Place ces événements dans l’ordre chronologique.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "items": [
+              {
+                "id": "i1",
+                "text": "La Cour d’appel de l’Ontario donne raison à la communauté."
+              },
+              {
+                "id": "i2",
+                "text": "Une commission recommande de fermer Montfort."
+              },
+              {
+                "id": "i3",
+                "text": "L’hôpital poursuit sa mission de soigner et de former en français."
+              },
+              {
+                "id": "i4",
+                "text": "Quelque 10 000 personnes se rassemblent à Ottawa."
+              }
+            ]
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "C’est une décision de juges qui a permis à l’hôpital de demeurer ouvert.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Nomme un lieu ou un service de ta communauté, autre que l’école, où l’on peut vivre en français. Explique son importance pour toi, pour ta famille ou pour d’autres personnes. Si tu n’en connais pas, décris un service en français que tu aimerais voir naître, et justifie ton choix.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 4
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Le texte affirme qu’« une communauté unie peut défendre ses droits ». Pense à une autre situation, tirée de ta vie, d’un livre ou de l’actualité, où des personnes se sont unies pour une cause. Compare-la à l’histoire de Montfort : nomme une ressemblance et une différence.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 5
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Ce texte présente surtout le point de vue de la communauté francophone. Quel autre point de vue aurait-on pu entendre en 1997, et quelles raisons pouvait-il avoir? Pourquoi est-il utile de connaître plusieurs points de vue sur un même événement?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 5
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Imagine que tu prends la parole au rassemblement du 22 mars 1997. Écris trois ou quatre phrases pour expliquer à la foule pourquoi Montfort doit rester ouvert. Appuie-toi sur des faits du texte.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 6
+          }
+        ],
+        "visualSupports": [
+          "Une carte d’Ottawa ou de l’Est ontarien pour situer l’Hôpital Montfort.",
+          "Une ligne du temps tracée au tableau, de 1997 à aujourd’hui, que la classe complète pendant la lecture.",
+          "Un drapeau franco-ontarien, si l’école en a un.",
+          "Une photo d’archives d’un rassemblement de SOS Montfort, choisie et vérifiée par l’enseignante ou l’enseignant."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Le choix a résume tout le paragraphe. Les choix b et c sont des détails, et le choix d est faux."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "C’était le seul hôpital ontarien où l’on pouvait recevoir des soins et apprendre à soigner en français. Sa fermeture aurait compromis l’accès aux soins en français et la formation de personnel francophone.",
+            "acceptableAnswers": [],
+            "explanation": "Deux raisons attendues, tirées du paragraphe 2. Accepter aussi l’idée de symbole de fierté (paragraphe 1)."
+          },
+          {
+            "questionId": "q3",
+            "kind": "ordering",
+            "orderedIds": ["i2", "i4", "i1", "i3"],
+            "explanation": "La recommandation (début 1997), le rassemblement (22 mars 1997), la décision de la Cour d’appel (décembre 2001), puis aujourd’hui."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Vrai : la Cour d’appel de l’Ontario donne raison à la communauté, et le gouvernement se plie à la décision."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "La radio communautaire francophone de ma région. On y entend de la musique et des nouvelles d’ici en français, ce qui garde notre langue vivante en dehors de l’école.",
+            "acceptableAnswers": [],
+            "explanation": "Réponse personnelle : évaluer le lien et la justification, pas le lieu choisi."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Des élèves de mon école ont organisé une collecte de fonds pour la banque alimentaire. Comme pour Montfort, un groupe s’est uni pour une cause commune. Par contre, il n’y a pas eu de désaccord à régler devant un tribunal.",
+            "acceptableAnswers": [],
+            "explanation": "Attendu : une situation précise, une ressemblance et une différence."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "Le point de vue du gouvernement ou de la commission : ils voulaient réduire les dépenses et réorganiser les hôpitaux pour toute la province. Connaître plusieurs points de vue aide à comprendre pourquoi il y a eu un désaccord et à se faire sa propre opinion.",
+            "acceptableAnswers": [],
+            "explanation": "Question d’approfondissement (analyse critique). Attendu : un autre point de vue plausible, appuyé sur le paragraphe 2, et une raison de consulter plusieurs points de vue."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "Montfort est le seul hôpital de l’Ontario où l’on apprend à soigner en français. Si on le ferme, qui soignera nos grands-parents dans leur langue? Nous sommes des milliers ici aujourd’hui : ensemble, nous pouvons le garder ouvert!",
+            "acceptableAnswers": [],
+            "explanation": "Question d’approfondissement. Attendu : un court discours persuasif qui s’appuie sur au moins un fait du texte."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

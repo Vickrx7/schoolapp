@@ -1,0 +1,180 @@
+{
+  "slug": "pont-de-papier",
+  "type": "stem_challenge",
+  "title": "Défi STIM : le pont de papier",
+  "summary": "Les équipes suivent le processus de design pour construire, avec 10 feuilles et du ruban-cache, un pont qui franchit 20 cm et porte le plus de rondelles possible. Elles découvrent comment la forme aide une structure à résister à la compression et à la tension.",
+  "source": "board_created",
+  "status": "board_approved",
+  "shareScope": "board",
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "gradeCodes": ["5"],
+  "subjectCode": "sci",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "D2.2"
+    }
+  ],
+  "durationMinutes": 100,
+  "materials": "Par équipe de 3 : 10 feuilles de papier format lettre, 1 m de ruban-cache, 1 paire de ciseaux à bouts ronds, 2 piles de livres de même hauteur (environ 15 cm), 1 gobelet de papier, environ 60 rondelles de métal identiques, 1 règle de 30 cm, 1 serviette ou 1 bac peu profond. Pour la classe : ruban-cache de rechange.",
+  "keywords": "pont, poutre, forme, matériaux, compression, tension, processus de design, ingénierie, défi",
+  "tags": ["stim", "structures", "forces", "cooperation"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "subFriendly": false,
+  "safetyNotes": {
+    "ageSuitability": "Convient aux élèves de 5e année (de 9 à 11 ans).",
+    "allergyAwareMaterials": "Papier, ruban-cache, ciseaux à bouts ronds et rondelles de métal seulement : aucun aliment, matériel sans latex. Si vous remplacez les rondelles par un autre poids, évitez les aliments (noix, arachides, graines). Si vous ajoutez des élastiques ou des ballons, prenez-les sans latex.",
+    "supervision": "close",
+    "hazards": [
+      "Ciseaux : on coupe assis et on passe les ciseaux lames fermées.",
+      "Le pont peut céder d’un coup et faire tomber les rondelles : on garde les mains et les pieds hors de la zone de chute et on ajoute les rondelles une à la fois.",
+      "Les piles de livres doivent rester stables : on les place sur une table, loin du bord."
+    ],
+    "notes": "Supervision étroite pendant les tests de charge : l’adulte se tient près de l’équipe qui teste. Placez une serviette ou un bac peu profond entre les deux piles de livres pour recevoir les rondelles."
+  },
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "J’explique comment la forme et l’assemblage des matériaux aident une structure à résister aux forces.",
+        "teacherNote": "Prévoyez deux périodes : définir, rechercher et planifier la première; construire, tester, améliorer et communiquer la deuxième. Faites un essai avant la leçon, car les résultats dépendent beaucoup du papier et du ruban : une feuille à plat porte à peine une ou deux rondelles, alors qu’un pont bien renforcé en porte souvent plusieurs dizaines (ordre de grandeur à vérifier avec votre matériel). Faites le lien avec l’expérience « Éponges et élastiques » : sous la charge, le dessus du pont est écrasé (compression) et le dessous est étiré (tension).",
+        "challenge": "Construis un pont de papier qui franchit un espace de 20 cm entre deux piles de livres. Ton pont doit porter un gobelet placé en son milieu, et on y ajoutera des rondelles une à la fois. Quelle forme donneras-tu au papier pour que ton pont porte le plus de rondelles possible?",
+        "constraints": [
+          "Tu peux utiliser seulement 10 feuilles de papier et 1 m de ruban-cache.",
+          "Le pont doit franchir un espace de 20 cm entre les deux piles de livres.",
+          "Le pont repose sur les livres : il ne peut pas y être collé ni attaché.",
+          "Le gobelet est posé au milieu du pont.",
+          "Vous avez 40 minutes pour construire le pont."
+        ],
+        "criteria": [
+          "Le pont franchit l’espace de 20 cm sans toucher la table.",
+          "Le pont porte le gobelet vide pendant 10 secondes.",
+          "L’équipe note le nombre de rondelles portées à chaque essai.",
+          "L’équipe explique comment la forme de son pont l’aide à résister à la compression et à la tension.",
+          "L’équipe améliore son pont après le premier essai et compare les deux résultats."
+        ],
+        "designStages": [
+          {
+            "stage": "definir",
+            "prompt": "Explique le défi dans tes mots. Que doit faire le pont? Quelles sont les contraintes?"
+          },
+          {
+            "stage": "rechercher",
+            "prompt": "Fais un essai rapide : place entre les livres une feuille à plat, puis une feuille roulée en tube, puis une feuille pliée en accordéon dans le sens de la longueur. Pose une rondelle au milieu de chacune. Laquelle plie le moins?"
+          },
+          {
+            "stage": "planifier",
+            "prompt": "Dessine ton pont et nomme les formes que tu utiliseras (tubes, poutres pliées, triangles). Indique par des flèches où le papier sera écrasé et où il sera étiré."
+          },
+          {
+            "stage": "construire",
+            "prompt": "Construis ton pont en respectant les contraintes. Assemble les pièces avec le ruban-cache."
+          },
+          {
+            "stage": "tester",
+            "prompt": "Pose le gobelet au milieu du pont. Ajoute les rondelles une à la fois jusqu’à ce que le pont cède ou que le gobelet touche la serviette. Note le nombre de rondelles."
+          },
+          {
+            "stage": "ameliorer",
+            "prompt": "Trouve l’endroit où ton pont a cédé. Change une seule chose pour le renforcer, puis fais un deuxième essai."
+          },
+          {
+            "stage": "communiquer",
+            "prompt": "Présente ton pont à la classe : sa forme, le nombre de rondelles portées aux deux essais et ce que tu as changé."
+          }
+        ],
+        "reflectionQuestions": [
+          {
+            "id": "r1",
+            "kind": "multiple_choice",
+            "prompt": "Tu poses une feuille entre deux livres, puis une charge au milieu. Quelles formes de papier plient le moins? Choisis toutes les bonnes réponses.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "Une feuille à plat"
+              },
+              {
+                "id": "b",
+                "text": "Une feuille roulée en tube serré"
+              },
+              {
+                "id": "c",
+                "text": "Une feuille pliée en accordéon dans le sens de la longueur"
+              },
+              {
+                "id": "d",
+                "text": "Une feuille froissée en boule"
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "r2",
+            "kind": "short_answer",
+            "prompt": "Pendant le test, quelle partie de ton pont était écrasée (compression)? Quelle partie était étirée (tension)?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          },
+          {
+            "id": "r3",
+            "kind": "short_answer",
+            "prompt": "Qu’as-tu changé pour améliorer ton pont? Est-ce que ça a fonctionné? Appuie ta réponse sur les résultats de tes deux essais.",
+            "hint": "",
+            "points": 2,
+            "category": "communication",
+            "lines": 4
+          },
+          {
+            "id": "r4",
+            "kind": "true_false",
+            "prompt": "Un pont fait avec plus de papier est toujours plus solide.",
+            "hint": "",
+            "points": null,
+            "category": "application"
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "r1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b", "c"],
+            "explanation": "Le tube et l’accordéon donnent de la hauteur au papier dans le sens de la charge : ils plient beaucoup moins qu’une feuille à plat. Une boule ne peut pas franchir l’espace."
+          },
+          {
+            "questionId": "r2",
+            "kind": "short_answer",
+            "sampleAnswer": "Le dessus du pont était écrasé (compression) et le dessous était étiré (tension), surtout au milieu, sous le gobelet.",
+            "acceptableAnswers": [],
+            "explanation": ""
+          },
+          {
+            "questionId": "r3",
+            "kind": "short_answer",
+            "sampleAnswer": "Nous avons ajouté deux tubes de papier sous le pont, dans le sens de la longueur. Au premier essai, le pont a porté 8 rondelles; au deuxième, il en a porté 23. Les tubes ont rendu le pont plus solide.",
+            "acceptableAnswers": [],
+            "explanation": "Évaluer l’usage des résultats des deux essais pour justifier la conclusion."
+          },
+          {
+            "questionId": "r4",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "La forme et l’assemblage comptent plus que la quantité de papier : quelques tubes bien placés sont plus solides qu’une pile de feuilles à plat."
+          }
+        ],
+        "solution": "Solutions efficaces fréquentes : des tubes roulés serrés ou des poutres pliées en accordéon, en U ou en triangle, placés dans le sens de la longueur sous le tablier. Élargir les appuis sur les livres aide aussi. Sous la charge, le dessus de la poutre est en compression et le dessous en tension; le pont cède souvent au milieu, là où le papier s’écrase ou se déchire."
+      }
+    }
+  ]
+}

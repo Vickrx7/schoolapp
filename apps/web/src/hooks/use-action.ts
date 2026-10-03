@@ -5,7 +5,8 @@ import { useCallback, useState, useTransition } from 'react';
 import { toast } from 'sonner';
 import type { ActionResult } from '@/lib/action-result';
 
-const KNOWN_ERRORS = new Set([
+/** Error keys with a message under `errors` (anything else shows the generic message). */
+export const KNOWN_ERRORS: ReadonlySet<string> = new Set([
   'forbidden',
   'duplicate',
   'inUse',
@@ -16,6 +17,7 @@ const KNOWN_ERRORS = new Set([
   'network',
   'required',
   'tooLong',
+  'tooLongForLevels',
   'tooMany',
   'invalidTime',
   'invalidDate',
@@ -24,6 +26,8 @@ const KNOWN_ERRORS = new Set([
   'endBeforeStart',
   'subjectRequired',
   'notAName',
+  'invalidEmail',
+  'invalidPhone',
   'alertsKeyMissing',
   'tooShort',
   'atLeastTwoLevels',
@@ -31,6 +35,101 @@ const KNOWN_ERRORS = new Set([
   'aiBudgetReached',
   'aiBusy',
   'personalInfo',
+  'levelInUse',
+  'subPlanConflict',
+  'subPlanInUse',
+  'subCodeLimit',
+  'subDayOver',
+  'absencePast',
+  'absenceTooLong',
+  'absenceOverlap',
+  'halfDaySingleDay',
+  'subPortalNotConfigured',
+  'subCodesKeyMissing',
+  'encryptionKeyMissing',
+  'subReportPending',
+  'subReportExists',
+  'subPlanAiStale',
+  'subPlanAiNothing',
+  'subReportChanged',
+  'absenceRequestReused',
+  // Library (server/errors.ts, DECISIONS D-063 to D-073).
+  'libraryNotReady',
+  'librarySafetyNotes',
+  'libraryFaithReviewNeeded',
+  'libraryWrongStatus',
+  'libraryOwnItem',
+  'libraryLocked',
+  'libraryConflict',
+  'libraryTooLargeForAi',
+  'libraryLevelExists',
+  'libraryPersonalLevels',
+  'libraryStudentNames',
+  'libraryInvalidContent',
+  'libraryChanged',
+  // Class mode (DECISIONS D-082 to D-090) and library growth (D-091 to D-093).
+  'classSessionOpen',
+  'classSessionChanged',
+  'classSessionNoMore',
+  'classSessionEnded',
+  'classModeNotPlayable',
+  'classPortalNotConfigured',
+  'libraryRateOwn',
+  'libraryRateNotApproved',
+  'libraryRemixArchived',
+  'libraryRemixLicence',
+  'libraryShareCap',
+  // Phase 6 (server/errors.ts and the Phase 6 actions; DECISIONS D-107, D-109, D-116).
+  'lastBoardAdmin',
+  'staffOtherBoard',
+  'staffSelf',
+  'staffStillActive',
+  'staffSelfRole',
+  'staffLastRole',
+  'staffAlreadyInvited',
+  'emailConflict',
+  'authNotConfigured',
+  'authRefused',
+  'invitationExpired',
+  'noSchoolYear',
+  'sampleClassExists',
+  'feedbackLimit',
+  // « Mon année » (server/errors.ts and the domain's forms; DECISIONS D-123, D-124).
+  'yearPlanWindow',
+  'yearPlanExpectation',
+  'reportPeriodOutsideYear',
+  'datesBoth',
+  'beforePeriodStart',
+  // « Commentaires de bulletin » (server/errors.ts, LXK01; D-129); « Créer une banque avec l'IA »
+  // with a note and without « J'ai vérifié » (server/actions/report-bank-ai.ts; D-132).
+  'reportBankNotTeaching',
+  'reportBankUnconfirmed',
+  // « Info-parents » (server/errors.ts and server/actions/newsletters.ts; D-137, D-138).
+  'newsletterWeek',
+  'newsletterPurged',
+  'newsletterConflict',
+  // « Traduire en anglais (IA) » (server/errors.ts and server/actions/newsletter-ai.ts; D-139); the
+  // worker's newsletterChanged and newsletterTooLargeForAi too.
+  'newsletterTooLargeForAi',
+  'newsletterNothingToTranslate',
+  'newsletterStale',
+  'newsletterBusy',
+  'newsletterChanged',
+  'newsletterUnconfirmed',
+  // A save over a message marked sent (LXN07, post-MVP review).
+  'newsletterSent',
+  // What a resource is missing (readinessFieldErrors, D-067).
+  'readiness.grades',
+  'readiness.subject',
+  'readiness.duration',
+  'readiness.materials',
+  'readiness.tags',
+  'readiness.base',
+  'readiness.expectations',
+  'readiness.key',
+  'readiness.levels',
+  'readiness.safety',
+  'readiness.content',
 ]);
 
 /** Translates an error key from a server action; unknown keys fall back to a generic message. */
@@ -85,5 +184,5 @@ export function useAction<Args extends unknown[], T>(
 
   const fieldError = (name: string) => errorText(fieldErrors[name]) ?? undefined;
 
-  return { run, pending, error, errorText: errorText(error), fieldError };
+  return { run, pending, error, errorText: errorText(error), fieldError, fieldErrors };
 }

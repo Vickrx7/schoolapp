@@ -1,0 +1,7 @@
+# Nightly backup (DECISIONS D-115). Install as /etc/cron.d/lynx-backup, with the path of the
+# checkout's deploy/docker directory. The server's clock is UTC, which Ubuntu's cron uses: 06:30 UTC
+# is 01:30 in Toronto in winter and 02:30 in summer. A failed night shows as a missed backup
+# heartbeat (HEARTBEAT_URL_BACKUP, « État du système »). Output goes to the journal.
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+30 6 * * * root cd /opt/lynx-ecole/deploy/docker && docker compose run --rm --no-TTY backup 2>&1 | systemd-cat -t lynx-backup

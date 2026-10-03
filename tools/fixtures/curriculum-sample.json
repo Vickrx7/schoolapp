@@ -1,0 +1,77 @@
+{
+  "official": false,
+  "verified": false,
+  "subjectCode": "fra",
+  "curriculumVersion": "fra-2023",
+  "sourceNote": "Résumé à vérifier contre le document officiel.",
+  "strands": [
+    { "code": "A", "labelFr": "Liens et applications en littératie", "labelEn": null },
+    { "code": "B", "labelFr": "Fondements de la langue", "labelEn": null },
+    {
+      "code": "C",
+      "labelFr": "Compréhension : comprendre et réagir à des textes",
+      "labelEn": null
+    },
+    {
+      "code": "D",
+      "labelFr": "Composition : exprimer ses idées et créer des textes",
+      "labelEn": null
+    }
+  ],
+  "expectations": [
+    {
+      "grade": "4",
+      "code": "C1",
+      "kind": "overall",
+      "strandCode": "C",
+      "parentCode": null,
+      "textFr": "Utiliser des stratégies avant, pendant et après la lecture pour comprendre divers textes, et réagir à ce qu’elle ou il lit.",
+      "textEn": null
+    },
+    {
+      "grade": "4",
+      "code": "C1.1",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C1",
+      "textFr": "Faire des prédictions et activer ses connaissances antérieures avant et pendant la lecture.",
+      "textEn": null
+    },
+    {
+      "grade": "4",
+      "code": "C1.2",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C1",
+      "textFr": "Dégager l’idée principale et les détails importants d’un texte informatif.",
+      "textEn": null
+    },
+    {
+      "grade": "4",
+      "code": "C1.3",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C1",
+      "textFr": "Utiliser les caractéristiques d’un texte informatif (titres, intertitres, légendes, tableaux) pour trouver de l’information.",
+      "textEn": null
+    },
+    {
+      "grade": "4",
+      "code": "D1",
+      "kind": "overall",
+      "strandCode": "D",
+      "parentCode": null,
+      "textFr": "Planifier et rédiger des textes variés pour communiquer de l’information à un public donné.",
+      "textEn": null
+    },
+    {
+      "grade": "4",
+      "code": "D1.1",
+      "kind": "specific",
+      "strandCode": "D",
+      "parentCode": "D1",
+      "textFr": "Organiser ses idées à l’aide d’un organisateur graphique avant d’écrire.",
+      "textEn": null
+    }
+  ]
+}

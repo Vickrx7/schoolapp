@@ -52,7 +52,7 @@ function PersonalLevel({ level }: { level: LevelOption }) {
             onChange={(e) => setDescription(e.target.value)}
           />
         </Field>
-        <label className="flex items-center gap-2 text-sm">
+        <label className="flex min-h-11 items-center gap-2 text-sm">
           <input
             type="checkbox"
             className="size-4 accent-brand-600"
@@ -62,7 +62,7 @@ function PersonalLevel({ level }: { level: LevelOption }) {
           {t('active')}
         </label>
         <div className="flex flex-wrap gap-2">
-          <Button type="submit" size="sm" disabled={save.pending}>
+          <Button type="submit" disabled={save.pending}>
             {save.pending ? tCommon('saving') : tCommon('save')}
           </Button>
           <ConfirmButton
@@ -70,6 +70,7 @@ function PersonalLevel({ level }: { level: LevelOption }) {
             message={t('deleteConfirm')}
             confirmLabel={tCommon('delete')}
             variant="danger"
+            size="md"
             onConfirm={() => remove.run(level.id)}
           />
         </div>

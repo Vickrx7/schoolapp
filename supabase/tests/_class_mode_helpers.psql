@@ -1,0 +1,353 @@
+-- Class mode fixtures (Phase 5; DECISIONS D-082 to D-090). Included with \ir after
+-- _helpers.psql, inside the test's transaction. Needs tests.build_fixture() and
+-- tests.build_library_fixture() before tests.battle_quiz().
+--
+-- Portal calls go through tests.portal_*: each switches to the portal role (no JWT claims),
+-- makes one call, switches back and records what the portal returned in tests.portal_outputs,
+-- so the privacy tests can scan every output of a whole session. The caller's role and claims
+-- are restored afterwards, so a test can stay signed in as a teacher around them.
+
+-- Every portal output, in order.
+create table tests.portal_outputs (
+  seq bigint generated always as identity primary key,
+  label text not null,
+  payload jsonb
+);
+-- Device tokens by test key (the web server keeps them in an HttpOnly cookie).
+create table tests.devices (
+  key text primary key,
+  session_id uuid,
+  device integer not null,
+  token text
+);
+grant select on tests.portal_outputs to anon, authenticated;
+grant select, insert, update on tests.devices to anon, authenticated;
+
+-- The session of a device token, read as superuser (the caller may be signed in as a teacher).
+create function tests.session_of_token(p_token text)
+returns uuid
+language sql
+security definer
+set search_path = ''
+as $$
+  select p.session_id from public.session_participants p
+  where p.token_hash = encode(extensions.digest(p_token, 'sha256'), 'hex');
+$$;
+
+-- The class portal's database role (it has no JWT claims).
+create function tests.as_class_portal()
+returns void
+language plpgsql
+as $$
+begin
+  perform set_config('request.jwt.claims', '', true);
+  perform set_config('request.jwt.claim.sub', '', true);
+  perform set_config('role', 'lynx_class_portal', true);
+end;
+$$;
+
+-- HMAC-like keys the web server would send (64 hex characters), one per test device or network.
+create function tests.device_key(p_n integer)
+returns text
+language sql
+immutable
+as $$
+  select encode(extensions.digest('test-device-' || p_n, 'sha256'), 'hex');
+$$;
+
+create function tests.network_key(p_n integer)
+returns text
+language sql
+immutable
+as $$
+  select encode(extensions.digest('test-network-' || p_n, 'sha256'), 'hex');
+$$;
+
+-- Runs one portal statement (built with literal values only: the portal role cannot use schema
+-- tests) as lynx_class_portal, records its output under p_label and returns it.
+create function tests.portal_call(p_label text, p_sql text)
+returns jsonb
+language plpgsql
+as $$
+declare
+  v_role text := current_setting('role');
+  v_claims text := current_setting('request.jwt.claims', true);
+  v_sub text := current_setting('request.jwt.claim.sub', true);
+  v_out jsonb;
+begin
+  perform tests.as_class_portal();
+  execute p_sql into v_out;
+  perform set_config('role', 'none', true);
+  insert into tests.portal_outputs (label, payload) values (p_label, v_out);
+  perform set_config('request.jwt.claims', coalesce(v_claims, ''), true);
+  perform set_config('request.jwt.claim.sub', coalesce(v_sub, ''), true);
+  perform set_config('role', v_role, true);
+  return v_out;
+end;
+$$;
+
+-- class_portal.join with a typed code or a class link, from test device p_device on test network
+-- p_network. On 'ok' the token is kept under p_key. Returns the row as JSON.
+create function tests.portal_join(
+  p_key text,
+  p_code text,
+  p_link text,
+  p_device integer,
+  p_network integer default 1
+)
+returns jsonb
+language plpgsql
+as $$
+declare
+  v_out jsonb;
+begin
+  v_out := tests.portal_call('join ' || p_key, format(
+    'select to_jsonb(j) from class_portal.join(%L, %L, %L, %L) j',
+    p_code, p_link, tests.device_key(p_device), tests.network_key(p_network)));
+  if v_out ->> 'outcome' = 'ok' then
+    insert into tests.devices (key, session_id, device, token)
+    values (p_key, tests.session_of_token(v_out ->> 'token'), p_device, v_out ->> 'token')
+    on conflict (key) do update set token = excluded.token, session_id = excluded.session_id;
+  end if;
+  return v_out;
+end;
+$$;
+
+-- The code of a session, read as superuser.
+create function tests.join_code(p_session uuid)
+returns text
+language sql
+security definer
+set search_path = ''
+as $$
+  select s.join_code from public.class_sessions s where s.id = p_session;
+$$;
+
+create function tests.device_token(p_key text)
+returns text
+language sql
+as $$
+  select token from tests.devices where key = p_key;
+$$;
+
+-- The participant row of a test device (null once it left or was removed).
+create function tests.participant(p_key text)
+returns uuid
+language sql
+security definer
+set search_path = ''
+as $$
+  select p.id from public.session_participants p
+  where p.token_hash = encode(extensions.digest((select d.token from tests.devices d where d.key = p_key), 'sha256'), 'hex');
+$$;
+
+-- The team of a test device, read as superuser.
+create function tests.device_team(p_key text)
+returns text
+language sql
+security definer
+set search_path = ''
+as $$
+  select p.team from public.session_participants p where p.id = tests.participant(p_key);
+$$;
+
+create function tests.portal_state(p_key text, p_version integer default null)
+returns jsonb
+language sql
+as $$
+  select tests.portal_call('state ' || p_key, format('select class_portal.state(%L, %s)',
+    tests.device_token(p_key), coalesce(p_version::text, 'null')));
+$$;
+
+create function tests.portal_answer(p_key text, p_index integer, p_response jsonb)
+returns jsonb
+language sql
+as $$
+  select tests.portal_call('answer ' || p_key, format('select class_portal.answer(%L, %s::smallint, %L::jsonb)',
+    tests.device_token(p_key), p_index, p_response));
+$$;
+
+create function tests.portal_set_team(p_key text, p_team text)
+returns jsonb
+language sql
+as $$
+  select tests.portal_call('team ' || p_key, format('select class_portal.set_team(%L, %L)',
+    tests.device_token(p_key), p_team));
+$$;
+
+create function tests.portal_leave(p_key text)
+returns void
+language plpgsql
+as $$
+declare
+  v_role text := current_setting('role');
+  v_claims text := current_setting('request.jwt.claims', true);
+  v_sub text := current_setting('request.jwt.claim.sub', true);
+  v_token text := tests.device_token(p_key);
+begin
+  perform tests.as_class_portal();
+  execute format('select class_portal.leave(%L)', v_token);
+  perform set_config('request.jwt.claims', coalesce(v_claims, ''), true);
+  perform set_config('request.jwt.claim.sub', coalesce(v_sub, ''), true);
+  perform set_config('role', v_role, true);
+end;
+$$;
+
+-- Runs any statement as the portal role (for what it must not be able to do).
+create function tests.class_portal_exec(p_sql text)
+returns void
+language plpgsql
+as $$
+begin
+  perform tests.as_class_portal();
+  execute p_sql;
+  perform set_config('role', 'none', true);
+end;
+$$;
+
+-- Joins p_devices devices (keys <prefix>1, <prefix>2, …, test devices p_first…) with the
+-- session's code; when students choose their team, each picks the next team in list order.
+-- Returns how many joined.
+create function tests.play(p_session uuid, p_devices integer, p_prefix text default 'dev',
+  p_first integer default 1)
+returns integer
+language plpgsql
+as $$
+declare
+  v_code text := tests.join_code(p_session);
+  v_mode text;
+  v_choice text;
+  v_teams text[];
+  v_joined integer := 0;
+  i integer;
+begin
+  select s.mode, s.team_choice, app.class_team_keys(s.team_count) into v_mode, v_choice, v_teams
+  from public.class_sessions s where s.id = p_session;
+  for i in 1 .. p_devices loop
+    if tests.portal_join(p_prefix || i, v_code, null, p_first + i - 1) ->> 'outcome' = 'ok' then
+      v_joined := v_joined + 1;
+      if v_mode = 'teams' and v_choice = 'device' then
+        perform tests.portal_set_team(p_prefix || i, v_teams[(i - 1) % cardinality(v_teams) + 1]);
+      end if;
+    end if;
+  end loop;
+  return v_joined;
+end;
+$$;
+
+-- The projector's control with the session's current version (as the signed-in teacher).
+create function tests.control(p_session text, p_action text, p_participant uuid default null,
+  p_team text default null)
+returns jsonb
+language sql
+as $$
+  select public.class_session_control(tests.id(p_session), p_action,
+    (select s.state_version from public.class_sessions s where s.id = tests.id(p_session)),
+    p_participant, p_team);
+$$;
+
+-- The battle quiz: a board-approved, board-shared quiz of board A (school p_school), written by
+-- p_author (a teacher key, or null for a board item), whose base version (kept as <key>_v) has
+-- 5 questions of every kind:
+--   q1 multiple choice, c2 right; q2 true or false, true; q3 matching l1→rc, l2→ra, l3→rb (rd is
+--   extra); q4 ordering i3, i1, i2; q5 short answer accepting « 1 000 » and « sentinelle ».
+-- Every display field of its key holds SENTINELLE-CORRIGE, and so do teacher-only content
+-- fields and fields a whitelist must drop (an « answer » in a question, a « correct » in a
+-- right-column option).
+create function tests.battle_quiz(p_key text, p_author text, p_school text default 'school_a1')
+returns uuid
+language plpgsql
+as $$
+declare
+  v_id uuid;
+  v_version uuid;
+begin
+  v_id := tests.library_item(p_key, p_author, 'quiz', 'board_approved', 'board', p_school);
+  select v.id into v_version from public.library_item_versions v
+  where v.item_id = v_id and v.language_level_id is null;
+  perform tests.remember(p_key || '_v', v_version);
+  update public.library_item_versions set content = jsonb_build_object(
+    'title', '', 'objective', 'Je lis et je compare des nombres jusqu’à 1 000.',
+    'teacherNote', 'SENTINELLE-CORRIGE : les réponses sont c2, vrai, l1-rc.',
+    'instructions', 'Lis chaque question.',
+    'questions', jsonb_build_array(
+      jsonb_build_object('id', 'q1', 'kind', 'multiple_choice',
+        'prompt', 'Quel nombre vient juste après 999?', 'hint', '', 'points', null,
+        'category', 'connaissance', 'multipleAnswers', false,
+        'answer', 'SENTINELLE-CORRIGE',
+        'choices', jsonb_build_array(
+          jsonb_build_object('id', 'c1', 'text', '990'),
+          jsonb_build_object('id', 'c2', 'text', '1 000'),
+          jsonb_build_object('id', 'c3', 'text', '1 001'),
+          jsonb_build_object('id', 'c4', 'text', '9 999'))),
+      jsonb_build_object('id', 'q2', 'kind', 'true_false',
+        'prompt', '500 est plus grand que 499.', 'hint', 'Compare les centaines.', 'points', null,
+        'category', null),
+      jsonb_build_object('id', 'q3', 'kind', 'matching',
+        'prompt', 'Associe chaque nombre en lettres au même nombre en chiffres.', 'hint', '',
+        'points', null, 'category', null,
+        'left', jsonb_build_array(
+          jsonb_build_object('id', 'l1', 'text', 'cent'),
+          jsonb_build_object('id', 'l2', 'text', 'mille'),
+          jsonb_build_object('id', 'l3', 'text', 'dix')),
+        'right', jsonb_build_array(
+          jsonb_build_object('id', 'ra', 'text', '1 000'),
+          jsonb_build_object('id', 'rb', 'text', '10'),
+          jsonb_build_object('id', 'rc', 'text', '100'),
+          jsonb_build_object('id', 'rd', 'text', '10 000', 'correct', 'SENTINELLE-CORRIGE'))),
+      jsonb_build_object('id', 'q4', 'kind', 'ordering',
+        'prompt', 'Place ces nombres du plus petit au plus grand.', 'hint', '', 'points', null,
+        'category', null,
+        'items', jsonb_build_array(
+          jsonb_build_object('id', 'i1', 'text', '500'),
+          jsonb_build_object('id', 'i2', 'text', '900'),
+          jsonb_build_object('id', 'i3', 'text', '100'))),
+      jsonb_build_object('id', 'q5', 'kind', 'short_answer',
+        'prompt', 'Écris « mille » en chiffres.', 'hint', '', 'points', null, 'category', null,
+        'lines', 1)))
+  where id = v_version;
+  update public.library_item_answer_keys set answer_key = jsonb_build_object(
+    'answers', jsonb_build_array(
+      jsonb_build_object('questionId', 'q1', 'kind', 'multiple_choice',
+        'correctChoiceIds', jsonb_build_array('c2'), 'explanation', 'SENTINELLE-CORRIGE'),
+      jsonb_build_object('questionId', 'q2', 'kind', 'true_false', 'correct', true,
+        'explanation', 'SENTINELLE-CORRIGE'),
+      jsonb_build_object('questionId', 'q3', 'kind', 'matching', 'pairs', jsonb_build_array(
+          jsonb_build_object('leftId', 'l1', 'rightId', 'rc'),
+          jsonb_build_object('leftId', 'l2', 'rightId', 'ra'),
+          jsonb_build_object('leftId', 'l3', 'rightId', 'rb')),
+        'explanation', 'SENTINELLE-CORRIGE'),
+      jsonb_build_object('questionId', 'q4', 'kind', 'ordering',
+        'orderedIds', jsonb_build_array('i3', 'i1', 'i2'), 'explanation', 'SENTINELLE-CORRIGE'),
+      jsonb_build_object('questionId', 'q5', 'kind', 'short_answer',
+        'sampleAnswer', 'SENTINELLE-CORRIGE', 'acceptableAnswers', jsonb_build_array('1 000', 'sentinelle'),
+        'explanation', 'SENTINELLE-CORRIGE')),
+    'solution', 'SENTINELLE-CORRIGE')
+  where version_id = v_version;
+  return v_id;
+end;
+$$;
+
+-- A right and a wrong answer to each battle quiz question, by question id, with the session's
+-- option ids (D-086: an option is named by its list and its place on screen, not by the content's
+-- id): q1's choices c1…c4 are a…d; q3's right column ra, rb, rc, rd is r1…r4; items keep i1…i3
+-- (they are listed in that order).
+create function tests.battle_answer(p_question text, p_right boolean)
+returns jsonb
+language sql
+immutable
+as $$
+  select case p_question
+    when 'q1' then jsonb_build_object('choiceIds', jsonb_build_array(case when p_right then 'b' else 'c' end))
+    when 'q2' then jsonb_build_object('value', p_right)
+    when 'q3' then case when p_right
+      then '{"pairs": {"l1": "r3", "l2": "r1", "l3": "r2"}}'::jsonb
+      else '{"pairs": {"l1": "r3", "l2": "r2", "l3": "r1"}}'::jsonb end
+    when 'q4' then case when p_right
+      then '{"orderedIds": ["i3", "i1", "i2"]}'::jsonb
+      else '{"orderedIds": ["i1", "i2", "i3"]}'::jsonb end
+    when 'q5' then jsonb_build_object('text', case when p_right then '1 000' else 'reponse-libre-xyz' end)
+  end;
+$$;
+
+grant execute on all functions in schema tests to anon, authenticated;

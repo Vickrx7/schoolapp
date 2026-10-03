@@ -1,0 +1,426 @@
+{
+  "slug": "billet-fractions-equivalentes",
+  "type": "exit_ticket",
+  "title": "Billet de sortie : les fractions équivalentes",
+  "summary": "Trois questions de fin de leçon (choix multiple, vrai ou faux, réponse courte) pour vérifier si les élèves reconnaissent et représentent des fractions équivalentes, avec une version pour chaque niveau de langue.",
+  "source": "teacher_created",
+  "author": "marc.gagnon@demo.lynx.test",
+  "school": "saint-exemple",
+  "status": "teacher_reviewed",
+  "shareScope": "private",
+  "reviewRequested": true,
+  "gradeCodes": ["5"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "B1.5"
+    }
+  ],
+  "durationMinutes": 5,
+  "materials": "Une copie du billet par élève et un crayon.",
+  "keywords": "billet de sortie, fractions équivalentes, bande de papier, droite numérique, évaluation formative",
+  "tags": ["fractions", "evaluation"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je reconnais et je représente des fractions équivalentes à l’aide de modèles et d’une droite numérique.",
+        "teacherNote": "Billet de sortie de 5 minutes, à la fin d’une leçon sur les fractions équivalentes. Triez les billets en trois piles (réussi, presque, à revoir) pour former les groupes de la leçon suivante. Erreur fréquente à la question 1 : choisir 4/5, en ajoutant le même nombre au numérateur et au dénominateur. Les versions par niveau de langue gardent les mêmes questions et les mêmes réponses; seule la formulation change.",
+        "prompt": "Réponds aux trois questions avant de sortir. Tu peux faire un croquis dans la marge pour t’aider.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Laquelle de ces fractions est équivalente à 2/3?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "4/5"
+              },
+              {
+                "id": "b",
+                "text": "4/6"
+              },
+              {
+                "id": "c",
+                "text": "2/6"
+              },
+              {
+                "id": "d",
+                "text": "3/4"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "true_false",
+            "prompt": "Tu plies une bande de papier en 4 parts égales et tu colories 2 de ces parts. Tu as colorié la moitié de la bande.",
+            "hint": "",
+            "points": null,
+            "category": "application"
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Sur une droite numérique de 0 à 1 partagée en dixièmes, Noé place un point à 4/10. Écris une fraction équivalente à 4/10 qui a un plus petit dénominateur. Explique comment tu l’as trouvée.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "2/3 = 4/6 : on multiplie le numérateur et le dénominateur par 2. Le choix 4/5 vient d’une erreur fréquente : ajouter 2 en haut et en bas ne donne pas une fraction équivalente."
+          },
+          {
+            "questionId": "q2",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "2 parts sur 4 parts égales, c’est 2/4 de la bande, et 2/4 = 1/2."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "2/5. J’ai divisé le numérateur et le dénominateur par 2 : 4 ÷ 2 = 2 et 10 ÷ 2 = 5. Sur la droite numérique, 4/10 et 2/5 sont au même point.",
+            "acceptableAnswers": [],
+            "explanation": "2/5 est la seule réponse possible (dénominateur plus petit que 10). Acceptez toute explication juste : diviser le numérateur et le dénominateur par 2, regrouper les dixièmes deux par deux, plier une bande, situer les deux fractions sur la droite numérique."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "debutant",
+      "content": {
+        "title": "",
+        "objective": "Je reconnais et je représente des fractions équivalentes à l’aide de modèles et d’une droite numérique.",
+        "teacherNote": "Phrases courtes, mots fréquents et un mot expliqué sous chaque question. Les questions, les nombres et les réponses sont les mêmes que dans la version de base. Lisez les questions à voix haute au besoin : on évalue les fractions, pas la lecture.",
+        "prompt": "Réponds aux 3 questions. Tu peux dessiner dans la marge.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quelle fraction est équivalente à 2/3?",
+            "hint": "Équivalente = qui a la même valeur.",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "4/5"
+              },
+              {
+                "id": "b",
+                "text": "4/6"
+              },
+              {
+                "id": "c",
+                "text": "2/6"
+              },
+              {
+                "id": "d",
+                "text": "3/4"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "true_false",
+            "prompt": "Tu plies une bande de papier en 4 parts égales. Tu colories 2 parts. Tu as colorié la moitié de la bande.",
+            "hint": "La moitié = 1/2.",
+            "points": null,
+            "category": "application"
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Noé place un point à 4/10 sur une droite numérique. La droite va de 0 à 1. Elle a 10 parts égales. Écris une fraction équivalente à 4/10 avec un plus petit dénominateur. Explique comment tu la trouves.",
+            "hint": "Le dénominateur = le nombre du bas. Dans 4/10, le dénominateur est 10.",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "2/3 = 4/6 : on multiplie le numérateur et le dénominateur par 2. Le choix 4/5 vient d’une erreur fréquente : ajouter 2 en haut et en bas ne donne pas une fraction équivalente."
+          },
+          {
+            "questionId": "q2",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "2 parts sur 4 parts égales, c’est 2/4 de la bande, et 2/4 = 1/2."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "2/5. J’ai divisé le numérateur et le dénominateur par 2 : 4 ÷ 2 = 2 et 10 ÷ 2 = 5. Sur la droite numérique, 4/10 et 2/5 sont au même point.",
+            "acceptableAnswers": [],
+            "explanation": "2/5 est la seule réponse possible (dénominateur plus petit que 10). Acceptez toute explication juste : diviser le numérateur et le dénominateur par 2, regrouper les dixièmes deux par deux, plier une bande, situer les deux fractions sur la droite numérique."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "intermediaire",
+      "content": {
+        "title": "",
+        "objective": "Je reconnais et je représente des fractions équivalentes à l’aide de modèles et d’une droite numérique.",
+        "teacherNote": "Phrases simples et quelques mots expliqués dans la consigne. Les questions, les nombres et les réponses sont les mêmes que dans la version de base.",
+        "prompt": "Réponds aux trois questions avant de sortir. Mots utiles : équivalente = qui a la même valeur; dénominateur = le nombre du bas d’une fraction.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quelle fraction est équivalente à 2/3?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "4/5"
+              },
+              {
+                "id": "b",
+                "text": "4/6"
+              },
+              {
+                "id": "c",
+                "text": "2/6"
+              },
+              {
+                "id": "d",
+                "text": "3/4"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "true_false",
+            "prompt": "Tu plies une bande de papier en 4 parts égales et tu colories 2 parts. Tu as colorié la moitié de la bande.",
+            "hint": "",
+            "points": null,
+            "category": "application"
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Noé place un point à 4/10 sur une droite numérique de 0 à 1. La droite est partagée en dixièmes. Écris une fraction équivalente à 4/10 avec un plus petit dénominateur. Explique comment tu l’as trouvée.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "2/3 = 4/6 : on multiplie le numérateur et le dénominateur par 2. Le choix 4/5 vient d’une erreur fréquente : ajouter 2 en haut et en bas ne donne pas une fraction équivalente."
+          },
+          {
+            "questionId": "q2",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "2 parts sur 4 parts égales, c’est 2/4 de la bande, et 2/4 = 1/2."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "2/5. J’ai divisé le numérateur et le dénominateur par 2 : 4 ÷ 2 = 2 et 10 ÷ 2 = 5. Sur la droite numérique, 4/10 et 2/5 sont au même point.",
+            "acceptableAnswers": [],
+            "explanation": "2/5 est la seule réponse possible (dénominateur plus petit que 10). Acceptez toute explication juste : diviser le numérateur et le dénominateur par 2, regrouper les dixièmes deux par deux, plier une bande, situer les deux fractions sur la droite numérique."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "avance",
+      "content": {
+        "title": "",
+        "objective": "Je reconnais et je représente des fractions équivalentes à l’aide de modèles et d’une droite numérique.",
+        "teacherNote": "Formulation attendue en 5e année, sans lexique ni indice. Les questions, les nombres et les réponses sont les mêmes que dans la version de base.",
+        "prompt": "Réponds aux trois questions avant de sortir. Tu peux faire un croquis dans la marge pour t’aider.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Laquelle de ces fractions est équivalente à 2/3?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "4/5"
+              },
+              {
+                "id": "b",
+                "text": "4/6"
+              },
+              {
+                "id": "c",
+                "text": "2/6"
+              },
+              {
+                "id": "d",
+                "text": "3/4"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "true_false",
+            "prompt": "Tu plies une bande de papier en 4 parts égales, puis tu colories 2 de ces parts. La partie coloriée représente la moitié de la bande.",
+            "hint": "",
+            "points": null,
+            "category": "application"
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Sur une droite numérique de 0 à 1 partagée en dixièmes, Noé place un point à 4/10. Écris une fraction équivalente à 4/10 dont le dénominateur est plus petit. Explique ta démarche.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "2/3 = 4/6 : on multiplie le numérateur et le dénominateur par 2. Le choix 4/5 vient d’une erreur fréquente : ajouter 2 en haut et en bas ne donne pas une fraction équivalente."
+          },
+          {
+            "questionId": "q2",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "2 parts sur 4 parts égales, c’est 2/4 de la bande, et 2/4 = 1/2."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "2/5. J’ai divisé le numérateur et le dénominateur par 2 : 4 ÷ 2 = 2 et 10 ÷ 2 = 5. Sur la droite numérique, 4/10 et 2/5 sont au même point.",
+            "acceptableAnswers": [],
+            "explanation": "2/5 est la seule réponse possible (dénominateur plus petit que 10). Acceptez toute explication juste : diviser le numérateur et le dénominateur par 2, regrouper les dixièmes deux par deux, plier une bande, situer les deux fractions sur la droite numérique."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "enrichi",
+      "content": {
+        "title": "",
+        "objective": "Je reconnais et je représente des fractions équivalentes à l’aide de modèles et d’une droite numérique.",
+        "teacherNote": "Vocabulaire plus précis (représenter, situer, justifier) et une justification plus poussée à la question 3. Les questions, les nombres et les réponses sont les mêmes que dans la version de base.",
+        "prompt": "Réponds aux trois questions avant de quitter la classe. Justifie tes réponses avec précision; tu peux t’appuyer sur un modèle, comme une bande de papier ou une droite numérique, esquissé dans la marge.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Parmi les fractions suivantes, laquelle représente la même quantité que 2/3?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "4/5"
+              },
+              {
+                "id": "b",
+                "text": "4/6"
+              },
+              {
+                "id": "c",
+                "text": "2/6"
+              },
+              {
+                "id": "d",
+                "text": "3/4"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "true_false",
+            "prompt": "On plie une bande de papier en quatre parts égales, puis on colorie deux de ces parts. La partie coloriée correspond exactement à la moitié de la bande.",
+            "hint": "",
+            "points": null,
+            "category": "application"
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Sur une droite numérique graduée en dixièmes, de 0 à 1, Noé situe un point à 4/10. Trouve une fraction équivalente à 4/10 dont le dénominateur est plus petit, puis justifie ta démarche. Explique aussi comment la droite numérique permet de vérifier que les deux fractions désignent le même point.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 4
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "2/3 = 4/6 : on multiplie le numérateur et le dénominateur par 2. Le choix 4/5 vient d’une erreur fréquente : ajouter 2 en haut et en bas ne donne pas une fraction équivalente."
+          },
+          {
+            "questionId": "q2",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "2 parts sur 4 parts égales, c’est 2/4 de la bande, et 2/4 = 1/2."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "2/5. J’ai divisé le numérateur et le dénominateur par 2 : 4 ÷ 2 = 2 et 10 ÷ 2 = 5. Sur la droite, chaque cinquième correspond à 2 dixièmes; 2/5 correspond donc à 4 dixièmes et se trouve exactement au même point que 4/10.",
+            "acceptableAnswers": [],
+            "explanation": "2/5 est la seule réponse possible (dénominateur plus petit que 10). Acceptez toute explication juste : diviser le numérateur et le dénominateur par 2, regrouper les dixièmes deux par deux, plier une bande, situer les deux fractions sur la droite numérique."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

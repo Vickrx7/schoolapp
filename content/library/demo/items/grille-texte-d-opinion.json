@@ -1,0 +1,148 @@
+{
+  "slug": "grille-texte-d-opinion",
+  "type": "rubric",
+  "title": "Grille d’évaluation : le texte d’opinion",
+  "summary": "Une grille selon les quatre catégories de la grille d’évaluation du rendement (niveaux 1 à 4) pour évaluer un texte d’opinion de 5e année adressé à la direction de l’école : connaissance du sujet et du genre, planification, pensée critique, organisation, public, conventions, processus d’écriture et liens.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["5"],
+  "subjectCode": "fra",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "D2"
+    },
+    {
+      "grade": "5",
+      "code": "D2.1"
+    }
+  ],
+  "durationMinutes": 10,
+  "materials": "Une copie de la grille par élève et le texte de l’élève.",
+  "keywords": "grille d’évaluation, grille du rendement, niveaux, autoévaluation, texte d’opinion, arguments, marqueurs de relation, public",
+  "tags": ["ecriture", "evaluation"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": false,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je connais ce qu’on attend d’un bon texte d’opinion et je m’en sers pour améliorer mon texte.",
+        "teacherNote": "Présentez la grille avant l’écriture, avec le référentiel « Pour convaincre : mon texte d’opinion », puis utilisez-la pour l’autoévaluation au brouillon, la rétroaction par les pairs et l’évaluation du texte final. Le niveau 3 correspond à la norme provinciale. Chaque critère reprend un élément de sa catégorie dans la grille d’évaluation du rendement : connaissance du sujet et du genre; habiletés de planification et de pensée critique; organisation, communication pour un public et utilisation des conventions et du vocabulaire; application du processus d’écriture et établissement de liens. Les qualificatifs suivent la grille des programmes-cadres de l’Ontario (« Faire croître le succès », 2010) : à comparer avec le document officiel en vigueur. Le texte peut aussi être présenté oralement à la direction.",
+        "task": "Écrire un texte d’opinion de quatre ou cinq paragraphes pour convaincre la direction de l’école d’apporter un changement : une introduction qui présente l’opinion, au moins trois arguments appuyés par des faits ou des exemples, et une conclusion avec une ouverture.",
+        "criteria": [
+          {
+            "category": "connaissance",
+            "criterion": "La connaissance du sujet : des faits et des exemples justes pour appuyer ses arguments",
+            "levels": {
+              "level1": "Démontre une connaissance limitée du sujet : peu de faits ou d’exemples, parfois inexacts.",
+              "level2": "Démontre une connaissance partielle du sujet : quelques faits ou exemples justes.",
+              "level3": "Démontre une connaissance générale du sujet : des faits ou des exemples justes pour la plupart des arguments.",
+              "level4": "Démontre une connaissance approfondie du sujet : des faits et des exemples justes, précis et bien choisis pour chaque argument."
+            }
+          },
+          {
+            "category": "connaissance",
+            "criterion": "Les caractéristiques du texte d’opinion : une introduction avec l’opinion, des arguments et une conclusion",
+            "levels": {
+              "level1": "Démontre une compréhension limitée des caractéristiques du texte d’opinion : l’opinion n’est pas claire ou une des parties manque.",
+              "level2": "Démontre une compréhension partielle des caractéristiques du texte d’opinion : les trois parties sont présentes, mais l’opinion reste floue.",
+              "level3": "Démontre une compréhension générale des caractéristiques du texte d’opinion : une introduction qui donne l’opinion, des arguments et une conclusion.",
+              "level4": "Démontre une compréhension approfondie des caractéristiques du texte d’opinion : l’introduction capte l’attention, l’opinion est nette et la conclusion ouvre sur une suite."
+            }
+          },
+          {
+            "category": "habiletes",
+            "criterion": "La planification : choisir et classer ses arguments dans un plan",
+            "levels": {
+              "level1": "Planifie son texte avec une efficacité limitée : peu d’arguments notés, sans ordre.",
+              "level2": "Planifie son texte avec une certaine efficacité : des arguments notés, mais peu appuyés ou mal classés.",
+              "level3": "Planifie son texte avec efficacité : trois arguments appuyés, classés du moins fort au plus fort.",
+              "level4": "Planifie son texte avec beaucoup d’efficacité : des arguments appuyés et bien classés, et une objection prévue avec sa réponse."
+            }
+          },
+          {
+            "category": "habiletes",
+            "criterion": "La pensée critique : distinguer les faits des opinions et appuyer chaque argument",
+            "levels": {
+              "level1": "Appuie ses arguments avec une efficacité limitée : des opinions sont présentées comme des faits, sans preuves.",
+              "level2": "Appuie ses arguments avec une certaine efficacité : certains arguments s’appuient sur un fait ou un exemple.",
+              "level3": "Appuie ses arguments avec efficacité : chaque argument s’appuie sur un fait, un exemple ou une explication.",
+              "level4": "Appuie ses arguments avec beaucoup d’efficacité : des faits vérifiés et des exemples convaincants pour chaque argument, en distinguant clairement les faits des opinions."
+            }
+          },
+          {
+            "category": "communication",
+            "criterion": "L’organisation : un argument par paragraphe et des marqueurs de relation",
+            "levels": {
+              "level1": "Organise ses idées avec une efficacité limitée : les arguments se mélangent et les marqueurs de relation sont rares.",
+              "level2": "Organise ses idées avec une certaine efficacité : certains paragraphes mélangent deux arguments; quelques marqueurs de relation.",
+              "level3": "Organise ses idées avec efficacité : un argument par paragraphe, avec des marqueurs de relation variés.",
+              "level4": "Organise ses idées avec beaucoup d’efficacité : les paragraphes s’enchaînent de façon fluide grâce à des marqueurs de relation variés et bien choisis."
+            }
+          },
+          {
+            "category": "communication",
+            "criterion": "Le public : un ton et des arguments adaptés à la direction de l’école",
+            "levels": {
+              "level1": "S’adresse à son public avec une efficacité limitée : le ton ne convient pas ou les arguments ne concernent pas la direction.",
+              "level2": "S’adresse à son public avec une certaine efficacité : le ton est poli, mais peu d’arguments tiennent compte de la direction.",
+              "level3": "S’adresse à son public avec efficacité : un ton poli et des arguments qui répondent aux préoccupations de la direction.",
+              "level4": "S’adresse à son public avec beaucoup d’efficacité : un ton respectueux et convaincant, et des arguments choisis pour toucher la direction."
+            }
+          },
+          {
+            "category": "communication",
+            "criterion": "Les conventions et le vocabulaire : accords, ponctuation, orthographe et mots précis",
+            "levels": {
+              "level1": "Utilise les conventions et le vocabulaire à l’étude avec une efficacité limitée : les erreurs gênent souvent la lecture.",
+              "level2": "Utilise les conventions et le vocabulaire à l’étude avec une certaine efficacité : plusieurs erreurs, mais le texte se lit.",
+              "level3": "Utilise les conventions et le vocabulaire à l’étude avec efficacité : quelques erreurs qui ne gênent pas la lecture; des mots précis.",
+              "level4": "Utilise les conventions et le vocabulaire à l’étude avec beaucoup d’efficacité : très peu d’erreurs; un vocabulaire précis et varié."
+            }
+          },
+          {
+            "category": "application",
+            "criterion": "Le processus d’écriture : réviser et corriger à l’aide du référentiel et de la grille",
+            "levels": {
+              "level1": "Applique le processus d’écriture avec une efficacité limitée : le brouillon est peu révisé et peu corrigé.",
+              "level2": "Applique le processus d’écriture avec une certaine efficacité : quelques corrections, surtout en orthographe.",
+              "level3": "Applique le processus d’écriture avec efficacité : le brouillon est révisé (arguments, marqueurs) et corrigé à l’aide des outils.",
+              "level4": "Applique le processus d’écriture avec beaucoup d’efficacité : les révisions rendent le texte nettement plus convaincant, et l’élève explique ses choix."
+            }
+          },
+          {
+            "category": "application",
+            "criterion": "Les liens : relier ses arguments à la vie de l’école et de la communauté",
+            "levels": {
+              "level1": "Établit des liens entre ses arguments et la vie de l’école avec une efficacité limitée : les exemples sont vagues ou absents.",
+              "level2": "Établit des liens entre ses arguments et la vie de l’école avec une certaine efficacité : un exemple tiré de la vie de l’école, peu développé.",
+              "level3": "Établit des liens entre ses arguments et la vie de l’école avec efficacité : des exemples tirés de la vie de l’école ou de la communauté appuient les arguments.",
+              "level4": "Établit des liens entre ses arguments et la vie de l’école avec beaucoup d’efficacité : des exemples tirés de la vie de l’école et de la communauté rendent le texte concret et convaincant."
+            }
+          }
+        ]
+      },
+      "answerKey": null
+    }
+  ]
+}

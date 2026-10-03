@@ -1,0 +1,273 @@
+/**
+ * « Couverture du curriculum » (DECISIONS D-094): which attentes of a grade and
+ * subject have few or no board-approved resources, by domaine.
+ *
+ * What counts is decided in SQL (`public.library_coverage`): for a specific attente, the
+ * board-approved items linked to it; for an overall attente, the items linked to it or to one
+ * of its children, each once. Browsing also matches parents, so its numbers can be higher; the
+ * page says so (« Comment on compte »).
+ *
+ * The coverage units, which the totals count, are the specific attentes plus the overall
+ * attentes without children, as in `public.library_coverage_summary`. An overall attente with
+ * children is a heading for them.
+ *
+ * Pure so it is unit-tested; loaded by `server/queries/library-coverage.ts`.
+ */
+import type { LibraryItemType } from '@lynx/content';
+import { isCoverageUnit } from '@lynx/domain';
+import {
+  groupExpectationsByDomaine,
+  type CurriculumStrand,
+  type DomaineEntry,
+} from '../curriculum-groups';
+import { subjectsForGrade } from './search-params';
+
+/** « Seuil » : an attente with fewer approved resources has « Peu de ressources ». */
+export const COVERAGE_MIN_DEFAULT = 2;
+export const COVERAGE_MIN_RANGE = { min: 1, max: 5 } as const;
+
+/** « Aucune ressource approuvée », fewer than the threshold, or enough. */
+export type CoverageLevel = 'none' | 'few' | 'covered';
+
+/**
+ * The list filter: « Sans ressource approuvée » (none), « Peu de ressources » (below the
+ * threshold, none included) and « Toutes ».
+ */
+export const COVERAGE_FILTERS = ['none', 'few', 'all'] as const;
+export type CoverageFilter = (typeof COVERAGE_FILTERS)[number];
+
+/** The threshold from the page's `min` parameter: a whole number from 1 to 5, else 2. */
+export function coverageMin(value: unknown): number {
+  const raw = Array.isArray(value) ? value[0] : value;
+  const n = typeof raw === 'number' ? raw : typeof raw === 'string' ? Number(raw) : NaN;
+  return Number.isInteger(n) && n >= COVERAGE_MIN_RANGE.min && n <= COVERAGE_MIN_RANGE.max
+    ? n
+    : COVERAGE_MIN_DEFAULT;
+}
+
+/** The list filter from the page's `show` parameter, « Toutes » when missing or unknown. */
+export function coverageFilter(value: unknown): CoverageFilter {
+  const raw = Array.isArray(value) ? value[0] : value;
+  return (COVERAGE_FILTERS as readonly unknown[]).includes(raw) ? (raw as CoverageFilter) : 'all';
+}
+
+/** The level of an attente with `approved` board-approved resources, for a threshold of `min`. */
+export function coverageLevel(approved: number, min: number = COVERAGE_MIN_DEFAULT): CoverageLevel {
+  const threshold = Math.min(
+    COVERAGE_MIN_RANGE.max,
+    Math.max(COVERAGE_MIN_RANGE.min, Math.floor(Number.isFinite(min) ? min : COVERAGE_MIN_DEFAULT)),
+  );
+  if (!(approved > 0)) return 'none';
+  return approved < threshold ? 'few' : 'covered';
+}
+
+/** A row of `public.library_coverage`, as the query maps it. */
+export interface CoverageRow {
+  expectationId: string;
+  parentId: string | null;
+  strandId: string | null;
+  kind: 'overall' | 'specific';
+  code: string;
+  /** The attente's text (the curriculum is in French). */
+  text: string;
+  /** « À vérifier » while false (D-030). */
+  verified: boolean;
+  sortOrder: number;
+  hasChildren: boolean;
+  approvedCount: number;
+  /** « En révision »: null unless the viewer is a content reviewer of the board. */
+  inReviewCount: number | null;
+  /** The types of the approved resources. */
+  approvedTypes: LibraryItemType[];
+}
+
+/** A domaine of the subject (`strands`). */
+export type CoverageStrand = CurriculumStrand;
+
+export interface CoverageExpectation extends CoverageRow {
+  /** Counted in the totals: a specific attente, or an overall attente without children. */
+  unit: boolean;
+  level: CoverageLevel;
+}
+
+/** An overall attente with its specific attentes, or an attente on its own. */
+export type CoverageEntry = DomaineEntry<CoverageExpectation>;
+
+export interface CoverageCounts {
+  units: number;
+  none: number;
+  few: number;
+  covered: number;
+}
+
+export interface CoverageGroup {
+  /** Null for attentes without a known domaine (listed last). */
+  strand: CoverageStrand | null;
+  entries: CoverageEntry[];
+  /** Over every unit of the domaine, whatever the filter. */
+  counts: CoverageCounts;
+}
+
+export interface CoverageView {
+  groups: CoverageGroup[];
+  /** Over every unit of the grade and subject, whatever the filter. */
+  counts: CoverageCounts;
+}
+
+const emptyCounts = (): CoverageCounts => ({ units: 0, none: 0, few: 0, covered: 0 });
+
+function addTo(counts: CoverageCounts, e: CoverageExpectation) {
+  if (!e.unit) return;
+  counts.units++;
+  counts[e.level]++;
+}
+
+function matches(e: CoverageExpectation, show: CoverageFilter): boolean {
+  if (!e.unit) return false;
+  if (show === 'none') return e.level === 'none';
+  if (show === 'few') return e.level !== 'covered';
+  return true;
+}
+
+/**
+ * The attentes by domaine (in the domaines' order, then those without one), each overall
+ * attente followed by its specific attentes, all in curriculum order. With a filter, only the
+ * units that match are listed, under their overall attente; empty domaines are left out. The
+ * counts always cover every unit, so « 14 attentes sur 22 » does not change with the filter.
+ */
+export function groupCoverage(
+  rows: readonly CoverageRow[],
+  strands: readonly CoverageStrand[],
+  { min = COVERAGE_MIN_DEFAULT, show = 'all' }: { min?: number; show?: CoverageFilter } = {},
+): CoverageView {
+  const view = (row: CoverageRow): CoverageExpectation => ({
+    ...row,
+    unit: isCoverageUnit(row.kind, row.hasChildren),
+    level: coverageLevel(row.approvedCount, min),
+  });
+  const total = emptyCounts();
+  const groups: CoverageGroup[] = [];
+  for (const group of groupExpectationsByDomaine(rows.map(view), strands)) {
+    const counts = emptyCounts();
+    const entries: CoverageEntry[] = [];
+    for (const { expectation: top, children } of group.entries) {
+      for (const e of [top, ...children]) {
+        addTo(counts, e);
+        addTo(total, e);
+      }
+      const shown = children.filter((c) => matches(c, show));
+      if (show === 'all' || matches(top, show) || shown.length) {
+        entries.push({ expectation: top, children: show === 'all' ? children : shown });
+      }
+    }
+    if (entries.length) groups.push({ strand: group.strand, entries, counts });
+  }
+  return { groups, counts: total };
+}
+
+/** The number of units with at least one approved resource (« 14 attentes sur 22 »). */
+export const withAnyApproved = (counts: CoverageCounts) => counts.few + counts.covered;
+
+/**
+ * The page's address (`/library/coverage?grade=3&subject=<id>&show=none&min=3`), leaving out the
+ * defaults (« Toutes », threshold 2) so a plain link stays short.
+ */
+export function coverageHref({
+  grade = null,
+  subject = null,
+  show = 'all',
+  min = COVERAGE_MIN_DEFAULT,
+}: {
+  grade?: string | null;
+  subject?: string | null;
+  show?: CoverageFilter;
+  min?: number;
+}): string {
+  const params = new URLSearchParams();
+  if (grade) params.set('grade', grade);
+  if (subject) params.set('subject', subject);
+  if (show !== 'all') params.set('show', show);
+  if (min !== COVERAGE_MIN_DEFAULT) params.set('min', String(min));
+  const query = params.toString();
+  return query ? `/library/coverage?${query}` : '/library/coverage';
+}
+
+// ---------------------------------------------------------------------------------------
+// « Vue d’ensemble »: grades × subjects
+// ---------------------------------------------------------------------------------------
+
+/** A row of `public.library_coverage_summary`, as the query maps it. */
+export interface CoverageSummaryRow {
+  gradeCode: string;
+  subjectId: string;
+  units: number;
+  none: number;
+  few: number;
+  covered: number;
+}
+
+export interface SummaryGrade {
+  code: string;
+  label: string;
+  /** K1 = -1, K2 = 0, 1re…8e = 1…8. */
+  ordinal: number;
+}
+
+export interface SummarySubject {
+  id: string;
+  code: string;
+  label: string;
+  gradeMin: number;
+  gradeMax: number;
+}
+
+export interface CoverageSummaryCell extends CoverageCounts {
+  subjectId: string;
+}
+
+export interface CoverageSummaryView<
+  G extends SummaryGrade = SummaryGrade,
+  S extends SummarySubject = SummarySubject,
+> {
+  /** The columns: the subjects that have attentes in at least one listed grade, in order. */
+  subjects: S[];
+  /** The grades that have attentes, in order; a cell is null where the subject has none. */
+  grades: { grade: G; cells: (CoverageSummaryCell | null)[] }[];
+}
+
+/**
+ * The summary table: one row per grade and one column per subject that has attentes, following
+ * the same rules as the list's choices (no kindergarten in the pilot, D-008; each subject within
+ * its grades, Anglais from the board's start grade, D-069). Rows for a grade or subject the user
+ * cannot see (another board's, or no longer offered) are left out.
+ */
+export function buildCoverageSummary<G extends SummaryGrade, S extends SummarySubject>(
+  rows: readonly CoverageSummaryRow[],
+  options: { grades: readonly G[]; subjects: readonly S[]; anglaisStartGrade: number },
+): CoverageSummaryView<G, S> {
+  const cells = new Map<string, CoverageSummaryCell>();
+  for (const grade of options.grades) {
+    if (grade.ordinal < 1) continue;
+    const offered = new Set(subjectsForGrade(options, grade.ordinal).map((s) => s.id));
+    for (const row of rows) {
+      if (row.gradeCode !== grade.code || !offered.has(row.subjectId) || row.units <= 0) continue;
+      cells.set(`${grade.code}|${row.subjectId}`, {
+        subjectId: row.subjectId,
+        units: row.units,
+        none: row.none,
+        few: row.few,
+        covered: row.covered,
+      });
+    }
+  }
+  const has = (gradeCode: string, subjectId: string) => cells.has(`${gradeCode}|${subjectId}`);
+  const grades = options.grades.filter((g) => options.subjects.some((s) => has(g.code, s.id)));
+  const subjects = options.subjects.filter((s) => grades.some((g) => has(g.code, s.id)));
+  return {
+    subjects,
+    grades: grades.map((grade) => ({
+      grade,
+      cells: subjects.map((s) => cells.get(`${grade.code}|${s.id}`) ?? null),
+    })),
+  };
+}

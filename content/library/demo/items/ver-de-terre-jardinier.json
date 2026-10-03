@@ -1,0 +1,1119 @@
+{
+  "slug": "ver-de-terre-jardinier",
+  "type": "reading_passage",
+  "title": "Le ver de terre, jardinier du sol",
+  "summary": "Texte informatif avec intertitres sur le ver de terre : son corps, sa respiration, son alimentation et son rôle dans le sol. Les questions font utiliser les intertitres et la partie « Le savais-tu? » pour trouver de l’information. Quatre versions selon le niveau de langue, avec les mêmes intertitres.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["3"],
+  "subjectCode": "fra",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "C1.3"
+    }
+  ],
+  "durationMinutes": 30,
+  "materials": "Une copie du texte par élève, dans la version prévue pour son groupe; un crayon; des surligneurs de deux couleurs (facultatif).",
+  "keywords": "ver de terre, sol, turricules, galeries, texte informatif, intertitres, le savais-tu, trouver de l’information, sciences",
+  "tags": ["lecture", "sciences", "animaux"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "J’utilise les intertitres et les autres parties d’un texte informatif pour trouver rapidement de l’information.",
+        "teacherNote": "Les quatre versions ont la même introduction, les mêmes quatre intertitres (des questions) et la même partie « Le savais-tu? ». Avant la lecture, faites survoler le texte : les élèves lisent seulement les intertitres et prédisent ce que chaque partie va expliquer. Le référentiel « Les parties d’un texte informatif » peut rester affiché pendant l’activité. Le texte fait un lien avec l’étude des sols en sciences (3e année). Faits à vérifier avant l’utilisation en classe : le ver de terre respire par la peau, qui doit rester humide; il n’a pas d’yeux mais il perçoit la lumière; de petites soies l’aident à s’accrocher au sol; ses excréments s’appellent des turricules et enrichissent le sol; la plupart des vers de terre des jardins de l’Ontario sont des espèces venues d’Europe.",
+        "text": "Sous nos pieds, dans la terre du jardin, du parc ou de la cour d’école, vit un petit animal très utile : le ver de terre. On le voit rarement, mais il travaille jour et nuit pour garder le sol en santé.\n\nÀ quoi ressemble-t-il?\n\nLe ver de terre a un corps long et mou, de couleur rose ou brune. Son corps est fait de nombreux anneaux. Il n’a ni pattes, ni yeux, ni oreilles. Pourtant, il sent la lumière et les vibrations du sol. Pour avancer, il allonge son corps, puis il le raccourcit. De minuscules poils raides, sous ses anneaux, l’aident à s’accrocher à la terre.\n\nComment respire-t-il?\n\nLe ver de terre n’a pas de poumons. Il respire par sa peau, qui doit toujours rester humide. S’il reste trop longtemps au soleil, sa peau sèche et il ne peut plus respirer. C’est pourquoi il reste sous la terre pendant la journée. Il sort surtout la nuit ou quand il pleut.\n\nQue mange-t-il?\n\nLe ver de terre avale de la terre et des morceaux de feuilles mortes. Il digère les petits bouts de plantes qui s’y trouvent. Ensuite, il rejette de petits tas de terre très riche, qu’on appelle des turricules. Les turricules sont un excellent engrais pour les plantes.\n\nPourquoi est-il utile?\n\nEn creusant ses galeries, le ver de terre mélange la terre et la rend plus légère. L’air et l’eau de pluie peuvent alors descendre plus facilement jusqu’aux racines des plantes. Voilà pourquoi on dit que le ver de terre est le jardinier du sol!\n\nLe savais-tu?\n\nLa plupart des vers de terre qu’on trouve aujourd’hui dans les jardins de l’Ontario viennent d’Europe. Il y a longtemps, ils ont traversé l’océan en bateau, cachés dans la terre des plantes que les gens apportaient avec eux.",
+        "glossary": [
+          {
+            "term": "un anneau",
+            "definition": "Une petite partie du corps du ver, en forme de rond."
+          },
+          {
+            "term": "une vibration",
+            "definition": "Un petit mouvement rapide qui fait trembler le sol, par exemple quand quelqu’un marche."
+          },
+          {
+            "term": "humide",
+            "definition": "Un peu mouillé."
+          },
+          {
+            "term": "digérer",
+            "definition": "Transformer la nourriture dans son corps."
+          },
+          {
+            "term": "un engrais",
+            "definition": "Ce qu’on met dans la terre pour aider les plantes à bien pousser."
+          },
+          {
+            "term": "une galerie",
+            "definition": "Un tunnel creusé sous la terre."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Tu veux savoir pourquoi le ver de terre sort surtout quand il pleut. Sous quel intertitre vas-tu chercher?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "c",
+                "text": "Que mange-t-il?"
+              },
+              {
+                "id": "a",
+                "text": "Comment respire-t-il?"
+              },
+              {
+                "id": "d",
+                "text": "Pourquoi est-il utile?"
+              },
+              {
+                "id": "b",
+                "text": "À quoi ressemble-t-il?"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "matching",
+            "prompt": "Relie chaque question à l’intertitre sous lequel tu trouveras la réponse. Un intertitre est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "left": [
+              {
+                "id": "l1",
+                "text": "Le ver de terre a-t-il des yeux?"
+              },
+              {
+                "id": "l2",
+                "text": "Qu’est-ce qu’un turricule?"
+              },
+              {
+                "id": "l3",
+                "text": "Comment le ver de terre aide-t-il l’eau à descendre jusqu’aux racines?"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "Pourquoi est-il utile?"
+              },
+              {
+                "id": "rb",
+                "text": "À quoi ressemble-t-il?"
+              },
+              {
+                "id": "rc",
+                "text": "Comment respire-t-il?"
+              },
+              {
+                "id": "rd",
+                "text": "Que mange-t-il?"
+              }
+            ]
+          },
+          {
+            "id": "q3",
+            "kind": "true_false",
+            "prompt": "Le ver de terre respire avec des poumons, comme nous.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q4",
+            "kind": "short_answer",
+            "prompt": "Lis la partie « Pourquoi est-il utile? ». Nomme deux choses que le ver de terre fait pour aider les plantes.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 3
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "À quoi sert la partie « Le savais-tu? », à la fin du texte?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Tu veux ajouter une partie sur les animaux qui mangent le ver de terre (des oiseaux, par exemple). Écris un intertitre pour cette nouvelle partie.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 1
+          }
+        ],
+        "visualSupports": [
+          "Une photo d’un ver de terre en gros plan, où l’on voit bien les anneaux.",
+          "Une photo de turricules sur une pelouse, au printemps.",
+          "Un schéma simple, dessiné au tableau, d’une coupe du sol avec des galeries et des racines.",
+          "Le référentiel « Les parties d’un texte informatif », affiché près du tableau."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "La partie « Comment respire-t-il? » explique que sa peau doit rester humide et qu’il sort surtout la nuit ou quand il pleut. L’intertitre ne parle pas de la pluie : il faut penser au lien entre la question et la partie."
+          },
+          {
+            "questionId": "q2",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "Les yeux : « À quoi ressemble-t-il? ». Les turricules : « Que mange-t-il? ». L’eau et les racines : « Pourquoi est-il utile? ». L’intertitre « Comment respire-t-il? » est de trop."
+          },
+          {
+            "questionId": "q3",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : la partie « Comment respire-t-il? » dit qu’il n’a pas de poumons et qu’il respire par sa peau."
+          },
+          {
+            "questionId": "q4",
+            "kind": "short_answer",
+            "sampleAnswer": "Il mélange la terre et la rend plus légère. Ses galeries laissent passer l’air et l’eau jusqu’aux racines.",
+            "acceptableAnswers": [],
+            "explanation": "Réponses possibles dans cette partie : il mélange la terre; il rend la terre plus légère; ses galeries laissent descendre l’air et l’eau jusqu’aux racines. Si l’élève nomme les turricules (un engrais), accepter la réponse, mais faire remarquer qu’elle vient de la partie « Que mange-t-il? »."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "Elle donne un fait étonnant de plus sur le sujet, pour le plaisir d’apprendre.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter toute réponse qui dit que cette partie ajoute un fait surprenant ou intéressant, en dehors des grandes parties du texte."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Qui le mange?",
+            "acceptableAnswers": [
+              "Qui le mange?",
+              "Quels sont ses ennemis?",
+              "Qui sont ses ennemis?",
+              "Ses ennemis",
+              "Qui mange le ver de terre?"
+            ],
+            "explanation": "Accepter tout intertitre court qui annonce le contenu de la nouvelle partie. Un intertitre sous forme de question, comme dans le texte, est un bonus."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "debutant",
+      "content": {
+        "title": "",
+        "objective": "J’utilise les intertitres et les autres parties d’un texte informatif pour trouver rapidement de l’information.",
+        "teacherNote": "Version Débutant : phrases courtes, une idée par phrase, vocabulaire fréquent. Les mêmes intertitres que les autres versions, pour que toute la classe puisse travailler les intertitres ensemble. Avant de répondre aux questions, faites surligner chaque intertitre d’une même couleur.",
+        "text": "Sous nos pieds, dans la terre, vit un petit animal très utile. C’est le ver de terre. On le voit peu, mais il travaille beaucoup!\n\nÀ quoi ressemble-t-il?\n\nLe ver de terre est long et mou. Il est rose ou brun. Son corps a beaucoup d’anneaux. Il n’a pas de pattes. Il n’a pas d’yeux. Il n’a pas d’oreilles. Mais il sent la lumière. Pour avancer, il allonge son corps, puis il le raccourcit. De tout petits poils l’aident à s’accrocher à la terre.\n\nComment respire-t-il?\n\nLe ver de terre n’a pas de poumons. Il respire par sa peau. Sa peau doit rester mouillée. Au soleil, sa peau sèche. Alors, le ver reste sous la terre le jour. Il sort la nuit ou quand il pleut.\n\nQue mange-t-il?\n\nLe ver de terre mange de la terre et des feuilles mortes. Ensuite, il fait de petits tas de terre. Ces petits tas s’appellent des turricules. Les turricules aident les plantes à pousser.\n\nPourquoi est-il utile?\n\nLe ver de terre creuse des tunnels dans la terre. Ces tunnels s’appellent des galeries. Grâce aux galeries, l’air et l’eau descendent jusqu’aux racines des plantes. C’est pour cela qu’on dit que le ver de terre est le jardinier du sol!\n\nLe savais-tu?\n\nLa plupart des vers de terre de nos jardins viennent d’Europe. Ils sont arrivés en bateau il y a très longtemps, cachés dans la terre.",
+        "glossary": [
+          {
+            "term": "un anneau",
+            "definition": "Un petit rond. Le corps du ver est fait de petits ronds."
+          },
+          {
+            "term": "mou",
+            "definition": "Le contraire de dur."
+          },
+          {
+            "term": "les poumons",
+            "definition": "Les parties du corps qui servent à respirer. Nous avons deux poumons."
+          },
+          {
+            "term": "les racines",
+            "definition": "La partie de la plante qui est sous la terre."
+          },
+          {
+            "term": "une galerie",
+            "definition": "Un tunnel sous la terre."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Tu veux savoir pourquoi le ver de terre sort quand il pleut. Sous quel intertitre vas-tu chercher?",
+            "hint": "Il y a un lien avec sa peau.",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "c",
+                "text": "Que mange-t-il?"
+              },
+              {
+                "id": "a",
+                "text": "Comment respire-t-il?"
+              },
+              {
+                "id": "b",
+                "text": "À quoi ressemble-t-il?"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "matching",
+            "prompt": "Relie chaque question à la bonne partie du texte. Une partie est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "left": [
+              {
+                "id": "l1",
+                "text": "Le ver de terre a-t-il des yeux?"
+              },
+              {
+                "id": "l2",
+                "text": "Qu’est-ce qu’un turricule?"
+              },
+              {
+                "id": "l3",
+                "text": "À quoi servent les galeries?"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "Pourquoi est-il utile?"
+              },
+              {
+                "id": "rb",
+                "text": "À quoi ressemble-t-il?"
+              },
+              {
+                "id": "rc",
+                "text": "Comment respire-t-il?"
+              },
+              {
+                "id": "rd",
+                "text": "Que mange-t-il?"
+              }
+            ]
+          },
+          {
+            "id": "q3",
+            "kind": "true_false",
+            "prompt": "Le ver de terre respire avec des poumons, comme nous.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q4",
+            "kind": "short_answer",
+            "prompt": "Lis la partie « Pourquoi est-il utile? ». Qu’est-ce qui descend jusqu’aux racines grâce aux galeries?",
+            "hint": "Cherche deux mots.",
+            "points": null,
+            "category": "connaissance",
+            "lines": 1
+          },
+          {
+            "id": "q5",
+            "kind": "multiple_choice",
+            "prompt": "À quoi sert la partie « Le savais-tu? »?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "b",
+                "text": "Elle donne le titre du texte."
+              },
+              {
+                "id": "a",
+                "text": "Elle donne un fait étonnant de plus."
+              },
+              {
+                "id": "c",
+                "text": "Elle explique les mots difficiles."
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Tu veux ajouter une partie sur les animaux qui mangent le ver de terre. Écris un intertitre pour cette partie.",
+            "hint": "Tu peux commencer par « Qui… ».",
+            "points": null,
+            "category": "application",
+            "lines": 1
+          }
+        ],
+        "visualSupports": [
+          "Une photo d’un ver de terre en gros plan, où l’on voit bien les anneaux.",
+          "Une photo de turricules sur une pelouse, au printemps.",
+          "Un schéma simple, dessiné au tableau, d’une coupe du sol avec des galeries et des racines.",
+          "Le référentiel « Les parties d’un texte informatif », affiché près du tableau."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Sa peau doit rester mouillée pour qu’il puisse respirer : c’est expliqué sous « Comment respire-t-il? »."
+          },
+          {
+            "questionId": "q2",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "« Comment respire-t-il? » est de trop."
+          },
+          {
+            "questionId": "q3",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : il n’a pas de poumons; il respire par sa peau."
+          },
+          {
+            "questionId": "q4",
+            "kind": "short_answer",
+            "sampleAnswer": "L’air et l’eau.",
+            "acceptableAnswers": [
+              "l’air et l’eau",
+              "l’eau et l’air",
+              "air et eau",
+              "eau et air",
+              "l’air et l’eau de pluie"
+            ],
+            "explanation": "Réponse dans la partie « Pourquoi est-il utile? »."
+          },
+          {
+            "questionId": "q5",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "« Le savais-tu? » ajoute un fait surprenant : les vers de terre de nos jardins viennent d’Europe."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Qui le mange?",
+            "acceptableAnswers": [
+              "Qui le mange?",
+              "Qui mange le ver de terre?",
+              "Quels sont ses ennemis?",
+              "Ses ennemis"
+            ],
+            "explanation": "Accepter tout intertitre court qui annonce le contenu de la nouvelle partie."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "intermediaire",
+      "content": {
+        "title": "",
+        "objective": "J’utilise les intertitres et les autres parties d’un texte informatif pour trouver rapidement de l’information.",
+        "teacherNote": "Version Intermédiaire : phrases simples ou composées, quelques mots nouveaux expliqués dans le glossaire, et des indices pour les questions 1, 4 et 6. Les mêmes intertitres que les autres versions.",
+        "text": "Sous nos pieds, dans la terre du jardin, du parc ou de la cour d’école, vit un petit animal très utile : le ver de terre. On le voit rarement, mais il travaille jour et nuit pour garder le sol en santé.\n\nÀ quoi ressemble-t-il?\n\nLe ver de terre a un corps long et mou, rose ou brun. Son corps est fait de nombreux anneaux. Il n’a pas de pattes, pas d’yeux et pas d’oreilles. Pourtant, il sent la lumière et les vibrations du sol. Pour avancer, il allonge son corps, puis il le raccourcit. De minuscules poils, sous ses anneaux, l’aident à s’accrocher à la terre.\n\nComment respire-t-il?\n\nLe ver de terre n’a pas de poumons. Il respire par sa peau, qui doit toujours rester humide. Si le ver reste trop longtemps au soleil, sa peau sèche et il ne peut plus respirer. C’est pourquoi il reste sous la terre pendant la journée. Il sort surtout la nuit ou quand il pleut.\n\nQue mange-t-il?\n\nLe ver de terre avale de la terre et des morceaux de feuilles mortes. Il digère les petits bouts de plantes qu’il y trouve. Ensuite, il rejette de petits tas de terre très riche. On les appelle des turricules. Les turricules aident beaucoup les plantes à pousser.\n\nPourquoi est-il utile?\n\nLe ver de terre creuse des galeries. En creusant, il mélange la terre et la rend plus légère. L’air et l’eau de pluie peuvent alors descendre plus facilement jusqu’aux racines des plantes. Voilà pourquoi on dit que le ver de terre est le jardinier du sol!\n\nLe savais-tu?\n\nLa plupart des vers de terre qu’on trouve aujourd’hui dans les jardins de l’Ontario viennent d’Europe. Il y a longtemps, ils ont traversé l’océan en bateau, cachés dans la terre des plantes que les gens apportaient.",
+        "glossary": [
+          {
+            "term": "un anneau",
+            "definition": "Une petite partie du corps du ver, en forme de rond."
+          },
+          {
+            "term": "une vibration",
+            "definition": "Un petit mouvement rapide qui fait trembler le sol."
+          },
+          {
+            "term": "humide",
+            "definition": "Un peu mouillé."
+          },
+          {
+            "term": "digérer",
+            "definition": "Transformer la nourriture dans son corps."
+          },
+          {
+            "term": "une galerie",
+            "definition": "Un tunnel creusé sous la terre."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Tu veux savoir pourquoi le ver de terre sort surtout quand il pleut. Sous quel intertitre vas-tu chercher?",
+            "hint": "Pense à ce qui arrive à sa peau au soleil.",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "c",
+                "text": "Que mange-t-il?"
+              },
+              {
+                "id": "a",
+                "text": "Comment respire-t-il?"
+              },
+              {
+                "id": "d",
+                "text": "Pourquoi est-il utile?"
+              },
+              {
+                "id": "b",
+                "text": "À quoi ressemble-t-il?"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "matching",
+            "prompt": "Relie chaque question à l’intertitre sous lequel tu trouveras la réponse. Un intertitre est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "left": [
+              {
+                "id": "l1",
+                "text": "Le ver de terre a-t-il des yeux?"
+              },
+              {
+                "id": "l2",
+                "text": "Qu’est-ce qu’un turricule?"
+              },
+              {
+                "id": "l3",
+                "text": "Comment le ver de terre aide-t-il l’eau à descendre jusqu’aux racines?"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "Pourquoi est-il utile?"
+              },
+              {
+                "id": "rb",
+                "text": "À quoi ressemble-t-il?"
+              },
+              {
+                "id": "rc",
+                "text": "Comment respire-t-il?"
+              },
+              {
+                "id": "rd",
+                "text": "Que mange-t-il?"
+              }
+            ]
+          },
+          {
+            "id": "q3",
+            "kind": "true_false",
+            "prompt": "Le ver de terre respire avec des poumons, comme nous.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q4",
+            "kind": "short_answer",
+            "prompt": "Lis la partie « Pourquoi est-il utile? ». Nomme deux choses que le ver de terre fait pour aider les plantes.",
+            "hint": "Cherche ce qui arrive à la terre quand il creuse.",
+            "points": null,
+            "category": "connaissance",
+            "lines": 3
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "À quoi sert la partie « Le savais-tu? », à la fin du texte?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Tu veux ajouter une partie sur les animaux qui mangent le ver de terre (des oiseaux, par exemple). Écris un intertitre pour cette nouvelle partie.",
+            "hint": "Les intertitres du texte sont des questions. Tu peux faire pareil.",
+            "points": null,
+            "category": "application",
+            "lines": 1
+          }
+        ],
+        "visualSupports": [
+          "Une photo d’un ver de terre en gros plan, où l’on voit bien les anneaux.",
+          "Une photo de turricules sur une pelouse, au printemps.",
+          "Un schéma simple, dessiné au tableau, d’une coupe du sol avec des galeries et des racines.",
+          "Le référentiel « Les parties d’un texte informatif », affiché près du tableau."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "La partie « Comment respire-t-il? » explique que sa peau doit rester humide et qu’il sort surtout la nuit ou quand il pleut."
+          },
+          {
+            "questionId": "q2",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "Les yeux : « À quoi ressemble-t-il? ». Les turricules : « Que mange-t-il? ». L’eau et les racines : « Pourquoi est-il utile? ». L’intertitre « Comment respire-t-il? » est de trop."
+          },
+          {
+            "questionId": "q3",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : il n’a pas de poumons et il respire par sa peau."
+          },
+          {
+            "questionId": "q4",
+            "kind": "short_answer",
+            "sampleAnswer": "Il mélange la terre et la rend plus légère. Ses galeries laissent passer l’air et l’eau jusqu’aux racines.",
+            "acceptableAnswers": [],
+            "explanation": "Réponses possibles : il mélange la terre; il rend la terre plus légère; ses galeries laissent descendre l’air et l’eau jusqu’aux racines."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "Elle donne un fait étonnant de plus sur le ver de terre.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter toute réponse qui dit que cette partie ajoute un fait surprenant ou intéressant."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Qui le mange?",
+            "acceptableAnswers": [
+              "Qui le mange?",
+              "Qui mange le ver de terre?",
+              "Quels sont ses ennemis?",
+              "Qui sont ses ennemis?",
+              "Ses ennemis"
+            ],
+            "explanation": "Accepter tout intertitre court qui annonce le contenu de la nouvelle partie."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "avance",
+      "content": {
+        "title": "",
+        "objective": "J’utilise les intertitres et les autres parties d’un texte informatif pour trouver rapidement de l’information.",
+        "teacherNote": "Version Avancé : même texte que la version de base, écrit dans le français attendu en 3e année. Les quatre versions ont les mêmes intertitres.",
+        "text": "Sous nos pieds, dans la terre du jardin, du parc ou de la cour d’école, vit un petit animal très utile : le ver de terre. On le voit rarement, mais il travaille jour et nuit pour garder le sol en santé.\n\nÀ quoi ressemble-t-il?\n\nLe ver de terre a un corps long et mou, de couleur rose ou brune. Son corps est fait de nombreux anneaux. Il n’a ni pattes, ni yeux, ni oreilles. Pourtant, il sent la lumière et les vibrations du sol. Pour avancer, il allonge son corps, puis il le raccourcit. De minuscules poils raides, sous ses anneaux, l’aident à s’accrocher à la terre.\n\nComment respire-t-il?\n\nLe ver de terre n’a pas de poumons. Il respire par sa peau, qui doit toujours rester humide. S’il reste trop longtemps au soleil, sa peau sèche et il ne peut plus respirer. C’est pourquoi il reste sous la terre pendant la journée. Il sort surtout la nuit ou quand il pleut.\n\nQue mange-t-il?\n\nLe ver de terre avale de la terre et des morceaux de feuilles mortes. Il digère les petits bouts de plantes qui s’y trouvent. Ensuite, il rejette de petits tas de terre très riche, qu’on appelle des turricules. Les turricules sont un excellent engrais pour les plantes.\n\nPourquoi est-il utile?\n\nEn creusant ses galeries, le ver de terre mélange la terre et la rend plus légère. L’air et l’eau de pluie peuvent alors descendre plus facilement jusqu’aux racines des plantes. Voilà pourquoi on dit que le ver de terre est le jardinier du sol!\n\nLe savais-tu?\n\nLa plupart des vers de terre qu’on trouve aujourd’hui dans les jardins de l’Ontario viennent d’Europe. Il y a longtemps, ils ont traversé l’océan en bateau, cachés dans la terre des plantes que les gens apportaient avec eux.",
+        "glossary": [
+          {
+            "term": "un anneau",
+            "definition": "Une petite partie du corps du ver, en forme de rond."
+          },
+          {
+            "term": "une vibration",
+            "definition": "Un petit mouvement rapide qui fait trembler le sol, par exemple quand quelqu’un marche."
+          },
+          {
+            "term": "humide",
+            "definition": "Un peu mouillé."
+          },
+          {
+            "term": "digérer",
+            "definition": "Transformer la nourriture dans son corps."
+          },
+          {
+            "term": "un engrais",
+            "definition": "Ce qu’on met dans la terre pour aider les plantes à bien pousser."
+          },
+          {
+            "term": "une galerie",
+            "definition": "Un tunnel creusé sous la terre."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Tu veux savoir pourquoi le ver de terre sort surtout quand il pleut. Sous quel intertitre vas-tu chercher?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "c",
+                "text": "Que mange-t-il?"
+              },
+              {
+                "id": "a",
+                "text": "Comment respire-t-il?"
+              },
+              {
+                "id": "d",
+                "text": "Pourquoi est-il utile?"
+              },
+              {
+                "id": "b",
+                "text": "À quoi ressemble-t-il?"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "matching",
+            "prompt": "Relie chaque question à l’intertitre sous lequel tu trouveras la réponse. Un intertitre est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "left": [
+              {
+                "id": "l1",
+                "text": "Le ver de terre a-t-il des yeux?"
+              },
+              {
+                "id": "l2",
+                "text": "Qu’est-ce qu’un turricule?"
+              },
+              {
+                "id": "l3",
+                "text": "Comment le ver de terre aide-t-il l’eau à descendre jusqu’aux racines?"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "Pourquoi est-il utile?"
+              },
+              {
+                "id": "rb",
+                "text": "À quoi ressemble-t-il?"
+              },
+              {
+                "id": "rc",
+                "text": "Comment respire-t-il?"
+              },
+              {
+                "id": "rd",
+                "text": "Que mange-t-il?"
+              }
+            ]
+          },
+          {
+            "id": "q3",
+            "kind": "true_false",
+            "prompt": "Le ver de terre respire avec des poumons, comme nous.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q4",
+            "kind": "short_answer",
+            "prompt": "Lis la partie « Pourquoi est-il utile? ». Nomme deux choses que le ver de terre fait pour aider les plantes.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 3
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "À quoi sert la partie « Le savais-tu? », à la fin du texte?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Tu veux ajouter une partie sur les animaux qui mangent le ver de terre (des oiseaux, par exemple). Écris un intertitre pour cette nouvelle partie.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 1
+          }
+        ],
+        "visualSupports": [
+          "Une photo d’un ver de terre en gros plan, où l’on voit bien les anneaux.",
+          "Une photo de turricules sur une pelouse, au printemps.",
+          "Un schéma simple, dessiné au tableau, d’une coupe du sol avec des galeries et des racines.",
+          "Le référentiel « Les parties d’un texte informatif », affiché près du tableau."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "La partie « Comment respire-t-il? » explique que sa peau doit rester humide et qu’il sort surtout la nuit ou quand il pleut. L’intertitre ne parle pas de la pluie : il faut penser au lien entre la question et la partie."
+          },
+          {
+            "questionId": "q2",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "Les yeux : « À quoi ressemble-t-il? ». Les turricules : « Que mange-t-il? ». L’eau et les racines : « Pourquoi est-il utile? ». L’intertitre « Comment respire-t-il? » est de trop."
+          },
+          {
+            "questionId": "q3",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : la partie « Comment respire-t-il? » dit qu’il n’a pas de poumons et qu’il respire par sa peau."
+          },
+          {
+            "questionId": "q4",
+            "kind": "short_answer",
+            "sampleAnswer": "Il mélange la terre et la rend plus légère. Ses galeries laissent passer l’air et l’eau jusqu’aux racines.",
+            "acceptableAnswers": [],
+            "explanation": "Réponses possibles dans cette partie : il mélange la terre; il rend la terre plus légère; ses galeries laissent descendre l’air et l’eau jusqu’aux racines. Si l’élève nomme les turricules (un engrais), accepter la réponse, mais faire remarquer qu’elle vient de la partie « Que mange-t-il? »."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "Elle donne un fait étonnant de plus sur le sujet, pour le plaisir d’apprendre.",
+            "acceptableAnswers": [],
+            "explanation": "Accepter toute réponse qui dit que cette partie ajoute un fait surprenant ou intéressant, en dehors des grandes parties du texte."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Qui le mange?",
+            "acceptableAnswers": [
+              "Qui le mange?",
+              "Quels sont ses ennemis?",
+              "Qui sont ses ennemis?",
+              "Ses ennemis",
+              "Qui mange le ver de terre?"
+            ],
+            "explanation": "Accepter tout intertitre court qui annonce le contenu de la nouvelle partie. Un intertitre sous forme de question, comme dans le texte, est un bonus."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "enrichi",
+      "content": {
+        "title": "",
+        "objective": "J’utilise les intertitres et les autres parties d’un texte informatif pour trouver rapidement de l’information.",
+        "teacherNote": "Version Enrichi : vocabulaire plus riche et plus précis (lombric, soies, décomposer), phrases plus variées, et deux questions d’approfondissement (questions 7 et 8). Les mêmes intertitres que les autres versions.",
+        "text": "Sous nos pieds, dans la terre du jardin, du parc ou de la cour d’école, s’active un petit animal discret mais précieux : le ver de terre, qu’on appelle aussi lombric. On l’aperçoit rarement, pourtant il travaille sans relâche, jour et nuit, pour garder le sol en santé.\n\nÀ quoi ressemble-t-il?\n\nLe ver de terre possède un corps allongé et mou, de couleur rosée ou brunâtre, formé d’une longue série d’anneaux. Il n’a ni pattes, ni yeux, ni oreilles. Sa peau lui permet toutefois de percevoir la lumière et les vibrations du sol. Pour se déplacer, il étire l’avant de son corps, puis ramène l’arrière, un peu comme un accordéon. De minuscules soies, sortes de poils raides placés sous ses anneaux, l’empêchent de glisser.\n\nComment respire-t-il?\n\nLe ver de terre n’a pas de poumons : c’est par sa peau que l’air entre dans son corps. Pour que cela fonctionne, sa peau doit toujours rester humide. Exposé trop longtemps au soleil, il se dessèche et finit par étouffer. Voilà pourquoi il reste à l’abri sous la terre le jour et sort surtout la nuit ou par temps de pluie.\n\nQue mange-t-il?\n\nLe ver de terre avale de la terre mêlée de feuilles mortes et d’autres débris de plantes en train de se décomposer. Il en digère les éléments nutritifs, puis rejette de petits tortillons de terre très fertile, appelés turricules. Ces turricules forment un engrais naturel de grande qualité.\n\nPourquoi est-il utile?\n\nEn creusant son réseau de galeries, le ver de terre brasse la terre et l’aère. L’air et l’eau de pluie s’infiltrent alors plus facilement jusqu’aux racines des plantes. Ce travail patient, combiné à l’engrais qu’il produit, explique pourquoi on le surnomme le jardinier du sol.\n\nLe savais-tu?\n\nLa plupart des vers de terre qui peuplent aujourd’hui les jardins de l’Ontario sont des espèces venues d’Europe. Il y a plusieurs siècles, ils ont traversé l’océan à bord de navires, cachés dans la terre des plantes transportées par les nouveaux arrivants.",
+        "glossary": [
+          {
+            "term": "un lombric",
+            "definition": "Un autre nom du ver de terre."
+          },
+          {
+            "term": "percevoir",
+            "definition": "Sentir ou remarquer quelque chose grâce à ses sens."
+          },
+          {
+            "term": "des soies",
+            "definition": "Ici, de minuscules poils raides qui aident le ver à s’accrocher."
+          },
+          {
+            "term": "se décomposer",
+            "definition": "Pourrir peu à peu et se transformer en terre."
+          },
+          {
+            "term": "aérer",
+            "definition": "Faire entrer de l’air."
+          },
+          {
+            "term": "s’infiltrer",
+            "definition": "Pénétrer lentement dans quelque chose, comme l’eau dans la terre."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Tu veux comprendre pourquoi on voit des vers de terre sur les trottoirs après une grosse pluie. Sous quel intertitre vas-tu chercher?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "c",
+                "text": "Que mange-t-il?"
+              },
+              {
+                "id": "a",
+                "text": "Comment respire-t-il?"
+              },
+              {
+                "id": "d",
+                "text": "Pourquoi est-il utile?"
+              },
+              {
+                "id": "b",
+                "text": "À quoi ressemble-t-il?"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "matching",
+            "prompt": "Associe chaque question à l’intertitre sous lequel tu trouveras la réponse. Un intertitre est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "left": [
+              {
+                "id": "l1",
+                "text": "Comment le ver de terre perçoit-il la lumière?"
+              },
+              {
+                "id": "l2",
+                "text": "Qu’est-ce qu’un turricule?"
+              },
+              {
+                "id": "l3",
+                "text": "Comment le ver de terre aide-t-il l’eau à s’infiltrer jusqu’aux racines?"
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "Pourquoi est-il utile?"
+              },
+              {
+                "id": "rb",
+                "text": "À quoi ressemble-t-il?"
+              },
+              {
+                "id": "rc",
+                "text": "Comment respire-t-il?"
+              },
+              {
+                "id": "rd",
+                "text": "Que mange-t-il?"
+              }
+            ]
+          },
+          {
+            "id": "q3",
+            "kind": "true_false",
+            "prompt": "Le ver de terre respire à l’aide de poumons, comme les êtres humains.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q4",
+            "kind": "short_answer",
+            "prompt": "D’après la partie « Pourquoi est-il utile? », de quelles façons le ver de terre aide-t-il les plantes? Donne deux façons.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 3
+          },
+          {
+            "id": "q5",
+            "kind": "short_answer",
+            "prompt": "Quel est le rôle de la partie « Le savais-tu? » dans ce texte? En quoi est-elle différente des autres parties?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Tu veux ajouter une partie sur les prédateurs du ver de terre (des oiseaux, des taupes…). Écris un intertitre dans le même style que ceux du texte.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 1
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Une partie du texte n’a pas d’intertitre : le tout premier paragraphe. Selon toi, pourquoi n’en a-t-il pas besoin?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Le mot « turricules » est expliqué dans le texte même. Relève la phrase qui l’explique, puis dis pourquoi l’autrice ou l’auteur a choisi de l’expliquer à cet endroit plutôt que dans un glossaire.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 4
+          }
+        ],
+        "visualSupports": [
+          "Une photo d’un ver de terre en gros plan, où l’on voit bien les anneaux.",
+          "Une photo de turricules sur une pelouse, au printemps.",
+          "Un schéma simple, dessiné au tableau, d’une coupe du sol avec des galeries et des racines.",
+          "Le référentiel « Les parties d’un texte informatif », affiché près du tableau."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "La partie « Comment respire-t-il? » explique que sa peau doit rester humide et qu’il sort surtout par temps de pluie. Il faut faire le lien entre la question et la partie, car l’intertitre ne parle pas de la pluie."
+          },
+          {
+            "questionId": "q2",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rb"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "La lumière : « À quoi ressemble-t-il? » (sa peau perçoit la lumière). Les turricules : « Que mange-t-il? ». L’eau et les racines : « Pourquoi est-il utile? ». L’intertitre « Comment respire-t-il? » est de trop, même s’il parle aussi de la peau : c’est un piège à discuter."
+          },
+          {
+            "questionId": "q3",
+            "kind": "true_false",
+            "correct": false,
+            "explanation": "Faux : il n’a pas de poumons; l’air entre par sa peau."
+          },
+          {
+            "questionId": "q4",
+            "kind": "short_answer",
+            "sampleAnswer": "Il brasse et aère la terre, ce qui laisse l’air et l’eau s’infiltrer jusqu’aux racines. De plus, il produit un engrais naturel, les turricules.",
+            "acceptableAnswers": [],
+            "explanation": "Dans cette version, la partie « Pourquoi est-il utile? » rappelle aussi l’engrais : accepter les deux façons."
+          },
+          {
+            "questionId": "q5",
+            "kind": "short_answer",
+            "sampleAnswer": "Elle ajoute un fait surprenant sur l’origine des vers de terre. Contrairement aux autres parties, elle ne répond pas à une question sur la vie du ver : c’est un bonus pour piquer la curiosité.",
+            "acceptableAnswers": [],
+            "explanation": "Attendu : un fait étonnant ou complémentaire; une différence (ce n’est pas une question, ce n’est pas essentiel pour comprendre le sujet, c’est un fait historique plutôt qu’une description)."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "Qui sont ses ennemis?",
+            "acceptableAnswers": [
+              "Qui sont ses ennemis?",
+              "Quels sont ses prédateurs?",
+              "Qui le mange?",
+              "Qui mange le ver de terre?"
+            ],
+            "explanation": "Le style du texte : des intertitres courts sous forme de question."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "C’est l’introduction : elle présente le sujet du texte entier, et le titre joue déjà le rôle d’intertitre pour elle.",
+            "acceptableAnswers": [],
+            "explanation": "Question d’approfondissement : accepter toute réponse qui reconnaît le rôle d’introduction du premier paragraphe."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "« Il en digère les éléments nutritifs, puis rejette de petits tortillons de terre très fertile, appelés turricules. » L’explication est placée juste là pour que la lecture ne s’arrête pas : on comprend le mot tout de suite.",
+            "acceptableAnswers": [],
+            "explanation": "Question d’approfondissement : accepter toute justification liée à la fluidité de la lecture ou au fait que le mot est important pour comprendre cette partie."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

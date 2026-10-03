@@ -29,14 +29,17 @@ export function EmptyState({
   title,
   body,
   action,
+  as: Title = 'p',
 }: {
   title: ReactNode;
   body?: ReactNode;
   action?: ReactNode;
+  /** `h1` where the state is the whole page (error and not-found pages). */
+  as?: 'p' | 'h1';
 }) {
   return (
     <div className="rounded-xl border border-dashed border-slate-300 bg-white p-8 text-center">
-      <p className="font-medium text-slate-900">{title}</p>
+      <Title className="font-medium text-slate-900">{title}</Title>
       {body ? <p className="mt-1 text-sm text-slate-600">{body}</p> : null}
       {action ? <div className="mt-4 flex justify-center">{action}</div> : null}
     </div>

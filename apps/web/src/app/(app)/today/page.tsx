@@ -6,19 +6,43 @@ import {
   localMinutesIn,
   timeToMinutes,
 } from '@lynx/domain';
-import { ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
+import {
+  CalendarX,
+  ChevronLeft,
+  ChevronRight,
+  ClipboardCheck,
+  ClipboardList,
+  MapPin,
+} from 'lucide-react';
 import type { Metadata } from 'next';
 import { getLocale, getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { AbsenceList } from '@/components/absences/absence-list';
 import { CheckOffButton } from '@/components/app/check-off-button';
+import { PurgeNotice } from '@/components/onboarding/class-notices';
+import { SampleBadge } from '@/components/onboarding/sample-badge';
+import { TeacherChecklist } from '@/components/onboarding/teacher-checklist';
+import { NewsletterReminders } from '@/components/today/newsletter-reminder';
+import { ReportReminders } from '@/components/today/report-reminder';
 import { Button } from '@/components/ui/button';
-import { Badge, Card, Notice } from '@/components/ui/card';
+import { StartUnitButton } from '@/components/year-plan/start-unit-button';
+import { Badge, Card, CardBody, CardHeader, CardTitle, Notice } from '@/components/ui/card';
 import { EmptyState, PageHeader } from '@/components/ui/page';
 import { formatLocalDate, formatTime, formatTimeRange } from '@/lib/format';
 import { cn } from '@/lib/utils';
+import { loadMyAbsences } from '@/server/queries/absences';
+import { loadNewsletterReminders } from '@/server/queries/newsletters';
+import { loadTeacherOnboarding } from '@/server/queries/onboarding';
+import { loadReportReminders } from '@/server/queries/report-comments';
+import { loadPendingReports } from '@/server/queries/sub-reports';
 import { loadToday, type TodayBlock } from '@/server/queries/today';
-import { requireSession, teachingSchools } from '@/server/session';
+import {
+  landingFor,
+  requireSession,
+  substituteBoardSchools,
+  teachingSchools,
+} from '@/server/session';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('today');
@@ -39,15 +63,36 @@ export default async function TodayPage({
 }) {
   const session = await requireSession();
   const schools = teachingSchools(session);
-  if (schools.length === 0) redirect('/calendar');
+  // Whoever does not teach has a landing page of their own (DECISIONS D-118).
+  if (schools.length === 0) redirect(landingFor(session));
 
   const t = await getTranslations('today');
+  const tAbsences = await getTranslations('absences');
+  const tNav = await getTranslations('nav');
+  // A teaching principal (or office staff who also teach): the phone bar has no room for
+  // « Suppléances » (components/app/nav-items.ts), so the board is linked from here.
+  const showBoard = substituteBoardSchools(session).length > 0;
   const locale = await getLocale();
   const timezone = schools[0]!.timezone;
   const today = localDateIn(timezone);
   const { date: requested } = await searchParams;
   const date = requested && isLocalDate(requested) ? requested : today;
-  const data = await loadToday(session, date, locale);
+  const [data, upcomingAbsences, pendingReports, onboarding, reminders, newsletterReminders] =
+    await Promise.all([
+      loadToday(session, date, locale),
+      loadMyAbsences(session, { from: today, limit: 5 }),
+      loadPendingReports(),
+      loadTeacherOnboarding(session),
+      // « Préparer mes commentaires » (« Bulletins », D-135) and « Info-parents » (D-142): on
+      // today's page only.
+      date === today ? loadReportReminders(session) : Promise.resolve([]),
+      date === today ? loadNewsletterReminders(session) : Promise.resolve([]),
+    ]);
+  // « Pour bien commencer » until it is done or hidden (D-109); sample classes carry « Exemple ».
+  const showChecklist = !onboarding.dismissed && onboarding.done < onboarding.total;
+  const samples = new Set(onboarding.sampleClassIds);
+  const tReport = await getTranslations('subReport');
+  const tOnboarding = await getTranslations('onboarding');
   const isToday = date === today;
   const nowMinutes = isToday ? localMinutesIn(timezone) : null;
   const multipleClasses = new Set(data.blocks.map((b) => b.classId)).size > 1;
@@ -73,7 +118,21 @@ export default async function TodayPage({
         title={isToday ? t('title') : formatLocalDate(date, locale)}
         subtitle={subtitle}
         actions={
-          <div className="flex items-center gap-1">
+          <div className="flex flex-wrap items-center gap-1">
+            <Button asChild variant="secondary" className="mr-1">
+              <Link href="/absences/new">
+                <CalendarX aria-hidden />
+                {tAbsences('quick')}
+              </Link>
+            </Button>
+            {showBoard ? (
+              <Button asChild variant="secondary" className="mr-1 md:hidden">
+                <Link href="/absences">
+                  <ClipboardList aria-hidden />
+                  {tNav('substitutes')}
+                </Link>
+              </Button>
+            ) : null}
             <Button asChild variant="secondary" size="icon">
               <Link href={`/today?date=${stepWeekday(date, -1)}`} aria-label={t('previousDay')}>
                 <ChevronLeft />
@@ -92,6 +151,87 @@ export default async function TodayPage({
           </div>
         }
       />
+
+      {pendingReports.length > 0 ? (
+        <div className="mb-4 space-y-2">
+          {/* The substitute's report is back: confirm it (D-054). */}
+          {pendingReports.map((r) => (
+            <Notice
+              key={r.reportId}
+              tone={r.status === 'submitted' ? 'info' : 'warning'}
+              className="flex flex-wrap items-center justify-between gap-2"
+              data-testid="report-banner"
+            >
+              <span className="flex items-center gap-2">
+                <ClipboardCheck className="size-4 shrink-0" aria-hidden />
+                {tReport(r.status === 'submitted' ? 'banner' : 'bannerDraft', {
+                  date: formatLocalDate(r.planDate, locale, {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                  }),
+                })}
+              </span>
+              <Link
+                href={`/absences/${r.absenceId}/plans/${r.planId}/report`}
+                className="inline-flex min-h-11 items-center font-medium underline underline-offset-2"
+              >
+                {tReport('bannerAction')}
+              </Link>
+            </Notice>
+          ))}
+        </div>
+      ) : null}
+
+      {onboarding.purgeNotices.length > 0 ? (
+        <div className="mb-4 space-y-2">
+          {/* Students' first names are erased after the school year (D-105). */}
+          {onboarding.purgeNotices.map((n) => (
+            <PurgeNotice key={n.classId} className={n.className} purgeOn={n.purgeOn} />
+          ))}
+        </div>
+      ) : null}
+
+      <ReportReminders reminders={reminders} />
+      <NewsletterReminders reminders={newsletterReminders} />
+
+      {showChecklist ? (
+        <TeacherChecklist data={onboarding} variant="card" />
+      ) : (
+        // The checklist says it too; without it, each sample class is still announced.
+        onboarding.samples.map((sample) => (
+          <Notice key={sample.id} tone="info" className="mb-4" data-testid="sample-notice">
+            <Link
+              href={`/classes/${sample.id}/students`}
+              className="font-medium underline underline-offset-2"
+            >
+              {sample.name}
+            </Link>{' '}
+            ·{' '}
+            {tOnboarding('sample.bannerNotice', {
+              date: formatLocalDate(sample.purgeOn, locale, {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+              }),
+            })}
+          </Notice>
+        ))
+      )}
+
+      {upcomingAbsences.length > 0 ? (
+        <Card className="mb-4">
+          <CardHeader>
+            <CardTitle>{tAbsences('upcoming')}</CardTitle>
+          </CardHeader>
+          <CardBody>
+            <AbsenceList
+              absences={upcomingAbsences}
+              timezones={Object.fromEntries(session.schools.map((s) => [s.id, s.timezone]))}
+            />
+          </CardBody>
+        </Card>
+      ) : null}
 
       {!data.hasClasses ? (
         <EmptyState
@@ -163,6 +303,7 @@ export default async function TodayPage({
                   block={block}
                   date={date}
                   showClass={multipleClasses}
+                  sample={samples.has(block.classId)}
                   current={
                     nowMinutes !== null &&
                     nowMinutes >= timeToMinutes(block.effectiveStart) &&
@@ -182,11 +323,14 @@ async function BlockCard({
   block,
   date,
   showClass,
+  sample,
   current,
 }: {
   block: TodayBlock;
   date: string;
   showClass: boolean;
+  /** A sample class's block (D-109): « Exemple ». */
+  sample: boolean;
   current: boolean;
 }) {
   const t = await getTranslations();
@@ -204,7 +348,8 @@ async function BlockCard({
         className={cn(
           'flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-slate-600',
           current && 'bg-brand-50 text-brand-900',
-          inactive && 'line-through opacity-60',
+          // Struck through, never faded: the text keeps its contrast (WCAG 2 AA, D-034).
+          inactive && 'line-through',
         )}
       >
         <span className="shrink-0 whitespace-nowrap tabular-nums sm:w-32">
@@ -221,13 +366,17 @@ async function BlockCard({
       className={cn(
         'overflow-hidden',
         current && 'ring-2 ring-brand-500',
-        inactive && 'opacity-70',
+        // A cancelled or replaced period (a mass, an assembly): a dashed, flat card and a grey
+        // stripe, never a faded one, so its text and badges keep their contrast (D-034).
+        inactive && 'border-dashed border-slate-300 bg-slate-50 shadow-none',
       )}
     >
       <div className="flex">
         <div
           className="w-1.5 shrink-0"
-          style={{ backgroundColor: block.subject?.color ?? '#94a3b8' }}
+          style={{
+            backgroundColor: inactive ? '#cbd5e1' : (block.subject?.color ?? '#94a3b8'),
+          }}
           aria-hidden
         />
         <div className="min-w-0 flex-1 p-4">
@@ -237,6 +386,7 @@ async function BlockCard({
             </span>
             <h2 className={cn('font-semibold', inactive && 'line-through')}>{heading}</h2>
             {showClass ? <Badge>{block.className}</Badge> : null}
+            {sample ? <SampleBadge /> : null}
             {statusLabel ? (
               <Badge tone="warning">
                 {block.affectedBy
@@ -277,7 +427,22 @@ async function BlockCard({
                   </p>
                 ) : null}
               </div>
-              {!inactive ? (
+              {block.lesson.pendingConfirmation ? (
+                // Confirmed only through the substitute's report, never checked off here.
+                block.lesson.pendingReport ? (
+                  <Link
+                    href={`/absences/${block.lesson.pendingReport.absenceId}/plans/${block.lesson.pendingReport.planId}/report`}
+                    className="inline-flex min-h-11 shrink-0 items-center rounded-full bg-amber-100 px-3 text-sm font-medium text-amber-900 underline-offset-2 hover:underline"
+                    data-testid="pending-chip"
+                  >
+                    {t('subReport.pendingChip')}
+                  </Link>
+                ) : (
+                  <Badge tone="warning" data-testid="pending-chip">
+                    {t('subReport.pendingChip')}
+                  </Badge>
+                )
+              ) : !inactive ? (
                 <CheckOffButton
                   lessonId={block.lesson.id}
                   lessonTitle={block.lesson.title}
@@ -285,6 +450,28 @@ async function BlockCard({
                   taught={block.lesson.taught}
                 />
               ) : null}
+            </div>
+          ) : block.plannedUnit &&
+            (block.lessonState === 'no_active_unit' || block.lessonState === 'unit_finished') ? (
+            // A planned unit is due (« Mon année », D-126): one tap starts it, never by itself.
+            <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm text-slate-700">
+                {block.lessonState === 'no_active_unit'
+                  ? t('today.plannedUnit.noActive', {
+                      title: block.plannedUnit.title,
+                      date: formatLocalDate(block.plannedUnit.startsOn, locale, {
+                        day: 'numeric',
+                        month: 'long',
+                      }),
+                    })
+                  : t('today.plannedUnit.finished', { title: block.plannedUnit.title })}
+              </p>
+              <StartUnitButton
+                classId={block.classId}
+                unitId={block.plannedUnit.id}
+                title={block.plannedUnit.title}
+                finishCurrent={block.lessonState === 'unit_finished'}
+              />
             </div>
           ) : block.lessonState === 'no_active_unit' ? (
             <p className="mt-2 text-sm text-slate-600">
@@ -304,6 +491,24 @@ async function BlockCard({
                 className="text-brand-700 underline underline-offset-2 hover:text-brand-800"
               >
                 {t('today.planUnit')}
+              </Link>
+            </p>
+          ) : null}
+          {block.lesson && block.plannedUnit ? (
+            // The unit under way still has lessons, and the next one's weeks have come.
+            <p className="mt-3 text-sm text-slate-700" data-testid="next-planned-unit">
+              {t('today.plannedUnit.next', {
+                title: block.plannedUnit.title,
+                date: formatLocalDate(block.plannedUnit.startsOn, locale, {
+                  day: 'numeric',
+                  month: 'short',
+                }),
+              })}{' '}
+              <Link
+                href={`/classes/${block.classId}/planning/year`}
+                className="text-brand-700 underline underline-offset-2 hover:text-brand-800"
+              >
+                {t('today.plannedUnit.yearLink')}
               </Link>
             </p>
           ) : null}
