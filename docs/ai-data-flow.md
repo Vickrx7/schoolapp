@@ -214,14 +214,15 @@ the board's own private drafts, which the board's designated reviewers read, edi
    recorded per board, outside every school's budget, and the operator sees them in
    `pnpm admin ai-usage`.
 
-## Banque de commentaires de bulletin : « Créer une banque avec l'IA »
+## Banque de commentaires de bulletin : « Créer une banque de commentaires avec l'IA »
 
 A teacher (or a principal or vice-principal) at a school with the Library module can ask the AI to
 write a report card comment bank (« Banque de commentaires de bulletin », D-129): points forts
 and prochaines étapes, for each level of the report card or each mark of the progress report, that
-she later picks from and adapts for each student. The AI writes from curriculum labels only: **it
-never sees a student or anything about one**. The result is her private draft, which she reviews
-before using or sharing it (D-132). It is never automatic.
+she later picks from and adapts for each student. The AI writes from curriculum labels: **the app
+gives it no student data**. The teacher's optional note is the only free text, and the form asks
+her to leave students out of it. The result is her private draft, which she reviews before using
+or sharing it (D-132). It is never automatic.
 
 1. **Choices, not text.** The form sends ids and choices only: what the bank is for (a subject,
    the learning skills and work habits, or Enseignement religieux), the report (« Bulletin de
@@ -234,13 +235,19 @@ before using or sharing it (D-132). It is never automatic.
    fits the others (the attentes of that subject and grade; Enseignement religieux only for a
    religion bank; no subject for the learning skills).
 3. **Preview, in the browser.** « Vérifier avant d'envoyer » shows exactly the text that would be
-   sent, with the names it replaced highlighted, under « Aucun renseignement sur vos élèves n'est
-   envoyé : seulement l'année, la matière et les attentes choisies. » A personal detail in the
-   note (below) blocks the request until she removes it.
+   sent, with the names it replaced highlighted, under « L'application n'ajoute aucun renseignement
+   sur vos élèves : elle envoie seulement l'année, la matière, les attentes choisies et vos
+   précisions. » (without a note: « Aucun renseignement sur vos élèves n'est envoyé : seulement
+   l'année, la matière et les attentes choisies. »). A personal detail in the note (below) blocks
+   the request until she removes it, and so does a title not followed by a name the app knows
+   (« Merci à Mme Dupuis »: the title rule of the « Info-parents » translation, below, with its
+   limits). With a note, the preview lists the note's capitalized words to check and « Envoyer à
+   l'IA » needs « J'ai vérifié : mes précisions ne nomment personne et ne disent rien sur un élève
+   en particulier. », which the server checks too.
 4. **Queue, then de-identification again on the server,** as for every AI request: the same school
    switch, budget and limits per person (the school's monthly budget pays for it), and the worker
    replaces every student and staff member of every school where she works with a marker, then
-   checks the final text one last time.
+   checks the final text one last time, the title rule on the note included.
 5. **The call.** The worker sends the system prompt (`prompts/report_comment_bank/v1.md`: its
    common part, the section for the scope and, for a subject or religion, the section for the
    report) and the request: the grade, the subject, the report and its marks, the attentes with
@@ -276,22 +283,34 @@ message is about the class's families and is often written to thank people by na
 3. **Preview, in the browser.** « Vérifier avant d'envoyer » shows exactly the text that would be
    sent, with the names the app knows replaced and highlighted, and:
    - **« Non envoyé — traduisez-le vous-même »**: a paragraph holding a detail the app detects
-     (below), or a title followed by a name it does not know (« Merci à Mme Dupuis », « M. le
-     maire Watson », « le père Gagnon ») is left out, with its reason. The rest is still sent (as
-     substitute plans do, D-052); the teacher writes that paragraph's English herself.
-   - **« Mots avec majuscule à vérifier »**: the capitalized words of what is sent, inside a
-     sentence (and a sentence's first word when the next one is capitalized too, as in a full
-     name), except markers, short acronyms, titles, common words and a short list of words that
-     are never a person (Dieu, Noël, Avent, Ontario, the school subjects…). If one of them is a
-     person's name (a parent, a volunteer), she removes it before sending.
+     (below), or a title that is not followed by a name the app knows (« Merci à Mme Dupuis »,
+     « M. le maire Watson », « le père Gagnon », « Mme Noël », « Mme St-Pierre ») is left out,
+     with its reason. The rest is still sent (as substitute plans do, D-052); the teacher writes
+     that paragraph's English herself. The title rule (`findTitledUnknownNames`, D-139 as
+     amended) knows the French and English honorifics (M., MM., Mme, Mmes, Mlle, Mx, Dr, Mr, Mrs,
+     Ms, monsieur, madame…), the abbreviations Me, Sr, P., Fr and Rev., and religious, school,
+     sports and family titles (abbé, curé, diacre, père, mère, frère, sœur, pasteur, coach,
+     maman, tante…). After a title, no list of allowed words applies; any space or a line break
+     may separate the title from the name, and up to three words may come between them
+     (« Mme la directrice adjointe Dupuis »). After an honorific, the next word is a name whatever
+     its case (« madame dupuis »), unless it is a little word (« Mme la », « Monsieur est »); after
+     a title that is also an everyday word (père, mère, coach, Me…), only a capitalized word counts
+     as a name. It fails closed: « le père Noël » is left out too.
+   - **« Mots avec majuscule à vérifier »**: the capitalized words of what is sent, wherever they
+     stand (at a sentence's start, after « : », « ( », « « » or a dash too), except markers,
+     short acronyms, abbreviated titles, little words that often start a sentence or a quotation
+     (« Les », « Demain », the days and months), and a short list of words that are rarely a
+     person in a message to families (Dieu, Avent, Ontario, the school subjects…). A name that is
+     also such a word (« Noël » alone) is not listed. If one of the words is a person's name (a
+     parent, a volunteer), she removes it before sending.
    - **« J'ai vérifié : le texte ne nomme aucune autre personne que l'application ne connaît
      pas. »**, a box she must tick; « Envoyer à l'IA » stays disabled until then, and the server
      refuses a request without it.
 4. **The request is the preview.** It carries the revision she checked and the keys of the
-   paragraphs the preview showed as sent; a message (or a roster) that changed since refuses it,
-   and she checks again (`newsletterStale`, `LXN05`). One request at a time per message: a
-   colleague's open request refuses hers (`LXN06`). The same school switch, budget and limits per
-   person as every request.
+   paragraphs the preview showed as sent; a message that changed since, or one where the app
+   would now leave out other paragraphs, refuses it, and she checks again (`newsletterStale`,
+   `LXN05`). One request at a time per message: a colleague's open request refuses hers
+   (`LXN06`). The same school switch, budget and limits per person as every request.
 5. **De-identification again on the server.** The worker replaces every student and staff member
    of every school where she works with a marker, applies the same rules (it never sends a
    paragraph the preview showed as not sent, nor one she did not confirm), checks the final text
@@ -401,9 +420,15 @@ can require its own approved cloud account or a model hosted in Canada instead (
 
 - A name the app doesn't know (a parent, a sibling, a student from a school where the teacher
   doesn't work) can only be caught by the teacher at the preview step. The preview reminds them to
-  check. For the « Info-parents » translation, a paragraph with such a name after a title is never
-  sent, and the preview lists the capitalized words to check; a first name the app does not know,
-  alone at the start of a sentence, is still only caught by the teacher.
+  check. For the « Info-parents » translation and the note of a comment bank, a paragraph or a note
+  where a title is not followed by a name the app knows is never sent, and the preview lists the
+  capitalized words to check. The teacher alone catches a name the app does not know when it has
+  no title (« Merci à Sophie » is listed, not blocked), when it is lowercase without a title, when
+  it is also a word the app treats as common (« Noël » alone, or a little word at the start of a
+  sentence), when it follows a title that is also an everyday word and is lowercase (« le curé
+  gagnon »), or when it follows a word the app does not take for a title (« la directrice
+  Dupuis »). The rule also leaves out some paragraphs that name no one (« le père Noël », « la mère
+  de Dieu »): the teacher writes their English herself.
 - A resource written from scratch names no one, but a character's fictional first name can still
   be the name of a student elsewhere in the board. Before a resource is shared, the app checks it
   for the first names of the students of the author's schools (D-066); the author confirms each

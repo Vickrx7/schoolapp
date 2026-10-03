@@ -135,7 +135,7 @@ background service, the last backup, the last clean-up), « Conservation des don
 le message ».
 
 In another private window, sign in as the new teacher (her code is in Mailpit): « Bienvenue », the
-five points, the box, « Commencer » → « Pour bien commencer » → « Essayer avec une classe exemple
+six points, the box, « Commencer » → « Pour bien commencer » → « Essayer avec une classe exemple
 (3e) » → the class page: « Classe exemple : elle n'est jamais incluse dans un plan de suppléance et
 sera supprimée le … ».
 

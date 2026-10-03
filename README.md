@@ -3,8 +3,9 @@
 Plateforme pour les écoles élémentaires catholiques de langue française de l’Ontario: planning,
 lesson tracking, differentiated texts with AI, the substitute hand-off, a reviewed resource
 library (« Banque de ressources ») and class mode (« Présenter à la classe », quizzes on class
-tablets), built for teachers first, with the principal's dashboard, the audit log and « Conseil »
-for board admins (release 0.6, ready for a pilot).
+tablets), the year plan (« Mon année »), report card comments (« Commentaires de bulletin ») and
+the weekly message to families (« Info-parents »), built for teachers first, with the principal's
+dashboard, the audit log and « Conseil » for board admins (release 0.9, ready for a pilot).
 
 - Product brief: [`SPEC.md`](SPEC.md)
 - Decisions and assumptions: [`DECISIONS.md`](DECISIONS.md)
@@ -15,6 +16,11 @@ for board admins (release 0.6, ready for a pilot).
   deployment steps and class devices; adaptations, opinions, coverage, bulk generation),
   [`docs/phase-6.md`](docs/phase-6.md) (pilot readiness: direction, audit log, « Conseil »,
   onboarding, retention, monitoring, deployment, the security review)
+- Features built after the pilot build: [`docs/mon-annee.md`](docs/mon-annee.md) (the year plan,
+  coverage and the long-range plan PDF), [`docs/report-comments.md`](docs/report-comments.md)
+  (comment banks and « Bulletins », composed on the teacher's device) and
+  [`docs/info-parents.md`](docs/info-parents.md) (the weekly message to families and its AI
+  translation)
 - Privacy (for a board's privacy officer): [`PRIVACY.md`](PRIVACY.md)
 - Installing in production, hosted in Canada or on a board's servers: [`DEPLOYMENT.md`](DEPLOYMENT.md)
 - Running the pilot: [`docs/PILOT.md`](docs/PILOT.md); the board demo:
@@ -107,7 +113,7 @@ Same ports and keys as the Supabase CLI, so the same `.env.local` works. See
 | `pnpm admin <command>`                                        | Onboard boards, schools and staff; AI budgets and usage; library reviewers, curriculum import, coverage, bulk generation, content packs; retention, status, support access and deletions on request (Phase 6) (`apps/admin/src/cli.ts`) |
 | `pnpm library:pack --version <v> --out <file>`                | Build the demo resources as a content pack file (`docs/content-packs.md`)                                                                                                                                                               |
 | `pnpm library:seed` / `pnpm library:seed:check`               | Regenerate the demo curriculum and library seeds from `content/` / check they are up to date (CI)                                                                                                                                       |
-| `pnpm ai:eval [--feature sub_plan] [--provider fake] [--yes]` | Run an AI evaluation set (`differentiate`, `sub_plan`, `library_item`, `library_levels`; Claude costs about $1–5; `fake` is free)                                                                                                       |
+| `pnpm ai:eval [--feature sub_plan] [--provider fake] [--yes]` | Run an AI evaluation set (`differentiate`, `sub_plan`, `library_item`, `library_levels`, `report_comment_bank`, `newsletter_translate`; Claude costs about $1–5 a set; `fake` is free)                                                  |
 | `docker compose up -d --wait` (in `deploy/docker`)            | A production install, hosted or board-hosted (`DEPLOYMENT.md`); `docker compose run --rm admin …` runs the admin CLI there                                                                                                              |
 
 ## Configuration
@@ -163,9 +169,13 @@ answer keys never reach student sheets or substitute plans, and nobody else read
 private drafts (D-062, D-065, D-066). Class mode keeps no student data: devices get numbers and
 fixed team names, nothing a student types is stored, answers and devices are deleted when the
 session ends (only class counts survive if the teacher asks), and answer keys never reach a
-device (D-084 to D-089). Opinions on resources are anonymous (D-093). The audit log is read
+device (D-084 to D-089). Opinions on resources are anonymous (D-093). Report card comments are
+composed in the teacher's browser and never reach our servers or the AI (D-130); the app sends
+nothing to families, and the AI translation of « Info-parents » holds back a paragraph where a
+title is not followed by a name the app knows (D-136, D-139). The audit log is read
 through one database function: principals see their school's sensitive entries, board admins
 administrative ones only, and nobody a student's name (D-103). Retention runs nightly (D-105);
 the app's own logs are scrubbed of personal details and stay on the server 14 days (D-111, D-119).
 The rule we design to: information that leaves Canada must hold no personal data. `PRIVACY.md` § 6
-lists every place data goes, and the one limit (a name the app does not know, in AI text).
+lists every place data goes, and the one limit (a name the app does not know, in AI text, which the
+teacher removes).

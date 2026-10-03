@@ -452,8 +452,10 @@ device. A draft edited from an older saved version is offered, not restored over
 The text of an AI request is kept until the request succeeds, and a failed request offers
 « Reprendre ce texte ».
 _Amended for « Commentaires de bulletin » (2026-10-03):_ report card comments (« Bulletins »)
-are drafts with stricter rules (D-130): kept in template form (`{prénom}`, never a first name),
-removed when another account signs in on the browser and 60 days after the report goes home, a
+are drafts with stricter rules (D-130): kept in template form (the student's own first name is
+never stored; since the post-MVP review, her classmates' first names are not either, and other
+names the teacher types stay as typed), removed at sign-out and, otherwise, when the app next opens
+in that browser for another account or after their date (60 days after the report goes home), a
 failed write said in words, nothing written after a sign-out in the page.
 
 **D-045 — AI calls fit in a time limit (amends D-041 and D-042).** Answers are streamed with
@@ -1881,9 +1883,12 @@ deleted with the unit or class (and with a sample class); report periods hold no
 go with their school year or board (D-123, D-124). No new job or setting.
 _Amended for « Commentaires de bulletin » (2026-10-03):_ no new job or setting. Comment banks are
 library resources (kept until the author deletes them; « Créer une banque avec l'IA » requests are
-`ai_jobs`, 30 days). Report card comments never reach the server: the device removes them at
-sign-out, when another account signs in on that browser, or 60 days after the « remise » (D-130).
-The class purge cannot reach a device and does not need to: the expiry comes long before.
+`ai_jobs`, 30 days). Report card comments never reach the server: the app removes them from the
+device at sign-out and, otherwise, when it next opens in that browser for another account or after
+their date (60 days after the « remise », never later than 60 days after the school year; D-130 as
+amended). The class purge cannot reach a device. The device's date comes long before the purge (a
+year after the school year), but nothing runs while the app is closed: a browser in which the app
+is never opened again keeps the drafts until its data is cleared (post-MVP review, round B).
 _Amended for « Info-parents » (2026-10-03):_ the class purge also deletes the class's
 « Info-parents » messages (`class_newsletters`; the `class.students_purged` entry counts them as
 `newsletters` when there were some), and a purged class takes no new message (`LXN02`), so the
@@ -2121,6 +2126,9 @@ notice, the terms and « Bienvenue » say that report card comments stay on the 
 _Amended for « Info-parents » (2026-10-03):_ terms `2026-10-pilote-4` (D-143): the notice's purposes
 and retention, and a term on whom a message to families may name and on removing unknown names
 before « Traduire en anglais (IA) ».
+_Amended in the post-MVP review (2026-10-03), round B:_ terms `2026-10-pilote-5` (D-144): « Combien
+de temps » says when report card comments really leave the device, and names the feedback kept a
+year.
 
 **D-111 — Error monitoring for the pilot: scrubbed structured logs and error references; no
 third-party error service.** `@lynx/observability` gives `createLogger` (JSON lines on stdout),
@@ -2623,7 +2631,8 @@ heading, « 2 sur 3 enseignées »), and the counts (« 22 attentes · 9 enseign
 encore prévues ») do not change with « Afficher » (« Toutes », « Pas encore prévues », « Prévues »,
 « Enseignées »). Without a subject, an overview per subject (and per grade in a combined class) for
 the whole year; a combined class shows one grade at a time. While an attente is a summary,
-« Attentes résumées, à vérifier contre le programme officiel ; la liste peut être incomplète. »;
+« Attentes résumées, à vérifier dans le curriculum officiel de l'Ontario ; la liste peut être
+incomplète. » (worded so since the post-MVP review);
 « Comment on compte » says all of this. Computed on each request under row level security as the
 teacher, from the class's units, lessons and progress: nothing is stored and nothing is added to
 the database. Private to the class team (the class layout, D-013): never a direction, office, board
@@ -2741,9 +2750,11 @@ and S3 (the composer, the terms and « Aujourd'hui »; D-130, D-133 to D-135). T
 plan's questions for Mike (2026-10-02), and the slices build on them: (1) no AI on an individual
 student's comment; (2) comments stay on the device; (3) 1,000 characters by default and plain
 spaces on copy, both adjustable; (4) the AI may write general banks when no attentes are loaded,
-marked as drafts to read; (5) the composer's drafts are erased when another account signs in on
-the browser and 60 days after the report goes home (for the lawyer). The feature is never called
-« Commentaires » alone: that word is the feedback button (D-116).
+marked as drafts to read; (5) the composer's drafts are erased when another account uses the
+app in that browser and 60 days after the report goes home (for the lawyer; D-130 as amended says
+when this really happens). Mike has not confirmed these answers yet (`docs/HANDOFF.md` « Decisions
+waiting for Mike »). The feature is never called « Commentaires » alone: that word is the feedback
+button (D-116).
 
 **D-129 — Comment banks are library type 26, `report_comments` (amends D-061, D-067, D-071, D-076,
 D-077, D-082, D-094 and D-100).** A bank is library content like any other: the board's or a teacher's, shared
@@ -2802,14 +2813,18 @@ grade in a combined class, « Mes notes », and per subject the mark (an achieve
 progress mark or a rating per learning skill), the chosen entries (bank id, revision and index;
 entries of an older revision are dropped and the text stays) and the comment, in template form:
 the student's first name is written `{prénom}` (`unfillComment`) and put back only to show, copy
-and print it (`fillComment`, D-131), so `localStorage` never holds a first name. The period key is
+and print it (`fillComment`, D-131), so `localStorage` never holds her first name (her classmates'
+since the post-MVP review; other names the teacher types stay as typed: amendment below). The
+period key is
 the board period's kind (one per school year, and a class has one year) or the chosen dates and
 report. Drafts are removed at sign-out (`clearAllDrafts`, after which this page writes nothing
 more), by « Effacer le commentaire » and « Effacer mes commentaires de cette période sur cet
-appareil », when another account signs in on that browser (`forgetReportDrafts`, the janitor in
-the signed-in shell, which also removes expired and unreadable report drafts), and at the latest
-60 days after the « remise » (`draftExpiresOn`: the « remise », else the « saisie », else the
-period's last day, plus 60 days; **Assumption**; an expired period's page keeps nothing). Unlike
+appareil », when another account opens the app in that browser (`forgetReportDrafts`, the janitor
+in the signed-in shell, which also removes expired report drafts), and once expired, when the app
+next opens in that browser (`draftExpiresOn`: the « remise », else the « saisie », else the
+period's last day, plus 60 days; **Assumption**; an expired period's page keeps nothing; the
+round B amendment below says what this means for a browser where the app never opens again).
+Unlike
 other drafts, a write that fails (a full device) is said in words (« L'espace de cet appareil est
 plein : copiez vos commentaires maintenant. »), and another tab's changes are taken up (« Modifié
 dans un autre onglet »). The comment's limit is a setting per class and period on the device, 1,000
@@ -2847,6 +2862,17 @@ stored characters is clipped (never cutting a token), an unreadable comment or s
 out and the rest kept. An expired draft is removed; a draft that cannot be read at all is never
 deleted for that (it stays until a sign-out or a new write). (4) In a combined class, a student's
 « Année d'études » and a wording other than neutral are kept even with nothing else written.
+
+_Amended in the post-MVP review (2026-10-03), round B (wording only):_ erasure runs only in code
+that runs in that browser: the sign-out, « Effacer », the composer when it reads its key, and the
+janitor whenever someone signed in opens the app there. `localStorage` has no timer, so a browser in
+which the app is never opened again (a school laptop put away, the browser of a teacher who left
+the board) keeps the drafts until its data is cleared. Every text says so instead of « au plus tard
+le … »: the page's notice (« Ils sont effacés à la déconnexion, ou la première fois que
+l'application s'ouvre dans ce navigateur après le {date}. »), « Comment ça marche », the privacy
+notice's « Combien de temps » (terms `2026-10-pilote-5`, D-144), `PRIVACY.md` § 1, 4 and 9. The
+promise about names is narrowed the same way: the class's first names are replaced on the device;
+other names stay as typed (`reportComments.help.name`).
 
 **D-131 — The `{prénom}` placeholder and elision.** Bank texts name the student only as
 `{prénom}`; the app never stores a student's name in a bank. Filling it in (`fillComment`) elides
@@ -2892,8 +2918,9 @@ returns it, so « Vérifier avant d'envoyer » shows exactly what is sent, names
 « Aucun renseignement sur vos élèves n'est envoyé : seulement l'année, la matière et les attentes
 choisies. » `request_report_comment_bank` queues it through `app.enqueue_ai_job` (school switch,
 school budget, limits per person: LXA01 to LXA03); a second tap with the same input while it is
-open returns that job. Nothing about a student, class or school, and no id, is sent; the note is
-de-identified and checked like any text (D-038). The feature `report_comment_bank` (prompt
+open returns that job. The app adds nothing about a student, class or school, and no id; the note
+is free text, de-identified and checked like any text (D-038, and since the post-MVP review the
+title rule of D-139). The feature `report_comment_bank` (prompt
 `report_comment_bank/v1`, its common part plus the scope's section and, for a subject or
 religion, the report's) answers entries with an attente key (`E1`…) that normalizing turns into
 the code; validation retries any token but `{prénom}`, any marker, a code in a text, another
@@ -2910,8 +2937,9 @@ with ids only (`?scope=&grade=&subject=&period=&exp=`), for « Bulletins » (sli
 generated in bulk (D-129). Cost: about $0.30 to $0.60 a bank, from the school's budget (D-040).
 _Why:_ the input and output of a bank share nothing with a resource's (no duration, materials,
 levels, formats or characters), `library_item/v1` is frozen (D-041) and a second section there
-would mean re-running its evaluation for 25 types; and a bank written from curriculum labels only
-can never hold anything about a student. As built (slice S2): migration
+would mean re-running its evaluation for 25 types; and a bank written from curriculum labels holds
+nothing about a student unless the teacher's note describes one, which the form asks her not to
+do. As built (slice S2): migration
 `20270118090200_report_comments_ai.sql`; `@lynx/ai` `features/report-comment-bank.ts`, ten
 evaluation cases and `checkReportCommentBank` (`pnpm ai:eval --feature report_comment_bank`);
 `server/actions/report-bank-ai.ts`; pgTAP `35_report_comments` (S2 part); e2e
@@ -2924,7 +2952,10 @@ runs the title rule on the note only, since an attente may well say « Marie, m�
 the preview lists the note's capitalized words, and a request with a note needs « J'ai vérifié »
 (`reportBankUnconfirmed`, checked by the server too). The preview says « …seulement l'année, la
 matière, les attentes choisies et vos précisions. » when a note is sent (the earlier sentence
-without one). `server/library/report-bank-preview.ts` builds it (unit tested).
+without one). `server/library/report-bank-preview.ts` builds it (unit tested). _Round B:_ with a
+note, the sentence reads « L'application n'ajoute aucun renseignement sur vos élèves : elle envoie
+seulement l'année, la matière, les attentes choisies et vos précisions. », since the note is the
+teacher's free text; the page's title is « Créer une banque de commentaires avec l'IA ».
 
 **D-133 — No AI on an individual student's comment.** No AI feature reads a report card comment,
 a student's mark or « Mes notes »: the AI only writes banks from curriculum labels (D-132). A
@@ -2943,6 +2974,8 @@ device's browser and never reach our servers or the AI; « À quoi servent ces r
 sign-out, when someone else signs in on that browser, or at the latest 60 days after the « remise »;
 the term « personal » allows, besides alerts, « les commentaires de bulletin, qui restent sur votre
 appareil »; the term « account » says signing out erases the drafts and the report card comments.
+(« Combien de temps » was reworded in the post-MVP review, terms `2026-10-pilote-5`, D-144: the
+erasure happens only when the app opens in that browser.)
 « Bienvenue » gains the point « Les commentaires de bulletin que vous rédigez restent dans le
 navigateur de votre appareil… » and « Ce qui a changé » (`welcome.changes.pilote3`). The seed's
 demo accounts accept the new version, so demos and browser tests go straight in; everyone else sees
@@ -2983,12 +3016,14 @@ the draft, the editor, copying; D-136 to D-138, D-140), S2 (the PDF and the « A
 reminder; D-141, D-142) and S3 (« Traduire en anglais (IA) », the terms and the docs; D-139,
 D-143). The lead answered the plan's questions for Mike (2026-10-03), and the slices build on
 them: (1) the app sends nothing: copy or print only, no parent data, no parent accounts; (2)
-« Traduire en anglais (IA) » in v1, with stricter rules than D-038 (a paragraph naming « M. » or
-« Mme » someone the app does not know is never sent; capitalized words are shown to check; off
-wherever AI is off; the preview shows exactly what is sent); (3) no « Améliorer le texte (IA) »
+« Traduire en anglais (IA) » in v1, with stricter rules than D-038 (a paragraph where a title such
+as « M. » or « Mme » is not followed by a name the app knows is never sent, with the limits D-139
+states; capitalized words are shown to check; off wherever AI is off; the preview shows exactly
+what is sent); (3) no « Améliorer le texte (IA) »
 in v1, a typography fix without AI instead; (4) other languages after the pilot; (5) messages are
 kept with the students' first names (a year after the school year) and deletable at any time; (6)
-« Moment de foi » included by default, one click removes it.
+« Moment de foi » included by default, one click removes it. Mike has not confirmed these answers
+yet (`docs/HANDOFF.md` « Decisions waiting for Mike »).
 
 **D-136 — Info-parents: one message per class and week, the class team's; the app sends nothing
 (amends D-013, D-033 and D-036).** A class has at most one message per week
@@ -3111,7 +3146,7 @@ under the owner's rule that nothing personal leaves Canada:
 - the preview lists « Mots avec majuscule à vérifier » in what is sent (`capitalizedWords`: words
   inside a sentence, and a sentence's first word when the next one is capitalized too; never
   markers, short acronyms, titles, common words or a short list of words that are never a person,
-  such as Dieu, Noël, Avent, Ontario and the school subjects — **Assumption**), and « Envoyer à
+  such as Dieu, Noël, Avent, Ontario and the school subjects; **Assumption**), and « Envoyer à
   l'IA » needs « J'ai vérifié : le texte ne nomme aucune autre personne que l'application ne
   connaît pas. », which the server checks too (`newsletterUnconfirmed`).
 
@@ -3139,8 +3174,8 @@ l'IA — à relire »), as the requester; a message saved or marked sent meanwhi
 English page says the translation was automatic (D-141). « Mx », which the app offers, becomes an
 honorific for every feature (only more is replaced). _Why:_ a message to families thanks parents,
 volunteers and guests by name, the most likely way a name the app does not know would leave
-Canada; the teacher sees and confirms exactly what goes. The limit that remains, said in the
-preview: a first name the app does not know, alone at the start of a sentence. As built (slice
+Canada; the teacher sees and confirms exactly what goes. The limits that remain are those of the
+amendments below (the preview states them). As built (slice
 S3): migration `20270125090100_class_newsletters_ai.sql`; pgTAP `37_class_newsletters_ai`;
 `packages/ai/src/features/newsletter-translate.ts`, `prompts/newsletter_translate/v1.md`, ten
 evaluation cases (`newsletter-translate-cases.ts`, `checkNewsletterTranslation`); the web server's
@@ -3173,6 +3208,19 @@ neither blocked nor listed; the teacher's confirmation covers it. When every par
 English, « Traduire en anglais (IA) » says so (« Tous les paragraphes ont déjà une version anglaise à
 jour ») and preselects nothing: a retranslation is sent only if the teacher picks « Tout
 retraduire ».
+
+_Amended in the post-MVP review (2026-10-03), round B (wording only):_ the complete list of what the
+rule does not catch, now in every text (`PRIVACY.md` § 5 and § 13, `docs/ai-data-flow.md`,
+`docs/info-parents.md`, the release note `v090.items.translate`, the preview's `newsletter.ai.limit`
+and the bank's `reportBankAi.noteLimit`): a name the app does not know is caught only by the
+teacher when it has no title (a capitalized one is listed, not blocked), when it is lowercase
+without a title, when it is also a word the app treats as common (« Noël » alone, or a little word
+at a sentence's start: not listed), when it is lowercase after a title that is also an everyday
+word (« le curé gagnon »), and when it follows a word the app does not take for a title (« la
+directrice Dupuis »: listed, not blocked). The rule also leaves out paragraphs that name no one
+(« le père Noël », « la mère de Dieu »), whose English the teacher writes. No text says « never
+sent » about a name any more, only about a paragraph where the app recognizes a title not followed
+by a name it knows.
 
 **D-140 — No AI rewriting in v1: « Corriger la typographie ».** « Améliorer le texte (IA) » is not
 built: rewriting the teacher's French would send more text out and risk invented facts for little
@@ -3250,6 +3298,41 @@ message aux familles, sans jamais l'envoyer, et il est effacé avec les prénoms
 seed's accounts accept the new version; everyone else sees the banner (never a block). `PRIVACY.md`
 (release 0.9) says the same. _Why:_ the notice's purposes and retention changed with « Info-parents
 », and the new AI feature needs the teacher to remove unknown names first.
+
+## Post-MVP review (2026-10-03)
+
+A review of the three post-MVP features (security, correctness, UX and French, documents) made 43
+findings, some of them the same problem seen from two sides. Round A fixed the code (commits
+`627ce0a`, `6616b48`, `401f593`, `8f07a60`) and wrote its decisions into D-125, D-127, D-129,
+D-130, D-132, D-137 and D-139 (« Amended in the post-MVP review »). Round B made every text say
+what the code does (D-044, D-105, D-110, D-130, D-132, D-134, D-139 and this entry).
+
+**D-144 — Pilot terms `2026-10-pilote-5` (amends D-110, D-134).** The privacy notice's « Combien
+de temps » promised that report card comments are erased « au plus tard 60 jours après la remise
+du bulletin ». No code can keep that promise: `localStorage` has no timer, and the app removes the
+drafts only when it runs in that browser (D-130 as amended). The notice now says: « Les
+commentaires de bulletin sont effacés de votre appareil à la déconnexion. Sans déconnexion, ils le
+sont la première fois que l'application s'ouvre dans ce navigateur pour une autre personne, ou plus
+de 60 jours après la remise du bulletin ; un navigateur où l'application ne s'ouvre plus les garde
+jusqu'à ce que ses données soient effacées. » In the same text, « les commentaires après un an »
+(the feedback button's, D-116, two sentences before « Les commentaires de bulletin ») becomes « les
+commentaires envoyés avec le bouton « Commentaires » après un an », as the English already said.
+The notice changes meaning, so the version changes (`CURRENT_TERMS_VERSION`,
+`TERMS_CHANGES['2026-10-pilote-5'] = 'pilote5'`), with « Ce qui a changé »
+(`welcome.changes.pilote5`): « les commentaires de bulletin sont effacés de votre appareil à la
+déconnexion ; sans déconnexion, seulement quand l'application s'ouvre de nouveau dans ce
+navigateur, pour une autre personne ou plus de 60 jours après la remise du bulletin. » The seed's
+accounts accept the new version; everyone else sees the banner (never a block). The other texts
+that changed with it are not terms: the page's notice and « Comment ça marche » in « Bulletins »
+(`reportComments.notice.body`, `reportComments.help.erase`, `reportComments.help.name`), the
+translation preview's limit (`newsletter.ai.limit`, `newsletter.ai.words` without its dash aside,
+`newsletter.ai.upToDate`), the bank preview (`reportBankAi.previewNoStudents`,
+`reportBankAi.noteLimit`, `errors.reportBankUnconfirmed`) and the release notes (`v080.items.ai`,
+`v090.items.translate`, `v090.items.terms`). The notice's AI paragraph is unchanged: it says the
+app does not recognize the names it does not know and that the teacher removes them, which stays
+true with the title rule. `PRIVACY.md` (release 0.9, change log) says the same. _Why:_ the owner's
+rule and the lawyer's review need texts that state what the code does, including its limits; a
+promise the code cannot keep is worse than a narrower one it keeps.
 
 ## Schema additions beyond SPEC section 8
 

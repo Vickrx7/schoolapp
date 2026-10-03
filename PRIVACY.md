@@ -17,8 +17,9 @@ data is entered (`docs/PILOT.md`).
 **The rule we design to: information that leaves Canada must hold no personal data.** Section 6
 lists every place data goes and what it holds. One limit remains, in the text sent to the AI
 provider: the app replaces the names it knows (the students and staff of the teacher's schools),
-but it cannot recognize a name it does not know, such as a parent's or a sibling's. The teacher
-sees the exact text before it is sent and must remove such a name (section 5).
+but it cannot reliably recognize a name it does not know, such as a parent's or a sibling's. Two
+features refuse a title followed by such a name (« Mme Dupuis »); for any other, the teacher sees
+the exact text before it is sent and must remove the name herself (section 5).
 
 ## Contents
 
@@ -41,18 +42,18 @@ sees the exact text before it is sent and must remove such a name (section 5).
 
 ## 1. Quick answers
 
-| Question                                                 | Short answer                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Section |
-| -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| Where is the data stored?                                | In Canada, by design. Hosted (not live yet): the database and the sign-in service at Supabase in AWS `ca-central-1` (Montréal), and the app's server at AWS in `ca-central-1`; where Supabase keeps its own backups and logs is to be confirmed in writing before go-live. Board-hosted: on the board's own servers.                                                                                                                                                  | 6       |
-| What does the app collect about students?                | A first name or nickname, the class, an optional language level, and, only if the principal turns them on, encrypted safety or medical alerts. No last name, Ontario Education Number, birth date, address, photo or e-mail. Students have no accounts. Report card comments a teacher writes stay in her browser; they never reach our servers or the AI.                                                                                                            | 3, 4    |
-| Is data sold, used for advertising, or used to train AI? | No, no and no. The AI provider receives the text after the names of the students and staff of the teacher's schools are replaced and the personal details the app detects are refused; another name (a parent's) must be removed by the teacher, who sees the exact text first. It is sent under commercial API terms that do not allow training on it by default.                                                                                                    | 5       |
-| Who are the subprocessors?                               | Hosted: Supabase (database, sign-in), Amazon Web Services (server, sign-in e-mails, backup storage), Anthropic (AI: the text a teacher sends, with known names replaced), an uptime monitor (no personal data). Board-hosted: the board's own infrastructure, plus Anthropic only if AI is on.                                                                                                                                                                        | 6       |
-| How are we told about a breach?                          | IP Lynx tells the board within 24 hours of confirming it (an Assumption to agree in the contract). The board notifies the Information and Privacy Commissioner and the people affected.                                                                                                                                                                                                                                                                               | 12      |
-| What happens at the end of the contract?                 | IP Lynx exports the board's whole audit log for it (CSV) and, if the board wants it, its library; on request IP Lynx prepares an extract of the board's data; then IP Lynx deletes the board within 30 days and confirms in writing. Backups age out within 30 days.                                                                                                                                                                                                  | 10      |
-| Can IP Lynx staff see our data?                          | Only named operators, only for support or maintenance, and our rule is to record each access in the board's own audit log first (a rule, not a technical lock: section 7). During the pilot, IP Lynx may also hold the board administrator role, if the board asks (section 2).                                                                                                                                                                                       | 7       |
-| Do students use AI?                                      | No. Only teachers, principals and vice-principals, at schools where the principal turned AI on and the board allows it. No AI feature reads a report card comment about a student.                                                                                                                                                                                                                                                                                    | 5, 13   |
-| How do people sign in?                                   | With a 6-digit code sent by e-mail; there are no passwords. Sessions end after 7 days, or after 12 hours without activity.                                                                                                                                                                                                                                                                                                                                            | 7       |
-| Are there cookies, trackers or analytics?                | Only the cookies the app needs to keep a person signed in, the chosen language and a substitute's or class device's session, plus one preference (the « Moment de foi » choice on the absence form). Unsent drafts stay in the browser until they are sent or the person signs out, and report card comments until sign-out, another account signing in on that browser, or 60 days after the report goes home. No analytics, no advertising, no third-party scripts. | 8       |
+| Question                                                 | Short answer                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | Section |
+| -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| Where is the data stored?                                | In Canada, by design. Hosted (not live yet): the database and the sign-in service at Supabase in AWS `ca-central-1` (Montréal), and the app's server at AWS in `ca-central-1`; where Supabase keeps its own backups and logs is to be confirmed in writing before go-live. Board-hosted: on the board's own servers.                                                                                                                                                                                            | 6       |
+| What does the app collect about students?                | A first name or nickname, the class, an optional language level, and, only if the principal turns them on, encrypted safety or medical alerts. No last name, Ontario Education Number, birth date, address, photo or e-mail. Students have no accounts. Report card comments a teacher writes stay in her browser; they never reach our servers or the AI.                                                                                                                                                      | 3, 4    |
+| Is data sold, used for advertising, or used to train AI? | No, no and no. The AI provider receives the text after the names of the students and staff of the teacher's schools are replaced and the personal details the app detects are refused; another name (a parent's) must be removed by the teacher, who sees the exact text first. It is sent under commercial API terms that do not allow training on it by default.                                                                                                                                              | 5       |
+| Who are the subprocessors?                               | Hosted: Supabase (database, sign-in), Amazon Web Services (server, sign-in e-mails, backup storage), Anthropic (AI: the text a teacher sends, with known names replaced), an uptime monitor (no personal data). Board-hosted: the board's own infrastructure, plus Anthropic only if AI is on.                                                                                                                                                                                                                  | 6       |
+| How are we told about a breach?                          | IP Lynx tells the board within 24 hours of confirming it (an Assumption to agree in the contract). The board notifies the Information and Privacy Commissioner and the people affected.                                                                                                                                                                                                                                                                                                                         | 12      |
+| What happens at the end of the contract?                 | IP Lynx exports the board's whole audit log for it (CSV) and, if the board wants it, its library; on request IP Lynx prepares an extract of the board's data; then IP Lynx deletes the board within 30 days and confirms in writing. Backups age out within 30 days.                                                                                                                                                                                                                                            | 10      |
+| Can IP Lynx staff see our data?                          | Only named operators, only for support or maintenance, and our rule is to record each access in the board's own audit log first (a rule, not a technical lock: section 7). During the pilot, IP Lynx may also hold the board administrator role, if the board asks (section 2).                                                                                                                                                                                                                                 | 7       |
+| Do students use AI?                                      | No. Only teachers, principals and vice-principals, at schools where the principal turned AI on and the board allows it. No AI feature reads a report card comment about a student.                                                                                                                                                                                                                                                                                                                              | 5, 13   |
+| How do people sign in?                                   | With a 6-digit code sent by e-mail; there are no passwords. Sessions end after 7 days, or after 12 hours without activity.                                                                                                                                                                                                                                                                                                                                                                                      | 7       |
+| Are there cookies, trackers or analytics?                | Only the cookies the app needs to keep a person signed in, the chosen language and a substitute's or class device's session, plus one preference (the « Moment de foi » choice on the absence form). Unsent drafts stay in the browser until they are sent or the person signs out, and report card comments until sign-out, or until the app next opens in that browser for another account or more than 60 days after the report goes home (section 4). No analytics, no advertising, no third-party scripts. | 8       |
 
 ## 2. Roles
 
@@ -173,9 +174,9 @@ it to.
 
 ### On the teacher's device (never sent)
 
-| Data                                                                                                                                                                                                                                                                                                                                                                     | Who sees it          | Kept                                                                                                              |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| Report card comment drafts (« Bulletins », D-130), in the browser's `localStorage`: per student id (never the name) the level or marks, the chosen bank entries, the wording (neutral, feminine or masculine), the grade in a combined class, « Mes notes » and the comment's text, with the first name replaced by `{prénom}`; the character limit and the copy setting | That browser profile | Until sign-out, « Effacer », another account signing in on that browser, or 60 days after the report's « remise » |
+| Data                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Who sees it          | Kept                                                                                                                                                                                                                                                                                                                                                     |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Report card comment drafts (« Bulletins », D-130), in the browser's `localStorage`: per student id (never the name) the level or marks, the chosen bank entries, the wording (neutral, feminine or masculine), the grade in a combined class, « Mes notes » and the comment's text, in template form: the student's own first name stored as `{prénom}` and a classmate's as a marker, in any case or accent; other names the teacher types (a parent's, a nickname) stay as typed; the character limit and the copy setting | That browser profile | Until sign-out or « Effacer ». Otherwise until the app next opens in that browser for another account, or after their date: 60 days after the report's « remise » (after the last chosen date for « Dates choisies »), never later than 60 days after the school year. A browser in which the app never opens again keeps them until its data is cleared |
 
 The server gives the composer only what the class team already sees (the students' first names)
 and data that is not about a student (the report periods, the subjects, the comment banks and the
@@ -184,8 +185,12 @@ handler, no form and no PDF carries them (a browser test types a marker in every
 it in no request). Known limits: what the browser holds is exposed to what acts on the browser,
 such as enhanced spell-check (some browsers send typed text to their maker), writing extensions
 and cloud clipboards; « Comment ça marche » on the page says so, and boards can manage those
-settings on their devices. On a computer nobody signs out of, the comments stay until another
-account signs in or they expire, in template form (no first names).
+settings on their devices. Nothing erases the drafts while the app is closed: the app removes
+them in that browser at sign-out, and otherwise when it next opens there for another account or
+after their date. On a computer nobody signs out of, the comments stay until then; if the app is
+never opened there again, until the browser's data is cleared. They stay in template form: the
+first names of the class's students are replaced, and other names the teacher typed stay as
+typed.
 
 ### Class mode
 
@@ -249,22 +254,35 @@ before sending. A name the app does not know (a parent's, a sibling's) cannot be
   identification numbers, postal codes, street addresses, a child's birth date), checks the exact
   outbound text once more, and sends no user, school or board identifier. Names are put back only
   on our server. **A name the app does not know** (a parent's, a sibling's, a student of another
-  school) is not recognized: the teacher sees the exact text before sending, and the preview asks
-  her to remove any such name. `docs/ai-data-flow.md` has the details.
+  school) is not reliably recognized: the teacher sees the exact text before sending, and the
+  preview asks her to remove any such name (two features also hold back a title followed by such
+  a name, below). `docs/ai-data-flow.md` has the details.
 - **AI, « Info-parents » translation (« Traduire en anglais (IA) », D-139):** only the message's
   French paragraphs, with known names replaced, and the class's grade (« 3e année »), built by the
   database from the stored message: no class, school, signature or identifier. A paragraph with a
-  detected detail, or a title followed by a name the app does not know (« Merci à Mme Dupuis »), is
-  not sent; the preview lists it (« Non envoyé ») and the capitalized words the teacher must check,
-  and nothing goes before she confirms. The answer comes back to our server, names are put back
-  there, and it is written into the message only if the message did not change meanwhile. What the
-  teacher then pastes into the board's channel is governed by that channel: the app sends nothing to
-  families (section 3).
-- **AI, report card comment banks (« Créer une banque avec l'IA », D-132):** the request carries
-  curriculum labels and the teacher's note only: the grade, the subject, the report, the chosen
-  attentes and the length of the entries, built by the database from ids, and the note
-  (« Précisions »), de-identified like any other. No student, class, school or identifier, and no
-  report card comment, is part of it; the bank comes back with the placeholder `{prénom}`.
+  detected detail is not sent, nor one where a title (M., Mme, Dr, Me, père, sœur, coach and
+  others, in French and English) is not followed by a name the app knows (« Merci à Mme Dupuis »,
+  « Mme Noël »); the preview lists it (« Non envoyé ») and the capitalized words the teacher must
+  check, and nothing goes before she confirms. The rule has limits, which the preview states: a
+  name with no title is not blocked (except a surname right after a name the app knows), and is
+  listed only when it is capitalized and is not a word the app treats as common (« Noël » alone
+  is not listed); after a title that is also an everyday word (père, mère, coach…), only a
+  capitalized word counts as a name; a word the app does not take for a title (« la directrice
+  Dupuis ») blocks nothing. It also blocks some paragraphs that name no one (« le père Noël »):
+  the teacher writes their English herself. The answer comes back to our server, names are put
+  back there, and it is written into the message only if the message did not change meanwhile.
+  What the teacher then pastes into the board's channel is governed by that channel: the app sends
+  nothing to families (section 3).
+- **AI, report card comment banks (« Créer une banque de commentaires avec l'IA », D-132):** the
+  request carries curriculum labels and the teacher's note only: the grade, the subject, the
+  report, the chosen attentes and the length of the entries, built by the database from ids, and
+  the note (« Précisions », at most 500 characters). The note is the only free text: the app
+  replaces the names it knows, refuses the request when a title is not followed by a name it knows
+  (the same rule and limits as the translation), lists the note's capitalized words, and sends a
+  note only once the teacher ticks « J'ai vérifié » (checked by the server too); the form asks her
+  to write nothing about a particular student, which the app cannot check. The app adds no student
+  data, no class, school or identifier, and no report card comment; the bank comes back with the
+  placeholder `{prénom}`.
 
 ## 6. Residency and jurisdiction
 
@@ -303,7 +321,7 @@ outside the board.
 ## 7. Access controls
 
 **Roles.** Each person sees only what their role allows. Row level security on every table enforces
-this in the database, and about 1,700 automated database tests check it.
+this in the database, and about 1,980 automated database tests check it.
 
 | Role                      | Sees                                                                                                                                                                                                                                                                                                                                                                     |
 | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -395,36 +413,37 @@ first.
 
 ## 9. Retention schedule
 
-Deletions run every night (the worker's clean-up). Settings marked "per board" can be changed by
-IP Lynx at the board's request, within the bounds shown. **The minimums are under legal review:**
-MFIPPA Regulation 823 may require keeping personal information for a year after its last use,
-which is why no per-board setting of personal data goes below 365 days (kept class results hold
-counts only, and may be kept less).
+Deletions on our servers run every night (the worker's clean-up); the one row about the teacher's
+device is applied by the app in that browser, never by the clean-up (section 4). Settings marked
+"per board" can be changed by IP Lynx at the board's request, within the bounds shown. **The
+minimums are under legal review:** MFIPPA Regulation 823 may require keeping personal information
+for a year after its last use, which is why no per-board setting of personal data goes below 365
+days (kept class results hold counts only, and may be kept less).
 
-| Data                                                                                                                  | Kept by default                                        | Per board (bounds) |
-| --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ | ------------------ |
-| Audit log                                                                                                             | 730 days                                               | 365 to 3,650 days  |
-| Substitute plans, with their codes, sessions and structured report                                                    | 365 days after the plan's date                         | 365 to 1,095 days  |
-| Absences with no plan left                                                                                            | 365 days after their last day                          | as above           |
-| Report notes and absent-student list                                                                                  | 60 days after the teacher confirms (or after the date) | no                 |
-| Substitute codes and sessions                                                                                         | 30 days after they expire                              | no                 |
-| Code attempts, class join failures                                                                                    | 1 day                                                  | no                 |
-| Students' first names, levels, alerts and the class's « Info-parents » messages (the class's teaching material stays) | 365 days after the school year ends                    | 365 to 1,095 days  |
-| Sample classes                                                                                                        | 60 days after creation                                 | no                 |
-| Report card comment drafts (device only, never on our servers)                                                        | sign-out, or 60 days after the remise                  | no                 |
-| AI requests (text, answer, text sent)                                                                                 | 30 days                                                | no                 |
-| AI usage ledger                                                                                                       | 730 days                                               | 365 to 3,650 days  |
-| Feedback                                                                                                              | 365 days                                               | 365 to 1,095 days  |
-| Invitations                                                                                                           | pending: 14 days; processed: 90 days                   | no                 |
-| Event outbox                                                                                                          | 90 days after handling                                 | no                 |
-| Sign-in service log (e-mails, actions)                                                                                | 90 days                                                | no                 |
-| Class mode answers and devices                                                                                        | until the session ends (at most 2 h 5 min)             | no                 |
-| Kept class results (counts only)                                                                                      | 365 days                                               | 1 to 3,650 days    |
-| Bulk generation runs; the text they sent                                                                              | 1 year; the text 30 days                               | no                 |
-| Server and proxy logs                                                                                                 | 14 days                                                | no                 |
-| Our backups                                                                                                           | 30 days                                                | no                 |
-| Supabase's own daily backups (hosted)                                                                                 | 7 days                                                 | no                 |
-| Accounts, classes, planning, library resources                                                                        | until deleted (section 10)                             | no                 |
+| Data                                                                                                                  | Kept by default                                                                                           | Per board (bounds) |
+| --------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ------------------ |
+| Audit log                                                                                                             | 730 days                                                                                                  | 365 to 3,650 days  |
+| Substitute plans, with their codes, sessions and structured report                                                    | 365 days after the plan's date                                                                            | 365 to 1,095 days  |
+| Absences with no plan left                                                                                            | 365 days after their last day                                                                             | as above           |
+| Report notes and absent-student list                                                                                  | 60 days after the teacher confirms (or after the date)                                                    | no                 |
+| Substitute codes and sessions                                                                                         | 30 days after they expire                                                                                 | no                 |
+| Code attempts, class join failures                                                                                    | 1 day                                                                                                     | no                 |
+| Students' first names, levels, alerts and the class's « Info-parents » messages (the class's teaching material stays) | 365 days after the school year ends                                                                       | 365 to 1,095 days  |
+| Sample classes                                                                                                        | 60 days after creation                                                                                    | no                 |
+| Report card comment drafts (device only, never on our servers; erased by the app in that browser, section 4)          | sign-out, or when the app next opens in that browser for another account or after 60 days past the remise | no                 |
+| AI requests (text, answer, text sent)                                                                                 | 30 days                                                                                                   | no                 |
+| AI usage ledger                                                                                                       | 730 days                                                                                                  | 365 to 3,650 days  |
+| Feedback                                                                                                              | 365 days                                                                                                  | 365 to 1,095 days  |
+| Invitations                                                                                                           | pending: 14 days; processed: 90 days                                                                      | no                 |
+| Event outbox                                                                                                          | 90 days after handling                                                                                    | no                 |
+| Sign-in service log (e-mails, actions)                                                                                | 90 days                                                                                                   | no                 |
+| Class mode answers and devices                                                                                        | until the session ends (at most 2 h 5 min)                                                                | no                 |
+| Kept class results (counts only)                                                                                      | 365 days                                                                                                  | 1 to 3,650 days    |
+| Bulk generation runs; the text they sent                                                                              | 1 year; the text 30 days                                                                                  | no                 |
+| Server and proxy logs                                                                                                 | 14 days                                                                                                   | no                 |
+| Our backups                                                                                                           | 30 days                                                                                                   | no                 |
+| Supabase's own daily backups (hosted)                                                                                 | 7 days                                                                                                    | no                 |
+| Accounts, classes, planning, library resources                                                                        | until deleted (section 10)                                                                                | no                 |
 
 - The class purge removes the students' first names and levels, their alerts, the substitute plans
   of the class's own school year that covered the class, its class mode link and its « Info-parents »
@@ -475,7 +494,10 @@ The board handles requests under MFIPPA. A person can correct their own name and
 « Profil »; teachers correct their students' first names. IP Lynx provides the records the board
 needs to answer a request (manual during the pilot: an extract prepared on request). A per-student
 export is not built: by design the app holds little about a student (a first name, a level, the
-class, alerts).
+class, alerts), but free text can mention one: the class's « Info-parents » messages may name a
+student (before a message is copied, printed or marked sent, « Des élèves sont nommés » lists the
+students it names, D-138), and so may a teacher's own units, lessons and notes. An extract made
+for a request about a student should include those mentions.
 
 ## 12. Breach response
 
@@ -500,8 +522,9 @@ class, alerts).
 - The app never contacts families: no e-mail, text message or parent account. A teacher copies or
   prints a class's « Info-parents » message herself; the editor asks her to name a student only for
   news everyone may read, never for behaviour, health or an evaluation (D-136, D-138). Its English
-  translation by the AI never sends a paragraph that names someone the app does not know after a
-  title (D-139).
+  translation by the AI leaves out a paragraph where the app finds a title not followed by a name
+  it knows (« Mme Dupuis »); the app does not recognize every name (one without a title, for
+  instance), so the teacher checks the exact text and confirms before anything is sent (D-139).
 - In class mode, students join a quiz on class devices with a number; nothing they type is stored,
   and their answers are deleted when the session ends.
 - A teacher may keep class results: counts per question and team scores, with no device and no
@@ -540,9 +563,9 @@ kept 730 days.
 
 ## 15. Assurance
 
-- **Automated tests**, run on every change in CI (GitHub Actions) and on a fresh database: 1,302
-  unit tests, 1,715 database tests (row level security, audit, retention, access), 93 integration
-  tests, and 130 browser tests on desktop, phone and tablet, with automated accessibility checks
+- **Automated tests**, run on every change in CI (GitHub Actions) and on a fresh database: 1,623
+  unit tests, 1,979 database tests (row level security, audit, retention, access), 97 integration
+  tests, and 156 browser tests on desktop, phone and tablet, with automated accessibility checks
   (axe, WCAG 2 A and AA) on the main pages. CI also restores a backup into an empty database and
   checks it, and starts the board-hosted install from the Docker images, then checks that its
   journal holds no e-mail address and no password.
@@ -557,13 +580,14 @@ kept 730 days.
   (`PRIVACY_CONTACT_EMAIL`), or the board's own privacy office.
 - **Support:** the address shown in the app (`SUPPORT_EMAIL`).
 - **Decisions behind this document:** `DECISIONS.md` (D-012 to D-019, D-037 to D-046, D-049 to
-  D-059, D-065, D-083 to D-093, D-102 to D-143).
+  D-059, D-065, D-083 to D-093, D-102 to D-144).
 
-| Date       | Release | Change                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| ---------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-10-02 | 0.6     | First version, written for the pilot. Pending a privacy lawyer's review.                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| 2026-10-02 | 0.6     | After the final review: the AI limit (names the app does not know), what the sign-in service and the database write to the journal, the hosting facts still to confirm, IP Lynx as a pilot board's administrator, the full audit export before a board is deleted, the monthly restore test. The in-app notice changed with it (terms version `2026-10-pilote-2`).                                                                                                                                |
-| 2026-10-02 | 0.7     | « Mon année »: a unit's planned dates and the attentes it aims at (the class team's, kept with the class), and the board's report card periods (no personal data). No new personal data and no AI, so the pilot terms are unchanged.                                                                                                                                                                                                                                                              |
-| 2026-10-02 | 0.7     | « Couverture » (worked out on each visit; nothing stored) and the long-range plan PDF (no student data; built when asked, never stored, the teacher's to give). No new personal data, so the pilot terms are unchanged.                                                                                                                                                                                                                                                                           |
-| 2026-10-03 | 0.8     | « Commentaires de bulletin »: comment banks in the library (phrases with `{prénom}`, no student data), « Créer une banque avec l'IA » (curriculum labels and the teacher's note only), and « Bulletins », which composes report card comments in the teacher's browser only (sections 1, 3, 4, 5, 9, 13). The notice, the terms and « Bienvenue » changed with it (terms version `2026-10-pilote-3`).                                                                                             |
-| 2026-10-03 | 0.9     | « Info-parents »: a class's weekly message to families, drafted from the class's data and kept with the class team, erased with the students' first names; the app sends nothing to families (sections 3, 4, 9, 13). « Traduire en anglais (IA) » sends only the message's French paragraphs with known names replaced, never a paragraph with a detected detail or a title before an unknown name (sections 5, 13). The notice and the terms changed with it (terms version `2026-10-pilote-4`). |
+| Date       | Release | Change                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| ---------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-10-02 | 0.6     | First version, written for the pilot. Pending a privacy lawyer's review.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| 2026-10-02 | 0.6     | After the final review: the AI limit (names the app does not know), what the sign-in service and the database write to the journal, the hosting facts still to confirm, IP Lynx as a pilot board's administrator, the full audit export before a board is deleted, the monthly restore test. The in-app notice changed with it (terms version `2026-10-pilote-2`).                                                                                                                                                                                                                                               |
+| 2026-10-02 | 0.7     | « Mon année »: a unit's planned dates and the attentes it aims at (the class team's, kept with the class), and the board's report card periods (no personal data). No new personal data and no AI, so the pilot terms are unchanged.                                                                                                                                                                                                                                                                                                                                                                             |
+| 2026-10-02 | 0.7     | « Couverture » (worked out on each visit; nothing stored) and the long-range plan PDF (no student data; built when asked, never stored, the teacher's to give). No new personal data, so the pilot terms are unchanged.                                                                                                                                                                                                                                                                                                                                                                                          |
+| 2026-10-03 | 0.8     | « Commentaires de bulletin »: comment banks in the library (phrases with `{prénom}`, no student data), « Créer une banque avec l'IA » (curriculum labels and the teacher's note only), and « Bulletins », which composes report card comments in the teacher's browser only (sections 1, 3, 4, 5, 9, 13). The notice, the terms and « Bienvenue » changed with it (terms version `2026-10-pilote-3`).                                                                                                                                                                                                            |
+| 2026-10-03 | 0.9     | « Info-parents »: a class's weekly message to families, drafted from the class's data and kept with the class team, erased with the students' first names; the app sends nothing to families (sections 3, 4, 9, 13). « Traduire en anglais (IA) » sends only the message's French paragraphs with known names replaced, never a paragraph with a detected detail, nor one where it recognizes a title before a name it does not know (sections 5, 13). The notice and the terms changed with it (terms version `2026-10-pilote-4`).                                                                              |
+| 2026-10-03 | 0.9     | After the post-MVP review: the title rule leaves out a paragraph (and refuses a bank's note) when a title is not followed by a name the app knows, with more titles and no exception after a title; its remaining limits are written out (sections 5, 13). Report card comments: every first name of the class is stored in template form, and the device's erasure is described as it works: at sign-out, or the next time the app opens in that browser (sections 1, 4, 9). Access requests include the « Info-parents » messages (section 11). The notice changed with it (terms version `2026-10-pilote-5`). |

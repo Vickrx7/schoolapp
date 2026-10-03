@@ -10,7 +10,7 @@ Never call this feature « Commentaires » alone: that word is the feedback butt
 | ----- | --------- | ----------------------------------------------------------------------------------------- |
 | S1    | `2ce92a8` | The comment bank as library type 26 (`report_comments`), its editor and three demo banks  |
 | S2    | `454e58b` | « Créer une banque avec l'IA » (`report_comment_bank`), its prompt, evaluation and checks |
-| S3    | (latest)  | « Bulletins », the reminder on « Aujourd'hui », terms `2026-10-pilote-3`, the docs        |
+| S3    | `c5d85c6` | « Bulletins », the reminder on « Aujourd'hui », terms `2026-10-pilote-3`, the docs        |
 
 ## What was built
 
@@ -23,25 +23,34 @@ Never call this feature « Commentaires » alone: that word is the feedback butt
   (at most 400 characters), optional feminine and masculine texts, a category and attente codes.
   Texts name the student `{prénom}` only. No duration, materials or formats; never in a lesson,
   class mode, the projector or a substitute plan. Review, sharing, approval, faith review and
-  « Adapter » work as for any resource. The demo pack has three approved banks: 3e Mathématiques
-  (report card), 3e Français (progress report) and the learning skills (3e to 5e).
+  « Adapter » work as for any resource. The editor and the bank's page speak of a bank, not of a
+  student sheet (since the post-MVP review): « Pour » and « Bulletin » first, the tabs « Contenu »
+  and « Détails », the general kind « Autres commentaires ». The demo pack has three approved
+  banks: 3e Mathématiques (report card), 3e Français (progress report) and the learning skills
+  (3e and 5e).
 
-**« Créer une banque avec l'IA »** (S2, D-132, `/library/generate/comments`)
+**« Créer une banque de commentaires avec l'IA »** (S2, D-132, `/library/generate/comments`)
 
 - One grade, a subject (none for the learning skills), the report, 0 to 12 attentes (none: general
-  comments), the length and a note. « Vérifier avant d'envoyer » shows exactly what is sent
-  (curriculum labels and the de-identified note, nothing about students); the answer is a private
-  draft with `{prénom}`. Also linked from the library hub, « Créer avec l'IA » and « Bulletins ».
+  comments), the length and a note (« Précisions »). « Vérifier avant d'envoyer » shows exactly
+  what is sent (curriculum labels and the de-identified note; the app adds nothing about
+  students). Since the post-MVP review, a title not followed by a name the app knows in the note
+  (« Merci à Mme Dupuis ») blocks the request, the note's capitalized words are listed to check,
+  and a request with a note needs « J'ai vérifié » (checked by the server too). The answer is a
+  private draft with `{prénom}`. Also linked from the library hub, « Créer avec l'IA » and
+  « Bulletins ».
 
 **« Bulletins »** (S3, D-130, D-135, `/classes/[id]/bulletins`), a class tab for its homeroom and
 subject teachers at a school with the Library module
 
 - **The notice, always shown:** « Vos commentaires restent sur cet appareil. Ils ne sont jamais
-  envoyés à nos serveurs ni à l'intelligence artificielle. Ils seront effacés quand vous vous
-  déconnecterez, ou au plus tard le 13 avril 2027. Copiez-les dans le bulletin officiel. » and
-  « Sur un ordinateur partagé, déconnectez-vous quand vous avez terminé. »
+  envoyés à nos serveurs ni à l'intelligence artificielle. Ils sont effacés à la déconnexion, ou la
+  première fois que l'application s'ouvre dans ce navigateur après le 13 avril 2027. Copiez-les
+  dans le bulletin officiel. » and « Sur un ordinateur partagé, déconnectez-vous quand vous avez
+  terminé. »
 - **Filters** (the address, filters only): « Période » (the board's periods with their dates and
-  « saisie », or « Dates choisies » with « Type de bulletin »), « Matière » (my subjects, the
+  « saisie », or « Dates choisies » with « Type de bulletin », inside the school year; without
+  board periods, the whole school year by default), « Matière » (my subjects, the
   learning skills first for the homeroom teacher, then the class's other subjects) and « Banque »
   (approved banks first, « Approuvée par le conseil » or « Brouillon — à relire », « Voir la
   banque »; without one, « Créer une banque avec l'IA », prefilled, and « Créer une banque »).
@@ -88,9 +97,15 @@ school's AI on (« École » → Intelligence artificielle) and the fake worker:
 
 - **Comments never leave the browser** (D-130). The device draft is `localStorage`
   `lynx-draft:report:{userId}:{classId}:{periodKey}`: per student id, the wording, marks, chosen
-  entries, notes and comment, with the first name written `{prénom}`, so the device holds no
-  first name. It is removed at sign-out, by « Effacer », when another account signs in on that
-  browser (the janitor in the app's shell), and 60 days after the « remise » at the latest.
+  entries, notes and comment, in template form: the student's own first name is written
+  `{prénom}` and a classmate's `{élève:…}`, in any case or accent (a first name that is also an
+  everyday word, such as Rose, is replaced in lowercase only when written as the roster spells
+  it); other names the teacher types (a parent's, a nickname) stay as typed. It is removed at sign-out and by « Effacer ».
+  Otherwise the app removes it in that browser, never on a schedule: the janitor in the app's
+  shell, whenever someone opens the app there, removes another account's drafts and the expired
+  ones (60 days after the « remise », or after the last chosen date; never later than 60 days
+  after the school year). A browser in which the app never opens again keeps them until its data
+  is cleared.
 - The page has no server action, route handler, form or PDF that carries a comment; its address
   holds filters only and the student is the fragment. A unit test checks the composer's files
   (no server action, no `server-only` module, no request of their own, no `name` on a comment
@@ -98,14 +113,17 @@ school's AI on (« École » → Intelligence artificielle) and the fake worker:
   and reloads, and finds it in no request's address, headers or body.
 - No AI reads a comment about a student (D-133). Banks hold curriculum phrases with `{prénom}`;
   the AI request for a bank carries curriculum labels and the de-identified note only (D-132,
-  `docs/ai-data-flow.md`).
+  `docs/ai-data-flow.md`). The note is free text: the form asks the teacher to write nothing about
+  a particular student, which the app cannot check.
 - The terms changed (`2026-10-pilote-3`, D-134): the notice, the terms and « Bienvenue » say that
-  report card comments stay on the device. `PRIVACY.md` § 1, 3, 4 (« On the teacher's device (never
-  sent) »), 5, 9, 13 and 16.
+  report card comments stay on the device; `2026-10-pilote-5` (D-144) says when they really leave
+  it. `PRIVACY.md` § 1, 3, 4 (« On the teacher's device (never sent) »), 5, 9, 13 and 16.
 - Known limits, for the lawyer and the boards: what the browser holds is exposed to what acts on
   the browser (enhanced spell-check, writing extensions, cloud clipboards); on a computer nobody
-  signs out of, comments stay (as templates) until another account signs in or they expire. The
-  working copies are transitory; the record is the board's report card (Q5).
+  signs out of, comments stay until the app is next opened there by another account or after
+  their date, and in a browser where the app never opens again until its data is cleared (as
+  templates: the class's first names replaced, other names as typed). The working copies are
+  transitory; the record is the board's report card (Q5).
 
 ## Tests
 
@@ -120,6 +138,12 @@ school's AI on (« École » → Intelligence artificielle) and the fake worker:
   `draft-storage` (the janitor: another account's, expired and unreadable drafts; nothing written
   after a sign-out), `components/report-comments/no-server.test.ts`; the catalogues' parity and the
   terms (`legal.test.ts`: the seed accepts `2026-10-pilote-3`).
+- Post-MVP review: `report-bank-preview.test.ts` (the note's title rule, capitalized words and
+  « J'ai vérifié »), `report-comments.test.ts` in `@lynx/content` (every first name of the class
+  in template form, any case or accent), the domain's draft tests (one bad entry never costs the
+  rest, a clipped text, a combined class's choices kept), `view-model.test.ts` (the same key every
+  day without board periods, dates kept inside the school year, the expiry's cap) and
+  `draft-storage.test.ts` (an unreadable draft is never deleted for that).
 - pgTAP `35_report_comments` (S1 and S2).
 - Integration: the worker turns a fake answer into a draft bank (S2).
 - Browser: `e2e/report-comments.spec.ts` (S2's two steps; S3: the tab, the filters, the demo bank,
@@ -146,10 +170,31 @@ school's AI on (« École » → Intelligence artificielle) and the fake worker:
 - Nothing was cut: « Suggestions à partir de mes notes », « Tout copier pour cet élève », the
   other-tab warning and the class-wide print are all built.
 
+## Post-MVP review (2026-10-03)
+
+The review of the three features changed this one in commits `627ce0a`, `6616b48`, `401f593` and
+`8f07a60` (D-129, D-130, D-132 and D-144 have the details):
+
+- **The device draft:** every first name of the class is stored in template form, in any case or
+  accent; without board periods the default dates are the whole school year, so the draft's key
+  no longer changes every day (before, yesterday's comments vanished from the page); chosen dates
+  stay inside the school year and the expiry is never later than 60 days after it; one bad entry
+  never costs the class's other comments, and an unreadable draft is never deleted for that; a
+  combined class keeps a student's grade and wording.
+- **The bank's note** goes through the title rule of « Info-parents » and needs « J'ai vérifié ».
+- **Wording:** the bank editor and page speak of a bank; « Bulletins » says nothing about a bank
+  when there is none; wider filters, bank names without the shared prefix; the welcome sentence
+  on report card comments is grammatical (same meaning); the notice, the help and the terms say
+  when comments really leave the device (terms `2026-10-pilote-5`, D-144).
+- Class-wide reads go page by page past PostgREST's 1,000-row cap.
+
 ## Known limits
 
 - **No curriculum in production** (D-030): without attentes, every entry of a bank is offered and
   the page says so; the AI writes general banks.
+- **Erasure happens only when the app runs in that browser** (above): a laptop or browser where
+  the app is never opened again keeps the comments until its data is cleared. Signing out on a
+  shared computer is the reliable way.
 - **One device:** comments do not follow a teacher to another computer (Q2), and a full device or
   cleared browser data loses what was not copied (the page says to copy early).
 - The bank list reads at most 50 banks per grade and subject.
@@ -158,6 +203,9 @@ school's AI on (« École » → Intelligence artificielle) and the fake worker:
 - AI on one student's comment is designed only (D-133).
 
 ## Questions (answered by the lead for Mike, 2026-10-02; we built on these answers)
+
+Mike has not confirmed these answers yet: `docs/HANDOFF.md` « Decisions waiting for Mike » lists
+them for him.
 
 1. AI on one student's comment: no for the pilot (S4 designed, not built).
 2. Comments stay on the device; nothing is stored on our servers.

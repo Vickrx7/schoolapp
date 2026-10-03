@@ -10,7 +10,7 @@ teacher copies or prints the message herself, through her board's own channels.
 | ----- | --------- | ---------------------------------------------------------------------------------------- |
 | S1    | `192366d` | The table, the first draft from the class's data, the editor, copying, the names check   |
 | S2    | `20cd996` | The PDF (French, English or both) and the reminder on « Aujourd'hui »                    |
-| S3    | (latest)  | « Traduire en anglais (IA) », terms `2026-10-pilote-4`, the docs, the seed's school mass |
+| S3    | `ed24e01` | « Traduire en anglais (IA) », terms `2026-10-pilote-4`, the docs, the seed's school mass |
 
 ## What was built
 
@@ -57,18 +57,21 @@ the board)
   (« Récupérer mes modifications »).
 - **« Partager »** (S1, S2, D-141): « Copier le français », « Copy the English », « Copier les
   deux », « Imprimer le français (PDF) », « Print the English (PDF) », « Imprimer les deux (PDF) »,
-  then « Marquer comme envoyé » (read-only until « Remettre en brouillon »). All wait for a save,
-  then « Des élèves sont nommés » lists the class's students the message names, the personal
-  details it holds, and, for the English, how many paragraphs will appear in French.
+  then « Marquer comme envoyé » (read-only until « Remettre en brouillon »; the database refuses
+  any change of a sent message's text, `LXN07`). All wait for a save, then « Des élèves sont
+  nommés » lists the class's students the message names, the personal details it holds, and, for
+  the English, how many paragraphs will appear in French.
 
 **« Traduire en anglais (IA) »** (S3, D-139), for the saved message, where the school's AI is on
 
 - « Vérifier avant d'envoyer »: « Seulement les paragraphes sans traduction à jour (3) » or « Tout
-  retraduire (12) »; exactly the text sent, with the names the app knows replaced and highlighted;
-  « Non envoyé — traduisez-le vous-même » for a paragraph with a personal detail or a title before
-  a name the app does not know (« Merci à Mme Dupuis »), with the reason; « Mots avec majuscule à
-  vérifier : Montfort… »; the box « J'ai vérifié : le texte ne nomme aucune autre personne que
-  l'application ne connaît pas. »; « Envoyer à l'IA ».
+  retraduire (12) » (when every paragraph already has up-to-date English, the dialog says so and
+  preselects nothing: a retranslation is sent only if the teacher picks « Tout retraduire »);
+  exactly the text sent, with the names the app knows replaced and highlighted; « Non envoyé —
+  traduisez-le vous-même » for a paragraph with a personal detail or a title not followed by a
+  name the app knows (« Merci à Mme Dupuis », « Mme Noël »), with the reason; « Mots avec
+  majuscule à vérifier : Montfort. »; the box « J'ai vérifié : le texte ne nomme aucune autre
+  personne que l'application ne connaît pas. »; « Envoyer à l'IA ».
 - While the AI translates, the message is read-only (« L'IA traduit votre message… »); then the
   English shows on its paragraphs (« English : traduit par l'IA — à relire ») with « L'IA a traduit
   2 paragraphes : relisez leur anglais… ». A message saved meanwhile takes nothing (« Le message a
@@ -101,10 +104,12 @@ week's message is marked sent.
   on demand, never stored, `private, no-store`.
 - **AI** (D-139, `docs/ai-data-flow.md`): only the French paragraphs to translate, with the names
   the app knows replaced and the class's grade; no class, school, signature or id. A paragraph with
-  a detected detail, or a title before a name the app does not know, is never sent; the teacher
-  checks the capitalized words and confirms. The answer comes back to Canada, where names are put
-  back, and is written into the message only while it is unchanged. The school's budget pays.
-- **Terms** `2026-10-pilote-4` (D-143) and `PRIVACY.md` release 0.9.
+  a detected detail, or a title not followed by a name the app knows, is never sent; the teacher
+  checks the capitalized words and confirms (the rule's limits are under « Known limits »). The
+  answer comes back to Canada, where names are put back, and is written into the message only
+  while it is unchanged. The school's budget pays.
+- **Terms** `2026-10-pilote-4` (D-143), then `2026-10-pilote-5` after the post-MVP review (D-144,
+  about report card comments), and `PRIVACY.md` release 0.9.
 
 ## Tests
 
@@ -112,14 +117,16 @@ week's message is marked sent.
   typography, the facts and the draft, the plain text, the reminder); the web's
   `server/newsletter/` (phrases with the real catalogues, names, view model, the translation
   preview: exactly the message the request sends, the paragraphs left out, the capitalized words),
-  the PDF model and render; `@lynx/ai`: `findTitledUnknownNames`, « Mx », the feature (input, the
+  the PDF model and render; `@lynx/ai`: `unknown-names.test.ts` (the title rule and the
+  capitalized words, with every example of the post-MVP review), « Mx », the feature (input, the
   paragraphs left out and the confirmed ones, the markers kept from the preview, the last check,
   normalizing, every validation rule, the fake answer), `capitalizedWords`, the evaluation checks
   and the prompt's privacy; `errors.test.ts`, `session-gate.test.ts`, `legal.test.ts`
   (`2026-10-pilote-4`).
-- pgTAP `36_class_newsletters` (S1) and `37_class_newsletters_ai` (S3: the request, who may ask,
+- pgTAP `36_class_newsletters` (S1), `37_class_newsletters_ai` (S3: the request, who may ask,
   the scopes and limits, LXN03 to LXN06 and LXA01, the answer written back, newsletterChanged,
-  invalidOutput, newsletterTooLargeForAi, the grants).
+  invalidOutput, newsletterTooLargeForAi, the grants) and `38_post_mvp_review` (a sent message's
+  text is locked, LXN07).
 - Integration: `apps/worker/src/newsletter-ai.int.test.ts` (the English written back with Samuel
   put back; « Mme Dupuis » never in what was sent, even when asked; a message saved during the
   translation takes nothing); `retention.int.test.ts` (the purge).
@@ -140,23 +147,53 @@ week's message is marked sent.
   check (`outboundFindings`), and the eval's fake answer carries the school's words (« PA day »,
   "Grade 3", the days and months) so every check runs on it. A translation that would make the
   message too large for the app fails (`newsletterTooLargeForAi`). pgTAP for S3 is its own file,
-  `37_class_newsletters_ai`.
+  `37_class_newsletters_ai`. (The post-MVP review widened the title rule again; see below.)
 - **The seed** (S3, lead decision): the demo's « Messe de l'école » goes on the first Friday, by the
   school's date (America/Toronto), that is not a seeded day off, so the demo never shows a mass on a
   PA day (`supabase/seed.sql`; `e2e/helpers.ts` `comingSchoolFriday`; `absence.spec.ts` checks it;
   `year-plan.spec.ts` expects the mass in the Thanksgiving week when the reset puts it there).
 
+## Post-MVP review (2026-10-03)
+
+The review of the three features changed this one in commits `627ce0a`, `401f593` and `8f07a60`
+(D-137, D-139 and D-144 have the details):
+
+- **The title rule fails closed** (`packages/ai/src/unknown-names.ts`, one implementation for the
+  preview, the worker and its last check): after a title, no allowed word applies (« Mme Noël »,
+  « Mme St-Pierre » and « le père Noël » are left out); more titles (plural, religious,
+  professional, English, family); any space or a line break between the title and the name; up
+  to three words between them; after an honorific, a lowercase name too (« madame dupuis »).
+- **« Mots avec majuscule à vérifier »** lists capitalized words at a sentence's start and after
+  « : », « ( », « « » and a dash too; Grace, April, May, June and August are no longer treated as
+  words that never name a person.
+- **The first draft:** prepared during the week before, that week's remaining lessons stay in it;
+  no lesson before the school year starts or after it ends; a unit too long for a paragraph lists
+  its first lessons and « et 6 autres leçons »; the app's lines end with a period; the faith moment
+  names the virtue and quotes the reflection; « Message » shows once.
+- **A sent message keeps its text** (`LXN07`) until « Remettre en brouillon »; class-wide reads go
+  page by page past PostgREST's 1,000-row cap; the class tabs scroll the current one into view on
+  phones.
+
 ## Known limits
 
-- **A first name the app does not know, alone at the start of a sentence** (« Julie viendra
-  lire »), is not caught by the title rule or listed as a capitalized word: the teacher reads the
-  exact text before she confirms (the preview says so).
+- **Names the title rule does not catch.** A name the app does not know is caught only by the
+  teacher, who reads the exact text before she confirms (the preview says so), when it has no
+  title (« Merci à Sophie » is listed, not blocked), when it is lowercase without a title, when it
+  is also a word the app treats as common (« Noël » alone, or a little word at the start of a
+  sentence), when it is lowercase after a title that is also an everyday word (« le curé
+  gagnon »), or when it follows a word the app does not take for a title (« la directrice
+  Dupuis »).
+- **The rule also leaves out some paragraphs that name no one** (« le père Noël », « la mère de
+  Dieu »): the teacher writes their English herself.
 - English only (other languages after the pilot, Q4); no « Améliorer le texte (IA) » (Q3).
 - The AI's English is reviewed by the teacher (« à relire »); the prompt's glossary covers the usual
   Ontario school words, not a board's own names for its programs.
 - Nothing is sent by the app: read receipts, scheduling and parent contacts are out of scope.
 
 ## Questions (answered by the lead for Mike, 2026-10-03; we built on these answers)
+
+Mike has not confirmed these answers yet: `docs/HANDOFF.md` « Decisions waiting for Mike » lists
+them for him.
 
 1. The app sends nothing: copy or print only; no parent data, no parent accounts.
 2. « Traduire en anglais (IA) » in v1 with the stricter rules; off wherever AI is off; the preview

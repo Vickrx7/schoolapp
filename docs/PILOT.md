@@ -40,6 +40,10 @@ need your decision or your account; the others are ours.
    - « Personnel invité »
    - « Journées pédagogiques et congés au calendrier » (in « Calendrier », « Tout le conseil »)
    - « Personnes qui approuvent les ressources »
+   - « Périodes de bulletin » (in « Années scolaires »: the progress report and the two terms,
+     with « Préremplir avec les dates habituelles »). « Bulletins », the report card reminder on
+     « Aujourd'hui » and the report dates of « Mon année » depend on it; without periods, teachers
+     choose their own dates in « Bulletins ».
 
 ## 2. Inviting teachers
 
@@ -76,8 +80,11 @@ Tell each teacher, in the message or in person:
   first names of the students of their schools with « [élève] ».
 - **« Pour bien commencer »** (four steps) is on « Aujourd'hui »: create the class, add the
   students (first names only), enter the timetable, create a unit with lessons.
+- **Sign out on a shared computer.** Report card comments (« Bulletins ») stay in that browser
+  only. Signing out erases them; otherwise they stay until the app is opened there again by
+  someone else or after their date (60 days after the report card goes home).
 
-What they see at the first sign-in: « Bienvenue », five short privacy points, a link to
+What they see at the first sign-in: « Bienvenue », six short privacy points, a link to
 « Confidentialité et conditions », the box to accept the pilot terms, then their display name and
 how students address them (Mme, M., Mx), used in substitute plans.
 
@@ -96,7 +103,7 @@ how students address them (Mme, M., Mx), used in substitute plans.
 
 1. **From your message to her first class.** How long from your text on her phone until she is
    signed in (target: under 3 minutes)? Is anything about the 6-digit code confusing?
-2. **« Bienvenue ».** Does she read the five privacy points? Do they reassure or worry her? Is
+2. **« Bienvenue ».** Does she read the six privacy points? Do they reassure or worry her? Is
    « Comment les élèves vous appellent-ils? » clear?
 3. **Setting up her real class:** class, students, timetable, one unit. Time it (target: under 20
    minutes on a laptop). Where does she stop?

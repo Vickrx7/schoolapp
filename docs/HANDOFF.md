@@ -2,13 +2,15 @@
 
 Written 2026-09-28 by the session that built Phases 1 and 2 (branch `claude/nifty-fermat-8hhl1l`);
 updated 2026-10-03 by the session that built Phases 3, 4, 5 and 6, « Mon année », « Commentaires
-de bulletin » and « Info-parents » (branch `claude/serene-ride-3n2fa1`). Read `SPEC.md` and `DECISIONS.md` first; this
-file covers what they don't: the conversation with Mike, the current state, how to run things in
-these containers, and what's next. Phase notes: `docs/phase-1.md` to `docs/phase-6.md`, then
+de bulletin » and « Info-parents », and their review (branch `claude/serene-ride-3n2fa1`). Read
+`SPEC.md` and `DECISIONS.md` first; this file covers what they don't: the conversation with Mike,
+the current state, how to run things in these containers, what's next, and the decisions waiting
+for Mike (section 6). Phase notes: `docs/phase-1.md` to `docs/phase-6.md`, then
 `docs/mon-annee.md` (the year planner), `docs/report-comments.md` (report card comments) and
-`docs/info-parents.md` (the weekly message to families), built after them; and `docs/content-packs.md` for a board's IT. For the pilot:
-`PRIVACY.md` (a board's privacy officer), `DEPLOYMENT.md` (installing), `docs/PILOT.md` (for Mike)
-and `docs/demo-script.md` (the board demo).
+`docs/info-parents.md` (the weekly message to families), built after them; and
+`docs/content-packs.md` for a board's IT. For the pilot: `PRIVACY.md` (a board's privacy officer),
+`DEPLOYMENT.md` (installing), `docs/PILOT.md` (for Mike) and `docs/demo-script.md` (the board
+demo).
 
 ## 1. The brief
 
@@ -60,8 +62,9 @@ Mon Tableau, Cartable, Ardoise). No availability or trademark check has been don
 - [Vickrx7/schoolapp#1](https://github.com/Vickrx7/schoolapp/pull/1) (draft, branch
   `claude/nifty-fermat-8hhl1l`): Phases 1 and 2. Not merged; no reviews.
 - [Vickrx7/schoolapp#2](https://github.com/Vickrx7/schoolapp/pull/2) (draft, branch
-  `claude/serene-ride-3n2fa1`, stacked on #1): the Phase 2 hardening, Phases 3, 4, 5 and 6. Once
-  #1 is merged, retarget #2 to `main`.
+  `claude/serene-ride-3n2fa1`, stacked on #1): the Phase 2 hardening, Phases 3, 4, 5 and 6, the
+  three post-MVP features (« Mon année », « Commentaires de bulletin », « Info-parents ») and
+  their review. Once #1 is merged, retarget #2 to `main`.
 
 **Commits on #2:**
 
@@ -124,10 +127,17 @@ Mon Tableau, Cartable, Ardoise). No availability or trademark check has been don
 | `c5d85c6` | « Commentaires de bulletin » S3: « Bulletins », « Aujourd'hui », terms `2026-10-pilote-3`   |
 | `192366d` | « Info-parents » S1: the weekly message to families, drafted and edited                     |
 | `20cd996` | « Info-parents » S2: the printed message and the « Aujourd'hui » reminder                   |
-| (latest)  | « Info-parents » S3: « Traduire en anglais (IA) », terms `2026-10-pilote-4`, the docs       |
+| `ed24e01` | « Info-parents » S3: « Traduire en anglais (IA) », terms `2026-10-pilote-4`, the docs       |
+| `627ce0a` | Post-MVP review A: the title rule fails closed, also on a comment bank's note               |
+| `6616b48` | Review A: report card drafts on the device (stable key, every first name templated)         |
+| `401f593` | Review A: reads past 1,000 rows, the week's lessons, a sent message's text locked (LXN07)   |
+| `8f07a60` | Review A: the UX and French fixes of the three features                                     |
+| `09b9ac2` | Review B: the in-app texts say what the app does, terms `2026-10-pilote-5`                  |
+| `b257a25` | Review B: the 1,000-row integration test removes the outbox events it emitted               |
+| (latest)  | Review B: the documents say what the code does, « Decisions waiting for Mike »              |
 
-**Verified (locally, from an empty database, and in CI on each pushed commit):** 1590 unit tests
-(none skipped), 1970 pgTAP tests (38 files), 96 integration tests (plus the 3 of `restore-smoke`,
+**Verified (locally, from an empty database, and in CI on each pushed commit):** 1623 unit tests
+(none skipped), 1979 pgTAP tests (39 files), 97 integration tests (plus the 3 of `restore-smoke`,
 which run after a restore: the `backup-restore` CI job and the local drill; the staff-account tests
 talk to the stack's real Auth server), 156 Playwright tests (desktop, phone and tablet, axe on every
 Phase 3, 4 and 5 page, every « Conseil » page, the direction's dashboard and « Journal d'audit », «
@@ -165,13 +175,16 @@ and the de-identified note only, previewed, a private draft); and « Bulletins �
 report period and subject, the class's students with their status, and for each student the
 wording, the mark, the bank's entries as cards (taught attentes first), the comment with its
 counter, « Copier », « Tout copier », « Imprimer » and « Mes notes ». **The comments never leave the
-browser** (D-130): `localStorage` holds them in template form (`{prénom}`, never a first name),
-erased at sign-out, when another account signs in on that browser (a janitor in the app's shell)
-and 60 days after the report goes home; no table, action, route, form or PDF carries them. No AI
-reads a comment about a student (D-133; per-student AI is designed only). « Aujourd'hui » reminds
-three weeks before each « saisie ». The terms are `2026-10-pilote-3` (D-134). Next: test it with
-pilot teachers before the 1re étape (`docs/report-comments.md`, « What to test »; saisie 5 February
-2027), the lawyer on the device copies (Q5), and one real-API bank case when the key is set.
+browser** (D-130): `localStorage` holds them in template form (the class's first names replaced,
+in any case or accent; other names the teacher types stay as typed), erased at sign-out and,
+otherwise, when the app next opens in that browser for another account or after their date (60
+days after the report goes home; a janitor in the app's shell); a browser where the app is never
+opened again keeps them. No table, action, route, form or PDF carries them. No AI reads a comment
+about a student (D-133; per-student AI is designed only). « Aujourd'hui » reminds three weeks
+before each « saisie ». The terms were `2026-10-pilote-3` (D-134), now `2026-10-pilote-5`
+(D-144). Next: test it with pilot teachers before the 1re étape (`docs/report-comments.md`, « What
+to test »; saisie 5 February 2027), the lawyer on the device copies (Q5), and one real-API bank
+case when the key is set.
 
 **« Info-parents » is built** (feature #3 after the pilot build; `docs/info-parents.md`; DECISIONS
 « Info-parents », D-136 to D-143): a class tab (`/classes/[id]/info-parents`, the class team with a
@@ -183,11 +196,27 @@ typographie », copied (« Copier le français », « Copy the English », « Co
 nothing to families** and stores no parent data. « Traduire en anglais (IA) » (feature
 `newsletter_translate`, off wherever AI is off) sends only the French paragraphs to translate, built
 by the database from the stored message, with known names replaced; a paragraph with a detected
-detail or a title before a name the app does not know (« Mme Dupuis ») is never sent, the preview
-lists the capitalized words to check, and the teacher confirms; the English comes back « à relire
+detail, or where a title is not followed by a name the app knows (« Mme Dupuis »), is never sent,
+the preview lists the capitalized words to check, and the teacher confirms (names without a title
+are only listed, and not all of them: « Known issues » below); the English comes back « à relire
 ». « Aujourd'hui » reminds on the week's last two school days. Messages are erased with the
 students' first names. The terms are `2026-10-pilote-4` (D-143). Next: test it with pilot teachers
 (`docs/info-parents.md`, « What to test »), and one real-API translation case when the key is set.
+
+**The post-MVP review is done** (the three features; 43 findings; DECISIONS « Post-MVP review »,
+D-144). Round A (`627ce0a` to `8f07a60`) fixed the code: the title rule fails closed (after a title,
+no word is allowed through; more titles, any space, up to three words between) and also checks a
+comment bank's note, which needs « J'ai vérifié »; the « Bulletins » device draft keeps a stable key
+without board periods, stores every first name of the class as a template, and loses nothing for one
+bad entry; class-wide reads go past PostgREST's 1,000-row cap; the « Info-parents » first draft
+keeps the week's lessons and the school year; a sent message's text is locked (`LXN07`); the
+long-range plan PDF lists units outside the year; the current class tab stays in view on phones; the
+bank editor speaks of a bank; French fixes. Round B (the latest commits) made every text say what
+the code does: `PRIVACY.md`, the feature docs, `docs/ai-data-flow.md`, the in-app hints, the release
+notes, DECISIONS, and the notice's « Combien de temps », which changed meaning (terms
+`2026-10-pilote-5`, D-144: report card comments leave the device at sign-out or when the app next
+opens in that browser, not « au plus tard » on a date). Section 6 lists the decisions waiting for
+Mike.
 
 **Phase 3 is complete** (3a and 3b; see `docs/phase-3.md`): absence button, plans built in the
 request and kept current by the worker, review and editing, release at 07:30, codes, the
@@ -217,7 +246,8 @@ without the Library module, the phone filter sheet losing focus, the question ed
 focus, `lang` on English labels, 44 px targets, English and French copy, and more).
 
 **Not verified:** nothing has been sent to the real Claude API (« Texte différencié »,
-« Consignes détaillées », « Créer avec l'IA », « Créer les versions manquantes »):
+« Consignes détaillées », « Créer avec l'IA », « Créer les versions manquantes », « Créer une
+banque de commentaires avec l'IA », « Traduire en anglais (IA) »):
 `ANTHROPIC_API_KEY` is not set in this environment. No hosted deployment exists; the reverse
 proxy and the portal roles' passwords are deployment steps in `DEPLOYMENT.md`.
 
@@ -327,7 +357,7 @@ kept search words, and three kinds of log noise and a Friday contrast failure on
 keeps plans to their school year's classes and the year-end purge to its year and its 60 days of
 notice, gives each worker job one connection and retries a failed unban, throttles staff sign-in
 (D-121), replaces students' first names in feedback, signs backups and checks restores, and fixes
-the UX review's findings. Round B (the latest commits; `20261201090600_phase6_board_audit_export.sql`,
+the UX review's findings. Round B (`00e1343`; `20261201090600_phase6_board_audit_export.sql`,
 pgTAP `33`) makes every privacy text say what the app does: the AI replaces the names it knows and
 the teacher removes any other (the notice and « Bienvenue » changed, so the terms are
 `2026-10-pilote-2`); board-hosted, Auth and the database no longer write addresses, statements or
@@ -350,7 +380,9 @@ that checks the signature). `docs/phase-6.md` « Final review » has the list an
   available, with the Phase 6 screens. « Mon année », « Commentaires de bulletin » and
   « Info-parents » are not claimed there yet: the marketing pages are updated once Mike has seen
   them (screenshots of « Bulletins » and « Info-parents », its PDF and its translation preview, in
-  French and English, desktop and phone, were taken for that).
+  French and English, desktop and phone, were taken for that). The site's « Vision · Plus tard,
+  sans date » list still names « Commentaires de bulletin » as something that does not exist:
+  move it out (the IEP log stays in Vision) when the pages are updated.
 
 ## 3. How to run it (in these containers)
 
@@ -432,7 +464,7 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   `SUB_PORTAL_DATABASE_URL` (in `.env.example`).
 - **Migrations are applied once.** The lite stack does not re-apply an edited migration: after
   editing one that is not committed yet, `stack.sh reset`. Never edit a committed migration; add
-  a new one (the latest is `20270125090100_class_newsletters_ai.sql`, pgTAP file `37`).
+  a new one (the latest is `20270201090000_post_mvp_review_fixes.sql`, pgTAP file `38`).
 - **Seeds come in two parts.** `supabase/seed.sql`, then `supabase/seeds/*.sql` by name
   (`config.toml` `sql_paths` for the CLI, `cmd_seed` in `stack.sh`). `seeds/20_library_demo.sql`
   is generated from `content/library/demo`: after changing the pack, run `pnpm library:seed`
@@ -529,8 +561,12 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   unit's lessons 4 to 8 first (the seed has none), gives lesson 4 and takes it back; a spec that
   leaves one of them given changes the counts. Its « Dates choisies » step assumes the seeded windows are around
   the current week (the year has six weeks to go). The long-range plan PDF is checked by its pages
-  (`/Type /Page`), not its text (compressed). Coverage reads a class's curriculum in pages of
-  1 000 rows, PostgREST's `max_rows`.
+  (`/Type /Page`), not its text (compressed).
+- **PostgREST returns at most 1,000 rows** (`max_rows` in `supabase/config.toml` for the CLI and
+  CI, `PGRST_DB_MAX_ROWS=1000` in `tools/lite-stack/stack.sh`, as hosted Supabase). A class-wide
+  read that can pass it (lesson progress, a curriculum, a year's calendar events) goes page by
+  page with `fetchAllRows` (`apps/web/src/server/queries/fetch-all.ts`); `.limit()` does not raise
+  the cap.
 - **Comment banks (« Commentaires de bulletin », D-129)** are library type 26, `report_comments`,
   and are not teaching material (`TYPE_INFO.teachingMaterial`): no duration, materials or formats,
   never in a lesson (`LXK01`), class mode, the projector or a substitute plan. Code that loops over
@@ -547,11 +583,13 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   form takes ids in its URL (`?scope=&grade=&subject=&period=&exp=id,id`) for « Bulletins ».
 - **« Bulletins » keeps comments on the device only (D-130).** The draft is `localStorage`
   `lynx-draft:report:{userId}:{classId}:{periodKey}` (`reportDraftKey`; the period key is the board
-  period's kind, or `custom-<from>-<to>-<report>`), in template form (`{prénom}`). Nothing on that
-  page may send a comment: no server action, route handler, form field with a `name` or PDF
-  (`components/report-comments/no-server.test.ts` checks the files; `e2e/report-comments.spec.ts`
-  types « ZZSENTINELLE » and checks every request). The janitor (`forgetReportDrafts`, mounted in
-  `app/(app)/layout.tsx`) removes other accounts' and expired report drafts on every load, and
+  period's kind, or `custom-<from>-<to>-<report>`, the whole school year by default when the board
+  has no periods), in template form (`{prénom}` for the student, `{élève:<8 hex of her id>}` for a
+  classmate: `unfillDraftText`). Nothing on that page may send a comment: no server action, route
+  handler, form field with a `name` or PDF (`components/report-comments/no-server.test.ts` checks
+  the files; `e2e/report-comments.spec.ts` types « ZZSENTINELLE » and checks every request). The
+  janitor (`forgetReportDrafts`, mounted in `app/(app)/layout.tsx`) removes other accounts' and
+  expired report drafts on every load (never one of the person's own it cannot read), and
   `clearAllDrafts` at sign-out closes all draft writes for that page. Browser tests that write
   comments run in their own context (a fresh browser), so nothing is left behind; the reminder
   test moves the 1re étape's « saisie » a week ahead and puts the seed's periods back.
@@ -563,8 +601,11 @@ data-ready="true"` before tapping; `e2e/db-newsletters.ts` has the helpers (`del
   en anglais (IA) » is `newsletter_translate`: `newsletter_ai_preview` and
   `request_newsletter_translation(id, scope, revision, sendKeys)`; the request's `sendKeys` are the
   paragraphs the preview showed as sent (`server/newsletter/ai-preview.ts`), and the worker sends no
-  other. The title rule (`findTitledUnknownNames`) runs only for this feature; `BlockedKind`
-  gained `titledName`, so any `Record<BlockedKind, …>` and the `*.kinds.*` messages need it.
+  other. The title rule (`findTitledUnknownNames`, `packages/ai/src/unknown-names.ts`) runs for
+  this feature and for a comment bank's note, nowhere else; `BlockedKind` gained `titledName`, so
+  any `Record<BlockedKind, …>` and the `*.kinds.*` messages need it. A message marked « Envoyé »
+  keeps its text: the database refuses any change of its content (`LXN07`, `newsletterSent`) until
+  « Remettre en brouillon ».
 - **The seed's « Messe de l'école »** is on the first Friday, by the school's date
   (America/Toronto), that is not a seeded day off (`e2e/helpers.ts` `comingSchoolFriday` says the
   same); before, a reset on a UTC Saturday put it on the 9 October PA day.
@@ -575,11 +616,12 @@ data-ready="true"` before tapping; `e2e/db-newsletters.ts` has the helpers (`del
   worker completes) has not: every page sends it to `/bienvenue` until `acceptWelcome(page)`
   (`e2e/helpers.ts`) accepts them. Remove such accounts with `deleteStaff` (and
   `deleteSampleClasses` first if it made one).
-- **New terms** (when the notice or « Bienvenue » changes meaning): change `CURRENT_TERMS_VERSION`
+- **New terms** (when the notice or « Bienvenue » changes meaning; the latest is
+  `2026-10-pilote-5`, D-144): change `CURRENT_TERMS_VERSION`
   and add its line to `TERMS_CHANGES` (`packages/domain/src/legal.ts`), its `welcome.changes.<key>`
   in both catalogues, and the version in `supabase/seed.sql` (unit tests check all three), so the
   demo accounts stay accepted and browser tests do not land on « Bienvenue ». Specs read the
-  version from `@lynx/domain`.
+  version from `@lynx/domain`; `onboarding.spec.ts` checks the newest « Ce qui a changé » line.
 - **Your own terms and checklist state:** colleagues cannot read `terms_version`,
   `terms_accepted_at` or `onboarding_dismissed_at` (nor `created_at`, `updated_at`); the session
   reads the person's own through `rpc('my_onboarding_state')` (D-109). A new query that selects
@@ -664,7 +706,7 @@ Where an item is already in `DECISIONS.md`, the D-number is given. Don't add dup
   - AI only for teachers and the direction (principals and vice-principals; D-039);
   - the French promo;
   - a separate environment for this project (he created "School app").
-- **Suggested, not yet answered:**
+- **Suggested, not yet answered:** everything in section 6, among them:
   - a zero-data-retention agreement with Anthropic before real students' names are in the app;
   - a hosted beta before showing teachers (needs his accounts: Supabase in Canada Central, a host
     for the web server and worker in a Canadian region, an email sender);
@@ -676,19 +718,96 @@ Where an item is already in `DECISIONS.md`, the D-number is given. Don't add dup
   marks the level for the teacher.
 - **The promo claims only shipped features.** The sick-day plan is labelled « Bientôt ».
 
-## 6. Next steps (in order)
+## 6. Decisions waiting for Mike
 
-1. **Show Mike Phases 3 to 6** with a short summary each; Phase 6's six questions are at the end
-   of `docs/phase-6.md` (real first names before a principal agrees, the hosting accounts and the
-   two letters to Supabase and Anthropic, who administers the pilot boards, the retention defaults,
-   the name, names the app cannot know in AI text), and `docs/PILOT.md` is his guide. Earlier phases: the three questions in
-   `docs/phase-3.md`, the six in `docs/phase-4.md` (we built on the recommended answers:
-   reviewers named by the board, school and board sharing before approval with faith content
-   faith-reviewed first, AI may draft faith reflections, AI level versions by default, the 78 demo
-   resources shown to pilot teachers; who owns shared content is still open) and the six in
-   `docs/phase-5.md` (devices optional, answers shown by default, device numbers instead of
-   nicknames, IP Lynx runs bulk generation with a cap per run, teachers' resources out of packs by
-   default, principals may give opinions). Update PR #2's description.
+Mike is the product owner and has not yet seen Phases 3 to 6 or the three post-MVP features. To
+keep building, the lead answered the questions of the three features on his behalf (16 answers),
+and earlier phases were built on our recommended answers. Each item below says what the app does
+today (the default that is built), so Mike only has to confirm it or say what to change. Go
+through them with him in plain words, one feature at a time.
+
+**« Mon année »** (the year planner; `docs/mon-annee.md`)
+
+1. **Curriculum for the pilot.** Nothing new is loaded: « Couverture » counts only the curriculum
+   expectations already in the app (in the demo, a partial summary for 3e and 5e; a new board has
+   none until one is imported), and says the list may be incomplete.
+2. **Report card dates.** Whoever administers the board types them, helped by a button that
+   proposes the usual Ontario dates.
+3. **A finished unit** counts all its curriculum expectations as taught, shown as « Enseignée
+   (unité terminée) ».
+4. **The long-range plan PDF** leaves out the coverage counts unless the teacher ticks the box.
+5. **No AI for the year plan** for now.
+
+**« Commentaires de bulletin »** (report card comments; `docs/report-comments.md`)
+
+1. **No AI on one student's comment** during the pilot: the AI only writes comment banks from the
+   curriculum. A design exists but is not built.
+2. **Comments stay on the teacher's device** (her browser); nothing is stored on our servers. They
+   do not follow her to another computer.
+3. **Length and spaces:** 1,000 characters by default, and plain spaces when she copies (some
+   report card systems miscount the others); she can change both. To check with a pilot teacher:
+   which report card system her board uses.
+4. **Banks without curriculum:** the AI may write general comment banks when no curriculum is
+   loaded, marked as drafts to read.
+5. **When comments are erased:** at sign-out; otherwise the next time the app opens in that browser
+   for another person, or more than 60 days after the report card goes home. A computer where the
+   app is never opened again keeps them until its browser data is cleared, so the terms ask
+   teachers to sign out on shared computers. The lawyer should confirm these working copies may go
+   (the official record is the board's report card).
+
+**« Info-parents »** (the weekly message to families; `docs/info-parents.md`)
+
+1. **The app sends nothing to families:** the teacher copies or prints the message; no parent
+   contacts and no parent accounts are stored.
+2. **« Traduire en anglais (IA) » is in.** The French paragraphs go to the AI in the United States
+   with the names the app knows replaced; a paragraph where a title (« Mme », « M. », « père »…)
+   is not followed by a name the app knows is held back for the teacher to translate; she checks
+   the capitalized words and confirms. Under Mike's rule, this works only because the teacher
+   checks: a name without a title (« Merci à Sophie ») is listed for her, not blocked. The
+   alternative is no AI translation (the teacher writes the English). This is the main privacy
+   decision of the three features.
+3. **No « Améliorer le texte (IA) »:** a typography fix without AI instead.
+4. **English only** for now; other languages after the pilot.
+5. **Messages are kept** with the students' first names (erased a year after the school year) and
+   can be deleted at any time.
+6. **« Moment de foi »** is in each message by default; one click removes it.
+
+**Earlier questions still open** (Phase 6, `docs/phase-6.md`; the app is built on our
+recommendation in each case):
+
+1. **Real first names before a principal agrees?** Built: no. Teachers use invented names,
+   initials or the sample class until their principal agrees in writing, and the terms say so. We
+   also recommend principals keep alerts off. A privacy lawyer should review the terms, a short
+   notice to parents and the retention periods before real names.
+2. **Hosting accounts and cost** (Supabase in Canada, a Montréal server, e-mail and backups in
+   Canada, a domain, a free uptime monitor), and **two letters** we prepare and Mike sends: to
+   Supabase (where it keeps its own backups and logs) and to Anthropic (zero data retention).
+   Nothing is hosted and neither letter is sent.
+3. **Who administers each pilot board?** Built: Mike may hold « Administration du conseil » if a
+   board asks; we recommend each board also names one of its own staff. We also need a privacy
+   contact address and the technical person who gets outage alerts.
+4. **Retention defaults:** audit log 2 years, substitute plans 1 year, students' first names 1 year
+   after the school year, AI usage 2 years, feedback 1 year, backups 30 days. Built as such,
+   pending the lawyer.
+5. **The name:** still « Lynx École », one setting to change.
+6. **Names the app doesn't know in AI text.** It replaces the names it knows; it cannot recognize a
+   name it has never seen (a parent's). The teacher sees the exact text and removes it; for the
+   two features above, a title before such a name also blocks it. We recommend keeping it this
+   way: blocking every unknown capitalized word would stop most ordinary texts.
+
+**Also open:** who owns what teachers share (Phase 4, question 5; licences stay empty until a
+lawyer advises); whether to bill boards for bulk generation (Phase 5, question 4); the budget
+pooling nuance (section 5); whether the France-French promo voice is fine; the go-ahead for the
+real-API evaluation (section 7, step 2, has the costs; batches included); keeping the API's
+server-side refusal fallbacks off (D-045). The other questions of Phases 3 to 5 were answered with
+our recommended defaults, which Mike can still change (`docs/phase-3.md`, `docs/phase-4.md`,
+`docs/phase-5.md`, « Questions for Mike »).
+
+## 7. Next steps (in order)
+
+1. **Show Mike Phases 3 to 6 and the three post-MVP features** (« Mon année », « Commentaires de
+   bulletin », « Info-parents ») with a short summary each, then go through section 6 with him:
+   the 16 answers given on his behalf and the six Phase 6 questions. `docs/PILOT.md` is his guide.
 2. **Real-API evaluation**, once `ANTHROPIC_API_KEY` is set and Mike agrees: `pnpm ai:eval --yes`
    (11 cases, about $1.60), `pnpm ai:eval --feature sub_plan --yes` (11 cases, about $2), then
    one library case alone (`pnpm ai:eval --feature library_item --case quiz-5e --yes`, under $1)
@@ -729,13 +848,19 @@ Where an item is already in `DECISIONS.md`, the D-number is given. Don't add dup
 
 **Known issues and risks:**
 
-- **« Info-parents » translation:** a first name the app does not know, alone at the start of a
-  sentence, is only caught by the teacher at the preview (it says so). The AI's English is « à
-  relire ».
+- **« Info-parents » translation and a bank's note:** a name the app does not know is caught only
+  by the teacher at the preview (it says so) when it has no title (« Merci à Sophie » is listed,
+  not blocked), when it is lowercase without a title, when it is also a word the app treats as
+  common (« Noël » alone), when it is lowercase after a title that is also an everyday word (« le
+  curé gagnon »), or when it follows a word the app does not take for a title (« la directrice
+  Dupuis »). The rule also holds back some paragraphs that name no one (« le père Noël »). The AI's
+  English is « à relire ».
 - **Report card comments live on one device** (D-130): a teacher who clears her browser data or
   changes computers loses what she has not copied; enhanced spell-check, writing extensions and
   cloud clipboards act on what the browser holds; on a computer nobody signs out of, comments stay
-  (as templates, without names) until another account signs in or 60 days after the « remise ».
+  (as templates: the class's first names replaced, other names as typed) until the app next opens
+  there for another account or after their date, and indefinitely if the app is never opened there
+  again.
 - **Real API untested** (above), batches included.
 - **Class mode on real classroom hardware** is untested: projectors at their real resolution,
   school Wi-Fi filters, managed Chromebooks keeping the class link bookmark, iPads (no WebKit
@@ -769,7 +894,8 @@ Where an item is already in `DECISIONS.md`, the D-number is given. Don't add dup
 - **The preview can under-report replacements.** The worker de-identifies with at least everyone
   the preview knows, so the preview can under-report replacements but never over-promise.
 - **Unknown names** (a parent, a student from a school where the teacher doesn't work) only get
-  caught by the teacher at the preview.
+  caught by the teacher at the preview, except after a title in « Traduire en anglais (IA) » and a
+  comment bank's note.
 - **Historical figures** who share a student's first name get replaced, then restored.
 - **Very short names** that match a French word once accents are removed (« Tú », « Lê », « An »)
   replace that word everywhere. A student named « Tú » would make the last check refuse every
@@ -791,21 +917,16 @@ Where an item is already in `DECISIONS.md`, the D-number is given. Don't add dup
 - **Office staff can read shared resources' answer keys through the API** (not personal data; no
   library screens).
 
-**Waiting on Mike:** the six Phase 6 questions (`docs/phase-6.md`), above all real first names
-before a principal agrees, the hosting accounts and the privacy lawyer; the three Phase 3 questions; the six Phase 4 questions (above all who owns
-shared content, and who reviews for a pilot board); the product name; the hosted beta accounts;
-the zero-data-retention request; OK on the budget pooling nuance; whether the France-French promo
-voice is fine; the real-API evaluation go-ahead (batches included); the six Phase 5 questions
-(above all whether pilot classes have student devices, and whether to bill boards for bulk
-generation); whether to turn on the API's server-side refusal fallbacks (a beta; it brings in a
-second model and its price, D-045).
+**Waiting on Mike:** section 6 (the 16 answers given for him on the three features, the six
+Phase 6 questions, and the other open items), above all real first names before a principal
+agrees, the AI translation of « Info-parents », the hosting accounts and the privacy lawyer.
 
-## 7. Starting a new session
+## 8. Starting a new session
 
 Paste something like this (adjust the task):
 
 ```
 Continue the school app project (Vickrx7/schoolapp) on branch claude/serene-ride-3n2fa1 (draft PR #2, stacked on #1). Read docs/HANDOFF.md, SPEC.md, DECISIONS.md, docs/phase-3.md, docs/phase-4.md, docs/phase-5.md and docs/phase-6.md first.
 
-Phases 3 (substitute hand-off), 4 (library core), 5 (library growth and class mode) and 6 (pilot readiness, with its final review) are done and CI is green. Read docs/phase-6.md, PRIVACY.md and DEPLOYMENT.md too. Next: my answers to the Phase 6 questions, then the hosted beta once I have the accounts. Never print or commit ANTHROPIC_API_KEY.
+Phases 3 (substitute hand-off), 4 (library core), 5 (library growth and class mode) and 6 (pilot readiness, with its final review) are done, then « Mon année », « Commentaires de bulletin » and « Info-parents » with their review (docs/mon-annee.md, docs/report-comments.md, docs/info-parents.md), and CI is green. Read docs/phase-6.md, PRIVACY.md and DEPLOYMENT.md too. Next: my answers to HANDOFF section 6 (« Decisions waiting for Mike »), then the hosted beta once I have the accounts. Never print or commit ANTHROPIC_API_KEY.
 ```

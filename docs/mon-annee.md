@@ -8,7 +8,7 @@ D-107, D-117 and D-118. Built in three slices on PR #2; the fourth (AI, D-128) i
 | ----- | --------- | -------------------------------------------------------------------------------------- |
 | S1    | `d2dad5a` | Database, domain code, the board's report periods, a unit's planned weeks and attentes |
 | S2    | `3615f3e` | « Mon année » (grid and phone list), « Planifier une unité », « Aujourd'hui »'s hint   |
-| S3    | (latest)  | « Couverture » and « Plan à long terme (PDF) », the docs                               |
+| S3    | `d5ce901` | « Couverture » and « Plan à long terme (PDF) », the docs                               |
 
 ## What was built
 
@@ -44,9 +44,11 @@ Couverture »; no new navigation item)
 - **« Plan à long terme (PDF) »** (S3, D-127), beside « Planifier une unité » on « Mon année »: page
   1 in landscape, the year at a glance (a column per month: days off and masses, report dates,
   seasons, then each subject's units with their dates); then the units by subject with their
-  dates, weeks, school days and attentes (code and text); and, only when « Inclure la couverture
-  des attentes » is ticked, « Couverture des attentes » (the year's counts per subject). « Ce
-  document est à vous : vous décidez à qui le remettre. » Nothing is sent by the app.
+  dates, weeks, school days and attentes (code and text), with any unit dated outside the school
+  year under « Hors de l'année scolaire »; and, only when « Inclure la couverture des attentes »
+  is ticked, « Couverture des attentes » (the year's counts per subject, with the caveat that only
+  the attentes loaded in the app are counted, a summarized list to check that may be incomplete).
+  « Ce document est à vous : vous décidez à qui le remettre. » Nothing is sent by the app.
 
 **For board admins** (S1, D-124): « Périodes de bulletin » in « Années scolaires » (the progress
 report and the two terms: evaluation window, « saisie au plus tard le », « remise aux familles »),
@@ -137,6 +139,25 @@ no-store`, no page policy, 404 for another teacher's class), the report periods,
   the grid does. A unit's description is not printed (free text, and not part of a long-range plan).
 - `PRIVACY.md` also gets a short paragraph on « Couverture » and the PDF.
 
+## Post-MVP review (2026-10-03)
+
+The review of the three features changed this one in commits `401f593` and `8f07a60` (D-125 and
+D-127 have the details):
+
+- Class-wide reads (lesson progress for « Couverture », « Mon année » and « Aujourd'hui », the
+  coverage curriculum, the calendar's events) go page by page past PostgREST's 1,000-row cap; the
+  lite stack now caps answers at 1,000 rows, as CI and hosted Supabase do.
+- The long-range plan PDF lists units dated outside the school year under « Hors de l'année
+  scolaire », as the screen does; its coverage page says the list is partial and to be checked,
+  « Mode de calcul » replaces a reference to a screen the reader cannot see, and the report
+  markers and team roles are lowercase (« saisie 6 nov. », « titulaire »).
+- Wording: « Mon année »'s intro says what the grid and the month list really show (days without
+  school in the « Calendrier » row, weeks without school greyed out); « à vérifier dans le
+  curriculum officiel de l'Ontario »; the PDF option comes before its button; 44 px buttons in the
+  report periods dialog and on a unit's page.
+- The first browser test of « Mon année » reads the seeded unit's dates, so it passes whichever
+  date the seed took.
+
 ## Known limits
 
 - **No curriculum in production** (D-030, `DEPLOYMENT.md` § 3.8): until one is loaded, the planning
@@ -152,6 +173,9 @@ no-store`, no page policy, 404 for another teacher's class), the report periods,
 - AI help to spread the attentes over the year is deferred (D-128).
 
 ## Questions (answered by the lead for Mike, 2026-10-02; we built on these answers)
+
+Mike has not confirmed these answers yet: `docs/HANDOFF.md` « Decisions waiting for Mike » lists
+them for him.
 
 1. Curriculum for pilot teachers: nothing new is loaded; coverage counts the summaries already
    there.
