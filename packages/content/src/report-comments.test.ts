@@ -6,8 +6,13 @@ import { renderStudentDoc } from './render/student';
 import { renderTeacherDoc } from './render/teacher';
 import { docToPlainText } from './render/plain';
 import {
+  CLASSMATE_GONE,
+  classmateToken,
+  clipDraftText,
   commentLength,
   elidesBefore,
+  fillDraftText,
+  unfillDraftText,
   entryQualifierProblems,
   entryText,
   fillComment,
@@ -205,6 +210,60 @@ describe('comment bank: {prénom} and elision (D-131)', () => {
       'Le travail d’Aïcha.',
     );
     expect(unfillComment('Texte', '  ')).toBe('Texte');
+  });
+
+  it('stores every first name of the class in template form, in any case (post-MVP review)', () => {
+    const lea = { id: '10000000-0000-4000-8000-000000000001', firstName: 'Léa' };
+    const noah = { id: '20000000-0000-4000-8000-000000000002', firstName: 'Noah' };
+    const rose = { id: '30000000-0000-4000-8000-000000000003', firstName: 'Rose' };
+    const marieEve = { id: '40000000-0000-4000-8000-000000000004', firstName: 'Marie-Ève' };
+    const marie = { id: '50000000-0000-4000-8000-000000000005', firstName: 'Marie' };
+    const aicha = { id: '60000000-0000-4000-8000-000000000006', firstName: 'Aïcha' };
+    const roster = [lea, noah, rose, marieEve, marie, aicha];
+    const unfill = (text: string, student = lea) => unfillDraftText(text, student, roster);
+    // The student's own name without its accent, in capitals or in lower case.
+    expect(unfill('Lea lit bien.')).toBe('{prénom} lit bien.');
+    expect(unfill('LÉA lit bien.')).toBe('{prénom} lit bien.');
+    expect(unfill('léa a oublié son livre.')).toBe('{prénom} a oublié son livre.');
+    // A classmate's name is stored by a token of her id, never as typed.
+    expect(unfill('Léa et Noah travaillent ensemble.')).toBe(
+      `{prénom} et ${classmateToken(noah.id)} travaillent ensemble.`,
+    );
+    expect(unfill('Léa aide noah et AÏCHA.')).toBe(
+      `{prénom} aide ${classmateToken(noah.id)} et ${classmateToken(aicha.id)}.`,
+    );
+    // The longest name first; a name that is a word in lower case stays a word.
+    expect(unfill('Marie-Ève aide Marie, Marie Eve et une rose.', rose)).toBe(
+      `${classmateToken(marieEve.id)} aide ${classmateToken(marie.id)}, ${classmateToken(marieEve.id)} et une rose.`,
+    );
+    expect(unfill('Rose cueille une rose.', rose)).toBe('{prénom} cueille une rose.');
+    // Other names (a parent, a nickname) stay as typed.
+    expect(unfill('La mère de Léa (Mme Diallo) a appelé; Lili rit.')).toBe(
+      'La mère de {prénom} (Mme Diallo) a appelé; Lili rit.',
+    );
+    // Back with the roster's spelling, and the article elided for the student's own name.
+    const template = unfill('Le travail de Aïcha aide Lea.', aicha);
+    expect(template).toBe(`Le travail de {prénom} aide ${classmateToken(lea.id)}.`);
+    expect(fillDraftText(template, 'Aïcha', roster)).toBe('Le travail d’Aïcha aide Léa.');
+    // A correctly written comment comes back exactly as written.
+    for (const text of [
+      'Léa et Noah travaillent ensemble; d’Aïcha, on retient la rigueur.',
+      'Marie-Ève aide Marie à cueillir une rose.',
+    ]) {
+      for (const student of roster) {
+        expect(fillDraftText(unfill(text, student), student.firstName, roster), text).toBe(text);
+      }
+    }
+    // A classmate who left the class: no name to put back.
+    expect(fillDraftText(`Avec ${classmateToken(noah.id)}.`, 'Léa', [lea])).toBe(
+      `Avec ${CLASSMATE_GONE}.`,
+    );
+  });
+
+  it('clips a stored text without cutting a token in two', () => {
+    expect(clipDraftText('abc', 10)).toBe('abc');
+    expect(clipDraftText('Bravo {prénom}!', 8)).toBe('Bravo ');
+    expect(clipDraftText('Bravo {prénom}!', 14)).toBe('Bravo {prénom}');
   });
 
   it('spells a loose placeholder and writes the article before it in full', () => {

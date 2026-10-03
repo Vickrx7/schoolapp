@@ -46,7 +46,10 @@ export interface ComposerPeriodSelection {
   report: ComposerReport;
   /** The last day the device keeps the comments (`draftExpiresOn`). */
   expiresOn: LocalDate;
-  /** « Dates choisies » typed without two dates in order: the default dates are used. */
+  /**
+   * « Dates choisies » typed without two dates in order inside the school year: the default dates
+   * (the whole year) are used.
+   */
   invalid: boolean;
   /** The board's period, when one is chosen. */
   reportPeriod: ReportPeriod | null;
@@ -58,9 +61,11 @@ const ordered = (periods: readonly ReportPeriod[]) =>
 
 /**
  * The period of `period`, `from`, `to` and `kind` (the report, for « Dates choisies »): one of
- * the board's periods; « Dates choisies » with two dates in order; by default the first period
- * whose « saisie » (or last day) has not passed, else the last one; and « Dates choisies » from
- * the year's first day to today when the board has set no period.
+ * the board's periods; « Dates choisies » with two dates in order, kept inside the school year; by
+ * default the first period whose « saisie » (or last day) has not passed, else the last one; and
+ * « Dates choisies » over the whole school year when the board has set no period, so the device
+ * draft's key is the same every day (post-MVP review). The device keeps the comments until 60
+ * days after the « remise » (or the last day), and never past 60 days after the school year.
  */
 export function composerPeriod(
   params: { period?: unknown; from?: unknown; to?: unknown; kind?: unknown },
@@ -69,13 +74,18 @@ export function composerPeriod(
   today: LocalDate,
 ): ComposerPeriodSelection {
   const board = ordered(periods);
+  const latest = draftExpiresOn({ endsOn: year.endsOn, dueOn: null, issuedOn: null });
+  const expires = (dates: Parameters<typeof draftExpiresOn>[0]): LocalDate => {
+    const own = draftExpiresOn(dates);
+    return own < latest ? own : latest;
+  };
   const of = (p: ReportPeriod): ComposerPeriodSelection => ({
     choice: p.kind,
     period: { kind: p.kind },
     key: periodKey({ kind: p.kind }),
     window: { startsOn: p.startsOn, endsOn: p.endsOn },
     report: bankPeriodOf(p.kind),
-    expiresOn: draftExpiresOn(p),
+    expiresOn: expires(p),
     invalid: false,
     reportPeriod: p,
   });
@@ -87,7 +97,7 @@ export function composerPeriod(
       key: periodKey(period),
       window: { startsOn: from, endsOn: to },
       report,
-      expiresOn: draftExpiresOn({ endsOn: to, dueOn: null, issuedOn: null }),
+      expiresOn: expires({ endsOn: to, dueOn: null, issuedOn: null }),
       invalid,
       reportPeriod: null,
     };
@@ -97,13 +107,12 @@ export function composerPeriod(
     const from = first(params.from);
     const to = first(params.to);
     const report: ComposerReport = first(params.kind) === 'progress' ? 'progress' : 'term';
-    if (from && to && isLocalDate(from) && isLocalDate(to) && from <= to) {
-      return custom(from, to, report, false);
-    }
-    const end = today < year.startsOn ? year.startsOn : today > year.endsOn ? year.endsOn : today;
+    const inYear = (d: string | null): d is LocalDate =>
+      d !== null && isLocalDate(d) && d >= year.startsOn && d <= year.endsOn;
+    if (inYear(from) && inYear(to) && from <= to) return custom(from, to, report, false);
     return custom(
       year.startsOn,
-      end,
+      year.endsOn,
       report,
       choice === 'custom' && (from !== null || to !== null),
     );

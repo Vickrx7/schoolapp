@@ -15,6 +15,7 @@ import {
   draftStorage,
   draftsClosed,
   readReportDraft,
+  reportDraftState,
   serializeDraft,
 } from './draft-storage';
 
@@ -39,7 +40,8 @@ export interface ReportDraftState {
 
 /**
  * The « Bulletins » draft of a class and period on this device (DECISIONS D-130): read and
- * checked against `reportDraftSchema` (an unreadable or expired one is removed), written a moment
+ * checked against `reportDraftSchema` (an expired one is removed; an unreadable student or comment
+ * is left out, and a draft that cannot be read at all is left as it is), written a moment
  * after each change and when the page is hidden, never sent anywhere. Unlike `useDraft`, a write
  * that fails is reported, so a teacher never loses comments without knowing; another tab's
  * changes are taken up (« Modifié dans un autre onglet »); nothing is written once the period's
@@ -105,14 +107,17 @@ export function useReportDraft({
     } catch {
       raw = null;
     }
-    const stored = readReportDraft(raw, today);
-    if (raw !== null && stored === null) {
+    const state = reportDraftState(raw, today);
+    // Past its 60 days: gone. One that cannot be read at all stays as it is (never deleted for
+    // that: D-130 as amended); an unreadable student or comment inside one is simply left out.
+    if (state.kind === 'expired') {
       try {
         draftStorage()?.removeItem(storageKey);
       } catch {
         // Storage blocked: nothing to remove.
       }
     }
+    const stored = state.kind === 'ok' ? state.draft : null;
     let next = stored ? { ...stored, expiresOn } : emptyReportDraft(expiresOn);
     if (bank) next = dropStalePicks(next, bank);
     latest.current = next;

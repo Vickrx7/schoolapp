@@ -1,7 +1,14 @@
 'use client';
 
-import { COMMENT_FORMS, fillComment, unfillComment, type CommentForm } from '@lynx/content';
 import {
+  COMMENT_FORMS,
+  fillDraftText,
+  unfillDraftText,
+  type CommentForm,
+  type RosterName,
+} from '@lynx/content';
+import {
+  REPORT_NOTES_MAX,
   composeFromPicks,
   emptyDraftComment,
   suggestEntries,
@@ -54,8 +61,11 @@ export function StudentEditor({
   next,
   onBackToList,
   headingRef,
+  classmates,
 }: {
   student: EditorStudent;
+  /** The class's students: their first names are stored in template form too. */
+  classmates: readonly RosterName[];
   draft: ReportDraftStudent;
   subjectKey: string;
   subjectLabel: string;
@@ -288,7 +298,8 @@ export function StudentEditor({
         editKey={editKey}
         label={t('editor.comment')}
         hint={t('editor.commentHint')}
-        firstName={student.firstName}
+        student={student}
+        classmates={classmates}
         template={comment.text}
         limit={limit}
         plainSpacesOnCopy={plainSpacesOnCopy}
@@ -341,7 +352,8 @@ export function StudentEditor({
 
       <NotesField
         key={student.id}
-        firstName={student.firstName}
+        student={student}
+        classmates={classmates}
         notes={draft.notes}
         onChange={(notes) => update((s) => ({ ...s, notes }))}
       />
@@ -355,18 +367,21 @@ export function StudentEditor({
  * (« D'après vos notes »). No AI.
  */
 function NotesField({
-  firstName,
+  student,
+  classmates,
   notes,
   onChange,
 }: {
-  firstName: string;
+  student: RosterName;
+  classmates: readonly RosterName[];
   notes: string;
   onChange: (notes: string) => void;
 }) {
+  const fill = (text: string) => fillDraftText(text, student.firstName, classmates);
   const t = useTranslations('reportComments.editor');
   const id = useId();
-  const [local, setLocal] = useState(() => ({ notes, display: fillComment(notes, firstName) }));
-  if (local.notes !== notes) setLocal({ notes, display: fillComment(notes, firstName) });
+  const [local, setLocal] = useState(() => ({ notes, display: fill(notes) }));
+  if (local.notes !== notes) setLocal({ notes, display: fill(notes) });
   return (
     <details className="rounded-lg border border-slate-200 bg-white" open={notes.trim() !== ''}>
       <summary className="flex min-h-11 cursor-pointer items-center px-3 text-sm font-medium text-slate-800">
@@ -380,10 +395,11 @@ function NotesField({
           id={`${id}-notes`}
           lang="fr-CA"
           rows={3}
-          value={local.notes === notes ? local.display : fillComment(notes, firstName)}
+          maxLength={REPORT_NOTES_MAX}
+          value={local.notes === notes ? local.display : fill(notes)}
           aria-describedby={`${id}-notes-hint`}
           onChange={(e) => {
-            const next = unfillComment(e.target.value, firstName);
+            const next = unfillDraftText(e.target.value, student, classmates);
             setLocal({ notes: next, display: e.target.value });
             onChange(next);
           }}

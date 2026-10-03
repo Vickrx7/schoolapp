@@ -22,7 +22,8 @@ export interface ComposerFilterValues {
  * comment: the comment fields sit outside every form), read back by the server, so a chosen
  * period and subject can be reloaded. « Dates choisies » shows « Du », « Au » and « Type de
  * bulletin ». A new period or subject chooses its own bank, so the bank list waits for
- * « Afficher ». The student open (`#eleve-<id>`) stays open.
+ * « Afficher ». The student open (`#eleve-<id>`) stays open. « Du » and « Au » stay inside the
+ * school year (the server checks it too, `composerPeriod`).
  */
 export function ComposerFilters({
   classId,
@@ -110,6 +111,8 @@ export function ComposerFilters({
                   id={`${id}-from`}
                   type="date"
                   name="from"
+                  min={year.startsOn}
+                  max={year.endsOn}
                   defaultValue={values.from ?? year.startsOn}
                 />
               </div>
@@ -119,6 +122,8 @@ export function ComposerFilters({
                   id={`${id}-to`}
                   type="date"
                   name="to"
+                  min={year.startsOn}
+                  max={year.endsOn}
                   defaultValue={values.to ?? year.endsOn}
                 />
               </div>

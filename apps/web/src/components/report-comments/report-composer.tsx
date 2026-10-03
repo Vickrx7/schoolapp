@@ -1,6 +1,6 @@
 'use client';
 
-import { fillComment, plainSpaces, type ReportBankScope } from '@lynx/content';
+import { fillDraftText, plainSpaces, type ReportBankScope } from '@lynx/content';
 import {
   commentStatus,
   emptyDraftStudent,
@@ -155,13 +155,22 @@ export function ReportComposer(props: ComposerProps) {
 
   const rows = students.map((s) => ({
     ...s,
-    status: commentStatus(draft.students[s.id]?.comments[subjectKey], s.firstName, draft.limit),
+    status: commentStatus(
+      draft.students[s.id]?.comments[subjectKey],
+      s.firstName,
+      draft.limit,
+      students,
+    ),
   }));
   const withText = students
     .map((s) => ({
       id: s.id,
       firstName: s.firstName,
-      text: fillComment(draft.students[s.id]?.comments[subjectKey]?.text ?? '', s.firstName).trim(),
+      text: fillDraftText(
+        draft.students[s.id]?.comments[subjectKey]?.text ?? '',
+        s.firstName,
+        students,
+      ).trim(),
     }))
     .filter((s) => s.text);
 
@@ -177,7 +186,11 @@ export function ReportComposer(props: ComposerProps) {
     const student = draft.students[shown.id];
     const parts = props.subjectLabels
       .map(({ key, label }) => {
-        const text = fillComment(student?.comments[key]?.text ?? '', shown.firstName).trim();
+        const text = fillDraftText(
+          student?.comments[key]?.text ?? '',
+          shown.firstName,
+          students,
+        ).trim();
         return text ? `${label}\n${text}` : null;
       })
       .filter(Boolean)
@@ -242,6 +255,7 @@ export function ReportComposer(props: ComposerProps) {
                     next={students[index + 1] ?? null}
                     onBackToList={backToList}
                     headingRef={heading}
+                    classmates={students}
                   />
                 </Card>
               ) : null}

@@ -8,6 +8,7 @@
 import {
   REPORT_DRAFT_PREFIX,
   draftExpired,
+  isLocalDate,
   parseReportDraft,
   parseReportDraftKey,
   type LocalDate,
@@ -164,23 +165,50 @@ export function forgetSentDrafts(
 // Report card comments (« Bulletins », D-130)
 // ---------------------------------------------------------------------------------------
 
+/**
+ * What a stored report draft is on `today`: readable (`ok`; an unreadable student or comment
+ * inside is left out, D-130 as amended), past its expiry date (`expired`), or not a draft at all
+ * (`unreadable`: kept as it is, never deleted for that, until a sign-out or a new write).
+ */
+export type StoredReportDraft =
+  | { kind: 'none' }
+  | { kind: 'ok'; draft: ReportDraft }
+  | { kind: 'expired' }
+  | { kind: 'unreadable' };
+
+export function reportDraftState(raw: string | null, today: LocalDate): StoredReportDraft {
+  if (raw === null) return { kind: 'none' };
+  let value: unknown;
+  try {
+    value = (JSON.parse(raw) as Partial<StoredDraft<unknown>> | null)?.value;
+  } catch {
+    return { kind: 'unreadable' };
+  }
+  // An expiry date that can be read decides, even when the rest cannot.
+  const expiresOn =
+    value !== null && typeof value === 'object'
+      ? (value as { expiresOn?: unknown }).expiresOn
+      : null;
+  if (typeof expiresOn === 'string' && isLocalDate(expiresOn) && draftExpired(expiresOn, today)) {
+    return { kind: 'expired' };
+  }
+  const draft = parseReportDraft(value);
+  if (!draft) return { kind: 'unreadable' };
+  return draftExpired(draft.expiresOn, today) ? { kind: 'expired' } : { kind: 'ok', draft };
+}
+
 /** A stored report draft, when it is readable and not expired on `today`. */
 export function readReportDraft(raw: string | null, today: LocalDate): ReportDraft | null {
-  if (raw === null) return null;
-  try {
-    const stored = JSON.parse(raw) as Partial<StoredDraft<unknown>> | null;
-    const draft = parseReportDraft(stored?.value);
-    return draft && !draftExpired(draft.expiresOn, today) ? draft : null;
-  } catch {
-    return null;
-  }
+  const state = reportDraftState(raw, today);
+  return state.kind === 'ok' ? state.draft : null;
 }
 
 /**
- * The janitor (D-130): removes the report drafts of every other account, the expired ones (60
- * days after the « remise ») and the unreadable ones. Run whenever someone signed in opens the
- * app, so a teacher's comments never stay behind for the next person on a shared computer, even
- * if she did not sign out. Returns how many were removed.
+ * The janitor (D-130): removes the report drafts of every other account and the expired ones (60
+ * days after the « remise », and never later than 60 days after the school year). Run whenever
+ * someone signed in opens the app, so a teacher's comments never stay behind for the next person
+ * on a shared computer, even if she did not sign out. One of her own drafts that cannot be read is
+ * left alone (a sign-out removes it). Returns how many were removed.
  */
 export function forgetReportDrafts({
   userId,
@@ -199,9 +227,9 @@ export function forgetReportDrafts({
     let gone = !parts || parts.userId !== userId;
     if (!gone) {
       try {
-        gone = readReportDraft(storage.getItem(DRAFT_PREFIX + key), today) === null;
+        gone = reportDraftState(storage.getItem(DRAFT_PREFIX + key), today).kind === 'expired';
       } catch {
-        gone = true;
+        gone = false;
       }
     }
     if (gone) removed += 1;

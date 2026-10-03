@@ -1,6 +1,13 @@
 'use client';
 
-import { commentLength, fillComment, plainSpaces, unfillComment } from '@lynx/content';
+import {
+  commentLength,
+  fillDraftText,
+  plainSpaces,
+  unfillDraftText,
+  type RosterName,
+} from '@lynx/content';
+import { commentMaxLength } from '@lynx/domain';
 import { Check, Copy, TriangleAlert } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
@@ -14,8 +21,8 @@ const ANNOUNCE_DELAY_MS = 900;
 
 /**
  * « Commentaire » (DECISIONS D-130, D-131): the comment as the teacher reads and edits it, with
- * the student's first name; the device keeps it in template form (`unfillComment`), so it never
- * stores the name. The textarea has no `name` and sits in no form: Enter adds a line, nothing is
+ * the first names; the device keeps it in template form (`unfillDraftText`: the student's first
+ * name and her classmates' are never stored). At most twice the limit, and 4,000 characters. The textarea has no `name` and sits in no form: Enter adds a line, nothing is
  * ever sent. The counter shows « 612 / 1 000 caractères » and says in words when the text is over
  * the limit (never colour alone); it is read out politely once typing pauses. « Copier » copies
  * what is shown, with plain spaces when « Espaces simples à la copie » is on.
@@ -24,7 +31,8 @@ export function CommentField({
   editKey,
   label,
   hint,
-  firstName,
+  student,
+  classmates,
   template,
   limit,
   plainSpacesOnCopy,
@@ -36,7 +44,9 @@ export function CommentField({
   editKey: string;
   label: ReactNode;
   hint?: ReactNode;
-  firstName: string;
+  student: RosterName;
+  /** The class's students: their first names are stored as `{élève:…}`. */
+  classmates: readonly RosterName[];
   template: string;
   limit: number;
   plainSpacesOnCopy: boolean;
@@ -50,21 +60,20 @@ export function CommentField({
   const id = useId();
   const own = useRef<HTMLTextAreaElement>(null);
   const area = textareaRef ?? own;
+  const fill = (text: string) => fillDraftText(text, student.firstName, classmates);
   const [local, setLocal] = useState(() => ({
     key: editKey,
     template,
-    display: fillComment(template, firstName),
+    display: fill(template),
   }));
   // Another student or subject, entries chosen, another tab: show the stored comment again.
   // While the teacher types, what she typed stays as typed (« de Aïcha » is not rewritten
   // under her cursor; the device stores « de {prénom} » and copies « d’Aïcha » next time).
   if (local.key !== editKey || local.template !== template) {
-    setLocal({ key: editKey, template, display: fillComment(template, firstName) });
+    setLocal({ key: editKey, template, display: fill(template) });
   }
   const display =
-    local.key === editKey && local.template === template
-      ? local.display
-      : fillComment(template, firstName);
+    local.key === editKey && local.template === template ? local.display : fill(template);
 
   const count = commentLength(display);
   const over = count - limit;
@@ -105,12 +114,13 @@ export function CommentField({
         id={`${id}-text`}
         lang="fr-CA"
         rows={7}
+        maxLength={commentMaxLength(limit)}
         value={display}
         aria-describedby={cn(hint && `${id}-hint`, `${id}-counter`)}
         aria-invalid={over > 0 ? true : undefined}
         className="min-h-44 [field-sizing:content] leading-relaxed"
         onChange={(e) => {
-          const next = unfillComment(e.target.value, firstName);
+          const next = unfillDraftText(e.target.value, student, classmates);
           setLocal({ key: editKey, template: next, display: e.target.value });
           onTemplateChange(next);
         }}

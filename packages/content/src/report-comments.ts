@@ -88,6 +88,129 @@ export function unfillComment(text: string, firstName: string): string {
   return text.replace(pattern, FIRST_NAME_TOKEN);
 }
 
+// ---------------------------------------------------------------------------------------
+// The device draft: every first name of the class in template form (post-MVP review)
+// ---------------------------------------------------------------------------------------
+
+/** A student of the class, as the composer knows them: never stored, read from the roster. */
+export interface RosterName {
+  id: string;
+  firstName: string;
+}
+
+/** Another student of the class in a stored comment: `{élève:<the first 8 hex of the id>}`. */
+export function classmateToken(id: string): string {
+  return `{élève:${id.slice(0, 8).toLowerCase()}}`;
+}
+const CLASSMATE_TOKEN = /\{élève:([0-9a-f]{8})\}/gu;
+/** A classmate's token whose student left the class: no name to put back. */
+export const CLASSMATE_GONE = '[élève]';
+
+/**
+ * First names that are also everyday words (folded): matched in lower case only when written
+ * exactly as the roster spells them, so « une rose », « une explication claire » and « fait preuve
+ * de patience » stay as typed.
+ */
+const NAMES_THAT_ARE_WORDS = new Set(
+  [
+    'aime aimee ambre amour ange aurore belle blanche bonheur capucine celeste cerise chance ciel',
+    'claire clemence colombe constance constant desire divine esperance etoile faith felicite',
+    'fidele fleur flore gloire grace honore hope iris jade jean joie joy juste lilas lis lumiere',
+    'lune lys marguerite marine max may melodie merveille miracle modeste neige oceane olive',
+    'paix parfait patience perle pierre precieuse prince princesse prudence prune roman rose sage',
+    'soleil tresor victoire violette will avril mai lui son ton',
+  ]
+    .join(' ')
+    .split(' '),
+);
+
+/** One character folded, keeping the text's length: « É » → « e », « - » (any dash) → « - ». */
+function foldChar(c: string): string {
+  if (/\p{Pd}/u.test(c)) return '-';
+  if (/\s/u.test(c)) return ' ';
+  const base = c.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
+  if (base.length === c.length) return base;
+  const lower = c.toLowerCase();
+  return lower.length === c.length ? lower : c;
+}
+
+const foldKeepingLength = (text: string) => [...text].map(foldChar).join('');
+const foldName = (name: string) => foldKeepingLength(name.trim().normalize('NFC'));
+
+/**
+ * A text as the device stores it (D-130 as amended in the post-MVP review): the student's own
+ * first name becomes `{prénom}` and every other first name of the class `{élève:…}`, whatever
+ * their case and accents (« LÉA », « Lea », « léa »), as whole words; a first name that is also an
+ * everyday word is replaced in lower case only when written as the roster spells it (« une rose »
+ * stays). Other names the teacher types (a parent's, a nickname) stay as typed. The text comes
+ * back with `fillDraftText`, with the roster's spelling.
+ */
+export function unfillDraftText(
+  text: string,
+  student: RosterName,
+  classmates: readonly RosterName[],
+): string {
+  const source = text.normalize('NFC');
+  const folded = foldKeepingLength(source);
+  const names = [
+    { token: FIRST_NAME_TOKEN, name: student.firstName.trim().normalize('NFC') },
+    ...classmates
+      .filter((c) => c.id !== student.id)
+      .map((c) => ({ token: classmateToken(c.id), name: c.firstName.trim().normalize('NFC') })),
+  ]
+    .filter((n) => [...n.name].some((c) => /\p{L}/u.test(c)))
+    // The longest names first (« Marie-Ève » before « Marie »); the student's own first.
+    .map((n, order) => ({ ...n, order, key: foldName(n.name) }))
+    .sort((a, b) => b.key.length - a.key.length || a.order - b.order);
+  const taken: { start: number; end: number; token: string }[] = [];
+  for (const { token, name, key } of names) {
+    const pattern = new RegExp(
+      `(?<![\\p{L}\\p{M}\\p{N}-])${escapeRegExp(key).replace(/[- ]/g, '[- ]')}(?![\\p{L}\\p{M}\\p{N}-])`,
+      'gu',
+    );
+    for (const m of folded.matchAll(pattern)) {
+      const start = m.index;
+      const end = start + m[0].length;
+      if (taken.some((t) => start < t.end && t.start < end)) continue;
+      const written = source.slice(start, end);
+      const lower = !/^\p{Lu}/u.test(written);
+      if (lower && written !== name && NAMES_THAT_ARE_WORDS.has(key.replace(/[- ]/g, ''))) continue;
+      taken.push({ start, end, token });
+    }
+  }
+  taken.sort((a, b) => a.start - b.start);
+  let out = '';
+  let last = 0;
+  for (const t of taken) {
+    out += source.slice(last, t.start) + t.token;
+    last = t.end;
+  }
+  return out + source.slice(last);
+}
+
+/** A stored text with the names back: `{prénom}` (with elision, `fillComment`) and `{élève:…}`. */
+export function fillDraftText(
+  template: string,
+  firstName: string,
+  classmates: readonly RosterName[],
+): string {
+  return fillComment(template, firstName).replace(CLASSMATE_TOKEN, (_, short: string) => {
+    const mate = classmates.find((c) => c.id.toLowerCase().startsWith(short));
+    return mate?.firstName.trim() || CLASSMATE_GONE;
+  });
+}
+
+/**
+ * At most `max` characters of a stored text, never cutting a token in two (a text too long for
+ * the device is clipped, never refused: D-130 as amended).
+ */
+export function clipDraftText(template: string, max: number): string {
+  if (template.length <= max) return template;
+  const cut = template.slice(0, max);
+  const open = cut.lastIndexOf('{');
+  return open > cut.lastIndexOf('}') ? cut.slice(0, open) : cut;
+}
+
 /** The words of an entry in the chosen wording: the neutral text when that one is empty. */
 export function entryText(
   entry: { neutral: string; feminine: string; masculine: string },

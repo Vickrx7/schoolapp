@@ -79,17 +79,61 @@ describe('« Période » in « Bulletins » (D-130)', () => {
     expect(wrong).toMatchObject({
       invalid: true,
       report: 'term',
-      window: { startsOn: '2026-09-02', endsOn: '2026-10-03' },
+      window: { startsOn: '2026-09-02', endsOn: '2027-06-25' },
     });
   });
 
-  it('falls back to « Dates choisies » when the board has set no period', () => {
+  it('falls back to « Dates choisies » over the whole year when the board has set no period', () => {
     const p = composerPeriod({}, [], year, '2027-08-01');
     expect(p).toMatchObject({
       choice: 'custom',
       invalid: false,
       window: { startsOn: '2026-09-02', endsOn: '2027-06-25' },
+      key: 'custom-2026-09-02-2027-06-25-term',
+      expiresOn: '2027-08-24',
     });
+  });
+
+  it('keeps the same device key from one day to the next (post-MVP review)', () => {
+    const keys = ['2026-11-10', '2026-11-11', '2027-03-01', '2027-06-25'].map(
+      (today) => composerPeriod({}, [], year, today).key,
+    );
+    expect(new Set(keys)).toEqual(new Set(['custom-2026-09-02-2027-06-25-term']));
+    expect(composerPeriod({ period: 'custom' }, [], year, '2026-11-10').key).toBe(keys[0]);
+    expect(composerPeriod({ kind: 'progress' }, [], year, '2026-11-11').key).toBe(
+      'custom-2026-09-02-2027-06-25-progress',
+    );
+  });
+
+  it('keeps « Dates choisies » inside the school year, and the expiry within 60 days of its end', () => {
+    for (const [from, to] of [
+      ['2026-09-02', '2099-12-31'],
+      ['2026-08-01', '2026-10-30'],
+      ['2027-07-01', '2027-07-31'],
+    ]) {
+      expect(
+        composerPeriod({ period: 'custom', from, to }, periods, year, '2026-10-03'),
+      ).toMatchObject({
+        invalid: true,
+        window: { startsOn: '2026-09-02', endsOn: '2027-06-25' },
+        expiresOn: '2027-08-24',
+      });
+    }
+    const last = composerPeriod(
+      { period: 'custom', from: '2027-05-03', to: '2027-06-25' },
+      periods,
+      year,
+      '2026-10-03',
+    );
+    expect(last).toMatchObject({ invalid: false, expiresOn: '2027-08-24' });
+    // A board period whose « remise » is late in the summer: never past the year's 60 days.
+    const late = composerPeriod(
+      { period: 'term2' },
+      [{ ...periods[2]!, issuedOn: '2027-06-30' }],
+      { startsOn: '2026-09-02', endsOn: '2027-06-11' },
+      '2027-06-01',
+    );
+    expect(late.expiresOn).toBe('2027-08-10');
   });
 });
 

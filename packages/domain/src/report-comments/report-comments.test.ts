@@ -3,6 +3,7 @@ import { fillComment } from '@lynx/content';
 import { describe, expect, it } from 'vitest';
 import {
   COMMENT_LIMIT_DEFAULT,
+  COMMENT_LIMIT_MAX,
   LEARNING_SKILLS_KEY,
   alternativesOf,
   bankPeriodOf,
@@ -18,6 +19,9 @@ import {
   entryInScope,
   isPeriodKey,
   noteKeywords,
+  REPORT_NOTES_MAX,
+  STORED_TEXT_MAX,
+  commentMaxLength,
   parseReportDraft,
   parseReportDraftKey,
   periodKey,
@@ -407,9 +411,47 @@ describe('the device draft (D-130)', () => {
     });
     expect(parseReportDraft({ ...draft, v: 2 })).toBeNull();
     expect(parseReportDraft({ ...draft, expiresOn: 'demain' })).toBeNull();
-    expect(parseReportDraft({ ...draft, limit: 50 })).toBeNull();
-    expect(parseReportDraft({ ...draft, students: { Aïcha: {} } })).toBeNull();
     expect(parseReportDraft(null)).toBeNull();
+    // Inside a draft, what cannot be read takes its default or is left out.
+    expect(parseReportDraft({ ...draft, limit: 50 })?.limit).toBe(COMMENT_LIMIT_DEFAULT);
+    expect(parseReportDraft({ ...draft, students: { Aïcha: {} } })?.students).toEqual({});
+  });
+
+  it('never loses the class’s other comments to one bad or oversized entry (post-MVP review)', () => {
+    const other = '10000000-0000-4000-8000-000000000002';
+    const third = '10000000-0000-4000-8000-000000000003';
+    const stored = JSON.parse(
+      JSON.stringify({
+        v: 1,
+        expiresOn: '2027-04-13',
+        students: {
+          [student]: { comments: { mat: { text: '{prénom} lit bien.', level: 9 } } },
+          // « Mes notes » pasted from a long document: clipped, never the reason to drop anything.
+          [other]: {
+            notes: 'x'.repeat(STORED_TEXT_MAX + 5000),
+            comments: { mat: { text: '{prénom} compte.' }, fra: 'pas un commentaire' },
+          },
+          [third]: 'pas un élève',
+        },
+      }),
+    );
+    const read = parseReportDraft(stored)!;
+    expect(Object.keys(read.students)).toEqual([student, other]);
+    expect(read.students[student]!.comments.mat).toMatchObject({
+      text: '{prénom} lit bien.',
+      level: null,
+    });
+    expect(read.students[other]!.notes).toHaveLength(STORED_TEXT_MAX);
+    expect(Object.keys(read.students[other]!.comments)).toEqual(['mat']);
+    expect(read.students[other]!.comments.mat!.text).toBe('{prénom} compte.');
+  });
+
+  it('allows a comment twice its limit and at least 4,000 characters, notes 4,000', () => {
+    expect(commentMaxLength(1000)).toBe(4000);
+    expect(commentMaxLength(3000)).toBe(6000);
+    expect(REPORT_NOTES_MAX).toBe(4000);
+    // Room for the tokens: « Al » (two letters and a space) becomes `{élève:…}` (16 characters).
+    expect(STORED_TEXT_MAX).toBeGreaterThanOrEqual((16 / 3) * commentMaxLength(COMMENT_LIMIT_MAX));
   });
 
   it('drops the picks of an older revision of the bank, keeping the text', () => {
@@ -456,9 +498,27 @@ describe('the device draft (D-130)', () => {
       ...emptyReportDraft('2027-04-13'),
       students: {
         [student]: { gradeCode: null, form: 'neutral', notes: '', comments: { mat: text } },
-        [bank]: { gradeCode: null, form: 'feminine', notes: '', comments: {} },
+        [bank]: { gradeCode: null, form: 'neutral', notes: '', comments: {} },
       },
     };
     expect(studentsWithWork(draft)).toEqual([student]);
+  });
+
+  it('keeps a student’s grade and wording in a combined class, with nothing else yet', () => {
+    const draft: ReportDraft = {
+      ...emptyReportDraft('2027-04-13'),
+      students: {
+        [student]: { gradeCode: '4', form: 'neutral', notes: '', comments: {} },
+        [bank]: { gradeCode: null, form: 'feminine', notes: '', comments: {} },
+      },
+    };
+    expect(studentsWithWork(draft)).toEqual([student, bank]);
+  });
+
+  it('counts a comment with its classmates’ first names put back', () => {
+    const mate = { id: '10000000-0000-4000-8000-000000000002', firstName: 'Noah' };
+    const text = { ...emptyDraftComment(), text: '{prénom} aide {élève:10000000}.' };
+    // « Aïcha aide Noah. »
+    expect(commentStatus(text, 'Aïcha', 1000, [mate])).toEqual({ kind: 'ready', length: 16 });
   });
 });

@@ -11,6 +11,7 @@ import {
   forgetSentDrafts,
   newsletterDraftKey,
   readReportDraft,
+  reportDraftState,
   removeDrafts,
   serializeDraft,
   storeDraft,
@@ -189,7 +190,21 @@ describe('report card comments on the device (« Bulletins », D-130)', () => {
     expect(readReportDraft(null, '2027-01-01')).toBeNull();
   });
 
-  it('removes another account’s report drafts, expired and unreadable ones, and nothing else', () => {
+  it('tells an expired draft from one it cannot read (which is never deleted for that)', () => {
+    expect(reportDraftState(draft('2027-04-13'), '2027-04-13').kind).toBe('ok');
+    expect(reportDraftState(draft('2027-04-13'), '2027-04-14').kind).toBe('expired');
+    expect(reportDraftState('{pas du JSON', '2027-01-01').kind).toBe('unreadable');
+    expect(
+      reportDraftState(serializeDraft({ v: 2, expiresOn: '2027-04-13' }), '2027-01-01'),
+    ).toEqual({ kind: 'unreadable' });
+    // Its expiry date read on its own, when the rest cannot be read.
+    expect(
+      reportDraftState(serializeDraft({ v: 2, expiresOn: '2027-04-13' }), '2027-04-14').kind,
+    ).toBe('expired');
+    expect(reportDraftState(null, '2027-01-01').kind).toBe('none');
+  });
+
+  it('removes another account’s report drafts and expired ones, and nothing else', () => {
     const key = (user: string, period: string) => DRAFT_PREFIX + reportDraftKey(user, cls, period);
     const storage = memoryStorage({
       [key(me, 'term1')]: draft('2027-04-13'),
@@ -201,11 +216,13 @@ describe('report card comments on the device (« Bulletins », D-130)', () => {
       [`${DRAFT_PREFIX}report-bank-generate:${other}`]: serializeDraft({ note: 'x' }),
       unrelated: 'kept',
     });
-    expect(forgetReportDrafts({ userId: me, today: '2027-02-01', storage })).toBe(4);
+    expect(forgetReportDrafts({ userId: me, today: '2027-02-01', storage })).toBe(3);
     const left = Array.from({ length: storage.length }, (_, i) => storage.key(i)).sort();
     expect(left).toEqual(
       [
         key(me, 'term1'),
+        // Hers but unreadable: left alone (a sign-out removes it).
+        key(me, 'term2'),
         `${DRAFT_PREFIX}lesson:${other}:u1:new`,
         `${DRAFT_PREFIX}report-bank-generate:${other}`,
         'unrelated',

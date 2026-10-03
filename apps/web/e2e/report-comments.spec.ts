@@ -451,7 +451,8 @@ test('« Bulletins »: comments composed on the device from the demo bank, copie
   // « Mes notes (sur cet appareil) », with the sentinel and her name; Enter in each field.
   await editor.locator('summary').filter({ hasText: 'Mes notes (sur cet appareil)' }).click();
   const notes = editor.getByLabel('Mes notes (sur cet appareil)');
-  await notes.fill(`${SENTINEL} Aïcha calcule vite`);
+  // A classmate's name, typed without its accent: stored as a token, back with the roster's spelling.
+  await notes.fill(`${SENTINEL} Aïcha calcule vite avec LEA`);
   await notes.press('Enter');
   await page.getByLabel('Limite de caractères').press('Enter');
 
@@ -474,13 +475,14 @@ test('« Bulletins »: comments composed on the device from the demo bank, copie
     new RegExp(`^Aïcha lit, .*${SENTINEL}`, 's'),
   );
   await expect(editor.getByLabel('Mes notes (sur cet appareil)')).toHaveValue(
-    `${SENTINEL} Aïcha calcule vite\n`,
+    `${SENTINEL} Aïcha calcule vite avec Léa\n`,
   );
 
   // The sentinel never left the browser: in no address, header or body of any request.
   expect(sent.length).toBeGreaterThan(10);
   for (const request of sent) expect(request).not.toContain(SENTINEL);
-  // The device holds the comments in template form: `{prénom}`, never a first name.
+  // The device holds the comments in template form: `{prénom}` and `{élève:…}`, never a first
+  // name of the class.
   const drafts = await reportDrafts(page);
   expect(drafts.map(([key]) => key)).toEqual([
     `${DRAFT_PREFIX}${DEMO_USER_IDS.isabelle}:${SEED.class3}:term1`,
@@ -488,8 +490,8 @@ test('« Bulletins »: comments composed on the device from the demo bank, copie
   const stored = drafts[0]![1];
   expect(stored).toContain('{prénom}');
   expect(stored).toContain(SENTINEL);
-  expect(stored).toContain('{prénom} calcule vite');
-  expect(stored).not.toMatch(/Aïcha|Youssef/);
+  expect(stored).toMatch(/\{prénom\} calcule vite avec \{élève:[0-9a-f]{8}\}/);
+  expect(stored).not.toMatch(/Aïcha|Youssef|\bL[ée]a\b|LEA/);
 
   // « Effacer mes commentaires de cette période sur cet appareil » asks first (axe on its dialog).
   await page
@@ -516,7 +518,7 @@ test('« Bulletins »: comments composed on the device from the demo bank, copie
   expect(await reportDrafts(page)).toEqual([]);
 });
 
-test('the janitor removes another account’s report comments and expired ones from the browser', async ({
+test('the janitor removes another account’s report comments and expired ones, never hers for being unreadable', async ({
   page,
 }) => {
   await login(page, DEMO.teacher3);
@@ -536,12 +538,14 @@ test('the janitor removes another account’s report comments and expired ones f
       savedAt: Date.now(),
     });
   const mine = `${DRAFT_PREFIX}${DEMO_USER_IDS.isabelle}:${SEED.class3}:progress`;
+  const unreadable = `${DRAFT_PREFIX}${DEMO_USER_IDS.isabelle}:${SEED.class3}:term2`;
   const planted = {
     // Marc's comments, left on this browser without signing out.
     [`${DRAFT_PREFIX}${DEMO_USER_IDS.marc}:${SEED.class5}:term1`]: draft('2099-01-01'),
     // Hers, 60 days after the remise: expired.
     [`${DRAFT_PREFIX}${DEMO_USER_IDS.isabelle}:${SEED.class3}:term1`]: draft('2020-01-01'),
-    [`${DRAFT_PREFIX}${DEMO_USER_IDS.isabelle}:${SEED.class3}:term2`]: '{pas du JSON',
+    // Hers, but unreadable: never deleted for that (a sign-out removes it).
+    [unreadable]: '{pas du JSON',
     [mine]: draft('2099-01-01'),
   };
   await page.evaluate((entries) => {
@@ -549,9 +553,14 @@ test('the janitor removes another account’s report comments and expired ones f
   }, planted);
   await page.goto('/calendar');
   await expect(async () => {
-    expect((await reportDrafts(page)).map(([key]) => key)).toEqual([mine]);
+    expect((await reportDrafts(page)).map(([key]) => key).sort()).toEqual(
+      [mine, unreadable].sort(),
+    );
   }).toPass();
-  await page.evaluate((key) => localStorage.removeItem(key), mine);
+  await page.evaluate(
+    (keys) => keys.forEach((key) => localStorage.removeItem(key)),
+    [mine, unreadable],
+  );
 });
 
 test('Paul, a subject teacher: his subject first, then the learning skills', async ({ page }) => {

@@ -4211,7 +4211,7 @@
       "apply": "Show",
       "bankLater": "The bank for the new period or subject is chosen after “Show”.",
       "noPeriods": "Your board has not set this year’s report card periods yet: choose the dates.",
-      "customInvalid": "Choose two dates in order. Meanwhile, the year up to today is used."
+      "customInvalid": "Choose two dates in order, within the school year. Meanwhile, the whole year is used."
     },
     "bank": {
       "approved": "Approved by the board",

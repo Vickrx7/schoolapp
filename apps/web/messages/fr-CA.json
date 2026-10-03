@@ -4211,7 +4211,7 @@
       "apply": "Afficher",
       "bankLater": "La banque de la nouvelle période ou matière se choisit après « Afficher ».",
       "noPeriods": "Votre conseil n’a pas encore indiqué les périodes de bulletin de cette année : choisissez les dates.",
-      "customInvalid": "Choisissez deux dates dans l’ordre. En attendant, l’année jusqu’à aujourd’hui est utilisée."
+      "customInvalid": "Choisissez deux dates dans l’ordre, pendant l’année scolaire. En attendant, toute l’année est utilisée."
     },
     "bank": {
       "approved": "Approuvée par le conseil",

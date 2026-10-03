@@ -2806,6 +2806,24 @@ device also keeps identity out of any future AI step by construction (D-133). As
 composer's files import no server action or `server-only` module and make no request, and the
 browser test types a sentinel in every field and finds it in no request.
 
+_Amended in the post-MVP review (2026-10-03), round A:_ (1) **Templates.** Every first name of the
+class is stored in template form, whatever its case or accents (« Lea », « LÉA », « léa » for
+Léa): the student's own as `{prénom}`, a classmate's as `{élève:<the first 8 hex of her id>}`
+(`unfillDraftText`, `fillDraftText` in `@lynx/content`), put back with the roster's spelling when
+shown, copied, printed and counted; a first name that is also an everyday word (Rose, Claire,
+Patience…) is replaced in lower case only when written as the roster spells it. Other names the
+teacher types (a parent's, a nickname, « Mme Diallo ») stay as typed. A classmate who left the
+class comes back as « [élève] ». (2) **Without board periods**, the default « Dates choisies »
+cover the whole school year, so the draft's key is the same every day; chosen dates must lie
+inside the school year (the inputs' min and max, and `composerPeriod`); the expiry is never later
+than 60 days after the school year's last day. (3) **One bad entry never costs the rest.** A
+comment may be typed up to twice its limit and at least 4,000 characters, « Mes notes » up to
+4,000; the draft is read tolerantly: a field out of range takes its default, a text past 60,000
+stored characters is clipped (never cutting a token), an unreadable comment or student is left
+out and the rest kept. An expired draft is removed; a draft that cannot be read at all is never
+deleted for that (it stays until a sign-out or a new write). (4) In a combined class, a student's
+« Année d'études » and a wording other than neutral are kept even with nothing else written.
+
 **D-131 — The `{prénom}` placeholder and elision.** Bank texts name the student only as
 `{prénom}`; the app never stores a student's name in a bank. Filling it in (`fillComment`) elides
 « de », « que », « lorsque » and « puisque » before a first name that calls for it, with the
