@@ -4199,6 +4199,10 @@ export type Database = {
           onboarding_dismissed_at: string;
         }[];
       };
+      newsletter_ai_preview: {
+        Args: { p_newsletter_id: string; p_scope: string };
+        Returns: Json;
+      };
       operator_account_id: {
         Args: { p_email: string };
         Returns: string;
@@ -4297,6 +4301,15 @@ export type Database = {
       };
       request_library_levels: {
         Args: { p_item_id: string; p_school_id: string; p_level_ids: string[] };
+        Returns: string;
+      };
+      request_newsletter_translation: {
+        Args: {
+          p_newsletter_id: string;
+          p_scope: string;
+          p_expected_revision: number;
+          p_send_keys: string[];
+        };
         Returns: string;
       };
       request_report_comment_bank: {

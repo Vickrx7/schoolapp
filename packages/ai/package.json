@@ -11,7 +11,8 @@
     "./features/shared": "./src/features/shared.ts",
     "./features/library-item": "./src/features/library-item.ts",
     "./features/library-levels": "./src/features/library-levels.ts",
-    "./features/report-comment-bank": "./src/features/report-comment-bank.ts"
+    "./features/report-comment-bank": "./src/features/report-comment-bank.ts",
+    "./features/newsletter-translate": "./src/features/newsletter-translate.ts"
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json"

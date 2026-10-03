@@ -188,7 +188,13 @@
     "reportBankNotTeaching": "A report card comment bank can’t be added to a lesson.",
     "newsletterWeek": "This week is not in the class’s school year.",
     "newsletterPurged": "The first names of this class’s students were erased: no message can be prepared for it any more.",
-    "newsletterConflict": "A colleague edited this message in the meantime. Your changes stay on this device: reload the page to see their version, then take yours back."
+    "newsletterConflict": "A colleague edited this message in the meantime. Your changes stay on this device: reload the page to see their version, then take yours back.",
+    "newsletterTooLargeForAi": "This message is too long for automatic translation: translate only the paragraphs without an up-to-date translation, or write the English yourself.",
+    "newsletterNothingToTranslate": "Every paragraph already has an up-to-date English version.",
+    "newsletterStale": "The message changed since you checked it. Check it again before sending.",
+    "newsletterBusy": "A colleague is already having this message translated. Try again in a few minutes.",
+    "newsletterChanged": "The message changed during the translation. Start the translation again.",
+    "newsletterUnconfirmed": "Tick “I checked” to confirm that the text names no one the app does not know."
   },
   "days": {
     "1": "Monday",
@@ -575,7 +581,8 @@
       "identifier": "ID number",
       "postalCode": "Postal code",
       "address": "Address",
-      "birthDate": "Birth date"
+      "birthDate": "Birth date",
+      "titledName": "Name after a title that the app does not know"
     },
     "blockedItem": "{kind}: <code>{match}</code>",
     "send": "Send to the AI",
@@ -879,7 +886,8 @@
       "identifier": "an identification number",
       "postalCode": "a postal code",
       "address": "an address",
-      "birthDate": "a date of birth"
+      "birthDate": "a date of birth",
+      "titledName": "a name the app does not know after a title"
     },
     "send": "Send to AI",
     "sending": "Sending…",
@@ -3725,7 +3733,8 @@
     "changes": {
       "pilote1": "the first complete version of the pilot project’s terms.",
       "pilote2": "the app replaces only the names it knows (your schools’ students and staff) before anything is sent to artificial intelligence: remove any other name yourself. The notice also says who reads your feedback and how IP Lynx accesses the data.",
-      "pilote3": "report card comments stay on your device: never on our servers or with artificial intelligence, and they are erased when you sign out."
+      "pilote3": "report card comments stay on your device: never on our servers or with artificial intelligence, and they are erased when you sign out.",
+      "pilote4": "family newsletters: the app helps you prepare a message to families, never sends it, and erases it with the students’ first names."
     },
     "acceptUpdated": "Accept the terms",
     "later": "Later",
@@ -3750,7 +3759,7 @@
       },
       "use": {
         "title": "What the information is for",
-        "body": "To plan teaching, prepare substitute plans and report card comments, and share resources with colleagues. It is never sold, never used for advertising and never used to train artificial intelligence."
+        "body": "To plan teaching, prepare substitute plans, report card comments and messages to families, and share resources with colleagues. It is never sold, never used for advertising and never used to train artificial intelligence. The app sends nothing to families: you copy or print your family newsletters yourself."
       },
       "ai": {
         "title": "Artificial intelligence",
@@ -3766,7 +3775,7 @@
       },
       "retention": {
         "title": "How long",
-        "body": "By default, students’ first names are erased one year after the end of the school year (units and lessons stay). Substitute plans are erased one year after their date, the audit log after two years, feedback after one year, a sample class after 60 days and backups after 30 days. Your board may ask for other periods. Report card comments are erased from your device when you sign out, when someone else signs in on that browser, or 60 days after the report card goes home at the latest."
+        "body": "By default, students’ first names and the class’s family newsletters are erased one year after the end of the school year (units and lessons stay). Substitute plans are erased one year after their date, the audit log after two years, feedback after one year, a sample class after 60 days and backups after 30 days. Your board may ask for other periods. Report card comments are erased from your device when you sign out, when someone else signs in on that browser, or 60 days after the report card goes home at the latest."
       },
       "rights": {
         "title": "Your rights",
@@ -3777,6 +3786,7 @@
       "pilot": "{appName} is under development: the app may change or be interrupted during the pilot project, which is free of charge.",
       "names": "Until your principal agrees in writing, use made-up first names or initials, or the sample class.",
       "personal": "Enter no personal information about a student other than their first name, except in alerts, when the principal has turned them on, and in report card comments, which stay on your device.",
+      "families": "A family newsletter goes to every family in the class: name a student in it only for news everyone may share. Before automatic translation, remove the names of parents or other people the app does not know.",
       "account": "Your access is personal. Sign out on a shared computer: your drafts and report card comments are then erased from it.",
       "ai": "Check what artificial intelligence suggests before using it with your students.",
       "feedback": "The feedback you send is read by the people with the “Board administration” role, to improve the app; during the pilot, IP Lynx may hold that role, if your board asks it to.",
@@ -3822,6 +3832,18 @@
     "intro": "What changed in the app, from the newest version to the oldest.",
     "current": "Installed version: {version}",
     "versions": {
+      "v090": {
+        "title": "Version 0.9 · Family newsletter",
+        "date": "October 2026",
+        "items": {
+          "message": "“Family newsletter” in each class: the week’s message to families, in French and in English, prepared from your planning and the calendar. You read it over, then copy or print it: the app sends nothing to families.",
+          "pdf": "“Print (PDF)”: the message in French, in English or in both languages, one page per language.",
+          "translate": "“Translate into English (AI)”: the English of the paragraphs without an up-to-date translation, after a check of what is sent. A paragraph that names, after a title, a person the app does not know is never sent.",
+          "typography": "“Fix the typography”: French spaces and apostrophes, without changing your words.",
+          "today": "“Today” reminds you of the week’s message on the last two school days, for the classes that use the family newsletter.",
+          "terms": "The pilot project’s terms now cover family newsletters."
+        }
+      },
       "v080": {
         "title": "Version 0.8 · Report card comments",
         "date": "October 2026",
@@ -4395,7 +4417,8 @@
         "identifier": "an identification number",
         "postalCode": "a postal code",
         "address": "an address",
-        "birthDate": "a date of birth"
+        "birthDate": "a date of birth",
+        "titledName": "a name the app does not know after a title"
       }
     },
     "pdf": {
@@ -4405,6 +4428,42 @@
       "both": "Print both (PDF)",
       "failed": "The PDF could not be created. The message is still in the app: try again in a moment.",
       "failedBack": "Back to the message"
+    },
+    "ai": {
+      "button": "Translate into English (AI)",
+      "previewTitle": "Check before sending",
+      "previewIntro": "This is exactly what will be sent to artificial intelligence for translation. The names the app knows are replaced (highlighted).",
+      "scope": "Paragraphs to translate",
+      "scopeMissing": "Only the paragraphs without an up-to-date translation ({count})",
+      "scopeAll": "Translate everything again ({count})",
+      "sentCount": "{count, plural, =0 {No paragraph will be sent.} one {# paragraph will be sent.} other {# paragraphs will be sent.}}",
+      "replacedCount": "{count, plural, =0 {No name to replace.} one {# name replaced.} other {# names replaced.}}",
+      "sentText": "Text sent",
+      "notSentTitle": "Not sent — translate it yourself",
+      "notSentIntro": "These paragraphs stay in Canada. Write their English yourself in the editor.",
+      "notSentReason": "contains {kind} ({match})",
+      "kinds": {
+        "email": "an email address",
+        "phone": "a phone number",
+        "identifier": "an identification number",
+        "postalCode": "a postal code",
+        "address": "an address",
+        "birthDate": "a date of birth",
+        "titledName": "a name the app does not know after a title"
+      },
+      "nothingSent": "No paragraph can be sent: write the English yourself.",
+      "words": "Capitalized words to check: {words} — if one of them is a person’s name (a parent, a volunteer), remove it before sending.",
+      "noWords": "No capitalized word to check.",
+      "limit": "The app does not recognize a first name it does not know when it stands alone at the start of a sentence: read the text over.",
+      "confirm": "I checked: the text names no other person the app does not know.",
+      "send": "Send to AI",
+      "sending": "Sending…",
+      "working": "AI is translating your message…",
+      "workingHint": "The message is read-only until the translation is done. You can leave this page: the translation goes on.",
+      "tooLongHint": "The translation is taking longer than expected. Your message has not changed.",
+      "resume": "Back to the message",
+      "done": "{count, plural, =0 {AI answered, but no paragraph changed.} one {AI translated # paragraph: read its English, marked “translated by AI — to read over”, before sharing the message.} other {AI translated # paragraphs: read their English, marked “translated by AI — to read over”, before sharing the message.}}",
+      "failed": "The translation did not go through."
     }
   },
   "newsletterText": {

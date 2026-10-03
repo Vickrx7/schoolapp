@@ -17,8 +17,11 @@
  *   pnpm ai:eval --feature report_comment_bank --provider fake   # « Créer une banque avec l’IA »
  *   pnpm ai:eval --feature report_comment_bank --case mat-3e-term --yes   # one case, under $1
  *
- * `--feature` is differentiate (the default), sub_plan, library_item, library_levels or
- * report_comment_bank. Reads
+ *   pnpm ai:eval --feature newsletter_translate --provider fake   # « Traduire en anglais (IA) »
+ *   pnpm ai:eval --feature newsletter_translate --case semaine-3e-complete --yes   # under $0.10
+ *
+ * `--feature` is differentiate (the default), sub_plan, library_item, library_levels,
+ * report_comment_bank or newsletter_translate. Reads
  * ANTHROPIC_API_KEY, AI_MODEL and AI_EFFORT from the environment (or apps/web/.env.local).
  *
  * `--batch` (library_item only; bulk generation, DECISIONS D-096 to D-098) sends the cases as one
@@ -54,6 +57,11 @@ import {
   type ReportCommentBankInput,
 } from '../features/report-comment-bank';
 import type { LibraryAiVersion } from '../features/library-shared';
+import {
+  newsletterTranslateFeature,
+  type NewsletterTranslateInput,
+  type NewsletterTranslateOutput,
+} from '../features/newsletter-translate';
 import { subPlanFeature } from '../features/sub-plan';
 import { countedInputTokens, fallbackInputTokens, schemaJsonText, worstCaseUsd } from '../batch';
 import { estimateCostUsd, priceFor } from '../pricing';
@@ -65,6 +73,7 @@ import {
   checkDifferentiation,
   checkLibraryItem,
   checkLibraryLevels,
+  checkNewsletterTranslation,
   checkReportCommentBank,
   checkSubPlan,
   type CheckResult,
@@ -72,6 +81,7 @@ import {
 import { differentiateCases } from './differentiate-cases';
 import { libraryItemCases } from './library-item-cases';
 import { libraryLevelsCases } from './library-levels-cases';
+import { newsletterTranslateCases } from './newsletter-translate-cases';
 import { reportCommentBankCases } from './report-comment-bank-cases';
 import { subPlanCases } from './sub-plan-cases';
 
@@ -672,6 +682,74 @@ async function reportCommentBankRuns(version: string): Promise<CaseRun[]> {
   return runs;
 }
 
+/** Each paragraph's French and English, side by side, for the teacher who reads the report. */
+function newsletterAnswer(
+  output: NewsletterTranslateOutput,
+  input: NewsletterTranslateInput,
+  sentText: string,
+): string[] {
+  const answers = new Map(output.items.map((i) => [i.key, i.text]));
+  const answer: string[] = [];
+  for (const item of input.items) {
+    answer.push(
+      `- **${item.key}** (${item.section})`,
+      `  - FR : ${item.text}`,
+      `  - EN : ${answers.get(item.key) ?? '_(non envoyé)_'}`,
+    );
+  }
+  answer.push(
+    '',
+    '<details><summary>Texte envoyé</summary>',
+    '',
+    '```',
+    sentText,
+    '```',
+    '</details>',
+    '',
+  );
+  return answer;
+}
+
+async function newsletterTranslateRuns(version: string): Promise<CaseRun[]> {
+  const cases = newsletterTranslateCases.filter((c) => !values.case || c.id === values.case);
+  if (!cases.length) throw new Error(`no case named ${values.case}`);
+  // About $0.03 to $0.10 per message at medium effort: short answers, more for long ones.
+  confirmCost(
+    cases.length,
+    'translations',
+    cases.reduce((sum, c) => sum + 0.03 + 0.004 * c.input.items.length, 0),
+  );
+  const system = await loadPrompt(newsletterTranslateFeature.name, version);
+  const runs: CaseRun[] = [];
+  for (const c of cases) {
+    process.stdout.write(`${c.id} … `);
+    const run = await runFeature({
+      feature: newsletterTranslateFeature,
+      provider,
+      price,
+      systemPrompt: system,
+      input: c.input,
+      people: c.people ?? [],
+    });
+    const checks = run.output ? checkNewsletterTranslation(run.output, c.input, c.expect) : null;
+    const answer = run.output ? newsletterAnswer(run.output, c.input, run.sentText ?? '') : [];
+    runs.push({
+      id: c.id,
+      heading: `${c.id}: ${c.title}`,
+      status: run.status,
+      line: statusLine(run),
+      problems: run.problems,
+      checks,
+      answer,
+      costUsd: run.costUsd,
+    });
+    console.log(
+      checks ? `${checks.filter((r) => r.passed).length}/${checks.length} checks` : run.status,
+    );
+  }
+  return runs;
+}
+
 const FEATURES = {
   differentiate: {
     title: 'Texte différencié',
@@ -690,11 +768,16 @@ const FEATURES = {
     feature: reportCommentBankFeature,
     runs: reportCommentBankRuns,
   },
+  newsletter_translate: {
+    title: 'Traduire en anglais (IA)',
+    feature: newsletterTranslateFeature,
+    runs: newsletterTranslateRuns,
+  },
 } as const;
 const chosen = FEATURES[values.feature as keyof typeof FEATURES];
 if (!chosen) {
   throw new Error(
-    `unknown feature ${values.feature} (differentiate, sub_plan, library_item, library_levels or report_comment_bank)`,
+    `unknown feature ${values.feature} (differentiate, sub_plan, library_item, library_levels, report_comment_bank or newsletter_translate)`,
   );
 }
 if (values.batch && values.feature !== 'library_item') {

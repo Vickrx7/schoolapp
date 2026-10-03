@@ -188,7 +188,13 @@
     "reportBankNotTeaching": "Une banque de commentaires de bulletin ne s’ajoute pas à une leçon.",
     "newsletterWeek": "Cette semaine n’est pas dans l’année scolaire de la classe.",
     "newsletterPurged": "Les prénoms des élèves de cette classe ont été effacés : on ne peut plus y préparer de message.",
-    "newsletterConflict": "Une ou un collègue a modifié ce message entre-temps. Vos modifications restent sur cet appareil : rechargez la page pour voir sa version, puis reprenez les vôtres."
+    "newsletterConflict": "Une ou un collègue a modifié ce message entre-temps. Vos modifications restent sur cet appareil : rechargez la page pour voir sa version, puis reprenez les vôtres.",
+    "newsletterTooLargeForAi": "Ce message est trop long pour la traduction automatique : traduisez seulement les paragraphes sans traduction à jour, ou écrivez l’anglais vous-même.",
+    "newsletterNothingToTranslate": "Tous les paragraphes ont déjà une version anglaise à jour.",
+    "newsletterStale": "Le message a changé depuis la vérification. Vérifiez-le de nouveau avant d’envoyer.",
+    "newsletterBusy": "Une ou un collègue fait déjà traduire ce message. Réessayez dans quelques minutes.",
+    "newsletterChanged": "Le message a changé pendant la traduction. Relancez la traduction.",
+    "newsletterUnconfirmed": "Cochez « J’ai vérifié » pour confirmer que le texte ne nomme personne que l’application ne connaît pas."
   },
   "days": {
     "1": "lundi",
@@ -575,7 +581,8 @@
       "identifier": "Numéro d’identification",
       "postalCode": "Code postal",
       "address": "Adresse",
-      "birthDate": "Date de naissance"
+      "birthDate": "Date de naissance",
+      "titledName": "Nom après un titre que l’application ne connaît pas"
     },
     "blockedItem": "{kind} : <code>{match}</code>",
     "send": "Envoyer à l’IA",
@@ -879,7 +886,8 @@
       "identifier": "un numéro d’identification",
       "postalCode": "un code postal",
       "address": "une adresse",
-      "birthDate": "une date de naissance"
+      "birthDate": "une date de naissance",
+      "titledName": "un nom que l’application ne connaît pas après un titre"
     },
     "send": "Envoyer à l’IA",
     "sending": "Envoi…",
@@ -3725,7 +3733,8 @@
     "changes": {
       "pilote1": "la première version complète des conditions du projet pilote.",
       "pilote2": "l’application remplace seulement les noms qu’elle connaît (les élèves et le personnel de vos écoles) avant l’envoi à l’intelligence artificielle : retirez vous-même tout autre nom. L’avis précise aussi qui lit vos commentaires et comment IP Lynx accède aux données.",
-      "pilote3": "les commentaires de bulletin restent sur votre appareil : jamais sur nos serveurs ni à l’intelligence artificielle, et ils sont effacés à la déconnexion."
+      "pilote3": "les commentaires de bulletin restent sur votre appareil : jamais sur nos serveurs ni à l’intelligence artificielle, et ils sont effacés à la déconnexion.",
+      "pilote4": "les messages Info-parents : l’application vous aide à préparer un message aux familles, sans jamais l’envoyer, et il est effacé avec les prénoms des élèves."
     },
     "acceptUpdated": "Accepter les conditions",
     "later": "Plus tard",
@@ -3750,7 +3759,7 @@
       },
       "use": {
         "title": "À quoi servent ces renseignements",
-        "body": "À planifier l’enseignement, à préparer les plans de suppléance et les commentaires de bulletin, et à partager des ressources entre collègues. Ils ne sont jamais vendus, jamais utilisés pour de la publicité et jamais utilisés pour entraîner une intelligence artificielle."
+        "body": "À planifier l’enseignement, à préparer les plans de suppléance, les commentaires de bulletin et les messages aux familles, et à partager des ressources entre collègues. Ils ne sont jamais vendus, jamais utilisés pour de la publicité et jamais utilisés pour entraîner une intelligence artificielle. L’application n’envoie rien aux familles : vous copiez ou imprimez vous-même vos messages Info-parents."
       },
       "ai": {
         "title": "L’intelligence artificielle",
@@ -3766,7 +3775,7 @@
       },
       "retention": {
         "title": "Combien de temps",
-        "body": "Par défaut, les prénoms des élèves sont effacés un an après la fin de l’année scolaire (les unités et leçons restent). Les plans de suppléance sont effacés un an après leur date, le journal d’audit après deux ans, les commentaires après un an, une classe exemple après 60 jours et les copies de sauvegarde après 30 jours. Votre conseil peut demander d’autres durées. Les commentaires de bulletin sont effacés de votre appareil à la déconnexion, quand une autre personne se connecte sur ce navigateur, ou au plus tard 60 jours après la remise du bulletin."
+        "body": "Par défaut, les prénoms des élèves et les messages Info-parents de la classe sont effacés un an après la fin de l’année scolaire (les unités et leçons restent). Les plans de suppléance sont effacés un an après leur date, le journal d’audit après deux ans, les commentaires après un an, une classe exemple après 60 jours et les copies de sauvegarde après 30 jours. Votre conseil peut demander d’autres durées. Les commentaires de bulletin sont effacés de votre appareil à la déconnexion, quand une autre personne se connecte sur ce navigateur, ou au plus tard 60 jours après la remise du bulletin."
       },
       "rights": {
         "title": "Vos droits",
@@ -3777,6 +3786,7 @@
       "pilot": "{appName} est en développement : l’application peut changer ou être interrompue pendant le projet pilote, qui est sans frais.",
       "names": "Tant que votre direction n’a pas donné son accord par écrit, utilisez des prénoms inventés ou des initiales, ou la classe exemple.",
       "personal": "N’entrez aucun autre renseignement personnel sur un élève que son prénom, sauf dans les alertes, lorsque la direction les a activées, et dans les commentaires de bulletin, qui restent sur votre appareil.",
+      "families": "Un message Info-parents va à toutes les familles de la classe : n’y nommez un élève que pour une nouvelle à partager avec tout le monde. Avant la traduction automatique, retirez les noms de parents ou d’autres personnes que l’application ne connaît pas.",
       "account": "Votre accès est personnel. Déconnectez-vous sur un ordinateur partagé : vos brouillons et vos commentaires de bulletin en sont alors effacés.",
       "ai": "Vérifiez ce que propose l’intelligence artificielle avant de l’utiliser avec vos élèves.",
       "feedback": "Les commentaires que vous envoyez sont lus par les personnes qui ont le rôle « Administration du conseil », pour améliorer l’application ; pendant le projet pilote, IP Lynx peut avoir ce rôle, si votre conseil le lui demande.",
@@ -3822,6 +3832,18 @@
     "intro": "Ce qui a changé dans l’application, de la version la plus récente à la plus ancienne.",
     "current": "Version installée : {version}",
     "versions": {
+      "v090": {
+        "title": "Version 0.9 · Info-parents",
+        "date": "Octobre 2026",
+        "items": {
+          "message": "« Info-parents » dans chaque classe : le message de la semaine aux familles, en français et en anglais, préparé à partir de votre planification et du calendrier. Vous le relisez, puis vous le copiez ou l’imprimez : l’application n’envoie rien aux familles.",
+          "pdf": "« Imprimer (PDF) » : le message en français, en anglais ou dans les deux langues, une page par langue.",
+          "translate": "« Traduire en anglais (IA) » : l’anglais des paragraphes sans traduction à jour, après une vérification de ce qui est envoyé. Un paragraphe qui nomme, après un titre, une personne que l’application ne connaît pas n’est jamais envoyé.",
+          "typography": "« Corriger la typographie » : les espaces et les apostrophes du français, sans changer vos mots.",
+          "today": "« Aujourd’hui » rappelle le message de la semaine pendant les deux derniers jours d’école, pour les classes qui utilisent Info-parents.",
+          "terms": "Les conditions du projet pilote parlent maintenant des messages Info-parents."
+        }
+      },
       "v080": {
         "title": "Version 0.8 · Commentaires de bulletin",
         "date": "Octobre 2026",
@@ -4395,7 +4417,8 @@
         "identifier": "un numéro d’identification",
         "postalCode": "un code postal",
         "address": "une adresse",
-        "birthDate": "une date de naissance"
+        "birthDate": "une date de naissance",
+        "titledName": "un nom que l’application ne connaît pas après un titre"
       }
     },
     "pdf": {
@@ -4405,6 +4428,42 @@
       "both": "Imprimer les deux (PDF)",
       "failed": "Le PDF n’a pas pu être créé. Le message reste dans l’application : réessayez dans un moment.",
       "failedBack": "Retour au message"
+    },
+    "ai": {
+      "button": "Traduire en anglais (IA)",
+      "previewTitle": "Vérifier avant d’envoyer",
+      "previewIntro": "Voici exactement ce qui sera envoyé à l’intelligence artificielle pour la traduction. Les noms que l’application connaît sont remplacés (surlignés).",
+      "scope": "Paragraphes à traduire",
+      "scopeMissing": "Seulement les paragraphes sans traduction à jour ({count})",
+      "scopeAll": "Tout retraduire ({count})",
+      "sentCount": "{count, plural, =0 {Aucun paragraphe ne sera envoyé.} one {# paragraphe sera envoyé.} other {# paragraphes seront envoyés.}}",
+      "replacedCount": "{count, plural, =0 {Aucun nom à remplacer.} one {# nom remplacé.} other {# noms remplacés.}}",
+      "sentText": "Texte envoyé",
+      "notSentTitle": "Non envoyé — traduisez-le vous-même",
+      "notSentIntro": "Ces paragraphes restent au Canada. Écrivez leur anglais vous-même dans l’éditeur.",
+      "notSentReason": "contient {kind} ({match})",
+      "kinds": {
+        "email": "une adresse courriel",
+        "phone": "un numéro de téléphone",
+        "identifier": "un numéro d’identification",
+        "postalCode": "un code postal",
+        "address": "une adresse",
+        "birthDate": "une date de naissance",
+        "titledName": "un nom que l’application ne connaît pas après un titre"
+      },
+      "nothingSent": "Aucun paragraphe ne peut être envoyé : écrivez l’anglais vous-même.",
+      "words": "Mots avec majuscule à vérifier : {words} — si l’un d’eux est le nom d’une personne (un parent, une ou un bénévole), retirez-le avant d’envoyer.",
+      "noWords": "Aucun mot avec majuscule à vérifier.",
+      "limit": "L’application ne reconnaît pas un prénom qu’elle ne connaît pas quand il est seul, en début de phrase : relisez le texte.",
+      "confirm": "J’ai vérifié : le texte ne nomme aucune autre personne que l’application ne connaît pas.",
+      "send": "Envoyer à l’IA",
+      "sending": "Envoi…",
+      "working": "L’IA traduit votre message…",
+      "workingHint": "Le message est en lecture seule jusqu’à la fin de la traduction. Vous pouvez quitter cette page : la traduction continue.",
+      "tooLongHint": "La traduction prend plus de temps que prévu. Votre message n’a pas changé.",
+      "resume": "Revenir au message",
+      "done": "{count, plural, =0 {L’IA a répondu, mais aucun paragraphe n’a changé.} one {L’IA a traduit # paragraphe : relisez son anglais, marqué « traduit par l’IA — à relire », avant de partager le message.} other {L’IA a traduit # paragraphes : relisez leur anglais, marqué « traduit par l’IA — à relire », avant de partager le message.}}",
+      "failed": "La traduction n’a pas abouti."
     }
   },
   "newsletterText": {

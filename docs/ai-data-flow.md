@@ -2,8 +2,8 @@
 
 This page describes exactly what goes to the AI provider, written to help answer a school board's
 privacy questionnaire. `PRIVACY.md` (Phase 6) points here as its annex. Decisions: DECISIONS.md,
-D-037 to D-046, D-052 for the substitute plan, D-072 to D-074 for the resource bank, and D-132 for
-report card comment banks.
+D-037 to D-046, D-052 for the substitute plan, D-072 to D-074 for the resource bank, D-132 for
+report card comment banks, and D-139 for the « Info-parents » translation.
 
 No AI feature receives a report card comment about a student; the composer runs in the browser.
 
@@ -257,6 +257,63 @@ before using or sharing it (D-132). It is never automatic.
    prompt version and model it came from. In the composer, the student's first name replaces
    `{prénom}` on the device only.
 
+## Info-parents : « Traduire en anglais (IA) »
+
+A teacher of the class team (with a teacher role, at a school with the Teaching module) can ask the
+AI for the English of her class's weekly message to families (« Info-parents », D-136, D-139):
+the paragraphs whose English is missing or out of date (« Seulement les paragraphes sans
+traduction à jour »), or all of them again (« Tout retraduire »). It is off wherever the school's
+AI is off, and never automatic. The rules are stricter than for the other features, because the
+message is about the class's families and is often written to thank people by name.
+
+1. **Choices only.** The editor sends the message's id and the scope. The message must be saved
+   first (« Enregistrez vos modifications d'abord. »).
+2. **The request is built by the database** from the stored message (`app.newsletter_ai_input`):
+   the paragraphs of the sections shown, in order, with their French only, each under a key
+   (« P1 », « P2 »…) with its section, and the class's grade (« 3e année »). No class, school,
+   staff name, signature, English text or id goes into the text sent; the paragraph ids stay in
+   Canada, to put each answer back on its paragraph.
+3. **Preview, in the browser.** « Vérifier avant d'envoyer » shows exactly the text that would be
+   sent, with the names the app knows replaced and highlighted, and:
+   - **« Non envoyé — traduisez-le vous-même »**: a paragraph holding a detail the app detects
+     (below), or a title followed by a name it does not know (« Merci à Mme Dupuis », « M. le
+     maire Watson », « le père Gagnon ») is left out, with its reason. The rest is still sent (as
+     substitute plans do, D-052); the teacher writes that paragraph's English herself.
+   - **« Mots avec majuscule à vérifier »**: the capitalized words of what is sent, inside a
+     sentence (and a sentence's first word when the next one is capitalized too, as in a full
+     name), except markers, short acronyms, titles, common words and a short list of words that
+     are never a person (Dieu, Noël, Avent, Ontario, the school subjects…). If one of them is a
+     person's name (a parent, a volunteer), she removes it before sending.
+   - **« J'ai vérifié : le texte ne nomme aucune autre personne que l'application ne connaît
+     pas. »**, a box she must tick; « Envoyer à l'IA » stays disabled until then, and the server
+     refuses a request without it.
+4. **The request is the preview.** It carries the revision she checked and the keys of the
+   paragraphs the preview showed as sent; a message (or a roster) that changed since refuses it,
+   and she checks again (`newsletterStale`, `LXN05`). One request at a time per message: a
+   colleague's open request refuses hers (`LXN06`). The same school switch, budget and limits per
+   person as every request.
+5. **De-identification again on the server.** The worker replaces every student and staff member
+   of every school where she works with a marker, applies the same rules (it never sends a
+   paragraph the preview showed as not sent, nor one she did not confirm), checks the final text
+   one last time, and runs the title rule on the whole message once more.
+6. **The call.** The system prompt (`prompts/newsletter_translate/v1.md`: Canadian French to
+   Canadian English for the families of a French-language Catholic school in Ontario; one answer
+   per key; markers kept exactly; every number, date and time kept; nothing added; the Ontario
+   school glossary) and the message: the grade, then each section's heading and its paragraphs
+   with their keys and markers.
+7. **The answer comes back** to the worker, where it is checked: every key sent answered once, the
+   same markers as many times (never « Student A »), the same numbers (« 1 000 » is "1,000") and
+   times (« 13 h 35 » is "1:35 p.m."), nothing left in French, no text much longer than its
+   French; otherwise it is asked again. The names are put back on our server only.
+8. **Written back while unchanged.** The database writes each English paragraph on its paragraph
+   if the message's revision is still the one sent and the paragraph's French is still the one
+   translated, as the teacher who asked (« English : traduit par l'IA — à relire »); a message
+   saved or marked sent meanwhile takes nothing (`newsletterChanged`). The PDF's English page says
+   "Some parts of this English version were translated automatically."
+
+It sends **no** ids, no class, school, board or staff names, no signature, no students (only
+markers), no English text, no event notes and nothing from another message.
+
 ## How names are found
 
 - **The text is cleaned first.** Text pasted from web pages, PDFs or Word often carries invisible
@@ -311,6 +368,7 @@ of the text.
 | Saved differentiated texts (library drafts)                                                         | Canadian database | Until the teacher deletes them                         |
 | Resources written with the AI, and versions added by it (library items, private drafts)             | Canadian database | Until the teacher deletes them                         |
 | Comment banks written with the AI (library items, private drafts; `{prénom}`, no student data)      | Canadian database | Until the teacher deletes them                         |
+| The translation, in the « Info-parents » message (`class_newsletters`)                              | Canadian database | With the class; erased with the students' first names  |
 | Bulk runs and their requests: the de-identified text sent (`library_bulk_requests.sent_text`)       | Canadian database | 30 days, then only its SHA-256 (runs: 1 year)          |
 | The board's drafts from bulk generation (library items, private until approved)                     | Canadian database | Until a reviewer deletes them                          |
 | A bulk batch and its answers                                                                        | The AI provider   | Deleted as soon as read (otherwise at most 29 days)    |
@@ -343,7 +401,9 @@ can require its own approved cloud account or a model hosted in Canada instead (
 
 - A name the app doesn't know (a parent, a sibling, a student from a school where the teacher
   doesn't work) can only be caught by the teacher at the preview step. The preview reminds them to
-  check.
+  check. For the « Info-parents » translation, a paragraph with such a name after a title is never
+  sent, and the preview lists the capitalized words to check; a first name the app does not know,
+  alone at the start of a sentence, is still only caught by the teacher.
 - A resource written from scratch names no one, but a character's fictional first name can still
   be the name of a student elsewhere in the board. Before a resource is shared, the app checks it
   for the first names of the students of the author's schools (D-066); the author confirms each

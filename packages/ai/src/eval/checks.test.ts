@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { MAX_TEXT_TIMES_LEVELS, type DifferentiateOutput } from '../features/differentiate';
 import { libraryItemFeature } from '../features/library-item';
 import { libraryLevelsFeature } from '../features/library-levels';
+import { newsletterTranslateFeature } from '../features/newsletter-translate';
 import { reportCommentBankFeature } from '../features/report-comment-bank';
 import {
   SUB_PLAN_LIMITS,
@@ -19,12 +20,14 @@ import {
   checkDifferentiation,
   checkLibraryItem,
   checkLibraryLevels,
+  checkNewsletterTranslation,
   checkReportCommentBank,
   checkSubPlan,
 } from './checks';
 import { differentiateCases } from './differentiate-cases';
 import { libraryItemCases } from './library-item-cases';
 import { libraryLevelsCases } from './library-levels-cases';
+import { newsletterTranslateCases } from './newsletter-translate-cases';
 import { reportCommentBankCases } from './report-comment-bank-cases';
 import { subPlanCases } from './sub-plan-cases';
 
@@ -427,5 +430,62 @@ describe('« Créer une banque avec l’IA » checks', () => {
     expect(checkReportCommentBank(impersonal, c.input, c.expect).filter((r) => !r.passed)).toEqual(
       [],
     );
+  });
+});
+
+describe('« Traduire en anglais (IA) » checks', () => {
+  it('has ten cases, and the fake provider passes every check of each', async () => {
+    expect(newsletterTranslateCases).toHaveLength(10);
+    expect(new Set(newsletterTranslateCases.map((c) => c.id)).size).toBe(10);
+    const system = await loadPrompt('newsletter_translate', 'v1');
+    for (const c of newsletterTranslateCases) {
+      const run = await runFeature({
+        feature: newsletterTranslateFeature,
+        provider: createFakeProvider(),
+        price: priceFor('fake'),
+        systemPrompt: system,
+        input: c.input,
+        people: c.people ?? [],
+      });
+      expect(run.status, c.id).toBe('succeeded');
+      // A paragraph naming someone the app does not know, or a phone number, is never sent.
+      for (const key of c.expect?.notSent ?? []) {
+        const text = c.input.items.find((i) => i.key === key)!.text;
+        expect(run.sentText, c.id).not.toContain(text.slice(0, 20));
+      }
+      const failed = checkNewsletterTranslation(run.output!, c.input, c.expect).filter(
+        (r) => !r.passed,
+      );
+      expect(failed, c.id).toEqual([]);
+    }
+  });
+
+  it('catches a missing paragraph, a number, French left, a lost name and a school word', () => {
+    const c = newsletterTranslateCases.find((x) => x.id === 'marqueurs')!;
+    const bad = {
+      items: [
+        {
+          key: 'P1',
+          text: 'Bravo to Samuel, qui a lu son poème devant la classe et les familles de l’école!',
+        },
+        { key: 'P2', text: 'Ms. Tremblay thanks the families for the 12 books.' },
+        { key: 'P3', text: 'Thanks to Mme Dupuis.' },
+      ],
+    };
+    const failed = checkNewsletterTranslation(bad, c.input, c.expect)
+      .filter((r) => !r.passed)
+      .map((r) => r.name);
+    expect(failed).toEqual([
+      'every paragraph sent has its English, once, and the ones left out have none',
+      'the same numbers, dates and times in every paragraph',
+      'nothing left in French',
+      'the names come back, and no marker is left',
+    ]);
+    const words = checkNewsletterTranslation(
+      { items: [{ key: 'P1', text: 'Thursday, November 19: leaving early at 1:35 p.m.' }] },
+      newsletterTranslateCases.find((x) => x.id === 'depart-hatif')!.input,
+      { notSent: ['P2', 'P3'] },
+    ).find((r) => r.name.startsWith('the school’s words'))!;
+    expect(words).toMatchObject({ passed: false, detail: 'P1 early dismissal' });
   });
 });

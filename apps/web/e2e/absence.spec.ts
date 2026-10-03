@@ -250,6 +250,18 @@ test('a multi-day plan skips a PA day added later and continues the lessons (wor
 
 test('a mass on a Friday replaces the 3e math period', async ({ page }) => {
   await cleanupAbsences(DEMO.teacher3);
+  // The seed puts its relative mass on a school Friday, never on a PA day or a holiday, whatever
+  // the day (and the time zone) of the reset.
+  const masses = await query<{ day: string }>(
+    `select to_char(e.starts_on, 'YYYY-MM-DD') as day from public.school_calendar_events e
+     where e.school_id = $1 and e.title in ('Messe de l''école', 'Messe de l’école')`,
+    [SEED.school],
+  );
+  expect(masses.length).toBeGreaterThan(0);
+  for (const { day } of masses) {
+    expect(new Date(`${day}T12:00:00Z`).getUTCDay(), day).toBe(5);
+    expect(isSeededSchoolDay(day), day).toBe(true);
+  }
   const friday = await massFriday();
   await login(page, DEMO.teacher3);
   await reportAbsence(page, { startsOn: friday });

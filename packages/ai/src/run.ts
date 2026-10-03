@@ -149,6 +149,14 @@ export function prepareCall<I, O>(
     }
     throw error;
   }
+  const own = feature.outboundFindings?.(user) ?? [];
+  if (own.length) {
+    return {
+      ok: false,
+      errorCode: 'personalInfo',
+      problems: [...problems, ...own.map((f) => `outbound ${f.kind}`)],
+    };
+  }
   return {
     ok: true,
     input,

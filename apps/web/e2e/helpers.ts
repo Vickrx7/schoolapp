@@ -195,11 +195,17 @@ export function isSeededSchoolDay(date: string): boolean {
   return weekday !== 0 && weekday !== 6 && !SEEDED_DAYS_OFF.has(date);
 }
 
-/** The coming Friday (today on a Friday), as the seed places its relative mass. */
-export function comingFriday(): string {
-  const d = new Date();
-  d.setUTCDate(d.getUTCDate() + ((5 - (d.getUTCDay() || 7) + 7) % 7));
-  return iso(d);
+/**
+ * The coming school Friday as the seed places its relative « Messe de l'école »: the first Friday
+ * from the school's date (America/Toronto; today on a Friday) that is not a seeded day off.
+ */
+export function comingSchoolFriday(now = new Date()): string {
+  const local = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Toronto' }).format(now);
+  let d = local;
+  while (new Date(`${d}T12:00:00Z`).getUTCDay() !== 5 || SEEDED_DAYS_OFF.has(d)) {
+    d = addDaysIso(d, 1);
+  }
+  return d;
 }
 
 /** A chip of the absence form (a radio button or a checkbox drawn as a button). */

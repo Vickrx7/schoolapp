@@ -4,7 +4,7 @@
  * ended, is sent to « Bienvenue » or the sign-in page and reaches no data. The planning, progress,
  * roster and timetable actions did not (risk 7 of the « Mon année » plan); « Mon année »'s own
  * actions do from the start, and so do « Créer une banque avec l’IA »'s (D-132) and
- * « Info-parents »'s (D-136).
+ * « Info-parents »'s (D-136, D-139).
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -27,6 +27,7 @@ const modules = {
   'year-plan': await import('./year-plan'),
   'report-bank-ai': await import('./report-bank-ai'),
   newsletters: await import('./newsletters'),
+  'newsletter-ai': await import('./newsletter-ai'),
 };
 
 const actions = Object.entries(modules).flatMap(([file, mod]) =>
@@ -46,6 +47,8 @@ beforeEach(() => {
 describe('the planning, progress, roster, timetable, year plan, comment bank AI and Info-parents actions (D-109)', () => {
   it('are all checked', () => {
     expect(actions.map((a) => a.name).sort()).toEqual([
+      'newsletter-ai.previewNewsletterTranslation',
+      'newsletter-ai.requestNewsletterTranslation',
       'newsletters.createNewsletter',
       'newsletters.deleteNewsletter',
       'newsletters.markNewsletterSent',
@@ -125,5 +128,21 @@ describe('the planning, progress, roster, timetable, year plan, comment bank AI 
       ),
     ).toEqual({ ok: false, error: 'invalid' });
     expect(from).not.toHaveBeenCalled();
+    // « Traduire en anglais (IA) » (D-139): never sent without the box ticked, nothing read.
+    expect(
+      await modules['newsletter-ai'].requestNewsletterTranslation(
+        '30000000-0000-4000-8000-000000000301',
+        'missing',
+        1,
+        ['P1'],
+        false,
+      ),
+    ).toEqual({ ok: false, error: 'newsletterUnconfirmed' });
+    expect(await modules['newsletter-ai'].previewNewsletterTranslation('x', 'missing')).toEqual({
+      ok: false,
+      error: 'invalid',
+    });
+    expect(from).not.toHaveBeenCalled();
+    expect(rpc).not.toHaveBeenCalled();
   });
 });

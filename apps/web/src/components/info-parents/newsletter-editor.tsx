@@ -17,6 +17,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useEffect, useId, useRef, useState } from 'react';
 import { toast } from 'sonner';
+import { JobProgress } from '@/components/differentiate/job-progress';
 import { copyText } from '@/components/report-comments/copy';
 import { Button } from '@/components/ui/button';
 import { Notice } from '@/components/ui/card';
@@ -28,9 +29,11 @@ import { useDraft } from '@/hooks/use-draft';
 import { openAsNewDocument } from '@/lib/new-document';
 import { markNewsletterSent, refillNewsletter, saveNewsletter } from '@/server/actions/newsletters';
 import type { NewsletterNames } from '@/server/newsletter/names';
+import type { NewsletterTranslationState } from '@/server/queries/newsletters';
 import { CheckDialog, needsCheck } from './check-dialog';
 import { DeleteNewsletterButton } from './delete-button';
 import { SectionEditor } from './section-editor';
+import { TranslateButton } from './translate-dialog';
 
 export interface NewsletterEditorProps {
   userId: string;
@@ -51,7 +54,14 @@ export interface NewsletterEditorProps {
   headings: { fr: Record<NewsletterSectionKey, string>; en: Record<NewsletterSectionKey, string> };
   /** The options « Préremplir à nouveau » offers (as « Préparer le message »). */
   options: { colleagues: boolean; guides: boolean };
+  /** « Traduire en anglais (IA) » is offered: the school's AI is on (D-139). */
+  ai: boolean;
+  /** The teacher's latest translation request for this message, if any. */
+  translation: NewsletterTranslationState | null;
 }
+
+const isOpen = (translation: NewsletterTranslationState | null) =>
+  translation?.status === 'queued' || translation?.status === 'running';
 
 /**
  * The week's message (DECISIONS D-136 to D-138): the header and the signature, the notice, every
@@ -61,7 +71,9 @@ export interface NewsletterEditorProps {
  * (`newsletterConflict`): the page then reloads the newer version and offers « Récupérer mes
  * modifications ». Copying, printing and marking sent wait for a save, then check the names
  * (« Des élèves sont nommés »); the PDF is the saved message, opened in the browser to print or
- * save (a plain navigation: nothing is prefetched).
+ * save (a plain navigation: nothing is prefetched). « Traduire en anglais (IA) » (D-139) works on
+ * the saved message too: while the AI translates, the message is read-only and the progress shows;
+ * the editor then opens the new version.
  */
 export function NewsletterEditor(props: NewsletterEditorProps) {
   const router = useRouter();
@@ -76,7 +88,8 @@ export function NewsletterEditor(props: NewsletterEditorProps) {
   }, [props.revision]);
   return (
     <EditorBody
-      key={generation}
+      // A translation that starts or ends opens the message as it is then.
+      key={`${generation}:${isOpen(props.translation) ? props.translation!.jobId : ''}`}
       {...props}
       reload={{
         expect: (revision) => {
@@ -123,6 +136,8 @@ function EditorBody({
   header,
   headings,
   options,
+  ai,
+  translation,
   reload,
 }: NewsletterEditorProps & {
   reload: {
@@ -133,6 +148,7 @@ function EditorBody({
 }) {
   const t = useTranslations('newsletter');
   const tCommon = useTranslations('common');
+  const tErrors = useTranslations('errors');
   const locale = useLocale();
   const router = useRouter();
   const signatureId = useId();
@@ -144,7 +160,9 @@ function EditorBody({
   });
   const content = draft.value;
   const dirty = JSON.stringify(content) !== savedJson;
-  const readOnly = status === 'sent';
+  const sent = status === 'sent';
+  const translating = isOpen(translation);
+  const readOnly = sent || translating;
   const total = content.sections.reduce((n, s) => n + s.items.length, 0);
   const [wordNotes, setWordNotes] = useState<string[] | null>(null);
   const [pending, setPending] = useState<Pending | null>(null);
@@ -203,7 +221,22 @@ function EditorBody({
     else setFallback(text);
   };
 
-  const shareBlocked = dirty || save.pending;
+  const shareBlocked = dirty || save.pending || translating;
+  // « Traduire en anglais (IA) »: the paragraphs shown, without up-to-date English, and all.
+  const translatable = {
+    missing: itemsNeedingEnglish(content).length,
+    all: content.sections
+      .filter((s) => !s.off)
+      .reduce((n, s) => n + s.items.filter((i) => i.fr.trim() !== '').length, 0),
+  };
+  const translationError =
+    translation?.status === 'failed' && translation.current && !sent
+      ? tErrors(
+          translation.errorCode && tErrors.has(translation.errorCode as 'aiError')
+            ? (translation.errorCode as 'aiError')
+            : 'aiError',
+        )
+      : null;
 
   return (
     <div className="space-y-5 pb-4" data-testid="newsletter-editor" data-ready={ready}>
@@ -232,7 +265,32 @@ function EditorBody({
       <Notice tone="warning" data-testid="newsletter-notice">
         {t('editor.notice')}
       </Notice>
-      {readOnly && sentLabel ? (
+      {translating && translation ? (
+        <div data-testid="translate-progress">
+          <JobProgress
+            jobId={translation.jobId}
+            status={translation.status as 'queued' | 'running'}
+            createdAt={translation.createdAt}
+            resumeHref={`/classes/${classId}/info-parents/${weekOf}`}
+            working={t('ai.working')}
+            workingHint={t('ai.workingHint')}
+            tooLongHint={t('ai.tooLongHint')}
+            resumeLabel={t('ai.resume')}
+          />
+        </div>
+      ) : null}
+      {translation?.status === 'succeeded' && translation.current && !sent ? (
+        <Notice tone="success" data-testid="translate-done">
+          {t('ai.done', { count: translation.applied ?? 0 })}
+        </Notice>
+      ) : null}
+      {translationError ? (
+        <Notice tone="warning" data-testid="translate-failed">
+          <p className="font-medium">{t('ai.failed')}</p>
+          <p>{translationError}</p>
+        </Notice>
+      ) : null}
+      {sent && sentLabel ? (
         <Notice tone="success">{t('editor.sent', { date: sentLabel })}</Notice>
       ) : null}
 
@@ -296,6 +354,14 @@ function EditorBody({
             <Type aria-hidden />
             {t('editor.typography')}
           </Button>
+          {ai ? (
+            <TranslateButton
+              newsletterId={id}
+              counts={translatable}
+              disabled={dirty || save.pending || translatable.all === 0}
+              onSent={() => router.refresh()}
+            />
+          ) : null}
         </div>
       )}
       {wordNotes ? (
@@ -342,7 +408,9 @@ function EditorBody({
         <h3 id={`${signatureId}-share`} className="font-semibold text-slate-900">
           {t('editor.share')}
         </h3>
-        {shareBlocked ? <p className="text-sm text-slate-600">{t('editor.saveFirst')}</p> : null}
+        {dirty || save.pending ? (
+          <p className="text-sm text-slate-600">{t('editor.saveFirst')}</p>
+        ) : null}
         <div role="group" aria-label={t('editor.copy')} className="flex flex-wrap gap-2">
           {LANGUAGES.map(([lang, key]) => (
             <Button
@@ -374,7 +442,7 @@ function EditorBody({
           ))}
         </div>
         <div className="flex flex-wrap gap-2 border-t border-slate-100 pt-3">
-          {readOnly ? (
+          {sent ? (
             <Button
               variant="secondary"
               disabled={mark.pending}

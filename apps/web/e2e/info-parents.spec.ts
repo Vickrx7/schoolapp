@@ -7,6 +7,7 @@ import {
   deleteEvent,
   insertSchoolEvent,
   nextLesson,
+  query,
   setProgress,
 } from './db';
 import {
@@ -14,6 +15,7 @@ import {
   demoWeeks,
   newsletterOf,
   newsletterReminderDueToday,
+  schoolAi,
 } from './db-newsletters';
 import { DEMO, e2ePrefix, expectAccessible, login } from './helpers';
 
@@ -23,9 +25,12 @@ import { DEMO, e2ePrefix, expectAccessible, login } from './helpers';
  * staff that never appear, a tip from the library's family guide with its English, an English
  * greeting), then edited (a student named, the typography fixed, the English written by hand, an
  * app line edited so its English is « à mettre à jour »), copied in both languages after « Des
- * élèves sont nommés », printed (PDF, D-141) and marked sent. The app sends nothing: the clipboard
- * is the browser's and the PDF is opened by the teacher.
- * The messages, the event and the progress made here are deleted.
+ * élèves sont nommés », translated by the AI after « Vérifier avant d'envoyer » (D-139: names
+ * replaced, a paragraph naming « Mme Dupuis » never sent, capitalized words to check, the box to
+ * tick; the fake provider), printed (PDF, D-141) and marked sent. The app sends nothing to
+ * families: the clipboard is the browser's and the PDF is opened by the teacher.
+ * The messages, the event, the progress and the translation requests made here are deleted, and
+ * the school's AI switch is put back.
  */
 test.describe.configure({ mode: 'serial' });
 
@@ -34,8 +39,10 @@ const NOTES = 'Note au personnel : arriver à 8 h 30 au gymnase.';
 let eventId: string | null = null;
 let lessonId: string | null = null;
 let weeks: Awaited<ReturnType<typeof demoWeeks>>;
+let aiWasOn: boolean | null = null;
 
 test.beforeAll(async () => {
+  aiWasOn = await schoolAi(SEED.school);
   await deleteNewsletters(SEED.class3);
   weeks = await demoWeeks();
   // A 3e math lesson taught on this week's Monday, and an assembly next Tuesday.
@@ -53,6 +60,7 @@ test.beforeAll(async () => {
 });
 
 test.afterAll(async () => {
+  if (aiWasOn !== null) await schoolAi(SEED.school, aiWasOn);
   await deleteNewsletters(SEED.class3);
   if (eventId) await deleteEvent(eventId);
   if (lessonId) await clearProgress([lessonId]);
@@ -249,6 +257,113 @@ test('editing: a student named, the typography, the English by hand; copied afte
     section(page, 'thisWeek').getByTestId('newsletter-item').first().getByTestId('english-status'),
   ).toHaveText(/^English\s:\sà mettre à jour/);
   await expect(page.getByText('Brouillon non enregistré récupéré.')).toHaveCount(0);
+});
+
+test('« Traduire en anglais (IA) »: exactly what is sent, an unknown name never, then the English', async ({
+  page,
+}) => {
+  test.setTimeout(120_000);
+  // Off wherever the school's AI is off.
+  await schoolAi(SEED.school, false);
+  await login(page, DEMO.teacher3);
+  await openEditor(page, weeks.thisWeek);
+  await expect(page.getByRole('button', { name: 'Corriger la typographie' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Traduire en anglais (IA)' })).toHaveCount(0);
+
+  await schoolAi(SEED.school, true);
+  await openEditor(page, weeks.thisWeek);
+  // A thank-you to a parent the app does not know, and news with a student and a place.
+  const reminders = section(page, 'reminders');
+  await reminders.getByRole('button', { name: 'Ajouter un paragraphe' }).click();
+  await reminders
+    .getByTestId('newsletter-item')
+    .last()
+    .getByLabel('Français')
+    .fill('Merci à Mme Dupuis, qui a accompagné notre sortie.');
+  const message = section(page, 'message');
+  await message.getByRole('button', { name: 'Ajouter un paragraphe' }).click();
+  const news = message.getByTestId('newsletter-item').last();
+  await news.getByLabel('Français').fill('Samuel a lu son poème au parc Montfort.');
+  // Not before a save.
+  await expect(page.getByRole('button', { name: 'Traduire en anglais (IA)' })).toBeDisabled();
+  await page.getByRole('button', { name: 'Enregistrer', exact: true }).click();
+  await expect(page.getByTestId('newsletter-save-bar')).toContainText('Enregistré');
+
+  await page.getByRole('button', { name: 'Traduire en anglais (IA)' }).click();
+  const dialog = page.getByRole('dialog', { name: 'Vérifier avant d’envoyer' });
+  const preview = dialog.getByTestId('translate-preview');
+  await expect(
+    dialog.getByText(
+      'Voici exactement ce qui sera envoyé à l’intelligence artificielle pour la traduction. Les noms que l’application connaît sont remplacés (surlignés).',
+    ),
+  ).toBeVisible();
+  // The edited app line, the news and the thank-you have no up-to-date English.
+  await expect(
+    dialog.getByRole('radio', {
+      name: 'Seulement les paragraphes sans traduction à jour (3)',
+    }),
+  ).toBeChecked();
+  await expect(dialog.getByRole('radio', { name: /^Tout retraduire \(\d+\)$/ })).toBeVisible();
+  await expect(preview.getByTestId('translate-count')).toHaveText(
+    '2 paragraphes seront envoyés. 1 nom remplacé.',
+  );
+  // Exactly what is sent: Samuel is a marker, highlighted; « Mme Dupuis » is not there at all.
+  const sent = dialog.getByTestId('translate-sent');
+  await expect(sent.locator('mark')).toHaveText(['Élève A']);
+  await expect(sent).toContainText('Élève A a lu son poème au parc Montfort.');
+  await expect(sent).toContainText('Section : Cette semaine en classe');
+  await expect(sent).not.toContainText('Samuel');
+  await expect(sent).not.toContainText('Dupuis');
+  await expect(sent).not.toContainText('Saint-Exemple');
+  const notSent = dialog.getByTestId('translate-not-sent');
+  await expect(notSent).toContainText('Non envoyé — traduisez-le vous-même');
+  await expect(notSent).toContainText('Merci à Mme Dupuis, qui a accompagné notre sortie.');
+  await expect(notSent).toContainText(
+    'contient un nom que l’application ne connaît pas après un titre (Mme Dupuis)',
+  );
+  await expect(dialog.getByTestId('translate-words')).toContainText(
+    /^Mots avec majuscule à vérifier\s:\s.*Montfort/,
+  );
+  // Nothing goes before « J’ai vérifié ».
+  const send = dialog.getByRole('button', { name: 'Envoyer à l’IA' });
+  await expect(send).toBeDisabled();
+  await expectAccessible(page);
+  await dialog
+    .getByRole('checkbox', {
+      name: 'J’ai vérifié : le texte ne nomme aucune autre personne que l’application ne connaît pas.',
+    })
+    .check();
+  await send.click();
+  await expect(dialog).toBeHidden();
+
+  // The worker (fake provider) translates; then the English is there, Samuel put back.
+  await expect(news.getByLabel('English')).toHaveValue(/^Demo translation: Samuel\.$/, {
+    timeout: 30_000,
+  });
+  await expect(page.getByTestId('newsletter-editor')).toHaveAttribute('data-ready', 'true');
+  await expect(news.getByTestId('english-status')).toHaveText(
+    /^English\s:\straduit par l’IA — à relire$/,
+  );
+  await expect(page.getByTestId('translate-done')).toContainText(
+    /^L’IA a traduit 2 paragraphes\s:\srelisez leur anglais/,
+  );
+  const thanks = section(page, 'reminders').getByTestId('newsletter-item').last();
+  await expect(thanks.getByLabel('English')).toHaveValue('');
+  await expect(thanks.getByTestId('english-status')).toHaveText(/^English\s:\sà écrire$/);
+  const line = section(page, 'thisWeek').getByTestId('newsletter-item').first();
+  await expect(line.getByTestId('english-status')).toHaveText(
+    /^English\s:\straduit par l’IA — à relire$/,
+  );
+  await expectAccessible(page);
+  // What left, as the worker recorded it: the markers, never the unknown name or the student.
+  const stored = await newsletterOf(SEED.class3, weeks.thisWeek);
+  const [job] = await query<{ sent_text: string }>(
+    `select sent_text from public.ai_jobs
+     where feature = 'newsletter_translate' and input ->> 'newsletterId' = $1`,
+    [stored!.id],
+  );
+  expect(job!.sent_text).toContain('<P1>\nÉlève A a lu son poème au parc Montfort.\n</P1>');
+  expect(job!.sent_text).not.toMatch(/Dupuis|Samuel|Tremblay|Saint-Exemple/);
 });
 
 test('« Imprimer (PDF) »: the saved message, after the check, rendered on demand, never cached', async ({

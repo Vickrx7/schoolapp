@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   findBlockedDetails,
   findPersonalInfo,
+  findTitledUnknownNames,
   PrivacyViolation,
   redactStrings,
   Redactor,
@@ -239,6 +240,9 @@ describe('Redactor', () => {
       ['M. Au parle.', 'Adulte A parle.'],
       ['Mme Tạ parle.', 'Adulte A parle.'],
       ['Mme Son parle.', 'Adulte A parle.'],
+      // « Mx », which the app offers, is an honorific too (Info-parents S3).
+      ['Mx Lê parle.', 'Adulte A parle.'],
+      ['Mx Tạ parle.', 'Adulte A parle.'],
     ];
     for (const [text, sent] of cases) {
       expect(new Redactor(staff, NOW).redact(text).text, text).toBe(sent);
@@ -401,6 +405,66 @@ describe('Redactor', () => {
     }));
     const r = new Redactor([...many, ...roster], NOW);
     expect(r.redact('Léa et Prénomb3 lisent.').text).toBe('Élève A et Élève B lisent.');
+  });
+});
+
+describe('findTitledUnknownNames (D-139)', () => {
+  const titled = (text: string, allowed?: ReadonlySet<string>) =>
+    findTitledUnknownNames(text, allowed).map((f) => [f.kind, f.match]);
+
+  it('finds a title followed by a name the app does not know', () => {
+    expect(titled('Merci à Mme Dupuis pour son aide.')).toEqual([['titledName', 'Mme Dupuis']]);
+    expect(titled('Merci à M. Watson et à Mx Lê.')).toEqual([
+      ['titledName', 'M. Watson'],
+      ['titledName', 'Mx Lê'],
+    ]);
+    expect(titled('Merci à M. et Mme Dupuis.')).toEqual([['titledName', 'Mme Dupuis']]);
+    expect(titled('Thanks to Mr. Smith, Dr Lee and Dre Roy!')).toEqual([
+      ['titledName', 'Mr. Smith'],
+      ['titledName', 'Dr Lee'],
+      ['titledName', 'Dre Roy'],
+    ]);
+    expect(titled('merci à madame Gagnon')).toEqual([['titledName', 'madame Gagnon']]);
+    expect(titled('Le père Gagnon et sœur Lucie viendront.')).toEqual([
+      ['titledName', 'père Gagnon'],
+      ['titledName', 'sœur Lucie'],
+    ]);
+    expect(titled('Mon frère Lucas et l’abbé Roy.')).toEqual([
+      ['titledName', 'frère Lucas'],
+      ['titledName', 'abbé Roy'],
+    ]);
+    // Up to two lowercase words between the title and the name.
+    expect(titled('Bienvenue à M. le maire Watson.')).toEqual([
+      ['titledName', 'M. le maire Watson'],
+    ]);
+    expect(titled('Mme DUPUIS viendra.')).toEqual([['titledName', 'Mme DUPUIS']]);
+  });
+
+  it('never finds a marker, a lowercase word or a word that is never a person', () => {
+    expect(titled('Merci à Adulte A et à Mme Élève B.')).toEqual([]);
+    expect(titled('Mme la directrice a dit que nous irons.')).toEqual([]);
+    expect(titled('Monsieur est arrivé.')).toEqual([]);
+    expect(titled('Le père Noël passera.', new Set(['noel']))).toEqual([]);
+    expect(titled('Le père Noël passera.')).toEqual([['titledName', 'père Noël']]);
+  });
+
+  it('needs a capital for an abbreviation and a space after a whole word', () => {
+    // « m » of « 100 m », « mère. » at the end of a sentence, « Père, » in a prayer.
+    expect(titled('La course de 100 m. Bravo à tous!')).toEqual([]);
+    expect(titled('Merci à sa mère. Demain, nous irons au parc.')).toEqual([]);
+    expect(titled('Au nom du Père, du Fils et du Saint-Esprit.')).toEqual([]);
+    expect(titled('Notre Père qui es aux cieux.')).toEqual([]);
+  });
+
+  it('runs after the redactor: a known person after a title is a marker by then', () => {
+    const staff: KnownPerson[] = [{ name: 'Isabelle Tremblay', kind: 'staff' }];
+    const sent = new Redactor(staff, NOW).redact('Merci à Mme Tremblay et à Mme Dupuis.').text;
+    expect(sent).toBe('Merci à Adulte A et à Mme Dupuis.');
+    expect(titled(sent)).toEqual([['titledName', 'Mme Dupuis']]);
+  });
+
+  it('is not one of the details findBlockedDetails reports (no other feature changes)', () => {
+    expect(kinds('Merci à Mme Dupuis.')).toEqual([]);
   });
 });
 

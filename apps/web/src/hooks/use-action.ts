@@ -106,6 +106,14 @@ export const KNOWN_ERRORS: ReadonlySet<string> = new Set([
   'newsletterWeek',
   'newsletterPurged',
   'newsletterConflict',
+  // « Traduire en anglais (IA) » (server/errors.ts and server/actions/newsletter-ai.ts; D-139); the
+  // worker's newsletterChanged and newsletterTooLargeForAi too.
+  'newsletterTooLargeForAi',
+  'newsletterNothingToTranslate',
+  'newsletterStale',
+  'newsletterBusy',
+  'newsletterChanged',
+  'newsletterUnconfirmed',
   // What a resource is missing (readinessFieldErrors, D-067).
   'readiness.grades',
   'readiness.subject',

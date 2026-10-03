@@ -143,6 +143,13 @@ export interface FeatureDefinition<I, O> {
     redactor: Redactor,
   ): { input: I; blocked: BlockedFinding[]; dropped?: string[] };
   buildUserMessage(input: I): string;
+  /**
+   * The feature's own part of the last check before sending (D-139): findings in the message
+   * (de-identified, as it would be sent) refuse the request (`personalInfo`), as
+   * `assertSafeOutbound`'s do. « Traduire en anglais (IA) » refuses a title before a name the app
+   * does not know there.
+   */
+  outboundFindings?(message: string): BlockedFinding[];
   /** Problems with an answer that matched the schema (missing levels, empty text...). */
   validate(output: O, input: I): string[];
   /** A plausible answer without calling a model, built from the de-identified input. */

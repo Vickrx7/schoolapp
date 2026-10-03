@@ -1,7 +1,7 @@
 /**
  * Automatic quality checks for AI answers (« Texte différencié », « Consignes détaillées »,
  * « Créer avec l’IA », « Créer les versions manquantes avec l’IA », « Créer une banque avec
- * l’IA »). They catch regressions; a teacher still reads the report for what code cannot judge
+ * l’IA », « Traduire en anglais (IA) »). They catch regressions; a teacher still reads the report for what code cannot judge
  * (natural Canadian French, tone).
  */
 import {
@@ -38,6 +38,13 @@ import {
   type ReportCommentBankAiOutput,
   type ReportCommentBankInput,
 } from '../features/report-comment-bank';
+import {
+  GRADE,
+  NEWSLETTER_GLOSSARY,
+  translationProblems,
+  type NewsletterTranslateInput,
+  type NewsletterTranslateOutput,
+} from '../features/newsletter-translate';
 import { mentionsLevelLabel, NOT_CANADIAN } from '../features/shared';
 import type { SubPlanAiInput, SubPlanAiOutput } from '../features/sub-plan';
 
@@ -947,5 +954,118 @@ export function checkReportCommentBank(
       detail: found.join(', ') || undefined,
     });
   }
+  return results;
+}
+
+// ---------------------------------------------------------------------------------------
+// « Traduire en anglais (IA) » (newsletter_translate, D-139)
+// ---------------------------------------------------------------------------------------
+
+export interface NewsletterTranslationExpectations {
+  /** Paragraphs left out (a personal detail, a title before a name the app does not know). */
+  notSent?: string[];
+  /** Names that must come back in a paragraph's English, by key (« Samuel » for P2). */
+  names?: Record<string, string[]>;
+}
+
+/**
+ * The checks of one translated message, on the answer as the teacher gets it (names put back):
+ * the paragraphs sent and only those, the same numbers and times, no French left, the lengths,
+ * the names back and no marker left, the school's words (« journée pédagogique » is "PA day",
+ * « 3e année » is "Grade 3", the days and months), English quotation marks and times, and no
+ * greeting or sign-off added.
+ */
+export function checkNewsletterTranslation(
+  output: NewsletterTranslateOutput,
+  input: NewsletterTranslateInput,
+  expect: NewsletterTranslationExpectations = {},
+): CheckResult[] {
+  const results: CheckResult[] = [];
+  const failing = (items: string[]) => ({
+    passed: items.length === 0,
+    detail: items.slice(0, 8).join(', ') || undefined,
+  });
+  const notSent = new Set(expect.notSent ?? []);
+  const sent = input.items.filter((i) => !notSent.has(i.key));
+  const answers = new Map(output.items.map((i) => [i.key, i.text]));
+  const keys = output.items.map((i) => i.key);
+
+  results.push({
+    name: 'every paragraph sent has its English, once, and the ones left out have none',
+    passed:
+      keys.length === new Set(keys).size &&
+      [...keys].sort().join(' ') ===
+        sent
+          .map((i) => i.key)
+          .sort()
+          .join(' '),
+    detail: `${keys.length}/${sent.length}; left out: ${[...notSent].join(', ') || 'none'}`,
+  });
+  const problems = (codes: string[]) =>
+    sent.flatMap((i) => {
+      const english = answers.get(i.key);
+      if (english === undefined) return [];
+      const found = translationProblems(i.text, english).filter((p) => codes.includes(p));
+      return found.length ? [`${i.key} ${found.join('+')}`] : [];
+    });
+  results.push({
+    name: 'the same numbers, dates and times in every paragraph',
+    ...failing(problems(['numbers', 'times'])),
+  });
+  results.push({ name: 'nothing left in French', ...failing(problems(['french', 'empty'])) });
+  results.push({
+    name: 'no paragraph much longer than its French',
+    ...failing(problems(['tooLong'])),
+  });
+
+  const missingNames = Object.entries(expect.names ?? {}).flatMap(([key, names]) =>
+    names.filter((n) => !(answers.get(key) ?? '').includes(n)).map((n) => `${key} ${n}`),
+  );
+  const markersLeft = [...answers].filter(([, text]) =>
+    /(?<![\p{L}\p{N}])(?:[ÉEée]l[èe]ve|[Aa]dulte|Student|Pupil|Adult)\s+[A-Z]{1,3}(?![\p{L}\p{N}])/u.test(
+      text,
+    ),
+  );
+  results.push({
+    name: 'the names come back, and no marker is left',
+    ...failing([...missingNames, ...markersLeft.map(([key]) => `${key} marker`)]),
+  });
+
+  const words = sent.flatMap((i) => {
+    const english = (answers.get(i.key) ?? '').toLowerCase();
+    if (!answers.has(i.key)) return [];
+    const expected = [
+      ...NEWSLETTER_GLOSSARY.filter((g) => g.fr.test(i.text)).map((g) => g.en),
+      ...[...i.text.matchAll(GRADE)].map((m) => `Grade ${m[1]}`),
+    ];
+    return expected.filter((e) => !english.includes(e.toLowerCase())).map((e) => `${i.key} ${e}`);
+  });
+  results.push({
+    name: 'the school’s words: PA day, Progress Report Card, Grade 3, the days and months…',
+    ...failing(words),
+  });
+  results.push({
+    name: 'English quotation marks and times (no « », no « 13 h 35 »)',
+    ...failing(
+      [...answers]
+        .filter(([, text]) =>
+          /[«»]|\d[ \u00a0\u202f]?h(?:[ \u00a0\u202f]?\d{2})?(?![\p{L}])/u.test(text),
+        )
+        .map(([key]) => key),
+    ),
+  });
+  results.push({
+    name: 'no greeting or sign-off added to a paragraph that has none',
+    ...failing(
+      sent
+        .filter((i) => !/bonjour|chères familles|bonne fin|bonne semaine|merci/iu.test(i.text))
+        .filter((i) =>
+          /^(?:dear|hello|hi)\b|(?:sincerely|regards|best wishes)[,.!]?$/iu.test(
+            (answers.get(i.key) ?? '').trim(),
+          ),
+        )
+        .map((i) => i.key),
+    ),
+  });
   return results;
 }

@@ -14,9 +14,27 @@ import {
 import { query } from './db';
 import { torontoToday } from './db-report-comments';
 
-/** Deletes every message of a class. */
+/** Deletes every message of a class, and the translation requests made for them (D-139). */
 export async function deleteNewsletters(classId: string): Promise<void> {
+  await query(
+    `delete from public.ai_jobs j
+     where j.feature = 'newsletter_translate'
+       and j.input ->> 'newsletterId' in (
+         select n.id::text from public.class_newsletters n where n.class_id = $1)`,
+    [classId],
+  );
   await query('delete from public.class_newsletters where class_id = $1', [classId]);
+}
+
+/** Whether the school's AI is on, and turns it on or off (library-ai.spec.ts does the same). */
+export async function schoolAi(schoolId: string, on?: boolean): Promise<boolean> {
+  const [row] = await query<{ ai_enabled: boolean }>(
+    on === undefined
+      ? 'select ai_enabled from public.schools where id = $1'
+      : 'update public.schools set ai_enabled = $2 where id = $1 returning ai_enabled',
+    on === undefined ? [schoolId] : [schoolId, on],
+  );
+  return row!.ai_enabled;
 }
 
 /** A class's message for a week, as stored. */

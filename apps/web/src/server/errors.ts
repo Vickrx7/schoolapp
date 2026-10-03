@@ -127,6 +127,15 @@ export function errorKey(error: PgLikeError | null | undefined): string {
       return 'newsletterWeek';
     case 'LXN02':
       return 'newsletterPurged';
+    // « Traduire en anglais (IA) » (20270125090100_class_newsletters_ai.sql; D-139).
+    case 'LXN03':
+      return 'newsletterTooLargeForAi';
+    case 'LXN04':
+      return 'newsletterNothingToTranslate';
+    case 'LXN05':
+      return 'newsletterStale';
+    case 'LXN06':
+      return 'newsletterBusy';
     default:
       return 'unexpected';
   }

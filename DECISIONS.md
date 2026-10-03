@@ -381,6 +381,11 @@ before any call (`packages/ai/src/privacy.ts`):
   the teacher at the preview. A unit test pins the limit (`packages/ai/src/privacy.test.ts`: a
   parent's and a sibling's names go out unchanged, with nothing blocked), so no text can promise more
   again without someone noticing.
+- _Amended for « Info-parents » (2026-10-03):_ « Mx », which the app offers, is an honorific like
+  « Mme » (« Mx Lê » is replaced for every feature). « Traduire en anglais (IA) » is stricter (D-139):
+  a paragraph with a detected detail, or with a title before a name the app does not know, is left
+  out instead of refusing the request, and the preview lists the capitalized words to check before
+  the teacher confirms.
 
 **D-039 — AI is off until the direction turns it on, and a board can forbid it.** Per-school
 switch on the École page (principal or vice-principal, audited). `boards.settings.ai.allowed =
@@ -584,6 +589,9 @@ class, school or staff names, and ids. The answer (`max_tokens` 64 000, D-045) i
 trigger when the worker records it, never once a substitute has opened the plan; the teacher
 can remove it at any time, even during the day. _Amended in Phase 4:_ plans use reviewed,
 sub-friendly library resources, with each group's version (D-077).
+_Amended for « Info-parents » (2026-10-03):_ « Traduire en anglais (IA) » leaves out a whole
+paragraph the same way (« Non envoyé — traduisez-le vous-même »), and also one with a title before a
+name the app does not know (D-139).
 
 **D-053 — PDFs are rendered on demand, never stored, never with alerts (amends D-029).** The
 plan PDF (schedule, lessons and steps, groups with first names, contacts, end of day, faith
@@ -970,6 +978,10 @@ _Amended by « Commentaires de bulletin » (2026-10-02):_ comment banks have the
 `report_comment_bank_ai_preview`, the input built by the database from ids) and turned into the
 requester's private draft by the same `app.library_item_from_ai_result` (D-132); `library_item`
 writes the 25 other types (`LIBRARY_ITEM_AI_TYPES`).
+_Amended for « Info-parents » (2026-10-03):_ `newsletter_translate` is requested the same way: the
+database builds the request from the stored message (`newsletter_ai_preview`,
+`request_newsletter_translation`), and the preview is exactly what is sent; its answer goes back on
+the message's paragraphs, not into the library (D-139).
 
 **D-073 — Versions per language level, and Phase 2 saved texts (amends D-042).** The AI feature
 `library_levels` writes 1 to 6 missing level versions from an item's base version, with the same
@@ -2106,6 +2118,9 @@ artificielle est traité aux États-Unis. » The seed's accounts accept the new 
 else sees the banner and « Ce qui a changé » (`welcome.changes.pilote2`).
 _Amended for « Commentaires de bulletin » (2026-10-03):_ terms `2026-10-pilote-3` (D-134): the
 notice, the terms and « Bienvenue » say that report card comments stay on the teacher's device.
+_Amended for « Info-parents » (2026-10-03):_ terms `2026-10-pilote-4` (D-143): the notice's purposes
+and retention, and a term on whom a message to families may name and on removing unknown names
+before « Traduire en anglais (IA) ».
 
 **D-111 — Error monitoring for the pilot: scrubbed structured logs and error references; no
 third-party error service.** `@lynx/observability` gives `createLogger` (JSON lines on stdout),
@@ -2366,6 +2381,9 @@ the board's report periods, « Couverture » and « Plan à long terme (PDF) ».
 _Amended for « Commentaires de bulletin » (2026-10-03):_ `releaseNotes.versions.v080`, « Version
 0.8 · Commentaires de bulletin » (October 2026): the bank in the library, « Créer une banque avec
 l'IA », « Bulletins », the reminder on « Aujourd'hui » and the new terms.
+_Amended for « Info-parents » (2026-10-03):_ `releaseNotes.versions.v090`, « Version 0.9 ·
+Info-parents » (October 2026): the week's message, the PDF, « Traduire en anglais (IA) »,
+« Corriger la typographie », the reminder on « Aujourd'hui » and the new terms.
 
 **D-118 — Navigation and landing pages (amends D-078).** Two new items: « Direction »
 (`/direction`, principals and vice-principals) and « Conseil » (`/board`, board admins). The order
@@ -3007,6 +3025,63 @@ account's when someone else opens the app on that browser. _Why:_ a message to e
 a child for good news, never for anything personal, and the teacher is the last check; the messages
 are about the class's students and go when their names go.
 
+**D-139 — « Traduire en anglais (IA) » (amends D-038, D-052 and D-072).** In the editor's tools,
+beside « Préremplir à nouveau » and « Corriger la typographie », for the class team at a school
+whose AI is on (off wherever the school's AI is off; never automatic), on the saved message
+(feature `newsletter_translate`). The scope: « Seulement les paragraphes sans traduction à jour »
+(English missing, or written for another French; the default) or « Tout retraduire ». The
+database builds the request from the stored message (`app.newsletter_ai_input`, as D-072): the
+paragraphs of the sections shown, in order, their French only, under keys P1… with their section,
+and the class's grade labels; no class, school, staff name, signature, English text or id goes in
+the text sent (the paragraph ids stay in Canada, to put each answer back). Stricter than D-038,
+under the owner's rule that nothing personal leaves Canada:
+
+- a paragraph holding a detected detail is not sent and is listed « Non envoyé — traduisez-le
+  vous-même » with its reason (as D-052 does for a field);
+- so is a paragraph where a title (M., Mme, Mlle, Mx, Monsieur, Madame, Dr, Dre, Mgr, and abbé,
+  père, mère, frère, sœur) is followed by a capitalized name the app does not know (« Merci à Mme
+  Dupuis », « M. le maire Watson »; `findTitledUnknownNames`, run on the redacted text, kind
+  `titledName`; `findBlockedDetails` is unchanged, so no other feature changes);
+- the preview lists « Mots avec majuscule à vérifier » in what is sent (`capitalizedWords`: words
+  inside a sentence, and a sentence's first word when the next one is capitalized too; never
+  markers, short acronyms, titles, common words or a short list of words that are never a person,
+  such as Dieu, Noël, Avent, Ontario and the school subjects — **Assumption**), and « Envoyer à
+  l'IA » needs « J'ai vérifié : le texte ne nomme aucune autre personne que l'application ne
+  connaît pas. », which the server checks too (`newsletterUnconfirmed`).
+
+The preview shows exactly what is sent: the request carries the revision checked and the keys of
+the paragraphs shown as sent (`sendKeys`); a message, or what the app would leave out, that
+changed since refuses it (`newsletterStale`, LXN05) and the teacher checks again. The worker
+redacts every paragraph of the request in the same order (so the markers are the preview's), with
+the requester's whole roster (never narrower), sends only the confirmed paragraphs that pass its
+own rules, and its last check runs the title rule on the whole message again
+(`FeatureDefinition.outboundFindings`). Limits: LXN03 (more than 60 paragraphs, a French paragraph
+over 1,000 characters, or 32 KB), LXN04 (nothing to translate), LXN06 (a colleague's request for
+the message is open; a second tap returns one's own), a message marked sent is never translated
+(22023), and the school switch, budget and limits of every request (LXA01–LXA03, D-040). The
+answer (prompt `newsletter_translate/v1`: Canadian English for the families of a French-language
+Catholic school in Ontario, one answer per key, markers kept, numbers and times kept, nothing added,
+the Ontario school glossary; `max_tokens` 32,000, D-045) is checked: every key sent once, the same
+markers as many times and never « Student A », the same numbers (« 1 000 » is 1,000, « 2,50 » is
+2.50) and times (« 13 h 35 » is 1:35 p.m.), no French left, no text much longer than its French.
+A trigger then writes each English paragraph on its paragraph while the message's revision is the
+one sent and that paragraph's French is unchanged (`enBy: 'ai'`, `enFrom`, « English : traduit par
+l'IA — à relire »), as the requester; a message saved or marked sent meanwhile takes nothing
+(`newsletterChanged`), and one that would grow past what the app reads takes nothing
+(`newsletterTooLargeForAi`). While it runs, the message is read-only with its progress; afterwards
+« L'IA a traduit 2 paragraphes : relisez leur anglais… » shows until the message changes. The PDF's
+English page says the translation was automatic (D-141). « Mx », which the app offers, becomes an
+honorific for every feature (only more is replaced). _Why:_ a message to families thanks parents,
+volunteers and guests by name, the most likely way a name the app does not know would leave
+Canada; the teacher sees and confirms exactly what goes. The limit that remains, said in the
+preview: a first name the app does not know, alone at the start of a sentence. As built (slice
+S3): migration `20270125090100_class_newsletters_ai.sql`; pgTAP `37_class_newsletters_ai`;
+`packages/ai/src/features/newsletter-translate.ts`, `prompts/newsletter_translate/v1.md`, ten
+evaluation cases (`newsletter-translate-cases.ts`, `checkNewsletterTranslation`); the web server's
+`server/actions/newsletter-ai.ts` and `server/newsletter/ai-preview.ts`;
+`components/info-parents/translate-dialog.tsx`; `apps/worker/src/newsletter-ai.int.test.ts`; e2e
+`info-parents.spec.ts`.
+
 **D-140 — No AI rewriting in v1: « Corriger la typographie ».** « Améliorer le texte (IA) » is not
 built: rewriting the teacher's French would send more text out and risk invented facts for little
 gain (Q3). « Corriger la typographie » fixes the French of every paragraph without changing words,
@@ -3069,7 +3144,20 @@ unit tests with the demo calendar), `loadNewsletterReminders` (`server/queries/n
 page against the demo calendar whatever the day it runs: no card without a message; with this
 week's draft, the card on the last two school days and none otherwise; none once sent.
 
-D-139 (« Traduire en anglais (IA) ») and D-143 (the pilot terms) come with slice S3.
+**D-143 — Pilot terms `2026-10-pilote-4` (amends D-110).** The notice's « À quoi servent ces
+renseignements » gains the messages to families and « L'application n'envoie rien aux familles :
+vous copiez ou imprimez vous-même vos messages Info-parents. »; « Combien de temps » says that the
+students' first names and the class's « Info-parents » messages are erased a year after the
+school year. A new term, after « N'entrez aucun autre renseignement personnel… »
+(`legal.terms.families`): « Un message Info-parents va à toutes les familles de la classe : n'y
+nommez un élève que pour une nouvelle à partager avec tout le monde. Avant la traduction
+automatique, retirez les noms de parents ou d'autres personnes que l'application ne connaît
+pas. » « Ce qui a changé » (`TERMS_CHANGES['2026-10-pilote-4'] = 'pilote4'`,
+`welcome.changes.pilote4`): « les messages Info-parents : l'application vous aide à préparer un
+message aux familles, sans jamais l'envoyer, et il est effacé avec les prénoms des élèves. » The
+seed's accounts accept the new version; everyone else sees the banner (never a block). `PRIVACY.md`
+(release 0.9) says the same. _Why:_ the notice's purposes and retention changed with « Info-parents
+», and the new AI feature needs the teacher to remove unknown names first.
 
 ## Schema additions beyond SPEC section 8
 

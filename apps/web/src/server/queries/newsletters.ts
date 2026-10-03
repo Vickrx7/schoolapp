@@ -577,3 +577,53 @@ export async function loadNewsletterReminders(
     .map(({ cls, weekOf }) => ({ classId: cls.id, className: cls.name, weekOf }))
     .sort((a, b) => a.className.localeCompare(b.className, 'fr-CA'));
 }
+
+/** The signed-in teacher's latest « Traduire en anglais (IA) » request for a message (D-139). */
+export interface NewsletterTranslationState {
+  jobId: string;
+  status: 'queued' | 'running' | 'succeeded' | 'failed';
+  createdAt: string;
+  /** A key under `errors` when it failed (newsletterChanged, aiBudgetReached…). */
+  errorCode: string | null;
+  /** Paragraphs written when it succeeded. */
+  applied: number | null;
+  /**
+   * Nothing changed in the message since the request was answered (or asked, for a failure):
+   * its notice shows only then.
+   */
+  current: boolean;
+}
+
+/**
+ * The teacher's own latest request for this message (row level security: a person's own jobs),
+ * read for the editor: while it is open, the message is read-only and the progress shows;
+ * afterwards, what it did, until the message changes.
+ */
+export async function loadNewsletterTranslation(
+  newsletterId: string,
+  revision: number,
+): Promise<NewsletterTranslationState | null> {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from('ai_jobs')
+    .select('id, status, error_code, created_at, asked:input->revision, applied:result->applied')
+    .eq('feature', 'newsletter_translate')
+    .eq('input->>newsletterId', newsletterId)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (error) reportError('loadNewsletterTranslation', error);
+  if (!data) return null;
+  const asked = typeof data.asked === 'number' ? data.asked : null;
+  const applied = typeof data.applied === 'number' ? data.applied : null;
+  return {
+    jobId: data.id,
+    status: data.status,
+    createdAt: data.created_at,
+    errorCode: data.error_code,
+    applied,
+    current:
+      asked !== null &&
+      (data.status === 'succeeded' ? asked + (applied ? 1 : 0) === revision : asked === revision),
+  };
+}

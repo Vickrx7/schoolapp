@@ -88,9 +88,18 @@ test('« Mon année » shows the units on the weeks, the calendar, report dates 
 
   // The calendar: no school over the holidays, partial weeks, masses.
   await expect(grid.getByRole('cell', { name: 'Pas d’école Congé des Fêtes' })).toHaveCount(2);
-  await expect(
-    grid.getByRole('cell', { name: /^4 jours de classe Action de grâce$/ }),
-  ).toBeVisible();
+  // The seed's « Messe de l'école » is on the first school Friday after the reset: in the
+  // Thanksgiving week when the database was reset between 3 and 9 October (never on the PA day).
+  const [mass] = await query<{ day: string }>(
+    `select to_char(starts_on, 'FMDD') as day from public.school_calendar_events
+     where school_id = $1 and title = 'Messe de l''école'
+       and starts_on between '2026-10-12' and '2026-10-16'`,
+    [SEED.school],
+  );
+  const thanksgiving = mass
+    ? `4 jours de classe Action de grâce Messe\\s: Messe de l['’]école, le ${mass.day} octobre`
+    : '4 jours de classe Action de grâce';
+  await expect(grid.getByRole('cell', { name: new RegExp(`^${thanksgiving}$`) })).toBeVisible();
   await expect(
     grid.getByText(/^Messe\s: Messe du mercredi des Cendres, le 10 février$/),
   ).toBeAttached();

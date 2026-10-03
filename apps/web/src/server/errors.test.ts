@@ -107,8 +107,24 @@ describe('database errors shown to users', () => {
   it('maps the « Info-parents » codes to their messages (D-137, D-138)', () => {
     expect(errorKey({ code: 'LXN01' })).toBe('newsletterWeek');
     expect(errorKey({ code: 'LXN02' })).toBe('newsletterPurged');
+    expect(errorKey({ code: 'LXN03' })).toBe('newsletterTooLargeForAi');
+    expect(errorKey({ code: 'LXN04' })).toBe('newsletterNothingToTranslate');
+    expect(errorKey({ code: 'LXN05' })).toBe('newsletterStale');
+    expect(errorKey({ code: 'LXN06' })).toBe('newsletterBusy');
     // newsletterConflict: a save on a revision a colleague changed (server/actions/newsletters.ts).
-    for (const key of ['newsletterWeek', 'newsletterPurged', 'newsletterConflict']) {
+    // newsletterChanged and newsletterTooLargeForAi are also the worker's job errors (D-139);
+    // newsletterUnconfirmed: « Envoyer à l'IA » without the box ticked (server/actions/newsletter-ai.ts).
+    for (const key of [
+      'newsletterWeek',
+      'newsletterPurged',
+      'newsletterConflict',
+      'newsletterTooLargeForAi',
+      'newsletterNothingToTranslate',
+      'newsletterStale',
+      'newsletterBusy',
+      'newsletterChanged',
+      'newsletterUnconfirmed',
+    ]) {
       expect(fr.errors, key).toHaveProperty(key);
     }
   });

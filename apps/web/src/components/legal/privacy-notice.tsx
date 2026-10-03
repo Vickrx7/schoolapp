@@ -1,7 +1,16 @@
 import { getTranslations } from 'next-intl/server';
 
 const NOTICE = ['who', 'collected', 'use', 'ai', 'where', 'access', 'retention', 'rights'] as const;
-const TERMS = ['pilot', 'names', 'personal', 'account', 'ai', 'feedback', 'changes'] as const;
+const TERMS = [
+  'pilot',
+  'names',
+  'personal',
+  'families',
+  'account',
+  'ai',
+  'feedback',
+  'changes',
+] as const;
 
 /**
  * « Confidentialité et conditions » (DECISIONS D-110): the plain-language privacy notice (from

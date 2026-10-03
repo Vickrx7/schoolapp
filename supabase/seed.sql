@@ -98,7 +98,7 @@ identities as (
 -- packages/domain/src/legal.ts; D-109, D-110), so demos and browser tests go straight in. An
 -- account made without them is sent to « Bienvenue » first (e2e/db.ts createStaffUser).
 insert into public.users (id, email, display_name, honorific, terms_version, terms_accepted_at)
-select s.id, s.email, s.display_name, s.honorific, '2026-10-pilote-3', now()
+select s.id, s.email, s.display_name, s.honorific, '2026-10-pilote-4', now()
 from staff s join identities i on i.user_id = s.id;
 
 insert into public.user_roles (user_id, role, board_id, school_id) values
@@ -290,11 +290,27 @@ insert into public.school_calendar_events (board_id, school_id, event_type, titl
   ('b0000000-0000-4000-8000-000000000001', 'c0000000-0000-4000-8000-000000000001', 'assembly', 'Cérémonie du jour du Souvenir', '2026-11-11', '2026-11-11', '10:45', '11:15', 'Au gymnase.'),
   ('b0000000-0000-4000-8000-000000000001', 'c0000000-0000-4000-8000-000000000001', 'early_dismissal', 'Rencontres parents-enseignants', '2026-11-19', '2026-11-19', '13:35', null, 'Départ des élèves à 13 h 35.');
 
--- Relative events: a school mass on the coming Friday and an assembly two weekdays from now.
+-- Relative events: a school mass on the coming school Friday and an assembly two weekdays from
+-- now. The mass's Friday is the first one, from the school's own date (America/Toronto: a reset
+-- on a UTC Saturday is still Friday evening there), that is not one of the days off above, so the
+-- demo never shows a mass on a PA day (e2e/helpers.ts `comingSchoolFriday` says the same).
 insert into public.school_calendar_events (board_id, school_id, event_type, title, starts_on, ends_on, start_time, end_time, notes)
 select 'b0000000-0000-4000-8000-000000000001', 'c0000000-0000-4000-8000-000000000001',
   'mass', 'Messe de l''école', d, d, '09:45', '10:35', 'Au gymnase. Les classes s''y rendent à 9 h 40.'
-from (select current_date + ((5 - extract(isodow from current_date)::int + 7) % 7) as d) as f;
+from (
+  select min(g.d) as d
+  from (
+    select (now() at time zone 'America/Toronto')::date + n as d
+    from generate_series(0, 120) n
+  ) g
+  where extract(isodow from g.d) = 5
+    and not exists (
+      select 1 from public.school_calendar_events e
+      where e.board_id = 'b0000000-0000-4000-8000-000000000001'
+        and (e.school_id is null or e.school_id = 'c0000000-0000-4000-8000-000000000001')
+        and e.event_type in ('pa_day', 'holiday')
+        and g.d between e.starts_on and e.ends_on)
+) as f;
 
 insert into public.school_calendar_events (board_id, school_id, event_type, title, starts_on, ends_on, start_time, end_time, notes)
 select 'b0000000-0000-4000-8000-000000000001', 'c0000000-0000-4000-8000-000000000001',

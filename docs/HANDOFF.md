@@ -1,12 +1,12 @@
 # Handoff
 
 Written 2026-09-28 by the session that built Phases 1 and 2 (branch `claude/nifty-fermat-8hhl1l`);
-updated 2026-10-03 by the session that built Phases 3, 4, 5 and 6, « Mon année » and « Commentaires
-de bulletin » (branch `claude/serene-ride-3n2fa1`). Read `SPEC.md` and `DECISIONS.md` first; this
+updated 2026-10-03 by the session that built Phases 3, 4, 5 and 6, « Mon année », « Commentaires
+de bulletin » and « Info-parents » (branch `claude/serene-ride-3n2fa1`). Read `SPEC.md` and `DECISIONS.md` first; this
 file covers what they don't: the conversation with Mike, the current state, how to run things in
 these containers, and what's next. Phase notes: `docs/phase-1.md` to `docs/phase-6.md`, then
-`docs/mon-annee.md` (the year planner) and `docs/report-comments.md` (report card comments), both
-built after them; and `docs/content-packs.md` for a board's IT. For the pilot:
+`docs/mon-annee.md` (the year planner), `docs/report-comments.md` (report card comments) and
+`docs/info-parents.md` (the weekly message to families), built after them; and `docs/content-packs.md` for a board's IT. For the pilot:
 `PRIVACY.md` (a board's privacy officer), `DEPLOYMENT.md` (installing), `docs/PILOT.md` (for Mike)
 and `docs/demo-script.md` (the board demo).
 
@@ -121,17 +121,21 @@ Mon Tableau, Cartable, Ardoise). No availability or trademark check has been don
 | `d5ce901` | « Mon année » S3: « Couverture » and the « Plan à long terme » PDF, `docs/mon-annee.md`     |
 | `2ce92a8` | « Commentaires de bulletin » S1: comment banks as library type 26                           |
 | `454e58b` | « Commentaires de bulletin » S2: « Créer une banque avec l'IA »                             |
-| (latest)  | « Commentaires de bulletin » S3: « Bulletins », « Aujourd'hui », terms `2026-10-pilote-3`   |
+| `c5d85c6` | « Commentaires de bulletin » S3: « Bulletins », « Aujourd'hui », terms `2026-10-pilote-3`   |
+| `192366d` | « Info-parents » S1: the weekly message to families, drafted and edited                     |
+| `20cd996` | « Info-parents » S2: the printed message and the « Aujourd'hui » reminder                   |
+| (latest)  | « Info-parents » S3: « Traduire en anglais (IA) », terms `2026-10-pilote-4`, the docs       |
 
-**Verified (locally, from an empty database, and in CI on each pushed commit):** 1488 unit tests
-(none skipped), 1862 pgTAP tests (36 files), 94 integration tests (plus the 3 of `restore-smoke`,
+**Verified (locally, from an empty database, and in CI on each pushed commit):** 1590 unit tests
+(none skipped), 1970 pgTAP tests (38 files), 96 integration tests (plus the 3 of `restore-smoke`,
 which run after a restore: the `backup-restore` CI job and the local drill; the staff-account tests
-talk to the stack's real Auth server), 149 Playwright tests (desktop, phone and tablet, axe on every
+talk to the stack's real Auth server), 156 Playwright tests (desktop, phone and tablet, axe on every
 Phase 3, 4 and 5 page, every « Conseil » page, the direction's dashboard and « Journal d'audit », «
 Bienvenue », « Pour bien commencer », each step of the board demo, a unit's planning, the report
 periods, « Mon année » on a desktop and at 360 px, starting a planned unit, « Couverture » and the
 long-range plan PDF, « Créer une banque avec l'IA », « Bulletins » on a desktop and at 360 px with a
-request sentinel, and the reminder on « Aujourd'hui »), lint, typecheck, format, generated DB types
+request sentinel, the reminder on « Aujourd'hui », « Info-parents » on a desktop and at 360 px with
+its PDF and « Traduire en anglais (IA) »), the evaluation sets with the fake provider, lint, typecheck, format, generated DB types
 up to date, the demo curriculum and library seeds up to date (`pnpm library:seed:check`), web build
 with no setting built in; in CI also a backup restored into an empty database, and both Docker
 images run as a board-hosted install (`docker-smoke`).
@@ -168,6 +172,22 @@ reads a comment about a student (D-133; per-student AI is designed only). « Auj
 three weeks before each « saisie ». The terms are `2026-10-pilote-3` (D-134). Next: test it with
 pilot teachers before the 1re étape (`docs/report-comments.md`, « What to test »; saisie 5 February
 2027), the lawyer on the device copies (Q5), and one real-API bank case when the key is set.
+
+**« Info-parents » is built** (feature #3 after the pilot build; `docs/info-parents.md`; DECISIONS
+« Info-parents », D-136 to D-143): a class tab (`/classes/[id]/info-parents`, the class team with a
+teacher role) with one message per week (`class_newsletters`), drafted without AI from the class's
+own data in French and English (lessons, next week, dates to remember, family guides' tips, a faith
+moment), edited paragraph by paragraph with each English's state in words, « Corriger la
+typographie », copied (« Copier le français », « Copy the English », « Copier les deux ») or printed
+(a PDF per language) after « Des élèves sont nommés », and « Marquer comme envoyé ». **The app sends
+nothing to families** and stores no parent data. « Traduire en anglais (IA) » (feature
+`newsletter_translate`, off wherever AI is off) sends only the French paragraphs to translate, built
+by the database from the stored message, with known names replaced; a paragraph with a detected
+detail or a title before a name the app does not know (« Mme Dupuis ») is never sent, the preview
+lists the capitalized words to check, and the teacher confirms; the English comes back « à relire
+». « Aujourd'hui » reminds on the week's last two school days. Messages are erased with the
+students' first names. The terms are `2026-10-pilote-4` (D-143). Next: test it with pilot teachers
+(`docs/info-parents.md`, « What to test »), and one real-API translation case when the key is set.
 
 **Phase 3 is complete** (3a and 3b; see `docs/phase-3.md`): absence button, plans built in the
 request and kept current by the worker, review and editing, release at 07:30, codes, the
@@ -327,9 +347,10 @@ that checks the signature). `docs/phase-6.md` « Final review » has the list an
   retake them from the running app if needed.
 - **Marketing site and board fact sheet** (`marketing/site`, `marketing/one-pager`, promo script
   v2): they claim only what ships; marketing v3 (`a214ac0`, `638e425`) shows Phases 1 to 6 as
-  available, with the Phase 6 screens. « Mon année » and « Commentaires de bulletin » are not
-  claimed there yet: the marketing pages are updated once Mike has seen them (screenshots of
-  « Bulletins » in French and English, desktop and phone, were taken for that).
+  available, with the Phase 6 screens. « Mon année », « Commentaires de bulletin » and
+  « Info-parents » are not claimed there yet: the marketing pages are updated once Mike has seen
+  them (screenshots of « Bulletins » and « Info-parents », its PDF and its translation preview, in
+  French and English, desktop and phone, were taken for that).
 
 ## 3. How to run it (in these containers)
 
@@ -411,8 +432,7 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   `SUB_PORTAL_DATABASE_URL` (in `.env.example`).
 - **Migrations are applied once.** The lite stack does not re-apply an edited migration: after
   editing one that is not committed yet, `stack.sh reset`. Never edit a committed migration; add
-  a new one (the latest is `20270118090200_report_comments_ai.sql`, pgTAP file `35`;
-  Info-parents moves to `20270125…`).
+  a new one (the latest is `20270125090100_class_newsletters_ai.sql`, pgTAP file `37`).
 - **Seeds come in two parts.** `supabase/seed.sql`, then `supabase/seeds/*.sql` by name
   (`config.toml` `sql_paths` for the CLI, `cmd_seed` in `stack.sh`). `seeds/20_library_demo.sql`
   is generated from `content/library/demo`: after changing the pack, run `pnpm library:seed`
@@ -535,6 +555,19 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   `clearAllDrafts` at sign-out closes all draft writes for that page. Browser tests that write
   comments run in their own context (a fresh browser), so nothing is left behind; the reminder
   test moves the 1re étape's « saisie » a week ahead and puts the seed's periods back.
+- **« Info-parents » (D-136 to D-143).** One message per class and week (`class_newsletters`,
+  `week_of` a Monday); saving is an update on the expected `revision` (zero rows: a colleague saved,
+  `newsletterConflict`). Browser tests wait for `data-testid="newsletter-editor"
+data-ready="true"` before tapping; `e2e/db-newsletters.ts` has the helpers (`deleteNewsletters`
+  also deletes the translation requests, `schoolAi` turns the school's AI on and off). « Traduire
+  en anglais (IA) » is `newsletter_translate`: `newsletter_ai_preview` and
+  `request_newsletter_translation(id, scope, revision, sendKeys)`; the request's `sendKeys` are the
+  paragraphs the preview showed as sent (`server/newsletter/ai-preview.ts`), and the worker sends no
+  other. The title rule (`findTitledUnknownNames`) runs only for this feature; `BlockedKind`
+  gained `titledName`, so any `Record<BlockedKind, …>` and the `*.kinds.*` messages need it.
+- **The seed's « Messe de l'école »** is on the first Friday, by the school's date
+  (America/Toronto), that is not a seeded day off (`e2e/helpers.ts` `comingSchoolFriday` says the
+  same); before, a reset on a UTC Saturday put it on the 9 October PA day.
 - **Unit tests of the web app's server code** can import `@/…`: the root `vitest.config.ts`
   aliases it (`server/actions/session-gate.test.ts` mocks the session and the database).
 - **New accounts in browser tests go through « Bienvenue ».** The seed's demo accounts have
@@ -688,8 +721,17 @@ Where an item is already in `DECISIONS.md`, the D-number is given. Don't add dup
    default); a subject teacher; a bank made with the AI; a shared computer. The lawyer confirms the
    device copies' erasure rules (Q5). Per-student AI (D-133) waits for Mike, a board and the lawyer.
 
+10. **« Info-parents » with pilot teachers** (`docs/info-parents.md`, « What to test »): how close
+    the first draft is to what they write, whether they translate, whether the « Non envoyé » rule
+    and the capitalized words catch the names they write, and where the message goes. One real-API
+    case (`pnpm ai:eval --feature newsletter_translate --case semaine-3e-complete --yes`) once the
+    key is set and Mike agrees.
+
 **Known issues and risks:**
 
+- **« Info-parents » translation:** a first name the app does not know, alone at the start of a
+  sentence, is only caught by the teacher at the preview (it says so). The AI's English is « à
+  relire ».
 - **Report card comments live on one device** (D-130): a teacher who clears her browser data or
   changes computers loses what she has not copied; enhanced spell-check, writing extensions and
   cloud clipboards act on what the browser holds; on a computer nobody signs out of, comments stay

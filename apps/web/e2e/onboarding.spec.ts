@@ -237,8 +237,10 @@ test('newer terms show a banner and never block', async ({ page }) => {
     ).toBeVisible();
     // What changed, in one line, and « Plus tard »: back to the page, the banner still there.
     await expect(page.getByTestId('terms-change')).toContainText('Ce qui a changé');
+    // « Info-parents » (terms 2026-10-pilote-4, D-143).
+    await expect(page.getByTestId('terms-change')).toContainText('les messages Info-parents');
     await expect(page.getByTestId('terms-change')).toContainText(
-      'les commentaires de bulletin restent sur votre appareil',
+      'sans jamais l’envoyer, et il est effacé avec les prénoms des élèves.',
     );
     await page.getByRole('link', { name: 'Plus tard', exact: true }).click();
     await expect(page).toHaveURL(/\/classes$/);

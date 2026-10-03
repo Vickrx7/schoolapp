@@ -12,8 +12,12 @@ import { newsletterCatalogs } from '@/server/newsletter/catalogs';
 import { newsletterHeader, newsletterHeadings } from '@/server/newsletter/phrases';
 import { isWeekOf, weekInYear } from '@/server/newsletter/view-model';
 import { loadClass } from '@/server/queries/classes';
-import { loadNewsletter, loadPrepareContext } from '@/server/queries/newsletters';
-import { findSchool, hasModule, hasRole, requireSession } from '@/server/session';
+import {
+  loadNewsletter,
+  loadNewsletterTranslation,
+  loadPrepareContext,
+} from '@/server/queries/newsletters';
+import { aiOn, findSchool, hasModule, hasRole, requireSession } from '@/server/session';
 
 type Params = Promise<{ classId: string; weekOf: string }>;
 
@@ -81,9 +85,10 @@ export default async function NewsletterWeekPage({ params }: { params: Params })
     );
   }
 
-  const [catalogs, context] = await Promise.all([
+  const [catalogs, context, translation] = await Promise.all([
     newsletterCatalogs(),
     loadPrepareContext(session, cls),
+    loadNewsletterTranslation(newsletter.id, newsletter.revision),
   ]);
   const headerValues = { school: school.name, className: cls.name, weekOf };
   const content = newsletter.content;
@@ -113,6 +118,8 @@ export default async function NewsletterWeekPage({ params }: { params: Params })
             en: newsletterHeadings('en-CA', catalogs.en),
           }}
           options={{ colleagues: context.colleagues, guides: hasModule(school, 'library') }}
+          ai={aiOn(session, school)}
+          translation={translation}
         />
       ) : (
         <div className="space-y-3">

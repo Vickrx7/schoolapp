@@ -2,8 +2,9 @@
 
 This document answers the questions an Ontario school board's privacy officer asks before a pilot
 or a contract: what the app collects, where it is stored, who can see it, how long it is kept, and
-what happens at the end. It describes release 0.8 (October 2026: Phase 6, « Mon année » and
-« Commentaires de bulletin ») of the app called « Lynx École » for now (the name is a placeholder).
+what happens at the end. It describes release 0.9 (October 2026: Phase 6, « Mon année »,
+« Commentaires de bulletin » and « Info-parents ») of the app called « Lynx École » for now (the
+name is a placeholder).
 
 It is written in English for privacy and IT staff. The app's own notice, « Confidentialité et
 conditions » (`/confidentialite`), says the same in plain French and English for teachers; where
@@ -250,6 +251,15 @@ before sending. A name the app does not know (a parent's, a sibling's) cannot be
   on our server. **A name the app does not know** (a parent's, a sibling's, a student of another
   school) is not recognized: the teacher sees the exact text before sending, and the preview asks
   her to remove any such name. `docs/ai-data-flow.md` has the details.
+- **AI, « Info-parents » translation (« Traduire en anglais (IA) », D-139):** only the message's
+  French paragraphs, with known names replaced, and the class's grade (« 3e année »), built by the
+  database from the stored message: no class, school, signature or identifier. A paragraph with a
+  detected detail, or a title followed by a name the app does not know (« Merci à Mme Dupuis »), is
+  not sent; the preview lists it (« Non envoyé ») and the capitalized words the teacher must check,
+  and nothing goes before she confirms. The answer comes back to our server, names are put back
+  there, and it is written into the message only if the message did not change meanwhile. What the
+  teacher then pastes into the board's channel is governed by that channel: the app sends nothing to
+  families (section 3).
 - **AI, report card comment banks (« Créer une banque avec l'IA », D-132):** the request carries
   curriculum labels and the teacher's note only: the grade, the subject, the report, the chosen
   attentes and the length of the entries, built by the database from ids, and the note
@@ -487,6 +497,11 @@ class, alerts).
 - Students never use AI. AI features are for teachers, principals and vice-principals only.
 - No AI feature reads a comment about a student: report card comments are composed in the
   teacher's browser and never leave it (D-130, D-133).
+- The app never contacts families: no e-mail, text message or parent account. A teacher copies or
+  prints a class's « Info-parents » message herself; the editor asks her to name a student only for
+  news everyone may read, never for behaviour, health or an evaluation (D-136, D-138). Its English
+  translation by the AI never sends a paragraph that names someone the app does not know after a
+  title (D-139).
 - In class mode, students join a quiz on class devices with a number; nothing they type is stored,
   and their answers are deleted when the session ends.
 - A teacher may keep class results: counts per question and team scores, with no device and no
@@ -542,12 +557,13 @@ kept 730 days.
   (`PRIVACY_CONTACT_EMAIL`), or the board's own privacy office.
 - **Support:** the address shown in the app (`SUPPORT_EMAIL`).
 - **Decisions behind this document:** `DECISIONS.md` (D-012 to D-019, D-037 to D-046, D-049 to
-  D-059, D-065, D-083 to D-093, D-102 to D-138, D-140).
+  D-059, D-065, D-083 to D-093, D-102 to D-143).
 
-| Date       | Release | Change                                                                                                                                                                                                                                                                                                                                                                                                |
-| ---------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-10-02 | 0.6     | First version, written for the pilot. Pending a privacy lawyer's review.                                                                                                                                                                                                                                                                                                                              |
-| 2026-10-02 | 0.6     | After the final review: the AI limit (names the app does not know), what the sign-in service and the database write to the journal, the hosting facts still to confirm, IP Lynx as a pilot board's administrator, the full audit export before a board is deleted, the monthly restore test. The in-app notice changed with it (terms version `2026-10-pilote-2`).                                    |
-| 2026-10-02 | 0.7     | « Mon année »: a unit's planned dates and the attentes it aims at (the class team's, kept with the class), and the board's report card periods (no personal data). No new personal data and no AI, so the pilot terms are unchanged.                                                                                                                                                                  |
-| 2026-10-02 | 0.7     | « Couverture » (worked out on each visit; nothing stored) and the long-range plan PDF (no student data; built when asked, never stored, the teacher's to give). No new personal data, so the pilot terms are unchanged.                                                                                                                                                                               |
-| 2026-10-03 | 0.8     | « Commentaires de bulletin »: comment banks in the library (phrases with `{prénom}`, no student data), « Créer une banque avec l'IA » (curriculum labels and the teacher's note only), and « Bulletins », which composes report card comments in the teacher's browser only (sections 1, 3, 4, 5, 9, 13). The notice, the terms and « Bienvenue » changed with it (terms version `2026-10-pilote-3`). |
+| Date       | Release | Change                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| ---------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-10-02 | 0.6     | First version, written for the pilot. Pending a privacy lawyer's review.                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| 2026-10-02 | 0.6     | After the final review: the AI limit (names the app does not know), what the sign-in service and the database write to the journal, the hosting facts still to confirm, IP Lynx as a pilot board's administrator, the full audit export before a board is deleted, the monthly restore test. The in-app notice changed with it (terms version `2026-10-pilote-2`).                                                                                                                                |
+| 2026-10-02 | 0.7     | « Mon année »: a unit's planned dates and the attentes it aims at (the class team's, kept with the class), and the board's report card periods (no personal data). No new personal data and no AI, so the pilot terms are unchanged.                                                                                                                                                                                                                                                              |
+| 2026-10-02 | 0.7     | « Couverture » (worked out on each visit; nothing stored) and the long-range plan PDF (no student data; built when asked, never stored, the teacher's to give). No new personal data, so the pilot terms are unchanged.                                                                                                                                                                                                                                                                           |
+| 2026-10-03 | 0.8     | « Commentaires de bulletin »: comment banks in the library (phrases with `{prénom}`, no student data), « Créer une banque avec l'IA » (curriculum labels and the teacher's note only), and « Bulletins », which composes report card comments in the teacher's browser only (sections 1, 3, 4, 5, 9, 13). The notice, the terms and « Bienvenue » changed with it (terms version `2026-10-pilote-3`).                                                                                             |
+| 2026-10-03 | 0.9     | « Info-parents »: a class's weekly message to families, drafted from the class's data and kept with the class team, erased with the students' first names; the app sends nothing to families (sections 3, 4, 9, 13). « Traduire en anglais (IA) » sends only the message's French paragraphs with known names replaced, never a paragraph with a detected detail or a title before an unknown name (sections 5, 13). The notice and the terms changed with it (terms version `2026-10-pilote-4`). |
