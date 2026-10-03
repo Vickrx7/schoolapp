@@ -226,8 +226,10 @@ export function newsletterFacts(input: NewsletterFactsInput): NewsletterFacts {
   const unitById = new Map(input.units.map((u) => [u.id, u]));
   const lessonUnit = new Map(input.units.flatMap((u) => u.lessons.map((l) => [l.id, u] as const)));
 
-  // The lessons the timetable gives from the preparation date (or the week's Monday) to next
-  // Friday, continuing each subject's sequence (`assignLessonsToSlots`).
+  // The lessons the timetable gives from the preparation date to next Friday, continuing each
+  // subject's sequence (`assignLessonsToSlots`). Prepared ahead (a day of the week before), the
+  // days until the week's Monday take their lessons first, so this week's remaining lessons never
+  // move into the message's week (post-MVP review); days outside the school year give none.
   const activeUnits = new Map(
     input.units
       .filter((u) => u.status === 'active')
@@ -235,7 +237,8 @@ export function newsletterFacts(input: NewsletterFactsInput): NewsletterFacts {
   );
   const slots: (TeachingSlot & { mine: boolean })[] = [];
   let unknownNextWeek = false;
-  for (let date = later(preparedOn, weekOf); date <= nextFriday; date = addDays(date, 1)) {
+  for (let date = preparedOn; date <= nextFriday; date = addDays(date, 1)) {
+    if (date < input.year.startsOn || date > input.year.endsOn) continue;
     const day = resolveSchoolDay({
       date,
       classId,
@@ -302,7 +305,7 @@ export function newsletterFacts(input: NewsletterFactsInput): NewsletterFacts {
   assignments.forEach((a, i) => {
     const slot = slots[i]!;
     if (!a.lesson || !slot.mine) return;
-    if (slot.date <= friday) {
+    if (slot.date >= weekOf && slot.date <= friday) {
       if (a.reason === 'assigned') thisWeekIds.push(a.lesson.id);
     } else if (slot.date >= nextMonday) {
       nextWeekIds.push(a.lesson.id);

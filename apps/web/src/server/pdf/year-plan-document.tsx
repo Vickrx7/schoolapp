@@ -275,6 +275,21 @@ function Section({ model, section }: { model: YearPlanPdfModel; section: YearPla
           none={model.bySubject.noExpectations}
         />
       ))}
+      {section.outsideYear ? (
+        <>
+          <Text style={styles.note} minPresenceAhead={40}>
+            {section.outsideYear.title}
+          </Text>
+          {section.outsideYear.units.map((u) => (
+            <Unit
+              key={u.key}
+              unit={u}
+              label={model.bySubject.expectationsLabel}
+              none={model.bySubject.noExpectations}
+            />
+          ))}
+        </>
+      ) : null}
       {section.unplaced ? <Text style={styles.note}>{section.unplaced}</Text> : null}
     </>
   );

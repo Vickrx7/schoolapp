@@ -11,6 +11,7 @@ import {
 import { localized } from '@/i18n/config';
 import { findSchool, type SessionContext } from '../session';
 import { createSupabaseServerClient } from '../supabase';
+import { fetchAllRows } from './fetch-all';
 import type { ClassDetail } from './classes';
 import { toCalendarEvent } from './mappers';
 import { loadSubjectsForGrades, type SubjectOption } from './subjects';
@@ -47,15 +48,20 @@ export async function loadClassYearWeeks(cls: {
     .maybeSingle();
   const y = row?.school_years;
   if (!y) return null;
-  const { data: events } = await supabase
-    .from('school_calendar_events')
-    .select(
-      'id, board_id, school_id, class_id, event_type, title, starts_on, ends_on, start_time, end_time, affects_schedule',
-    )
-    .eq('board_id', cls.boardId)
-    .lte('starts_on', y.ends_on)
-    .gte('ends_on', y.starts_on)
-    .order('starts_on');
+  // A board admin who teaches sees every school's events: page by page past PostgREST's cap.
+  const { data: events } = await fetchAllRows((from, to) =>
+    supabase
+      .from('school_calendar_events')
+      .select(
+        'id, board_id, school_id, class_id, event_type, title, starts_on, ends_on, start_time, end_time, affects_schedule',
+      )
+      .eq('board_id', cls.boardId)
+      .lte('starts_on', y.ends_on)
+      .gte('ends_on', y.starts_on)
+      .order('starts_on')
+      .order('id')
+      .range(from, to),
+  );
   const calendar: YearCalendarEvent[] = (events ?? []).map((e) => ({
     ...toCalendarEvent(e),
     schoolId: e.school_id,
@@ -181,12 +187,16 @@ export async function loadYearPlan(
       .order('sort_order')
       .order('created_at'),
     // When lessons were taught: given, or reported by a substitute (D-054).
-    supabase
-      .from('lesson_progress')
-      .select('lesson_id, taught_on')
-      .eq('class_id', cls.id)
-      .in('status', ['completed', 'pending_confirmation'])
-      .not('taught_on', 'is', null),
+    fetchAllRows((from, to) =>
+      supabase
+        .from('lesson_progress')
+        .select('lesson_id, taught_on')
+        .eq('class_id', cls.id)
+        .in('status', ['completed', 'pending_confirmation'])
+        .not('taught_on', 'is', null)
+        .order('lesson_id')
+        .range(from, to),
+    ),
     supabase
       .from('timetable_blocks')
       .select('subject_id')

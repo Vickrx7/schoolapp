@@ -25,6 +25,7 @@ import {
 } from '../planning/coverage-view';
 import { findSchool, type SessionContext } from '../session';
 import { createSupabaseServerClient } from '../supabase';
+import { fetchAllRows } from './fetch-all';
 import type { ClassDetail } from './classes';
 import type { ClassYear } from './year-plan';
 import { loadSubjectsForGrades, type SubjectOption } from './subjects';
@@ -60,9 +61,6 @@ export interface CoverageInputs {
   progress: Map<string, CoverageProgress>;
 }
 
-/** PostgREST answers at most this many rows at a time (`max_rows`): longer lists are paged. */
-const PAGE = 1000;
-
 /**
  * The coverage inputs of a class. Null when the class's school year cannot be read, or when a
  * query fails (reported; the page says it could not be loaded).
@@ -78,32 +76,26 @@ export async function loadCoverageInputs(
   const supabase = await createSupabaseServerClient();
 
   const loadRows = async (): Promise<CoverageCountRow[] | null> => {
-    const rows: CoverageCountRow[] = [];
-    // Twenty pages are far more than a grade's curriculum (Ontario has a few hundred per subject).
-    for (let page = 0; page < 20; page++) {
-      const { data, error } = await supabase
+    const { data, error } = await fetchAllRows((from, to) =>
+      supabase
         .from('curriculum_expectations')
         .select('id, subject_id, grade_code, kind, parent_id, is_verified')
         .in('grade_code', cls.gradeCodes)
         .order('id')
-        .range(page * PAGE, page * PAGE + PAGE - 1);
-      if (error) {
-        reportError('loadClassCoverage', error);
-        return null;
-      }
-      for (const e of data ?? []) {
-        rows.push({
-          expectationId: e.id,
-          subjectId: e.subject_id,
-          gradeCode: e.grade_code,
-          kind: e.kind,
-          parentId: e.parent_id,
-          verified: e.is_verified,
-        });
-      }
-      if ((data ?? []).length < PAGE) break;
+        .range(from, to),
+    );
+    if (error) {
+      reportError('loadClassCoverage', error);
+      return null;
     }
-    return rows;
+    return data.map((e) => ({
+      expectationId: e.id,
+      subjectId: e.subject_id,
+      gradeCode: e.grade_code,
+      kind: e.kind,
+      parentId: e.parent_id,
+      verified: e.is_verified,
+    }));
   };
 
   const [yearRes, gradesRes, unitsRes, progressRes, subjects, rows] = await Promise.all([
@@ -124,7 +116,14 @@ export async function loadCoverageInputs(
       )
       .eq('class_id', cls.id)
       .neq('status', 'archived'),
-    supabase.from('lesson_progress').select('lesson_id, status, taught_on').eq('class_id', cls.id),
+    fetchAllRows((from, to) =>
+      supabase
+        .from('lesson_progress')
+        .select('lesson_id, status, taught_on')
+        .eq('class_id', cls.id)
+        .order('lesson_id')
+        .range(from, to),
+    ),
     loadSubjectsForGrades(cls.gradeOrdinals, board?.settings, locale),
     loadRows(),
   ]);
@@ -261,13 +260,16 @@ export async function loadClassCoverage(
 
   const supabase = await createSupabaseServerClient();
   const [expectations, strands] = await Promise.all([
-    supabase
-      .from('curriculum_expectations')
-      .select('id, kind, parent_id, strand_id, code, text_fr, text_en, is_verified, sort_order')
-      .eq('subject_id', subject.id)
-      .eq('grade_code', grade.code)
-      .order('sort_order')
-      .limit(PAGE),
+    fetchAllRows((from, to) =>
+      supabase
+        .from('curriculum_expectations')
+        .select('id, kind, parent_id, strand_id, code, text_fr, text_en, is_verified, sort_order')
+        .eq('subject_id', subject.id)
+        .eq('grade_code', grade.code)
+        .order('sort_order')
+        .order('id')
+        .range(from, to),
+    ),
     supabase
       .from('strands')
       .select('id, code, label_fr, label_en, sort_order')

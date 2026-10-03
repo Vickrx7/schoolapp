@@ -13,6 +13,7 @@ import type { ReportPeriodKind } from '../year-plan/report-periods';
 import {
   englishTypography,
   frenchTypography,
+  NEWSLETTER_LIMITS,
   NEWSLETTER_SECTIONS,
   type NewsletterContent,
   type NewsletterItem,
@@ -24,10 +25,13 @@ import type { NewsletterDate, NewsletterFacts, NewsletterLessonLine } from './fa
 export interface NewsletterPhrases {
   greeting: string;
   closing: string;
-  /** « Mathématiques (unité « … ») : « … » et « … » ». */
-  lessons(line: { subject: string; unit: string; lessons: string[] }): string;
+  /**
+   * « Mathématiques (unité « … ») : « … » et « … » »; with `more`, the list ends « et 6 autres
+   * leçons » (a line too long for a paragraph, post-MVP review).
+   */
+  lessons(line: { subject: string; unit: string; lessons: string[]; more?: number }): string;
   /** A cycle day unknown: « Mathématiques (unité « … »), prochaines leçons : … ». */
-  nextLessons(line: { subject: string; unit: string; lessons: string[] }): string;
+  nextLessons(line: { subject: string; unit: string; lessons: string[]; more?: number }): string;
   unitStart(start: { subject: string; title: string; date: LocalDate }): string;
   dayOff(d: { from: LocalDate; to: LocalDate; title: string; type: CalendarEventType }): string;
   earlyDismissal(d: { date: LocalDate; time: string | null; title: string }): string;
@@ -99,17 +103,30 @@ export function buildNewsletterDraft(
     };
   };
 
-  const lessonItem = (line: NewsletterLessonLine, write: 'lessons' | 'nextLessons') =>
-    item(
-      'lesson',
-      (p, lang) =>
+  // A unit's lessons for the week on one line; a line too long for a paragraph (Français twice a
+  // day, long titles) lists the first lessons and ends « et 6 autres leçons », never refusing the
+  // whole message (post-MVP review).
+  const lessonItem = (line: NewsletterLessonLine, write: 'lessons' | 'nextLessons') => {
+    const titles = line.lessons.map((l) => l.title);
+    const writeFirst =
+      (n: number) =>
+      (p: NewsletterPhrases, lang: 'fr' | 'en'): string =>
         p[write]({
           subject: line.subject[lang],
           unit: line.unitTitle,
-          lessons: line.lessons.map((l) => l.title),
-        }),
-      line.unitId,
-    );
+          lessons: titles.slice(0, n),
+          more: titles.length - n,
+        });
+    let n = titles.length;
+    while (
+      n > 1 &&
+      (frenchTypography(writeFirst(n)(phrases.fr, 'fr')).length > NEWSLETTER_LIMITS.fr ||
+        englishTypography(writeFirst(n)(phrases.en, 'en')).length > NEWSLETTER_LIMITS.en)
+    ) {
+      n--;
+    }
+    return item('lesson', writeFirst(n), line.unitId);
+  };
 
   const sections: Record<NewsletterSectionKey, NewsletterItem[]> = {
     message: [item('greeting', (p) => p.greeting)],

@@ -37,6 +37,10 @@ const unitCell = (page: Page, title: string) =>
 
 const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
+/** A planned unit's status in its cell (`placeUnits`: late once its first day has passed). */
+const plannedLabel = (startsOn: string, today: string) =>
+  startsOn >= today ? 'À venir' : 'Pas encore commencée';
+
 const longDate = (date: string) =>
   new Intl.DateTimeFormat('fr-CA', { day: 'numeric', month: 'long', timeZone: 'UTC' })
     .format(new Date(`${date}T12:00:00Z`))
@@ -77,10 +81,17 @@ test('« Mon année » shows the units on the weeks, the calendar, report dates 
   ).toBeVisible();
   await expect(grid.getByRole('columnheader', { name: 'Septembre 2026' })).toBeVisible();
 
-  // The seeded units, the one under way and the planned one after it.
+  // The seeded units, the one under way and the planned one after it: « À venir », or « Pas encore
+  // commencée » once its first day has passed (a database reset in the last six weeks of the year
+  // takes the seed's fixed fall dates, supabase/seeds/50_year_plan_demo.sql).
   await expect(unitCell(page, "Les nombres jusqu'à 1 000")).toContainText('En cours');
+  const [planned] = await query<{ starts: string }>(
+    `select planned_start_on::text as starts from public.units
+     where class_id = $1 and title = 'L''addition et la soustraction jusqu''à 1 000'`,
+    [SEED.class3],
+  );
   await expect(unitCell(page, "L'addition et la soustraction jusqu'à 1 000")).toContainText(
-    'À venir',
+    plannedLabel(planned!.starts, TODAY),
   );
   await expect(unitCell(page, "L'addition et la soustraction jusqu'à 1 000")).toHaveAccessibleName(
     /· Mathématiques, du \d+(er)? \S+ au \d+(er)? \S+$/,

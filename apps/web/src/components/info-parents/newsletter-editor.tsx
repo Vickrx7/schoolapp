@@ -69,7 +69,8 @@ const isOpen = (translation: NewsletterTranslationState | null) =>
  * typographie », « Copier », « Imprimer (PDF) » (D-141) and « Marquer comme envoyé ». The content
  * is a device draft until it is saved (D-035); a save is refused when a colleague saved first
  * (`newsletterConflict`): the page then reloads the newer version and offers « Récupérer mes
- * modifications ». Copying, printing and marking sent wait for a save, then check the names
+ * modifications ». A message marked sent (in another tab) refuses any change (`newsletterSent`,
+ * LXN07): the page shows it as sent, and « Remettre en brouillon » comes first. Copying, printing and marking sent wait for a save, then check the names
  * (« Des élèves sont nommés »); the PDF is the saved message, opened in the browser to print or
  * save (a plain navigation: nothing is prefetched). « Traduire en anglais (IA) » (D-139) works on
  * the saved message too: while the AI translates, the message is read-only and the progress shows;
@@ -189,6 +190,8 @@ function EditorBody({
     const result = await save.run(id, revision, sent);
     if (result?.ok) setSavedJson(JSON.stringify(sent));
     else if (result && !result.ok && result.error === 'newsletterConflict') reload.now(revision);
+    // Marked sent in another tab (LXN07): the page shows it as sent, read-only.
+    else if (result && !result.ok && result.error === 'newsletterSent') router.refresh();
   };
 
   const refill = useAction(refillNewsletter);
@@ -334,6 +337,7 @@ function EditorBody({
                 reload.cancel();
                 if (result && !result.ok && result.error === 'newsletterConflict')
                   reload.now(revision);
+                if (result && !result.ok && result.error === 'newsletterSent') router.refresh();
               }
             }}
           />

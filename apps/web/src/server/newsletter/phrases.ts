@@ -56,8 +56,12 @@ export function newsletterPhrases(
   const day = (date: LocalDate) => formatLocalDate(date, locale);
   const lineDate = (date: LocalDate) => upperFirst(day(date), locale);
   const quote = (s: string) => (fr ? `«\u00a0${s}\u00a0»` : `“${s}”`);
-  const list = (items: string[]) =>
-    new Intl.ListFormat(locale, { type: 'conjunction' }).format(items.map(quote));
+  // « « … », « … » et 6 autres leçons » when the line lists only the first lessons.
+  const list = (items: string[], more = 0) =>
+    new Intl.ListFormat(locale, { type: 'conjunction' }).format([
+      ...items.map(quote),
+      ...(more > 0 ? [t('moreLessons', { count: more })] : []),
+    ]);
   const time = (value: string) => formatTime(value, locale);
   // An event's name: its title, unless it only repeats its type (« Journée pédagogique »). In
   // English the type comes first, then the French title quoted.
@@ -76,10 +80,10 @@ export function newsletterPhrases(
   return {
     greeting: t('greeting'),
     closing: t('closing'),
-    lessons: ({ subject, unit, lessons }) =>
-      t('lessons', { subject, unit, lessons: list(lessons) }),
-    nextLessons: ({ subject, unit, lessons }) =>
-      t('nextLessons', { subject, unit, lessons: list(lessons) }),
+    lessons: ({ subject, unit, lessons, more }) =>
+      t('lessons', { subject, unit, lessons: list(lessons, more) }),
+    nextLessons: ({ subject, unit, lessons, more }) =>
+      t('nextLessons', { subject, unit, lessons: list(lessons, more) }),
     unitStart: ({ subject, title }) => t('unitStart', { subject, title }),
     dayOff: ({ from, to, title, type }) => {
       const name = eventName(title, type);

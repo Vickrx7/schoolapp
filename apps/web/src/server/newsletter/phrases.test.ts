@@ -156,6 +156,48 @@ describe('the family-facing sentences (D-137), from the real catalogues', () => 
   });
 });
 
+describe('a week with many long lessons (post-MVP review)', () => {
+  it('lists the first lessons and « et N autres leçons » rather than refusing the message', () => {
+    // Français twice a day: eleven lessons of 85 characters (the database allows 160).
+    const title = (i: number) =>
+      `Lecture guidée ${i} : repérer les caractéristiques du texte informatif (manuel p. 12-15)`;
+    const facts: NewsletterFacts = {
+      weekOf: '2026-10-05',
+      thisWeek: [
+        {
+          subjectId: 'fra',
+          subject: { fr: 'Français', en: 'French' },
+          unitId: 'u',
+          unitTitle: 'Lire pour s’informer : les animaux de l’Ontario',
+          lessons: Array.from({ length: 11 }, (_, i) => ({ id: `l${i}`, title: title(i + 1) })),
+        },
+      ],
+      nextWeek: [],
+      nextLessonsOnly: false,
+      unitStarts: [],
+      dates: [],
+      guides: [],
+      faith: null,
+    };
+    let n = 0;
+    const content = buildNewsletterDraft(
+      facts,
+      pair,
+      { signature: 'Mme Tremblay', faith: false, guides: false },
+      () => `item${String(n++).padStart(4, '0')}`,
+    );
+    expect(newsletterContentSchema.safeParse(content).success).toBe(true);
+    const line = content.sections.find((s) => s.key === 'thisWeek')!.items[0]!;
+    expect(line.fr.length).toBeLessThanOrEqual(1000);
+    expect(line.en.length).toBeLessThanOrEqual(1500);
+    // Ten titles fit in French's 1,000 characters; the eleventh is counted.
+    expect(line.fr).toMatch(/» et 1 autre leçon$/);
+    expect(line.fr).toMatch(/«\sLecture guidée 10\s/u);
+    expect(line.fr).not.toMatch(/Lecture guidée 11\s/u);
+    expect(line.en).toMatch(/ other lessons?$/);
+  });
+});
+
 describe('a whole draft from the catalogues', () => {
   it('is valid content whose text reads in both languages', () => {
     const facts: NewsletterFacts = {

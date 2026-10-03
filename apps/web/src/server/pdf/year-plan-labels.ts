@@ -41,6 +41,9 @@ export interface YearPlanPdfLabels {
   noExpectations: string;
   toVerify: string;
   unplaced: (titles: string) => string;
+  /** « Hors de l'année scolaire », and what replaces a unit's weeks there. */
+  outsideYear: string;
+  outsideYearLength: string;
   noUnits: string;
   coverage: {
     title: string;
@@ -91,6 +94,8 @@ export function yearPlanPdfLabels(locale: AppLocale, catalog: typeof messages): 
     noExpectations: t('yearPlan.unit.noExpectations'),
     toVerify: t('yearPlan.pdf.toVerify'),
     unplaced: (titles) => t('yearPlan.pdf.unplaced', { titles }),
+    outsideYear: t('yearPlan.pdf.outsideYear'),
+    outsideYearLength: t('yearPlan.pdf.outsideYearLength'),
     noUnits: t('yearPlan.pdf.noUnits'),
     coverage: {
       title: t('yearPlan.pdf.coverageTitle'),

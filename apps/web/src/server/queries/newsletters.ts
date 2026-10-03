@@ -27,6 +27,7 @@ import { newsletterNames, type NewsletterNames } from '../newsletter/names';
 import { sortNewsletterRows, type NewsletterListRow } from '../newsletter/view-model';
 import { findSchool, teachingSchools, type SessionContext } from '../session';
 import { createSupabaseServerClient } from '../supabase';
+import { fetchAllRows } from './fetch-all';
 import type { ClassDetail } from './classes';
 import { eventsForSchool, scheduleFor, toCalendarEvent, toTimetableBlock } from './mappers';
 import type { ClassYear } from './year-plan';
@@ -257,11 +258,15 @@ export async function loadNewsletterFacts(
         )
         .eq('class_id', cls.id)
         .neq('status', 'archived'),
-      supabase
-        .from('lesson_progress')
-        .select('lesson_id, status, taught_on')
-        .eq('class_id', cls.id)
-        .limit(5 * PAGE),
+      // A class's progress passes PostgREST's 1,000 rows in the spring: page by page.
+      fetchAllRows((from, to) =>
+        supabase
+          .from('lesson_progress')
+          .select('lesson_id, status, taught_on')
+          .eq('class_id', cls.id)
+          .order('lesson_id')
+          .range(from, to),
+      ),
       supabase.from('subjects').select('id, label_fr, label_en'),
       options.faith
         ? supabase
@@ -294,15 +299,18 @@ export async function loadNewsletterFacts(
     cycleDay: a.cycle_day,
   }));
   const from = anchors.reduce((min, a) => (a.anchorDate < min ? a.anchorDate : min), weekOf);
-  const { data: eventRows, error: eventsError } = await supabase
-    .from('school_calendar_events')
-    .select(
-      'id, board_id, school_id, class_id, event_type, title, starts_on, ends_on, start_time, end_time, affects_schedule',
-    )
-    .eq('board_id', cls.boardId)
-    .lte('starts_on', until)
-    .gte('ends_on', from)
-    .limit(5 * PAGE);
+  const { data: eventRows, error: eventsError } = await fetchAllRows((first, last) =>
+    supabase
+      .from('school_calendar_events')
+      .select(
+        'id, board_id, school_id, class_id, event_type, title, starts_on, ends_on, start_time, end_time, affects_schedule',
+      )
+      .eq('board_id', cls.boardId)
+      .lte('starts_on', until)
+      .gte('ends_on', from)
+      .order('id')
+      .range(first, last),
+  );
   if (eventsError) {
     reportError('loadNewsletterFacts', eventsError);
     return null;
@@ -547,15 +555,18 @@ export async function loadNewsletterReminders(
 
   const from = candidates.reduce((min, c) => (c.startsOn < min ? c.startsOn : min), '9999-12-31');
   const until = candidates.reduce((max, c) => (c.endsOn > max ? c.endsOn : max), '0000-01-01');
-  const { data: events, error: eventsError } = await supabase
-    .from('school_calendar_events')
-    .select(
-      'id, board_id, school_id, class_id, event_type, title, starts_on, ends_on, start_time, end_time, affects_schedule',
-    )
-    .in('board_id', [...new Set(candidates.map((c) => c.school.boardId))])
-    .lte('starts_on', until)
-    .gte('ends_on', from)
-    .limit(PAGE);
+  const { data: events, error: eventsError } = await fetchAllRows((first, last) =>
+    supabase
+      .from('school_calendar_events')
+      .select(
+        'id, board_id, school_id, class_id, event_type, title, starts_on, ends_on, start_time, end_time, affects_schedule',
+      )
+      .in('board_id', [...new Set(candidates.map((c) => c.school.boardId))])
+      .lte('starts_on', until)
+      .gte('ends_on', from)
+      .order('id')
+      .range(first, last),
+  );
   if (eventsError) {
     reportError('loadNewsletterReminders', eventsError);
     return [];

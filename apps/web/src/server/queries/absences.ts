@@ -17,6 +17,7 @@ import type { SchoolContext, SessionContext } from '../session';
 import { teachingSchools } from '../session';
 import { summarizePlan, type PlanDaySummary } from '../sub-plans/summary';
 import { createSupabaseServerClient } from '../supabase';
+import { fetchAllRows } from './fetch-all';
 import { eventsForSchool, toCalendarEvent } from './mappers';
 
 type Supabase = Awaited<ReturnType<typeof createSupabaseServerClient>>;
@@ -179,14 +180,18 @@ export async function loadSchoolEvents(
   from: LocalDate,
   to: LocalDate,
 ): Promise<CalendarEvent[]> {
-  const { data } = await supabase
-    .from('school_calendar_events')
-    .select(
-      'id, board_id, school_id, class_id, event_type, title, starts_on, ends_on, start_time, end_time, affects_schedule',
-    )
-    .is('class_id', null)
-    .lte('starts_on', to)
-    .gte('ends_on', from);
+  const { data } = await fetchAllRows((first, last) =>
+    supabase
+      .from('school_calendar_events')
+      .select(
+        'id, board_id, school_id, class_id, event_type, title, starts_on, ends_on, start_time, end_time, affects_schedule',
+      )
+      .is('class_id', null)
+      .lte('starts_on', to)
+      .gte('ends_on', from)
+      .order('id')
+      .range(first, last),
+  );
   return eventsForSchool(data ?? [], school).map(toCalendarEvent);
 }
 

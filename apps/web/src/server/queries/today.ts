@@ -19,6 +19,7 @@ import { localized } from '@/i18n/config';
 import type { SchoolContext, SessionContext } from '../session';
 import { teachingSchools } from '../session';
 import { createSupabaseServerClient } from '../supabase';
+import { fetchAllRows } from './fetch-all';
 import { eventsForSchool, scheduleFor, toCalendarEvent, toTimetableBlock } from './mappers';
 
 export interface TodayLesson {
@@ -133,10 +134,15 @@ export async function loadToday(
         )
         .in('class_id', classIds)
         .eq('status', 'active'),
-      supabase
-        .from('lesson_progress')
-        .select('lesson_id, status, taught_on, sub_reports(sub_plan_id, sub_plans(absence_id))')
-        .in('class_id', classIds),
+      // Every class of hers, page by page: past PostgREST's 1,000 rows in the spring.
+      fetchAllRows((from, to) =>
+        supabase
+          .from('lesson_progress')
+          .select('lesson_id, status, taught_on, sub_reports(sub_plan_id, sub_plans(absence_id))')
+          .in('class_id', classIds)
+          .order('lesson_id')
+          .range(from, to),
+      ),
       supabase.from('subjects').select('id, label_fr, label_en, color'),
       supabase.from('rooms').select('id, name').in('school_id', schoolIds),
       // Planned units whose window touches the date's week (« Mon année », D-126).
@@ -163,13 +169,17 @@ export async function loadToday(
     (min, a) => (a.anchor_date < min ? a.anchor_date : min),
     date,
   );
-  const { data: eventRows } = await supabase
-    .from('school_calendar_events')
-    .select(
-      'id, board_id, school_id, class_id, event_type, title, starts_on, ends_on, start_time, end_time, affects_schedule',
-    )
-    .lte('starts_on', date)
-    .gte('ends_on', earliestAnchor);
+  const { data: eventRows } = await fetchAllRows((from, to) =>
+    supabase
+      .from('school_calendar_events')
+      .select(
+        'id, board_id, school_id, class_id, event_type, title, starts_on, ends_on, start_time, end_time, affects_schedule',
+      )
+      .lte('starts_on', date)
+      .gte('ends_on', earliestAnchor)
+      .order('id')
+      .range(from, to),
+  );
 
   const subjects = new Map(
     (subjectsRes.data ?? []).map((s) => [

@@ -2640,6 +2640,17 @@ Browser tests: `year-plan.spec.ts` (the statuses match the seed, a lesson given 
 into « Enseignée », the report periods and chosen dates, « Afficher »), `year-plan-mobile.spec.ts`
 (360 px) and the security-policy check.
 
+_Amended in the post-MVP review (2026-10-03), round A:_ a class's progress passes PostgREST's
+1,000-row cap (`max_rows`, as hosted Supabase does) around May, and a single request (a
+`.limit()` above the cap too) is cut silently, so every class-wide read of « Mon année »,
+« Bulletins », « Info-parents » and the rest of the app goes page by page on a stable order
+(`server/queries/fetch-all.ts`, `fetchAllRows`): the lesson progress of « Couverture », « Mon
+année », « Bulletins », « Info-parents », « Aujourd'hui », the class's « Planification » page and
+« Planifier » from the library; the curriculum read by « Couverture »; the calendar events of
+« Mon année », « Info-parents » (and its reminder), « Aujourd'hui », « Calendrier » and the
+absence form. The lite stack now caps answers at 1,000 rows like CI and production
+(`PGRST_DB_MAX_ROWS`), and an integration test reads 1,200 lessons past it.
+
 **D-126 — The year view (« Mon année »).** `/classes/[id]/planning/year`, a section of the
 class's « Planification » tab (« Unités · Mon année · Couverture »; « Couverture » is D-125; no
 new navigation item, D-118 unchanged). The school year as weeks, Monday to Friday, each labelled by its
@@ -2705,6 +2716,10 @@ Sans; a date never breaks across lines), `year-plan-labels.ts`, `renderYearPlanP
 unité ». The year view's model (`buildYearView`) places the units, so screen and paper agree.
 Browser test: `year-plan.spec.ts` (`%PDF`, `private, no-store`, no page policy, one more page with
 coverage, 404 for another teacher's class).
+
+_Amended in the post-MVP review (2026-10-03), round A:_ a unit dated wholly outside the school
+year is printed in its subject's part under « Hors de l'année scolaire » (« Dates hors de l'année
+scolaire : à replanifier »), as the screen lists it; the PDF no longer leaves it out.
 
 **D-128 — AI for the year plan is deferred.** « Proposer une répartition (IA) » is not built:
 production boards have no curriculum loaded (D-030), the demo sample is partial and unverified,
@@ -3031,6 +3046,18 @@ and keeps the typed ones in their place, the signature and the removed sections 
 _Why:_ per-paragraph English provenance shows exactly what is out of date after a French edit,
 without a translation table, and a fixed set of sections keeps the copy readable. The seed's demo
 Catholic references have an English text of our own, so the demo shows an English faith moment.
+
+_Amended in the post-MVP review (2026-10-03), round A:_ (1) The week's lessons: the timetable is
+followed from the preparation day, even when it comes before the message's week (prepared on a
+Wednesday for the next week, Wednesday to Friday take their lessons first, so this week's lessons
+never move into next week's message), and no lesson is given before the school year's first day
+or after its last (no « La semaine prochaine » after the last week). (2) A unit's line that would
+pass a paragraph's limit (1,000 characters in French, 1,500 in English) lists its first lessons
+and ends « et 6 autres leçons », instead of refusing the whole draft. (3) A message marked
+« Envoyé » keeps its text: any change of its content is refused by the database (LXN07,
+`20270201090000_post_mvp_review_fixes.sql`, pgTAP `38_post_mvp_review`) until « Remettre en
+brouillon »; a stale tab's « Enregistrer » or « Préremplir à nouveau » says so
+(`newsletterSent`) and the page shows the message as sent.
 
 **D-138 — Names and retention (amends D-105).** Before a message is copied, printed (D-141) or
 marked sent, « Des élèves sont nommés » lists the class's students it names (« Ce message nomme

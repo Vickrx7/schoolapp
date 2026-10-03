@@ -95,6 +95,11 @@ export interface YearPlanPdfSection {
   key: string;
   subject: string;
   units: YearPlanPdfUnitEntry[];
+  /**
+   * Units dated wholly outside the school year (a year edited afterwards), under « Hors de l'année
+   * scolaire », as the year view lists them (post-MVP review).
+   */
+  outsideYear: { title: string; units: YearPlanPdfUnitEntry[] } | null;
   /** « Unités sans dates : … » */
   unplaced: string | null;
 }
@@ -245,13 +250,20 @@ export function buildYearPlanPdfModel(
   }));
   const sections: YearPlanPdfSection[] = input.subjects.flatMap((subject) => {
     const units = placed.find((p) => p.subject.id === subject.id)?.units ?? [];
+    const outside = view.outsideYear.filter((p) => p.unit.subjectId === subject.id);
     const unplaced = view.unplaced.filter((u) => u.subjectId === subject.id);
-    if (units.length === 0 && unplaced.length === 0) return [];
+    if (units.length === 0 && outside.length === 0 && unplaced.length === 0) return [];
     return [
       {
         key: subject.id,
         subject: subject.label,
         units: units.map(entry),
+        outsideYear: outside.length
+          ? {
+              title: labels.outsideYear,
+              units: outside.map((p) => ({ ...entry(p), length: labels.outsideYearLength })),
+            }
+          : null,
         unplaced: unplaced.length ? labels.unplaced(unplaced.map((u) => u.title).join(', ')) : null,
       },
     ];

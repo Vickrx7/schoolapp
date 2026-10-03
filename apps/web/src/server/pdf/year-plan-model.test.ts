@@ -60,6 +60,41 @@ describe('buildYearPlanPdfModel', () => {
     );
   });
 
+  it('lists a unit dated outside the school year under « Hors de l’année scolaire » (post-MVP review)', () => {
+    const summer = UNITS.find((u) => u.id === 'addition')!;
+    const model = buildYearPlanPdfModel(
+      input({
+        units: [
+          ...UNITS,
+          {
+            ...summer,
+            id: 'summer',
+            title: 'Projet d’été',
+            plannedStartOn: '2027-07-05',
+            plannedEndOn: '2027-07-16',
+          },
+        ],
+      }),
+      FR,
+    );
+    const math = model.bySubject.sections.find((s) => s.subject === 'Mathématiques')!;
+    expect(math.units.map((u) => u.title)).not.toContain('Projet d’été');
+    expect(math.outsideYear).toEqual({
+      title: 'Hors de l’année scolaire',
+      units: [
+        expect.objectContaining({
+          title: 'Projet d’été',
+          when: 'Du 5 juillet au 16 juillet',
+          length: 'Dates hors de l’année scolaire : à replanifier',
+        }),
+      ],
+    });
+    // Without one, no such part.
+    expect(
+      buildYearPlanPdfModel(input(), FR).bySubject.sections.every((s) => s.outsideYear === null),
+    ).toBe(true);
+  });
+
   it('lists the units by subject with their weeks, school days and attentes', () => {
     const model = buildYearPlanPdfModel(input(), FR);
     expect(model.bySubject.sections.map((s) => s.subject)).toEqual(['Français', 'Mathématiques']);

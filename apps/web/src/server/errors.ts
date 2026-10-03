@@ -136,6 +136,9 @@ export function errorKey(error: PgLikeError | null | undefined): string {
       return 'newsletterStale';
     case 'LXN06':
       return 'newsletterBusy';
+    // A message marked sent keeps its text (20270201090000_post_mvp_review_fixes.sql; D-137).
+    case 'LXN07':
+      return 'newsletterSent';
     default:
       return 'unexpected';
   }

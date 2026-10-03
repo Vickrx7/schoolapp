@@ -547,6 +547,91 @@ describe('newsletterFacts: the lessons (D-137)', () => {
   });
 });
 
+describe('newsletterFacts: prepared ahead, and the school year’s edges (post-MVP review)', () => {
+  // Mathématiques every day at 9:00, a unit of 40 lessons.
+  const daily: NewsletterFactsInput['blocks'] = [1, 2, 3, 4, 5].map((day) => ({
+    id: `mat-${day}`,
+    classId: CLASS,
+    dayKey: day,
+    startTime: '09:00',
+    endTime: '10:00',
+    kind: 'subject' as const,
+    subjectId: MAT,
+    title: null,
+    teacherId: null,
+    roomId: null,
+  }));
+  const lessons = Array.from({ length: 40 }, (_, i) => ({
+    id: `l${i + 1}`,
+    sequenceNumber: i + 1,
+    title: `Leçon ${i + 1}`,
+    expectationIds: [],
+    libraryItemId: null,
+  }));
+  const unit = {
+    id: 'u-daily',
+    subjectId: MAT,
+    title: 'Nombres',
+    status: 'active' as const,
+    plannedStartOn: null,
+    plannedEndOn: null,
+    expectationIds: [],
+    lessons,
+  };
+  const daysOf = (overrides: Partial<NewsletterFactsInput>) => {
+    const facts = newsletterFacts(
+      input({
+        events: [],
+        blocks: daily,
+        units: [unit],
+        progress: new Map(),
+        taughtOn: new Map(),
+        ...overrides,
+      }),
+    );
+    return {
+      thisWeek: facts.thisWeek.flatMap(titles),
+      nextWeek: facts.nextWeek.flatMap(titles),
+    };
+  };
+
+  it('prepared during the week before: that week’s lessons stay in it', () => {
+    // Lessons 1 and 2 given Monday and Tuesday 5 and 6 October; prepared on Wednesday the 7th.
+    const given = {
+      progress: new Map([
+        ['l1', 'completed' as const],
+        ['l2', 'completed' as const],
+      ]),
+      taughtOn: new Map([
+        ['l1', '2026-10-05'],
+        ['l2', '2026-10-06'],
+      ]),
+    };
+    const ahead = daysOf({ ...given, weekOf: '2026-10-12', preparedOn: '2026-10-07' });
+    // Wednesday to Friday take lessons 3 to 5: the week of the 12th starts at lesson 6.
+    expect(ahead.thisWeek).toEqual(['Leçon 6', 'Leçon 7', 'Leçon 8', 'Leçon 9', 'Leçon 10']);
+    expect(ahead.nextWeek).toEqual(['Leçon 11', 'Leçon 12', 'Leçon 13', 'Leçon 14', 'Leçon 15']);
+    // The same day, this week's message: what was given, then the rest of the week.
+    const current = daysOf({ ...given, weekOf: '2026-10-05', preparedOn: '2026-10-07' });
+    expect(current.thisWeek).toEqual(['Leçon 1', 'Leçon 2', 'Leçon 3', 'Leçon 4', 'Leçon 5']);
+    expect(current.nextWeek).toEqual(['Leçon 6', 'Leçon 7', 'Leçon 8', 'Leçon 9', 'Leçon 10']);
+  });
+
+  it('gives no lesson before the year starts or after it ends', () => {
+    const year = { startsOn: '2026-09-02', endsOn: '2027-06-25' };
+    // The year starts on a Wednesday: three lessons that week.
+    expect(daysOf({ year, weekOf: '2026-08-31', preparedOn: '2026-08-28' }).thisWeek).toEqual([
+      'Leçon 1',
+      'Leçon 2',
+      'Leçon 3',
+    ]);
+    // The last week: nothing « la semaine prochaine ».
+    const last = daysOf({ year, weekOf: '2027-06-21', preparedOn: '2027-06-21' });
+    expect(last.thisWeek).toEqual(['Leçon 1', 'Leçon 2', 'Leçon 3', 'Leçon 4', 'Leçon 5']);
+    expect(last.nextWeek).toEqual([]);
+  });
+});
+
 describe('newsletterFacts: the dates to remember', () => {
   it('from the day after the preparation to the Friday two weeks later', () => {
     expect(newsletterDatesWindow('2026-10-05', '2026-10-08')).toEqual({

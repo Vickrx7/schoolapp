@@ -113,6 +113,7 @@ describe('database errors shown to users', () => {
     expect(errorKey({ code: 'LXN04' })).toBe('newsletterNothingToTranslate');
     expect(errorKey({ code: 'LXN05' })).toBe('newsletterStale');
     expect(errorKey({ code: 'LXN06' })).toBe('newsletterBusy');
+    expect(errorKey({ code: 'LXN07' })).toBe('newsletterSent');
     // newsletterConflict: a save on a revision a colleague changed (server/actions/newsletters.ts).
     // newsletterChanged and newsletterTooLargeForAi are also the worker's job errors (D-139);
     // newsletterUnconfirmed: « Envoyer à l'IA » without the box ticked (server/actions/newsletter-ai.ts).
@@ -126,6 +127,7 @@ describe('database errors shown to users', () => {
       'newsletterBusy',
       'newsletterChanged',
       'newsletterUnconfirmed',
+      'newsletterSent',
     ]) {
       expect(fr.errors, key).toHaveProperty(key);
     }

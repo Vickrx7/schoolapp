@@ -32,6 +32,7 @@ import {
 } from '../report-comments/view-model';
 import { aiOn, findSchool, hasModule, type SessionContext } from '../session';
 import { createSupabaseServerClient } from '../supabase';
+import { fetchAllRows } from './fetch-all';
 import type { ClassDetail } from './classes';
 import { loadSubjectsForGrades, type SubjectOption } from './subjects';
 import { loadExpectationChoices, type ClassYear, type ExpectationChoice } from './year-plan';
@@ -149,10 +150,15 @@ export async function loadReportComposer(
         )
         .eq('class_id', cls.id)
         .neq('status', 'archived'),
-      supabase
-        .from('lesson_progress')
-        .select('lesson_id, status, taught_on')
-        .eq('class_id', cls.id),
+      // A class's progress passes PostgREST's 1,000 rows in the spring: page by page.
+      fetchAllRows((from, to) =>
+        supabase
+          .from('lesson_progress')
+          .select('lesson_id, status, taught_on')
+          .eq('class_id', cls.id)
+          .order('lesson_id')
+          .range(from, to),
+      ),
       loadSubjectsForGrades(cls.gradeOrdinals, board?.settings, locale),
     ]);
   const failed =

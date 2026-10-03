@@ -142,6 +142,7 @@ start_services() {
     PGRST_DB_SCHEMAS=public PGRST_DB_ANON_ROLE=anon PGRST_JWT_SECRET="$JWT_SECRET" \
     PGRST_DB_EXTRA_SEARCH_PATH="public,extensions" PGRST_SERVER_PORT="$REST_PORT" PGRST_SERVER_HOST=127.0.0.1 \
     PGRST_DB_CHANNEL_ENABLED=true \
+    PGRST_DB_MAX_ROWS=1000 \
     "$BIN/postgrest"
   wait_for "http://127.0.0.1:$REST_PORT/" rest
 }

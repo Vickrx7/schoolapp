@@ -7,6 +7,7 @@ import { UnitStatusButton } from '@/components/planning/unit-actions';
 import { Badge, Card } from '@/components/ui/card';
 import { EmptyState } from '@/components/ui/page';
 import { loadClass } from '@/server/queries/classes';
+import { fetchAllRows } from '@/server/queries/fetch-all';
 import { loadSubjectsForGrades } from '@/server/queries/subjects';
 import { findSchool, requireSession } from '@/server/session';
 import { createSupabaseServerClient } from '@/server/supabase';
@@ -31,7 +32,15 @@ export default async function PlanningPage({ params }: { params: Promise<{ class
       .neq('status', 'archived')
       .order('sort_order')
       .order('created_at'),
-    supabase.from('lesson_progress').select('lesson_id, status').eq('class_id', classId),
+    // A class's progress passes PostgREST's 1,000 rows in the spring: page by page.
+    fetchAllRows((from, to) =>
+      supabase
+        .from('lesson_progress')
+        .select('lesson_id, status')
+        .eq('class_id', classId)
+        .order('lesson_id')
+        .range(from, to),
+    ),
     loadSubjectsForGrades(cls.gradeOrdinals, board?.settings, await getLocale()),
   ]);
 

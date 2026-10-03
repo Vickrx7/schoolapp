@@ -11,6 +11,7 @@ import { reportError } from '../errors';
 import type { PlanningClass, PlanningTargets, UnitStatus } from '../library/planning-targets';
 import { requireSession, teachingSchools } from '../session';
 import { createSupabaseServerClient } from '../supabase';
+import { fetchAllRows } from '../queries/fetch-all';
 import { getLocale } from 'next-intl/server';
 
 /**
@@ -87,12 +88,20 @@ export async function listPlanningTargets(
 
   const rows = (classes.data ?? []).map((r) => r.classes);
   const lessonIds = rows.flatMap((c) => c.units.flatMap((u) => u.unit_lessons.map((l) => l.id)));
+  // By class, page by page: a teacher's classes pass PostgREST's 1,000 rows in the spring.
   const progress = lessonIds.length
     ? ((
-        await supabase
-          .from('lesson_progress')
-          .select('lesson_id, status')
-          .in('lesson_id', lessonIds)
+        await fetchAllRows((from, to) =>
+          supabase
+            .from('lesson_progress')
+            .select('lesson_id, status')
+            .in(
+              'class_id',
+              rows.map((c) => c.id),
+            )
+            .order('lesson_id')
+            .range(from, to),
+        )
       ).data ?? [])
     : [];
   const status = new Map(progress.map((p) => [p.lesson_id, p.status]));

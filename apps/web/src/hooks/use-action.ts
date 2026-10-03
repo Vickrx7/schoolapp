@@ -116,6 +116,8 @@ export const KNOWN_ERRORS: ReadonlySet<string> = new Set([
   'newsletterBusy',
   'newsletterChanged',
   'newsletterUnconfirmed',
+  // A save over a message marked sent (LXN07, post-MVP review).
+  'newsletterSent',
   // What a resource is missing (readinessFieldErrors, D-067).
   'readiness.grades',
   'readiness.subject',

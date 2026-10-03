@@ -6,6 +6,7 @@ import { DeleteEventButton } from '@/components/calendar/delete-event-button';
 import { Badge, Card } from '@/components/ui/card';
 import { EmptyState, PageHeader } from '@/components/ui/page';
 import { formatLocalDate, formatTime, formatTimeRange } from '@/lib/format';
+import { fetchAllRows } from '@/server/queries/fetch-all';
 import { adminBoards, hasRole, requireSession } from '@/server/session';
 import { createSupabaseServerClient } from '@/server/supabase';
 
@@ -23,15 +24,20 @@ export default async function CalendarPage() {
   const today = localDateIn(tz);
 
   const [eventsRes, classesRes] = await Promise.all([
-    supabase
-      .from('school_calendar_events')
-      .select(
-        'id, board_id, school_id, class_id, event_type, title, starts_on, ends_on, start_time, end_time, notes, classes(name)',
-      )
-      .gte('ends_on', today)
-      .lte('starts_on', addDays(today, 180))
-      .order('starts_on')
-      .order('start_time', { nullsFirst: true }),
+    // A board admin sees every school's events: page by page past PostgREST's 1,000 rows.
+    fetchAllRows((from, to) =>
+      supabase
+        .from('school_calendar_events')
+        .select(
+          'id, board_id, school_id, class_id, event_type, title, starts_on, ends_on, start_time, end_time, notes, classes(name)',
+        )
+        .gte('ends_on', today)
+        .lte('starts_on', addDays(today, 180))
+        .order('starts_on')
+        .order('start_time', { nullsFirst: true })
+        .order('id')
+        .range(from, to),
+    ),
     supabase
       .from('class_teachers')
       .select('classes!inner(id, name, school_id)')
