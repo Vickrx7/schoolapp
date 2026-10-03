@@ -49,6 +49,12 @@ test('a new teacher accepts the terms, then tries the app with a sample class', 
     await expect(
       page.getByText(/^L’application remplace les noms des élèves et du personnel de vos écoles/),
     ).toContainText('retirez vous-même tout autre nom');
+    // Report card comments stay on the device (« Commentaires de bulletin », D-134).
+    await expect(
+      page.getByText(
+        /^Les commentaires de bulletin que vous rédigez restent dans le navigateur de votre appareil\s:\sjamais sur nos serveurs ni à l’intelligence artificielle\. Ils sont effacés à la déconnexion\.$/,
+      ),
+    ).toBeVisible();
     await expect(
       page.getByRole('link', { name: 'Lire « Confidentialité et conditions »' }),
     ).toHaveAttribute('href', '/confidentialite');
@@ -232,7 +238,7 @@ test('newer terms show a banner and never block', async ({ page }) => {
     // What changed, in one line, and « Plus tard »: back to the page, the banner still there.
     await expect(page.getByTestId('terms-change')).toContainText('Ce qui a changé');
     await expect(page.getByTestId('terms-change')).toContainText(
-      'l’application remplace seulement les noms qu’elle connaît',
+      'les commentaires de bulletin restent sur votre appareil',
     );
     await page.getByRole('link', { name: 'Plus tard', exact: true }).click();
     await expect(page).toHaveURL(/\/classes$/);

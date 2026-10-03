@@ -2,7 +2,17 @@
  * How drafts are kept in the browser and when a stored one is brought back (D-035). Plain
  * functions, no React, so the rules can be unit-tested. Drafts live in localStorage, or in
  * sessionStorage for a form that must not outlive its tab (the substitute's report, D-054).
+ * Report card comments (« Bulletins », D-130) are drafts too (`report:` keys): they also expire,
+ * and leave the browser when another account signs in on it (`forgetReportDrafts`).
  */
+import {
+  REPORT_DRAFT_PREFIX,
+  draftExpired,
+  parseReportDraft,
+  parseReportDraftKey,
+  type LocalDate,
+  type ReportDraft,
+} from '@lynx/domain';
 
 export const DRAFT_PREFIX = 'lynx-draft:';
 
@@ -113,11 +123,20 @@ export function removeDrafts(match: (key: string) => boolean, storage = draftSto
   }
 }
 
+let closed = false;
+
+/** True once this page has cleared every draft for a sign-out: nothing may be written again. */
+export function draftsClosed(): boolean {
+  return closed;
+}
+
 /**
  * Removes every draft on this device. For sign-out: drafts can hold students' names and must
- * not stay behind on a shared computer.
+ * not stay behind on a shared computer. A write still waiting in this page (a draft saved a
+ * moment after the last keystroke, or when the page is left) is refused from then on.
  */
 export function clearAllDrafts(storage = draftStorage()): void {
+  closed = true;
   removeDrafts(() => true, storage);
 }
 
@@ -139,4 +158,54 @@ export function forgetSentDrafts(
       return false;
     }
   }, storage);
+}
+
+// ---------------------------------------------------------------------------------------
+// Report card comments (« Bulletins », D-130)
+// ---------------------------------------------------------------------------------------
+
+/** A stored report draft, when it is readable and not expired on `today`. */
+export function readReportDraft(raw: string | null, today: LocalDate): ReportDraft | null {
+  if (raw === null) return null;
+  try {
+    const stored = JSON.parse(raw) as Partial<StoredDraft<unknown>> | null;
+    const draft = parseReportDraft(stored?.value);
+    return draft && !draftExpired(draft.expiresOn, today) ? draft : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The janitor (D-130): removes the report drafts of every other account, the expired ones (60
+ * days after the « remise ») and the unreadable ones. Run whenever someone signed in opens the
+ * app, so a teacher's comments never stay behind for the next person on a shared computer, even
+ * if she did not sign out. Returns how many were removed.
+ */
+export function forgetReportDrafts({
+  userId,
+  today,
+  storage = draftStorage(),
+}: {
+  userId: string;
+  today: LocalDate;
+  storage?: Storage | null;
+}): number {
+  if (!storage) return 0;
+  let removed = 0;
+  removeDrafts((key) => {
+    if (!key.startsWith(REPORT_DRAFT_PREFIX)) return false;
+    const parts = parseReportDraftKey(key);
+    let gone = !parts || parts.userId !== userId;
+    if (!gone) {
+      try {
+        gone = readReportDraft(storage.getItem(DRAFT_PREFIX + key), today) === null;
+      } catch {
+        gone = true;
+      }
+    }
+    if (gone) removed += 1;
+    return gone;
+  }, storage);
+  return removed;
 }

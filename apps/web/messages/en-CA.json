@@ -240,6 +240,12 @@
       "finishAndStart": "Finish and start “{title}”",
       "started": "“{title}” is in progress.",
       "yearLink": "My year"
+    },
+    "reportReminder": {
+      "due": "{kind}: due {date}",
+      "ends": "{kind}: the period ends on {date}",
+      "action": "Prepare my comments",
+      "actionFor": "Prepare my comments · {className}"
     }
   },
   "classes": {
@@ -263,7 +269,8 @@
       "timetable": "Timetable",
       "planning": "Planning",
       "substitute": "Substitute",
-      "settings": "Settings"
+      "settings": "Settings",
+      "bulletins": "Report cards"
     },
     "role": {
       "homeroom": "Homeroom teacher",
@@ -3692,7 +3699,8 @@
       "alerts": "Safety and medical alerts stay hidden until someone chooses to show them, and every viewing is logged.",
       "ai": "The app replaces the names of your schools’ students and staff before anything is sent to artificial intelligence; remove any other name yourself (a parent’s, for example).",
       "canada": "The data is stored in Canada. Only the text sent to artificial intelligence is processed in the United States.",
-      "feedback": "Your feedback is welcome: the “Feedback” button is at the top of every page."
+      "feedback": "Your feedback is welcome: the “Feedback” button is at the top of every page.",
+      "reportComments": "The report card comments you write stay in your device’s browser: never on our servers or with artificial intelligence. They are erased when you sign out."
     },
     "readTerms": "Read “Privacy and terms”",
     "accept": "I have read and accept the terms of the pilot project",
@@ -3708,7 +3716,8 @@
     "whatChanged": "What changed: {change}",
     "changes": {
       "pilote1": "the first complete version of the pilot project’s terms.",
-      "pilote2": "the app replaces only the names it knows (your schools’ students and staff) before anything is sent to artificial intelligence: remove any other name yourself. The notice also says who reads your feedback and how IP Lynx accesses the data."
+      "pilote2": "the app replaces only the names it knows (your schools’ students and staff) before anything is sent to artificial intelligence: remove any other name yourself. The notice also says who reads your feedback and how IP Lynx accesses the data.",
+      "pilote3": "report card comments stay on your device: never on our servers or with artificial intelligence, and they are erased when you sign out."
     },
     "acceptUpdated": "Accept the terms",
     "later": "Later",
@@ -3729,11 +3738,11 @@
       },
       "collected": {
         "title": "What the app collects",
-        "body": "For staff: name, email, roles and chosen language. For students: first name only, language level and, if the principal turns them on, encrypted safety or medical alerts. Never a student’s last name, Ontario Education Number, birth date, address, photo or email. Students have no accounts."
+        "body": "For staff: name, email, roles and chosen language. For students: first name only, language level and, if the principal turns them on, encrypted safety or medical alerts. Never a student’s last name, Ontario Education Number, birth date, address, photo or email. Students have no accounts. The report card comments you write stay in your device’s browser: they are never sent to our servers or to artificial intelligence."
       },
       "use": {
         "title": "What the information is for",
-        "body": "To plan teaching, prepare substitute plans and share resources with colleagues. It is never sold, never used for advertising and never used to train artificial intelligence."
+        "body": "To plan teaching, prepare substitute plans and report card comments, and share resources with colleagues. It is never sold, never used for advertising and never used to train artificial intelligence."
       },
       "ai": {
         "title": "Artificial intelligence",
@@ -3749,7 +3758,7 @@
       },
       "retention": {
         "title": "How long",
-        "body": "By default, students’ first names are erased one year after the end of the school year (units and lessons stay). Substitute plans are erased one year after their date, the audit log after two years, feedback after one year, a sample class after 60 days and backups after 30 days. Your board may ask for other periods."
+        "body": "By default, students’ first names are erased one year after the end of the school year (units and lessons stay). Substitute plans are erased one year after their date, the audit log after two years, feedback after one year, a sample class after 60 days and backups after 30 days. Your board may ask for other periods. Report card comments are erased from your device when you sign out, when someone else signs in on that browser, or 60 days after the report card goes home at the latest."
       },
       "rights": {
         "title": "Your rights",
@@ -3759,8 +3768,8 @@
     "terms": {
       "pilot": "{appName} is under development: the app may change or be interrupted during the pilot project, which is free of charge.",
       "names": "Until your principal agrees in writing, use made-up first names or initials, or the sample class.",
-      "personal": "Enter no personal information about a student other than their first name, except in alerts, when the principal has turned them on.",
-      "account": "Your access is personal. Sign out on a shared computer.",
+      "personal": "Enter no personal information about a student other than their first name, except in alerts, when the principal has turned them on, and in report card comments, which stay on your device.",
+      "account": "Your access is personal. Sign out on a shared computer: your drafts and report card comments are then erased from it.",
       "ai": "Check what artificial intelligence suggests before using it with your students.",
       "feedback": "The feedback you send is read by the people with the “Board administration” role, to improve the app; during the pilot, IP Lynx may hold that role, if your board asks it to.",
       "changes": "These terms may change. A banner will tell you, and you can read them again before accepting them."
@@ -3805,6 +3814,17 @@
     "intro": "What changed in the app, from the newest version to the oldest.",
     "current": "Installed version: {version}",
     "versions": {
+      "v080": {
+        "title": "Version 0.8 · Report card comments",
+        "date": "October 2026",
+        "items": {
+          "bank": "“Report card comment bank” in the library: strengths and next steps by expectation and level, with a place for the student’s first name.",
+          "ai": "“Create a bank with AI”: a bank prepared from the grade, the subject and the chosen expectations only, never information about your students.",
+          "composer": "“Report cards” in each class: for each student, a level, entries from the bank and the comment to copy into the official report card. Your comments stay on your device.",
+          "today": "“Today” reminds you of each report card’s due date, three weeks ahead.",
+          "terms": "The pilot project’s terms now say that report card comments stay on your device."
+        }
+      },
       "v070": {
         "title": "Version 0.7 · My year",
         "date": "October 2026",
@@ -4120,6 +4140,145 @@
       "units": "An overall expectation with specific expectations is a heading: its specific expectations are counted.",
       "loaded": "Only the expectations loaded in the app for this grade are counted.",
       "private": "It is worked out again on each visit from your units and lessons; nothing is saved, and neither the principal nor the board sees it."
+    }
+  },
+  "reportComments": {
+    "metaTitle": "Report card comments · {className}",
+    "title": "Report card comments",
+    "intro": "For each student, choose a level and entries from the bank, adjust the text, then copy it into the official report card.",
+    "failed": "This class’s information could not be loaded. Try again in a moment.",
+    "notice": {
+      "body": "Your comments stay on this device. They are never sent to our servers or to the AI. They will be erased when you sign out, or on {date} at the latest. Copy them into the official report card.",
+      "bodyExpired": "Your comments stay on this device and are never sent to our servers or to the AI. This period ended more than 60 days ago: what you write here is no longer kept. Copy it into the official report card as you go.",
+      "shared": "On a shared computer, sign out when you are done.",
+      "writeFailed": "This device’s storage is full: copy your comments now.",
+      "changedElsewhere": "Changed in another tab: the latest version is shown.",
+      "erasedElsewhere": "These comments were erased in another tab or at sign-out. Reload the page to continue."
+    },
+    "filters": {
+      "legend": "Period, subject and bank",
+      "period": "Period",
+      "periodOption": "{kind} ({from}–{to}) · due {due}",
+      "periodOptionNoDue": "{kind} ({from}–{to})",
+      "custom": "Chosen dates",
+      "customRange": "{from} to {to}",
+      "from": "From",
+      "to": "To",
+      "kind": "Report",
+      "kinds": {
+        "progress": "Progress Report Card",
+        "term": "Provincial Report Card"
+      },
+      "subject": "Subject",
+      "mine": "My subjects",
+      "others": "Other subjects",
+      "learningSkills": "Learning skills and work habits",
+      "bank": "Bank",
+      "apply": "Show",
+      "bankLater": "The bank for the new period or subject is chosen after “Show”.",
+      "noPeriods": "Your board has not set this year’s report card periods yet: choose the dates.",
+      "customInvalid": "Choose two dates in order. Meanwhile, the year up to today is used."
+    },
+    "bank": {
+      "approved": "Approved by the board",
+      "reviewed": "Reviewed",
+      "draft": "Draft — to read",
+      "view": "View the bank",
+      "none": "No comment bank for {subject}, {grade}.",
+      "noneHint": "Create one with AI, from the grade, the subject and the expectations taught only, or write it yourself. You can also write each comment without a bank.",
+      "createAi": "Create a bank with AI",
+      "create": "Create a bank",
+      "unreadable": "This bank could not be read. Choose another one or open it in the library.",
+      "draftWarning": "This bank is a draft: read each entry before using it."
+    },
+    "taught": {
+      "summary": "Expectations taught during the period ({count})",
+      "intro": "From your units and lessons. The bank’s entries tied to these expectations come first; the others are still offered, folded away under each student.",
+      "none": "No expectation taught was found for this period: every entry in the bank is offered.",
+      "notLoaded": "No expectations are loaded for this subject: every entry in the bank is offered."
+    },
+    "students": {
+      "heading": "Students ({count})",
+      "summary": "{ready} ready · {started} started · {todo} to do",
+      "status": {
+        "todo": "To do",
+        "started": "Started",
+        "ready": "Ready · {count} / {limit}",
+        "over": "{over, plural, one {# character} other {# characters}} over"
+      },
+      "empty": "This class has no students yet.",
+      "add": "Add students",
+      "back": "All students",
+      "around": "Previous and next student",
+      "previous": "Previous student",
+      "next": "Next student",
+      "nextNamed": "Next student: {name}"
+    },
+    "editor": {
+      "form": "Wording",
+      "forms": {
+        "neutral": "Neutral",
+        "feminine": "Feminine",
+        "masculine": "Masculine"
+      },
+      "formHint": "This choice stays on this device.",
+      "grade": "Grade",
+      "gradeHint": "Combined class: the expectations of this grade. This choice stays on this device.",
+      "level": "Achievement level",
+      "levelOption": "Level {n}",
+      "progress": "Progress",
+      "ratings": "Learning skills and work habits",
+      "ratingsHint": "Choose the rating of the skills you comment on: {key}.",
+      "needsMark": "Choose an achievement level to see the entries offered.",
+      "needsProgress": "Choose the progress to see the entries offered.",
+      "needsRatings": "Choose at least one rating to see the entries offered.",
+      "strengths": "Strengths",
+      "nextSteps": "Next steps",
+      "general": "General comments",
+      "noEntries": "No entry in the bank for this choice.",
+      "otherWording": "Other wording",
+      "fromNotes": "From your notes",
+      "attente": "Expectation {codes}",
+      "outOfScope": "Other entries in the bank (expectations not taught during the period): {count}",
+      "replaceQuestion": "You edited the comment. Replace your text with the chosen entries?",
+      "replace": "Replace",
+      "keep": "Keep my text",
+      "comment": "Comment",
+      "commentHint": "Edit the text freely. The first name is added for display, copying and printing; the device does not store it.",
+      "counter": "{count} / {limit} characters",
+      "over": "{over, plural, one {# character} other {# characters}} over the limit.",
+      "copy": "Copy",
+      "copied": "Copied",
+      "copyFailed": "Copying did not work: the text is selected, copy it with Ctrl+C (⌘+C on a Mac).",
+      "copyAll": "Copy everything for this student",
+      "copiedAll": "Everything is copied",
+      "print": "Print",
+      "clearComment": "Erase the comment",
+      "clearCommentMessage": "Erase {name}’s comment for “{subject}” on this device? The level and the chosen entries are erased too.",
+      "clearConfirm": "Erase",
+      "notes": "My notes (on this device)",
+      "notesHint": "For you only: your notes stay on this device. Entries that share a word with them come first (“From your notes”)."
+    },
+    "settings": {
+      "heading": "Settings and printing",
+      "limit": "Character limit",
+      "limitHint": "Your board’s report card limit, from 100 to 5,000 characters.",
+      "plainSpaces": "Plain spaces when copying (recommended for the official report card)",
+      "printAll": "Print all comments ({count})",
+      "clearAll": "Erase my comments for this period on this device",
+      "clearAllMessage": "Erase the comments of {count, plural, one {# student} other {# students}} on this device? This cannot be undone.",
+      "clearAllConfirm": "Erase",
+      "cleared": "This period’s comments are erased from this device."
+    },
+    "help": {
+      "summary": "How it works",
+      "device": "Your comments, levels, choices and notes stay in this device’s browser: nothing is sent to our servers or to the AI, and no AI reads a comment about a student.",
+      "name": "The first name is never stored with the comment: the device keeps “{token}” in its place and adds the name for display, copying and printing (« d’Aïcha », « de Samuel »).",
+      "banks": "Entries come from the library’s comment banks. A bank approved by the board comes first; a draft must be read before use.",
+      "taught": "The expectations taught during the period come from your units and lessons (“Coverage”). Entries tied to other expectations are still offered, folded away.",
+      "copy": "Copy each comment into your board’s official report card: that is the record. “Plain spaces when copying” replaces no-break spaces, which some systems count wrongly.",
+      "erase": "Your comments are erased from this device when you sign out, when someone else signs in on this browser, and 60 days after the report card goes home at the latest. They do not follow you to another device.",
+      "spellcheck": "Good to know: some browsers’ enhanced spell check and some extensions send what you type to their maker."
     }
   }
 }

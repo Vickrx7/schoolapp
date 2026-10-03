@@ -1,4 +1,4 @@
-import { termsState } from '@lynx/domain';
+import { localDateIn, termsState } from '@lynx/domain';
 import { getTranslations } from 'next-intl/server';
 import type { ReactNode } from 'react';
 import { AppNav } from '@/components/app/app-nav';
@@ -6,6 +6,7 @@ import { FooterSlot } from '@/components/app/footer-slot';
 import { HeaderActionsSlot } from '@/components/app/header-actions-slot';
 import { SignOutForm } from '@/components/app/sign-out-form';
 import { FeedbackProvider } from '@/components/feedback/feedback-provider';
+import { ReportDraftJanitor } from '@/components/report-comments/report-draft-janitor';
 import { TermsBanner } from '@/components/onboarding/terms-banner';
 import { Notice } from '@/components/ui/card';
 import { APP_NAME } from '@/lib/app-name';
@@ -24,9 +25,11 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
   const session = await requireSession();
   const t = await getTranslations();
 
+  const today = localDateIn(session.schools[0]?.timezone ?? 'America/Toronto');
   if (session.schools.length === 0 && session.boards.length === 0) {
     return (
       <main className="mx-auto max-w-md space-y-4 px-4 py-16">
+        <ReportDraftJanitor userId={session.userId} today={today} />
         <Notice tone="warning">{t('auth.noAccess')}</Notice>
         <SignOutForm />
       </main>
@@ -48,6 +51,8 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
   return (
     // « Commentaires » (D-116): the header's button and the error page open one dialog.
     <FeedbackProvider userId={session.userId}>
+      {/* « Bulletins » (D-130): another account's or expired report comments leave this browser. */}
+      <ReportDraftJanitor userId={session.userId} today={today} />
       <AppNav
         appName={APP_NAME}
         showTeaching={showTeaching}

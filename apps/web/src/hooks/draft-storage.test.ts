@@ -1,10 +1,14 @@
 import { describe, expect, it } from 'vitest';
+import { emptyReportDraft, reportDraftKey } from '@lynx/domain';
 import {
   clearAllDrafts,
   decideDraft,
   DRAFT_PREFIX,
+  draftsClosed,
   draftStorage,
+  forgetReportDrafts,
   forgetSentDrafts,
+  readReportDraft,
   removeDrafts,
   serializeDraft,
   storeDraft,
@@ -145,5 +149,75 @@ describe('where drafts are kept', () => {
       delete g.window;
     }
     expect(draftStorage('session')).toBeNull();
+  });
+});
+
+describe('report card comments on the device (« Bulletins », D-130)', () => {
+  const me = 'd0000000-0000-4000-8000-000000000001';
+  const other = 'd0000000-0000-4000-8000-000000000002';
+  const cls = 'e0000000-0000-4000-8000-000000000003';
+  const student = '10000000-0000-4000-8000-000000000001';
+  const draft = (expiresOn: string) =>
+    serializeDraft({
+      ...emptyReportDraft(expiresOn),
+      students: {
+        [student]: {
+          gradeCode: null,
+          form: 'neutral',
+          notes: '',
+          comments: {
+            mat: {
+              level: 3,
+              progress: null,
+              ratings: {},
+              picks: [],
+              text: '{prénom} lit.',
+              edited: true,
+            },
+          },
+        },
+      },
+    });
+
+  it('reads a stored draft until the day it expires', () => {
+    expect(readReportDraft(draft('2027-04-13'), '2027-04-13')?.expiresOn).toBe('2027-04-13');
+    expect(readReportDraft(draft('2027-04-13'), '2027-04-14')).toBeNull();
+    expect(readReportDraft('{pas du JSON', '2027-01-01')).toBeNull();
+    expect(readReportDraft(serializeDraft({ v: 2 }), '2027-01-01')).toBeNull();
+    expect(readReportDraft(null, '2027-01-01')).toBeNull();
+  });
+
+  it('removes another account’s report drafts, expired and unreadable ones, and nothing else', () => {
+    const key = (user: string, period: string) => DRAFT_PREFIX + reportDraftKey(user, cls, period);
+    const storage = memoryStorage({
+      [key(me, 'term1')]: draft('2027-04-13'),
+      [key(me, 'progress')]: draft('2027-01-05'),
+      [key(me, 'term2')]: '{pas du JSON',
+      [key(other, 'term1')]: draft('2027-04-13'),
+      [`${DRAFT_PREFIX}report:broken`]: draft('2027-04-13'),
+      [`${DRAFT_PREFIX}lesson:${other}:u1:new`]: serializeDraft({ title: 'Le castor' }),
+      [`${DRAFT_PREFIX}report-bank-generate:${other}`]: serializeDraft({ note: 'x' }),
+      unrelated: 'kept',
+    });
+    expect(forgetReportDrafts({ userId: me, today: '2027-02-01', storage })).toBe(4);
+    const left = Array.from({ length: storage.length }, (_, i) => storage.key(i)).sort();
+    expect(left).toEqual(
+      [
+        key(me, 'term1'),
+        `${DRAFT_PREFIX}lesson:${other}:u1:new`,
+        `${DRAFT_PREFIX}report-bank-generate:${other}`,
+        'unrelated',
+      ].sort(),
+    );
+    // The day after the expiry, hers go too.
+    expect(forgetReportDrafts({ userId: me, today: '2027-04-14', storage })).toBe(1);
+    expect(forgetReportDrafts({ userId: me, today: '2027-04-14', storage: null })).toBe(0);
+  });
+
+  it('refuses any write once every draft was cleared for a sign-out', () => {
+    const storage = memoryStorage({ [`${DRAFT_PREFIX}report:a:b:term1`]: draft('2027-04-13') });
+    clearAllDrafts(storage);
+    expect(storage.length).toBe(0);
+    expect(draftsClosed()).toBe(true);
   });
 });

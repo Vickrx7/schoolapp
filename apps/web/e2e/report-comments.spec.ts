@@ -1,6 +1,8 @@
-import { expect, test } from '@playwright/test';
+import { addDays } from '@lynx/domain';
+import { expect, test, type Page } from '@playwright/test';
 import { SEED, closeDb, deleteLibraryItems, query } from './db';
-import { deleteBankRequests } from './db-report-comments';
+import { DEMO_USER_IDS, bankItemId, deleteBankRequests, torontoToday } from './db-report-comments';
+import { SEEDED_PERIODS, restoreReportPeriods, setReportPeriods } from './db-year-plan';
 import { DEMO, expectAccessible, login } from './helpers';
 
 /**
@@ -10,6 +12,11 @@ import { DEMO, expectAccessible, login } from './helpers';
  * checked before sending (nothing about her students is sent), then her private draft. Needs the
  * worker running with AI_PROVIDER=fake (as in CI): nothing leaves the machine. The school's AI
  * switch is turned on here and put back afterwards; the banks and requests made here are deleted.
+ *
+ * Slice S3, « Bulletins » (D-130, D-135): comments composed in the browser from the demo bank,
+ * copied, kept on the device in template form only (`{prénom}`, never a first name), never in any
+ * request, and erased at sign-out or by the janitor; Paul's subjects; the reminder on
+ * « Aujourd’hui ». The report periods changed here are put back.
  */
 test.describe.configure({ mode: 'serial' });
 
@@ -33,6 +40,7 @@ test.beforeAll(async () => {
 });
 
 test.afterAll(async () => {
+  await restoreReportPeriods();
   await deleteLibraryItems({ ids: created });
   await deleteBankRequests(DEMO.teacher3);
   if (aiWasOn !== null) {
@@ -238,4 +246,339 @@ test('a request being prepared, a failed one taken up again, and the links to th
   await expect(page.getByRole('radio', { name: 'Bulletin de progrès' })).toBeChecked();
   await expect(page.getByRole('checkbox', { name: /^B1\.1 / })).toBeChecked();
   await expect(page.getByRole('checkbox', { name: /^B1\.2 / })).toBeChecked();
+});
+
+// ---------------------------------------------------------------------------------------
+// Slice S3: « Bulletins »
+// ---------------------------------------------------------------------------------------
+
+const SENTINEL = 'ZZSENTINELLE';
+const DRAFT_PREFIX = 'lynx-draft:report:';
+const COMPOSER = `/classes/${SEED.class3}/bulletins`;
+
+/** The report drafts on this browser, key and stored text. */
+const reportDrafts = (page: Page) =>
+  page.evaluate((prefix) => {
+    const out: [string, string][] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i)!;
+      if (key.startsWith(prefix)) out.push([key, localStorage.getItem(key) ?? '']);
+    }
+    return out.sort();
+  }, DRAFT_PREFIX);
+
+/** Opens a student of the list; the editor shows her name. */
+async function openStudent(page: Page, name: string) {
+  await page
+    .getByRole('navigation', { name: /^Élèves/ })
+    .getByRole('link', { name: new RegExp(`^${name}\\s`) })
+    .click();
+  await expect(page).toHaveURL(/#eleve-[0-9a-f-]{36}$/);
+  const editor = page.getByRole('article');
+  await expect(
+    editor.getByRole('heading', { level: 3, name: new RegExp(`^${name}`) }),
+  ).toBeVisible();
+  return editor;
+}
+
+test('« Bulletins »: comments composed on the device from the demo bank, copied, never sent', async ({
+  page,
+  context,
+}) => {
+  test.setTimeout(150_000);
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  // Every request the page makes, with its address, headers and body.
+  const sent: string[] = [];
+  page.on('request', (request) => {
+    sent.push(
+      [
+        request.method(),
+        request.url(),
+        JSON.stringify(request.headers()),
+        request.postData() ?? '',
+      ].join('\n'),
+    );
+  });
+  const [math, french] = await query<{ id: string }>(
+    `select id from public.subjects where code in ('mat', 'fra') and board_id is null
+     order by code = 'mat' desc`,
+  );
+
+  await login(page, DEMO.teacher3);
+  await page.goto(`/classes/${SEED.class3}/students`);
+  await page.getByRole('link', { name: 'Bulletins', exact: true }).click();
+  await page.waitForURL(/\/bulletins$/);
+  await expect(
+    page.getByRole('heading', { level: 2, name: 'Commentaires de bulletin' }),
+  ).toBeVisible();
+  await expect(page).toHaveTitle(/^Commentaires de bulletin · 3e année – Mme Tremblay/);
+  await expect(page.getByTestId('device-notice')).toContainText(
+    /^Vos commentaires restent sur cet appareil\. Ils ne sont jamais envoyés à nos serveurs ni à l’intelligence artificielle\. Ils seront effacés quand vous vous déconnecterez, ou au plus tard le \d+\S*\s\S+\s\d{4}\. Copiez-les dans le bulletin officiel\./,
+  );
+  // The homeroom teacher: the learning skills first, then her subjects.
+  const subject = page.getByLabel('Matière', { exact: true });
+  await expect(subject.locator('option').first()).toHaveText(
+    'Habiletés d’apprentissage et habitudes de travail',
+  );
+
+  // « Bulletin scolaire — 1re étape », Mathématiques: the demo bank, approved by the board.
+  await page.getByLabel('Période', { exact: true }).selectOption('term1');
+  await subject.selectOption({ label: 'Mathématiques' });
+  await page.getByRole('button', { name: 'Afficher', exact: true }).click();
+  await page.waitForURL(new RegExp(`/bulletins\\?period=term1&subject=${math!.id}$`));
+  await expect(page.getByLabel('Période', { exact: true }).locator('option:checked')).toHaveText(
+    /^Bulletin scolaire — 1re étape \(2 sept\.–29 janv\.\) · saisie au plus tard le 5 févr\.$/,
+  );
+  await expect(
+    page.getByText(/^Commentaires de bulletin\s:\sMathématiques, 3e année$/),
+  ).toBeVisible();
+  await expect(page.getByText('Approuvée par le conseil', { exact: true })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Voir la banque' })).toHaveAttribute(
+    'href',
+    `/library/items/${bankItemId('commentaires-mat-3e-bulletin')}`,
+  );
+  // B1.1 and B1.2 were taught (the seeded unit's lessons 1 and 4).
+  await expect(page.getByText('Attentes enseignées pendant la période (2)')).toBeVisible();
+  await expect(page.getByTestId('report-progress')).toHaveText(
+    /^0 prêt · 0 commencé · 20 à faire$/,
+  );
+
+  // Aïcha, level 3, one strength: her name in the text, with its counter.
+  let editor = await openStudent(page, 'Aïcha');
+  await expect(editor.getByRole('heading', { level: 3, name: /^Aïcha/ })).toBeFocused();
+  await editor.getByRole('radio', { name: 'Niveau 3' }).check();
+  const strengths = editor.getByRole('group', { name: 'Points forts' });
+  await strengths.getByRole('checkbox', { name: /^Aïcha lit, représente, compose/ }).check();
+  const comment = editor.getByLabel('Commentaire', { exact: true });
+  await expect(comment).toHaveValue(
+    /^Aïcha lit, représente, compose et décompose des nombres jusqu’à 1\s000 de différentes façons/,
+  );
+  await expect(editor.getByText(/^\d+\s\/\s1\s000\scaractères$/)).toBeVisible();
+  // The attentes not taught (B1.3, B2.3, B2.5) are folded away.
+  await expect(
+    editor.getByText(
+      /^Autres entrées de la banque \(attentes non enseignées pendant la période\)\s:\s6$/,
+    ),
+  ).toBeVisible();
+
+  // « Copier »: the comment as shown, with plain spaces (« 1 000 »).
+  await editor.getByRole('button', { name: 'Copier', exact: true }).click();
+  await expect(editor.getByRole('button', { name: 'Copié', exact: true })).toBeVisible();
+  const copied = await page.evaluate(() => navigator.clipboard.readText());
+  expect(copied).toBe((await comment.inputValue()).replace(/[\u00a0\u202f]/g, ' '));
+  expect(copied).toContain('1 000');
+  expect(copied).not.toMatch(/[\u00a0\u202f]/);
+
+  // « Féminin »: the entries' feminine texts, chosen per student.
+  await editor.getByRole('radio', { name: 'Féminin' }).check();
+  await strengths
+    .getByRole('checkbox', { name: 'Aïcha est de plus en plus confiante en mathématiques.' })
+    .check();
+  // « de {prénom} » elides before Aïcha.
+  await editor
+    .getByRole('group', { name: 'Commentaires généraux' })
+    .getByRole('checkbox', { name: /^Les progrès d’Aïcha en numération/ })
+    .check();
+  await expect(comment).toHaveValue(
+    /^Aïcha lit, .* Aïcha est de plus en plus confiante en mathématiques\. Les progrès d’Aïcha en numération sont réguliers depuis le début de l’année\.$/,
+  );
+
+  // Youssef: « de Youssef » (Y then a vowel does not elide).
+  editor = await openStudent(page, 'Youssef');
+  await editor.getByRole('radio', { name: 'Niveau 2' }).check();
+  await editor
+    .getByRole('group', { name: 'Commentaires généraux' })
+    .getByRole('checkbox', { name: /^Les progrès de Youssef en numération/ })
+    .check();
+  await expect(editor.getByLabel('Commentaire', { exact: true })).toHaveValue(
+    'Les progrès de Youssef en numération sont réguliers depuis le début de l’année.',
+  );
+  await expect(page.getByTestId('report-progress')).toHaveText(
+    /^2 prêts · 0 commencé · 18 à faire$/,
+  );
+
+  // Over the limit: said in words, in the list and under the comment.
+  await page.getByLabel('Limite de caractères').fill('100');
+  await page.getByLabel('Limite de caractères').press('Enter');
+  await expect(
+    page
+      .getByRole('navigation', { name: /^Élèves/ })
+      .getByRole('link', { name: /^Aïcha\sDépasse de \d+ caractères$/ }),
+  ).toBeVisible();
+  editor = await openStudent(page, 'Aïcha');
+  await expect(editor.getByText(/^Dépasse la limite de \d+ caractères\.$/)).toBeVisible();
+  await page.getByLabel('Limite de caractères').fill('1000');
+  await page.getByLabel('Limite de caractères').press('Enter');
+  await expect(editor.getByText(/Dépasse la limite/)).toHaveCount(0);
+  await expectAccessible(page);
+
+  // Edited by hand, then a new entry: the page asks before replacing the text.
+  await comment.click();
+  await comment.press('End');
+  await comment.pressSequentially(` ${SENTINEL}`);
+  await comment.press('Enter');
+  await strengths.getByRole('checkbox', { name: /^Aïcha compare et ordonne/ }).check();
+  await expect(
+    editor.getByText(
+      'Vous avez modifié le commentaire. Remplacer votre texte par les entrées choisies?',
+    ),
+  ).toBeVisible();
+  await editor.getByRole('button', { name: 'Garder mon texte' }).click();
+  await expect(comment).toHaveValue(new RegExp(`${SENTINEL}\\n?$`));
+
+  // « Mes notes (sur cet appareil) », with the sentinel and her name; Enter in each field.
+  await editor.locator('summary').filter({ hasText: 'Mes notes (sur cet appareil)' }).click();
+  const notes = editor.getByLabel('Mes notes (sur cet appareil)');
+  await notes.fill(`${SENTINEL} Aïcha calcule vite`);
+  await notes.press('Enter');
+  await page.getByLabel('Limite de caractères').press('Enter');
+
+  // Another subject, then back, and a reload: the comment comes back from the device.
+  await subject.selectOption({ label: 'Français' });
+  await page.getByRole('button', { name: 'Afficher', exact: true }).click();
+  // The student open stays open in the other subject.
+  await page.waitForURL(new RegExp(`subject=${french!.id}#eleve-[0-9a-f-]{36}$`));
+  await expect(
+    page.getByRole('article').getByRole('heading', { level: 3, name: /^Aïcha/ }),
+  ).toBeVisible();
+  await expect(page.getByLabel('Matière', { exact: true }).locator('option:checked')).toHaveText(
+    'Français',
+  );
+  await page.goBack();
+  await page.waitForURL(new RegExp(`subject=${math!.id}`));
+  await page.reload();
+  editor = await openStudent(page, 'Aïcha');
+  await expect(editor.getByLabel('Commentaire', { exact: true })).toHaveValue(
+    new RegExp(`^Aïcha lit, .*${SENTINEL}`, 's'),
+  );
+  await expect(editor.getByLabel('Mes notes (sur cet appareil)')).toHaveValue(
+    `${SENTINEL} Aïcha calcule vite\n`,
+  );
+
+  // The sentinel never left the browser: in no address, header or body of any request.
+  expect(sent.length).toBeGreaterThan(10);
+  for (const request of sent) expect(request).not.toContain(SENTINEL);
+  // The device holds the comments in template form: `{prénom}`, never a first name.
+  const drafts = await reportDrafts(page);
+  expect(drafts.map(([key]) => key)).toEqual([
+    `${DRAFT_PREFIX}${DEMO_USER_IDS.isabelle}:${SEED.class3}:term1`,
+  ]);
+  const stored = drafts[0]![1];
+  expect(stored).toContain('{prénom}');
+  expect(stored).toContain(SENTINEL);
+  expect(stored).toContain('{prénom} calcule vite');
+  expect(stored).not.toMatch(/Aïcha|Youssef/);
+
+  // « Effacer mes commentaires de cette période sur cet appareil » asks first (axe on its dialog).
+  await page
+    .getByRole('button', { name: 'Effacer mes commentaires de cette période sur cet appareil' })
+    .click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog).toContainText(
+    'Effacer les commentaires de 2 élèves sur cet appareil? Cette action est définitive.',
+  );
+  await expectAccessible(page);
+  await dialog.getByRole('button', { name: 'Annuler' }).click();
+  expect(await reportDrafts(page)).toHaveLength(1);
+
+  // Signing out erases them; signing back in finds none.
+  await page.goto('/profile');
+  await page.getByRole('button', { name: 'Se déconnecter' }).click();
+  await page.waitForURL(/\/login/);
+  expect(await reportDrafts(page)).toEqual([]);
+  await login(page, DEMO.teacher3);
+  await page.goto(`${COMPOSER}?period=term1&subject=${math!.id}`);
+  await expect(page.getByTestId('report-progress')).toHaveText(
+    /^0 prêt · 0 commencé · 20 à faire$/,
+  );
+  expect(await reportDrafts(page)).toEqual([]);
+});
+
+test('the janitor removes another account’s report comments and expired ones from the browser', async ({
+  page,
+}) => {
+  await login(page, DEMO.teacher3);
+  const draft = (expiresOn: string) =>
+    JSON.stringify({
+      value: {
+        v: 1,
+        expiresOn,
+        limit: 1000,
+        plainSpaces: true,
+        students: {
+          '10000000-0000-4000-8000-000000000001': {
+            comments: { mat: { text: '{prénom} lit.' } },
+          },
+        },
+      },
+      savedAt: Date.now(),
+    });
+  const mine = `${DRAFT_PREFIX}${DEMO_USER_IDS.isabelle}:${SEED.class3}:progress`;
+  const planted = {
+    // Marc's comments, left on this browser without signing out.
+    [`${DRAFT_PREFIX}${DEMO_USER_IDS.marc}:${SEED.class5}:term1`]: draft('2099-01-01'),
+    // Hers, 60 days after the remise: expired.
+    [`${DRAFT_PREFIX}${DEMO_USER_IDS.isabelle}:${SEED.class3}:term1`]: draft('2020-01-01'),
+    [`${DRAFT_PREFIX}${DEMO_USER_IDS.isabelle}:${SEED.class3}:term2`]: '{pas du JSON',
+    [mine]: draft('2099-01-01'),
+  };
+  await page.evaluate((entries) => {
+    for (const [key, value] of Object.entries(entries)) localStorage.setItem(key, value);
+  }, planted);
+  await page.goto('/calendar');
+  await expect(async () => {
+    expect((await reportDrafts(page)).map(([key]) => key)).toEqual([mine]);
+  }).toPass();
+  await page.evaluate((key) => localStorage.removeItem(key), mine);
+});
+
+test('Paul, a subject teacher: his subject first, then the learning skills', async ({ page }) => {
+  await login(page, DEMO.rotary);
+  await page.goto(COMPOSER);
+  await expect(
+    page.getByRole('heading', { level: 2, name: 'Commentaires de bulletin' }),
+  ).toBeVisible();
+  const options = page.getByLabel('Matière', { exact: true }).locator('option');
+  await expect(options.nth(0)).toHaveText('Éducation physique et santé');
+  await expect(options.nth(1)).toHaveText('Habiletés d’apprentissage et habitudes de travail');
+  await expect(page.locator('optgroup[label="Mes matières"] option')).toHaveText([
+    'Éducation physique et santé',
+  ]);
+  // No bank for his subject: links to make one (with AI only where the school turned it on).
+  await expect(page.getByTestId('no-bank')).toContainText(
+    'Aucune banque de commentaires pour Éducation physique et santé, 3e année.',
+  );
+  await expect(page.getByRole('link', { name: 'Créer une banque', exact: true })).toHaveAttribute(
+    'href',
+    /^\/library\/new\?type=report_comments&grade=3&subject=[0-9a-f-]{36}$/,
+  );
+  await expectAccessible(page);
+});
+
+test('« Aujourd’hui » reminds of the saisie three weeks ahead, with a link to the period', async ({
+  page,
+}) => {
+  const today = await torontoToday();
+  const due = addDays(today, 7);
+  await setReportPeriods(
+    SEEDED_PERIODS.map((p) =>
+      p.kind === 'term1'
+        ? { ...p, due_on: due, issued_on: p.issued_on && p.issued_on < due ? due : p.issued_on }
+        : p,
+    ),
+  );
+  try {
+    await login(page, DEMO.teacher3);
+    await page.goto('/today');
+    const reminder = page.getByTestId('report-reminder').filter({ hasText: '1re étape' });
+    await expect(reminder).toContainText(
+      /^Bulletin scolaire — 1re étape\s:\ssaisie au plus tard le \d+\S*\s[^\s.]+\.?Préparer/,
+    );
+    await expectAccessible(page);
+    await reminder.getByRole('link', { name: 'Préparer mes commentaires' }).click();
+    await page.waitForURL(`${COMPOSER}?period=term1`);
+    await expect(page.getByLabel('Période', { exact: true })).toHaveValue('term1');
+  } finally {
+    await restoreReportPeriods();
+  }
 });

@@ -12,6 +12,7 @@ import {
   DRAFT_PREFIX,
   decideDraft,
   draftStorage,
+  draftsClosed,
   serializeDraft,
   type DraftStorageKind,
   type SentDraftPolicy,
@@ -35,6 +36,8 @@ export interface DraftOptions {
 }
 
 function write(kind: DraftStorageKind, storageKey: string, text: string) {
+  // Signed out in this page: a late save must not bring a draft back.
+  if (draftsClosed()) return;
   try {
     draftStorage(kind)?.setItem(storageKey, text);
   } catch {

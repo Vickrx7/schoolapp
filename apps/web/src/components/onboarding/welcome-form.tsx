@@ -11,7 +11,7 @@ import { useDraft } from '@/hooks/use-draft';
 import { HONORIFICS } from '@/lib/honorifics';
 import { acceptTerms } from '@/server/actions/onboarding';
 
-const POINTS = ['firstNames', 'alerts', 'ai', 'canada', 'feedback'] as const;
+const POINTS = ['firstNames', 'alerts', 'ai', 'reportComments', 'canada', 'feedback'] as const;
 
 const subscribeNothing = () => () => {};
 

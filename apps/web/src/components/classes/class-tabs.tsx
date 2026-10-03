@@ -6,23 +6,32 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 const TABS = ['students', 'timetable', 'planning', 'substitute', 'settings'] as const;
-type Tab = (typeof TABS)[number] | 'class-mode';
+type Tab = (typeof TABS)[number] | 'class-mode' | 'bulletins';
 
 /**
  * The class's tabs. « Mode classe » (quizzes on devices, DECISIONS D-090) comes after
- * « Planification » when the school has the Library module; the row scrolls sideways on phones.
+ * « Planification » when the school has the Library module, then « Bulletins » (report card
+ * comments, D-135) for the homeroom and subject teachers there; the row scrolls sideways on
+ * phones.
  */
 export function ClassTabs({
   classId,
   classMode = false,
+  bulletins = false,
 }: {
   classId: string;
   classMode?: boolean;
+  bulletins?: boolean;
 }) {
   const t = useTranslations('classes.tabs');
   const tClassMode = useTranslations('classMode');
   const pathname = usePathname();
-  const tabs: Tab[] = classMode ? [...TABS.slice(0, 3), 'class-mode', ...TABS.slice(3)] : [...TABS];
+  const tabs: Tab[] = [
+    ...TABS.slice(0, 3),
+    ...(classMode ? (['class-mode'] as const) : []),
+    ...(bulletins ? (['bulletins'] as const) : []),
+    ...TABS.slice(3),
+  ];
   return (
     <nav
       className="-mx-4 overflow-x-auto border-b border-slate-200 px-4"

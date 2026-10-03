@@ -69,6 +69,9 @@ test('every page family carries the security policy and works under it', async (
   const [french] = await query<{ id: string }>(
     "select id from public.subjects where code = 'fra' and board_id is null",
   );
+  const [math] = await query<{ id: string }>(
+    "select id from public.subjects where code = 'mat' and board_id is null",
+  );
   for (const path of [
     '/today',
     '/classes',
@@ -85,6 +88,9 @@ test('every page family carries the security policy and works under it', async (
     `/classes/${SEED.class3}/planning/coverage?subject=${french!.id}`,
     // « Créer une banque avec l’IA » (D-132): the form and its attentes, loaded by an action.
     '/library/generate/comments',
+    // « Bulletins » (D-130): the composer, with a bank (copying and printing are not requests).
+    `/classes/${SEED.class3}/bulletins`,
+    `/classes/${SEED.class3}/bulletins?period=term1&subject=${math!.id}`,
   ]) {
     await expectPolicy(page, path);
     await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();

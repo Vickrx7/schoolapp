@@ -439,6 +439,10 @@ account on a shared computer never sees them, and signing out removes every draf
 device. A draft edited from an older saved version is offered, not restored over newer content.
 The text of an AI request is kept until the request succeeds, and a failed request offers
 « Reprendre ce texte ».
+_Amended for « Commentaires de bulletin » (2026-10-03):_ report card comments (« Bulletins »)
+are drafts with stricter rules (D-130): kept in template form (`{prénom}`, never a first name),
+removed when another account signs in on the browser and 60 days after the report goes home, a
+failed write said in words, nothing written after a sign-out in the page.
 
 **D-045 — AI calls fit in a time limit (amends D-041 and D-042).** Answers are streamed with
 `max_tokens` 64 000 (thinking counts toward it). A job has 13 minutes in all, under the 15 minutes
@@ -1850,6 +1854,11 @@ _Amended for « Mon année » (2026-10-02):_ a unit's planned window and its att
 (`unit_expectations`) are the teacher's planning: kept when the class's students are purged,
 deleted with the unit or class (and with a sample class); report periods hold no personal data and
 go with their school year or board (D-123, D-124). No new job or setting.
+_Amended for « Commentaires de bulletin » (2026-10-03):_ no new job or setting. Comment banks are
+library resources (kept until the author deletes them; « Créer une banque avec l'IA » requests are
+`ai_jobs`, 30 days). Report card comments never reach the server: the device removes them at
+sign-out, when another account signs in on that browser, or 60 days after the « remise » (D-130).
+The class purge cannot reach a device and does not need to: the expiry comes long before.
 
 **D-106 — Operator actions are visible to the board.** Triggers audit changes to `boards.settings`
 keys `ai` and `retention` (`board.settings_changed {keys}`), to `module_entitlements`
@@ -2078,6 +2087,8 @@ defaults (« Par défaut », and the board may ask for others); the feedback ter
 with its limit, and « Les données sont conservées au Canada. Seul le texte envoyé à l'intelligence
 artificielle est traité aux États-Unis. » The seed's accounts accept the new version; everyone
 else sees the banner and « Ce qui a changé » (`welcome.changes.pilote2`).
+_Amended for « Commentaires de bulletin » (2026-10-03):_ terms `2026-10-pilote-3` (D-134): the
+notice, the terms and « Bienvenue » say that report card comments stay on the teacher's device.
 
 **D-111 — Error monitoring for the pilot: scrubbed structured logs and error references; no
 third-party error service.** `@lynx/observability` gives `createLogger` (JSON lines on stdout),
@@ -2335,6 +2346,9 @@ As built (slice S6): the footer of every app page shows « Confidentialité », 
 _Amended for « Mon année » (2026-10-02):_ `releaseNotes.versions.v070`, « Version 0.7 · Mon
 année » (October 2026): « Mon année », planning a unit, « Aujourd'hui » starting a planned unit,
 the board's report periods, « Couverture » and « Plan à long terme (PDF) ».
+_Amended for « Commentaires de bulletin » (2026-10-03):_ `releaseNotes.versions.v080`, « Version
+0.8 · Commentaires de bulletin » (October 2026): the bank in the library, « Créer une banque avec
+l'IA », « Bulletins », the reminder on « Aujourd'hui » and the new terms.
 
 **D-118 — Navigation and landing pages (amends D-078).** Two new items: « Direction »
 (`/direction`, principals and vice-principals) and « Conseil » (`/board`, board admins). The order
@@ -2713,6 +2727,48 @@ approval for free, and a 26th type costs less than a new store. As built (slice 
 `types/report-comments.ts` and `report-comments.ts`; the editor's `CommentEntriesEditor`. A bank
 never counts in « Couverture du curriculum » (D-094): it is not a resource for teaching an attente.
 
+**D-130 — Comments are composed on the device only (amends D-044).** « Bulletins »
+(`/classes/[id]/bulletins`, D-135) composes report card comments in the teacher's browser. There is
+no table for them, no server action, no route handler, no form that carries them and no PDF (a
+server-rendered PDF would send the text to the server; « Imprimer » is the browser's own, one
+student per page). The server gives only what « Élèves » already shows (the students' first names)
+and data that is not about a student: the report periods, the subjects, the usable comment banks
+(`search_library`, then the chosen bank's base version and `content_revision`) and the attentes
+taught during the period (`taughtExpectationIds` over the class's own units, lessons and progress,
+D-125). The device draft (`lynx-draft:report:{userId}:{classId}:{periodKey}`, `reportDraftSchema`,
+version 1) holds per student id, never per name: the wording (neutral, feminine or masculine), the
+grade in a combined class, « Mes notes », and per subject the mark (an achievement level, a
+progress mark or a rating per learning skill), the chosen entries (bank id, revision and index;
+entries of an older revision are dropped and the text stays) and the comment, in template form:
+the student's first name is written `{prénom}` (`unfillComment`) and put back only to show, copy
+and print it (`fillComment`, D-131), so `localStorage` never holds a first name. The period key is
+the board period's kind (one per school year, and a class has one year) or the chosen dates and
+report. Drafts are removed at sign-out (`clearAllDrafts`, after which this page writes nothing
+more), by « Effacer le commentaire » and « Effacer mes commentaires de cette période sur cet
+appareil », when another account signs in on that browser (`forgetReportDrafts`, the janitor in
+the signed-in shell, which also removes expired and unreadable report drafts), and at the latest
+60 days after the « remise » (`draftExpiresOn`: the « remise », else the « saisie », else the
+period's last day, plus 60 days; **Assumption**; an expired period's page keeps nothing). Unlike
+other drafts, a write that fails (a full device) is said in words (« L'espace de cet appareil est
+plein : copiez vos commentaires maintenant. »), and another tab's changes are taken up (« Modifié
+dans un autre onglet »). The comment's limit is a setting per class and period on the device, 1,000
+characters by default, 100 to 5,000, with « Espaces simples à la copie » on by default
+(**Assumptions**; Q3). The learning skills come first for the homeroom teacher (**Assumption**).
+The proposals are rules, not AI: a bank's entries for the student's mark, those tied to an attente
+taught during the period first (D-069's rule through overall and specific attentes), then those
+about no attente, in the bank's order; entries for attentes not taught are folded away; with no
+attente loaded, or none taught, every entry is offered and the page says so; entries sharing a
+word with « Mes notes » come first (« D'après vos notes »). A text edited by hand is never replaced
+without asking (« Remplacer votre texte par les entrées choisies? »). _Why:_ the product owner's
+rule (Q2: comments stay on the device), the boards' report card system is the record, and an
+evaluative text about a child is personal information even without the name; a template on the
+device also keeps identity out of any future AI step by construction (D-133). As built (slice S3):
+`packages/domain/src/report-comments/` (periods, subjects, suggestions, the draft),
+`hooks/use-report-draft.ts`, `hooks/draft-storage.ts` (`forgetReportDrafts`),
+`components/report-comments/`, `server/queries/report-comments.ts`; a unit test checks that the
+composer's files import no server action or `server-only` module and make no request, and the
+browser test types a sentinel in every field and finds it in no request.
+
 **D-131 — The `{prénom}` placeholder and elision.** Bank texts name the student only as
 `{prénom}`; the app never stores a student's name in a bank. Filling it in (`fillComment`) elides
 « de », « que », « lorsque » and « puisque » before a first name that calls for it, with the
@@ -2781,6 +2837,53 @@ can never hold anything about a student. As built (slice S2): migration
 evaluation cases and `checkReportCommentBank` (`pnpm ai:eval --feature report_comment_bank`);
 `server/actions/report-bank-ai.ts`; pgTAP `35_report_comments` (S2 part); e2e
 `report-comments.spec.ts`.
+
+**D-133 — No AI on an individual student's comment.** No AI feature reads a report card comment,
+a student's mark or « Mes notes »: the AI only writes banks from curriculum labels (D-132). A
+« Reformuler ce commentaire (IA) » is designed (`report-comments-plan` S4: only the template form
+with `{prénom}` would leave the device, the worker's de-identification and last check on top, a
+one-day job deleted as soon as it is read, a board opt-in and the school's AI switch) and not
+built. It waits for Mike's yes, a board's written approval, the lawyer's review and new terms.
+_Why:_ the product owner's rule (Q1), the boards' AI rules, and an evaluative text about one child
+is personal information even without the name.
+
+**D-134 — Pilot terms `2026-10-pilote-3` (amends D-110).** The notice and the terms change meaning,
+so the version changes (`CURRENT_TERMS_VERSION`, `TERMS_CHANGES['2026-10-pilote-3'] = 'pilote3'`):
+« Ce que l'application recueille » adds that the report card comments a teacher writes stay in her
+device's browser and never reach our servers or the AI; « À quoi servent ces renseignements » adds
+« les commentaires de bulletin »; « Combien de temps » says they are erased from the device at
+sign-out, when someone else signs in on that browser, or at the latest 60 days after the « remise »;
+the term « personal » allows, besides alerts, « les commentaires de bulletin, qui restent sur votre
+appareil »; the term « account » says signing out erases the drafts and the report card comments.
+« Bienvenue » gains the point « Les commentaires de bulletin que vous rédigez restent dans le
+navigateur de votre appareil… » and « Ce qui a changé » (`welcome.changes.pilote3`). The seed's
+demo accounts accept the new version, so demos and browser tests go straight in; everyone else sees
+the banner (D-109). These are the only edits to existing message values in this feature.
+
+**D-135 — The « Bulletins » tab and the « Aujourd'hui » reminder.** « Bulletins » is a class tab
+after « Planification » and « Mode classe », for the class's homeroom and subject teachers at a
+school with the Library module (**Assumption**); « Soutien » members and everyone else get « Page
+introuvable ». No navigation item (D-118 unchanged). Its address holds filters only (`period`,
+`from`, `to`, `kind`, `subject`, `bank`; a GET form), and the student shown is the address's
+fragment (`#eleve-<id>`), which never leaves the browser: on a phone the list and the student are
+two screens and Back returns to the list. « Période » lists the board's periods with their dates
+and « saisie » (by default the first whose « saisie » has not passed), and « Dates choisies » with
+« Du », « Au » and « Type de bulletin », the only choice when the board has set no period;
+« Matière » lists the teacher's own subjects (her timetable blocks, or the blocks without a teacher
+for the homeroom teacher, D-006), the learning skills (first for the homeroom teacher), then the
+class's other subjects; « Banque » lists the usable banks of the subject's scope (Enseignement
+religieux is « L'enseignement religieux ») that serve the report (« Les deux » serves both), the
+board's approved ones first, with « Approuvée par le conseil » or « Brouillon — à relire » and
+« Voir la banque »; without one, « Créer une banque avec l'IA » (prefilled with ids only: the scope,
+the grade, the subject, the report and up to 12 attentes taught; only where the school's AI is on)
+and « Créer une banque ». On « Aujourd'hui », from 21 days before a period's « saisie » (or its last
+day without one) until that day, each of the teacher's classes as homeroom or subject teacher at a
+library school, never a sample class, gets « Préparer mes commentaires » for that period
+(**Assumption** on the 21 days). _Why:_ the comments belong to the class and its report period; the
+class team already sees the class's students; a reminder three weeks ahead fits the « saisie ».
+As built (slice S3): `app/(app)/classes/[classId]/bulletins/`, `ClassTabs`' `bulletins`,
+`server/report-comments/view-model.ts`, `components/today/report-reminder.tsx`,
+`loadReportReminders`; e2e `report-comments.spec.ts` and `report-comments-mobile.spec.ts` (360 px).
 
 ## Schema additions beyond SPEC section 8
 

@@ -20,6 +20,22 @@ test('the privacy notice and the pilot terms are public, in French and English',
   await expect(page.getByRole('heading', { name: 'Avis de confidentialité' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Conditions du projet pilote' })).toBeVisible();
   await expect(page.getByText(`Version des conditions : ${CURRENT_TERMS_VERSION}`)).toBeVisible();
+  // Report card comments stay on the teacher's device (« Commentaires de bulletin », D-134).
+  await expect(
+    page.getByText(
+      /Les commentaires de bulletin que vous rédigez restent dans le navigateur de votre appareil\s:\sils ne sont jamais envoyés à nos serveurs ni à l’intelligence artificielle\.$/,
+    ),
+  ).toBeVisible();
+  await expect(
+    page.getByText(
+      /Les commentaires de bulletin sont effacés de votre appareil à la déconnexion, quand une autre personne se connecte sur ce navigateur, ou au plus tard 60 jours après la remise du bulletin\.$/,
+    ),
+  ).toBeVisible();
+  await expect(
+    page.getByText(
+      /^N’entrez aucun autre renseignement personnel sur un élève que son prénom, sauf dans les alertes, lorsque la direction les a activées, et dans les commentaires de bulletin, qui restent sur votre appareil\.$/,
+    ),
+  ).toBeVisible();
   await expectAccessible(page);
 
   await page.getByRole('button', { name: 'English' }).click();
@@ -55,6 +71,9 @@ test('the app’s footer has « Confidentialité », « Nouveautés » and the v
   await footer.getByRole('link', { name: 'Nouveautés' }).click();
   await expect(page).toHaveURL(/\/nouveautes$/);
   await expect(page.getByRole('heading', { level: 1, name: 'Nouveautés' })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Version 0.8 · Commentaires de bulletin' }),
+  ).toBeVisible();
   await expect(
     page.getByRole('heading', { name: 'Version 0.6 · Prêt pour le projet pilote' }),
   ).toBeVisible();

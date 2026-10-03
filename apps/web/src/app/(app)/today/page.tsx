@@ -23,6 +23,7 @@ import { CheckOffButton } from '@/components/app/check-off-button';
 import { PurgeNotice } from '@/components/onboarding/class-notices';
 import { SampleBadge } from '@/components/onboarding/sample-badge';
 import { TeacherChecklist } from '@/components/onboarding/teacher-checklist';
+import { ReportReminders } from '@/components/today/report-reminder';
 import { Button } from '@/components/ui/button';
 import { StartUnitButton } from '@/components/year-plan/start-unit-button';
 import { Badge, Card, CardBody, CardHeader, CardTitle, Notice } from '@/components/ui/card';
@@ -31,6 +32,7 @@ import { formatLocalDate, formatTime, formatTimeRange } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import { loadMyAbsences } from '@/server/queries/absences';
 import { loadTeacherOnboarding } from '@/server/queries/onboarding';
+import { loadReportReminders } from '@/server/queries/report-comments';
 import { loadPendingReports } from '@/server/queries/sub-reports';
 import { loadToday, type TodayBlock } from '@/server/queries/today';
 import {
@@ -73,11 +75,13 @@ export default async function TodayPage({
   const today = localDateIn(timezone);
   const { date: requested } = await searchParams;
   const date = requested && isLocalDate(requested) ? requested : today;
-  const [data, upcomingAbsences, pendingReports, onboarding] = await Promise.all([
+  const [data, upcomingAbsences, pendingReports, onboarding, reminders] = await Promise.all([
     loadToday(session, date, locale),
     loadMyAbsences(session, { from: today, limit: 5 }),
     loadPendingReports(),
     loadTeacherOnboarding(session),
+    // « Préparer mes commentaires » (« Bulletins », D-135): on today's page only.
+    date === today ? loadReportReminders(session) : Promise.resolve([]),
   ]);
   // « Pour bien commencer » until it is done or hidden (D-109); sample classes carry « Exemple ».
   const showChecklist = !onboarding.dismissed && onboarding.done < onboarding.total;
@@ -182,6 +186,8 @@ export default async function TodayPage({
           ))}
         </div>
       ) : null}
+
+      <ReportReminders reminders={reminders} />
 
       {showChecklist ? (
         <TeacherChecklist data={onboarding} variant="card" />

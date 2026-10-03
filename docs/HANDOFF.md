@@ -1,11 +1,12 @@
 # Handoff
 
 Written 2026-09-28 by the session that built Phases 1 and 2 (branch `claude/nifty-fermat-8hhl1l`);
-updated 2026-10-02 by the session that built Phases 3, 4, 5 and 6 (branch `claude/serene-ride-3n2fa1`).
-Read `SPEC.md` and `DECISIONS.md` first; this file covers what they don't: the conversation with
-Mike, the current state, how to run things in these containers, and what's next. Phase notes:
-`docs/phase-1.md` to `docs/phase-6.md`, then `docs/mon-annee.md` (the year planner built after
-them; and `docs/content-packs.md` for a board's IT). For the pilot:
+updated 2026-10-03 by the session that built Phases 3, 4, 5 and 6, « Mon année » and « Commentaires
+de bulletin » (branch `claude/serene-ride-3n2fa1`). Read `SPEC.md` and `DECISIONS.md` first; this
+file covers what they don't: the conversation with Mike, the current state, how to run things in
+these containers, and what's next. Phase notes: `docs/phase-1.md` to `docs/phase-6.md`, then
+`docs/mon-annee.md` (the year planner) and `docs/report-comments.md` (report card comments), both
+built after them; and `docs/content-packs.md` for a board's IT. For the pilot:
 `PRIVACY.md` (a board's privacy officer), `DEPLOYMENT.md` (installing), `docs/PILOT.md` (for Mike)
 and `docs/demo-script.md` (the board demo).
 
@@ -117,19 +118,23 @@ Mon Tableau, Cartable, Ardoise). No availability or trademark check has been don
 | `00e1343` | Final review, round B: privacy wording, terms `2026-10-pilote-2`, the journal, audit export |
 | `d2dad5a` | « Mon année » S1: report periods, unit windows and attentes, the planning actions' gate     |
 | `3615f3e` | « Mon année » S2: the year view, and « Aujourd'hui » starting a planned unit                |
-| (latest)  | « Mon année » S3: « Couverture » and the « Plan à long terme » PDF, `docs/mon-annee.md`     |
+| `d5ce901` | « Mon année » S3: « Couverture » and the « Plan à long terme » PDF, `docs/mon-annee.md`     |
+| `2ce92a8` | « Commentaires de bulletin » S1: comment banks as library type 26                           |
+| `454e58b` | « Commentaires de bulletin » S2: « Créer une banque avec l'IA »                             |
+| (latest)  | « Commentaires de bulletin » S3: « Bulletins », « Aujourd'hui », terms `2026-10-pilote-3`   |
 
-**Verified (locally, from an empty database, and in CI on each pushed commit):** 1398 unit tests
-(none skipped), 1796 pgTAP tests, 93 integration tests (plus the 3 of `restore-smoke`, which run
-after a restore: the `backup-restore` CI job and the local drill; the staff-account tests talk to
-the stack's real Auth server), 140 Playwright tests (desktop, phone and tablet, axe on every Phase
-3, 4 and 5 page, every « Conseil » page, the direction's dashboard and « Journal d'audit »,
-« Bienvenue », « Pour bien commencer », each step of the board demo, a unit's planning, the
-report periods, « Mon année » on a desktop and at 360 px, starting a planned unit, « Couverture »
-and the long-range plan PDF), lint, typecheck, format, generated DB types up to date, the demo
-curriculum and library seeds up to date (`pnpm library:seed:check`), web build with no setting
-built in; in CI also a backup restored into an empty database, and both Docker images run as a
-board-hosted install (`docker-smoke`).
+**Verified (locally, from an empty database, and in CI on each pushed commit):** 1488 unit tests
+(none skipped), 1862 pgTAP tests (36 files), 94 integration tests (plus the 3 of `restore-smoke`,
+which run after a restore: the `backup-restore` CI job and the local drill; the staff-account tests
+talk to the stack's real Auth server), 149 Playwright tests (desktop, phone and tablet, axe on every
+Phase 3, 4 and 5 page, every « Conseil » page, the direction's dashboard and « Journal d'audit », «
+Bienvenue », « Pour bien commencer », each step of the board demo, a unit's planning, the report
+periods, « Mon année » on a desktop and at 360 px, starting a planned unit, « Couverture » and the
+long-range plan PDF, « Créer une banque avec l'IA », « Bulletins » on a desktop and at 360 px with a
+request sentinel, and the reminder on « Aujourd'hui »), lint, typecheck, format, generated DB types
+up to date, the demo curriculum and library seeds up to date (`pnpm library:seed:check`), web build
+with no setting built in; in CI also a backup restored into an empty database, and both Docker
+images run as a board-hosted install (`docker-smoke`).
 
 **« Mon année » is built** (feature #1 after the pilot build; `docs/mon-annee.md`; DECISIONS
 « Mon année », D-123 to D-128): the board's « Périodes de bulletin » in « Années scolaires » (with
@@ -144,6 +149,25 @@ report period or chosen dates, computed from the class's own units and lessons, 
 class team), and on « Aujourd'hui » the planned unit due that week with « Commencer l'unité ». AI
 for the year plan is deferred (D-128). Next: test it with pilot teachers (`docs/mon-annee.md`, « What
 to test »); marketing may claim it once Mike has seen it.
+
+**« Commentaires de bulletin » is built** (feature #2 after the pilot build;
+`docs/report-comments.md`; DECISIONS « Commentaires de bulletin », D-129 to D-135): comment banks are
+library type 26 (« Banque de commentaires de bulletin », `report_comments`: entries by attente or
+learning skill, points forts, prochaines étapes and general comments per level, progress mark or
+rating, texts with `{prénom}`; not teaching material; three approved demo banks); « Créer une
+banque avec l'IA » (`/library/generate/comments`, feature `report_comment_bank`: curriculum labels
+and the de-identified note only, previewed, a private draft); and « Bulletins », a class tab
+(`/classes/[id]/bulletins`, the class's homeroom and subject teachers at a library school): per
+report period and subject, the class's students with their status, and for each student the
+wording, the mark, the bank's entries as cards (taught attentes first), the comment with its
+counter, « Copier », « Tout copier », « Imprimer » and « Mes notes ». **The comments never leave the
+browser** (D-130): `localStorage` holds them in template form (`{prénom}`, never a first name),
+erased at sign-out, when another account signs in on that browser (a janitor in the app's shell)
+and 60 days after the report goes home; no table, action, route, form or PDF carries them. No AI
+reads a comment about a student (D-133; per-student AI is designed only). « Aujourd'hui » reminds
+three weeks before each « saisie ». The terms are `2026-10-pilote-3` (D-134). Next: test it with
+pilot teachers before the 1re étape (`docs/report-comments.md`, « What to test »; saisie 5 February
+2027), the lawyer on the device copies (Q5), and one real-API bank case when the key is set.
 
 **Phase 3 is complete** (3a and 3b; see `docs/phase-3.md`): absence button, plans built in the
 request and kept current by the worker, review and editing, release at 07:30, codes, the
@@ -303,8 +327,9 @@ that checks the signature). `docs/phase-6.md` « Final review » has the list an
   retake them from the running app if needed.
 - **Marketing site and board fact sheet** (`marketing/site`, `marketing/one-pager`, promo script
   v2): they claim only what ships; marketing v3 (`a214ac0`, `638e425`) shows Phases 1 to 6 as
-  available, with the Phase 6 screens. « Mon année » is not claimed there yet: the marketing pages
-  are updated once Mike has seen it.
+  available, with the Phase 6 screens. « Mon année » and « Commentaires de bulletin » are not
+  claimed there yet: the marketing pages are updated once Mike has seen them (screenshots of
+  « Bulletins » in French and English, desktop and phone, were taken for that).
 
 ## 3. How to run it (in these containers)
 
@@ -500,6 +525,16 @@ Demo logins are in `supabase/seed.sql` (e.g. `isabelle.tremblay@demo.lynx.test`,
   « En préparation » are the library's (`LIBRARY_AI_FEATURES` in `server/queries/library-ai.ts`).
   Banks use the rubrics' qualifiers (`REPORT_CARD_QUALIFIERS` is `ACHIEVEMENT_QUALIFIERS`). The
   form takes ids in its URL (`?scope=&grade=&subject=&period=&exp=id,id`) for « Bulletins ».
+- **« Bulletins » keeps comments on the device only (D-130).** The draft is `localStorage`
+  `lynx-draft:report:{userId}:{classId}:{periodKey}` (`reportDraftKey`; the period key is the board
+  period's kind, or `custom-<from>-<to>-<report>`), in template form (`{prénom}`). Nothing on that
+  page may send a comment: no server action, route handler, form field with a `name` or PDF
+  (`components/report-comments/no-server.test.ts` checks the files; `e2e/report-comments.spec.ts`
+  types « ZZSENTINELLE » and checks every request). The janitor (`forgetReportDrafts`, mounted in
+  `app/(app)/layout.tsx`) removes other accounts' and expired report drafts on every load, and
+  `clearAllDrafts` at sign-out closes all draft writes for that page. Browser tests that write
+  comments run in their own context (a fresh browser), so nothing is left behind; the reminder
+  test moves the 1re étape's « saisie » a week ahead and puts the seed's periods back.
 - **Unit tests of the web app's server code** can import `@/…`: the root `vitest.config.ts`
   aliases it (`server/actions/session-gate.test.ts` mocks the session and the database).
 - **New accounts in browser tests go through « Bienvenue ».** The seed's demo accounts have
@@ -647,9 +682,18 @@ Where an item is already in `DECISIONS.md`, the D-number is given. Don't add dup
    checking the « à vérifier » attentes of her grade, the report dates for each pilot board, the
    long-range plan with a principal. « Reprendre le plan de l'an dernier » is needed before August
    2027; AI for the year plan waits for real curriculum (D-128).
+9. **« Commentaires de bulletin » with pilot teachers** before the 1re étape (saisie 5 February
+   2027; `docs/report-comments.md`, « What to test »): a homeroom teacher writes a whole class's
+   comments and pastes them into the board's report card system (counts, spaces, the 1,000
+   default); a subject teacher; a bank made with the AI; a shared computer. The lawyer confirms the
+   device copies' erasure rules (Q5). Per-student AI (D-133) waits for Mike, a board and the lawyer.
 
 **Known issues and risks:**
 
+- **Report card comments live on one device** (D-130): a teacher who clears her browser data or
+  changes computers loses what she has not copied; enhanced spell-check, writing extensions and
+  cloud clipboards act on what the browser holds; on a computer nobody signs out of, comments stay
+  (as templates, without names) until another account signs in or 60 days after the « remise ».
 - **Real API untested** (above), batches included.
 - **Class mode on real classroom hardware** is untested: projectors at their real resolution,
   school Wi-Fi filters, managed Chromebooks keeping the class link bookmark, iPads (no WebKit

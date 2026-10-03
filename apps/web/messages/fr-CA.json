@@ -240,6 +240,12 @@
       "finishAndStart": "Terminer et commencer « {title} »",
       "started": "« {title} » est en cours.",
       "yearLink": "Mon année"
+    },
+    "reportReminder": {
+      "due": "{kind} : saisie au plus tard le {date}",
+      "ends": "{kind} : la période se termine le {date}",
+      "action": "Préparer mes commentaires",
+      "actionFor": "Préparer mes commentaires · {className}"
     }
   },
   "classes": {
@@ -263,7 +269,8 @@
       "timetable": "Horaire",
       "planning": "Planification",
       "substitute": "Suppléance",
-      "settings": "Paramètres"
+      "settings": "Paramètres",
+      "bulletins": "Bulletins"
     },
     "role": {
       "homeroom": "Titulaire",
@@ -3692,7 +3699,8 @@
       "alerts": "Les alertes de sécurité et médicales restent cachées jusqu’à ce qu’on choisisse de les afficher, et chaque consultation est enregistrée.",
       "ai": "L’application remplace les noms des élèves et du personnel de vos écoles avant chaque envoi à l’intelligence artificielle ; retirez vous-même tout autre nom (celui d’un parent, par exemple).",
       "canada": "Les données sont conservées au Canada. Seul le texte envoyé à l’intelligence artificielle est traité aux États-Unis.",
-      "feedback": "Vos commentaires sont les bienvenus : le bouton « Commentaires » est en haut de chaque page."
+      "feedback": "Vos commentaires sont les bienvenus : le bouton « Commentaires » est en haut de chaque page.",
+      "reportComments": "Les commentaires de bulletin que vous rédigez restent dans le navigateur de votre appareil : jamais sur nos serveurs ni à l’intelligence artificielle. Ils sont effacés à la déconnexion."
     },
     "readTerms": "Lire « Confidentialité et conditions »",
     "accept": "J’ai lu et j’accepte les conditions du projet pilote",
@@ -3708,7 +3716,8 @@
     "whatChanged": "Ce qui a changé : {change}",
     "changes": {
       "pilote1": "la première version complète des conditions du projet pilote.",
-      "pilote2": "l’application remplace seulement les noms qu’elle connaît (les élèves et le personnel de vos écoles) avant l’envoi à l’intelligence artificielle : retirez vous-même tout autre nom. L’avis précise aussi qui lit vos commentaires et comment IP Lynx accède aux données."
+      "pilote2": "l’application remplace seulement les noms qu’elle connaît (les élèves et le personnel de vos écoles) avant l’envoi à l’intelligence artificielle : retirez vous-même tout autre nom. L’avis précise aussi qui lit vos commentaires et comment IP Lynx accède aux données.",
+      "pilote3": "les commentaires de bulletin restent sur votre appareil : jamais sur nos serveurs ni à l’intelligence artificielle, et ils sont effacés à la déconnexion."
     },
     "acceptUpdated": "Accepter les conditions",
     "later": "Plus tard",
@@ -3729,11 +3738,11 @@
       },
       "collected": {
         "title": "Ce que l’application recueille",
-        "body": "Pour le personnel : le nom, le courriel, les rôles et la langue choisie. Pour les élèves : le prénom seulement, le niveau de langue et, si la direction les active, des alertes de sécurité ou médicales chiffrées. Jamais de nom de famille, de numéro d’immatriculation scolaire, de date de naissance, d’adresse, de photo ni de courriel d’élève. Les élèves n’ont pas de compte."
+        "body": "Pour le personnel : le nom, le courriel, les rôles et la langue choisie. Pour les élèves : le prénom seulement, le niveau de langue et, si la direction les active, des alertes de sécurité ou médicales chiffrées. Jamais de nom de famille, de numéro d’immatriculation scolaire, de date de naissance, d’adresse, de photo ni de courriel d’élève. Les élèves n’ont pas de compte. Les commentaires de bulletin que vous rédigez restent dans le navigateur de votre appareil : ils ne sont jamais envoyés à nos serveurs ni à l’intelligence artificielle."
       },
       "use": {
         "title": "À quoi servent ces renseignements",
-        "body": "À planifier l’enseignement, à préparer les plans de suppléance et à partager des ressources entre collègues. Ils ne sont jamais vendus, jamais utilisés pour de la publicité et jamais utilisés pour entraîner une intelligence artificielle."
+        "body": "À planifier l’enseignement, à préparer les plans de suppléance et les commentaires de bulletin, et à partager des ressources entre collègues. Ils ne sont jamais vendus, jamais utilisés pour de la publicité et jamais utilisés pour entraîner une intelligence artificielle."
       },
       "ai": {
         "title": "L’intelligence artificielle",
@@ -3749,7 +3758,7 @@
       },
       "retention": {
         "title": "Combien de temps",
-        "body": "Par défaut, les prénoms des élèves sont effacés un an après la fin de l’année scolaire (les unités et leçons restent). Les plans de suppléance sont effacés un an après leur date, le journal d’audit après deux ans, les commentaires après un an, une classe exemple après 60 jours et les copies de sauvegarde après 30 jours. Votre conseil peut demander d’autres durées."
+        "body": "Par défaut, les prénoms des élèves sont effacés un an après la fin de l’année scolaire (les unités et leçons restent). Les plans de suppléance sont effacés un an après leur date, le journal d’audit après deux ans, les commentaires après un an, une classe exemple après 60 jours et les copies de sauvegarde après 30 jours. Votre conseil peut demander d’autres durées. Les commentaires de bulletin sont effacés de votre appareil à la déconnexion, quand une autre personne se connecte sur ce navigateur, ou au plus tard 60 jours après la remise du bulletin."
       },
       "rights": {
         "title": "Vos droits",
@@ -3759,8 +3768,8 @@
     "terms": {
       "pilot": "{appName} est en développement : l’application peut changer ou être interrompue pendant le projet pilote, qui est sans frais.",
       "names": "Tant que votre direction n’a pas donné son accord par écrit, utilisez des prénoms inventés ou des initiales, ou la classe exemple.",
-      "personal": "N’entrez aucun autre renseignement personnel sur un élève que son prénom, sauf dans les alertes, lorsque la direction les a activées.",
-      "account": "Votre accès est personnel. Déconnectez-vous sur un ordinateur partagé.",
+      "personal": "N’entrez aucun autre renseignement personnel sur un élève que son prénom, sauf dans les alertes, lorsque la direction les a activées, et dans les commentaires de bulletin, qui restent sur votre appareil.",
+      "account": "Votre accès est personnel. Déconnectez-vous sur un ordinateur partagé : vos brouillons et vos commentaires de bulletin en sont alors effacés.",
       "ai": "Vérifiez ce que propose l’intelligence artificielle avant de l’utiliser avec vos élèves.",
       "feedback": "Les commentaires que vous envoyez sont lus par les personnes qui ont le rôle « Administration du conseil », pour améliorer l’application ; pendant le projet pilote, IP Lynx peut avoir ce rôle, si votre conseil le lui demande.",
       "changes": "Ces conditions peuvent changer. Une bannière vous le dira, et vous pourrez les relire avant de les accepter."
@@ -3805,6 +3814,17 @@
     "intro": "Ce qui a changé dans l’application, de la version la plus récente à la plus ancienne.",
     "current": "Version installée : {version}",
     "versions": {
+      "v080": {
+        "title": "Version 0.8 · Commentaires de bulletin",
+        "date": "Octobre 2026",
+        "items": {
+          "bank": "« Banque de commentaires de bulletin » dans la bibliothèque : des points forts et des prochaines étapes par attente et par niveau, avec la place du prénom de l’élève.",
+          "ai": "« Créer une banque avec l’IA » : une banque préparée à partir de l’année, de la matière et des attentes choisies seulement, jamais de renseignements sur vos élèves.",
+          "composer": "« Bulletins » dans chaque classe : pour chaque élève, un niveau, des entrées de la banque et le commentaire à copier dans le bulletin officiel. Vos commentaires restent sur votre appareil.",
+          "today": "« Aujourd’hui » rappelle la date de saisie de chaque bulletin, trois semaines avant.",
+          "terms": "Les conditions du projet pilote précisent que les commentaires de bulletin restent sur votre appareil."
+        }
+      },
       "v070": {
         "title": "Version 0.7 · Mon année",
         "date": "Octobre 2026",
@@ -4120,6 +4140,145 @@
       "units": "Une attente qui a des contenus d’apprentissage sert de titre : on compte ses contenus.",
       "loaded": "Seules les attentes chargées dans l’application pour cette année d’études sont comptées.",
       "private": "Le calcul est refait à chaque visite, à partir de vos unités et de vos leçons ; rien n’est enregistré, et ni la direction ni le conseil ne le voient."
+    }
+  },
+  "reportComments": {
+    "metaTitle": "Commentaires de bulletin · {className}",
+    "title": "Commentaires de bulletin",
+    "intro": "Pour chaque élève, choisissez un niveau et des entrées de la banque, ajustez le texte, puis copiez-le dans le bulletin officiel.",
+    "failed": "Les données de cette classe n’ont pas pu être chargées. Réessayez dans un moment.",
+    "notice": {
+      "body": "Vos commentaires restent sur cet appareil. Ils ne sont jamais envoyés à nos serveurs ni à l’intelligence artificielle. Ils seront effacés quand vous vous déconnecterez, ou au plus tard le {date}. Copiez-les dans le bulletin officiel.",
+      "bodyExpired": "Vos commentaires restent sur cet appareil et ne sont jamais envoyés à nos serveurs ni à l’intelligence artificielle. Cette période est terminée depuis plus de 60 jours : ce que vous écrivez ici n’est plus conservé. Copiez-le au fur et à mesure dans le bulletin officiel.",
+      "shared": "Sur un ordinateur partagé, déconnectez-vous quand vous avez terminé.",
+      "writeFailed": "L’espace de cet appareil est plein : copiez vos commentaires maintenant.",
+      "changedElsewhere": "Modifié dans un autre onglet : la version la plus récente est affichée.",
+      "erasedElsewhere": "Ces commentaires ont été effacés dans un autre onglet ou à la déconnexion. Rechargez la page pour continuer."
+    },
+    "filters": {
+      "legend": "Période, matière et banque",
+      "period": "Période",
+      "periodOption": "{kind} ({from}–{to}) · saisie au plus tard le {due}",
+      "periodOptionNoDue": "{kind} ({from}–{to})",
+      "custom": "Dates choisies",
+      "customRange": "Du {from} au {to}",
+      "from": "Du",
+      "to": "Au",
+      "kind": "Type de bulletin",
+      "kinds": {
+        "progress": "Bulletin de progrès",
+        "term": "Bulletin scolaire"
+      },
+      "subject": "Matière",
+      "mine": "Mes matières",
+      "others": "Autres matières",
+      "learningSkills": "Habiletés d’apprentissage et habitudes de travail",
+      "bank": "Banque",
+      "apply": "Afficher",
+      "bankLater": "La banque de la nouvelle période ou matière se choisit après « Afficher ».",
+      "noPeriods": "Votre conseil n’a pas encore indiqué les périodes de bulletin de cette année : choisissez les dates.",
+      "customInvalid": "Choisissez deux dates dans l’ordre. En attendant, l’année jusqu’à aujourd’hui est utilisée."
+    },
+    "bank": {
+      "approved": "Approuvée par le conseil",
+      "reviewed": "Révisée",
+      "draft": "Brouillon — à relire",
+      "view": "Voir la banque",
+      "none": "Aucune banque de commentaires pour {subject}, {grade}.",
+      "noneHint": "Créez-en une avec l’IA, à partir de l’année, de la matière et des attentes enseignées seulement, ou écrivez-la vous-même. Vous pouvez aussi rédiger chaque commentaire sans banque.",
+      "createAi": "Créer une banque avec l’IA",
+      "create": "Créer une banque",
+      "unreadable": "Cette banque n’a pas pu être lue. Choisissez-en une autre ou ouvrez-la dans la bibliothèque.",
+      "draftWarning": "Cette banque est un brouillon : relisez chaque entrée avant de l’utiliser."
+    },
+    "taught": {
+      "summary": "Attentes enseignées pendant la période ({count})",
+      "intro": "D’après vos unités et vos leçons. Les entrées de la banque liées à ces attentes sont proposées en premier ; les autres restent offertes, repliées sous chaque élève.",
+      "none": "Aucune attente enseignée trouvée pour cette période : toutes les entrées de la banque sont proposées.",
+      "notLoaded": "Aucune attente n’est chargée pour cette matière : toutes les entrées de la banque sont proposées."
+    },
+    "students": {
+      "heading": "Élèves ({count})",
+      "summary": "{ready, plural, one {# prêt} other {# prêts}} · {started, plural, one {# commencé} other {# commencés}} · {todo} à faire",
+      "status": {
+        "todo": "À faire",
+        "started": "Commencé",
+        "ready": "Prêt · {count} / {limit}",
+        "over": "Dépasse de {over, plural, one {# caractère} other {# caractères}}"
+      },
+      "empty": "Cette classe n’a pas encore d’élèves.",
+      "add": "Ajouter des élèves",
+      "back": "Tous les élèves",
+      "around": "Élève précédent et suivant",
+      "previous": "Élève précédent",
+      "next": "Élève suivant",
+      "nextNamed": "Élève suivant : {name}"
+    },
+    "editor": {
+      "form": "Formulation",
+      "forms": {
+        "neutral": "Neutre",
+        "feminine": "Féminin",
+        "masculine": "Masculin"
+      },
+      "formHint": "Ce choix reste sur cet appareil.",
+      "grade": "Année d’études",
+      "gradeHint": "Classe combinée : les attentes de cette année d’études. Ce choix reste sur cet appareil.",
+      "level": "Niveau de rendement",
+      "levelOption": "Niveau {n}",
+      "progress": "Progrès",
+      "ratings": "Habiletés d’apprentissage et habitudes de travail",
+      "ratingsHint": "Choisissez la cote des habiletés que vous commentez : {key}.",
+      "needsMark": "Choisissez un niveau de rendement pour voir les entrées proposées.",
+      "needsProgress": "Choisissez le progrès pour voir les entrées proposées.",
+      "needsRatings": "Choisissez au moins une cote pour voir les entrées proposées.",
+      "strengths": "Points forts",
+      "nextSteps": "Prochaines étapes",
+      "general": "Commentaires généraux",
+      "noEntries": "Aucune entrée de la banque pour ce choix.",
+      "otherWording": "Autre formulation",
+      "fromNotes": "D’après vos notes",
+      "attente": "Attente {codes}",
+      "outOfScope": "Autres entrées de la banque (attentes non enseignées pendant la période) : {count}",
+      "replaceQuestion": "Vous avez modifié le commentaire. Remplacer votre texte par les entrées choisies?",
+      "replace": "Remplacer",
+      "keep": "Garder mon texte",
+      "comment": "Commentaire",
+      "commentHint": "Modifiez le texte librement. Le prénom est ajouté à l’affichage, à la copie et à l’impression ; l’appareil ne l’enregistre pas.",
+      "counter": "{count} / {limit} caractères",
+      "over": "Dépasse la limite de {over, plural, one {# caractère} other {# caractères}}.",
+      "copy": "Copier",
+      "copied": "Copié",
+      "copyFailed": "La copie automatique n’a pas fonctionné : le texte est sélectionné, copiez-le avec Ctrl+C (⌘+C sur Mac).",
+      "copyAll": "Tout copier pour cet élève",
+      "copiedAll": "Tout est copié",
+      "print": "Imprimer",
+      "clearComment": "Effacer le commentaire",
+      "clearCommentMessage": "Effacer le commentaire de {name} pour « {subject} » sur cet appareil? Le niveau et les entrées choisies sont effacés aussi.",
+      "clearConfirm": "Effacer",
+      "notes": "Mes notes (sur cet appareil)",
+      "notesHint": "Pour vous seulement : vos notes restent sur cet appareil. Les entrées qui partagent un mot avec elles passent en premier (« D’après vos notes »)."
+    },
+    "settings": {
+      "heading": "Réglages et impression",
+      "limit": "Limite de caractères",
+      "limitHint": "Celle du bulletin de votre conseil, de 100 à 5 000 caractères.",
+      "plainSpaces": "Espaces simples à la copie (recommandé pour le bulletin officiel)",
+      "printAll": "Imprimer tous les commentaires ({count})",
+      "clearAll": "Effacer mes commentaires de cette période sur cet appareil",
+      "clearAllMessage": "Effacer les commentaires de {count, plural, one {# élève} other {# élèves}} sur cet appareil? Cette action est définitive.",
+      "clearAllConfirm": "Effacer",
+      "cleared": "Les commentaires de cette période sont effacés de cet appareil."
+    },
+    "help": {
+      "summary": "Comment ça marche",
+      "device": "Vos commentaires, vos niveaux, vos choix et vos notes restent dans le navigateur de cet appareil : rien n’est envoyé à nos serveurs ni à l’intelligence artificielle, et aucune intelligence artificielle ne lit un commentaire sur un élève.",
+      "name": "Le prénom n’est jamais enregistré avec le commentaire : l’appareil garde « {token} » à sa place et l’ajoute à l’affichage, à la copie et à l’impression (« d’Aïcha », « de Samuel »).",
+      "banks": "Les entrées viennent des banques de commentaires de la bibliothèque. Une banque approuvée par le conseil passe en premier ; un brouillon est à relire avant usage.",
+      "taught": "Les attentes enseignées pendant la période viennent de vos unités et de vos leçons (« Couverture »). Les entrées liées aux autres attentes restent offertes, repliées.",
+      "copy": "Copiez chaque commentaire dans le bulletin officiel de votre conseil : c’est lui qui fait foi. « Espaces simples à la copie » remplace les espaces insécables, que certains systèmes comptent mal.",
+      "erase": "Vos commentaires sont effacés de cet appareil à la déconnexion, quand une autre personne se connecte sur ce navigateur, et au plus tard 60 jours après la remise du bulletin. Ils ne vous suivent pas sur un autre appareil.",
+      "spellcheck": "Bon à savoir : la vérification orthographique avancée de certains navigateurs et certaines extensions envoient le texte que vous tapez à leur éditeur."
     }
   }
 }

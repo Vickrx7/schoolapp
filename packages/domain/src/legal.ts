@@ -18,8 +18,11 @@ export const TERMS_VERSION_PATTERN = /^[0-9]{4}-[0-9]{2}-[a-z0-9-]{1,24}$/;
  * The terms in force. Changing it shows everyone the « conditions ont changé » banner.
  * `2026-10-pilote-2` (Phase 6 review): the notice and « Bienvenue » say that only the names the
  * app knows are replaced before AI, who reads feedback, and how IP Lynx accesses the data.
+ * `2026-10-pilote-3` (« Commentaires de bulletin », D-134): teachers may write report card
+ * comments, which stay in their browser (never on our servers or with the AI) and are erased at
+ * sign-out, when another account signs in, or 60 days after the report goes home.
  */
-export const CURRENT_TERMS_VERSION = '2026-10-pilote-2';
+export const CURRENT_TERMS_VERSION = '2026-10-pilote-3';
 
 /**
  * « Ce qui a changé » for each version, shown when newer terms are offered (never at a first
@@ -28,6 +31,7 @@ export const CURRENT_TERMS_VERSION = '2026-10-pilote-2';
 export const TERMS_CHANGES: Readonly<Record<string, string>> = {
   '2026-11-pilote-1': 'pilote1',
   '2026-10-pilote-2': 'pilote2',
+  '2026-10-pilote-3': 'pilote3',
 };
 
 /** The message key of what `version` changed (`welcome.changes.<key>`), if any. */

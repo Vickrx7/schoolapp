@@ -13,3 +13,5 @@ export * from './retention';
 export * from './sample-class';
 // « Mon année »: the year plan, report periods and coverage (D-123 to D-126).
 export * from './year-plan';
+// « Commentaires de bulletin »: the « Bulletins » composer, on the device (D-130, D-135).
+export * from './report-comments';
