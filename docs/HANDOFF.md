@@ -162,7 +162,7 @@ une unité »; « Plan à long terme (PDF) », coverage only when ticked), « Co
 report period or chosen dates, computed from the class's own units and lessons, private to the
 class team), and on « Aujourd'hui » the planned unit due that week with « Commencer l'unité ». AI
 for the year plan is deferred (D-128). Next: test it with pilot teachers (`docs/mon-annee.md`, « What
-to test »); marketing may claim it once Mike has seen it.
+to test »); the marketing pages now show it as available in the pilot build (`0e78764`).
 
 **« Commentaires de bulletin » is built** (feature #2 after the pilot build;
 `docs/report-comments.md`; DECISIONS « Commentaires de bulletin », D-129 to D-135): comment banks are
@@ -375,14 +375,12 @@ that checks the signature). `docs/phase-6.md` « Final review » has the list an
   sick-day plan is labelled « Bientôt » there: it now exists.
 - **Screenshots:** Phase 1 screens in `marketing/promo/screens/`. None of Phases 2 to 4 are kept;
   retake them from the running app if needed.
-- **Marketing site and board fact sheet** (`marketing/site`, `marketing/one-pager`, promo script
-  v2): they claim only what ships; marketing v3 (`a214ac0`, `638e425`) shows Phases 1 to 6 as
-  available, with the Phase 6 screens. « Mon année », « Commentaires de bulletin » and
-  « Info-parents » are not claimed there yet: the marketing pages are updated once Mike has seen
-  them (screenshots of « Bulletins » and « Info-parents », its PDF and its translation preview, in
-  French and English, desktop and phone, were taken for that). The site's « Vision · Plus tard,
-  sans date » list still names « Commentaires de bulletin » as something that does not exist:
-  move it out (the IEP log stays in Vision) when the pages are updated.
+- **Marketing site and board fact sheet** (`marketing/site`, `marketing/one-pager`, promo scripts
+  v2 to v5): they claim only what ships. Marketing v3 (`a214ac0`, `638e425`) shows Phases 1 to 6 as
+  available; the update `0e78764` adds « Mon année », « Commentaires de bulletin » and « Info-parents »
+  (section « Année scolaire », five new screenshots, `promo/script-v5.md`) and moves report card
+  comments out of the « Vision » list. Both pages are published as private claude.ai Artifacts; Mike
+  reviews them before sharing. The contact address `pilote@iplynx.ca` is still a placeholder.
 
 ## 3. How to run it (in these containers)
 
