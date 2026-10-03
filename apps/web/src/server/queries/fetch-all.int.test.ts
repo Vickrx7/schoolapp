@@ -4,7 +4,9 @@
  * class with 1,200 lessons given reads them all with `fetchAllRows`, and a single request (even
  * with a higher `.limit()`) does not. Needs DATABASE_URL, and SUPABASE_URL and
  * SUPABASE_SERVICE_ROLE_KEY (the local stack's, from .env.example, by default). Its unit, lessons
- * and progress are deleted at the end.
+ * and progress are deleted at the end, with the 2,400 outbox events they emitted (a lesson given,
+ * then its progress cleared): left pending, they would fill the next dispatch batch of the
+ * outbox's own test, which runs after this file.
  */
 import { readFileSync } from 'node:fs';
 import { createClient } from '@supabase/supabase-js';
@@ -54,7 +56,18 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  if (unitId) await pool.query(`delete from public.units where id = $1`, [unitId]);
+  if (unitId) {
+    const { rows } = await pool.query<{ id: string }>(
+      `select id from public.unit_lessons where unit_id = $1`,
+      [unitId],
+    );
+    await pool.query(`delete from public.units where id = $1`, [unitId]);
+    await pool.query(
+      `delete from public.event_outbox
+       where aggregate_type = 'lesson' and aggregate_id = any($1::uuid[])`,
+      [rows.map((r) => r.id)],
+    );
+  }
   await pool.end();
 });
 
