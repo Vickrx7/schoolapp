@@ -238,6 +238,13 @@
       margin-inline-start: auto;
     }
   }
+  /* Between phone and wide screens the eight links wrap: the header then scrolls away with the
+     page instead of covering it. */
+  @media (min-width: 860px) and (max-width: 1219px) {
+    .top {
+      position: static;
+    }
+  }
 
   /* ---------- Page and cahier margin ---------- */
   main {
@@ -1011,6 +1018,45 @@
     font-size: 0.9375rem;
   }
 
+  /* ---------- The school year: one block per feature, a wide capture beside a narrow one ---------- */
+  .sec-head + .block > .group-h {
+    margin-top: 0;
+  }
+  .block + .block {
+    margin-top: clamp(44px, 7vw, 72px);
+    padding-top: clamp(4px, 1vw, 8px);
+    border-top: 1px dashed var(--line);
+  }
+  .pair {
+    display: grid;
+    gap: 24px 32px;
+    align-items: start;
+    margin-bottom: clamp(28px, 5vw, 44px);
+  }
+  @media (min-width: 900px) {
+    .pair {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 260px);
+    }
+    .pair--facts {
+      grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+    }
+  }
+  .grid-item h4 {
+    font-size: 1.2rem;
+  }
+  .facts h4,
+  .where h4 {
+    font-size: 1.125rem;
+  }
+  /* A printed page: the sheet sits on a second sheet, as on the welcome-sheet illustration. */
+  .shot--sheet {
+    max-width: 300px;
+  }
+  .shot--sheet img {
+    border-radius: 2px;
+    box-shadow: 6px 6px 0 var(--sheet-back);
+  }
+
   /* ---------- Privacy: index cards (fiches) ---------- */
   .card {
     display: grid;
@@ -1332,6 +1378,7 @@
       <a href="#suppleance" data-en="Substitute day">Suppléance</a>
       <a href="#ressources" data-en="Resources">Ressources</a>
       <a href="#mode-classe" data-en="Class mode">Mode classe</a>
+      <a href="#annee" data-en="School year">Année scolaire</a>
       <a href="#vie-privee" data-en="Privacy">Vie privée</a>
       <a href="#direction" data-en="Principals">Direction</a>
       <a href="#conseils" data-en="School boards">Conseils scolaires</a>
@@ -1377,14 +1424,17 @@
       <p data-l="fr" lang="fr-CA">
         Aussi dans la version pilote : une <a href="#ressources">banque de ressources</a> en
         français, avec des versions par niveau de langue, un
-        <a href="#mode-classe">mode classe</a> pour le projecteur et les tablettes de la classe, un
+        <a href="#mode-classe">mode classe</a> pour le projecteur et les tablettes de la classe,
+        <a href="#annee">« Mon année », les commentaires de bulletin et « Info-parents »</a>, un
         <a href="#direction">tableau de bord pour la direction</a> et un espace
         <a href="#conseils">« Conseil »</a> pour l’administration du conseil scolaire.
       </p>
       <p data-l="en" lang="en-CA" hidden>
         Also in the pilot build: a French <a href="#ressources">resource bank</a> with versions by
         language level, a <a href="#mode-classe">class mode</a> for the classroom projector and
-        tablets, a <a href="#direction">dashboard for principals</a>, and a
+        tablets,
+        <a href="#annee">a year planner, report card comments and a weekly message to families</a>,
+        a <a href="#direction">dashboard for principals</a>, and a
         <a href="#conseils">“Conseil”</a> area for the school board’s administrators.
       </p>
       <div class="actions">
@@ -2612,9 +2662,13 @@
           entrée est marquée « À vérifier ».
         </li>
         <li>
-          « Créer avec l’IA » et « Créer les versions manquantes avec l’IA » existent si l’école
-          active l’IA, avec l’aperçu de ce qui sera envoyé. Ils n’ont fonctionné qu’avec un faux
-          fournisseur : aucune promesse sur la qualité.
+          S’y ajoutent trois banques de commentaires de bulletin écrites pour la démonstration
+          (mathématiques et français de 3e année, habiletés d’apprentissage).
+        </li>
+        <li>
+          « Créer avec l’IA », « Créer les versions manquantes avec l’IA » et « Créer une banque de
+          commentaires avec l’IA » existent si l’école active l’IA, avec l’aperçu de ce qui sera
+          envoyé. Ils n’ont fonctionné qu’avec un faux fournisseur : aucune promesse sur la qualité.
         </li>
         <li>
           Les mathématiques n’ont pas encore de dessins (droites numériques, grilles). La propriété
@@ -2633,9 +2687,13 @@
           “À vérifier” (to verify).
         </li>
         <li>
-          “Create with AI” and “Create the missing versions with AI” exist when the school turns AI
-          on, with a preview of what will be sent. They have only run with a fake provider: no claim
-          about quality.
+          Plus three report card comment banks written for the demo (Grade 3 Math and Français,
+          learning skills).
+        </li>
+        <li>
+          “Create with AI”, “Create the missing versions with AI” and “Create a comment bank with
+          AI” exist when the school turns AI on, with a preview of what will be sent. They have only
+          run with a fake provider: no claim about quality.
         </li>
         <li>
           Math has no drawings yet (number lines, grids). Who owns the content that teachers share
@@ -2800,6 +2858,501 @@
     </p>
   </section>
 
+  <!-- ================= THE SCHOOL YEAR: MON ANNÉE, BULLETINS, INFO-PARENTS ================= -->
+  <section class="sec" id="annee" aria-labelledby="year-title">
+    <div class="sec-head">
+      <p class="hand" data-en="From September to June">De septembre à juin</p>
+      <h2 id="year-title" data-en="Plan the year, write report cards, write to families">
+        Planifier l’année, rédiger les bulletins, écrire aux familles
+      </h2>
+      <div class="stamps">
+        <span class="stamp stamp--ok" data-en="Available (pilot build)"
+          >Disponible (version pilote)</span
+        >
+        <span class="tag" data-en="Versions 0.7 to 0.9, October 2026"
+          >Versions 0.7 à 0.9, octobre 2026</span
+        >
+      </div>
+      <p class="intro" data-l="fr" lang="fr-CA">
+        Trois outils ajoutés à chaque classe pour le personnel enseignant. Ils sont construits et
+        couverts par des tests automatisés, comme le reste de la version pilote. Aucun n’a encore
+        été essayé dans une vraie classe.
+      </p>
+      <p class="intro" data-l="en" lang="en-CA" hidden>
+        Three tools added to each class, for teachers. They are built and covered by automated
+        tests, like the rest of the pilot build. None has been tried in a real class yet.
+      </p>
+    </div>
+
+    <!-- « Mon année » and « Couverture » -->
+    <div class="block">
+      <div class="group-h">
+        <h3 data-en="“My year” and “Coverage”">« Mon année » et « Couverture »</h3>
+        <span class="tag" data-en="In each class’s “Planning”"
+          >Dans la « Planification » de chaque classe</span
+        >
+      </div>
+      <div class="pair">
+        <figure class="shot">
+          <img
+            src="assets/year-desktop.webp"
+            width="1280"
+            height="800"
+            loading="lazy"
+            decoding="async"
+            alt="Capture d’écran sur ordinateur : « Mon année · 2026-2027 » pour la 3e année de Mme Tremblay. Le bouton « Planifier une unité », la case « Inclure la couverture des attentes » et le bouton « Plan à long terme (PDF) », puis un tableau des semaines de septembre à novembre 2026. La ligne Calendrier montre une journée pédagogique et une messe dans la semaine du 5 octobre, l’Action de grâce et une messe dans celle du 12. La ligne Bulletins montre le bulletin de progrès : fin le 30 octobre, saisie le 6 novembre, remise le 13 novembre. La ligne Temps liturgique montre l’Avent. Puis une ligne par matière : en Français, l’unité « Lire pour s’informer : les animaux de l’Ontario », en cours ; en Mathématiques, « Les nombres jusqu’à 1 000 », en cours, et « L’addition et la soustraction jusqu’à 1 000 », à venir."
+            data-alt-en="Computer screenshot: “Mon année · 2026-2027” (my year) for Mme Tremblay’s Grade 3. The “Planifier une unité” (plan a unit) button, a box to include expectation coverage and the “Plan à long terme (PDF)” (long-range plan) button, then a table of the weeks from September to November 2026. The calendar row shows a PA day and a mass in the week of October 5, and Thanksgiving and a mass in the week of October 12. The report card row shows the progress report: the period ends October 30, marks are due November 6, and it goes home November 13. The liturgical row shows Advent. Then one row per subject: in Français, the unit “Lire pour s’informer : les animaux de l’Ontario”, in progress; in Math, “Les nombres jusqu’à 1 000”, in progress, and “L’addition et la soustraction jusqu’à 1 000”, coming up."
+          />
+          <figcaption
+            data-en="“My year” on a computer: the units on the weeks, with the calendar, report card dates and liturgical seasons."
+          >
+            « Mon année » sur un ordinateur : les unités sur les semaines, avec le calendrier, les
+            dates de bulletin et les temps liturgiques.
+          </figcaption>
+        </figure>
+        <figure class="shot shot--phone">
+          <img
+            src="assets/coverage-class-phone.webp"
+            width="560"
+            height="1212"
+            loading="lazy"
+            decoding="async"
+            alt="Capture d’écran sur téléphone : « Couverture » en Français, 3e année. Quatre contenus d’apprentissage, chacun marqué « À vérifier » : C1.1 « Enseignée » (1 leçon donnée, la dernière le 2 octobre), C1.2 « Prévue », C1.3 « Enseignée » (1 leçon donnée, la dernière le 1er octobre) et C1.4 « Pas encore prévue ». Les trois premiers mènent à l’unité « Lire pour s’informer : les animaux de l’Ontario » (14 sept.–23 oct.)."
+            data-alt-en="Phone screenshot: “Couverture” (coverage) for Grade 3 Français. Four specific expectations, each marked “À vérifier” (to verify): C1.1 taught (1 lesson given, the last on October 2), C1.2 planned, C1.3 taught (1 lesson given, the last on October 1) and C1.4 not yet planned. The first three link to the unit “Lire pour s’informer : les animaux de l’Ontario” (Sept. 14 to Oct. 23)."
+          />
+          <figcaption
+            data-en="“Coverage” on a phone: each expectation’s status, and the lessons and units behind it."
+          >
+            « Couverture » sur un téléphone : l’état de chaque attente, et les leçons et les unités
+            qui le justifient.
+          </figcaption>
+        </figure>
+      </div>
+      <div class="grid">
+        <div class="grid-item">
+          <h4 data-en="“My year”">« Mon année »</h4>
+          <p data-l="fr" lang="fr-CA">
+            Les semaines de l’année en tableau, une ligne par matière, avec les journées sans école,
+            les dates de bulletin et les temps liturgiques. Sur un téléphone, une liste par mois.
+            Chaque unité a ses semaines et les attentes qu’elle vise. Une unité sans dates, mais
+            dont des leçons sont données, est placée d’après ces leçons, et vous confirmez.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            The year’s weeks in a table, one row per subject, with the days without school, report
+            card dates and liturgical seasons. On a phone, a list by month. Each unit has its weeks
+            and the expectations it aims at. A unit with no dates but with lessons taught is placed
+            from those lessons, and you confirm.
+          </p>
+        </div>
+        <div class="grid-item">
+          <h4 data-en="“Coverage”">« Couverture »</h4>
+          <p data-l="fr" lang="fr-CA">
+            Pour chaque attente : « Enseignée », « Prévue » ou « Pas encore prévue », avec les
+            leçons données et les unités qui le montrent. Pour toute l’année, une période de
+            bulletin ou des dates choisies. Le calcul est refait à chaque visite à partir de vos
+            unités et de vos leçons ; rien n’est enregistré.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            For each expectation: taught, planned or not yet planned, with the lessons taught and
+            the units that show it. For the whole year, a report card period or chosen dates. It is
+            worked out on each visit from your units and lessons; nothing is stored.
+          </p>
+        </div>
+        <div class="grid-item">
+          <h4 data-en="“Long-range plan (PDF)”">« Plan à long terme (PDF) »</h4>
+          <p data-l="fr" lang="fr-CA">
+            L’année en un coup d’œil, à l’horizontale, puis les unités par matière avec leurs dates
+            et leurs attentes. La couverture s’y ajoute seulement si vous cochez la case. Le PDF est
+            produit sur demande et jamais conservé : vous décidez à qui le remettre.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            The year at a glance, in landscape, then the units by subject with their dates and
+            expectations. Coverage is added only if you tick the box. The PDF is made on request and
+            never stored: you decide who gets it.
+          </p>
+        </div>
+        <div class="grid-item">
+          <h4 data-en="On “Today”">Sur « Aujourd’hui »</h4>
+          <p data-l="fr" lang="fr-CA">
+            La semaine où une unité prévue doit commencer, « Aujourd’hui » l’annonce avec
+            « Commencer l’unité ». Une unité ne commence jamais toute seule.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            In the week a planned unit is due to start, “Today” shows it with “Start the unit”. A
+            unit never starts by itself.
+          </p>
+        </div>
+        <div class="grid-item">
+          <h4 data-en="Report card dates">Les dates de bulletin</h4>
+          <p data-l="fr" lang="fr-CA">
+            L’administration du conseil inscrit les périodes de bulletin de chaque année scolaire :
+            fin de la période d’évaluation, saisie et remise aux familles. « Préremplir avec les
+            dates habituelles » propose les dates de l’Ontario sans les enregistrer.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            The board’s administrators enter each school year’s report card periods: end of the
+            evaluation period, marks due and sent home. A button proposes Ontario’s usual dates
+            without saving them.
+          </p>
+        </div>
+        <div class="grid-item">
+          <h4 data-en="Private to the class team">Privé à l’équipe de la classe</h4>
+          <p data-l="fr" lang="fr-CA">
+            Seule l’équipe de la classe voit « Mon année » et « Couverture ». La direction, le
+            secrétariat et l’administration du conseil ne les voient pas. Il n’y a pas d’IA dans ces
+            écrans.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            Only the class team sees “My year” and “Coverage”. The principal, the office and the
+            board’s administrators do not. There is no AI in these screens.
+          </p>
+        </div>
+      </div>
+      <p class="caveat extras" data-l="fr" lang="fr-CA">
+        « Couverture » compte seulement les attentes chargées dans l’application, et un nouveau
+        conseil n’en a aucune tant qu’un curriculum n’est pas importé. La démonstration contient un
+        échantillon résumé et partiel (3e et 5e année : français, mathématiques, sciences et
+        technologie), marqué « À vérifier » : ses chiffres peuvent induire en erreur.
+      </p>
+      <p class="caveat extras" data-l="en" lang="en-CA" hidden>
+        “Coverage” counts only the expectations loaded in the app, and a new board has none until a
+        curriculum is imported. The demo holds a partial, paraphrased sample (Grades 3 and 5:
+        Français, Math, Science and technology), marked “À vérifier” (to verify): its counts can
+        mislead.
+      </p>
+    </div>
+
+    <!-- « Commentaires de bulletin » -->
+    <div class="block">
+      <div class="group-h">
+        <h3 data-en="Report card comments">Commentaires de bulletin</h3>
+        <span class="tag" data-en="The “Report cards” tab of each class, and banks in the library"
+          >L’onglet « Bulletins » de chaque classe, et des banques dans « Ressources »</span
+        >
+      </div>
+      <div class="pair pair--facts">
+        <figure class="shot">
+          <img
+            src="assets/report-comments-desktop.webp"
+            width="1280"
+            height="800"
+            loading="lazy"
+            decoding="async"
+            alt="Capture d’écran sur ordinateur : « Bulletins » de la 3e année, en Mathématiques. À gauche, « Élèves (20) », 3 prêts, 0 commencé, 17 à faire : Adam « Prêt · 260 / 1 000 », Aïcha « Prêt · 316 / 1 000 », Chloé « Prêt · 309 / 1 000 », puis Emma, Félix, Florence, Gabriel, Jade, Léa, Liam, Maëlle, Mathis et Mia, « À faire ». À droite, Aïcha : la formulation « Féminin », le niveau de rendement 3, puis les points forts de la banque à cocher. Le premier, coché et lié à l’attente B1.1, dit : « Aïcha lit, représente, compose et décompose des nombres jusqu’à 1 000 de différentes façons et démontre une compréhension générale de la valeur de position. »"
+            data-alt-en="Computer screenshot: “Bulletins” (report cards) for Grade 3, in Math. On the left, “Élèves (20)” (students), 3 ready, 0 started, 17 to do: Adam ready at 260 of 1,000 characters, Aïcha at 316, Chloé at 309, then Emma, Félix, Florence, Gabriel, Jade, Léa, Liam, Maëlle, Mathis and Mia, to do. On the right, Aïcha: the feminine wording, achievement level 3, then the bank’s strengths to tick. The first, ticked and linked to expectation B1.1, says in French that Aïcha reads, represents, composes and decomposes numbers to 1,000 in different ways and shows a general understanding of place value."
+          />
+          <figcaption
+            data-en="“Report cards”: the class on the left, Aïcha on the right. The entries come from a demo bank approved in the demo board."
+          >
+            « Bulletins » : la classe à gauche, Aïcha à droite. Les entrées viennent d’une banque de
+            démonstration, approuvée dans le conseil de démonstration.
+          </figcaption>
+        </figure>
+        <aside class="facts" aria-labelledby="device-title">
+          <h4 id="device-title" data-en="What stays on your device">
+            Ce qui reste sur votre appareil
+          </h4>
+          <ul data-l="fr" lang="fr-CA">
+            <li>
+              Les commentaires, les niveaux, les entrées choisies et vos notes restent dans le
+              navigateur de cet appareil. Ils ne sont jamais envoyés à nos serveurs ni à l’IA.
+            </li>
+            <li>
+              Sur l’appareil, les prénoms des élèves de la classe sont remplacés par une marque ;
+              l’application les remet à l’affichage, à la copie et à l’impression. Un autre nom que
+              vous tapez (celui d’un parent, un surnom) reste tel quel.
+            </li>
+            <li>
+              Ils sont effacés à la déconnexion. Sinon, l’application les efface quand elle s’ouvre
+              de nouveau dans ce navigateur pour une autre personne, ou la première fois qu’elle s’y
+              ouvre plus de 60 jours après la remise du bulletin (ou après la dernière des dates
+              choisies).
+            </li>
+            <li>
+              Limite : un navigateur où l’application ne s’ouvre plus les garde jusqu’à ce que ses
+              données soient effacées. Sur un ordinateur partagé, déconnectez-vous. Ils ne vous
+              suivent pas sur un autre appareil.
+            </li>
+            <li>Aucune IA ne lit un commentaire sur un élève.</li>
+          </ul>
+          <ul data-l="en" lang="en-CA" hidden>
+            <li>
+              Comments, marks, chosen entries and your notes stay in this device’s browser. They are
+              never sent to our servers or to the AI.
+            </li>
+            <li>
+              On the device, the first names of the class’s students are replaced by a marker; the
+              app puts them back on screen, when copying and when printing. Another name you type (a
+              parent’s, a nickname) stays as typed.
+            </li>
+            <li>
+              They are erased when you sign out. Otherwise, the app erases them when it next opens
+              in that browser for someone else, or the first time it opens there more than 60 days
+              after the report card goes home (or after the last of the chosen dates).
+            </li>
+            <li>
+              Limit: a browser where the app no longer opens keeps them until its data is cleared.
+              On a shared computer, sign out. They do not follow you to another device.
+            </li>
+            <li>No AI reads a comment about a student.</li>
+          </ul>
+        </aside>
+      </div>
+      <div class="grid grid--2">
+        <div class="grid-item">
+          <h4 data-en="Comment banks">Des banques de commentaires</h4>
+          <p data-l="fr" lang="fr-CA">
+            Dans « Ressources » : des points forts, des prochaines étapes et des commentaires
+            généraux par attente (ou par habileté d’apprentissage) et par niveau ou par cote, avec
+            « {prénom} » à la place du prénom de l’élève. Révision, partage et approbation par le
+            conseil, comme pour une ressource. La démonstration en contient trois, écrites pour
+            elle.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            In the library: strengths, next steps and general comments by expectation (or by
+            learning skill) and by level or rating, with “{prénom}” where the student’s first name
+            goes. Reviewed, shared and approved by the board like any resource. The demo has three,
+            written for it.
+          </p>
+        </div>
+        <div class="grid-item">
+          <h4 data-en="“Create a comment bank with AI”">
+            « Créer une banque de commentaires avec l’IA »
+          </h4>
+          <p data-l="fr" lang="fr-CA">
+            Si votre école active l’IA : l’année, la matière, le bulletin, jusqu’à 12 attentes et
+            vos « Précisions ». L’IA écrit seulement à partir de ces libellés du curriculum et de
+            vos précisions ; l’application n’y ajoute rien sur vos élèves. Avant l’envoi, vous voyez
+            le texte exact : les noms que l’application connaît y sont remplacés, un titre suivi
+            d’un nom qu’elle ne connaît pas (« Mme Dupuis ») bloque la demande, les mots avec
+            majuscule sont listés, et vous confirmez avec « J’ai vérifié ». Le résultat est un
+            brouillon privé, à relire.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            If your school turns AI on: the grade, subject, report card, up to 12 expectations and
+            your “Details”. The AI writes only from those curriculum labels and your details; the
+            app adds nothing about your students. Before sending, you see the exact text: the names
+            the app knows are replaced, a title followed by a name it does not know (“Mme Dupuis”)
+            blocks the request, capitalized words are listed, and you confirm with “I checked”. The
+            result is a private draft to read over.
+          </p>
+        </div>
+        <div class="grid-item">
+          <h4 data-en="“Report cards”, student by student">« Bulletins », élève par élève</h4>
+          <p data-l="fr" lang="fr-CA">
+            Choisissez la période, la matière et la banque. Pour chaque élève : la formulation
+            (neutre, féminin ou masculin), le niveau de rendement, puis les entrées à cocher, déjà
+            au prénom de l’élève ; celles des attentes enseignées pendant la période passent en
+            premier. Le commentaire se modifie librement, avec son nombre de caractères.
+            « Aujourd’hui » rappelle la date de saisie trois semaines avant.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            Choose the period, the subject and the bank. For each student: the wording (neutral,
+            feminine or masculine), the achievement level, then the entries to tick, already with
+            the student’s first name; those for expectations taught during the period come first.
+            The comment can be edited freely, with its character count. “Today” reminds you of the
+            deadline three weeks ahead.
+          </p>
+        </div>
+        <div class="grid-item">
+          <h4 data-en="Into the official report card">Vers le bulletin officiel</h4>
+          <p data-l="fr" lang="fr-CA">
+            « Copier », « Tout copier pour cet élève » ou « Imprimer », avec des espaces simples à
+            la copie (un réglage, comme la limite de 1 000 caractères). Le bulletin officiel de
+            votre conseil fait foi.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            “Copy”, “Copy everything for this student” or “Print”, with plain spaces when copying (a
+            setting, like the 1,000-character limit). Your board’s official report card is the
+            record.
+          </p>
+        </div>
+      </div>
+      <p class="caveat extras" data-l="fr" lang="fr-CA">
+        « Créer une banque de commentaires avec l’IA » n’a fonctionné qu’avec un faux fournisseur :
+        aucune promesse sur la qualité des banques ni sur le temps gagné. Pas encore essayé avec le
+        système de bulletin d’un conseil.
+      </p>
+      <p class="caveat extras" data-l="en" lang="en-CA" hidden>
+        “Create a comment bank with AI” has only run with a fake provider: no claim about the
+        quality of the banks or the time saved. Not tried yet with a board’s report card system.
+      </p>
+    </div>
+
+    <!-- « Info-parents » -->
+    <div class="block">
+      <div class="group-h">
+        <h3 data-en="“Info-parents” (family newsletter)">« Info-parents »</h3>
+        <span class="tag" data-en="In each class; the app sends nothing to families"
+          >Dans chaque classe ; l’application n’envoie rien aux familles</span
+        >
+      </div>
+      <div class="pair">
+        <figure class="shot">
+          <img
+            src="assets/newsletter-desktop.webp"
+            width="1280"
+            height="800"
+            loading="lazy"
+            decoding="async"
+            alt="Capture d’écran sur ordinateur : l’éditeur « Info-parents », section « Dates à retenir · Dates to remember ». Chaque paragraphe en français à gauche et en anglais à droite, marqué « English : préparé par l’application » : « Mardi 6 octobre à 12 h 05 : Rassemblement : lancement de la collecte d’aliments. », « Jeudi 8 octobre à 10 h : Messe de l’Action de grâce. » et « Vendredi 9 octobre : journée pédagogique (pas d’école). », avec leur anglais, par exemple « Friday, October 9 : PA day (no school). ». Des boutons pour monter, descendre ou retirer chaque paragraphe, et la barre « Enregistré » en bas."
+            data-alt-en="Computer screenshot: the “Info-parents” editor, the “Dates à retenir · Dates to remember” section. Each paragraph in French on the left and English on the right, marked “English : préparé par l’application” (prepared by the app): Tuesday, October 6 at 12:05 p.m., an assembly launching the food drive; Thursday, October 8 at 10 a.m., the Thanksgiving mass; Friday, October 9, “PA day (no school).” Buttons to move each paragraph up or down or remove it, and the “Enregistré” (saved) bar at the bottom."
+          />
+          <figcaption
+            data-en="The first draft, in French and English, from the school’s calendar. Each paragraph says where its English came from."
+          >
+            Le premier jet, en français et en anglais, tiré du calendrier de l’école. Chaque
+            paragraphe dit d’où vient son anglais.
+          </figcaption>
+        </figure>
+        <figure class="shot shot--sheet">
+          <img
+            src="assets/newsletter-pdf.webp"
+            width="816"
+            height="1056"
+            loading="lazy"
+            decoding="async"
+            alt="Le PDF « Info-parents » en français : École élémentaire catholique Saint-Exemple, 3e année – Mme Tremblay, semaine du 28 septembre 2026. « Bonjour chères familles, », puis « Cette semaine en classe » et « La semaine prochaine » (les leçons de Français et de Mathématiques, par unité), « Dates à retenir » (cinq dates, dont la journée pédagogique du 9 octobre et l’Action de grâce le 12), « Pour aider à la maison » (trois jeux avec les nombres), « Moment de foi » (une courte prière), « Bonne fin de semaine ! » et la signature « Mme Tremblay ». Aucun élève n’est nommé."
+            data-alt-en="The “Info-parents” PDF in French: École élémentaire catholique Saint-Exemple, Grade 3 – Mme Tremblay, week of September 28, 2026. A greeting to families, then this week and next week in class (the Français and Math lessons, by unit), dates to remember (five dates, including the October 9 PA day and Thanksgiving on the 12th), helping at home (three number games), a faith moment (a short prayer), a closing and the signature “Mme Tremblay”. No student is named."
+          />
+          <figcaption data-en="The same first draft, printed in French, untouched.">
+            Le même premier jet, imprimé en français, sans retouche.
+          </figcaption>
+        </figure>
+      </div>
+      <div class="grid grid--2">
+        <div class="grid-item">
+          <h4 data-en="A first draft, without AI">Un premier jet, sans IA</h4>
+          <p data-l="fr" lang="fr-CA">
+            L’application prépare le message de la semaine à partir de la classe : les leçons de
+            cette semaine et de la suivante, une unité prévue dans « Mon année », les dates à
+            retenir du calendrier de l’école, des conseils des guides pour les familles et un moment
+            de foi. Jamais les notes d’un événement destinées au personnel, un niveau, une alerte ni
+            rien sur un élève.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            The app drafts the week’s message from the class: this week’s and next week’s lessons, a
+            unit planned in “My year”, the dates to remember from the school calendar, tips from the
+            family guides and a faith moment. Never an event’s notes for staff, a level, an alert or
+            anything about a student.
+          </p>
+        </div>
+        <div class="grid-item">
+          <h4 data-en="French and English">Français et anglais</h4>
+          <p data-l="fr" lang="fr-CA">
+            Chaque paragraphe a son français et son anglais côte à côte (un sélecteur par section
+            sur un téléphone), et l’état de son anglais en toutes lettres : « à écrire », « préparé
+            par l’application », « écrit par vous »… Vous modifiez, déplacez, retirez ou ajoutez des
+            paragraphes. « Corriger la typographie » rectifie les espaces et les apostrophes du
+            français, sans IA.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            Each paragraph has its French and English side by side (a switch per section on a
+            phone), and the state of its English in words: to write, prepared by the app, written by
+            you… You edit, move, remove or add paragraphs. “Fix the typography” corrects French
+            spacing and apostrophes, without AI.
+          </p>
+        </div>
+        <div class="grid-item">
+          <h4 data-en="Copy or print">Copier ou imprimer</h4>
+          <p data-l="fr" lang="fr-CA">
+            « Copier le français », « Copy the English » ou « Copier les deux », pour le moyen de
+            communication approuvé par votre conseil, ou un PDF par langue. Avant, l’application
+            signale les élèves que le message nomme et les renseignements personnels qu’il contient.
+            Elle n’envoie rien aux familles et ne garde aucune de leurs coordonnées.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            “Copy the French”, “Copy the English” or “Copy both”, for the communication channel your
+            board approves, or a PDF per language. First, the app points out the students the
+            message names and the personal details it holds. It sends nothing to families and keeps
+            none of their contact details.
+          </p>
+        </div>
+        <div class="grid-item">
+          <h4 data-en="Kept with the class">Rangé avec la classe</h4>
+          <p data-l="fr" lang="fr-CA">
+            Seule l’équipe de la classe voit ses messages ; la direction et le secrétariat ne les
+            voient pas. Ils sont effacés avec les prénoms des élèves, un an après la fin de l’année
+            scolaire, et vous pouvez en supprimer un en tout temps. « Aujourd’hui » rappelle le
+            message pendant les deux derniers jours d’école de la semaine.
+          </p>
+          <p data-l="en" lang="en-CA" hidden>
+            Only the class team sees its messages; the principal and the office do not. They are
+            erased with the students’ first names, a year after the school year ends, and you can
+            delete one at any time. “Today” reminds you about the message on the week’s last two
+            school days.
+          </p>
+        </div>
+      </div>
+      <div class="where">
+        <h4 data-en="“Translate into English (AI)”, in short">
+          « Traduire en anglais (IA) », en bref
+        </h4>
+        <ul data-l="fr" lang="fr-CA">
+          <li>Seulement si votre école active l’IA, et jamais automatiquement.</li>
+          <li>
+            Envoyé : les paragraphes en français à traduire et l’année d’études, les noms que
+            l’application connaît remplacés. Jamais la classe, l’école, la signature ni un
+            identifiant. Le texte est traité aux États-Unis, comme pour les autres fonctions d’IA.
+          </li>
+          <li>
+            Non envoyé : un paragraphe qui contient un renseignement personnel détecté (un courriel,
+            un numéro de téléphone) ou un titre qui n’est pas suivi d’un nom que l’application
+            connaît (« Merci à Mme Dupuis »). Vous écrivez son anglais vous-même.
+          </li>
+          <li>
+            L’aperçu montre le texte exact et liste les mots avec majuscule à vérifier ; rien ne
+            part avant que vous cochiez « J’ai vérifié ». L’anglais revient marqué « English :
+            traduit par l’IA — à relire ».
+          </li>
+          <li>
+            Limite : un nom sans titre (« Merci à Sophie ») est listé, pas bloqué, et l’application
+            ne le liste pas toujours (« Noël » seul, par exemple). C’est votre relecture qui
+            l’attrape.
+          </li>
+          <li>
+            Anglais seulement. Jamais essayé avec le vrai modèle d’IA : aucune promesse sur la
+            qualité de la traduction.
+          </li>
+        </ul>
+        <ul data-l="en" lang="en-CA" hidden>
+          <li>Only if your school turns AI on, and never automatically.</li>
+          <li>
+            Sent: the French paragraphs to translate and the grade, with the names the app knows
+            replaced. Never the class, the school, the signature or an identifier. The text is
+            processed in the United States, as for the other AI features.
+          </li>
+          <li>
+            Not sent: a paragraph holding a personal detail the app detects (an email, a phone
+            number) or a title not followed by a name the app knows (“Merci à Mme Dupuis”). You
+            write its English yourself.
+          </li>
+          <li>
+            The preview shows the exact text and lists the capitalized words to check; nothing goes
+            before you tick “I checked”. The English comes back marked “English: translated by AI —
+            to read over”.
+          </li>
+          <li>
+            Limit: a name without a title (“Merci à Sophie”) is listed, not blocked, and the app
+            does not always list it (“Noël” alone, for example). Your reading catches it.
+          </li>
+          <li>
+            English only. Never tried with the real AI model: no claim about the quality of the
+            translation.
+          </li>
+        </ul>
+      </div>
+      <p class="caveat extras" data-l="fr" lang="fr-CA">
+        « Info-parents » n’est pas un portail pour les parents : il n’y a ni compte ni coordonnées
+        des familles. Vous envoyez le message vous-même, par le moyen de votre conseil.
+      </p>
+      <p class="caveat extras" data-l="en" lang="en-CA" hidden>
+        “Info-parents” is not a parent portal: there are no family accounts and no contact details.
+        You send the message yourself, through your board’s channel.
+      </p>
+    </div>
+  </section>
+
   <!-- ================= PRIVACY ================= -->
   <section class="sec" id="vie-privee" aria-labelledby="priv-title">
     <div class="sec-head">
@@ -2901,6 +3454,69 @@
         </p>
       </article>
       <article class="card">
+        <h3 data-en="Report card comments stay on your device">
+          Les commentaires de bulletin restent sur votre appareil
+        </h3>
+        <p data-l="fr" lang="fr-CA">
+          Vous rédigez les commentaires de bulletin dans votre navigateur, et ils y restent : ils ne
+          sont jamais envoyés à nos serveurs ni à l’IA, et aucune IA ne lit un commentaire sur un
+          élève. Sur l’appareil, les prénoms des élèves de la classe sont remplacés par une marque.
+          Les commentaires sont effacés à la déconnexion, ou quand l’application s’ouvre de nouveau
+          dans ce navigateur pour une autre personne, ou pour la première fois après leur date. Pour
+          écrire une banque, l’IA reçoit seulement des libellés du curriculum et vos précisions, où
+          les noms que l’application connaît sont remplacés.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          You write report card comments in your browser, and they stay there: they are never sent
+          to our servers or to the AI, and no AI reads a comment about a student. On the device, the
+          first names of the class’s students are replaced by a marker. Comments are erased when you
+          sign out, or when the app next opens in that browser for someone else, or for the first
+          time after their date. To write a bank, the AI receives only curriculum labels and your
+          details, where the names the app knows are replaced.
+        </p>
+        <p class="limit" data-l="fr" lang="fr-CA">
+          Limites : un navigateur où l’application ne s’ouvre plus garde les commentaires jusqu’à ce
+          que ses données soient effacées. Un autre nom que vous tapez (celui d’un parent) reste tel
+          quel, et la vérification orthographique avancée de certains navigateurs envoie le texte
+          tapé à leur éditeur.
+        </p>
+        <p class="limit" data-l="en" lang="en-CA" hidden>
+          Limits: a browser where the app no longer opens keeps the comments until its data is
+          cleared. Another name you type (a parent’s) stays as typed, and some browsers’ enhanced
+          spell-check sends typed text to their maker.
+        </p>
+      </article>
+      <article class="card">
+        <h3 data-en="Info-parents: nothing goes to families">
+          Info-parents : rien ne part vers les familles
+        </h3>
+        <p data-l="fr" lang="fr-CA">
+          L’application n’envoie ni courriel ni texto aux familles et ne garde aucune de leurs
+          coordonnées : vous copiez ou imprimez le message vous-même, par le moyen de votre conseil.
+          La traduction anglaise par l’IA est facultative. Elle envoie les paragraphes en français,
+          les noms que l’application connaît remplacés, et retient tout paragraphe où un titre n’est
+          pas suivi d’un nom qu’elle connaît (« Mme Dupuis »), ou qui contient un renseignement
+          personnel détecté. Vous vérifiez les mots avec majuscule qu’elle liste, puis vous
+          confirmez.
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          The app sends no email or text to families and keeps none of their contact details: you
+          copy or print the message yourself, through your board’s channel. The AI English
+          translation is optional. It sends the French paragraphs with the names the app knows
+          replaced, and holds back any paragraph where a title is not followed by a name the app
+          knows (“Mme Dupuis”), or that holds a personal detail it detects. You check the
+          capitalized words it lists, then confirm.
+        </p>
+        <p class="limit" data-l="fr" lang="fr-CA">
+          Limite : un nom sans titre (« Sophie ») est listé, pas bloqué, et pas toujours listé.
+          C’est votre relecture qui l’attrape.
+        </p>
+        <p class="limit" data-l="en" lang="en-CA" hidden>
+          Limit: a name without a title (“Sophie”) is listed, not blocked, and not always listed.
+          Your reading catches it.
+        </p>
+      </article>
+      <article class="card">
         <h3 data-en="Erased every night">Effacé chaque nuit</h3>
         <div class="stamps">
           <span class="stamp stamp--ok" data-en="Available (pilot build)"
@@ -2909,18 +3525,19 @@
         </div>
         <p data-l="fr" lang="fr-CA">
           Chaque nuit, l’application efface ce qui a dépassé sa durée de conservation : les prénoms
-          des élèves un an après la fin de l’année scolaire (vos unités et vos leçons restent), les
-          plans de suppléance un an après leur date, les demandes d’IA après 30 jours, les
-          commentaires après un an et le journal d’audit après deux ans. Vous voyez un avis 60 jours
-          avant que les prénoms d’une classe soient effacés. Une donnée effacée reste au plus
-          30 jours dans les copies de sauvegarde.
+          des élèves un an après la fin de l’année scolaire, avec les messages « Info-parents » de
+          la classe (vos unités et vos leçons restent), les plans de suppléance un an après leur
+          date, les demandes d’IA après 30 jours, les messages envoyés par « Commentaires » après un
+          an et le journal d’audit après deux ans. Vous voyez un avis 60 jours avant que les prénoms
+          d’une classe soient effacés. Une donnée effacée reste au plus 30 jours dans les copies de
+          sauvegarde.
         </p>
         <p data-l="en" lang="en-CA" hidden>
           Every night, the app erases what has passed its retention period: students’ first names a
-          year after the school year ends (your units and lessons stay), substitute plans a year
-          after their date, AI requests after 30 days, feedback after a year and the audit log after
-          two years. You see a notice 60 days before a class’s first names are erased. Erased data
-          stays in the backups for 30 days at most.
+          year after the school year ends, with the class’s “Info-parents” messages (your units and
+          lessons stay), substitute plans a year after their date, AI requests after 30 days,
+          feedback after a year and the audit log after two years. You see a notice 60 days before a
+          class’s first names are erased. Erased data stays in the backups for 30 days at most.
         </p>
         <p class="limit" data-l="fr" lang="fr-CA">
           Ce sont les durées par défaut. Un conseil peut demander d’en changer certaines, sans
@@ -3150,6 +3767,10 @@
             propre révision avant d’être offert à tout le conseil, et une prière se projette en gros
             caractères.
           </li>
+          <li>
+            « Mon année » montre les temps liturgiques, et chaque message « Info-parents » propose
+            un moment de foi, que vous retirez d’un clic.
+          </li>
         </ul>
         <ul class="ticks" data-l="en" lang="en-CA" hidden>
           <li>Morning prayer and O Canada can be a period in the timetable.</li>
@@ -3161,6 +3782,10 @@
           <li>
             In the resource bank, faith content (a morning prayer, a reflection) gets its own review
             before it reaches the whole board, and a prayer can be projected in large type.
+          </li>
+          <li>
+            “My year” shows the liturgical seasons, and each “Info-parents” message offers a faith
+            moment, which you remove in one click.
           </li>
         </ul>
         <p class="caveat" data-l="fr" lang="fr-CA">
@@ -3222,7 +3847,8 @@
           </li>
           <li>
             Des niveaux de langue par élève et le « Texte différencié » pour les classes où la
-            maîtrise du français varie.
+            maîtrise du français varie. « Info-parents » prépare le message aux familles en français
+            et en anglais.
           </li>
           <li>
             Une écriture inclusive : « la personne suppléante », « le personnel enseignant », « la
@@ -3238,7 +3864,7 @@
           <li>Ontario grades and subjects, rotating days (Day 1 to N) and rotary teaching.</li>
           <li>
             Language levels per student and “Differentiated text” for classes where French
-            proficiency varies.
+            proficiency varies. “Info-parents” drafts the message to families in French and English.
           </li>
           <li>
             Inclusive writing in French: “la personne suppléante”, “le personnel enseignant”, “la
@@ -3390,13 +4016,15 @@
       <div class="grid-item">
         <h3 data-en="What the principal doesn’t see">Ce que la direction ne voit pas</h3>
         <p data-l="fr" lang="fr-CA">
-          Les unités, les leçons et la progression du personnel enseignant, et aucun chiffre par
-          personne. Dans le journal, un élève paraît par sa classe (« Élève · 3e année »), jamais
-          par son prénom.
+          Les unités, les leçons, la progression, « Mon année », « Couverture » et les messages
+          « Info-parents » du personnel enseignant, et aucun chiffre par personne. Les commentaires
+          de bulletin restent sur l’appareil de l’enseignant·e. Dans le journal, un élève paraît par
+          sa classe (« Élève · 3e année »), jamais par son prénom.
         </p>
         <p data-l="en" lang="en-CA" hidden>
-          Teachers’ units, lessons and progress, and no figures per person. In the log, a student
-          appears as their class (“Élève · 3e année”), never by first name.
+          Teachers’ units, lessons, progress, “My year”, “Coverage” and “Info-parents” messages, and
+          no figures per person. Report card comments stay on the teacher’s device. In the log, a
+          student appears as their class (“Élève · 3e année”), never by first name.
         </p>
       </div>
     </div>
@@ -3493,16 +4121,18 @@
         <h3 data-en="Schools, school years, calendar">Écoles, années scolaires, calendrier</h3>
         <p data-l="fr" lang="fr-CA">
           Les coordonnées et les heures de chaque école (le téléphone du secrétariat paraît dans les
-          plans), l’IA activée ou non par école, les années scolaires, et les journées pédagogiques
-          et congés de tout le conseil. Les alertes restent une décision de la direction de chaque
-          école. D’autres choix (modules, niveaux de langue, heure de publication des plans) sont
-          appliqués par la personne qui gère le serveur, à votre demande.
+          plans), l’IA activée ou non par école, les années scolaires et leurs périodes de bulletin,
+          et les journées pédagogiques et congés de tout le conseil. Les alertes restent une
+          décision de la direction de chaque école. D’autres choix (modules, niveaux de langue,
+          heure de publication des plans) sont appliqués par la personne qui gère le serveur, à
+          votre demande.
         </p>
         <p data-l="en" lang="en-CA" hidden>
           Each school’s contact details and hours (the office phone appears in plans), AI on or off
-          per school, the school years, and PA days and holidays for the whole board. Alerts remain
-          each school principal’s decision. Other choices (modules, language levels, the plans’
-          release time) are applied by whoever runs the server, at your request.
+          per school, the school years and their report card periods, and PA days and holidays for
+          the whole board. Alerts remain each school principal’s decision. Other choices (modules,
+          language levels, the plans’ release time) are applied by whoever runs the server, at your
+          request.
         </p>
       </div>
       <div class="brd">
@@ -3614,16 +4244,18 @@
         <h3 data-en="Retention, every night">La conservation, chaque nuit</h3>
         <p data-l="fr" lang="fr-CA">
           Ce qui a dépassé sa durée est effacé chaque nuit, conseil par conseil. Par défaut :
-          journal d’audit 2 ans, plans de suppléance 1 an, prénoms des élèves 1 an après l’année
-          scolaire, utilisation de l’IA 2 ans, commentaires 1 an, sauvegardes 30 jours. Le personnel
-          enseignant voit un avis 60 jours avant l’effacement des prénoms d’une classe. Ces minimums
-          attendent l’avis d’un ou d’une juriste.
+          journal d’audit 2 ans, plans de suppléance 1 an, prénoms des élèves et messages
+          « Info-parents » 1 an après l’année scolaire, utilisation de l’IA 2 ans, messages de
+          « Commentaires » 1 an, sauvegardes 30 jours. Le personnel enseignant voit un avis 60 jours
+          avant l’effacement des prénoms d’une classe. Ces minimums attendent l’avis d’un ou d’une
+          juriste.
         </p>
         <p data-l="en" lang="en-CA" hidden>
           What has passed its retention period is erased every night, board by board. By default:
-          audit log 2 years, substitute plans 1 year, students’ first names 1 year after the school
-          year, AI use 2 years, feedback 1 year, backups 30 days. Teachers see a notice 60 days
-          before a class’s first names are erased. These minimums are waiting for a lawyer’s review.
+          audit log 2 years, substitute plans 1 year, students’ first names and “Info-parents”
+          messages 1 year after the school year, AI use 2 years, feedback 1 year, backups 30 days.
+          Teachers see a notice 60 days before a class’s first names are erased. These minimums are
+          waiting for a lawyer’s review.
         </p>
       </div>
       <div class="brd">
@@ -3731,18 +4363,17 @@
           Liens avec les systèmes de l’école : portes, sonorisation, interphones, caméras
         </li>
         <li data-en="Microsoft or Google sign-in">Connexion Microsoft ou Google</li>
-        <li data-en="Parents">Parents</li>
+        <li data-en="A parent portal and parent accounts">Portail et comptes pour les parents</li>
         <li data-en="Board analytics">Analyses pour le conseil</li>
-        <li data-en="Report-card comments and an IEP log">
-          Commentaires de bulletin et journal du PEI
-        </li>
+        <li data-en="An IEP log">Journal du PEI</li>
       </ul>
       <p
         class="note"
-        data-en="None of these exists today. The platform has no link with PA, doors, intercoms or cameras."
+        data-en="None of these exists today. The platform has no link with PA, doors, intercoms or cameras. “Info-parents” is a message the teacher copies or prints, not a portal."
       >
         Rien de cela n’existe aujourd’hui. La plateforme n’a aucun lien avec la sonorisation, les
-        portes, les interphones ou les caméras.
+        portes, les interphones ou les caméras. « Info-parents » est un message que l’enseignant·e
+        copie ou imprime ; ce n’est pas un portail.
       </p>
     </div>
   </section>
@@ -3931,6 +4562,16 @@
           to your first sign-in? Our goal is under 3 minutes. None of this has been measured yet.
         </p>
         <p data-l="fr" lang="fr-CA">
+          Pour l’année et les bulletins : « Couverture » correspond-elle à ce que vous savez avoir
+          enseigné ? Les entrées d’une banque sont-elles utilisables telles quelles ? Où
+          envoyez-vous le message aux familles, et le texte copié s’y présente-t-il bien ?
+        </p>
+        <p data-l="en" lang="en-CA" hidden>
+          For the year and report cards: does “Coverage” match what you know you taught? Are a
+          bank’s entries usable as they are? Where do you send the message to families, and does the
+          copied text look right there?
+        </p>
+        <p data-l="fr" lang="fr-CA">
           Pour la direction : le tableau de bord vous est-il utile à 7 h 45 ? Quelque chose y
           ressemble-t-il à de la surveillance du personnel ?
         </p>
@@ -4072,13 +4713,13 @@
     d’IP Lynx Inc., intégrateur ontarien en sécurité et en télécommunications. En développement :
     aucun service en ligne, aucun conseil scolaire client, aucun témoignage. Les exemples et les
     prénoms de cette page sont fictifs, comme les données des captures d’écran (les courriels y sont
-    brouillés). État au 2 octobre 2026.
+    brouillés). État au 3 octobre 2026.
   </p>
   <p data-l="en" lang="en-CA" hidden>
     “<span data-app-name>Lynx École</span>” is a working name that may change. A platform by IP Lynx
     Inc., an Ontario security and telecom integrator. In development: no live service, no
     school-board clients, no testimonials. The examples and first names on this page are fictional,
-    and so is the data in the screenshots (emails are blurred). Status as of October 2, 2026.
+    and so is the data in the screenshots (emails are blurred). Status as of October 3, 2026.
   </p>
 </footer>
 

@@ -311,13 +311,15 @@
     }
     ul {
       gap: 1pt;
+      /* Room for the disc marker, which the page edge would otherwise cut. */
+      padding-inline-start: 1.4em;
     }
     .sheet {
       max-width: none;
       border: 0;
       border-top: 3pt solid var(--green);
       padding: 5pt 0 0;
-      gap: 7pt;
+      gap: 6pt;
     }
     .sheet + .sheet {
       margin-top: 0;
@@ -349,6 +351,12 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 9pt;
       margin-top: 2pt;
+    }
+    /* Print only: the top of each capture, so that each language stays on one page. */
+    .shots img {
+      max-height: 30mm;
+      object-fit: cover;
+      object-position: top;
     }
     .cols {
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -384,7 +392,7 @@
       </p>
       <h1 id="fr-title">Fiche d’information pour les conseils scolaires</h1>
       <p class="meta">
-        État au 2 octobre 2026 · Version pilote, rien n’est encore en ligne · IP Lynx Inc.,
+        État au 3 octobre 2026 · Version pilote, rien n’est encore en ligne · IP Lynx Inc.,
         intégrateur ontarien en sécurité et en télécommunications
       </p>
       <p class="jump"><a href="#en" lang="en-CA">English version below</a></p>
@@ -421,6 +429,23 @@
             IA. Banque de ressources par niveau de langue, mode classe au projecteur et sur les
             tablettes. IA facultative, désactivée par défaut.
           </p>
+        </div>
+        <div class="row">
+          <p>Année scolaire</p>
+          <ul>
+            <li>
+              « Mon année » : les unités sur les semaines de l’année ; « Couverture » par attente ;
+              un plan à long terme en PDF.
+            </li>
+            <li>
+              « Bulletins » : les commentaires à partir de banques, gardés dans le navigateur,
+              jamais envoyés à nos serveurs ni à l’IA.
+            </li>
+            <li>
+              « Info-parents » : le message de la semaine en français et en anglais, à copier ou à
+              imprimer ; rien n’est envoyé aux familles.
+            </li>
+          </ul>
         </div>
         <div class="row">
           <p>Suppléance</p>
@@ -538,9 +563,9 @@
             minimales n’ont pas encore été revues par un ou une juriste. WCAG 2.0 AA est une cible.
           </li>
           <li>
-            Le curriculum intégré est un échantillon résumé (3e et 5e année) marqué « À vérifier ».
-            Les ressources et les textes de foi, écrits pour la démonstration, n’ont été validés ni
-            en classe ni par une autorité catholique.
+            Le curriculum intégré est un échantillon résumé (3e et 5e année) marqué « À vérifier » ;
+            « Couverture » ne compte que ces attentes. Les ressources et les textes de foi, écrits
+            pour la démonstration, n’ont été validés ni en classe ni par une autorité catholique.
           </li>
           <li>
             Pas encore essayé dans une vraie école ni sur le matériel d’une vraie classe. Aucun lien
@@ -584,7 +609,7 @@
       </p>
       <h1 id="en-title">Fact sheet for school boards</h1>
       <p class="meta">
-        Status as of October 2, 2026 · Pilot build, nothing is online yet · IP Lynx Inc., an Ontario
+        Status as of October 3, 2026 · Pilot build, nothing is online yet · IP Lynx Inc., an Ontario
         security and telecom integrator
       </p>
       <p class="jump"><a href="#fr" lang="fr-CA">Version française ci-dessus</a></p>
@@ -619,6 +644,23 @@
             without AI. A French resource bank with versions by language level, and class mode on
             the projector and class tablets. AI is optional and off by default.
           </p>
+        </div>
+        <div class="row">
+          <p>School year</p>
+          <ul>
+            <li>
+              “My year”: units on the year’s weeks; “Coverage” by expectation; a long-range plan as
+              a PDF.
+            </li>
+            <li>
+              “Report cards”: comments built from comment banks, kept in the browser, never sent to
+              our servers or the AI.
+            </li>
+            <li>
+              “Info-parents”: the week’s message in French and English, copied or printed by the
+              teacher; nothing is sent to families.
+            </li>
+          </ul>
         </div>
         <div class="row">
           <p>Substitutes</p>
@@ -734,8 +776,8 @@
           </li>
           <li>
             The curriculum included is a paraphrased sample (Grades 3 and 5) marked “À vérifier” (to
-            verify). The resources and faith texts were written for the demo; no class and no
-            Catholic authority has validated them.
+            verify); “Coverage” counts only those expectations. The resources and faith texts were
+            written for the demo; no class and no Catholic authority has validated them.
           </li>
           <li>
             Not tried yet in a real school or on a real classroom’s equipment. No link with PA,
