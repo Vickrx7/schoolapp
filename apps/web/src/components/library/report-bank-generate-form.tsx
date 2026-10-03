@@ -2,7 +2,7 @@
 
 import { FIRST_NAME_TOKEN } from '@lynx/content';
 import { ShieldCheck } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
@@ -67,6 +67,8 @@ export function ReportBankGenerateForm({
   const tAi = useTranslations('libraryAi');
   const tc = useTranslations('libraryCommon');
   const tCommon = useTranslations('common');
+  const tNews = useTranslations('newsletter.ai');
+  const locale = useLocale();
   const router = useRouter();
   const draft = useDraft(draftKey, initial, {
     sentPolicy: (jobId) => {
@@ -79,6 +81,8 @@ export function ReportBankGenerateForm({
   const aiOff = !school?.aiEnabled;
   const skills = v.scope === 'learning_skills';
   const [preview, setPreview] = useState<ReportBankPreview | null>(null);
+  // « J'ai vérifié », for the preview shown (a new preview asks again).
+  const [checked, setChecked] = useState(false);
   const [loaded, setLoaded] = useState<{ key: string; result: Expectations } | null>(null);
   const [attempt, setAttempt] = useState(0);
 
@@ -112,7 +116,12 @@ export function ReportBankGenerateForm({
       ? loaded.result
       : { state: 'loading' };
 
-  const check = useAction(previewReportBankGeneration, { onSuccess: setPreview });
+  const check = useAction(previewReportBankGeneration, {
+    onSuccess: (data) => {
+      setPreview(data);
+      setChecked(false);
+    },
+  });
   const send = useAction(requestReportBankGeneration, {
     onSuccess: ({ jobId }) => {
       // Not cleared yet: if the request fails, the teacher gets her choices back (D-035).
@@ -401,7 +410,9 @@ export function ReportBankGenerateForm({
           <CardBody className="space-y-4">
             <Notice tone="info" className="flex items-start gap-2">
               <ShieldCheck className="mt-0.5 size-4 shrink-0" aria-hidden />
-              <span className="font-medium">{t('previewNoStudents')}</span>
+              <span className="font-medium">
+                {preview.note ? t('previewNoStudents') : t('previewNoStudentsNoNote')}
+              </span>
             </Notice>
             <p className="text-sm text-slate-600">
               {t('previewIntro', { token: FIRST_NAME_TOKEN })}
@@ -411,12 +422,43 @@ export function ReportBankGenerateForm({
             <p className="text-sm font-medium text-slate-700">
               {tAi('replacedCount', { count: preview.replaced })}
             </p>
-            <p className="text-sm text-slate-600">{t('previewCheck')}</p>
+            {preview.note && !preview.blocked.length ? (
+              <>
+                <Notice
+                  tone={preview.words.length ? 'warning' : 'info'}
+                  data-testid="bank-note-words"
+                >
+                  <p>
+                    {preview.words.length
+                      ? tNews('words', {
+                          words: new Intl.ListFormat(locale, { type: 'unit' }).format(
+                            preview.words,
+                          ),
+                        })
+                      : tNews('noWords')}
+                  </p>
+                  <p className="mt-1 text-sm">{t('noteLimit')}</p>
+                </Notice>
+                <label className="flex min-h-11 cursor-pointer items-start gap-3 rounded-lg border border-slate-300 bg-white p-3 text-slate-900">
+                  <input
+                    type="checkbox"
+                    className="mt-0.5 size-5 shrink-0 accent-brand-600"
+                    checked={checked}
+                    onChange={(e) => setChecked(e.target.checked)}
+                  />
+                  <span>{t('noteConfirm')}</span>
+                </label>
+              </>
+            ) : (
+              <p className="text-sm text-slate-600">{t('previewCheck')}</p>
+            )}
             <p className="text-sm text-slate-600">{t('reviewNote')}</p>
             <div className="flex flex-wrap gap-2">
               <Button
-                onClick={() => void send.run(toBankForm(v))}
-                disabled={send.pending || preview.blocked.length > 0 || aiOff}
+                onClick={() => void send.run(toBankForm(v), checked)}
+                disabled={
+                  send.pending || preview.blocked.length > 0 || aiOff || (preview.note && !checked)
+                }
               >
                 {send.pending ? tAi('sending') : tAi('send')}
               </Button>

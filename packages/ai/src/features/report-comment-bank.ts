@@ -44,6 +44,7 @@ import { z } from 'zod';
 import type { BlockedFinding, Redactor } from '../privacy';
 import { selectPromptSections } from '../prompt-sections';
 import type { FeatureDefinition } from '../types';
+import { findTitledUnknownNames } from '../unknown-names';
 import { wordingProblems } from './library-shared';
 import { tagged } from './shared';
 
@@ -174,7 +175,9 @@ export const REPORT_BANK_OUTPUT_LIMITS = { title: 200, summary: 1000, keywords: 
 /**
  * De-identifies every text of the request with one redactor: the teacher's note is the only text
  * she typed and the one most likely to name someone; the labels and the attentes come from the
- * database, and are checked all the same.
+ * database, and are checked all the same. A note where a title is not followed by a name the app
+ * knows (« Merci à Mme Dupuis », `findTitledUnknownNames`) refuses the request, as « Traduire en
+ * anglais (IA) » leaves out such a paragraph (D-132, D-139): the teacher takes the name out.
  */
 export function redactReportCommentBankInput(
   input: ReportCommentBankInput,
@@ -187,6 +190,8 @@ export function redactReportCommentBankInput(
     return r.text;
   };
   const cleanOrNull = (value: string | null) => (value === null ? null : clean(value));
+  const teacherNote = clean(input.teacherNote);
+  blocked.push(...findTitledUnknownNames(teacherNote));
   return {
     input: {
       ...input,
@@ -198,10 +203,19 @@ export function redactReportCommentBankInput(
         text: clean(e.text),
         strandLabel: cleanOrNull(e.strandLabel),
       })),
-      teacherNote: clean(input.teacherNote),
+      teacherNote,
     },
     blocked,
   };
+}
+
+/** The tag of the teacher's note in the message (`tagged`, which the note cannot close). */
+const NOTE_TAG = 'precisions';
+const NOTE_BLOCK = new RegExp(`<${NOTE_TAG}>\\n([\\s\\S]*)\\n</${NOTE_TAG}>`, 'u');
+
+/** The teacher's note as the message carries it, or '' when it has none. */
+export function reportBankNoteOf(message: string): string {
+  return NOTE_BLOCK.exec(message)?.[1] ?? '';
 }
 
 // ---------------------------------------------------------------------------------------
@@ -270,7 +284,7 @@ export function reportCommentBankUserMessage(input: ReportCommentBankInput): str
   lines.push(
     '',
     input.teacherNote.trim()
-      ? tagged('precisions', input.teacherNote)
+      ? tagged(NOTE_TAG, input.teacherNote)
       : "Précisions de l'enseignant·e : aucune.",
   );
   return lines.join('\n');
@@ -747,6 +761,11 @@ export const reportCommentBankFeature: FeatureDefinition<
         : [`scope:${input.scope}`, `period:${input.period}`],
     ),
   redactInput: redactReportCommentBankInput,
+  /**
+   * The last check before sending runs the title rule on the note again (D-132): only on the note,
+   * since an attente of Enseignement religieux may well say « Marie, mère de Jésus ».
+   */
+  outboundFindings: (message) => findTitledUnknownNames(reportBankNoteOf(message)),
   buildUserMessage: reportCommentBankUserMessage,
   normalize: normalizeReportCommentBank,
   validate: validateReportCommentBank,

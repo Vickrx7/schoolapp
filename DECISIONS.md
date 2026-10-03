@@ -2875,6 +2875,15 @@ evaluation cases and `checkReportCommentBank` (`pnpm ai:eval --feature report_co
 `server/actions/report-bank-ai.ts`; pgTAP `35_report_comments` (S2 part); e2e
 `report-comments.spec.ts`.
 
+_Amended in the post-MVP review (2026-10-03), round A:_ the note (« Précisions ») is checked as
+« Traduire en anglais (IA) » checks a paragraph (D-139 as amended): a title not followed by a name
+the app knows blocks the request (`titledName`, in `redactInput` and again at the last check, which
+runs the title rule on the note only, since an attente may well say « Marie, mère de Jésus »);
+the preview lists the note's capitalized words, and a request with a note needs « J'ai vérifié »
+(`reportBankUnconfirmed`, checked by the server too). The preview says « …seulement l'année, la
+matière, les attentes choisies et vos précisions. » when a note is sent (the earlier sentence
+without one). `server/library/report-bank-preview.ts` builds it (unit tested).
+
 **D-133 — No AI on an individual student's comment.** No AI feature reads a report card comment,
 a student's mark or « Mes notes »: the AI only writes banks from curriculum labels (D-132). A
 « Reformuler ce commentaire (IA) » is designed (`report-comments-plan` S4: only the template form
@@ -3081,6 +3090,29 @@ evaluation cases (`newsletter-translate-cases.ts`, `checkNewsletterTranslation`)
 `server/actions/newsletter-ai.ts` and `server/newsletter/ai-preview.ts`;
 `components/info-parents/translate-dialog.tsx`; `apps/worker/src/newsletter-ai.int.test.ts`; e2e
 `info-parents.spec.ts`.
+
+_Amended in the post-MVP review (2026-10-03), round A:_ the title rule fails closed. It lives in
+`packages/ai/src/unknown-names.ts` (`findTitledUnknownNames`, `capitalizedWords`, `TITLES`), one
+implementation for the web preview, the worker's `redactInput` and the last check. A paragraph
+with a title that is not followed by a name the app knows (a marker by then) is never sent: no
+allow-list applies after a title (« Mme Noël », « M. Toussaint », « Mme St-Pierre », « Mme Grace
+Dupuis » and « le père Noël » are findings); the titles are M., MM., Mme, Mmes, Mlle(s), Mx, Me,
+Dr, Dre, Pr, Pre, Mgr, Sr, P., Fr, Rev., Mr, Mrs, Ms, and monsieur, madame, mademoiselle,
+messieurs, mesdames, mesdemoiselles, mister, docteur(e), monseigneur, abbé, curé, diacre, père,
+mère, frère, sœur, pasteur, chanoine, révérend, maître, professeur(e), coach, miss, father, sister,
+brother, maman, papa, tante, oncle (abbreviations only capitalized; whole words in any case); any
+Unicode space or a line break may separate title and name; up to three words may come between
+(« Mme la directrice adjointe Dupuis »); after an honorific the next word is a name whatever its
+case (« madame dupuis ») unless it is a little word (« Mme la », « Monsieur est »); after a title
+that is also an everyday word (père, mère, Me…), only a capitalized word is a name (« sa mère
+viendra » is not a finding); a capitalized word after a marker is one too (« Mme Élève A Dupuis »,
+« Adulte A Dupuis »). `capitalizedWords` now lists every capitalized word wherever it stands (at a
+sentence's start, after « : », « ( », « « » or a dash), except markers, short acronyms,
+abbreviated titles, `NEVER_A_PERSON` (which no longer holds Grace, April, May, June or August) and
+a short list of little words that start a sentence or a quotation (« Les », « Demain », days and
+months). The limit that remains: a name the app does not know, without a title, that is
+lowercase, or that is also one of those little words or in `NEVER_A_PERSON` (« Noël » alone), is
+neither blocked nor listed; the teacher's confirmation covers it.
 
 **D-140 — No AI rewriting in v1: « Corriger la typographie ».** « Améliorer le texte (IA) » is not
 built: rewriting the teacher's French would send more text out and risk invented facts for little

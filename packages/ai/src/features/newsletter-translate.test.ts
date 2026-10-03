@@ -156,6 +156,41 @@ describe('what is sent', () => {
     expect(prepared.problems).toEqual(['dropped items.P2', 'dropped items.P3', 'dropped items.P5']);
   });
 
+  it('never sends a paragraph the reviewers made leak: no allow-list after a title, any space', () => {
+    const leaks = [
+      'Merci à Mme Noël pour les biscuits.',
+      'Merci à M. Toussaint qui est venu parler de son métier.',
+      'Merci à Mme St-Pierre pour les biscuits.',
+      'Merci à M. Saint-Onge pour le transport.',
+      'Merci à Mme Ste-Marie qui a accompagné la sortie.',
+      'Merci à Mme Grace Dupuis pour sa visite.',
+      'Merci à Mme April Dupuis pour sa visite.',
+      'Thanks to Mrs. June Smith and Mr. English.',
+      'Le père Noël Bélanger viendra.',
+      'Merci à Mmes Dupuis et Côté.',
+      'Merci à MM. Bélanger et Roy.',
+      'Le curé Bélanger bénira la classe.',
+      'Merci à Me Lavoie, à Sr Thérèse et au P. Lemieux.',
+      'Merci à Coach Miller et à Miss Smith.',
+      'Merci à Mme la directrice adjointe Dupuis.',
+      'merci à madame dupuis',
+      ...['\u2009', '\u2002', '\u2007', '\u205f', '\u3000', '\n', '\t'].map(
+        (space) => `Merci à Mme${space}Dupuis pour les biscuits.`,
+      ),
+    ];
+    for (const text of leaks) {
+      const prepared = prepare(
+        input([
+          ['message', text],
+          ['closing', 'Bonne semaine!'],
+        ]),
+      );
+      if (!prepared.ok) throw new Error('refused');
+      expect(prepared.problems, text).toEqual(['dropped items.P1']);
+      expect(prepared.user, text).not.toContain('<P1>');
+    }
+  });
+
   it('refuses the request when nothing is left to send (personalInfo)', () => {
     const prepared = prepare(input([['message', 'Merci à Mme Dupuis.']]));
     expect(prepared).toMatchObject({ ok: false, errorCode: 'personalInfo' });
@@ -207,34 +242,9 @@ describe('what is sent', () => {
   });
 });
 
-describe('capitalizedWords: words to check before sending', () => {
-  it('lists capitalized words inside sentences, never markers, titles or common words', () => {
-    expect(
-      capitalizedWords([
-        'Bonjour chères familles,',
-        'Merci à Julie et à Élève A pour la collecte organisée avec la paroisse Sainte-Famille.',
-        'Les élèves de 3e année visiteront le Musée canadien de la nature avec Adulte B.',
-        'Rappel : la journée PA est vendredi. Noël approche, et Dieu nous aime.',
-      ]),
-    ).toEqual(['Julie', 'Musée']);
-  });
-
-  it('lists a sentence’s first word only when the next one is listed too (a full name)', () => {
-    expect(capitalizedWords(['Julie Dupuis viendra lire une histoire.'])).toEqual([
-      'Julie',
-      'Dupuis',
-    ]);
-    expect(capitalizedWords(['Demain, nous irons au parc.'])).toEqual([]);
-    expect(capitalizedWords(['Les Dupuis viendront. Merci à Son et à Bon.'])).toEqual([
-      'Dupuis',
-      'Son',
-      'Bon',
-    ]);
-    expect(capitalizedWords(['« Les Nombres » est notre unité.'])).toEqual(['Nombres']);
-  });
-
-  it('finds a name after an elision, each word once', () => {
-    expect(capitalizedWords(['Le livre d’Hélène.', 'Hélène et Hélène.'])).toEqual(['Hélène']);
+describe('capitalizedWords (unknown-names.test.ts has the rules)', () => {
+  it('is the shared implementation', () => {
+    expect(capitalizedWords(['Merci à Julie.'])).toEqual(['Julie']);
   });
 });
 

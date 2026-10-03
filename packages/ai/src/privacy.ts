@@ -31,9 +31,10 @@ export type BlockedKind =
   | 'address'
   | 'birthDate'
   /**
-   * A title followed by a name the app does not know (« Merci à Mme Dupuis »). Found only by
-   * `findTitledUnknownNames`, which « Traduire en anglais (IA) » runs (D-139): never by
-   * `findBlockedDetails`, so no other feature changes.
+   * A title not followed by a name the app knows (« Merci à Mme Dupuis »). Found only by
+   * `findTitledUnknownNames` (unknown-names.ts), which « Traduire en anglais (IA) » (D-139) and
+   * the note of « Créer une banque avec l'IA » (D-132) run: never by `findBlockedDetails`, so no
+   * other feature changes.
    */
   | 'titledName';
 
@@ -437,117 +438,11 @@ export function findBlockedDetails(text: string, now = new Date()): BlockedFindi
 }
 
 // ---------------------------------------------------------------------------------------
-// A title followed by a name the app does not know (« Traduire en anglais (IA) », D-139)
+// A title before a name the app does not know (« Traduire en anglais (IA) », « Créer une banque
+// avec l'IA »): see unknown-names.ts.
 // ---------------------------------------------------------------------------------------
 
-/**
- * Words that put a person's name after them (folded). Abbreviations count only when capitalized
- * (« M. Roy », never the « m » of « 100 m »), and may take a period: the honorifics, « Dr » and
- * « Dre », « Mgr ».
- */
-const TITLE_ABBREVIATIONS = new Set([
-  'm',
-  'mme',
-  'mlle',
-  'mr',
-  'mrs',
-  'ms',
-  'mx',
-  'dr',
-  'dre',
-  'mgr',
-]);
-/**
- * Whole words, in any case and followed by a space only: the honorifics written out, and the
- * religious and family titles of a Catholic school's letters (« merci à madame Dupuis », « le
- * père Gagnon », « sœur Marie », « l'abbé Roy », « mon frère Lucas »).
- */
-const TITLE_WORDS = new Set([
-  'monsieur',
-  'madame',
-  'mademoiselle',
-  'docteur',
-  'docteure',
-  'abbe',
-  'monseigneur',
-  'pere',
-  'mere',
-  'frere',
-  'soeur',
-]);
-const ABBREVIATION_GAP = /^\.?[ \t\u00a0\u202f]*$/u;
-const SPACE_GAP = /^[ \t\u00a0\u202f]+$/u;
-/** Between the words after a title: « le curé Gagnon », « l'abbé ». */
-const WORD_GAP = /^(?:[ \t\u00a0\u202f]+|['’])$/u;
-/** At most this many lowercase words between a title and a name (« M. le maire Watson »). */
-const TITLE_LOOKAHEAD = 2;
-
-/** A title, given what separates it from the next word. */
-function isTitle(word: { raw: string; folded: string }, gap: string): boolean {
-  if (TITLE_ABBREVIATIONS.has(word.folded)) {
-    return /^\p{Lu}/u.test(word.raw) && ABBREVIATION_GAP.test(gap);
-  }
-  return TITLE_WORDS.has(word.folded) && SPACE_GAP.test(gap);
-}
-
-/**
- * Every title followed by a capitalized word that is no marker (« Merci à Mme Dupuis », « M. le
- * maire Watson », « Dr Lee »): a person the app does not know, since the redactor already replaced
- * the people it knows (« Mme Tremblay » became « Adulte A »). Run it on redacted text. A newsletter
- * thanks parents, volunteers and guests by name: such a paragraph is never sent to the AI
- * (D-139). `allowed`: folded words that are never a person (« Noël » in « le père Noël »).
- * Lowercase words after a title end the search after two (« Mme la directrice a dit »).
- */
-export function findTitledUnknownNames(
-  text: string,
-  allowed: ReadonlySet<string> = new Set(),
-): BlockedFinding[] {
-  const words = [...text.matchAll(WORD)].map((m) => ({
-    start: m.index,
-    end: m.index + m[0].length,
-    raw: m[0],
-    folded: fold(m[0]),
-  }));
-  const findings: BlockedFinding[] = [];
-  let i = 0;
-  while (i < words.length) {
-    const title = words[i]!;
-    const first = words[i + 1];
-    if (!first || !isTitle(title, text.slice(title.end, first.start))) {
-      i++;
-      continue;
-    }
-    let found = -1;
-    for (let k = i + 1; k <= i + 1 + TITLE_LOOKAHEAD && k < words.length; k++) {
-      const word = words[k]!;
-      if (k > i + 1 && !WORD_GAP.test(text.slice(words[k - 1]!.end, word.start))) break;
-      // « M. et Mme Dupuis »: the next title starts its own search.
-      const after = words[k + 1];
-      if (after && isTitle(word, text.slice(word.end, after.start))) break;
-      if (!/^\p{Lu}/u.test(word.raw)) continue;
-      // « Mme Élève A » cannot be a name the app does not know.
-      const next = words[k + 1];
-      const marker =
-        (word.folded === 'eleve' || word.folded === 'adulte') &&
-        next !== undefined &&
-        /^[A-Z]{1,3}$/.test(next.raw) &&
-        /^\s+$/u.test(text.slice(word.end, next.start));
-      if (!marker && !allowed.has(word.folded)) found = k;
-      break;
-    }
-    if (found >= 0) {
-      findings.push({
-        kind: 'titledName',
-        match: text.slice(title.start, words[found]!.end),
-        index: title.start,
-      });
-      i = found + 1;
-    } else {
-      i++;
-    }
-  }
-  return findings;
-}
+export { findTitledUnknownNames } from './unknown-names';
 
 // ---------------------------------------------------------------------------------------
 // Redactor

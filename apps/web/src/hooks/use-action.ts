@@ -100,8 +100,10 @@ export const KNOWN_ERRORS: ReadonlySet<string> = new Set([
   'reportPeriodOutsideYear',
   'datesBoth',
   'beforePeriodStart',
-  // « Commentaires de bulletin » (server/errors.ts, LXK01; D-129).
+  // « Commentaires de bulletin » (server/errors.ts, LXK01; D-129); « Créer une banque avec l'IA »
+  // with a note and without « J'ai vérifié » (server/actions/report-bank-ai.ts; D-132).
   'reportBankNotTeaching',
+  'reportBankUnconfirmed',
   // « Info-parents » (server/errors.ts and server/actions/newsletters.ts; D-137, D-138).
   'newsletterWeek',
   'newsletterPurged',

@@ -81,7 +81,7 @@ test('« Créer une banque avec l’IA »: checked before sending, no student da
   await expect(page.getByText('Ce qui sera envoyé à l’IA')).toBeVisible();
   await expect(
     page.getByText(
-      /^Aucun renseignement sur vos élèves n’est envoyé\s:\sseulement l’année, la matière et les attentes choisies\.$/,
+      /^Aucun renseignement sur vos élèves n’est envoyé\s:\sseulement l’année, la matière, les attentes choisies et vos précisions\.$/,
     ),
   ).toBeVisible();
   // Exactly what is sent: the grade, the subject, the report, the attentes with their keys, the
@@ -101,10 +101,32 @@ test('« Créer une banque avec l’IA »: checked before sending, no student da
   await expect(page.getByText('Relisez chaque entrée avant de l’utiliser.')).toBeVisible();
   await expectAccessible(page);
 
-  // « Modifier la demande » goes back to the form; the choices are still there.
+  // The note goes only once « J’ai vérifié » is ticked.
+  await expect(page.getByTestId('bank-note-words')).toContainText(
+    'Aucun mot avec majuscule à vérifier.',
+  );
+  await expect(page.getByRole('button', { name: 'Envoyer à l’IA' })).toBeDisabled();
+
+  // « Modifier la demande » goes back to the form; the choices are still there. A title before a
+  // name the app does not know blocks the request, as « Traduire en anglais (IA) » does.
   await page.getByRole('button', { name: 'Modifier la demande' }).click();
   await expect(page.getByRole('checkbox', { name: /^B1\.2 / })).toBeChecked();
+  const note = page.getByLabel(/^Précisions/);
+  await note.fill('Comme pour Samuel, insister sur la droite numérique. Merci à Mme Dupuis.');
   await page.getByRole('button', { name: 'Vérifier avant d’envoyer' }).click();
+  await expect(page.getByText('Renseignements personnels à retirer')).toBeVisible();
+  await expect(
+    page.getByText(/^Nom que l’application ne connaît pas, après un titre\s:\sMme Dupuis$/),
+  ).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Envoyer à l’IA' })).toBeDisabled();
+  await page.getByRole('button', { name: 'Modifier la demande' }).click();
+  await note.fill('Comme pour Samuel, insister sur la droite numérique.');
+  await page.getByRole('button', { name: 'Vérifier avant d’envoyer' }).click();
+  await page
+    .getByRole('checkbox', {
+      name: 'J’ai vérifié : mes précisions ne nomment personne et ne disent rien sur un élève en particulier.',
+    })
+    .check();
   await page.getByRole('button', { name: 'Envoyer à l’IA' }).click();
   // The job page follows the request, then opens the new draft.
   await page.waitForURL(ITEM_URL, { timeout: 120_000 });

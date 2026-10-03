@@ -11,9 +11,9 @@
  * Stricter than the other features, under the rule that nothing personal leaves Canada:
  * - a paragraph holding a personal detail (`findBlockedDetails`) is not sent and listed as
  *   « Non envoyé », as substitute plans do (D-052), instead of refusing the whole request;
- * - so is a paragraph where a title is followed by a name the app does not know (« Merci à Mme
- *   Dupuis », `findTitledUnknownNames`, run on the redacted text: the people the app knows are
- *   already markers);
+ * - so is a paragraph where a title is not followed by a name the app knows (« Merci à Mme
+ *   Dupuis », « Mme Noël », `findTitledUnknownNames`, run on the redacted text: the people the app
+ *   knows are already markers; no allow-list after a title);
  * - the preview lists the remaining capitalized words for the teacher to check
  *   (`capitalizedWords`), and she confirms before anything is sent;
  * - the request carries the keys of the paragraphs the preview showed as sent (`sendKeys`): the
@@ -23,12 +23,8 @@
  * Pure (Zod only): the web server imports it for its preview.
  */
 import { z } from 'zod';
-import {
-  findTitledUnknownNames,
-  type BlockedFinding,
-  type BlockedKind,
-  type Redactor,
-} from '../privacy';
+import type { BlockedFinding, BlockedKind, Redactor } from '../privacy';
+import { findTitledUnknownNames } from '../unknown-names';
 import type { FeatureDefinition } from '../types';
 import { tagged } from './shared';
 
@@ -121,117 +117,17 @@ export const newsletterTranslateOutputSchema = z.object({
 }) as z.ZodType<NewsletterTranslateOutput>;
 
 // ---------------------------------------------------------------------------------------
-// Words that are never a person, for the title rule and the preview's capitalized words
+// Names the app does not know (unknown-names.ts, shared with « Créer une banque avec l'IA »)
 // ---------------------------------------------------------------------------------------
+
+export { capitalizedWords, NEVER_A_PERSON } from '../unknown-names';
 
 const foldWord = (s: string) =>
   s.normalize('NFKD').replace(/\p{M}/gu, '').toLowerCase().replace(/œ/g, 'oe').replace(/æ/g, 'ae');
 
-/**
- * Capitalized words that never name a person in a message to families (folded): the faith, the
- * feasts and seasons, places, school subjects and days off, and English days and months (the
- * plan's allowlist, **Assumption**). « Marie » is not in it: it is a first name too.
- */
-export const NEVER_A_PERSON: ReadonlySet<string> = new Set(
-  [
-    // Faith, feasts and seasons
-    'dieu jesus christ seigneur vierge esprit saint sainte st ste tout puissant eglise',
-    'noel paques avent careme pentecote toussaint epiphanie ascension assomption cendres',
-    'action grace souvenir famille fetes fete terre halloween carnaval',
-    // Places
-    'canada ontario quebec ottawa toronto',
-    // Subjects and school words
-    'francais anglais mathematiques sciences technologie etudes sociales education physique',
-    'sante arts musique danse histoire geographie religieux enseignement info parents',
-    'ecole conseil paroisse classe',
-    'english french math',
-    // English days and months
-    'monday tuesday wednesday thursday friday saturday sunday',
-    'january february march april may june july august september october november december',
-  ]
-    .join(' ')
-    .split(' '),
-);
-
-/** Function words that may start a sentence: there, never a name (folded). */
-const COMMON_WORDS = new Set(
-  [
-    'le la les l un une des du de d au aux ce cet cette ces mon ma mes ton ta tes son sa ses',
-    'notre nos votre vos leur leurs je j tu il elle on nous vous ils elles c ca qui que qu quoi',
-    'et ou mais donc or ni car si s en a dans par pour sur sous avec sans chez vers entre apres',
-    'avant depuis pendant tous toutes chaque merci bonjour bonsoir bravo felicitations bienvenue',
-    'bonne bon bonnes bons cher chere cheres chers rappel rappels attention important',
-    'the a an we our you your this these that please thank thanks dear hello',
-  ]
-    .join(' ')
-    .split(' '),
-);
-
 /** « Élève A », « Adulte B »: the markers the redactor puts in place of people. */
 const MARKER =
   /(?<![\p{L}\p{M}\p{N}])([ÉEée]l[èe]ve|[Aa]dulte)\s+([A-Z]{1,3})(?![\p{L}\p{M}\p{N}])/gu;
-/** Words without their elision: « Hélène » in « d’Hélène ». */
-const WORD = /[\p{L}\p{M}]+/gu;
-/** What may come right before a word that starts a sentence or a quotation. */
-const STARTS = /(?:^|[.!?…:;«“"([\n—–]|^\s*-|\s-)\s*$/u;
-
-/**
- * The capitalized words of the texts that the teacher should check before sending (D-139): a
- * name the app does not know (a parent's, a volunteer's) is sent as it is, so the preview asks
- * her to look at every word that may be one. Words in the middle of a sentence, never markers,
- * short acronyms (« PA »), titles (« Mme »), common words or `NEVER_A_PERSON`; a word that starts
- * a sentence or a quotation (« Les », « Demain ») only when the next word is listed too (« Julie
- * Dupuis viendra »). In order of appearance, each once.
- */
-export function capitalizedWords(texts: readonly string[]): string[] {
-  const out: string[] = [];
-  const seen = new Set<string>();
-  const add = (word: string) => {
-    const key = foldWord(word);
-    if (!seen.has(key)) {
-      seen.add(key);
-      out.push(word);
-    }
-  };
-  for (const text of texts) {
-    const markers = new Set<number>();
-    for (const m of text.matchAll(MARKER)) {
-      markers.add(m.index);
-      markers.add(m.index + m[0].length - m[2]!.length);
-    }
-    const words = [...text.matchAll(WORD)].map((m) => ({ word: m[0], index: m.index }));
-    const candidate = (i: number) => {
-      const w = words[i];
-      if (!w || markers.has(w.index) || !/^\p{Lu}/u.test(w.word)) return false;
-      const letters = w.word;
-      if (letters.length < 2) return false;
-      if (letters.length <= 3 && letters === letters.toUpperCase()) return false;
-      const folded = foldWord(letters);
-      if (NEVER_A_PERSON.has(folded)) return false;
-      return !/^(?:m|mme|mlle|mr|mrs|ms|mx|dr|dre|mgr)$/.test(folded);
-    };
-    // Inside a sentence, a capitalized « Son » or « Bon » is a name: only a sentence's first word
-    // may be a common word.
-    const common = (i: number) => COMMON_WORDS.has(foldWord(words[i]!.word));
-    const atStart = (i: number) => STARTS.test(text.slice(0, words[i]!.index));
-    words.forEach((w, i) => {
-      if (!candidate(i)) return;
-      if (!atStart(i)) return add(w.word);
-      // A sentence's first word is listed with the next when both are capitalized (a full name),
-      // unless it is a common word (« Les Dupuis viendront »: Dupuis only).
-      const next = words[i + 1];
-      if (
-        !common(i) &&
-        next &&
-        candidate(i + 1) &&
-        /^\s+$/u.test(text.slice(w.index + w.word.length, next.index))
-      ) {
-        add(w.word);
-      }
-    });
-  }
-  return out;
-}
 
 // ---------------------------------------------------------------------------------------
 // De-identification: one redactor for the whole request; a paragraph with a personal detail
@@ -271,11 +167,11 @@ export function redactNewsletterTranslateInput(
   const items: NewsletterTranslateItem[] = [];
   const gradeLabels = input.gradeLabels.map((label) => {
     const r = redactor.redact(label);
-    return r.blocked.length || findTitledUnknownNames(r.text, NEVER_A_PERSON).length ? '' : r.text;
+    return r.blocked.length || findTitledUnknownNames(r.text).length ? '' : r.text;
   });
   for (const item of input.items) {
     const r = redactor.redact(item.text);
-    const findings = [...r.blocked, ...findTitledUnknownNames(r.text, NEVER_A_PERSON)];
+    const findings = [...r.blocked, ...findTitledUnknownNames(r.text)];
     if (findings.length) {
       notSent.push({
         key: item.key,
@@ -627,7 +523,7 @@ export const newsletterTranslateFeature: FeatureDefinition<
   },
 
   /** The last check before sending runs the title rule on the whole message again. */
-  outboundFindings: (message) => findTitledUnknownNames(message, NEVER_A_PERSON),
+  outboundFindings: (message) => findTitledUnknownNames(message),
 
   buildUserMessage: newsletterTranslateUserMessage,
   normalize: normalizeNewsletterTranslation,

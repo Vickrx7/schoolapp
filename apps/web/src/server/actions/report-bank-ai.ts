@@ -5,17 +5,15 @@ import {
   REPORT_BANK_LENGTH_KEYS,
   REPORT_BANK_MAX_EXPECTATIONS,
   REPORT_BANK_NOTE_MAX,
-  reportCommentBankFeature,
   reportCommentBankInputSchema,
 } from '@lynx/ai/features/report-comment-bank';
-import { Redactor, type BlockedKind, type Segment } from '@lynx/ai/privacy';
 import { GRADE_CODE_PATTERN, REPORT_BANK_SCOPES } from '@lynx/content';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { fail, ok, type ActionResult } from '@/lib/action-result';
 import { visiblePeople } from '../ai-people';
 import { reportError } from '../errors';
-import { segmentMessage } from '../library/ai-preview';
+import { buildReportBankPreview, type ReportBankPreview } from '../library/report-bank-preview';
 import { aiOn, librarySchools, requireSession } from '../session';
 import { createSupabaseServerClient } from '../supabase';
 import { parseInput } from './validation';
@@ -26,7 +24,10 @@ import { parseInput } from './validation';
  * note (« Précisions »). The database builds the request from its tables
  * (`report_comment_bank_ai_preview`) and the server shows the teacher exactly the de-identified
  * text that would be sent, names highlighted (D-038). Nothing about her students is part of it,
- * and nothing is sent before she presses « Envoyer ».
+ * and nothing is sent before she presses « Envoyer ». Her note (« Précisions ») is checked as
+ * « Traduire en anglais (IA) » checks a paragraph (D-132, D-139, as amended in the post-MVP
+ * review): a title not followed by a name the app knows blocks the request, the other
+ * capitalized words are listed, and a note is sent only once she ticks « J'ai vérifié ».
  */
 
 const AI_ERRORS: Record<string, string> = {
@@ -62,13 +63,7 @@ const bankSchema = z
   });
 export type ReportBankForm = z.input<typeof bankSchema>;
 
-export interface ReportBankPreview {
-  /** Exactly the text sent, split around the names replaced by markers. */
-  message: Segment[];
-  replaced: number;
-  /** Personal details that block the request until the teacher removes them. */
-  blocked: { kind: BlockedKind; match: string }[];
-}
+export type { ReportBankPreview };
 
 async function prepareBank(raw: ReportBankForm) {
   const session = await requireSession();
@@ -103,14 +98,7 @@ async function prepareBank(raw: ReportBankForm) {
     });
     return { ok: false as const, result: fail('invalid') };
   }
-  const redactor = new Redactor(await visiblePeople(supabase));
-  const { input: sent, blocked } = reportCommentBankFeature.redactInput(input.data, redactor);
-  const message = reportCommentBankFeature.buildUserMessage(sent);
-  const preview: ReportBankPreview = {
-    message: segmentMessage(message, redactor.replacements()),
-    replaced: redactor.replacements().length,
-    blocked: blocked.map((b) => ({ kind: b.kind, match: b.match })),
-  };
+  const preview = buildReportBankPreview(input.data, await visiblePeople(supabase));
   return { ok: true as const, supabase, form, request, preview };
 }
 
@@ -123,13 +111,18 @@ export async function previewReportBankGeneration(
   return ok(prepared.preview);
 }
 
-/** « Envoyer »: queues the request (the database builds it again from the same ids). */
+/**
+ * « Envoyer »: queues the request (the database builds it again from the same ids). With a note,
+ * only once « J'ai vérifié » is ticked (`reportBankUnconfirmed`).
+ */
 export async function requestReportBankGeneration(
   raw: ReportBankForm,
+  confirmed = false,
 ): Promise<ActionResult<{ jobId: string }>> {
   const prepared = await prepareBank(raw);
   if (!prepared.ok) return prepared.result;
   if (prepared.preview.blocked.length) return fail('personalInfo');
+  if (prepared.preview.note && confirmed !== true) return fail('reportBankUnconfirmed');
   const { data, error } = await prepared.supabase.rpc('request_report_comment_bank', {
     p_school_id: prepared.form.schoolId,
     p_request: prepared.request,

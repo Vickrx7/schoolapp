@@ -102,6 +102,8 @@ describe('database errors shown to users', () => {
   it('maps the « Commentaires de bulletin » code to its message (D-129)', () => {
     expect(errorKey({ code: 'LXK01' })).toBe('reportBankNotTeaching');
     expect(fr.errors).toHaveProperty('reportBankNotTeaching');
+    // reportBankUnconfirmed: a note sent without « J'ai vérifié » (server/actions/report-bank-ai.ts).
+    expect(fr.errors).toHaveProperty('reportBankUnconfirmed');
   });
 
   it('maps the « Info-parents » codes to their messages (D-137, D-138)', () => {

@@ -6,7 +6,7 @@ import { Redactor, type KnownPerson } from '../privacy';
 import { loadPrompt } from '../prompts';
 import { createFakeProvider } from '../providers';
 import { priceFor } from '../pricing';
-import { runFeature } from '../run';
+import { prepareCall, runFeature } from '../run';
 import {
   REPORT_BANK_LENGTH_KEYS,
   REPORT_BANK_LENGTHS,
@@ -148,6 +148,68 @@ describe('report_comment_bank: the request', () => {
       new Redactor(people, NOW),
     );
     expect(email.blocked.map((b) => b.kind)).toEqual(['email']);
+  });
+
+  it('refuses a note where a title is not followed by a name the app knows (D-132, D-139)', () => {
+    for (const note of [
+      'Ton chaleureux. Merci à Mme Dupuis et à Samuel pour leur aide.',
+      'Merci à Mme Noël.',
+      'Merci à M.\u2009St-Pierre.',
+      'merci à madame dupuis',
+      'Comme le fait le curé Bélanger.',
+    ]) {
+      const { blocked } = feature.redactInput(
+        request('subject', { teacherNote: note }),
+        new Redactor(people, NOW),
+      );
+      expect(
+        blocked.map((b) => b.kind),
+        note,
+      ).toEqual(['titledName']);
+      const prepared = prepareCall(feature, request('subject', { teacherNote: note }), {
+        systemPrompt: 'Écris.',
+        people,
+        now: NOW,
+      });
+      expect(prepared, note).toMatchObject({ ok: false, errorCode: 'personalInfo' });
+    }
+    // A known person after a title is a marker: sent.
+    const known = feature.redactInput(
+      request('subject', { teacherNote: 'Comme Mme Tremblay le fait en classe.' }),
+      new Redactor(people, NOW),
+    );
+    expect(known.blocked).toEqual([]);
+    expect(known.input.teacherNote).toBe('Comme Adulte A le fait en classe.');
+  });
+
+  it('runs the title rule on the note only at the last check (an attente may name « mère »)', () => {
+    const religion = request('religion', {
+      expectations: [
+        {
+          ...exp(
+            1,
+            'A1.1',
+            'Reconnaître Marie, mère de Jésus, et le père Abraham dans les récits.',
+          ),
+          strandLabel: null,
+        },
+      ],
+      teacherNote: 'Un ton chaleureux.',
+    });
+    const prepared = prepareCall(feature, religion, { systemPrompt: 'Écris.', people, now: NOW });
+    expect(prepared.ok).toBe(true);
+    const bypass = {
+      ...feature,
+      // A redaction that would let the note through: the last check still refuses.
+      redactInput: (i: ReportCommentBankInput) => ({ input: i, blocked: [] }),
+    };
+    expect(
+      prepareCall(bypass, request('subject', { teacherNote: 'Merci à Mme Dupuis.' }), {
+        systemPrompt: 'Écris.',
+        people,
+        now: NOW,
+      }),
+    ).toEqual({ ok: false, errorCode: 'personalInfo', problems: ['outbound titledName'] });
   });
 
   it('sends grade, subject, report, length, attentes with keys and the note: no ids', () => {
