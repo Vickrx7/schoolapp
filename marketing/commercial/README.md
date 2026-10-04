@@ -42,6 +42,9 @@ cd marketing/commercial/
 ../promo/venv/bin/python make_commercial.py remix                 # new mix on the already rendered picture
 ```
 
+Screens, captions and titles hold perfectly still. Paper labels and props drift a fraction of a
+pixel, changing pose twice a second (`JIT_SCALE` and `JIT_HOLD` in `make_commercial.py`).
+
 A full build takes about 15 minutes per language on 4 CPUs. ffmpeg must be on the PATH. A voice
 line is regenerated only when its text changes (`build/voice-<lang>/`). Each scene lasts as long
 as its voice line plus a short lead and tail, so the French cut is a little longer, not faster.

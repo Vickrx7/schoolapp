@@ -89,9 +89,37 @@ def _clamp(img, cx):
     return cx
 
 
+# The handmade wobble: screens and text hold still; paper pieces drift a fraction of a pixel,
+# changing pose only every JIT_HOLD frames (twice a second at 12 fps).
+JIT_SCALE = 0.25
+JIT_HOLD = 6
+STEADY = {"phone", "laptop", "proj", "pfr", "pen", "lap", "tab", "tab0", "tab1", "tab2", "caption", "brand",
+          "chtab", "card", "name", "tagline", "foot", "sub1"}
+
+
 class FrameCtx(A.Ctx):
     def put(self, img, cx, cy, *a, **k):
-        return super().put(img, _clamp(img, cx), cy, *a, **k)
+        key = k.get("key", "")
+        if key in STEADY:
+            k["jit"], k["jrot"] = 0.0, 0.0
+        else:
+            k["jit"] = k.get("jit", 2.0) * JIT_SCALE
+            k["jrot"] = k.get("jrot", 0.6) * JIT_SCALE
+        frame = self.frame
+        self.frame = frame // JIT_HOLD
+        try:
+            return super().put(img, _clamp(img, cx), cy, *a, **k)
+        finally:
+            self.frame = frame
+
+    def connector(self, p1, p2, t0=0.0, key="", color=A.SLATE, width=4):
+        if self.t < t0:
+            return
+        jx, jy, _ = A.jitter(key + "c", self.frame // JIT_HOLD, 0.4, 0)
+        d = A.ImageDraw.Draw(self.cv)
+        d.line((p1[0] + jx, p1[1] + jy, p2[0] + jx, p2[1] + jy), fill=A.rgba(color, 200), width=width)
+        r = 8
+        d.ellipse((p2[0] + jx - r, p2[1] + jy - r, p2[0] + jx + r, p2[1] + jy + r), fill=A.rgba(A.AMBER), outline=A.rgba(color), width=3)
 
     def sfx(self, kind, t):
         pass

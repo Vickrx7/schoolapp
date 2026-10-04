@@ -382,7 +382,7 @@ def highlight(c: Ctx, rect, t0: float, key: str, color=AMBER, width=7, pad=8):
     """A hand-drawn ring around a canvas rect (x0, y0, x1, y1), appearing at t0."""
     if c.t < t0:
         return
-    jx, jy, _ = jitter(key + "hl", c.frame, 1.5, 0)
+    jx, jy, _ = jitter(key + "hl", c.frame // 6, 0.4, 0)
     x0, y0, x1, y1 = rect
     d = ImageDraw.Draw(c.cv)
     p = qstep(c.t, t0, 0.25, 3)

@@ -403,7 +403,7 @@ def s_tablets(c, S):
     for i, (x, y, r) in enumerate(((1380, 300, -4), (1640, 520, 3), (1360, 720, -2))):
         lbl = T(f"Device {i + 1}", f"Appareil {i + 1}")
         img = A.tablet("site-tablet-join", 440, 300) if i == 0 else A.tablet(None, 440, 300, label=lbl)
-        c.put(img[0], x, y, t0=C0(S) + 0.2 + i * 0.35, enter="slide", from_dir="right", dist=800, rot=r, key=f"tab{i}")
+        c.put(img[0], x, y, t0=C0(S) + 0.2 + i * 0.35, enter="slide", from_dir="right", dist=800, rot=r, key=f"tab{i}", jit=0.0, jrot=0.0)
     c.put(A.tag(T("join with a code", "on se joint avec un code"), AMBER, SLATE, 40), 1000, 140, t0=V(S, 0.25), enter="pop", rot=-2, key="t1")
     c.put(A.tag(T("no student accounts ✓", "aucun compte d'élève ✓"), GREEN, WHITE, 42), 1660, 860, t0=V(S, 0.6), enter="stamp", dur=0.3, steps=3, rot=2, key="t2")
     captions(c, S)
@@ -417,7 +417,7 @@ def s_sick(c, S):
     if c.cv is not None:
         c.cv.alpha_composite(A.night_overlay())
     ring_on = 0.0 <= t < CH_CARD + 1.4
-    wob = (6 if int(round(t * FPS)) % 2 == 0 else -6) if ring_on and t > 0.2 else 0
+    wob = (3 if int(round(t * FPS)) % 2 == 0 else -3) if ring_on and t > 0.2 else 0
     c.put(A.clock(230, 6, 5, alarm=True), 1600, 300, t0=0.1, enter="pop", rot=wob - 3, key="alarm", jit=2.5 if ring_on else 1.2, jrot=0.5)
     c.sfx("alarm", 0.15)
     c.put(A.moon(140), 1780, 190, t0=0.2, enter="pop", rot=-10, key="moon")
