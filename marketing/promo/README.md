@@ -91,3 +91,55 @@ timetables, first-names-only CSV import, encrypted + hidden + logged medical ale
 sick-day substitute plan is labelled "Bientôt · Coming soon" (ribbon + tag) and drawn as paper,
 not as an app screen. No pricing, AI, or board endorsement is claimed; the end card notes that
 "Lynx École" is a working name and all demo data is fictional.
+
+## 90-second commercial (`make_commercial.py`)
+
+A calmer, 90-second cut of the flagship script (« Lynx École commercials »), in French and in
+English: the sick day at 6 h 05, the plan, the code, the substitute, the report, the resource
+bank, class mode, « Mon année » and « Couverture », « Bulletins », « Info-parents », the
+principal and the board, privacy, and the end card. Scene lengths follow the voice (about 91 s).
+
+**This cut is written as if the pilot is live: it says the data is hosted in Canada and shows the
+AI at work (names replaced before anything goes to the AI). Confirm both before it airs.**
+
+| File                                              | What                                                                                     |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `lynx-ecole-commercial-90-fr.mp4` / `…-en.mp4`    | 1920x1080, 30 fps, H.264 (yuv420p, High, +faststart) + AAC 48 kHz, about 23 MB each      |
+| `build/commercial/commercial-90-storyboard-*.png` | Contact sheets (4x4), one frame per scene plus three second beats                        |
+| `make_commercial.py`                              | Voice lines, scenes, music, mix, encode and storyboard (reuses `promo_audio.py`)         |
+| `screens-commercial/`                             | The captures this cut adds (WebP, demo data), and `canada.json` for the map              |
+| `fonts/ZillaSlab-*.ttf`, `fonts/Lexend-*.ttf`     | The site's display and body faces (SIL OFL, `fonts/OFL-ZillaSlab.txt`, `OFL-Lexend.txt`) |
+
+Rebuild (same venv and voice files as above; ffmpeg comes from PATH, or from `imageio-ffmpeg`):
+
+```bash
+cd marketing/promo/
+./venv/bin/pip install imageio-ffmpeg            # only if ffmpeg is not on PATH
+./venv/bin/python make_commercial.py --lang fr   # -> lynx-ecole-commercial-90-fr.mp4 + build/commercial/ storyboard (~6 min, 4 CPUs)
+./venv/bin/python make_commercial.py --lang en
+./venv/bin/python make_commercial.py --lang fr preview       # two PNGs per scene in build/commercial/
+./venv/bin/python make_commercial.py --lang fr frames 12 41  # given times
+./venv/bin/python make_commercial.py --lang fr remix         # new mix on the rendered picture
+```
+
+- **Voice**: the lines are `LINES_FR` / `LINES_EN` (`say` is read, `caption` is burned in with
+  French typography); the voice is cached in `build/commercial/voice-<lang>.json`, so delete it
+  after editing a line. A few French phonemes are fixed by hand (`FIXES_FR`: glides in « Ensuite »
+  and « suivi », « quiz », liaisons that should not be made).
+- **Picture**: every screen is a capture of the development build with demo data. The site's
+  captures come from `../site/assets/`. `screens-commercial/` adds, from 2026-10-04 after a fresh
+  `stack.sh reset` (reset again afterwards): the absence of Tuesday 6 October (a 13 h 30 school
+  mass added to the demo calendar; released and re-dated to 7 h 30), the office's code and the
+  printed welcome sheet, the substitute's « Maintenant » / « Ensuite », « Élèves » with the alerts
+  hidden (a demo alert, never shown), « Suivi de la journée » (draft time re-dated to 15 h 29),
+  the teacher's « Confirmer », and a class-mode game on four tablets. The app ran with
+  `APP_BASE_URL=http://lynx-ecole.example` (a reserved name) so no development address is on
+  screen; the footer label « Version dev » on the office captures was filled with the page
+  colour. From earlier sets: the « Bulletins » comment with « Copier » and the preview of
+  « Traduire en anglais (IA) » (a colleague's name sent as « Adulte A »), both 2026-10-03, and
+  the library's student sheet (2026-09-30). The English cut shows the same French screens.
+- **Drawn here**: the kitchen at 6 h 05, the chalkboard (as on the site's hero), the classroom
+  wall, the map (Natural Earth outline, public domain, via the world-atlas npm package), the chalk
+  marks and the end card on the Franco-Ontarian green and white. Nothing else is drawn as UI.
+- **Music**: original and procedural, as for v1, but calmer (felt-piano arpeggios, a pad, a soft
+  bass; D major at 76 BPM), ducked under the voice and resolving on the end card.
