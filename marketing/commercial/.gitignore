@@ -1,0 +1,5 @@
+# Generated: rebuild with the steps in README.md
+build/
+out/*.mp4
+out/*.png
+__pycache__/
