@@ -252,7 +252,8 @@ def storyboard(scenes, path):
 
 
 def write_script(scenes, meta, path):
-    lines = [f"{A.APP} commercial, {LANG} voice-over ({AU.VOICE_CFG[LANG]})", ""]
+    cfg = AU.VOICE_CFG[LANG]
+    lines = [f"{A.APP} commercial, {LANG} voice-over (Kokoro {cfg['voice']}, {cfg['lang']}, speed {cfg['speed']})", ""]
     for s, m in zip(scenes, meta):
         v0 = s.start + s.voice
         lines.append(f"[{v0:6.2f}s – {v0 + s.vdur:6.2f}s] {s.idx + 1}. {s.id} (chapter {s.ch}), scene {s.start:.2f}–{s.start + s.dur:.2f}s")
@@ -300,7 +301,7 @@ def main():
         storyboard(scenes, os.path.join(OUT, f"storyboard-{LANG}.png"))
         return
 
-    write_script(scenes, meta, os.path.join(OUT, f"voiceover-{LANG}.txt"))
+    write_script(scenes, meta, os.path.join(HERE, f"voiceover-{LANG}.txt"))
     print("probing sound effects…", flush=True)
     events = probe_sfx(scenes)
     silent = os.path.join(BUILD, f"video-silent-{LANG}.mp4")

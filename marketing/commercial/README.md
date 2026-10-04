@@ -18,16 +18,16 @@ It is built from code and real screenshots of the app with the demo data, in the
 first 60-second promo (`../promo/`), whose papercraft helpers it reuses. The finished videos are
 not committed: rebuild them with the steps below.
 
-| File                  | What                                                                                            |
-| --------------------- | ----------------------------------------------------------------------------------------------- |
-| `script.py`           | The voice-over and captions, scene by scene, in English and French                              |
-| `scenes.py`           | The 39 scenes: devices with screenshots, paper labels, props, chapter cards                     |
-| `art.py`              | Phone (scrolling), laptop (panning), projector, tablet, props, captions with pages              |
-| `audio.py`            | Kokoro voice (cached per line), a score that follows the chapters, paper sound effects, the mix |
-| `make_commercial.py`  | Build: timeline, sound-effect probe, frames, encode, mix, mux, storyboard                       |
-| `screens/`            | The screenshots, each with a JSON of the boxes the video points at                              |
-| `capture/`            | The Playwright walkthrough that took the screenshots                                            |
-| `out/voiceover-*.txt` | The final voice lines and captions with their timings                                           |
+| File                 | What                                                                                            |
+| -------------------- | ----------------------------------------------------------------------------------------------- |
+| `script.py`          | The voice-over and captions, scene by scene, in English and French                              |
+| `scenes.py`          | The 39 scenes: devices with screenshots, paper labels, props, chapter cards                     |
+| `art.py`             | Phone (scrolling), laptop (panning), projector, tablet, props, captions with pages              |
+| `audio.py`           | Kokoro voice (cached per line), a score that follows the chapters, paper sound effects, the mix |
+| `make_commercial.py` | Build: timeline, sound-effect probe, frames, encode, mix, mux, storyboard                       |
+| `screens/`           | The screenshots, each with a JSON of the boxes the video points at                              |
+| `capture/`           | The Playwright walkthrough that took the screenshots                                            |
+| `voiceover-*.txt`    | The final voice lines and captions with their timings                                           |
 
 ## Rebuild
 

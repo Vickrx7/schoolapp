@@ -1,0 +1,159 @@
+Lynx École commercial, fr voice-over (Kokoro ff_siwis, fr-fr, speed 1.02)
+
+[  0.60s –   7.87s] 1. papers (chapter 0), scene 0.00–9.00s
+    VO:      Planifications, plans de suppléance, bulletins, le message du vendredi aux familles. Toute une année scolaire tient sur mille bouts de papier.
+    caption: Planifications, plans de suppléance, bulletins, le message du vendredi… / Toute une année scolaire tient sur mille bouts de papier.
+
+[ 10.20s –  17.01s] 2. title (chapter 0), scene 9.00–18.00s
+    VO:      Lynx École réunit tout au même endroit. Elle est pensée pour les écoles élémentaires catholiques de langue française de l'Ontario.
+    caption: Lynx École réunit tout au même endroit. / Pensée pour les écoles élémentaires catholiques de langue française de l’Ontario.
+
+[ 19.90s –  30.58s] 3. today (chapter 1), scene 18.00–31.17s
+    VO:      Votre journée commence dans Aujourd'hui : chaque période, chaque routine, de la prière du matin et de l'Ô Canada jusqu'à la prochaine leçon de chaque matière, tirée de votre propre planification.
+    caption: Votre journée commence dans « Aujourd’hui » : chaque période, chaque routine, || de la prière du matin et de l’Ô Canada jusqu’à la prochaine leçon / de chaque matière, tirée de votre propre planification.
+
+[ 31.77s –  38.31s] 4. calendar (chapter 1), scene 31.17–38.83s
+    VO:      Journée pédagogique, messe de l'école, départ hâtif pour les rencontres de parents : votre journée s'ajuste toute seule.
+    caption: Journée pédagogique, messe de l’école, départ hâtif pour les rencontres : / votre journée s’ajuste toute seule.
+
+[ 39.53s –  45.65s] 5. taught (chapter 1), scene 38.83–46.17s
+    VO:      Leçon donnée? Une touche, et votre planification avance. Vous changez d'idée? Annuler, c'est une touche aussi.
+    caption: Leçon donnée ? Une touche, et votre planification avance. / Vous changez d’idée ? Annuler, c’est une touche aussi.
+
+[ 46.57s –  53.33s] 6. timetable (chapter 1), scene 46.17–53.92s
+    VO:      Horaire de la semaine ou jours en rotation, enseignement en rotation, classes combinées : l'application suit votre vrai horaire.
+    caption: Horaire de la semaine ou jours en rotation, enseignement en rotation, / classes combinées : l’application suit votre vrai horaire.
+
+[ 55.82s –  60.05s] 7. unit (chapter 2), scene 53.92–60.58s
+    VO:      Planifiez vos unités leçon par leçon, et joignez-y des ressources de la banque.
+    caption: Planifiez vos unités leçon par leçon, / et joignez-y des ressources de la banque.
+
+[ 60.98s –  68.32s] 8. year (chapter 2), scene 60.58–68.83s
+    VO:      Mon année place vos unités sur toute l'année, semaine par semaine, à côté du calendrier, des dates de bulletin et des temps liturgiques.
+    caption: « Mon année » place vos unités sur toute l’année, semaine par semaine, || à côté du calendrier, des dates de bulletin et des temps liturgiques.
+
+[ 69.23s –  79.17s] 9. coverage (chapter 2), scene 68.83–79.75s
+    VO:      Couverture montre, pour chaque attente chargée dans l'application, ce qui est enseigné, ce qui est prévu et ce qui n'est pas encore prévu. Et votre plan à long terme s'imprime en PDF.
+    caption: « Couverture » montre, pour chaque attente chargée dans l’application, / ce qui est enseigné, ce qui est prévu et ce qui n’est pas encore prévu. || Et votre plan à long terme s’imprime en PDF.
+
+[ 81.65s –  88.58s] 10. library (chapter 3), scene 79.75–89.17s
+    VO:      La banque de ressources est en français, on peut y faire des recherches, et les ressources sont rangées par attente du curriculum.
+    caption: La banque de ressources est en français, on peut y faire des recherches, / et les ressources sont rangées par attente du curriculum.
+
+[ 89.57s –  95.91s] 11. versions (chapter 3), scene 89.17–96.50s
+    VO:      Une ressource peut avoir une version pour chaque niveau de langue, et la feuille de l'élève n'imprime jamais le nom du niveau.
+    caption: Une ressource peut avoir une version pour chaque niveau de langue, / et la feuille de l’élève n’imprime jamais le nom du niveau.
+
+[ 96.90s – 105.30s] 12. review (chapter 3), scene 96.50–105.83s
+    VO:      Avant d'être partagée avec tout le conseil, une ressource est approuvée par des personnes que votre conseil désigne, et le contenu de foi est révisé à part.
+    caption: Avant d’être partagée avec tout le conseil, une ressource est approuvée par des personnes / que votre conseil désigne, et le contenu de foi est révisé à part.
+
+[106.23s – 119.26s] 13. differentiate (chapter 3), scene 105.83–120.33s
+    VO:      Besoin du même texte à plusieurs niveaux de langue? Avec Différencier, vous le demandez à l'I.A. Avant l'envoi, vous voyez exactement le texte qui part : les noms que l'application connaît y sont remplacés, et vous retirez les autres.
+    caption: Besoin du même texte à plusieurs niveaux de langue ? Avec « Différencier », vous le demandez à l’IA. || Avant l’envoi, vous voyez exactement le texte qui part : les noms que l’application / connaît y sont remplacés, et vous retirez les autres.
+
+[120.73s – 129.57s] 14. aicontrols (chapter 3), scene 120.33–130.08s
+    VO:      L'I.A. reste éteinte tant que la direction ne l'active pas. Seul le personnel l'utilise, jamais les élèves, et un conseil peut l'interdire dans toutes ses écoles.
+    caption: L’IA reste éteinte tant que la direction ne l’active pas. || Seul le personnel l’utilise, jamais les élèves, / et un conseil peut l’interdire dans toutes ses écoles.
+
+[132.18s – 138.26s] 15. projector (chapter 4), scene 130.08–138.83s
+    VO:      Présenter à la classe : un quiz au projecteur, une question à la fois, et la réponse seulement quand vous la demandez.
+    caption: « Présenter à la classe » : un quiz au projecteur, une question à la fois, / et la réponse seulement quand vous la demandez.
+
+[139.23s – 145.99s] 16. tablets (chapter 4), scene 138.83–146.50s
+    VO:      Les élèves peuvent répondre sur les tablettes de la classe avec un code. Aucun compte d'élève : chaque appareil n'est qu'un numéro.
+    caption: Les élèves peuvent répondre sur les tablettes de la classe avec un code. / Aucun compte d’élève : chaque appareil n’est qu’un numéro.
+
+[149.00s – 153.29s] 17. sick (chapter 5), scene 146.50–154.25s
+    VO:      Six heures du matin, et vous vous réveillez malade? Deux touches sur votre téléphone.
+    caption: 6 h du matin, et vous vous réveillez malade ? / Deux touches sur votre téléphone.
+
+[154.65s – 164.90s] 18. plan (chapter 5), scene 154.25–165.42s
+    VO:      Votre plan de suppléance se prépare tout seul, à partir de là où chaque classe est rendue : les prochaines leçons, les groupes par niveau de langue, les routines et le numéro du secrétariat.
+    caption: Votre plan de suppléance se prépare tout seul, à partir de là où chaque classe est rendue : || les prochaines leçons, les groupes par niveau de langue, les routines / et le numéro du secrétariat.
+
+[165.82s – 172.13s] 19. released (chapter 5), scene 165.42–172.67s
+    VO:      Relisez-le si vous le voulez. Il est publié tout seul à sept heures trente, l'heure par défaut, ou plus tôt si vous le décidez.
+    caption: Relisez-le si vous le voulez. Il est publié tout seul à 7 h 30, / l’heure par défaut, ou plus tôt si vous le décidez.
+
+[173.07s – 178.62s] 20. code (chapter 5), scene 172.67–179.17s
+    VO:      Le secrétariat remet à la personne suppléante un code pour cette journée seulement. Aucun compte requis.
+    caption: Le secrétariat remet à la personne suppléante un code pour cette journée seulement. / Aucun compte requis.
+
+[179.57s – 185.68s] 21. subphone (chapter 5), scene 179.17–186.25s
+    VO:      Sur son téléphone, la personne suppléante voit ce qui se passe maintenant, et ce qui vient ensuite, toute la journée.
+    caption: Sur son téléphone, la personne suppléante voit ce qui se passe maintenant, / et ce qui vient ensuite, toute la journée.
+
+[186.65s – 196.71s] 22. alerts (chapter 5), scene 186.25–197.25s
+    VO:      Si la direction les active, les alertes médicales sont chiffrées et n'apparaissent que sur demande. Un code les ouvre pour quiconque le détient : chaque consultation est donc enregistrée.
+    caption: Si la direction les active, les alertes médicales sont chiffrées / et n’apparaissent que sur demande. || Un code les ouvre pour quiconque le détient : / chaque consultation est donc enregistrée.
+
+[197.65s – 201.84s] 23. report (chapter 5), scene 197.25–202.42s
+    VO:      En fin de journée, la personne suppléante envoie un suivi de ce qui a été fait.
+    caption: En fin de journée, la personne suppléante / envoie un suivi de ce qui a été fait.
+
+[202.82s – 206.82s] 24. confirm (chapter 5), scene 202.42–207.33s
+    VO:      Le lendemain matin, le suivi vous attend. Vous le lisez, et vous le confirmez.
+    caption: Le lendemain matin, le suivi vous attend. / Vous le lisez, et vous le confirmez.
+
+[209.23s – 215.91s] 25. bulletins (chapter 6), scene 207.33–216.50s
+    VO:      Bulletins : composez le commentaire de chaque élève à partir des banques de commentaires de votre conseil, attente par attente.
+    caption: « Bulletins » : composez le commentaire de chaque élève à partir des banques / de commentaires de votre conseil, attente par attente.
+
+[216.90s – 222.83s] 26. ondevice (chapter 6), scene 216.50–223.42s
+    VO:      Ces commentaires sont rédigés dans votre navigateur. Ils ne sont jamais envoyés à nos serveurs, ni à l'I.A.
+    caption: Ces commentaires sont rédigés dans votre navigateur. / Ils ne sont jamais envoyés à nos serveurs, ni à l’IA.
+
+[223.82s – 231.64s] 27. infoparents (chapter 6), scene 223.42–232.17s
+    VO:      Info-parents prépare votre message de la semaine aux familles à partir de ce que votre classe a vécu, en français et en anglais, côte à côte.
+    caption: « Info-parents » prépare votre message de la semaine aux familles / à partir de ce que votre classe a vécu, en français et en anglais, côte à côte.
+
+[232.57s – 237.56s] 28. print (chapter 6), scene 232.17–238.08s
+    VO:      Vous le relisez, puis vous le copiez ou l'imprimez. L'application, elle, n'envoie rien aux familles.
+    caption: Vous le relisez, puis vous le copiez ou l’imprimez. / L’application, elle, n’envoie rien aux familles.
+
+[239.98s – 247.18s] 29. direction (chapter 7), scene 238.08–247.75s
+    VO:      Pour la direction, sept heures quarante-cinq d'un coup d'œil : les absences du jour, l'état de chaque plan, les codes remis et les suivis reçus.
+    caption: Pour la direction, 7 h 45 d’un coup d’œil : les absences du jour, l’état de chaque plan, / les codes remis et les suivis reçus.
+
+[248.15s – 255.40s] 30. audit (chapter 7), scene 247.75–255.92s
+    VO:      Le journal d'audit montre chaque consultation d'alerte, avec le code utilisé, et signale les codes émis par le secrétariat.
+    caption: Le journal d’audit montre chaque consultation d’alerte, avec le code utilisé, / et signale les codes émis par le secrétariat.
+
+[256.32s – 263.79s] 31. yours (chapter 7), scene 255.92–264.33s
+    VO:      Et la planification reste celle du personnel enseignant : le tableau de bord ne montre jamais les unités, les leçons ni la progression.
+    caption: Et la planification reste celle du personnel enseignant : / le tableau de bord ne montre jamais les unités, les leçons ni la progression.
+
+[266.23s – 271.38s] 32. staff (chapter 8), scene 264.33–271.92s
+    VO:      Le conseil invite son personnel, attribue les rôles, et peut retirer l'accès d'une personne.
+    caption: Le conseil invite son personnel, attribue les rôles, / et peut retirer l’accès d’une personne.
+
+[272.32s – 279.87s] 33. board (chapter 8), scene 271.92–280.42s
+    VO:      Il voit l'utilisation de l'I.A. par école, l'état du système, et ce qui est effacé chaque nuit à la fin de sa durée de conservation.
+    caption: Il voit l’utilisation de l’IA par école, l’état du système, / et ce qui est effacé chaque nuit à la fin de sa durée de conservation.
+
+[280.82s – 288.11s] 34. hosting (chapter 8), scene 280.42–289.00s
+    VO:      Lynx École est conçue pour être hébergée au Canada, ou sur les serveurs de votre conseil, avec des sauvegardes chiffrées et signées.
+    caption: Lynx École est conçue pour être hébergée au Canada, ou sur les serveurs de votre conseil, / avec des sauvegardes chiffrées et signées.
+
+[290.90s – 301.90s] 35. privacy (chapter 9), scene 289.00–302.75s
+    VO:      La confidentialité d'abord : les élèves, c'est le prénom seulement, les accès sensibles sont enregistrés, les commentaires de bulletin restent sur votre appareil, et les élèves n'utilisent jamais l'I.A.
+    caption: La confidentialité d’abord : le prénom des élèves seulement, des accès sensibles enregistrés, / des commentaires de bulletin sur votre appareil, et jamais d’IA pour les élèves.
+
+[304.65s – 313.20s] 36. start (chapter 10), scene 302.75–313.75s
+    VO:      Dès la première connexion, une courte liste pour bien commencer, et une classe exemple, à ajouter si vous le voulez, pour faire des essais sans toucher à la vraie.
+    caption: Dès la première connexion, une courte liste pour bien commencer, et une classe exemple, / à ajouter si vous le voulez, pour faire des essais sans toucher à la vraie.
+
+[314.15s – 320.94s] 37. bilingual (chapter 10), scene 313.75–321.50s
+    VO:      En français d'abord, avec l'anglais à la connexion ou dans votre profil, sur un téléphone, une tablette ou un ordinateur.
+    caption: En français d’abord, avec l’anglais à la connexion ou dans votre profil, / sur un téléphone, une tablette ou un ordinateur.
+
+[321.90s – 327.10s] 38. feedback (chapter 10), scene 321.50–327.67s
+    VO:      Et il y a un bouton Commentaires sur chaque page, parce que ce projet pilote se construit avec vous.
+    caption: Et il y a un bouton « Commentaires » sur chaque page, / parce que ce projet pilote se construit avec vous.
+
+[328.07s – 335.12s] 39. end (chapter 0), scene 327.67–338.25s
+    VO:      Lynx École. Moins de paperasse, plus d'enseignement. C'est une version pilote, pas encore en ligne. Joignez-vous au projet pilote.
+    caption: Lynx École. Moins de paperasse, plus d’enseignement. / Une version pilote, pas encore en ligne. Joignez-vous au projet pilote.
+
+Total 338.25s, 39 scenes, 4059 frames at 12 fps
