@@ -1,0 +1,39 @@
+Lynx École promo — French voiceover (Kokoro ff_siwis, fr-fr, speed 1.0)
+
+[ 0.70s –  5.61s]  scene 1 (Lundi matin), scene  0.00– 6.33s
+    VO:      Lundi matin. La cloche n'a pas encore sonné, et vous jonglez déjà avec mille choses.
+    caption: Lundi matin. La cloche n'a pas encore sonné, / et vous jonglez déjà avec mille choses.
+
+[ 6.78s – 14.44s]  scene 2 (Toute la journée, un écran), scene  6.33–15.17s
+    VO:      Avec Lynx École, l'écran « Aujourd'hui » montre toute votre journée : chaque période, chaque routine et la prochaine leçon de chaque matière.
+    caption: L'écran « Aujourd'hui » montre toute votre journée : / chaque période, chaque routine et la prochaine leçon.
+
+[15.62s – 20.76s]  scene 3 (La journée s'ajuste), scene 15.17–21.50s
+    VO:      Journée pédagogique? Messe de l'école? Départ hâtif? Votre journée s'ajuste toute seule.
+    caption: Journée pédagogique? Messe de l'école? Départ hâtif? / Votre journée s'ajuste toute seule.
+
+[21.95s – 26.09s]  scene 4 (Une touche : Leçon donnée), scene 21.50–26.83s
+    VO:      Leçon donnée? Une seule touche, et votre planification avance d'elle-même.
+    caption: Leçon donnée? Une seule touche, / et votre planification avance d'elle-même.
+
+[27.28s – 32.87s]  scene 5 (Prénoms seulement), scene 26.83–33.58s
+    VO:      Votre liste de classe reste privée : les prénoms seulement. Le reste ne quitte jamais votre appareil.
+    caption: Votre liste de classe reste privée : les prénoms seulement. / Le reste ne quitte jamais votre appareil.
+
+[34.03s – 38.73s]  scene 6 (Alertes chiffrées), scene 33.58–39.50s
+    VO:      Les alertes médicales sont chiffrées, et restent cachées jusqu'à ce que vous en ayez besoin.
+    caption: Les alertes médicales sont chiffrées, / et restent cachées jusqu'à ce que vous en ayez besoin.
+
+[39.95s – 48.08s]  scene 7 (Conçue pour l'Ontario), scene 39.50–48.83s
+    VO:      Conçue pour les écoles catholiques de langue française de l'Ontario : jours en rotation, enseignement en rotation, prière du matin et tout le reste.
+    caption: Conçue pour les écoles catholiques de langue française de l'Ontario : / jours en rotation, prière du matin et tout le reste.
+
+[49.28s – 58.76s]  scene 8 (Bientôt : journée de maladie), scene 48.83–59.50s
+    VO:      Bientôt : malade à six heures du matin? Une seule touche préparera un plan de suppléance complet pour la personne suppléante, exactement là où votre classe est rendue.
+    caption: Bientôt : malade à 6 h du matin? Une seule touche préparera / un plan de suppléance complet, là où votre classe est rendue.
+
+[59.95s – 64.49s]  scene 9 (Carte de fin), scene 59.50–67.42s
+    VO:      Lynx École. Moins de paperasse, plus d'enseignement. Dites-nous ce que vous en pensez!
+    caption: Lynx École. Moins de paperasse, plus d'enseignement. / Dites-nous ce que vous en pensez!
+
+Total: 67.42s, 9 scenes, 809 frames at 12 fps

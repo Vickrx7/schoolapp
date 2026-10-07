@@ -1,0 +1,39 @@
+Lynx École promo — English voiceover (Kokoro af_heart, speed 0.95)
+
+[ 0.70s –  5.52s]  scene 1 (Monday morning), scene  0.00– 6.25s
+    VO:      Monday morning. The bell hasn't rung yet, and you're already juggling a hundred things.
+    caption: Monday morning. The bell hasn't rung yet, / and you're already juggling a hundred things.
+
+[ 6.70s – 13.82s]  scene 2 (Whole day, one screen), scene  6.25–14.58s
+    VO:      Lynx École puts your whole day on one screen: every period, every routine, and the next lesson for each subject.
+    caption: Lynx École puts your whole day on one screen: / every period, every routine, and the next lesson.
+
+[15.03s – 19.47s]  scene 3 (Day adjusts itself), scene 14.58–20.25s
+    VO:      P.A. day? School mass? Early dismissal? Your day adjusts on its own.
+    caption: PA day? School mass? Early dismissal? / Your day adjusts on its own.
+
+[20.70s – 24.05s]  scene 4 (One tap: Leçon donnée), scene 20.25–24.83s
+    VO:      Taught it? One tap. Your plan moves forward by itself.
+    caption: Taught it? One tap. / Your plan moves forward by itself.
+
+[25.28s – 30.72s]  scene 5 (First names only), scene 24.83–31.50s
+    VO:      Your class list stays private: first names only. Everything else never leaves your device.
+    caption: Your class list stays private: first names only. / Everything else never leaves your device.
+
+[31.95s – 35.60s]  scene 6 (Encrypted alerts), scene 31.50–36.33s
+    VO:      Medical alerts are encrypted, and stay hidden until you need them.
+    caption: Medical alerts are encrypted, / and stay hidden until you need them.
+
+[36.78s – 43.63s]  scene 7 (Made for Ontario), scene 36.33–44.42s
+    VO:      Made for French Catholic schools in Ontario: rotating days, rotary periods, prière du matin and all.
+    caption: Made for French Catholic schools in Ontario: / rotating days, rotary periods, prière du matin and all.
+
+[44.87s – 51.71s]  scene 8 (Coming soon: sick day), scene 44.42–52.50s
+    VO:      Coming soon: sick at six a.m.? One tap will build a full substitute plan, right where your class left off.
+    caption: Coming soon: sick at 6 a.m.? One tap will build / a full substitute plan, right where your class left off.
+
+[52.95s – 57.28s]  scene 9 (End card), scene 52.50–60.25s
+    VO:      Lynx École. Less paperwork, more teaching. We'd love to know what you think.
+    caption: Lynx École. Less paperwork, more teaching. / We'd love to know what you think.
+
+Total: 60.25s, 9 scenes, 723 frames at 12 fps

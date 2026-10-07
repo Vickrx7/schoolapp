@@ -1,0 +1,416 @@
+-- Demo data for local development and pilot demos. Everything here is fictional.
+-- Loaded by `supabase db reset` (and tools/lite-stack/stack.sh reset).
+--
+-- Demo logins (sign in with the emailed 6-digit code; locally the email lands in Mailpit):
+--   isabelle.tremblay@demo.lynx.test  teacher, 3e année (homeroom)
+--   marc.gagnon@demo.lynx.test        teacher, 5e année (homeroom)
+--   paul.leblanc@demo.lynx.test       teacher, Anglais (5e) and EPS prep coverage (3e)
+--   sophie.lavoie@demo.lynx.test      principal
+--   julie.bergeron@demo.lynx.test     office admin
+--   nathalie.roy@demo.lynx.test       board admin
+
+-- ---------------------------------------------------------------------------------------
+-- Board, school, year, rooms
+-- ---------------------------------------------------------------------------------------
+
+insert into public.boards (id, name, short_name, slug, settings) values (
+  'b0000000-0000-4000-8000-000000000001',
+  'Conseil scolaire catholique Démo',
+  'CSC Démo',
+  'csc-demo',
+  '{"anglaisStartGrade": 4, "subPlanAutoReleaseTime": "07:30"}'
+);
+
+select public.provision_board_defaults('b0000000-0000-4000-8000-000000000001');
+
+insert into public.schools (id, board_id, name, short_name, slug, timezone, schedule_type,
+  student_alerts_enabled, settings)
+values (
+  'c0000000-0000-4000-8000-000000000001',
+  'b0000000-0000-4000-8000-000000000001',
+  'École élémentaire catholique Saint-Exemple',
+  'É.É.C. Saint-Exemple',
+  'saint-exemple',
+  'America/Toronto',
+  'weekly',
+  true,
+  '{"contact": {"officePhone": "555-0100", "officeEmail": "secretariat@demo.lynx.test"}}'
+);
+
+select public.provision_school_defaults('c0000000-0000-4000-8000-000000000001');
+
+insert into public.school_years (id, board_id, name, starts_on, ends_on) values (
+  'a0000000-0000-4000-8000-000000000001',
+  'b0000000-0000-4000-8000-000000000001',
+  '2026-2027', '2026-09-02', '2027-06-25'
+);
+
+insert into public.rooms (id, school_id, name, notes) values
+  ('f0000000-0000-4000-8000-000000000101', 'c0000000-0000-4000-8000-000000000001', 'Local 101', 'Rez-de-chaussée, près du secrétariat'),
+  ('f0000000-0000-4000-8000-000000000104', 'c0000000-0000-4000-8000-000000000001', 'Local 104', 'Rez-de-chaussée, aile est'),
+  ('f0000000-0000-4000-8000-000000000201', 'c0000000-0000-4000-8000-000000000001', 'Gymnase', null),
+  ('f0000000-0000-4000-8000-000000000202', 'c0000000-0000-4000-8000-000000000001', 'Bibliothèque', null);
+
+-- ---------------------------------------------------------------------------------------
+-- Staff accounts (auth + profile + roles)
+-- ---------------------------------------------------------------------------------------
+
+with staff (id, email, display_name, honorific) as (
+  values
+    ('d0000000-0000-4000-8000-000000000001'::uuid, 'isabelle.tremblay@demo.lynx.test', 'Isabelle Tremblay', 'Mme'),
+    ('d0000000-0000-4000-8000-000000000002'::uuid, 'marc.gagnon@demo.lynx.test', 'Marc Gagnon', 'M.'),
+    ('d0000000-0000-4000-8000-000000000003'::uuid, 'paul.leblanc@demo.lynx.test', 'Paul Leblanc', 'M.'),
+    ('d0000000-0000-4000-8000-000000000004'::uuid, 'sophie.lavoie@demo.lynx.test', 'Sophie Lavoie', 'Mme'),
+    ('d0000000-0000-4000-8000-000000000005'::uuid, 'julie.bergeron@demo.lynx.test', 'Julie Bergeron', 'Mme'),
+    ('d0000000-0000-4000-8000-000000000006'::uuid, 'nathalie.roy@demo.lynx.test', 'Nathalie Roy', 'Mme')
+),
+auth_users as (
+  insert into auth.users (
+    instance_id, id, aud, role, email, email_confirmed_at, raw_app_meta_data, raw_user_meta_data,
+    created_at, updated_at, confirmation_token, recovery_token, email_change_token_new, email_change
+  )
+  select '00000000-0000-0000-0000-000000000000', id, 'authenticated', 'authenticated', email, now(),
+    '{"provider": "email", "providers": ["email"]}', '{}', now(), now(), '', '', '', ''
+  from staff
+  returning id, email
+),
+identities as (
+  insert into auth.identities (id, user_id, provider_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
+  select gen_random_uuid(), id, id::text,
+    jsonb_build_object('sub', id::text, 'email', email, 'email_verified', true),
+    'email', now(), now(), now()
+  from auth_users
+  returning user_id
+)
+insert into public.users (id, email, display_name, honorific)
+select s.id, s.email, s.display_name, s.honorific
+from staff s join identities i on i.user_id = s.id;
+
+insert into public.user_roles (user_id, role, board_id, school_id) values
+  ('d0000000-0000-4000-8000-000000000001', 'teacher', 'b0000000-0000-4000-8000-000000000001', 'c0000000-0000-4000-8000-000000000001'),
+  ('d0000000-0000-4000-8000-000000000002', 'teacher', 'b0000000-0000-4000-8000-000000000001', 'c0000000-0000-4000-8000-000000000001'),
+  ('d0000000-0000-4000-8000-000000000003', 'teacher', 'b0000000-0000-4000-8000-000000000001', 'c0000000-0000-4000-8000-000000000001'),
+  ('d0000000-0000-4000-8000-000000000004', 'principal', 'b0000000-0000-4000-8000-000000000001', 'c0000000-0000-4000-8000-000000000001'),
+  ('d0000000-0000-4000-8000-000000000005', 'office_admin', 'b0000000-0000-4000-8000-000000000001', 'c0000000-0000-4000-8000-000000000001'),
+  ('d0000000-0000-4000-8000-000000000006', 'board_admin', 'b0000000-0000-4000-8000-000000000001', null);
+
+-- ---------------------------------------------------------------------------------------
+-- Classes and teaching teams
+-- ---------------------------------------------------------------------------------------
+
+insert into public.classes (id, school_id, school_year_id, name, room_id, created_by) values
+  ('e0000000-0000-4000-8000-000000000003', 'c0000000-0000-4000-8000-000000000001',
+   'a0000000-0000-4000-8000-000000000001', '3e année – Mme Tremblay',
+   'f0000000-0000-4000-8000-000000000101', 'd0000000-0000-4000-8000-000000000001'),
+  ('e0000000-0000-4000-8000-000000000005', 'c0000000-0000-4000-8000-000000000001',
+   'a0000000-0000-4000-8000-000000000001', '5e année – M. Gagnon',
+   'f0000000-0000-4000-8000-000000000104', 'd0000000-0000-4000-8000-000000000002');
+
+insert into public.class_grades (class_id, grade_code) values
+  ('e0000000-0000-4000-8000-000000000003', '3'),
+  ('e0000000-0000-4000-8000-000000000005', '5');
+
+insert into public.class_teachers (class_id, user_id, role) values
+  ('e0000000-0000-4000-8000-000000000003', 'd0000000-0000-4000-8000-000000000001', 'homeroom'),
+  ('e0000000-0000-4000-8000-000000000003', 'd0000000-0000-4000-8000-000000000003', 'subject'),
+  ('e0000000-0000-4000-8000-000000000005', 'd0000000-0000-4000-8000-000000000002', 'homeroom'),
+  ('e0000000-0000-4000-8000-000000000005', 'd0000000-0000-4000-8000-000000000003', 'subject');
+
+-- ---------------------------------------------------------------------------------------
+-- Students: first names only. Default language levels for a mixed-proficiency class.
+-- ---------------------------------------------------------------------------------------
+
+insert into public.students (class_id, first_name, default_language_level_id)
+select 'e0000000-0000-4000-8000-000000000003', s.first_name,
+  (select id from public.language_levels
+   where board_id = 'b0000000-0000-4000-8000-000000000001' and code = s.level and owner_user_id is null)
+from (values
+  ('Léa', 'avance'), ('Nathan', 'avance'), ('Chloé', 'enrichi'), ('Mathis', 'intermediaire'),
+  ('Zoé', 'avance'), ('Samuel', 'debutant'), ('Emma', 'avance'), ('Liam', 'intermediaire'),
+  ('Rosalie', 'enrichi'), ('Adam', 'debutant'), ('Maëlle', 'avance'), ('Olivier', 'avance'),
+  ('Aïcha', 'debutant'), ('Youssef', 'intermediaire'), ('Florence', 'avance'), ('Gabriel', 'avance'),
+  ('Mia', 'intermediaire'), ('Noah', 'avance'), ('Jade', 'enrichi'), ('Félix', 'avance')
+) as s (first_name, level);
+
+insert into public.students (class_id, first_name, default_language_level_id)
+select 'e0000000-0000-4000-8000-000000000005', s.first_name,
+  (select id from public.language_levels
+   where board_id = 'b0000000-0000-4000-8000-000000000001' and code = s.level and owner_user_id is null)
+from (values
+  ('Charlotte', 'avance'), ('Thomas', 'avance'), ('Béatrice', 'enrichi'), ('William', 'intermediaire'),
+  ('Camille', 'avance'), ('Antoine', 'avance'), ('Sofia', 'debutant'), ('Jacob', 'avance'),
+  ('Alice', 'enrichi'), ('Ethan', 'intermediaire'), ('Amélie', 'avance'), ('Hugo', 'avance'),
+  ('Fatou', 'debutant'), ('Ali', 'intermediaire'), ('Juliette', 'avance'), ('Xavier', 'avance'),
+  ('Nour', 'debutant'), ('Malik', 'intermediaire'), ('Laurence', 'enrichi'), ('Édouard', 'avance')
+) as s (first_name, level);
+
+-- ---------------------------------------------------------------------------------------
+-- Timetables (balanced school day). day_key 1..5 = Monday..Friday.
+-- ---------------------------------------------------------------------------------------
+
+-- Routines and breaks shared by both classes, every day.
+insert into public.timetable_blocks (class_id, day_key, start_time, end_time, kind, title)
+select c.class_id, d.day_key, r.start_time::time, r.end_time::time, r.kind::public.block_kind, r.title
+from (values ('e0000000-0000-4000-8000-000000000003'::uuid), ('e0000000-0000-4000-8000-000000000005'::uuid)) as c (class_id)
+cross join generate_series(1, 5) as d (day_key)
+cross join (values
+  ('08:45', '08:55', 'routine', 'Entrée, prière du matin et O Canada'),
+  ('10:35', '11:15', 'nutrition_break', 'Première pause santé'),
+  ('12:55', '13:35', 'nutrition_break', 'Deuxième pause santé'),
+  ('15:15', '15:20', 'routine', 'Rangement, prière et départ')
+) as r (start_time, end_time, kind, title);
+
+-- Teaching blocks: (class, day, start, end, subject code, teacher or null for homeroom).
+insert into public.timetable_blocks (class_id, day_key, start_time, end_time, kind, subject_id, teacher_id, room_id)
+select b.class_id, b.day_key, b.start_time::time, b.end_time::time, 'subject',
+  (select id from public.subjects where code = b.subject_code and board_id is null),
+  b.teacher_id, b.room_id
+from (values
+  -- 3e année: Français every morning, Math every day, EPS with M. Leblanc on Tue/Thu (prep coverage).
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 1, '08:55', '09:45', 'fra', null::uuid, null::uuid),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 1, '09:45', '10:35', 'mat', null, null),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 1, '11:15', '12:05', 'fra', null, null),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 1, '12:05', '12:55', 'ere', null, null),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 1, '13:35', '14:25', 'sci', null, null),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 1, '14:25', '15:15', 'art', null, null),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 2, '08:55', '09:45', 'fra', null, null),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 2, '09:45', '10:35', 'mat', null, null),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 2, '11:15', '12:05', 'fra', null, null),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 2, '12:05', '12:55', 'etu', null, null),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 2, '13:35', '14:25', 'eps', 'd0000000-0000-4000-8000-000000000003', 'f0000000-0000-4000-8000-000000000201'),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 2, '14:25', '15:15', 'mat', null, null),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 3, '08:55', '09:45', 'fra', null, null),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 3, '09:45', '10:35', 'mat', null, null),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 3, '11:15', '12:05', 'sci', null, null),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 3, '12:05', '12:55', 'ere', null, null),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 3, '13:35', '14:25', 'fra', null, null),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 3, '14:25', '15:15', 'eps', null, 'f0000000-0000-4000-8000-000000000201'),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 4, '08:55', '09:45', 'fra', null, null),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 4, '09:45', '10:35', 'mat', null, null),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 4, '11:15', '12:05', 'fra', null, null),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 4, '12:05', '12:55', 'etu', null, null),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 4, '13:35', '14:25', 'eps', 'd0000000-0000-4000-8000-000000000003', 'f0000000-0000-4000-8000-000000000201'),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 4, '14:25', '15:15', 'art', null, null),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 5, '08:55', '09:45', 'fra', null, null),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 5, '09:45', '10:35', 'mat', null, null),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 5, '11:15', '12:05', 'ere', null, null),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 5, '12:05', '12:55', 'sci', null, null),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 5, '13:35', '14:25', 'fra', null, 'f0000000-0000-4000-8000-000000000202'),
+  ('e0000000-0000-4000-8000-000000000003'::uuid, 5, '14:25', '15:15', 'eps', null, 'f0000000-0000-4000-8000-000000000201'),
+  -- 5e année: Anglais with M. Leblanc on Mon/Wed/Fri (rotary).
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 1, '08:55', '09:45', 'mat', null, null),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 1, '09:45', '10:35', 'fra', null, null),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 1, '11:15', '12:05', 'ang', 'd0000000-0000-4000-8000-000000000003', null),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 1, '12:05', '12:55', 'fra', null, null),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 1, '13:35', '14:25', 'sci', null, null),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 1, '14:25', '15:15', 'ere', null, null),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 2, '08:55', '09:45', 'mat', null, null),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 2, '09:45', '10:35', 'fra', null, null),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 2, '11:15', '12:05', 'etu', null, null),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 2, '12:05', '12:55', 'fra', null, null),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 2, '13:35', '14:25', 'sci', null, null),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 2, '14:25', '15:15', 'eps', null, 'f0000000-0000-4000-8000-000000000201'),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 3, '08:55', '09:45', 'mat', null, null),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 3, '09:45', '10:35', 'fra', null, null),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 3, '11:15', '12:05', 'ang', 'd0000000-0000-4000-8000-000000000003', null),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 3, '12:05', '12:55', 'ere', null, null),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 3, '13:35', '14:25', 'fra', null, null),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 3, '14:25', '15:15', 'art', null, null),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 4, '08:55', '09:45', 'mat', null, null),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 4, '09:45', '10:35', 'fra', null, null),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 4, '11:15', '12:05', 'sci', null, null),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 4, '12:05', '12:55', 'fra', null, null),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 4, '13:35', '14:25', 'etu', null, null),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 4, '14:25', '15:15', 'eps', null, 'f0000000-0000-4000-8000-000000000201'),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 5, '08:55', '09:45', 'mat', null, null),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 5, '09:45', '10:35', 'fra', null, null),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 5, '11:15', '12:05', 'ang', 'd0000000-0000-4000-8000-000000000003', null),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 5, '12:05', '12:55', 'sci', null, null),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 5, '13:35', '14:25', 'art', null, null),
+  ('e0000000-0000-4000-8000-000000000005'::uuid, 5, '14:25', '15:15', 'ere', null, null)
+) as b (class_id, day_key, start_time, end_time, subject_code, teacher_id, room_id);
+
+-- ---------------------------------------------------------------------------------------
+-- Calendar: board-wide days off and school events for the fall term, plus a couple of
+-- events relative to today so the demo always shows the calendar at work.
+-- ---------------------------------------------------------------------------------------
+
+insert into public.school_calendar_events (board_id, school_id, event_type, title, starts_on, ends_on, start_time, end_time, notes) values
+  ('b0000000-0000-4000-8000-000000000001', null, 'pa_day', 'Journée pédagogique', '2026-10-09', '2026-10-09', null, null, null),
+  ('b0000000-0000-4000-8000-000000000001', null, 'holiday', 'Action de grâce', '2026-10-12', '2026-10-12', null, null, null),
+  ('b0000000-0000-4000-8000-000000000001', null, 'pa_day', 'Journée pédagogique', '2026-11-20', '2026-11-20', null, null, null),
+  ('b0000000-0000-4000-8000-000000000001', null, 'holiday', 'Congé des Fêtes', '2026-12-21', '2027-01-01', null, null, null),
+  ('b0000000-0000-4000-8000-000000000001', 'c0000000-0000-4000-8000-000000000001', 'mass', 'Messe de l''Action de grâce', '2026-10-08', '2026-10-08', '10:00', '11:00', 'À l''église paroissiale; départ à pied à 9 h 45.'),
+  ('b0000000-0000-4000-8000-000000000001', 'c0000000-0000-4000-8000-000000000001', 'assembly', 'Cérémonie du jour du Souvenir', '2026-11-11', '2026-11-11', '10:45', '11:15', 'Au gymnase.'),
+  ('b0000000-0000-4000-8000-000000000001', 'c0000000-0000-4000-8000-000000000001', 'early_dismissal', 'Rencontres parents-enseignants', '2026-11-19', '2026-11-19', '13:35', null, 'Départ des élèves à 13 h 35.');
+
+-- Relative events: a school mass on the coming Friday and an assembly two weekdays from now.
+insert into public.school_calendar_events (board_id, school_id, event_type, title, starts_on, ends_on, start_time, end_time, notes)
+select 'b0000000-0000-4000-8000-000000000001', 'c0000000-0000-4000-8000-000000000001',
+  'mass', 'Messe de l''école', d, d, '09:45', '10:35', 'Au gymnase. Les classes s''y rendent à 9 h 40.'
+from (select current_date + ((5 - extract(isodow from current_date)::int + 7) % 7) as d) as f;
+
+insert into public.school_calendar_events (board_id, school_id, event_type, title, starts_on, ends_on, start_time, end_time, notes)
+select 'b0000000-0000-4000-8000-000000000001', 'c0000000-0000-4000-8000-000000000001',
+  'assembly', 'Rassemblement : lancement de la collecte d''aliments', d, d, '12:05', '12:30', null
+from (
+  select case extract(isodow from current_date)::int
+    when 4 then current_date + 4
+    when 5 then current_date + 4
+    when 6 then current_date + 3
+    else current_date + 2
+  end as d
+) as a;
+
+-- ---------------------------------------------------------------------------------------
+-- Curriculum sample. Short summaries, NOT the official text: every row is marked
+-- is_verified = false until checked against the Ministry documents (DECISIONS.md, D-030).
+-- ---------------------------------------------------------------------------------------
+
+insert into public.strands (id, subject_id, code, label_fr, curriculum_version, sort_order)
+select v.id, (select id from public.subjects where code = v.subject_code and board_id is null),
+  v.code, v.label_fr, v.version, v.sort_order
+from (values
+  ('10000000-0000-4000-8000-00000000fa01'::uuid, 'fra', 'A', 'Liens et applications en littératie', 'fra-2023', 1),
+  ('10000000-0000-4000-8000-00000000fa02'::uuid, 'fra', 'B', 'Fondements de la langue', 'fra-2023', 2),
+  ('10000000-0000-4000-8000-00000000fa03'::uuid, 'fra', 'C', 'Compréhension : comprendre et réagir à des textes', 'fra-2023', 3),
+  ('10000000-0000-4000-8000-00000000fa04'::uuid, 'fra', 'D', 'Composition : exprimer ses idées et créer des textes', 'fra-2023', 4),
+  ('10000000-0000-4000-8000-00000000aa02'::uuid, 'mat', 'B', 'Nombres', 'mat-2020', 2),
+  ('10000000-0000-4000-8000-00000000aa04'::uuid, 'mat', 'D', 'Données', 'mat-2020', 4),
+  ('10000000-0000-4000-8000-00000000ac04'::uuid, 'sci', 'D', 'Structures et mécanismes', 'sci-2022', 4)
+) as v (id, subject_code, code, label_fr, version, sort_order);
+
+insert into public.curriculum_expectations (id, subject_id, grade_code, strand_id, parent_id, kind, code, text_fr, curriculum_version, is_verified, source_note, sort_order)
+select v.id, (select id from public.subjects where code = v.subject_code and board_id is null),
+  v.grade_code, v.strand_id, v.parent_id, v.kind::public.expectation_kind, v.code, v.text_fr, v.version,
+  false, 'Résumé à vérifier contre le document officiel.', v.sort_order
+from (values
+  -- 3e année, Français
+  ('20000000-0000-4000-8000-000000030c01'::uuid, 'fra', '3', '10000000-0000-4000-8000-00000000fa03'::uuid, null::uuid, 'overall', 'C1', 'Utiliser des stratégies pour comprendre divers textes, dont des textes informatifs, et réagir à ce qu''elle ou il lit.', 'fra-2023', 1),
+  ('20000000-0000-4000-8000-000000030c11'::uuid, 'fra', '3', '10000000-0000-4000-8000-00000000fa03'::uuid, '20000000-0000-4000-8000-000000030c01'::uuid, 'specific', 'C1.1', 'Faire des prédictions et activer ses connaissances antérieures avant la lecture.', 'fra-2023', 2),
+  ('20000000-0000-4000-8000-000000030c12'::uuid, 'fra', '3', '10000000-0000-4000-8000-00000000fa03'::uuid, '20000000-0000-4000-8000-000000030c01'::uuid, 'specific', 'C1.2', 'Repérer l''idée principale et quelques détails importants d''un texte informatif.', 'fra-2023', 3),
+  ('20000000-0000-4000-8000-000000030c13'::uuid, 'fra', '3', '10000000-0000-4000-8000-00000000fa03'::uuid, '20000000-0000-4000-8000-000000030c01'::uuid, 'specific', 'C1.3', 'Utiliser les caractéristiques d''un texte informatif (titres, images, légendes) pour trouver de l''information.', 'fra-2023', 4),
+  ('20000000-0000-4000-8000-000000030d01'::uuid, 'fra', '3', '10000000-0000-4000-8000-00000000fa04'::uuid, null, 'overall', 'D1', 'Planifier et rédiger de courts textes pour communiquer de l''information à un public donné.', 'fra-2023', 5),
+  ('20000000-0000-4000-8000-000000030d11'::uuid, 'fra', '3', '10000000-0000-4000-8000-00000000fa04'::uuid, '20000000-0000-4000-8000-000000030d01'::uuid, 'specific', 'D1.1', 'Organiser ses idées à l''aide d''un organisateur graphique avant d''écrire.', 'fra-2023', 6),
+  -- 3e année, Mathématiques
+  ('20000000-0000-4000-8000-000000030b01'::uuid, 'mat', '3', '10000000-0000-4000-8000-00000000aa02'::uuid, null, 'overall', 'B1', 'Démontrer une compréhension des nombres naturels jusqu''à 1 000 et de leurs relations.', 'mat-2020', 1),
+  ('20000000-0000-4000-8000-000000030b11'::uuid, 'mat', '3', '10000000-0000-4000-8000-00000000aa02'::uuid, '20000000-0000-4000-8000-000000030b01'::uuid, 'specific', 'B1.1', 'Lire, représenter, composer et décomposer des nombres naturels jusqu''à 1 000 de différentes façons.', 'mat-2020', 2),
+  ('20000000-0000-4000-8000-000000030b12'::uuid, 'mat', '3', '10000000-0000-4000-8000-00000000aa02'::uuid, '20000000-0000-4000-8000-000000030b01'::uuid, 'specific', 'B1.2', 'Comparer et ordonner des nombres naturels jusqu''à 1 000.', 'mat-2020', 3),
+  ('20000000-0000-4000-8000-000000030b13'::uuid, 'mat', '3', '10000000-0000-4000-8000-00000000aa02'::uuid, '20000000-0000-4000-8000-000000030b01'::uuid, 'specific', 'B1.3', 'Arrondir des nombres naturels à la dizaine ou à la centaine près dans divers contextes.', 'mat-2020', 4),
+  ('20000000-0000-4000-8000-000000030b21'::uuid, 'mat', '3', '10000000-0000-4000-8000-00000000aa02'::uuid, null, 'overall', 'B2', 'Utiliser ses connaissances des nombres et des opérations pour résoudre des problèmes.', 'mat-2020', 5),
+  -- 5e année, Mathématiques
+  ('20000000-0000-4000-8000-000000050b01'::uuid, 'mat', '5', '10000000-0000-4000-8000-00000000aa02'::uuid, null, 'overall', 'B1', 'Démontrer une compréhension des nombres naturels, des fractions et des nombres décimaux jusqu''aux centièmes.', 'mat-2020', 1),
+  ('20000000-0000-4000-8000-000000050b11'::uuid, 'mat', '5', '10000000-0000-4000-8000-00000000aa02'::uuid, '20000000-0000-4000-8000-000000050b01'::uuid, 'specific', 'B1.5', 'Représenter des fractions équivalentes à l''aide de modèles et de droites numériques.', 'mat-2020', 2),
+  ('20000000-0000-4000-8000-000000050b12'::uuid, 'mat', '5', '10000000-0000-4000-8000-00000000aa02'::uuid, '20000000-0000-4000-8000-000000050b01'::uuid, 'specific', 'B1.6', 'Comparer et ordonner des fractions et des nombres décimaux jusqu''aux centièmes.', 'mat-2020', 3),
+  ('20000000-0000-4000-8000-000000050b13'::uuid, 'mat', '5', '10000000-0000-4000-8000-00000000aa02'::uuid, '20000000-0000-4000-8000-000000050b01'::uuid, 'specific', 'B1.7', 'Établir des liens entre les fractions et les nombres décimaux (dixièmes et centièmes).', 'mat-2020', 4),
+  -- 5e année, Sciences et technologie
+  ('20000000-0000-4000-8000-000000050d01'::uuid, 'sci', '5', '10000000-0000-4000-8000-00000000ac04'::uuid, null, 'overall', 'D2', 'Démontrer une compréhension des forces qui agissent sur les structures et de leurs effets.', 'sci-2022', 1),
+  ('20000000-0000-4000-8000-000000050d11'::uuid, 'sci', '5', '10000000-0000-4000-8000-00000000ac04'::uuid, '20000000-0000-4000-8000-000000050d01'::uuid, 'specific', 'D2.1', 'Distinguer les forces internes (compression, tension, torsion, cisaillement) et externes.', 'sci-2022', 2),
+  ('20000000-0000-4000-8000-000000050d12'::uuid, 'sci', '5', '10000000-0000-4000-8000-00000000ac04'::uuid, '20000000-0000-4000-8000-000000050d01'::uuid, 'specific', 'D2.2', 'Expliquer comment la forme et les matériaux d''une structure l''aident à résister aux forces.', 'sci-2022', 3)
+) as v (id, subject_code, grade_code, strand_id, parent_id, kind, code, text_fr, version, sort_order);
+
+-- ---------------------------------------------------------------------------------------
+-- Units and lessons, with some lessons already taught.
+-- ---------------------------------------------------------------------------------------
+
+insert into public.units (id, class_id, subject_id, title, description, status, sort_order, created_by)
+select v.id, v.class_id, (select id from public.subjects where code = v.subject_code and board_id is null),
+  v.title, v.description, 'active', 1, v.created_by
+from (values
+  ('30000000-0000-4000-8000-000000000301'::uuid, 'e0000000-0000-4000-8000-000000000003'::uuid, 'fra',
+   'Lire pour s''informer : les animaux de l''Ontario',
+   'Lecture de textes informatifs et rédaction d''une courte fiche sur un animal.',
+   'd0000000-0000-4000-8000-000000000001'::uuid),
+  ('30000000-0000-4000-8000-000000000302'::uuid, 'e0000000-0000-4000-8000-000000000003'::uuid, 'mat',
+   'Les nombres jusqu''à 1 000', 'Valeur de position, comparaison et arrondissement.',
+   'd0000000-0000-4000-8000-000000000001'::uuid),
+  ('30000000-0000-4000-8000-000000000501'::uuid, 'e0000000-0000-4000-8000-000000000005'::uuid, 'mat',
+   'Fractions et nombres décimaux', 'Fractions équivalentes, comparaison et liens avec les décimaux.',
+   'd0000000-0000-4000-8000-000000000002'::uuid),
+  ('30000000-0000-4000-8000-000000000502'::uuid, 'e0000000-0000-4000-8000-000000000005'::uuid, 'sci',
+   'Les forces qui agissent sur les structures', 'Forces internes et externes, conception d''une structure solide.',
+   'd0000000-0000-4000-8000-000000000002'::uuid)
+) as v (id, class_id, subject_code, title, description, created_by);
+
+insert into public.unit_lessons (unit_id, sequence_number, title, objectives, materials, content, sub_notes, duration_minutes)
+select v.unit_id, v.seq, v.title, v.objectives, v.materials, v.content, v.sub_notes, 50
+from (values
+  ('30000000-0000-4000-8000-000000000301'::uuid, 1, 'Qu''est-ce qu''un texte informatif?', 'Distinguer un texte informatif d''un récit.', 'Deux livres de la bibliothèque de classe (un récit, un documentaire).', 'Comparer les deux livres en grand groupe. Noter les différences au tableau.', null),
+  ('30000000-0000-4000-8000-000000000301'::uuid, 2, 'Les caractéristiques d''un texte informatif', 'Repérer titres, sous-titres, images et légendes.', 'Affiche « Les parties d''un documentaire », surligneurs.', 'Lecture guidée d''une page sur le castor. Les élèves surlignent les caractéristiques.', null),
+  ('30000000-0000-4000-8000-000000000301'::uuid, 3, 'Prédire avant de lire', 'Faire des prédictions à partir du titre et des images.', 'Texte « L''ours noir » (photocopies dans le bac bleu).', 'Tour de table des prédictions, puis lecture à voix haute par l''enseignante.', null),
+  ('30000000-0000-4000-8000-000000000301'::uuid, 4, 'Trouver l''idée principale', 'Repérer l''idée principale d''un paragraphe.', 'Texte « Le huard », organisateur graphique « idée principale et détails ».', 'Modéliser avec le premier paragraphe, puis travail en dyades pour les deux suivants. Retour en grand groupe.', 'Les élèves au niveau Débutant peuvent travailler avec la version illustrée du texte (bac vert).'),
+  ('30000000-0000-4000-8000-000000000301'::uuid, 5, 'Les détails importants', 'Distinguer un détail important d''un détail secondaire.', 'Texte « Le huard », crayons de couleur.', 'Jeu du tri : détails importants ou non? Les élèves justifient leur choix.', null),
+  ('30000000-0000-4000-8000-000000000301'::uuid, 6, 'Choisir mon animal', 'Choisir un animal et formuler trois questions.', 'Livres documentaires sur les animaux de l''Ontario (bibliothèque).', 'Les élèves choisissent un animal et écrivent trois questions dans leur cahier.', null),
+  ('30000000-0000-4000-8000-000000000301'::uuid, 7, 'Planifier ma fiche', 'Organiser ses idées avec un organisateur graphique.', 'Organisateur graphique « Ma fiche animale ».', 'Remplir l''organisateur à partir des lectures.', null),
+  ('30000000-0000-4000-8000-000000000301'::uuid, 8, 'Rédiger ma fiche', 'Rédiger une courte fiche informative.', 'Gabarit de fiche, crayons de couleur.', 'Rédaction et illustration de la fiche. Partage en petits groupes.', null),
+  ('30000000-0000-4000-8000-000000000302'::uuid, 1, 'Centaines, dizaines, unités', 'Représenter des nombres jusqu''à 1 000 avec du matériel de base dix.', 'Blocs de base dix (armoire du fond).', 'Construire des nombres dictés par l''enseignante, puis en équipe.', null),
+  ('30000000-0000-4000-8000-000000000302'::uuid, 2, 'Composer et décomposer', 'Décomposer un nombre de plusieurs façons.', 'Blocs de base dix, ardoises.', 'Trouver au moins trois façons de représenter 347.', null),
+  ('30000000-0000-4000-8000-000000000302'::uuid, 3, 'Lire et écrire les nombres', 'Lire et écrire des nombres en chiffres et en lettres.', 'Cartes-nombres.', 'Jeu du mémo : associer les chiffres et les mots.', null),
+  ('30000000-0000-4000-8000-000000000302'::uuid, 4, 'Comparer des nombres', 'Comparer des nombres avec <, > et =.', 'Droite numérique géante (au sol), cartes-nombres.', 'Placer des nombres sur la droite numérique et les comparer.', null),
+  ('30000000-0000-4000-8000-000000000302'::uuid, 5, 'Ordonner des nombres', 'Ordonner des nombres en ordre croissant et décroissant.', 'Cartes-nombres, fiche d''exercices.', 'Travail en équipes de trois, puis fiche individuelle.', 'La fiche d''exercices est dans le cartable rouge sur le bureau.'),
+  ('30000000-0000-4000-8000-000000000302'::uuid, 6, 'Arrondir à la dizaine', 'Arrondir à la dizaine près.', 'Droite numérique.', 'Utiliser la droite numérique pour voir la dizaine la plus proche.', null),
+  ('30000000-0000-4000-8000-000000000302'::uuid, 7, 'Arrondir à la centaine', 'Arrondir à la centaine près.', 'Droite numérique.', 'Problèmes de la vie courante (prix, distances).', null),
+  ('30000000-0000-4000-8000-000000000302'::uuid, 8, 'Défi des nombres', 'Réinvestir les apprentissages de l''unité.', 'Fiche « Défi des nombres ».', 'Circuit de quatre ateliers.', null),
+  ('30000000-0000-4000-8000-000000000501'::uuid, 1, 'Retour sur les fractions', 'Représenter des fractions simples.', 'Réglettes fractionnaires.', 'Activité de rappel en dyades.', null),
+  ('30000000-0000-4000-8000-000000000501'::uuid, 2, 'Fractions équivalentes (1)', 'Trouver des fractions équivalentes avec des modèles.', 'Réglettes fractionnaires, papier quadrillé.', 'Exploration guidée, puis mise en commun.', null),
+  ('30000000-0000-4000-8000-000000000501'::uuid, 3, 'Fractions équivalentes (2)', 'Trouver des fractions équivalentes sur une droite numérique.', 'Droites numériques imprimées.', 'Travail individuel puis correction collective.', null),
+  ('30000000-0000-4000-8000-000000000501'::uuid, 4, 'Comparer des fractions', 'Comparer des fractions avec des repères (0, 1/2, 1).', 'Cartes-fractions.', 'Jeu de la bataille des fractions.', null),
+  ('30000000-0000-4000-8000-000000000501'::uuid, 5, 'Les dixièmes', 'Relier les dixièmes aux fractions.', 'Grilles de 10, crayons de couleur.', 'Colorier et écrire la fraction et le nombre décimal.', null),
+  ('30000000-0000-4000-8000-000000000501'::uuid, 6, 'Les centièmes', 'Relier les centièmes aux fractions.', 'Grilles de 100.', 'Colorier des grilles de 100 et écrire le nombre décimal.', 'Les grilles de 100 sont dans le tiroir du haut du classeur gris.'),
+  ('30000000-0000-4000-8000-000000000501'::uuid, 7, 'Comparer des nombres décimaux', 'Comparer et ordonner des nombres décimaux jusqu''aux centièmes.', 'Circulaires d''épicerie.', 'Classer des prix du plus petit au plus grand.', null),
+  ('30000000-0000-4000-8000-000000000501'::uuid, 8, 'Tâche de synthèse', 'Réinvestir les apprentissages de l''unité.', 'Tâche « Le marché du village ».', 'Tâche individuelle.', null),
+  ('30000000-0000-4000-8000-000000000502'::uuid, 1, 'Qu''est-ce qu''une force?', 'Définir une force comme une poussée ou une traction.', 'Objets variés (ballon, élastique, livre).', 'Stations d''exploration, puis mise en commun.', null),
+  ('30000000-0000-4000-8000-000000000502'::uuid, 2, 'Forces externes', 'Identifier les forces externes qui agissent sur une structure.', 'Photos de ponts et d''édifices.', 'Analyse de photos en équipe.', null),
+  ('30000000-0000-4000-8000-000000000502'::uuid, 3, 'Compression et tension', 'Observer la compression et la tension.', 'Éponges, élastiques.', 'Expériences simples en dyades.', 'Distribuer une éponge et un élastique par dyade; les élèves ne lancent pas les élastiques.'),
+  ('30000000-0000-4000-8000-000000000502'::uuid, 4, 'Torsion et cisaillement', 'Observer la torsion et le cisaillement.', 'Pâte à modeler, ciseaux.', 'Démonstration puis essais.', null),
+  ('30000000-0000-4000-8000-000000000502'::uuid, 5, 'La forme compte', 'Comparer la solidité de différentes formes.', 'Papier, ruban adhésif, livres.', 'Construire des colonnes de formes différentes et tester leur résistance.', null),
+  ('30000000-0000-4000-8000-000000000502'::uuid, 6, 'Les matériaux comptent', 'Comparer des matériaux de construction.', 'Pailles, bâtonnets, carton.', 'Tests de flexibilité et de résistance.', null),
+  ('30000000-0000-4000-8000-000000000502'::uuid, 7, 'Défi : le pont le plus solide', 'Concevoir et construire un pont.', 'Bâtonnets, colle blanche, ruban adhésif.', 'Défi de conception en équipe.', null),
+  ('30000000-0000-4000-8000-000000000502'::uuid, 8, 'Tester et améliorer', 'Tester le pont et proposer des améliorations.', 'Ponts construits, poids.', 'Tests et réflexion écrite.', null)
+) as v (unit_id, seq, title, objectives, materials, content, sub_notes);
+
+-- Link a few lessons to expectations.
+insert into public.unit_lesson_expectations (lesson_id, expectation_id)
+select l.id, e.expectation_id
+from public.unit_lessons l
+join (values
+  ('30000000-0000-4000-8000-000000000301'::uuid, 2, '20000000-0000-4000-8000-000000030c13'::uuid),
+  ('30000000-0000-4000-8000-000000000301'::uuid, 3, '20000000-0000-4000-8000-000000030c11'::uuid),
+  ('30000000-0000-4000-8000-000000000301'::uuid, 4, '20000000-0000-4000-8000-000000030c12'::uuid),
+  ('30000000-0000-4000-8000-000000000301'::uuid, 7, '20000000-0000-4000-8000-000000030d11'::uuid),
+  ('30000000-0000-4000-8000-000000000302'::uuid, 1, '20000000-0000-4000-8000-000000030b11'::uuid),
+  ('30000000-0000-4000-8000-000000000302'::uuid, 4, '20000000-0000-4000-8000-000000030b12'::uuid),
+  ('30000000-0000-4000-8000-000000000302'::uuid, 6, '20000000-0000-4000-8000-000000030b13'::uuid),
+  ('30000000-0000-4000-8000-000000000501'::uuid, 2, '20000000-0000-4000-8000-000000050b11'::uuid),
+  ('30000000-0000-4000-8000-000000000501'::uuid, 4, '20000000-0000-4000-8000-000000050b12'::uuid),
+  ('30000000-0000-4000-8000-000000000501'::uuid, 5, '20000000-0000-4000-8000-000000050b13'::uuid),
+  ('30000000-0000-4000-8000-000000000502'::uuid, 2, '20000000-0000-4000-8000-000000050d11'::uuid),
+  ('30000000-0000-4000-8000-000000000502'::uuid, 5, '20000000-0000-4000-8000-000000050d12'::uuid)
+) as e (unit_id, seq, expectation_id) on e.unit_id = l.unit_id and e.seq = l.sequence_number;
+
+-- Lessons already taught (on recent school days).
+insert into public.lesson_progress (lesson_id, status, taught_on, completed_by, source)
+select l.id, 'completed', current_date - (v.done - l.sequence_number + 1), v.teacher_id, 'teacher'
+from public.unit_lessons l
+join (values
+  ('30000000-0000-4000-8000-000000000301'::uuid, 3, 'd0000000-0000-4000-8000-000000000001'::uuid),
+  ('30000000-0000-4000-8000-000000000302'::uuid, 4, 'd0000000-0000-4000-8000-000000000001'::uuid),
+  ('30000000-0000-4000-8000-000000000501'::uuid, 5, 'd0000000-0000-4000-8000-000000000002'::uuid),
+  ('30000000-0000-4000-8000-000000000502'::uuid, 2, 'd0000000-0000-4000-8000-000000000002'::uuid)
+) as v (unit_id, done, teacher_id) on v.unit_id = l.unit_id and l.sequence_number <= v.done;
+
+-- ---------------------------------------------------------------------------------------
+-- Catholic references (board-editable). Short original texts written for the demo.
+-- ---------------------------------------------------------------------------------------
+
+insert into public.catholic_references (board_id, type, title, text_fr, grade_min, grade_max, liturgical_season, tags, source_note) values
+  ('b0000000-0000-4000-8000-000000000001', 'virtue', 'Le respect', 'Je traite les autres comme j''aimerais être traité, en paroles et en gestes.', -1, 8, null, '{respect,communauté}', 'Texte original de démonstration.'),
+  ('b0000000-0000-4000-8000-000000000001', 'virtue', 'La persévérance', 'Quand une tâche est difficile, je continue d''essayer et je demande de l''aide au besoin.', 1, 8, null, '{persévérance,effort}', 'Texte original de démonstration.'),
+  ('b0000000-0000-4000-8000-000000000001', 'virtue', 'La compassion', 'Je remarque quand quelqu''un a de la peine et je cherche une façon de l''aider.', -1, 8, null, '{compassion,entraide}', 'Texte original de démonstration.'),
+  ('b0000000-0000-4000-8000-000000000001', 'reflection', 'Prendre soin de la création', 'Comment peux-tu prendre soin de la nature et des animaux autour de toi cette semaine?', 1, 8, null, '{création,environnement,sciences}', 'Texte original de démonstration.'),
+  ('b0000000-0000-4000-8000-000000000001', 'reflection', 'Dire merci', 'Nomme trois personnes ou trois choses pour lesquelles tu veux dire merci aujourd''hui.', -1, 8, 'temps_ordinaire', '{gratitude,action de grâce}', 'Texte original de démonstration.'),
+  ('b0000000-0000-4000-8000-000000000001', 'prayer', 'Prière avant le travail', 'Seigneur, aide-moi à bien écouter, à faire de mon mieux et à aider mes amis aujourd''hui. Amen.', -1, 6, null, '{prière,journée}', 'Texte original de démonstration.'),
+  ('b0000000-0000-4000-8000-000000000001', 'prayer', 'Prière de l''Avent', 'Seigneur, pendant ce temps d''attente, rends nos cœurs prêts à t''accueillir et à partager avec les autres. Amen.', -1, 8, 'avent', '{avent,partage}', 'Texte original de démonstration.');
+
+-- The seed's own events are just noise for the worker.
+delete from public.event_outbox;
