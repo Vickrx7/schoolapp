@@ -1,0 +1,206 @@
+{
+  "slug": "robot-du-quadrillage",
+  "type": "game",
+  "title": "Le robot du quadrillage",
+  "summary": "Un jeu de codage sans écran, en équipes de trois : une personne écrit un code avec des instructions en séquence et des répétitions, une autre joue le robot sur un quadrillage tracé au sol, la troisième vérifie. Avec une variante à deux robots (événements simultanés), une variante pour déboguer et une banque de questions.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["3"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "C3.1"
+    },
+    {
+      "grade": "3",
+      "code": "C3.2"
+    }
+  ],
+  "durationMinutes": 30,
+  "materials": "Du ruban-cache pour tracer au sol un quadrillage de 5 cases sur 5 (cases d’environ 40 cm de côté); de petits objets qui servent de trésors (gomme à effacer, cube, jeton); une feuille et un crayon par équipe. Sans espace libre au sol : un quadrillage de 5 × 5 cases sur une feuille et un pion par équipe.",
+  "keywords": "codage, code, robot, programmation sans écran, instructions, séquence, répétition, boucle, déboguer, événements simultanés, quadrillage",
+  "tags": ["jeu", "stim", "cooperation", "mouvement", "codage"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "J’écris, je lis et je modifie un code avec des instructions en séquence et des répétitions pour amener un robot à un endroit précis.",
+        "teacherNote": "Conçu pour une personne suppléante : du ruban-cache et quelques petits objets suffisent. Jouez une manche devant la classe avant de commencer : une ou un élève joue le robot, et la classe écrit le code ensemble. Insistez sur le fait que le robot fait exactement ce que dit le code, même s’il y a une erreur : trouver et corriger l’erreur, c’est déboguer. Affichez les instructions A, D et G au tableau. Pour les élèves qui apprennent le français, affichez les phrases modèles « Avance d’une case », « Tourne à droite », « Tourne à gauche » et « Répète … fois ». Les questions du jeu peuvent servir de réchauffement collectif.",
+        "grouping": "En équipes de trois : une personne programme, une personne joue le robot et une personne vérifie. On change de rôle à chaque manche.",
+        "setup": "Tracez au sol, avec du ruban-cache, un quadrillage de 5 cases sur 5 (cases d’environ 40 cm de côté); deux équipes peuvent partager un quadrillage en jouant chacune leur tour. Marquez d’un X la case de départ, dans un coin, et collez à côté une flèche de ruban-cache qui montre la direction de départ : le robot regarde le long d’un bord du quadrillage, et ce bord est à sa gauche. Ainsi, un premier quart de tour vers la droite (D) le tourne vers l’intérieur du quadrillage. Écrivez au tableau le code du robot : A = avance d’une case vers l’avant; D = tourne d’un quart de tour vers la droite, sur place; G = tourne d’un quart de tour vers la gauche, sur place; « Répète 3 fois : A » = fais A trois fois de suite. Si l’espace manque, chaque équipe utilise un quadrillage de 5 × 5 cases dessiné sur une feuille et un pion muni d’une petite flèche de papier qui montre dans quelle direction il regarde.",
+        "rules": [
+          "Le robot se place sur la case de départ (le X) et regarde dans la direction de la flèche.",
+          "La personne qui vérifie place le trésor sur une case du quadrillage.",
+          "La personne qui programme écrit le code sur la feuille, une instruction par ligne : A (avance d’une case), D (tourne à droite) ou G (tourne à gauche). D et G font tourner le robot sur place : il ne change pas de case.",
+          "Pour écrire un code plus court, utilise une répétition. Par exemple, « Répète 3 fois : A » remplace A, A, A.",
+          "Le robot ne regarde pas la feuille. La personne qui vérifie lit le code à voix haute, une instruction à la fois, et le robot l’exécute exactement.",
+          "Si le robot s’arrête sur le trésor, l’équipe marque 2 points.",
+          "Sinon, il y a un bogue! L’équipe relit le code, trouve l’erreur et la corrige. Le robot retourne au départ et on réessaie. Si le nouveau code fonctionne, l’équipe marque 1 point.",
+          "Le robot ne sort jamais du quadrillage. Si le code le fait sortir, c’est un bogue à corriger.",
+          "On change de rôle, on déplace le trésor et on joue une autre manche."
+        ],
+        "howToWin": "Le jeu est coopératif : l’équipe gagne quand elle atteint 10 points. Défi supplémentaire : trouver chaque trésor avec le code le plus court possible, grâce aux répétitions.",
+        "variations": [
+          "Deux robots en même temps : deux robots partent de deux coins différents. À chaque claquement de mains, chaque robot exécute une instruction de son code, en même temps que l’autre. Les deux codes doivent amener chaque robot à son trésor sans que les robots se retrouvent sur la même case au même moment.",
+          "Les obstacles : placez deux ou trois objets sur des cases interdites. Le code doit les contourner.",
+          "Le code mystère : l’adulte écrit un code au tableau, par exemple « Répète 2 fois : A, puis D, puis Répète 3 fois : A ». Chaque équipe prédit la case d’arrivée avant de tester le code.",
+          "Déboguer : l’adulte donne un code qui contient une erreur. L’équipe le lit, trouve l’instruction à changer, puis teste sa correction.",
+          "Sur table : un pion sur un quadrillage de papier remplace le robot. On joue en équipes de deux."
+        ],
+        "questions": [
+          {
+            "id": "g1",
+            "kind": "multiple_choice",
+            "prompt": "Le robot exécute ce code : A, A, D, A. De combien de cases s’est-il déplacé en tout?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "2"
+              },
+              {
+                "id": "b",
+                "text": "3"
+              },
+              {
+                "id": "c",
+                "text": "4"
+              },
+              {
+                "id": "d",
+                "text": "5"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "g2",
+            "kind": "true_false",
+            "prompt": "Le code « Répète 4 fois : A » fait avancer le robot de 4 cases.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "g3",
+            "kind": "multiple_choice",
+            "prompt": "Quel code fait exactement la même chose que A, A, A, D, A, A, A?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "Répète 3 fois : A, puis D, puis Répète 3 fois : A"
+              },
+              {
+                "id": "b",
+                "text": "Répète 6 fois : A, puis D"
+              },
+              {
+                "id": "c",
+                "text": "Répète 3 fois : A, D"
+              },
+              {
+                "id": "d",
+                "text": "D, puis Répète 6 fois : A"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "g4",
+            "kind": "ordering",
+            "prompt": "Le robot doit avancer de 2 cases, tourner à droite, puis avancer d’une case. Place les instructions dans le bon ordre.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "items": [
+              {
+                "id": "a",
+                "text": "D"
+              },
+              {
+                "id": "b",
+                "text": "A"
+              },
+              {
+                "id": "c",
+                "text": "Répète 2 fois : A"
+              }
+            ]
+          },
+          {
+            "id": "g5",
+            "kind": "short_answer",
+            "prompt": "Le code « Répète 3 fois : A » amène le robot tout près du trésor, mais le trésor est une case plus loin, droit devant. Comment changes-tu le code?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "g1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "Il y a trois A. D fait tourner le robot sur place : il ne change pas de case."
+          },
+          {
+            "questionId": "g2",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "« Répète 4 fois : A » veut dire A, A, A, A."
+          },
+          {
+            "questionId": "g3",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "Le choix c donne A, D, A, D, A, D : le robot tourne trois fois. Les choix b et d placent le D au mauvais moment."
+          },
+          {
+            "questionId": "g4",
+            "kind": "ordering",
+            "orderedIds": ["c", "a", "b"],
+            "explanation": "Répète 2 fois : A, puis D, puis A."
+          },
+          {
+            "questionId": "g5",
+            "kind": "short_answer",
+            "sampleAnswer": "Je change le 3 pour un 4 : « Répète 4 fois : A ».",
+            "acceptableAnswers": ["Répète 4 fois : A", "Répète 4 fois A", "4 fois"],
+            "explanation": "On peut aussi ajouter un A après la répétition : « Répète 3 fois : A, puis A »."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

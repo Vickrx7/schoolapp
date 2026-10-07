@@ -1,0 +1,192 @@
+{
+  "slug": "valeur-manquante-collecte",
+  "type": "worked_example",
+  "title": "Trouver la valeur manquante dans une addition",
+  "summary": "Exemple résolu pas à pas : écrire une équation avec une lettre pour un problème de collecte de denrées (175 + b = 250), trouver la valeur manquante par bonds sur une droite numérique ouverte, vérifier la réponse, puis cinq questions de pratique.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["3"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "C2.3"
+    },
+    {
+      "grade": "3",
+      "code": "C2.1"
+    }
+  ],
+  "durationMinutes": 30,
+  "materials": "L’exemple affiché ou une copie par élève, un crayon et une bande de papier pour tracer une droite numérique ouverte.",
+  "keywords": "valeur manquante, équation, variable, lettre, addition, soustraction, droite numérique ouverte, vérifier, collecte de denrées",
+  "tags": ["nombres", "algebre"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": false,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je trouve la valeur manquante dans une équation d’addition ou de soustraction et je vérifie ma réponse.",
+        "teacherNote": "Faites d’abord lire le problème sans donner l’équation : demandez ce qu’on connaît et ce qu’on cherche. La droite numérique ouverte est décrite en mots : tracez-la au tableau pendant l’explication, en partant de 175. La lettre b (pour « boîtes ») est une variable : elle représente un nombre qu’on ne connaît pas encore. Faites remarquer que l’addition à trou et la soustraction mènent à la même réponse. La question de pratique 5 se corrige à la main.",
+        "problem": "Pour la collecte de denrées de l’école, une classe de 3e année veut ramasser 250 boîtes de conserve. Elle en a déjà ramassé 175. Combien de boîtes de conserve lui manque-t-il pour atteindre son objectif? Écris une équation avec une lettre, puis trouve la valeur de la lettre.",
+        "steps": [
+          {
+            "explanation": "Lis le problème et repère ce que tu sais. Le total visé est 250 boîtes. La partie déjà ramassée est 175 boîtes. La partie qui manque est inconnue.",
+            "work": "Total : 250; partie connue : 175; partie manquante : inconnue"
+          },
+          {
+            "explanation": "Choisis une lettre pour la partie manquante. Ici, la lettre b représente le nombre de boîtes qui manquent. Écris l’équation : ce qu’on a déjà, plus ce qui manque, égale le total.",
+            "work": "175 + b = 250"
+          },
+          {
+            "explanation": "Trace une droite numérique ouverte : une ligne sur laquelle tu écris seulement les nombres dont tu as besoin. Écris 175 à gauche et 250 à droite.",
+            "work": "Départ : 175; arrivée : 250"
+          },
+          {
+            "explanation": "Fais un premier bond jusqu’à la centaine suivante, un nombre facile. De 175, il faut 25 pour arriver à 200.",
+            "work": "175 + 25 = 200"
+          },
+          {
+            "explanation": "Fais un deuxième bond, de 200 jusqu’à 250.",
+            "work": "200 + 50 = 250"
+          },
+          {
+            "explanation": "Additionne la longueur des deux bonds : c’est la valeur de b.",
+            "work": "25 + 50 = 75, donc b = 75"
+          },
+          {
+            "explanation": "Vérifie : remplace b par 75 dans l’équation. Si l’égalité est vraie, ta réponse est bonne.",
+            "work": "175 + 75 = 250 : c’est vrai."
+          },
+          {
+            "explanation": "Autre façon : on peut aussi trouver la partie manquante avec une soustraction. On enlève la partie connue du total.",
+            "work": "250 − 175 = 75"
+          }
+        ],
+        "answer": "Il manque 75 boîtes de conserve. Dans l’équation 175 + b = 250, b = 75, car 175 + 75 = 250.",
+        "practice": [
+          {
+            "id": "p1",
+            "kind": "multiple_choice",
+            "prompt": "Quelle valeur de n rend l’égalité 40 + n = 100 vraie?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "40"
+              },
+              {
+                "id": "b",
+                "text": "50"
+              },
+              {
+                "id": "c",
+                "text": "60"
+              },
+              {
+                "id": "d",
+                "text": "140"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "p2",
+            "kind": "true_false",
+            "prompt": "Dans l’équation 300 − n = 280, la valeur de n est 20.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "p3",
+            "kind": "short_answer",
+            "prompt": "Trouve la valeur de n : n + 130 = 500.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 1
+          },
+          {
+            "id": "p4",
+            "kind": "short_answer",
+            "prompt": "Désiré lit un livre de 120 pages. Il a déjà lu 85 pages. Écris une équation avec la lettre p pour le nombre de pages qu’il lui reste à lire, puis trouve la valeur de p.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 3
+          },
+          {
+            "id": "p5",
+            "kind": "short_answer",
+            "prompt": "Éloïse résout l’équation 450 − n = 200. Elle trouve n = 650. Sa réponse est-elle juste? Explique comment tu vérifies.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "p1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "40 + 60 = 100. Le choix 140 vient d’une addition de 40 et de 100."
+          },
+          {
+            "questionId": "p2",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "300 − 20 = 280 : l’égalité est vraie."
+          },
+          {
+            "questionId": "p3",
+            "kind": "short_answer",
+            "sampleAnswer": "n = 370",
+            "acceptableAnswers": ["370", "n = 370", "n=370"],
+            "explanation": "130 + 70 = 200, puis 200 + 300 = 500 : 70 + 300 = 370. Vérification : 370 + 130 = 500."
+          },
+          {
+            "questionId": "p4",
+            "kind": "short_answer",
+            "sampleAnswer": "85 + p = 120; p = 35. Il lui reste 35 pages à lire.",
+            "acceptableAnswers": ["35", "p = 35", "p=35", "35 pages"],
+            "explanation": "85 + 5 = 90, puis 90 + 30 = 120 : 5 + 30 = 35. Acceptez aussi l’équation 120 − 85 = p."
+          },
+          {
+            "questionId": "p5",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. Pour vérifier, je remplace n par 650 : 450 − 650 ne donne pas 200, car on ne peut pas enlever 650 de 450. La bonne réponse est n = 250, car 450 − 250 = 200.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit remplacer n par 650 pour vérifier, dire que c’est faux et, si possible, trouver n = 250. Éloïse a additionné 450 et 200 au lieu de chercher la partie enlevée."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

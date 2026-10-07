@@ -3,82 +3,48 @@
 import { Printer, Sparkles } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { toast } from 'sonner';
-import { ConfirmButton } from '@/components/app/confirm-button';
 import { Button } from '@/components/ui/button';
 import { Card, CardBody, CardHeader, CardTitle, Notice } from '@/components/ui/card';
 import { Field, Input, Textarea } from '@/components/ui/field';
-import { useAction } from '@/hooks/use-action';
-import { useDraft } from '@/hooks/use-draft';
+import { useAction, useErrorText } from '@/hooks/use-action';
+import { forgetSentDrafts, useDraft } from '@/hooks/use-draft';
 import { cn } from '@/lib/utils';
+import { saveDifferentiation } from '@/server/actions/differentiate';
 import {
-  deleteSavedDifferentiation,
-  saveDifferentiation,
-  updateSavedDifferentiation,
-} from '@/server/actions/differentiate';
+  resolveFieldErrors,
+  toEditable,
+  versionPayload,
+  type EditableVersion,
+  type EditorVersion,
+  type LineNumbers,
+} from './result-lines';
+import { StudentCopies } from './student-copies';
 
-export interface EditorVersion {
-  languageLevelId: string;
-  levelLabel: string;
-  title: string;
-  text: string;
-  glossary: { term: string; definition: string }[];
-  visualSupports: string[];
-  questions: string[];
-  teacherNote: string;
-}
+export type { EditorVersion } from './result-lines';
 
-interface EditableVersion {
-  languageLevelId: string;
-  levelLabel: string;
-  title: string;
-  text: string;
-  glossary: string;
-  visualSupports: string;
-  questions: string;
-  teacherNote: string;
-}
-
-const lines = (s: string) =>
-  s
-    .split('\n')
-    .map((l) => l.trim())
-    .filter(Boolean);
-
-/** "mot : définition" per line; a line without a colon is a word without definition. */
-function parseGlossary(s: string) {
-  return lines(s).map((l) => {
-    const i = l.indexOf(':');
-    return i === -1
-      ? { term: l, definition: '' }
-      : { term: l.slice(0, i).trim(), definition: l.slice(i + 1).trim() };
-  });
-}
-
-const toEditable = (v: EditorVersion): EditableVersion => ({
-  ...v,
-  glossary: v.glossary
-    .map((g) => (g.definition ? `${g.term} : ${g.definition}` : g.term))
-    .join('\n'),
-  visualSupports: v.visualSupports.join('\n'),
-  questions: v.questions.join('\n'),
-});
-
+/**
+ * A finished « Texte différencié » request, before it is saved: the versions side by side (one
+ * at a time on phones), editable, printable per level. « Enregistrer » makes it an ordinary
+ * library draft (D-073) and opens its page in the library, where it is edited from then on.
+ */
 export function ResultEditor({
-  mode,
   id,
+  userId,
   initial,
 }: {
-  mode: 'job' | 'saved';
+  /** The request (AI job). */
   id: string;
+  userId: string;
   initial: { title: string; objective: string; versions: EditorVersion[] };
 }) {
   const t = useTranslations('differentiate');
   const tCommon = useTranslations('common');
+  const errorText = useErrorText();
   const router = useRouter();
-  const draft = useDraft(`differentiate:${mode}:${id}`, {
+  const draft = useDraft(`differentiate:job:${userId}:${id}`, {
     title: initial.title,
     objective: initial.objective,
     versions: initial.versions.map(toEditable),
@@ -87,42 +53,58 @@ export function ResultEditor({
   const [selected, setSelected] = useState(0);
   const [printing, setPrinting] = useState<number[]>([]);
 
-  const payload = () => ({
-    title: v.title,
-    objective: v.objective,
-    versions: v.versions.map((x) => ({
-      languageLevelId: x.languageLevelId,
-      title: x.title,
-      text: x.text,
-      glossary: parseGlossary(x.glossary).filter((g) => g.term),
-      visualSupports: lines(x.visualSupports),
-      questions: lines(x.questions),
-      teacherNote: x.teacherNote,
-    })),
-  });
+  // The request succeeded: the new-request draft kept in case it failed can go.
+  useEffect(() => {
+    forgetSentDrafts(`differentiate:new:${userId}`, id);
+  }, [userId, id]);
 
-  const saveNew = useAction(saveDifferentiation, {
-    onSuccess: ({ itemId }) => {
+  const build = () => {
+    const versions = v.versions.map(versionPayload);
+    return {
+      payload: {
+        title: v.title,
+        objective: v.objective,
+        versions: versions.map((x) => x.payload),
+      },
+      lines: versions.map((x) => x.lines),
+    };
+  };
+  // Line numbers of what was last sent, to point at the line a field error comes from.
+  const [sentLines, setSentLines] = useState<LineNumbers[]>([]);
+
+  const saver = useAction(saveDifferentiation, {
+    onSuccess: ({ itemId, skippedLevels }) => {
       draft.clear();
-      toast.success(t('savedToLibrary'));
-      router.push(`/differentiate/saved/${itemId}`);
+      if (skippedLevels) toast.warning(t('savedWithoutLevels', { count: skippedLevels }));
+      else toast.success(t('savedToLibrary'));
+      // An ordinary library draft from now on (D-073).
+      router.push(`/library/items/${itemId}`);
     },
   });
-  const saveChanges = useAction(updateSavedDifferentiation, {
-    successMessage: t('changesSaved'),
-    onSuccess: () => draft.clear(),
-  });
-  const remove = useAction(deleteSavedDifferentiation, {
-    successMessage: t('deleted'),
-    onSuccess: () => {
-      draft.clear();
-      router.push('/differentiate');
-    },
-  });
-  const pending = saveNew.pending || saveChanges.pending;
+  const pending = saver.pending;
+  const errors = resolveFieldErrors(saver.fieldErrors, sentLines);
+  const fieldError = (key: string) => {
+    const e = errors.fields[key];
+    if (!e) return undefined;
+    const message = errorText(e.error) ?? undefined;
+    return e.line ? t('lineError', { line: e.line, error: message ?? '' }) : message;
+  };
 
-  const save = () =>
-    void (mode === 'job' ? saveNew.run(id, payload()) : saveChanges.run(id, payload()));
+  const save = async () => {
+    const { payload, lines } = build();
+    setSentLines(lines);
+    const result = await saver.run(id, payload);
+    if (result && !result.ok && result.fieldErrors) {
+      // Say so even when the field is out of sight (phones show one level at a time).
+      const resolved = resolveFieldErrors(result.fieldErrors, lines);
+      if (resolved.firstVersion !== null) setSelected(resolved.firstVersion);
+      toast.error(
+        Object.keys(resolved.fields).length
+          ? t('fixErrors')
+          : errorText(resolved.unmatched[0] ?? result.error),
+      );
+    }
+  };
 
   const updateVersion = (index: number, field: keyof EditableVersion, value: string) =>
     draft.setValue((prev) => ({
@@ -141,7 +123,7 @@ export function ResultEditor({
         {draft.restored ? (
           <Notice tone="info" className="flex flex-wrap items-center justify-between gap-2">
             <span>{tCommon('draftRestored')}</span>
-            <Button variant="ghost" size="sm" onClick={() => draft.discard()}>
+            <Button variant="ghost" onClick={() => draft.discard()}>
               {tCommon('discardDraft')}
             </Button>
           </Notice>
@@ -153,11 +135,7 @@ export function ResultEditor({
 
         <Card>
           <CardBody className="space-y-4 pt-4">
-            <Field
-              label={t('titleLabel')}
-              htmlFor="result-title"
-              error={saveNew.fieldError('title') ?? saveChanges.fieldError('title')}
-            >
+            <Field label={t('titleLabel')} htmlFor="result-title" error={fieldError('title')}>
               <Input
                 id="result-title"
                 value={v.title}
@@ -165,7 +143,11 @@ export function ResultEditor({
                 onChange={(e) => draft.update('title', e.target.value)}
               />
             </Field>
-            <Field label={t('objective')} htmlFor="result-objective">
+            <Field
+              label={t('objective')}
+              htmlFor="result-objective"
+              error={fieldError('objective')}
+            >
               <Textarea
                 id="result-objective"
                 value={v.objective}
@@ -175,27 +157,13 @@ export function ResultEditor({
               />
             </Field>
             <div className="flex flex-wrap gap-2">
-              <Button onClick={save} disabled={pending}>
-                {pending
-                  ? tCommon('saving')
-                  : mode === 'job'
-                    ? t('saveToLibrary')
-                    : t('saveChanges')}
+              <Button onClick={() => void save()} disabled={pending}>
+                {pending ? tCommon('saving') : t('saveToLibrary')}
               </Button>
               <Button variant="secondary" onClick={() => print(v.versions.map((_, i) => i))}>
                 <Printer aria-hidden />
                 {t('printAll')}
               </Button>
-              {mode === 'saved' ? (
-                <ConfirmButton
-                  label={t('deleteSaved')}
-                  message={t('deleteSavedConfirm')}
-                  confirmLabel={tCommon('delete')}
-                  variant="danger"
-                  size="md"
-                  onConfirm={() => remove.run(id)}
-                />
-              ) : null}
             </div>
           </CardBody>
         </Card>
@@ -205,7 +173,6 @@ export function ResultEditor({
           {v.versions.map((x, i) => (
             <Button
               key={x.languageLevelId}
-              size="sm"
               variant={i === selected ? 'primary' : 'secondary'}
               aria-pressed={i === selected}
               onClick={() => setSelected(i)}
@@ -218,9 +185,7 @@ export function ResultEditor({
         <div className="grid gap-4 md:grid-cols-2">
           {v.versions.map((x, i) => {
             const idp = `v${i}`;
-            const error = (field: string) =>
-              saveNew.fieldError(`versions.${i}.${field}`) ??
-              saveChanges.fieldError(`versions.${i}.${field}`);
+            const error = (field: string) => fieldError(`versions.${i}.${field}`);
             return (
               <Card
                 key={x.languageLevelId}
@@ -229,7 +194,7 @@ export function ResultEditor({
               >
                 <CardHeader>
                   <CardTitle id={`${idp}-level`}>{x.levelLabel}</CardTitle>
-                  <Button variant="ghost" size="sm" onClick={() => print([i])}>
+                  <Button variant="ghost" onClick={() => print([i])}>
                     <Printer aria-hidden />
                     <span className="sr-only sm:not-sr-only">{t('printLevel')}</span>
                   </Button>
@@ -306,46 +271,7 @@ export function ResultEditor({
         </div>
       </div>
 
-      {/* Student copies: no level name on the page, only a small neutral number for the
-          teacher, so no student sees themselves labelled "Débutant". */}
-      <div className="hidden text-black print:block">
-        {printing.map((index) => {
-          const x = v.versions[index];
-          if (!x) return null;
-          const glossary = parseGlossary(x.glossary);
-          const questions = lines(x.questions);
-          return (
-            <section key={x.languageLevelId} className="break-after-page space-y-4 font-serif">
-              <p className="text-right text-xs text-gray-400">{index + 1}</p>
-              <h1 className="text-2xl font-bold">{x.title}</h1>
-              <div className="text-lg leading-relaxed whitespace-pre-wrap">{x.text}</div>
-              {glossary.length ? (
-                <div>
-                  <h2 className="text-lg font-bold">{t('glossary')}</h2>
-                  <dl className="mt-1 space-y-1">
-                    {glossary.map((g) => (
-                      <div key={g.term}>
-                        <dt className="inline font-bold">{g.term}</dt>
-                        {g.definition ? <dd className="inline"> : {g.definition}</dd> : null}
-                      </div>
-                    ))}
-                  </dl>
-                </div>
-              ) : null}
-              {questions.length ? (
-                <div>
-                  <h2 className="text-lg font-bold">{t('questions')}</h2>
-                  <ol className="mt-1 list-decimal space-y-6 pl-6">
-                    {questions.map((q) => (
-                      <li key={q}>{q}</li>
-                    ))}
-                  </ol>
-                </div>
-              ) : null}
-            </section>
-          );
-        })}
-      </div>
+      <StudentCopies versions={v.versions} printing={printing} />
     </>
   );
 }

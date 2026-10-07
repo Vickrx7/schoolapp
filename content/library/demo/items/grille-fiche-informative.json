@@ -1,0 +1,132 @@
+{
+  "slug": "grille-fiche-informative",
+  "type": "rubric",
+  "title": "Grille d’évaluation : la fiche informative",
+  "summary": "Une grille selon les quatre catégories de la grille d’évaluation du rendement (niveaux 1 à 4) pour évaluer une fiche informative de 3e année sur un animal de l’Ontario.",
+  "source": "board_created",
+  "status": "board_approved",
+  "shareScope": "board",
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "gradeCodes": ["3"],
+  "subjectCode": "fra",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "D1"
+    }
+  ],
+  "durationMinutes": 10,
+  "materials": "Une copie de la grille par élève et le texte de l’élève.",
+  "keywords": "grille d’évaluation, grille du rendement, niveaux, autoévaluation, fiche informative, texte informatif",
+  "tags": ["ecriture", "evaluation", "animaux"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": false,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je connais ce qu’on attend d’une bonne fiche informative et je m’en sers pour améliorer mon texte.",
+        "teacherNote": "Présentez la grille avant l’écriture, puis utilisez-la pour l’autoévaluation au brouillon et pour l’évaluation du texte final. Le niveau 3 correspond à la norme provinciale. Chaque critère reprend un élément de sa catégorie dans la grille d’évaluation du rendement : connaissance du genre et compréhension de l’information; habiletés de planification et de traitement de l’information; organisation, communication pour un public et utilisation des conventions et du vocabulaire; application du processus d’écriture et établissement de liens. Les qualificatifs (limitée, partielle, générale, approfondie; avec une efficacité limitée, avec une certaine efficacité, avec efficacité, avec beaucoup d’efficacité) suivent la grille des programmes-cadres de l’Ontario (« Faire croître le succès », 2010) : à comparer avec le document officiel en vigueur. Convient au projet « Mon documentaire sur un animal de l’Ontario ».",
+        "task": "Écrire une fiche informative de quatre paragraphes sur un animal de l’Ontario pour des élèves plus jeunes : habitat, alimentation, apparence et fait étonnant.",
+        "criteria": [
+          {
+            "category": "connaissance",
+            "criterion": "La compréhension de l’information sur l’animal",
+            "levels": {
+              "level1": "Démontre une compréhension limitée de l’information trouvée sur l’animal : peu de faits, parfois inexacts.",
+              "level2": "Démontre une compréhension partielle de l’information trouvée sur l’animal : quelques faits exacts.",
+              "level3": "Démontre une compréhension générale de l’information trouvée sur l’animal : plusieurs faits exacts dans chaque paragraphe.",
+              "level4": "Démontre une compréhension approfondie de l’information trouvée sur l’animal : des faits exacts, précis et bien choisis."
+            }
+          },
+          {
+            "category": "connaissance",
+            "criterion": "Les caractéristiques du texte informatif : titre, intertitres, légendes",
+            "levels": {
+              "level1": "Démontre une connaissance limitée des caractéristiques du texte informatif : le titre ou les intertitres manquent souvent.",
+              "level2": "Démontre une connaissance partielle des caractéristiques du texte informatif : quelques intertitres ou légendes sont présents.",
+              "level3": "Démontre une connaissance générale des caractéristiques du texte informatif : un titre, des intertitres et des légendes dans la plupart des pages.",
+              "level4": "Démontre une connaissance approfondie des caractéristiques du texte informatif : le titre, les intertitres et les légendes guident la lecture."
+            }
+          },
+          {
+            "category": "habiletes",
+            "criterion": "La planification : trier ses idées dans l’organisateur graphique",
+            "levels": {
+              "level1": "Utilise l’organisateur graphique avec une efficacité limitée : peu de mots-clés, souvent dans la mauvaise case.",
+              "level2": "Utilise l’organisateur graphique avec une certaine efficacité : quelques mots-clés, parfois dans la mauvaise case.",
+              "level3": "Utilise l’organisateur graphique avec efficacité : des mots-clés dans chaque case, bien triés.",
+              "level4": "Utilise l’organisateur graphique avec beaucoup d’efficacité : des mots-clés précis et bien triés, qui guident toute l’écriture."
+            }
+          },
+          {
+            "category": "habiletes",
+            "criterion": "La recherche : choisir l’information utile dans des livres documentaires",
+            "levels": {
+              "level1": "Choisit l’information utile dans les livres avec une efficacité limitée : les notes sont souvent hors sujet ou recopiées mot à mot.",
+              "level2": "Choisit l’information utile dans les livres avec une certaine efficacité : quelques notes utiles, d’autres hors sujet.",
+              "level3": "Choisit l’information utile dans les livres avec efficacité : les notes répondent aux questions de départ.",
+              "level4": "Choisit l’information utile dans les livres avec beaucoup d’efficacité : les notes sont justes, écrites dans ses mots et répondent à toutes ses questions."
+            }
+          },
+          {
+            "category": "communication",
+            "criterion": "L’organisation : un paragraphe par sujet",
+            "levels": {
+              "level1": "Organise ses idées en paragraphes avec une efficacité limitée : les sujets se mélangent souvent.",
+              "level2": "Organise ses idées en paragraphes avec une certaine efficacité : certains paragraphes mélangent deux sujets.",
+              "level3": "Organise ses idées en paragraphes avec efficacité : chaque paragraphe porte sur un seul sujet.",
+              "level4": "Organise ses idées en paragraphes avec beaucoup d’efficacité : chaque paragraphe porte sur un seul sujet et commence par une phrase qui l’annonce."
+            }
+          },
+          {
+            "category": "communication",
+            "criterion": "Le public : communiquer clairement avec des élèves plus jeunes",
+            "levels": {
+              "level1": "Communique l’information à un public plus jeune avec une efficacité limitée : plusieurs phrases sont difficiles à comprendre pour ce public.",
+              "level2": "Communique l’information à un public plus jeune avec une certaine efficacité : certaines phrases sont claires pour ce public.",
+              "level3": "Communique l’information à un public plus jeune avec efficacité : des phrases claires et des légendes utiles pour ce public.",
+              "level4": "Communique l’information à un public plus jeune avec beaucoup d’efficacité : des phrases claires, des légendes utiles et un ton qui capte l’intérêt de ce public."
+            }
+          },
+          {
+            "category": "communication",
+            "criterion": "Les conventions et le vocabulaire : majuscules, points, accords simples et mots précis appris en classe",
+            "levels": {
+              "level1": "Utilise les conventions et le vocabulaire à l’étude avec une efficacité limitée : les erreurs gênent souvent la lecture et les mots précis sont rares.",
+              "level2": "Utilise les conventions et le vocabulaire à l’étude avec une certaine efficacité : plusieurs erreurs, mais le texte se lit; quelques mots précis.",
+              "level3": "Utilise les conventions et le vocabulaire à l’étude avec efficacité : quelques erreurs qui ne gênent pas la lecture; plusieurs mots précis bien employés (habitat, herbivore, terrier…).",
+              "level4": "Utilise les conventions et le vocabulaire à l’étude avec beaucoup d’efficacité : très peu d’erreurs; de nombreux mots précis, bien employés et expliqués au besoin."
+            }
+          },
+          {
+            "category": "application",
+            "criterion": "Le processus d’écriture : planifier, rédiger, réviser et corriger",
+            "levels": {
+              "level1": "Applique le processus d’écriture avec une efficacité limitée : le brouillon est peu révisé et peu corrigé.",
+              "level2": "Applique le processus d’écriture avec une certaine efficacité : quelques corrections au brouillon, surtout en orthographe.",
+              "level3": "Applique le processus d’écriture avec efficacité : le brouillon est révisé et corrigé à l’aide de la grille.",
+              "level4": "Applique le processus d’écriture avec beaucoup d’efficacité : les révisions améliorent clairement le texte, et l’élève explique ses changements."
+            }
+          },
+          {
+            "category": "application",
+            "criterion": "Les liens : relier l’animal au quotidien des élèves plus jeunes",
+            "levels": {
+              "level1": "Établit des liens entre l’animal et le quotidien des élèves plus jeunes avec une efficacité limitée : aucune comparaison ni aucun exemple tiré de leur vie.",
+              "level2": "Établit des liens entre l’animal et le quotidien des élèves plus jeunes avec une certaine efficacité : une comparaison ou un exemple, peu développé.",
+              "level3": "Établit des liens entre l’animal et le quotidien des élèves plus jeunes avec efficacité : des comparaisons ou des exemples tirés de leur vie (la taille d’un chien, un lac près de chez eux).",
+              "level4": "Établit des liens entre l’animal et le quotidien des élèves plus jeunes avec beaucoup d’efficacité : des comparaisons et des exemples bien choisis, qui les aident à imaginer l’animal et à s’y intéresser."
+            }
+          }
+        ]
+      },
+      "answerKey": null
+    }
+  ]
+}

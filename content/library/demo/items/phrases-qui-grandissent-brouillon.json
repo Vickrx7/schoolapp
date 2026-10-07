@@ -1,0 +1,64 @@
+{
+  "slug": "phrases-qui-grandissent-brouillon",
+  "type": "learning_centre",
+  "title": "Des phrases qui grandissent (brouillon)",
+  "summary": "Un centre de jeu de cartes pour construire une phrase de base (qui? + fait quoi?), puis l’enrichir avec des groupes de mots qui disent où, quand et comment.",
+  "source": "ai_generated",
+  "author": "isabelle.tremblay@demo.lynx.test",
+  "school": "saint-exemple",
+  "status": "draft",
+  "shareScope": "private",
+  "reviewRequested": false,
+  "approvedBy": null,
+  "faithReviewed": false,
+  "gradeCodes": ["3"],
+  "subjectCode": "fra",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "B3.1"
+    }
+  ],
+  "durationMinutes": 25,
+  "materials": "Quatre paquets de cartes de couleurs différentes (Qui?, Fait quoi?, Où?, Quand?), des bandes de papier, des crayons et un bac étiqueté « Mes phrases ».",
+  "keywords": "phrase de base, sujet, verbe, complément, enrichir une phrase, groupe du nom, majuscule, point, jeu de cartes",
+  "tags": ["ecriture", "jeu"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "subFriendly": false,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": "v1",
+  "model": "claude-opus-5-5",
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "Des phrases qui grandissent",
+        "objective": "Je construis une phrase de base (qui? + fait quoi?) et je l’enrichis avec des mots qui disent où, quand et comment.",
+        "teacherNote": "Brouillon généré, à relire avant l’utilisation : vérifier les cartes proposées, le temps prévu et le niveau des mots. Toutes les cartes « Qui? » sont au singulier pour que les phrases restent correctes; ajoutez plus tard des sujets au pluriel pour travailler l’accord du verbe. Les phrases peuvent être drôles (« Le chat de Noé prépare une soupe au bord du lac »), pourvu qu’elles soient bien construites : c’est ce qui motive les élèves. Les élèves qui apprennent le français peuvent s’arrêter à l’étape 3 et lire leur phrase avec l’aide d’une ou d’un camarade.",
+        "setup": "Placez les quatre paquets de cartes face cachée sur la table, avec les bandes de papier, les crayons et le bac « Mes phrases ». Cartes « Qui? » : Ma voisine, La brigadière, Mon ami Bastien, Le bibliothécaire, Le chat de Noé, Une élève de 3e année. Cartes « Fait quoi? » : lit un livre, patine, construit un fort, plante des fleurs, chante une chanson, prépare une soupe. Cartes « Où? » : à la patinoire, dans la cour, à la bibliothèque, au bord du lac, dans la cuisine, au parc. Cartes « Quand? » : le samedi matin, après l’école, pendant la tempête, au printemps, ce soir, à la récréation. Montrez d’abord un exemple à toute la classe, en ajoutant une carte à la fois.",
+        "groupSize": "2 à 4 élèves",
+        "studentSteps": [
+          "Pige une carte « Qui? » et une carte « Fait quoi? ». Écris ta phrase de base sur une bande de papier. Exemple : Ma voisine patine.",
+          "Pige une carte « Où? » et ajoute-la à ta phrase. Exemple : Ma voisine patine à la patinoire.",
+          "Pige une carte « Quand? ». Ajoute-la au début ou à la fin de ta phrase.",
+          "Ajoute un mot qui dit comment (lentement, avec soin, en riant…) ou un mot qui décrit (grande, joyeux, petit…).",
+          "Lis ta phrase à voix haute à la personne à côté de toi. A-t-elle du sens?",
+          "Vérifie la majuscule au début et le point à la fin.",
+          "Dépose ta bande dans le bac « Mes phrases »."
+        ],
+        "extension": "Écris la phrase la plus longue possible qui a encore du sens, sans utiliser le mot « et ». Compte tes mots, puis lis ta phrase à la classe.",
+        "cleanup": "Remets chaque carte dans son paquet, face cachée, et range les crayons."
+      },
+      "answerKey": null
+    }
+  ]
+}

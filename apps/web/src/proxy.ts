@@ -1,7 +1,39 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import { REQUEST_PATH_HEADER, requestPath } from './lib/request-path';
+import { SURFACE_HEADER, surfaceOf, type Surface } from './lib/surface';
+import { serverEnv } from './server/env';
 
-const PUBLIC_PATHS = ['/login', '/auth/confirm', '/auth/no-access'];
+/**
+ * Pages for signed-out visitors too. « Confidentialité et conditions » (DECISIONS D-110) is
+ * linked from the login page and the substitute portal.
+ */
+const PUBLIC_PATHS = ['/login', '/auth/confirm', '/auth/no-access', '/confidentialite'];
+
+/**
+ * Health checks for monitors and the error reports of browsers (D-111, D-112): public, never
+ * cached, and handled before the Supabase client exists (no session is read or refreshed).
+ */
+const OPERATIONS_PATHS = ['/api/health', '/api/client-error'];
+
+/**
+ * The substitute portal (no account; DECISIONS D-049). Public, and handled before the Supabase
+ * client exists, so a staff session cookie in the same browser is never read or refreshed there.
+ */
+const PORTAL_PATHS = ['/suppleance', '/s'];
+
+const under = (path: string, prefix: string) => path === prefix || path.startsWith(`${prefix}/`);
+
+/**
+ * Continues with the request's (possibly updated) headers, the surface header and the page's
+ * address set, whatever the client sent in them (lib/surface.ts, lib/request-path.ts).
+ */
+function forward(request: NextRequest, surface: Surface): NextResponse {
+  const headers = new Headers(request.headers);
+  headers.set(SURFACE_HEADER, surface);
+  headers.set(REQUEST_PATH_HEADER, requestPath(request.nextUrl.pathname, request.nextUrl.search));
+  return NextResponse.next({ request: { headers } });
+}
 
 /**
  * Refreshes the Supabase session cookie on every request and sends signed-out visitors to
@@ -9,32 +41,36 @@ const PUBLIC_PATHS = ['/login', '/auth/confirm', '/auth/no-access'];
  * session again, and Row Level Security enforces access in the database.
  */
 export async function proxy(request: NextRequest) {
-  let response = NextResponse.next({ request });
+  const path = request.nextUrl.pathname;
+  // Class devices (« Quiz sur les appareils », no account; DECISIONS D-083, D-090): public, and
+  // handled before the Supabase client exists, like the substitute portal.
+  if (surfaceOf(path) === 'jouer') return forward(request, 'jouer');
+  if (PORTAL_PATHS.some((p) => under(path, p))) return forward(request, 'app');
+  if (OPERATIONS_PATHS.some((p) => under(path, p))) return forward(request, 'app');
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          for (const { name, value } of cookiesToSet) request.cookies.set(name, value);
-          response = NextResponse.next({ request });
-          for (const { name, value, options } of cookiesToSet)
-            response.cookies.set(name, value, options);
-        },
+  let response = forward(request, 'app');
+
+  // Read at run time on the server (DECISIONS D-113), never inlined into the build.
+  const env = serverEnv();
+  const supabase = createServerClient(env.SUPABASE_URL, env.SUPABASE_ANON_KEY, {
+    cookies: {
+      getAll() {
+        return request.cookies.getAll();
+      },
+      setAll(cookiesToSet) {
+        for (const { name, value } of cookiesToSet) request.cookies.set(name, value);
+        response = forward(request, 'app');
+        for (const { name, value, options } of cookiesToSet)
+          response.cookies.set(name, value, options);
       },
     },
-  );
+  });
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const path = request.nextUrl.pathname;
-  const isPublic = PUBLIC_PATHS.some((p) => path === p || path.startsWith(`${p}/`));
+  const isPublic = PUBLIC_PATHS.some((p) => under(path, p));
 
   if (!user && !isPublic) {
     const url = request.nextUrl.clone();
@@ -43,6 +79,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url);
   }
   if (user && path === '/login') {
+    // « Aujourd'hui » sends whoever does not teach to their own landing page (landingFor, D-118).
     const url = request.nextUrl.clone();
     url.pathname = '/today';
     url.search = '';

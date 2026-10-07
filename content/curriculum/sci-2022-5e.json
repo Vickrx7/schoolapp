@@ -1,0 +1,423 @@
+{
+  "official": false,
+  "verified": false,
+  "subjectCode": "sci",
+  "curriculumVersion": "sci-2022",
+  "sourceNote": "Résumé paraphrasé du curriculum de sciences et technologie de l’Ontario (2022), à vérifier contre le document officiel.",
+  "strands": [
+    {
+      "code": "A",
+      "labelFr": "Habiletés en STIM et liens",
+      "labelEn": null
+    },
+    {
+      "code": "B",
+      "labelFr": "Systèmes vivants",
+      "labelEn": null
+    },
+    {
+      "code": "C",
+      "labelFr": "Matière et énergie",
+      "labelEn": null
+    },
+    {
+      "code": "D",
+      "labelFr": "Structures et mécanismes",
+      "labelEn": null
+    },
+    {
+      "code": "E",
+      "labelFr": "Systèmes de la Terre et de l’espace",
+      "labelEn": null
+    }
+  ],
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "A1",
+      "kind": "overall",
+      "strandCode": "A",
+      "parentCode": null,
+      "textFr": "Utiliser un processus de recherche scientifique, un processus d’expérimentation scientifique et un processus de design en ingénierie pour mener des investigations, en respectant les consignes de santé et de sécurité.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "A1.1",
+      "kind": "specific",
+      "strandCode": "A",
+      "parentCode": "A1",
+      "textFr": "Utiliser un processus de recherche scientifique pour explorer des questions liées aux concepts à l’étude.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "A1.2",
+      "kind": "specific",
+      "strandCode": "A",
+      "parentCode": "A1",
+      "textFr": "Utiliser un processus d’expérimentation scientifique pour faire des prédictions, les vérifier et observer des phénomènes liés aux concepts à l’étude.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "A1.3",
+      "kind": "specific",
+      "strandCode": "A",
+      "parentCode": "A1",
+      "textFr": "Utiliser un processus de design en ingénierie pour concevoir, construire, mettre à l’essai et améliorer une solution à un problème concret.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "A1.4",
+      "kind": "specific",
+      "strandCode": "A",
+      "parentCode": "A1",
+      "textFr": "Suivre les consignes de santé et de sécurité pendant les investigations, dont le port de l’équipement de protection et l’utilisation sécuritaire des outils et du matériel.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "A1.5",
+      "kind": "specific",
+      "strandCode": "A",
+      "parentCode": "A1",
+      "textFr": "Communiquer ses résultats en utilisant le vocabulaire scientifique et technologique et des formes adaptées à l’intention et au public.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "A2",
+      "kind": "overall",
+      "strandCode": "A",
+      "parentCode": null,
+      "textFr": "Utiliser le codage dans des investigations et pour modéliser des concepts, et évaluer l’incidence du codage et des technologies émergentes sur la vie quotidienne.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "A2.1",
+      "kind": "specific",
+      "strandCode": "A",
+      "parentCode": "A2",
+      "textFr": "Écrire et exécuter du code pour mener des investigations et modéliser des concepts, par exemple à l’aide d’instructions conditionnelles.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "A2.2",
+      "kind": "specific",
+      "strandCode": "A",
+      "parentCode": "A2",
+      "textFr": "Reconnaître et décrire l’incidence du codage et des technologies émergentes sur la vie quotidienne, y compris dans les métiers spécialisés.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "A3",
+      "kind": "overall",
+      "strandCode": "A",
+      "parentCode": null,
+      "textFr": "Analyser des applications de la science et de la technologie dans divers contextes et reconnaître les contributions de personnes et de communautés diverses.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "A3.1",
+      "kind": "specific",
+      "strandCode": "A",
+      "parentCode": "A3",
+      "textFr": "Décrire des applications pratiques des concepts scientifiques et technologiques à l’étude, dont des métiers qui s’y rattachent.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "A3.2",
+      "kind": "specific",
+      "strandCode": "A",
+      "parentCode": "A3",
+      "textFr": "Explorer comment la science et la technologie peuvent être combinées à d’autres matières pour répondre à des problèmes concrets.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "A3.3",
+      "kind": "specific",
+      "strandCode": "A",
+      "parentCode": "A3",
+      "textFr": "Reconnaître les contributions à la science et à la technologie de personnes de diverses communautés, dont les Premières Nations, les Métis, les Inuit et les communautés francophones.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B1",
+      "kind": "overall",
+      "strandCode": "B",
+      "parentCode": null,
+      "textFr": "Évaluer l’incidence de facteurs sociaux et environnementaux et de diverses technologies sur la santé humaine.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B1.1",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B1",
+      "textFr": "Évaluer les effets de divers facteurs sociaux et environnementaux sur la santé humaine et décrire des façons de réduire les effets nuisibles et de profiter des effets bénéfiques.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B1.2",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B1",
+      "textFr": "Évaluer l’incidence de diverses technologies sur la santé humaine, par exemple des outils de diagnostic ou des prothèses.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B2",
+      "kind": "overall",
+      "strandCode": "B",
+      "parentCode": null,
+      "textFr": "Démontrer une compréhension de la structure et de la fonction des systèmes du corps humain et des interactions entre ces systèmes.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B2.1",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B2",
+      "textFr": "Décrire la structure et la fonction des principaux organes de divers systèmes du corps humain (respiratoire, circulatoire, digestif, musculosquelettique, nerveux).",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B2.2",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B2",
+      "textFr": "Décrire comment les systèmes du corps humain interagissent pour assurer les fonctions vitales, par exemple les systèmes respiratoire et circulatoire.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "B2.3",
+      "kind": "specific",
+      "strandCode": "B",
+      "parentCode": "B2",
+      "textFr": "Reconnaître des maladies et des troubles courants qui touchent les systèmes du corps humain, leurs causes possibles et des façons de les prévenir ou de les traiter.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C1",
+      "kind": "overall",
+      "strandCode": "C",
+      "parentCode": null,
+      "textFr": "Évaluer l’incidence sur la société et l’environnement des matériaux que les humains utilisent et des changements qu’ils leur font subir.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C1.1",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C1",
+      "textFr": "Évaluer les effets sur l’environnement de l’utilisation et de l’élimination de divers matériaux, et proposer des façons d’en limiter les effets, par exemple réduire, réutiliser et recycler.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C1.2",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C1",
+      "textFr": "Évaluer l’utilité pour la société de procédés qui transforment la matière, comme la cuisson, le recyclage et le compostage, en tenant compte de leurs effets sur l’environnement.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C2",
+      "kind": "overall",
+      "strandCode": "C",
+      "parentCode": null,
+      "textFr": "Démontrer une compréhension des propriétés de la matière, des changements d’état et des changements physiques et chimiques.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C2.1",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C2",
+      "textFr": "Décrire les propriétés des solides, des liquides et des gaz, dont la masse, le volume et la forme.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C2.2",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C2",
+      "textFr": "Expliquer les changements d’état (fusion, solidification, évaporation, condensation, sublimation) causés par un gain ou une perte de chaleur.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C2.3",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C2",
+      "textFr": "Distinguer les changements physiques, qui sont souvent réversibles, et les changements chimiques, qui produisent de nouvelles substances.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "C2.4",
+      "kind": "specific",
+      "strandCode": "C",
+      "parentCode": "C2",
+      "textFr": "Reconnaître les indices d’un changement chimique, comme la production d’un gaz, un changement de couleur, la formation d’un solide ou un dégagement de chaleur ou de lumière.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D1",
+      "kind": "overall",
+      "strandCode": "D",
+      "parentCode": null,
+      "textFr": "Évaluer l’incidence des forces sur les structures, ainsi que l’incidence des structures sur la société et l’environnement.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D1.1",
+      "kind": "specific",
+      "strandCode": "D",
+      "parentCode": "D1",
+      "textFr": "Évaluer les effets de phénomènes naturels, comme le vent, les séismes et les fortes chutes de neige, sur les structures, et décrire comment on conçoit des structures qui y résistent.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D1.2",
+      "kind": "specific",
+      "strandCode": "D",
+      "parentCode": "D1",
+      "textFr": "Évaluer l’incidence de structures sur la société et l’environnement en tenant compte de divers facteurs (coût, sécurité, matériaux, besoins de la communauté).",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D2",
+      "kind": "overall",
+      "strandCode": "D",
+      "parentCode": null,
+      "textFr": "Démontrer une compréhension des forces qui agissent sur les structures et de leurs effets.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D2.1",
+      "kind": "specific",
+      "strandCode": "D",
+      "parentCode": "D2",
+      "textFr": "Distinguer les forces internes (compression, tension, torsion, cisaillement) et externes.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D2.2",
+      "kind": "specific",
+      "strandCode": "D",
+      "parentCode": "D2",
+      "textFr": "Expliquer comment la forme et les matériaux d’une structure l’aident à résister aux forces.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "D2.3",
+      "kind": "specific",
+      "strandCode": "D",
+      "parentCode": "D2",
+      "textFr": "Décrire comment la grandeur et la direction d’une force, ainsi que l’endroit où elle s’applique, influent sur une structure.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "E1",
+      "kind": "overall",
+      "strandCode": "E",
+      "parentCode": null,
+      "textFr": "Évaluer l’incidence de l’utilisation de l’énergie et des ressources sur la société et l’environnement, et proposer des moyens de les conserver.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "E1.1",
+      "kind": "specific",
+      "strandCode": "E",
+      "parentCode": "E1",
+      "textFr": "Analyser les effets à long terme de l’utilisation de l’énergie et des ressources naturelles par les humains, et proposer des moyens de réduire ces effets.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "E1.2",
+      "kind": "specific",
+      "strandCode": "E",
+      "parentCode": "E1",
+      "textFr": "Évaluer des technologies et des habitudes qui permettent d’économiser l’énergie et les ressources à la maison, à l’école et dans la communauté.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "E2",
+      "kind": "overall",
+      "strandCode": "E",
+      "parentCode": null,
+      "textFr": "Démontrer une compréhension des formes d’énergie, des transformations de l’énergie et de la conservation de l’énergie et des ressources.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "E2.1",
+      "kind": "specific",
+      "strandCode": "E",
+      "parentCode": "E2",
+      "textFr": "Reconnaître diverses formes d’énergie (mécanique, électrique, thermique, chimique, sonore, lumineuse) et décrire comment on les utilise au quotidien.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "E2.2",
+      "kind": "specific",
+      "strandCode": "E",
+      "parentCode": "E2",
+      "textFr": "Décrire comment l’énergie se transforme d’une forme à une autre dans des appareils et des phénomènes courants.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "E2.3",
+      "kind": "specific",
+      "strandCode": "E",
+      "parentCode": "E2",
+      "textFr": "Expliquer que l’énergie ne se crée pas et ne disparaît pas, mais qu’elle se transforme, souvent en partie en chaleur.",
+      "textEn": null
+    },
+    {
+      "grade": "5",
+      "code": "E2.4",
+      "kind": "specific",
+      "strandCode": "E",
+      "parentCode": "E2",
+      "textFr": "Distinguer les sources d’énergie renouvelables et non renouvelables, et comparer leurs avantages et leurs inconvénients.",
+      "textEn": null
+    }
+  ]
+}

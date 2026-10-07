@@ -1,16 +1,13 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
-import { Button } from '@/components/ui/button';
-import { EmptyState } from '@/components/ui/page';
+import { ErrorPanel } from '@/components/app/error-panel';
 
-export default function AppError({ reset }: { error: Error; reset: () => void }) {
-  const t = useTranslations();
-  return (
-    <EmptyState
-      title={t('errors.title')}
-      body={t('errors.unexpected')}
-      action={<Button onClick={reset}>{t('common.retry')}</Button>}
-    />
-  );
+export default function AppError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  return <ErrorPanel error={error} reset={reset} />;
 }

@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto';
+import type { z } from 'zod';
 import { PrivacyViolation, Redactor, type KnownPerson } from './privacy';
 import { estimateCostUsd, type ModelPrice } from './pricing';
 import {
@@ -17,9 +19,17 @@ export interface RunOptions<I, O> {
   systemPrompt: string;
   /** Raw input from the request; validated here. */
   input: unknown;
-  /** Everyone whose name must not leave: the school's students and staff. */
+  /**
+   * Everyone whose name must not leave: students and staff of every school the requester
+   * works in (never fewer people than the requester's preview used).
+   */
   people: readonly KnownPerson[];
   maxAttempts?: number;
+  /**
+   * The longest the whole request may take, every attempt included. A call still running
+   * then is abandoned (error 'timeout') and not retried.
+   */
+  timeoutMs?: number;
   now?: Date;
 }
 
@@ -40,6 +50,18 @@ export interface RunResult<O> {
   problems: string[];
 }
 
+/**
+ * `normalize` must never throw; if it does anyway, the answer counts as unusable (and is retried)
+ * rather than failing the whole request.
+ */
+function normalizeSafely<I, O>(normalize: (output: O, input: I) => O, output: O, input: I) {
+  try {
+    return normalize(output, input);
+  } catch {
+    return null;
+  }
+}
+
 function addUsage(total: TokenUsage, more: TokenUsage) {
   total.inputTokens += more.inputTokens;
   total.outputTokens += more.outputTokens;
@@ -47,9 +69,131 @@ function addUsage(total: TokenUsage, more: TokenUsage) {
   total.cacheWriteTokens += more.cacheWriteTokens;
 }
 
+export interface PrepareOptions {
+  /** The system prompt for `feature.promptVersion` (see prompts.ts). */
+  systemPrompt: string;
+  /** Everyone whose name must not leave (see RunOptions.people). */
+  people: readonly KnownPerson[];
+  now?: Date;
+}
+
+/** A request ready to send: de-identified, checked, with its prompt, schema and limit. */
+export interface PreparedCall<I, O> {
+  ok: true;
+  /** The input as sent: de-identified. */
+  input: I;
+  /** Puts the request's people back into the answer (`checkOutput`). */
+  redactor: Redactor;
+  system: string;
+  user: string;
+  schema: z.ZodType<O>;
+  maxTokens: number;
+  /**
+   * SHA-256 (hex) of exactly what is sent: the system prompt and the message. The same input
+   * with the same people always gives the same hash, so a batch's answers are put back only
+   * against the markers they were written with (D-098).
+   */
+  sentSha256: string;
+  /** Fields left out because they held a personal detail: `dropped <path>` (logged). */
+  problems: string[];
+}
+
+export type PrepareResult<I, O> =
+  | PreparedCall<I, O>
+  | { ok: false; errorCode: 'invalidInput' | 'personalInfo'; problems: string[] };
+
+/** SHA-256 (hex) of what a call sends. */
+export function sentHash(system: string, user: string): string {
+  return createHash('sha256').update(system).update('\u0000').update(user).digest('hex');
+}
+
+/**
+ * Everything before a call (D-037, D-041, D-098): validate the input, de-identify it with the
+ * request's people, refuse it when a personal detail remains (`personalInfo`), build the
+ * message and system prompt, check that no known name leaves in either, and choose the output
+ * schema and `max_tokens`. The streamed path (`runFeature`) and the batch path (bulk generation)
+ * both go through here, so they refuse exactly the same requests.
+ */
+export function prepareCall<I, O>(
+  feature: FeatureDefinition<I, O>,
+  rawInput: unknown,
+  options: PrepareOptions,
+): PrepareResult<I, O> {
+  const parsed = feature.inputSchema.safeParse(rawInput);
+  if (!parsed.success) return { ok: false, errorCode: 'invalidInput', problems: [] };
+
+  const redactor = new Redactor(options.people, options.now);
+  const { input, blocked, dropped = [] } = feature.redactInput(parsed.data, redactor);
+  // Fields left out because they held a personal detail: their paths only (they are logged).
+  const problems = dropped.map((path) => `dropped ${path}`);
+  if (blocked.length) {
+    return {
+      ok: false,
+      errorCode: 'personalInfo',
+      problems: [...problems, ...blocked.map((b) => `blocked ${b.kind}`)],
+    };
+  }
+
+  const user = feature.buildUserMessage(input);
+  const system = feature.systemPrompt?.(options.systemPrompt, input) ?? options.systemPrompt;
+  const schema = feature.outputSchemaFor?.(input) ?? feature.outputSchema;
+  try {
+    redactor.assertSafeOutbound(`${system}\n${user}`);
+  } catch (error) {
+    if (error instanceof PrivacyViolation) {
+      return {
+        ok: false,
+        errorCode: 'personalInfo',
+        problems: [...problems, ...error.findings.map((f) => `outbound ${f.kind}`)],
+      };
+    }
+    throw error;
+  }
+  const own = feature.outboundFindings?.(user) ?? [];
+  if (own.length) {
+    return {
+      ok: false,
+      errorCode: 'personalInfo',
+      problems: [...problems, ...own.map((f) => `outbound ${f.kind}`)],
+    };
+  }
+  return {
+    ok: true,
+    input,
+    redactor,
+    system,
+    user,
+    schema,
+    maxTokens: feature.maxTokens,
+    sentSha256: sentHash(system, user),
+    problems,
+  };
+}
+
+export type CheckedOutput<O> = { ok: true; output: O } | { ok: false; problems: string[] };
+
+/**
+ * Everything after an answer that matched the schema: normalize it (D-080), validate it, then put
+ * the request's people back. Problems are paths and codes, never content.
+ */
+export function checkOutput<I, O>(
+  feature: FeatureDefinition<I, O>,
+  output: O,
+  input: I,
+  redactor: Redactor,
+): CheckedOutput<O> {
+  const normalized = feature.normalize ? normalizeSafely(feature.normalize, output, input) : output;
+  if (normalized === null) return { ok: false, problems: ['normalize failed'] };
+  const issues = feature.validate(normalized, input);
+  if (issues.length) return { ok: false, problems: issues };
+  return { ok: true, output: redactor.restore(normalized) };
+}
+
 /**
  * Runs one AI feature request end to end: validate, de-identify, check, call the provider
- * (retrying answers that fail validation), and put names back.
+ * (retrying answers that fail validation), and put names back. A feature may choose its system
+ * prompt and output schema from the input, and normalize each answer before it is validated
+ * (D-080): what normalizing fixes never costs a retry.
  */
 export async function runFeature<I, O>(options: RunOptions<I, O>): Promise<RunResult<O>> {
   const { feature, provider } = options;
@@ -75,42 +219,48 @@ export async function runFeature<I, O>(options: RunOptions<I, O>): Promise<RunRe
     ...extra,
   });
 
-  const parsed = feature.inputSchema.safeParse(options.input);
-  if (!parsed.success) return result('failed', 'invalidInput');
-
-  const redactor = new Redactor(options.people, options.now);
-  const { input, blocked } = feature.redactInput(parsed.data, redactor);
-  if (blocked.length) {
-    return result('failed', 'personalInfo', { problems: blocked.map((b) => `blocked ${b.kind}`) });
+  const prepared = prepareCall(feature, options.input, {
+    systemPrompt: options.systemPrompt,
+    people: options.people,
+    ...(options.now ? { now: options.now } : {}),
+  });
+  if (!prepared.ok) {
+    return result('failed', prepared.errorCode, { problems: prepared.problems });
   }
-
-  const user = feature.buildUserMessage(input);
-  try {
-    redactor.assertSafeOutbound(`${options.systemPrompt}\n${user}`);
-  } catch (error) {
-    if (error instanceof PrivacyViolation) {
-      return result('failed', 'personalInfo', {
-        problems: error.findings.map((f) => `outbound ${f.kind}`),
-      });
-    }
-    throw error;
-  }
+  const { input, redactor, system, user, schema } = prepared;
 
   const maxAttempts = options.maxAttempts ?? 3;
-  const problems: string[] = [];
+  const signal =
+    options.timeoutMs === undefined ? undefined : AbortSignal.timeout(options.timeoutMs);
+  const problems: string[] = [...prepared.problems];
   let model = provider.model;
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    if (signal?.aborted) {
+      return result('failed', 'timeout', {
+        sentText: attempt > 1 ? user : null,
+        attempts: attempt - 1,
+        model,
+        problems: [...problems, 'no time left for another attempt'],
+      });
+    }
     let response;
     try {
       response = await provider.generate({
-        system: options.systemPrompt,
+        system,
         user,
-        schema: feature.outputSchema,
-        maxTokens: feature.maxTokens,
+        schema,
+        maxTokens: prepared.maxTokens,
         fake: () => feature.fake(input),
+        ...(signal ? { signal } : {}),
       });
     } catch (error) {
+      // The call may have failed after the provider started (a broken or timed-out stream):
+      // keep what it reported, since it is billed. Timeouts are not retried either.
       const code = error instanceof AiProviderError ? error.code : 'aiError';
+      if (error instanceof AiProviderError) {
+        if (error.usage) addUsage(usage, error.usage);
+        if (error.requestId) requestIds.push(error.requestId);
+      }
       return result('failed', code, {
         sentText: user,
         attempts: attempt,
@@ -123,25 +273,25 @@ export async function runFeature<I, O>(options: RunOptions<I, O>): Promise<RunRe
     if (response.requestId) requestIds.push(response.requestId);
 
     if (response.stopReason === 'refusal') {
-      return result('failed', 'aiRefused', { sentText: user, attempts: attempt, model });
+      return result('failed', 'aiRefused', { sentText: user, attempts: attempt, model, problems });
     }
     if (
       response.stopReason === 'max_tokens' ||
       response.stopReason === 'model_context_window_exceeded'
     ) {
-      return result('failed', 'aiTooLong', { sentText: user, attempts: attempt, model });
+      return result('failed', 'aiTooLong', { sentText: user, attempts: attempt, model, problems });
     }
     if (!response.output) {
       problems.push(`attempt ${attempt}: ${response.stopReason}`);
       continue;
     }
-    const issues = feature.validate(response.output, input);
-    if (issues.length) {
-      problems.push(...issues.map((i) => `attempt ${attempt}: ${i}`));
+    const checked = checkOutput(feature, response.output, input, redactor);
+    if (!checked.ok) {
+      problems.push(...checked.problems.map((i) => `attempt ${attempt}: ${i}`));
       continue;
     }
     return result('succeeded', null, {
-      output: redactor.restore(response.output),
+      output: checked.output,
       sentText: user,
       attempts: attempt,
       model,

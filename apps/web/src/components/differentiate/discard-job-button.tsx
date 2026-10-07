@@ -14,6 +14,7 @@ export function DiscardJobButton({ jobId }: { jobId: string }) {
       message={t('discardConfirm')}
       confirmLabel={t('discard')}
       variant="ghost"
+      size="md"
       onConfirm={() => discard.run(jobId)}
     />
   );

@@ -1,0 +1,47 @@
+{
+  "slug": "prendre-soin-de-la-creation",
+  "type": "catholic_reflection",
+  "title": "Prendre soin de la création",
+  "summary": "Une courte réflexion pour la 3e à la 5e année sur le soin de la création, avec des questions d’échange, une prière originale et un geste concret pour la semaine.",
+  "source": "board_created",
+  "status": "board_approved",
+  "shareScope": "board",
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": true,
+  "gradeCodes": ["3", "4", "5"],
+  "subjectCode": "ere",
+  "durationMinutes": 10,
+  "materials": "Une silhouette d’arbre affichée au mur ou au babillard, des feuilles d’arbre découpées dans du papier de couleur (une par élève) et du ruban adhésif.",
+  "keywords": "création, nature, environnement, gratitude, prière, geste concret, saint François d’Assise",
+  "tags": ["foi", "priere", "creation"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "faithContent": true,
+  "catholicConnection": "La création est un cadeau de Dieu confié à nos soins (Genèse 2, 15) : chaque petit geste pour la nature et les animaux autour de nous est une façon de dire merci.",
+  "catholicReference": "Prendre soin de la création",
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je reconnais la création comme un cadeau de Dieu et je choisis un geste concret pour en prendre soin.",
+        "teacherNote": "Réflexion de 10 minutes pour la 3e à la 5e année, par exemple au début de la journée ou avant une sortie dans la cour. Lisez la réflexion à voix haute, laissez un moment de silence, puis choisissez deux ou trois questions pour un échange en cercle. Terminez par la prière et présentez le geste de la semaine. Préparez d’avance les feuilles d’arbre en papier et la silhouette de l’arbre. Pour aller plus loin : le 4 octobre, l’Église fête saint François d’Assise, patron de l’écologie; en 2015, le pape François a publié l’encyclique « Laudato si’ » sur la sauvegarde de la maison commune.",
+        "theme": "Prendre soin de la création",
+        "scriptureReference": "Genèse 2, 15",
+        "reflection": "Regarde autour de toi : les arbres de la cour, l’eau des lacs et des rivières, les oiseaux, les insectes, les animaux et les personnes qui t’entourent. Dans notre foi, nous croyons que toute cette création est un cadeau de Dieu. Dans le livre de la Genèse, la Bible raconte que Dieu confie le jardin qu’il a créé aux êtres humains pour qu’ils en prennent soin.\n\nPrendre soin de la création, c’est un peu comme prendre soin d’un jardin qu’on nous a prêté. Nous le gardons en bon état pour nous, mais aussi pour les autres, pour les animaux et pour les enfants qui viendront après nous.\n\nPas besoin de faire de grandes choses. Fermer le robinet pendant qu’on se brosse les dents, ramasser un déchet dans la cour, remplir sa bouteille réutilisable ou observer un insecte sans lui faire de mal : ce sont de petits gestes. Quand toute une classe les fait, ils comptent beaucoup.",
+        "questions": [
+          "Qu’est-ce que tu aimes le plus observer dans la nature : les arbres, les animaux, l’eau, le ciel? Pourquoi?",
+          "Comment peux-tu prendre soin de la nature et des animaux autour de toi cette semaine?",
+          "Qu’est-ce qui montre que quelqu’un prend soin de la cour d’école?",
+          "Comment notre classe pourrait-elle travailler ensemble pour prendre soin de la création?"
+        ],
+        "prayer": "Dieu notre Père,\nmerci pour la terre, l’eau et le ciel,\npour les arbres, les fleurs et les animaux,\net pour toutes les personnes que nous aimons.\nOuvre nos yeux à la beauté du monde\net aide-nous à en prendre soin chaque jour\npar de petits gestes faits avec amour.\nAmen.",
+        "action": "Cette semaine, choisis un petit geste pour prendre soin de la création : éteindre la lumière en sortant, ramasser un déchet dans la cour, utiliser les deux côtés d’une feuille ou un autre geste de ton choix. Écris-le sur une feuille d’arbre en papier et ajoute-la à l’arbre de la classe. Vendredi, on raconte comment ça s’est passé."
+      },
+      "answerKey": null
+    }
+  ]
+}

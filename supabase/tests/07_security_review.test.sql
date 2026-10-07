@@ -2,7 +2,8 @@
 -- (supabase/migrations/20260928170000_security_review_fixes.sql).
 begin;
 \ir _helpers.psql
-select plan(22);
+\ir _class_mode_helpers.psql
+select plan(23);
 select tests.build_fixture();
 
 do $$
@@ -44,7 +45,11 @@ select tests.clear_authentication();
 
 -- 1. Deactivated users cannot write their own rows.
 select tests.authenticate_as('former_teacher');
-update public.library_items set status = 'teacher_reviewed', share_scope = 'board' where id = tests.id('former_draft');
+select throws_ok(
+  $$update public.library_items set status = 'teacher_reviewed', share_scope = 'board'
+    where id = tests.id('former_draft')$$,
+  '42501', null, 'a deactivated user cannot update library items (nobody can, directly)'
+);
 update public.users set display_name = 'Encore là' where id = tests.id('former_teacher');
 select throws_ok(
   $$insert into public.library_items (board_id, type, title, source, author_id)
@@ -129,9 +134,14 @@ select throws_ok(
   '42501', null, 'a lesson cannot link someone else''s private library item'
 );
 
--- 6. "Created by" is set by the database.
-insert into public.class_sessions (id, class_id, join_code, expires_at)
-values (tests.remember('session', gen_random_uuid()), tests.id('class_a'), 'QWER12', now() + interval '1 hour');
+-- 6. "Created by" is set by the database. Since Phase 5, class sessions start only through
+--    public.start_class_session (D-089), and no column of theirs is writable through the API.
+select tests.clear_authentication();
+select tests.build_library_fixture();
+select tests.battle_quiz('battle', 'teacher_a');
+select tests.authenticate_as('teacher_a');
+select tests.remember('session', (select session_id from public.start_class_session(
+  tests.id('class_a'), tests.id('battle'), null, 'solo')));
 select tests.clear_authentication();
 select is((select created_by from public.class_sessions where id = tests.id('session')), tests.id('teacher_a'),
   'class sessions record their real creator');
@@ -139,7 +149,7 @@ select is((select created_by from public.class_sessions where id = tests.id('ses
 select tests.authenticate_as('teacher_a');
 select throws_ok(
   $$insert into public.class_sessions (class_id, join_code, expires_at, created_by)
-    values (tests.id('class_a'), 'ZXCV34', now() + interval '1 hour', tests.id('teacher_a_other'))$$,
+    values (tests.id('class_a'), 'ACDEFH', now() + interval '1 hour', tests.id('teacher_a_other'))$$,
   '42501', null, 'the creator of a class session cannot be set through the API'
 );
 select tests.clear_authentication();

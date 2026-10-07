@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { fail, ok, okVoid, type ActionResult } from '@/lib/action-result';
 import { reportError } from '../errors';
+import { requireSession } from '../session';
 import { createSupabaseServerClient } from '../supabase';
 import { parseInput } from './validation';
 
@@ -18,6 +19,7 @@ export async function createUnit(
   input: z.input<typeof unitFormSchema>,
   makeActive: boolean,
 ): Promise<ActionResult<{ id: string }>> {
+  await requireSession();
   const parsed = parseInput(unitFormSchema, input);
   if (!parsed.ok) return parsed.result;
   const v = parsed.data;
@@ -55,6 +57,7 @@ export async function updateUnit(
   unitId: string,
   input: z.input<typeof unitUpdateSchema>,
 ): Promise<ActionResult> {
+  await requireSession();
   const parsed = parseInput(unitUpdateSchema, input);
   if (!parsed.ok) return parsed.result;
   const supabase = await createSupabaseServerClient();
@@ -74,6 +77,7 @@ export async function setUnitStatus(
   unitId: string,
   status: 'active' | 'planned' | 'completed' | 'archived',
 ): Promise<ActionResult> {
+  await requireSession();
   const supabase = await createSupabaseServerClient();
   const { error } =
     status === 'active'
@@ -85,6 +89,7 @@ export async function setUnitStatus(
 }
 
 export async function deleteUnit(classId: string, unitId: string): Promise<ActionResult> {
+  await requireSession();
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.from('units').delete().eq('id', unitId).select('id');
   if (error) return fail(reportError('deleteUnit', error));
@@ -99,6 +104,7 @@ export async function saveLesson(
   input: z.input<typeof lessonFormSchema>,
   lessonId?: string,
 ): Promise<ActionResult<{ id: string }>> {
+  await requireSession();
   const parsed = parseInput(lessonFormSchema, input);
   if (!parsed.ok) return parsed.result;
   const v = parsed.data;
@@ -160,6 +166,7 @@ export async function deleteLesson(
   unitId: string,
   lessonId: string,
 ): Promise<ActionResult> {
+  await requireSession();
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from('unit_lessons')
@@ -191,6 +198,7 @@ export async function moveLesson(
   lessonId: string,
   direction: 'up' | 'down',
 ): Promise<ActionResult> {
+  await requireSession();
   const supabase = await createSupabaseServerClient();
   const { data: lessons, error } = await supabase
     .from('unit_lessons')

@@ -1,7 +1,35 @@
 import { describe, expect, it } from 'vitest';
-import type { DifferentiateOutput } from '../features/differentiate';
-import { averageSentenceLength, checkDifferentiation } from './checks';
+import { MAX_TEXT_TIMES_LEVELS, type DifferentiateOutput } from '../features/differentiate';
+import { libraryItemFeature } from '../features/library-item';
+import { libraryLevelsFeature } from '../features/library-levels';
+import { newsletterTranslateFeature } from '../features/newsletter-translate';
+import { reportCommentBankFeature } from '../features/report-comment-bank';
+import {
+  SUB_PLAN_LIMITS,
+  SUB_PLAN_MAX_BLOCKS,
+  subPlanAiInputSchema,
+  subPlanFeature,
+  type SubPlanAiOutput,
+} from '../features/sub-plan';
+import { priceFor } from '../pricing';
+import { loadPrompt } from '../prompts';
+import { createFakeProvider } from '../providers';
+import { runFeature } from '../run';
+import {
+  averageSentenceLength,
+  checkDifferentiation,
+  checkLibraryItem,
+  checkLibraryLevels,
+  checkNewsletterTranslation,
+  checkReportCommentBank,
+  checkSubPlan,
+} from './checks';
 import { differentiateCases } from './differentiate-cases';
+import { libraryItemCases } from './library-item-cases';
+import { libraryLevelsCases } from './library-levels-cases';
+import { newsletterTranslateCases } from './newsletter-translate-cases';
+import { reportCommentBankCases } from './report-comment-bank-cases';
+import { subPlanCases } from './sub-plan-cases';
 
 const good: DifferentiateOutput = {
   objective: 'Comprendre comment le castor construit son barrage.',
@@ -67,8 +95,397 @@ describe('evaluation checks', () => {
     );
   });
 
-  it('has ten cases with unique ids', () => {
-    expect(differentiateCases).toHaveLength(10);
-    expect(new Set(differentiateCases.map((c) => c.id)).size).toBe(10);
+  it('has ten sample cases plus the largest request the app accepts, with unique ids', () => {
+    expect(differentiateCases).toHaveLength(11);
+    expect(new Set(differentiateCases.map((c) => c.id)).size).toBe(11);
+    const size = (c: (typeof differentiateCases)[number]) =>
+      c.text.length * (c.levels?.length ?? 4);
+    expect(differentiateCases.filter((c) => size(c) > MAX_TEXT_TIMES_LEVELS)).toEqual([]);
+    const largest = differentiateCases.find((c) => c.levels?.length === 6);
+    expect(largest && size(largest)).toBeGreaterThan(0.9 * MAX_TEXT_TIMES_LEVELS);
+  });
+});
+
+describe('substitute plan evaluation (sub_plan)', () => {
+  it('has ten sample cases plus the largest request the app sends, with unique ids', () => {
+    expect(subPlanCases).toHaveLength(11);
+    expect(new Set(subPlanCases.map((c) => c.id)).size).toBe(11);
+    for (const c of subPlanCases)
+      expect(subPlanAiInputSchema.safeParse(c.input).success).toBe(true);
+    const largest = subPlanCases.at(-1)!.input;
+    expect(largest.blocks).toHaveLength(SUB_PLAN_MAX_BLOCKS);
+    for (const b of largest.blocks) {
+      expect(b.lesson!.content!.length).toBeGreaterThan(0.95 * SUB_PLAN_LIMITS.content);
+    }
+  });
+
+  // `pnpm ai:eval --feature sub_plan --provider fake` must pass every check (CI runs this).
+  it('passes every check with the fake provider', async () => {
+    const systemPrompt = await loadPrompt('sub_plan', 'v1');
+    for (const c of subPlanCases) {
+      const run = await runFeature({
+        feature: subPlanFeature,
+        provider: createFakeProvider(),
+        price: priceFor('fake'),
+        systemPrompt,
+        input: c.input,
+        people: c.people ?? [],
+      });
+      expect(run.status, c.id).toBe('succeeded');
+      const failed = checkSubPlan(run.output!, c.input, c.expect, run).filter((r) => !r.passed);
+      expect(failed, c.id).toEqual([]);
+    }
+  });
+
+  it('catches missing periods, bad minutes, level names, anglicisms, codes and leftover markers', () => {
+    const c = subPlanCases.find((x) => x.id === 'histoire-titre-seulement-7e')!;
+    const good = subPlanFeature.fake(c.input);
+    const block = good.blocks[0]!;
+    const bad: SubPlanAiOutput = {
+      ...good,
+      faithSentence: '',
+      blocks: [
+        {
+          ...block,
+          steps: block.steps.map((s) => ({ ...s, minutes: 1, say: s.say ? 'Bonjour.' : '' })),
+          differentiation: [],
+          activity: { ...block.activity!, title: 'Fiche du groupe Enrichi' },
+          ifTimeRemains: 'Travail sur l’attente B2.1 pendant le week-end au CM1, avec Élève D.',
+          materialsChecklist: ['Médicaments de la classe'],
+        },
+      ],
+    };
+    const failed = checkSubPlan(bad, c.input, {
+      rooms: ['Local 204'],
+      maxStepMinutes: 8,
+    })
+      .filter((r) => !r.passed)
+      .map((r) => r.name);
+    expect(failed).toEqual(
+      expect.arrayContaining([
+        'steps fit each period (60–110 % of its minutes)',
+        'instructions for every group',
+        'no level name in what students receive',
+        'a faith sentence only when there is a faith moment',
+        'no health words the teacher did not write',
+        'no European French or anglicisms',
+        'no France grade names (CP, CE1, CM2)',
+        'no invented curriculum codes',
+        '« Dites » lines in guillemets',
+        'no leftover name markers after restore',
+      ]),
+    );
+    expect(checkSubPlan({ ...good, blocks: [] }, c.input)[0]).toMatchObject({
+      name: 'every period present once',
+      passed: false,
+    });
+  });
+
+  it('checks the rooms named, what was left out and never sent, and names put back', () => {
+    const c = subPlanCases.find((x) => x.id === 'eps-rotation-deux-classes')!;
+    const good = subPlanFeature.fake(c.input);
+    const elsewhere = {
+      ...good,
+      dayOverview: 'Les élèves vont ensuite au local 112, puis à la cafétéria.',
+    };
+    expect(
+      checkSubPlan(elsewhere, c.input, { rooms: ['Gymnase'] }).find(
+        (r) => r.name === 'only rooms that were given',
+      ),
+    ).toMatchObject({ passed: false, detail: 'local 112, cafeteria' });
+    const run = { sentText: 'Appelez le 613-555-0142.', problems: [] };
+    const results = checkSubPlan(
+      good,
+      c.input,
+      {
+        dropped: ['blocks.B1.lesson.subNotes'],
+        neverSent: ['613-555-0142'],
+        namesRestored: ['Léa'],
+      },
+      run,
+    );
+    expect(results.filter((r) => !r.passed).map((r) => r.name)).toEqual([
+      'fields with a personal detail left out',
+      'personal details never sent',
+      'names restored in the answer',
+    ]);
+  });
+});
+
+describe('library evaluation (library_item, library_levels)', () => {
+  it('has ten cases each, with unique ids', () => {
+    expect(libraryItemCases).toHaveLength(10);
+    expect(new Set(libraryItemCases.map((c) => c.id)).size).toBe(10);
+    expect(libraryLevelsCases).toHaveLength(10);
+    expect(new Set(libraryLevelsCases.map((c) => c.id)).size).toBe(10);
+  });
+
+  it('ai 10. passes every check with the fake provider', async () => {
+    const provider = createFakeProvider();
+    const item = await loadPrompt('library_item', 'v1');
+    for (const c of libraryItemCases) {
+      const run = await runFeature({
+        feature: libraryItemFeature,
+        provider,
+        price: priceFor('fake'),
+        systemPrompt: item,
+        input: c.input,
+        people: c.people ?? [],
+      });
+      expect(run.status, c.id).toBe('succeeded');
+      const failed = checkLibraryItem(run.output!, c.input, c.expect).filter((r) => !r.passed);
+      expect(failed, c.id).toEqual([]);
+    }
+    const levels = await loadPrompt('library_levels', 'v1');
+    for (const c of libraryLevelsCases) {
+      const run = await runFeature({
+        feature: libraryLevelsFeature,
+        provider,
+        price: priceFor('fake'),
+        systemPrompt: levels,
+        input: c.input,
+        people: c.people ?? [],
+      });
+      expect(run.status, c.id).toBe('succeeded');
+      expect(
+        checkLibraryLevels(run.output!, c.input).filter((r) => !r.passed),
+        c.id,
+      ).toEqual([]);
+    }
+  });
+
+  it('catches missing levels, long sentences, names, numbers, safety, rubric wording and English', async () => {
+    const provider = createFakeProvider();
+    const run = async (id: string) => {
+      const c = libraryItemCases.find((x) => x.id === id)!;
+      const result = await runFeature({
+        feature: libraryItemFeature,
+        provider,
+        price: priceFor('fake'),
+        systemPrompt: 'Système.',
+        input: c.input,
+        people: c.people ?? [],
+      });
+      return { c, output: result.output! };
+    };
+    const failing = (results: { name: string; passed: boolean }[]) =>
+      results.filter((r) => !r.passed).map((r) => r.name);
+
+    const reading = await run('lecture-3e');
+    const broken = structuredClone(reading.output);
+    broken.levels = broken.levels.slice(1);
+    broken.levels[0]!.content.text =
+      'Le castor, qui est le plus grand rongeur que l’on trouve dans les rivières et les lacs du Canada, construit des barrages impressionnants avec des branches qu’il coupe lui-même.';
+    expect(failing(checkLibraryItem(broken, reading.c.input, reading.c.expect))).toEqual(
+      expect.arrayContaining(['every level asked for, once']),
+    );
+    const long = structuredClone(reading.output);
+    long.levels[0]!.content.text = broken.levels[0]!.content.text;
+    expect(failing(checkLibraryItem(long, reading.c.input, reading.c.expect))).toEqual([
+      'most accessible level has short sentences (≤ 12 words)',
+      'sentences do not get shorter from one level to the next',
+    ]);
+
+    const worksheet = await run('fiche-ordonner-3e');
+    const named = structuredClone(worksheet.output);
+    named.base.content.instructions = 'Liam, compare 1 250 et 980. Aide Élève A.';
+    expect(failing(checkLibraryItem(named, worksheet.c.input, worksheet.c.expect))).toEqual(
+      expect.arrayContaining([
+        'numbers up to 1000',
+        'the student named in the note is nowhere in the resource',
+        'no person marker',
+      ]),
+    );
+
+    const experiment = await run('experience-5e');
+    const unsafe = structuredClone(experiment.output);
+    unsafe.safetyNotes = {
+      ...unsafe.safetyNotes!,
+      allergyAwareMaterials: 'Des élastiques.',
+      supervision: 'close',
+    };
+    expect(failing(checkLibraryItem(unsafe, experiment.c.input, experiment.c.expect))).toEqual([
+      'allergy-aware materials name nut-free or latex-free options',
+      'standard supervision (a substitute can run it)',
+    ]);
+
+    const rubric = await run('grille-3e');
+    const wording = structuredClone(rubric.output);
+    const criteria = wording.base.content.criteria as { levels: Record<string, string> }[];
+    criteria[1]!.levels.level2 = 'Organise ses idées avec beaucoup d’efficacité.';
+    expect(failing(checkLibraryItem(wording, rubric.c.input, rubric.c.expect))).toEqual([
+      'achievement-chart wording per level',
+    ]);
+
+    const guide = await run('guide-familles-3e');
+    const french = structuredClone(guide.output);
+    (french.base.content.en as { intro: string }).intro = 'Ce mois-ci, votre enfant apprend.';
+    expect(failing(checkLibraryItem(french, guide.c.input, guide.c.expect))).toEqual([
+      'the English part is in English',
+    ]);
+
+    const pause = await run('pause-active-1re');
+    const ball = structuredClone(pause.output);
+    ball.base.content.steps = ['Lance le ballon à ton ami.'];
+    ball.durationMinutes = 10;
+    expect(failing(checkLibraryItem(ball, pause.c.input, pause.c.expect))).toEqual([
+      '5 minutes or less',
+      'no equipment needed',
+    ]);
+  });
+
+  it('checks the level set, the questions and the English words for library_levels', async () => {
+    const provider = createFakeProvider();
+    const c = libraryLevelsCases.find((x) => x.id === 'quiz-avance-enrichi')!;
+    expect(c.input.levels.map((l) => [l.key, l.label, l.mostAccessible])).toEqual([
+      ['L1', 'Avancé', false],
+      ['L2', 'Enrichi', false],
+    ]);
+    const result = await runFeature({
+      feature: libraryLevelsFeature,
+      provider,
+      price: priceFor('fake'),
+      systemPrompt: 'Système.',
+      input: c.input,
+      people: [],
+    });
+    const output = structuredClone(result.output!);
+    output.levels[0]!.content.questions = (output.levels[0]!.content.questions as unknown[]).slice(
+      1,
+    );
+    output.levels[1]!.content.instructions = 'Pour la fin de semaine… ou le week-end.';
+    const failed = checkLibraryLevels(output, c.input)
+      .filter((r) => !r.passed)
+      .map((r) => r.name);
+    expect(failed).toEqual(
+      expect.arrayContaining([
+        'objective and questions kept in every level',
+        'no European French or anglicisms',
+        'as many questions as the base in every level',
+      ]),
+    );
+  });
+});
+
+describe('« Créer une banque avec l’IA » checks', () => {
+  it('has ten cases, and the fake provider passes every check of each', async () => {
+    expect(reportCommentBankCases).toHaveLength(10);
+    expect(new Set(reportCommentBankCases.map((c) => c.id)).size).toBe(10);
+    const system = await loadPrompt('report_comment_bank', 'v1');
+    for (const c of reportCommentBankCases) {
+      const run = await runFeature({
+        feature: reportCommentBankFeature,
+        provider: createFakeProvider(),
+        price: priceFor('fake'),
+        systemPrompt: system,
+        input: c.input,
+        people: c.people ?? [],
+      });
+      expect(run.status, c.id).toBe('succeeded');
+      const failed = checkReportCommentBank(run.output!, c.input, c.expect).filter(
+        (r) => !r.passed,
+      );
+      expect(failed, c.id).toEqual([]);
+    }
+  });
+
+  it('catches a missing {prénom}, a wrong qualifier, « elle », a name and a long text', () => {
+    const c = reportCommentBankCases.find((x) => x.id === 'note-names-student')!;
+    const fake = reportCommentBankFeature.normalize!(
+      reportCommentBankFeature.fake(c.input),
+      c.input,
+    );
+    const bad = {
+      ...fake,
+      entries: fake.entries.map((e, i) =>
+        i === 0
+          ? { ...e, neutral: 'Aïcha compare des nombres avec beaucoup d’efficacité.' }
+          : i === 1
+            ? { ...e, neutral: `Elle ${'compare des nombres '.repeat(25)}` }
+            : i < 6
+              ? { ...e, neutral: e.neutral.replace('{prénom}', 'L’élève') }
+              : e,
+      ),
+    };
+    const failed = checkReportCommentBank(bad, c.input, c.expect)
+      .filter((r) => !r.passed)
+      .map((r) => r.name);
+    expect(failed).toEqual(
+      expect.arrayContaining([
+        'the bank passes `final` and every rule of the request',
+        '{prénom} in at least 80 % of points forts and prochaines étapes',
+        'each qualified entry uses its own level’s qualifier and no other',
+        'neutral texts do not use « il » or « elle » for the student (rough)',
+        'every text within 400 characters',
+        'the student named in the note is nowhere in the bank',
+      ]),
+    );
+    // Impersonal « il » is not the student.
+    const impersonal = {
+      ...fake,
+      entries: fake.entries.map((e, i) =>
+        i === 1 ? { ...e, neutral: 'Il serait profitable que {prénom} s’exerce chaque jour.' } : e,
+      ),
+    };
+    expect(checkReportCommentBank(impersonal, c.input, c.expect).filter((r) => !r.passed)).toEqual(
+      [],
+    );
+  });
+});
+
+describe('« Traduire en anglais (IA) » checks', () => {
+  it('has ten cases, and the fake provider passes every check of each', async () => {
+    expect(newsletterTranslateCases).toHaveLength(10);
+    expect(new Set(newsletterTranslateCases.map((c) => c.id)).size).toBe(10);
+    const system = await loadPrompt('newsletter_translate', 'v1');
+    for (const c of newsletterTranslateCases) {
+      const run = await runFeature({
+        feature: newsletterTranslateFeature,
+        provider: createFakeProvider(),
+        price: priceFor('fake'),
+        systemPrompt: system,
+        input: c.input,
+        people: c.people ?? [],
+      });
+      expect(run.status, c.id).toBe('succeeded');
+      // A paragraph naming someone the app does not know, or a phone number, is never sent.
+      for (const key of c.expect?.notSent ?? []) {
+        const text = c.input.items.find((i) => i.key === key)!.text;
+        expect(run.sentText, c.id).not.toContain(text.slice(0, 20));
+      }
+      const failed = checkNewsletterTranslation(run.output!, c.input, c.expect).filter(
+        (r) => !r.passed,
+      );
+      expect(failed, c.id).toEqual([]);
+    }
+  });
+
+  it('catches a missing paragraph, a number, French left, a lost name and a school word', () => {
+    const c = newsletterTranslateCases.find((x) => x.id === 'marqueurs')!;
+    const bad = {
+      items: [
+        {
+          key: 'P1',
+          text: 'Bravo to Samuel, qui a lu son poème devant la classe et les familles de l’école!',
+        },
+        { key: 'P2', text: 'Ms. Tremblay thanks the families for the 12 books.' },
+        { key: 'P3', text: 'Thanks to Mme Dupuis.' },
+      ],
+    };
+    const failed = checkNewsletterTranslation(bad, c.input, c.expect)
+      .filter((r) => !r.passed)
+      .map((r) => r.name);
+    expect(failed).toEqual([
+      'every paragraph sent has its English, once, and the ones left out have none',
+      'the same numbers, dates and times in every paragraph',
+      'nothing left in French',
+      'the names come back, and no marker is left',
+    ]);
+    const words = checkNewsletterTranslation(
+      { items: [{ key: 'P1', text: 'Thursday, November 19: leaving early at 1:35 p.m.' }] },
+      newsletterTranslateCases.find((x) => x.id === 'depart-hatif')!.input,
+      { notSent: ['P2', 'P3'] },
+    ).find((r) => r.name.startsWith('the school’s words'))!;
+    expect(words).toMatchObject({ passed: false, detail: 'P1 early dismissal' });
   });
 });

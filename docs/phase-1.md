@@ -7,7 +7,7 @@
 - Monorepo with CI (lint, format, typecheck, unit tests, database tests, integration tests,
   end-to-end tests in a real browser).
 - Full MVP database schema (48 tables) with Row Level Security on every table, explicit grants,
-  and 159 pgTAP tests covering who can see and change what, for every role.
+  and 159 pgTAP tests (217 after Phase 2) covering who can see and change what, for every role.
 - Roles for everyone in the spec (teacher, principal, VP, office, facilities, board admin, parent),
   scoped to a school or a board. Substitutes get single-day codes in Phase 3, not accounts.
 - Module entitlements per school (core, teaching, library, office, safety and building, board

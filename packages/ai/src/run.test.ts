@@ -1,6 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { differentiateFeature, type DifferentiateInput } from './features/differentiate';
+import {
+  libraryItemFeature,
+  libraryItemInputSchema,
+  libraryItemOutputSchema,
+  type LibraryItemAiOutput,
+  type LibraryItemInput,
+} from './features/library-item';
+import { subPlanFeature, type SubPlanAiInput } from './features/sub-plan';
 import { priceFor, estimateCostUsd, UnknownModelPriceError } from './pricing';
+import { loadPrompt } from './prompts';
 import { createFakeProvider } from './providers';
 import { runFeature } from './run';
 import type { AiProvider, ProviderRequest, ProviderResult } from './types';
@@ -116,12 +125,12 @@ describe('runFeature', () => {
     expect(result.problems).toEqual(['attempt 1: missing level L2']);
   });
 
-  it('gives up after three unusable answers', async () => {
-    const { provider } = spyProvider(() => ({
+  it('gives up after three unusable answers, and counts all three', async () => {
+    const { provider, requests } = spyProvider((_, n) => ({
       output: null,
       stopReason: 'invalid_json',
       model: 'fake',
-      requestId: null,
+      requestId: `req_${n}`,
       usage: { inputTokens: 1, outputTokens: 1, cacheReadTokens: 0, cacheWriteTokens: 0 },
     }));
     const result = await runFeature({ ...base, provider, input });
@@ -130,6 +139,119 @@ describe('runFeature', () => {
       errorCode: 'invalidOutput',
       attempts: 3,
     });
+    expect(requests).toHaveLength(3);
+    expect(result.usage.inputTokens).toBe(3);
+    expect(result.costUsd).toBeGreaterThan(0);
+    expect(result.sentText).toBe(requests[0]!.user);
+    expect(result.providerRequestIds).toEqual(['req_1', 'req_2', 'req_3']);
+    expect(result.problems).toEqual([
+      'attempt 1: invalid_json',
+      'attempt 2: invalid_json',
+      'attempt 3: invalid_json',
+    ]);
+  });
+
+  it('retries answers that fail the feature checks, up to three times', async () => {
+    const { provider, requests } = spyProvider((req) => {
+      const full = req.fake() as ReturnType<typeof differentiateFeature.fake>;
+      return {
+        output: { ...full, objective: ' ' },
+        stopReason: 'end_turn',
+        model: 'fake',
+        requestId: null,
+        usage: { inputTokens: 1, outputTokens: 1, cacheReadTokens: 0, cacheWriteTokens: 0 },
+      };
+    });
+    const result = await runFeature({ ...base, provider, input });
+    expect(result).toMatchObject({ status: 'invalid_output', errorCode: 'invalidOutput' });
+    expect(requests).toHaveLength(3);
+    expect(result.output).toBeNull();
+  });
+
+  it('makes exactly as many calls as maxAttempts allows', async () => {
+    const { provider, requests } = spyProvider(() => ({
+      output: null,
+      stopReason: 'invalid_schema',
+      model: 'fake',
+      requestId: null,
+      usage: { inputTokens: 1, outputTokens: 1, cacheReadTokens: 0, cacheWriteTokens: 0 },
+    }));
+    const result = await runFeature({ ...base, provider, input, maxAttempts: 1 });
+    expect(result).toMatchObject({ status: 'invalid_output', attempts: 1 });
+    expect(requests).toHaveLength(1);
+  });
+
+  it('stops at a refusal that follows an unusable answer', async () => {
+    const usage = { inputTokens: 10, outputTokens: 5, cacheReadTokens: 0, cacheWriteTokens: 0 };
+    const { provider, requests } = spyProvider((_, n) => ({
+      output: null,
+      stopReason: n === 1 ? 'invalid_json' : 'refusal',
+      model: 'fake',
+      requestId: null,
+      usage,
+    }));
+    const result = await runFeature({ ...base, provider, input });
+    expect(result).toMatchObject({ status: 'failed', errorCode: 'aiRefused', attempts: 2 });
+    expect(requests).toHaveLength(2);
+    expect(result.usage.inputTokens).toBe(20);
+    expect(result.sentText).toBe(requests[0]!.user);
+  });
+
+  it('keeps the usage of earlier attempts and of a call that failed after sending', async () => {
+    const usage = { inputTokens: 10, outputTokens: 5, cacheReadTokens: 0, cacheWriteTokens: 0 };
+    const { provider, requests } = spyProvider((_, n) => {
+      if (n === 2) {
+        throw new AiProviderError('aiUnavailable', 'stream broke', {
+          requestId: 'req_broken',
+          usage: { ...usage, outputTokens: 0 },
+        });
+      }
+      return { output: null, stopReason: 'invalid_json', model: 'fake', requestId: 'req_1', usage };
+    });
+    const result = await runFeature({ ...base, provider, input });
+    expect(result).toMatchObject({ status: 'failed', errorCode: 'aiUnavailable', attempts: 2 });
+    expect(requests).toHaveLength(2);
+    expect(result.usage).toMatchObject({ inputTokens: 20, outputTokens: 5 });
+    expect(result.costUsd).toBeGreaterThan(0);
+    expect(result.providerRequestIds).toEqual(['req_1', 'req_broken']);
+    expect(result.sentText).toBe(requests[0]!.user);
+  });
+
+  it('abandons a call at the deadline and does not start another one', async () => {
+    // Answers slowly and unusably; the deadline passes during the first call.
+    const { provider, requests } = spyProvider(() => ({
+      output: null,
+      stopReason: 'invalid_json',
+      model: 'fake',
+      requestId: null,
+      usage: { inputTokens: 1, outputTokens: 1, cacheReadTokens: 0, cacheWriteTokens: 0 },
+    }));
+    const slow: AiProvider = {
+      ...provider,
+      async generate<T>(request: ProviderRequest<T>) {
+        await new Promise((r) => setTimeout(r, 60));
+        return provider.generate(request);
+      },
+    };
+    const result = await runFeature({ ...base, provider: slow, input, timeoutMs: 30 });
+    expect(result).toMatchObject({ status: 'failed', errorCode: 'timeout', attempts: 1 });
+    expect(requests).toHaveLength(1);
+    expect(requests[0]!.signal).toBeInstanceOf(AbortSignal);
+    expect(result.sentText).toBe(requests[0]!.user);
+    expect(result.usage.inputTokens).toBe(1);
+  });
+
+  it('does not retry a call that timed out', async () => {
+    const { provider, requests } = spyProvider(() => {
+      throw new AiProviderError('timeout', 'too slow', {
+        usage: { inputTokens: 7, outputTokens: 0, cacheReadTokens: 0, cacheWriteTokens: 0 },
+      });
+    });
+    const result = await runFeature({ ...base, provider, input });
+    expect(result).toMatchObject({ status: 'failed', errorCode: 'timeout', attempts: 1 });
+    expect(requests).toHaveLength(1);
+    expect(result.usage.inputTokens).toBe(7);
+    expect(result.sentText).toBe(requests[0]!.user);
   });
 
   it('does not retry a refusal or a cut-off answer', async () => {
@@ -147,6 +269,8 @@ describe('runFeature', () => {
       const result = await runFeature({ ...base, provider, input });
       expect(result).toMatchObject({ status: 'failed', errorCode });
       expect(requests).toHaveLength(1);
+      expect(result.sentText).toBe(requests[0]!.user);
+      expect(result.usage.outputTokens).toBe(1);
     }
   });
 
@@ -157,7 +281,82 @@ describe('runFeature', () => {
       generate: () => Promise.reject(new AiProviderError('aiConfig', 'bad key')),
     };
     const result = await runFeature({ ...base, provider, input });
-    expect(result).toMatchObject({ status: 'failed', errorCode: 'aiConfig' });
+    expect(result).toMatchObject({ status: 'failed', errorCode: 'aiConfig', attempts: 1 });
+    // Counted as sent: the worker records an attempt even when nothing came back.
+    expect(result.sentText).not.toBeNull();
+  });
+
+  it('refuses to send a name that sits in a field the feature does not redact', async () => {
+    for (const extra of [
+      { subjectLabel: 'Sciences avec Léa' },
+      { gradeLabel: 'Classe de Mme Tremblay' },
+    ]) {
+      const { provider, requests } = spyProvider();
+      const result = await runFeature({ ...base, provider, input: { ...input, ...extra } });
+      expect(result).toMatchObject({
+        status: 'failed',
+        errorCode: 'personalInfo',
+        sentText: null,
+        problems: ['outbound name'],
+      });
+      expect(requests).toHaveLength(0);
+    }
+  });
+
+  it('refuses to send a name that is in the system prompt', async () => {
+    const { provider, requests } = spyProvider();
+    const result = await runFeature({
+      ...base,
+      provider,
+      input,
+      systemPrompt: 'Tu aides Isabelle Tremblay.',
+    });
+    expect(result).toMatchObject({ status: 'failed', errorCode: 'personalInfo', sentText: null });
+    expect(requests).toHaveLength(0);
+  });
+
+  it('runs with the real prompt when staff names hold particles or very short parts', async () => {
+    // « De », « La », « Du » and « Lê » are also words of the prompt and of most texts.
+    const { provider, requests } = spyProvider();
+    const result = await runFeature({
+      ...base,
+      provider,
+      input,
+      systemPrompt: await loadPrompt('differentiate', 'v1'),
+      people: [
+        ...people,
+        { name: 'Marc De Grandpré', kind: 'staff' },
+        { name: 'Luc Des Rosiers', kind: 'staff' },
+        { name: 'Julie Du Sablon', kind: 'staff' },
+        { name: 'Marie La Salle', kind: 'staff' },
+        { name: 'Minh Lê', kind: 'staff' },
+        { name: 'Anh Tạ', kind: 'staff' },
+      ],
+    });
+    expect(result.status).toBe('succeeded');
+    expect(requests[0]!.user).toContain('près de la rivière');
+  });
+
+  it('de-identifies the objective and the level descriptions too', async () => {
+    const { provider, requests } = spyProvider();
+    const result = await runFeature({
+      ...base,
+      provider,
+      input: {
+        ...input,
+        objective: 'Léa et ses amis comprennent le rôle du castor.',
+        levels: [
+          { ...input.levels[0]!, description: 'Pour Léa : phrases courtes.' },
+          input.levels[1]!,
+        ],
+      },
+    });
+    expect(result.status).toBe('succeeded');
+    const sent = `${requests[0]!.system}\n${requests[0]!.user}`;
+    expect(sent).not.toMatch(/Léa/);
+    expect(sent).toContain('Élève A et ses amis');
+    expect(sent).toContain('Pour Élève A : phrases courtes.');
+    expect(result.output!.objective).toContain('Léa et ses amis');
   });
 });
 
@@ -171,6 +370,7 @@ describe('pricing', () => {
     };
     expect(estimateCostUsd(usage, priceFor('claude-opus-5-5'))).toBeCloseTo(0.108, 6);
     expect(estimateCostUsd(usage, priceFor('claude-sonnet-5'))).toBeCloseTo(0.054, 6);
+    expect(estimateCostUsd(usage, priceFor('claude-sonnet-5-5'))).toBeCloseTo(0.054, 6);
   });
 
   it('refuses to guess the price of an unknown model, unless configured', () => {
@@ -202,5 +402,191 @@ describe('differentiate checks', () => {
     expect(differentiateFeature.validate(output, input)).toEqual([
       'level name shown to students in L1',
     ]);
+  });
+});
+
+describe('runFeature: a substitute plan (sub_plan)', () => {
+  const plan: SubPlanAiInput = {
+    gradeLabels: ['3e année'],
+    weekday: 'mercredi',
+    groups: [
+      { key: 'G1', levelLabel: 'Débutant', levelDescription: 'Phrases courtes.', size: 3 },
+      { key: 'G2', levelLabel: 'Avancé', levelDescription: null, size: 17 },
+    ],
+    faith: null,
+    blocks: [
+      {
+        key: 'B1',
+        ref: {
+          blockKey: '60000000-0000-4000-8000-000000031085',
+          lessonId: '40000000-0000-4000-8000-000000030104',
+        },
+        start: '08:55',
+        end: '09:45',
+        minutes: 50,
+        status: 'normal',
+        eventTitle: null,
+        subjectLabel: 'Français',
+        unitTitle: 'Lire pour s’informer',
+        room: 'Local 101',
+        groups: ['G1', 'G2'],
+        lesson: {
+          title: 'Trouver l’idée principale',
+          objectives: 'Repérer l’idée principale d’un paragraphe.',
+          materials: 'Texte « Le huard ».',
+          content: 'Léa distribue les textes. Travail en dyades.',
+          subNotes: 'Si Mme Tremblay est absente longtemps, appelez le 613-555-0142.',
+        },
+        fallback: null,
+        needsActivity: false,
+      },
+    ],
+  };
+
+  it('leaves out a field with a personal detail, logs its path only, and sends the rest', async () => {
+    const { provider, requests } = spyProvider();
+    const result = await runFeature({
+      ...base,
+      feature: subPlanFeature,
+      provider,
+      input: plan,
+      systemPrompt: await loadPrompt('sub_plan', 'v1'),
+    });
+    expect(result.status).toBe('succeeded');
+    expect(result.problems).toEqual(['dropped blocks.B1.lesson.subNotes']);
+    const sent = `${requests[0]!.system}\n${requests[0]!.user}`;
+    expect(result.sentText).toBe(requests[0]!.user);
+    expect(sent).not.toMatch(/613|Tremblay|Léa|appelez/);
+    expect(sent).not.toContain('60000000-0000-4000-8000-000000031085');
+    expect(sent).toContain('Élève A distribue les textes.');
+    // The answer comes back with the name, and nothing of the note that was left out.
+    const steps = result.output!.blocks[0]!.steps.map((s) => s.instruction).join('\n');
+    expect(steps).toContain('Léa distribue les textes.');
+    expect(JSON.stringify(result.output)).not.toContain('613');
+  });
+
+  it('still refuses to send a detail that reached the message another way', async () => {
+    const { provider, requests } = spyProvider();
+    const result = await runFeature({
+      ...base,
+      feature: {
+        ...subPlanFeature,
+        // A feature that forgets to clean a field: the last check still catches it.
+        redactInput: (value: SubPlanAiInput) => ({ input: value, blocked: [], dropped: [] }),
+      },
+      provider,
+      input: plan,
+      systemPrompt: 'Système.',
+    });
+    expect(result).toMatchObject({ status: 'failed', errorCode: 'personalInfo', sentText: null });
+    expect(requests).toHaveLength(0);
+  });
+
+  it('runs with the real prompt when staff names hold particles or very short parts', async () => {
+    const { provider } = spyProvider();
+    const result = await runFeature({
+      ...base,
+      feature: subPlanFeature,
+      provider,
+      input: {
+        ...plan,
+        blocks: [{ ...plan.blocks[0]!, lesson: { ...plan.blocks[0]!.lesson!, subNotes: null } }],
+      },
+      systemPrompt: await loadPrompt('sub_plan', 'v1'),
+      people: [
+        ...people,
+        { name: 'Marc De Grandpré', kind: 'staff' },
+        { name: 'Marie La Salle', kind: 'staff' },
+        { name: 'Minh Lê', kind: 'staff' },
+        { name: 'Anh Tạ', kind: 'staff' },
+      ],
+    });
+    expect(result.status).toBe('succeeded');
+    expect(result.problems).toEqual([]);
+  });
+});
+
+describe('runFeature: a library resource (library_item)', () => {
+  const request: LibraryItemInput = libraryItemInputSchema.parse({
+    itemType: 'quiz',
+    gradeCodes: ['3'],
+    gradeLabels: ['3e année'],
+    subjectId: 'ece67150-44d3-4e6e-b772-d9bde2165caf',
+    subjectLabel: 'Mathématiques',
+    strandLabel: 'Nombres',
+    expectations: [
+      {
+        key: 'E1',
+        expectationId: '20000000-0000-4000-8000-000000030b12',
+        code: 'B1.2',
+        text: 'Comparer et ordonner des nombres naturels jusqu’à 1 000.',
+      },
+    ],
+    levels: [],
+    catholic: null,
+    durationMinutes: 20,
+    subFriendly: false,
+    teacherNote: 'Pour Léa, des nombres simples.',
+  });
+
+  it('ai 9. sends the type’s schema and prompt section, and normalizes before it validates', async () => {
+    const { provider, requests } = spyProvider();
+    const prompt = await loadPrompt('library_item', 'v1');
+    const result = await runFeature({
+      ...base,
+      feature: libraryItemFeature,
+      provider,
+      input: request,
+      systemPrompt: prompt,
+    });
+    expect(result.status).toBe('succeeded');
+    expect(requests).toHaveLength(1);
+    const sent = requests[0]!;
+    expect(sent.schema).toBe(libraryItemOutputSchema('quiz'));
+    expect(sent.system).toContain('## Type : Quiz');
+    expect(sent.system).not.toContain('## Type : Chanson');
+    expect(sent.system).not.toContain('<!--');
+    expect(sent.user).toContain('<precisions>\nPour Élève A, des nombres simples.\n</precisions>');
+    expect(sent.maxTokens).toBe(64_000);
+    // The fake answer has flat questions; the result is canonical (normalized, then checked).
+    const questions = result.output!.base.content.questions as Record<string, unknown>[];
+    expect(questions.find((q) => q.kind === 'true_false')).not.toHaveProperty('choices');
+  });
+
+  it('retries an answer whose form normalizing cannot fix, and one whose normalize throws', async () => {
+    let calls = 0;
+    const feature = {
+      ...libraryItemFeature,
+      normalize: (output: LibraryItemAiOutput, input: LibraryItemInput) => {
+        calls += 1;
+        if (calls === 1) throw new Error('boom');
+        return libraryItemFeature.normalize!(output, input);
+      },
+    };
+    const { provider, requests } = spyProvider((req, n) => ({
+      output:
+        n === 2
+          ? {
+              ...(req.fake() as LibraryItemAiOutput),
+              levels: [{ level: 'L9', content: {}, answerKey: null }],
+            }
+          : req.fake(),
+      stopReason: 'end_turn',
+      model: 'fake',
+      requestId: `r${n}`,
+      usage: { inputTokens: 10, outputTokens: 10, cacheReadTokens: 0, cacheWriteTokens: 0 },
+    }));
+    const result = await runFeature({
+      ...base,
+      feature,
+      provider,
+      input: request,
+      systemPrompt: 'Système.',
+    });
+    expect(result.status).toBe('succeeded');
+    expect(requests).toHaveLength(3);
+    expect(result.problems).toEqual(
+      expect.arrayContaining(['attempt 1: normalize failed', 'attempt 2: unexpected level L9']),
+    );
   });
 });

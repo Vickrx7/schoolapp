@@ -26,6 +26,9 @@
     "admin": "pnpm --filter @lynx/admin run cli",
     "test:int": "vitest run --config vitest.int.config.ts",
     "db:types:direct": "tsx tools/gen-db-types.ts && prettier --write packages/db/src/database.types.ts",
+    "library:seed": "tsx tools/build-library-seed.ts",
+    "library:seed:check": "tsx tools/build-library-seed.ts --check",
+    "library:pack": "tsx tools/build-pack.ts content/library/demo",
     "ai:eval": "tsx --env-file-if-exists=apps/web/.env.local packages/ai/src/eval/run-eval.ts"
   },
   "devDependencies": {

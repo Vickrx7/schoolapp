@@ -14,7 +14,8 @@ the same pieces Supabase uses, as standalone binaries:
 It uses the Supabase CLI's local JWT secret and demo keys, so `.env.example` works unchanged.
 
 ```bash
-tools/lite-stack/stack.sh reset    # fresh database: auth schema, migrations, seed
+tools/lite-stack/stack.sh reset    # fresh database: auth schema, migrations, seed.sql, then seeds/*.sql
+tools/lite-stack/stack.sh fresh    # the same without any data: a new install, the target of a restore drill
 tools/lite-stack/stack.sh start    # start services, apply new migrations
 tools/lite-stack/stack.sh test     # pgTAP suite (needs pg_prove, e.g. apt install libtap-parser-sourcehandler-pgtap-perl postgresql-16-pgtap)
 tools/lite-stack/stack.sh psql     # psql into the database

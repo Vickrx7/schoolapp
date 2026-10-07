@@ -1,0 +1,187 @@
+/**
+ * Changes to the teacher's overlay on a plan (sub_plans.edits, D-048), as pure functions so the
+ * editor's rules can be unit-tested. Every edit of a block records the lesson it was written
+ * for: it applies only while the block keeps that lesson, and is never lost when the plan is
+ * rebuilt.
+ */
+import {
+  insertLibraryStep,
+  libraryStepText,
+  type ComposedBlock,
+  type DetachedEdit,
+  type SubPlanBlockEdit,
+  type SubPlanEdits,
+  type SubPlanStepEdit,
+} from '@lynx/domain';
+
+export const MAX_STEPS = 12;
+export const MAX_CHECKLIST = 12;
+
+type Block = Pick<ComposedBlock, 'key' | 'lesson' | 'steps' | 'teacherNote'>;
+
+function withBlock(edits: SubPlanEdits, key: string, edit: SubPlanBlockEdit | null): SubPlanEdits {
+  const blocks = { ...edits.blocks };
+  if (edit) blocks[key] = edit;
+  else delete blocks[key];
+  const next: SubPlanEdits = { ...edits, blocks };
+  if (Object.keys(blocks).length === 0) delete next.blocks;
+  return next;
+}
+
+/** The block's current edit if it still applies, else a fresh one for its current lesson. */
+function currentEdit(edits: SubPlanEdits, block: Block): SubPlanBlockEdit {
+  const lessonId = block.lesson?.lessonId ?? null;
+  const existing = edits.blocks?.[block.key];
+  if (existing && existing.forLessonId === lessonId) return existing;
+  return { forLessonId: lessonId };
+}
+
+/** The steps the editor starts from: the teacher's own, else what the plan shows now. */
+export function stepsForEditing(block: Block): SubPlanStepEdit[] {
+  // An AI step's « Dites : » line stays with its step (plan content is always French).
+  return block.steps.map((s) => ({
+    minutes: s.minutes,
+    text: (s.say ? `${s.text} Dites : ${s.say}` : s.text).slice(0, 1000),
+  }));
+}
+
+export function setBlockSteps(
+  edits: SubPlanEdits,
+  block: Block,
+  steps: SubPlanStepEdit[],
+): SubPlanEdits {
+  return withBlock(edits, block.key, {
+    ...currentEdit(edits, block),
+    steps: steps.slice(0, MAX_STEPS),
+  });
+}
+
+export function setBlockNote(edits: SubPlanEdits, block: Block, note: string): SubPlanEdits {
+  const edit = { ...currentEdit(edits, block), teacherNote: note };
+  return withBlock(edits, block.key, edit);
+}
+
+/**
+ * « Ne pas utiliser cette ressource » (true) and « Utiliser cette ressource » (false): the
+ * block's library resource is hidden for everyone, for the lesson the block has now (D-077).
+ * The resource's step (« Distribuez … ») follows it in her own steps too: hiding takes it out,
+ * and bringing the resource back puts it before her main step if she wrote her steps while it
+ * was hidden (unless her list is full).
+ */
+export function setHideLibrary(
+  edits: SubPlanEdits,
+  block: Block & Pick<ComposedBlock, 'library' | 'hiddenLibrary'>,
+  hide: boolean,
+): SubPlanEdits {
+  const edit: SubPlanBlockEdit = { ...currentEdit(edits, block) };
+  if (hide) {
+    edit.hideLibrary = true;
+    const step = block.library ? libraryStepText(block.library) : null;
+    if (edit.steps && step) edit.steps = edit.steps.filter((s) => s.text !== step);
+  } else {
+    delete edit.hideLibrary;
+    const step = block.hiddenLibrary?.stepText;
+    if (
+      edit.steps &&
+      step &&
+      edit.steps.length < MAX_STEPS &&
+      !edit.steps.some((s) => s.text === step)
+    ) {
+      edit.steps = insertLibraryStep(edit.steps, { minutes: null, text: step });
+    }
+  }
+  const empty = !edit.steps && edit.teacherNote === undefined && !edit.hideLibrary;
+  return withBlock(edits, block.key, empty ? null : edit);
+}
+
+/** « Revenir au plan préparé »: the block shows the generated steps again. */
+export function resetBlock(edits: SubPlanEdits, blockKey: string): SubPlanEdits {
+  return withBlock(edits, blockKey, null);
+}
+
+/** Applies a detached edit to the block's current lesson (the teacher checked it still fits). */
+export function reattachEdit(
+  edits: SubPlanEdits,
+  detached: Pick<DetachedEdit, 'blockKey' | 'currentLessonId'>,
+): SubPlanEdits {
+  const edit = edits.blocks?.[detached.blockKey];
+  if (!edit) return edits;
+  return withBlock(edits, detached.blockKey, { ...edit, forLessonId: detached.currentLessonId });
+}
+
+export function setOverview(edits: SubPlanEdits, overview: string): SubPlanEdits {
+  const next: SubPlanEdits = { ...edits, overview };
+  if (overview === '') delete next.overview;
+  return next;
+}
+
+export function setChecklist(edits: SubPlanEdits, items: string[]): SubPlanEdits {
+  return { ...edits, endOfDayChecklist: items.slice(0, MAX_CHECKLIST) };
+}
+
+export function resetChecklist(edits: SubPlanEdits): SubPlanEdits {
+  const next = { ...edits };
+  delete next.endOfDayChecklist;
+  return next;
+}
+
+/** Null removes the faith moment, text replaces it, undefined goes back to the generated one. */
+export function setFaith(edits: SubPlanEdits, faith: { text: string } | null | undefined) {
+  const next: SubPlanEdits = { ...edits };
+  if (faith === undefined) delete next.faith;
+  else next.faith = faith;
+  return next;
+}
+
+/**
+ * What is sent to the server: blank steps, checklist items and notes are dropped (the editor
+ * keeps them while the teacher types), and an empty overlay is null.
+ */
+export function toPayload(edits: SubPlanEdits): SubPlanEdits | null {
+  const out: SubPlanEdits = {};
+  const overview = edits.overview?.trim();
+  if (overview) out.overview = overview;
+  if (edits.endOfDayChecklist) {
+    out.endOfDayChecklist = edits.endOfDayChecklist.map((i) => i.trim()).filter(Boolean);
+  }
+  if (edits.faith === null) out.faith = null;
+  else if (edits.faith?.text.trim()) out.faith = { text: edits.faith.text.trim() };
+  const blocks: Record<string, SubPlanBlockEdit> = {};
+  for (const [key, edit] of Object.entries(edits.blocks ?? {})) {
+    const next: SubPlanBlockEdit = { forLessonId: edit.forLessonId };
+    if (edit.steps) {
+      next.steps = edit.steps
+        .map((s) => ({ minutes: s.minutes, text: s.text.trim() }))
+        .filter((s) => s.text.length > 0);
+    }
+    const note = edit.teacherNote?.trim();
+    if (note) next.teacherNote = note;
+    if (edit.hideLibrary) next.hideLibrary = true;
+    if (next.steps || next.teacherNote || next.hideLibrary) blocks[key] = next;
+  }
+  if (Object.keys(blocks).length > 0) out.blocks = blocks;
+  return Object.keys(out).length > 0 ? out : null;
+}
+
+/** Whether two overlays save the same thing. */
+export function samePayload(a: SubPlanEdits | null, b: SubPlanEdits | null): boolean {
+  return JSON.stringify(a ? toPayload(a) : null) === JSON.stringify(b ? toPayload(b) : null);
+}
+
+/** Parses a minutes field: blank is "no duration", otherwise 1 to 240. */
+export function parseMinutes(value: string): number | null {
+  const n = Number.parseInt(value.replace(/\D/g, ''), 10);
+  if (!Number.isFinite(n) || n < 1) return null;
+  return Math.min(240, n);
+}
+
+/**
+ * « Annuler » after removing a step or a checklist item: puts `item` back where it was in the
+ * list as it is now (later changes kept), or at the end if the list got shorter; nothing when
+ * the list is full again.
+ */
+export function restoreAt<T>(list: readonly T[], index: number, item: T, max: number): T[] {
+  if (list.length >= max) return [...list];
+  const at = Math.min(Math.max(index, 0), list.length);
+  return [...list.slice(0, at), item, ...list.slice(at)];
+}

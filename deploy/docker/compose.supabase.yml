@@ -1,0 +1,166 @@
+# Board-hosted: a minimal self-hosted Supabase next to compose.yml (DECISIONS D-114), only what
+# the app uses: PostgreSQL 17 (Supabase's image), Supabase Auth, PostgREST and a small gateway.
+# None of them is reachable from outside: the browser never calls Supabase (D-113); the web
+# server, the worker and the admin CLI reach it at http://api-gateway:8000 and db:5432.
+#
+#   COMPOSE_FILE=compose.yml:compose.supabase.yml      (written into .env by generate-secrets.mjs --board)
+#
+# The image versions are the ones the Supabase CLI's local stack runs in CI (`supabase start`),
+# pinned by digest, so the hosted, CI and board-hosted databases stay aligned.
+x-logging: &logging
+  driver: ${LOG_DRIVER:-journald}
+
+services:
+  db:
+    image: supabase/postgres:17.6.1.171@sha256:658d1c9b09ae4f61b8e95087b6859181b4b7d6940d769cf7b605609c8aad43e9
+    restart: unless-stopped
+    # What the database writes to the journal (D-119): the image logs every DDL statement
+    # (`log_statement = 'ddl'`: role passwords included, at its first start too, since the
+    # options reach the initializing server) and each error's DETAIL and statement, which quote
+    # the values (« Key (email)=(…) already exists »). Here: no statements, errors without their
+    # detail or statement. An error's own message can still quote a value it refused.
+    command:
+      - postgres
+      - -c
+      - config_file=/etc/postgresql/postgresql.conf
+      - -c
+      - log_statement=none
+      - -c
+      - log_error_verbosity=terse
+      - -c
+      - log_min_error_statement=panic
+    environment:
+      POSTGRES_HOST: /var/run/postgresql
+      POSTGRES_PORT: 5432
+      PGPORT: 5432
+      POSTGRES_DB: postgres
+      PGDATABASE: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      # At the database's first start only: the Auth and PostgREST logins' passwords.
+      - ./db-init/99-lynx-roles.sql:/docker-entrypoint-initdb.d/init-scripts/99-lynx-roles.sql:ro
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-U', 'postgres', '-h', 'localhost']
+      interval: 5s
+      timeout: 5s
+      start_period: 60s
+      retries: 20
+    logging: *logging
+
+  auth:
+    image: supabase/gotrue:v2.197.0@sha256:1736a63078f5922b198c4cbe50f80ab9a2d3b54fe8b7b6cfb2e9dc5dbbc12c6b
+    restart: unless-stopped
+    environment:
+      API_EXTERNAL_URL: http://api-gateway:8000/auth/v1
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://supabase_auth_admin:${POSTGRES_PASSWORD}@db:5432/postgres
+      GOTRUE_SITE_URL: https://${APP_DOMAIN}
+      GOTRUE_URI_ALLOW_LIST: https://${APP_DOMAIN}/**
+      # Invite-only: accounts are made by the admin CLI and the worker (D-004, D-107).
+      GOTRUE_DISABLE_SIGNUP: 'true'
+      GOTRUE_JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env}
+      GOTRUE_JWT_EXP: 3600
+      GOTRUE_JWT_AUD: authenticated
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
+      GOTRUE_JWT_ADMIN_ROLES: service_role
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: 'true'
+      GOTRUE_EXTERNAL_PHONE_ENABLED: 'false'
+      GOTRUE_EXTERNAL_ANONYMOUS_USERS_ENABLED: 'false'
+      GOTRUE_MAILER_AUTOCONFIRM: 'false'
+      # A 6-digit code valid an hour, in the app's own message (D-019).
+      GOTRUE_MAILER_OTP_EXP: 3600
+      GOTRUE_MAILER_OTP_LENGTH: 6
+      GOTRUE_MAILER_SUBJECTS_MAGIC_LINK: Votre code de connexion
+      GOTRUE_MAILER_TEMPLATES_MAGIC_LINK: http://api-gateway:8000/templates/magic_link.html
+      GOTRUE_SMTP_HOST: ${SMTP_HOST:?set SMTP_HOST in .env (the board's mail relay)}
+      GOTRUE_SMTP_PORT: ${SMTP_PORT:-587}
+      GOTRUE_SMTP_USER: ${SMTP_USER:-}
+      GOTRUE_SMTP_PASS: ${SMTP_PASS:-}
+      GOTRUE_SMTP_ADMIN_EMAIL: ${SMTP_ADMIN_EMAIL:?set SMTP_ADMIN_EMAIL in .env (the sender address)}
+      GOTRUE_SMTP_SENDER_NAME: ${SMTP_SENDER_NAME:-}
+      GOTRUE_SMTP_MAX_FREQUENCY: ${AUTH_EMAIL_MAX_FREQUENCY:-60s}
+      GOTRUE_RATE_LIMIT_EMAIL_SENT: ${AUTH_EMAIL_RATE_LIMIT:-100}
+      # Auth's own limits per client address (D-121): the web server sends the address it derived
+      # (CLIENT_IP_HEADER, TRUSTED_PROXY_HOPS) in this header on its sign-in calls; nothing else
+      # reaches Auth. Code requests and code checks per address per 5 minutes: a school's staff
+      # share one address, so these leave room for a morning's sign-ins (the app's own throttle
+      # counts wrong codes per person).
+      GOTRUE_RATE_LIMIT_HEADER: X-Lynx-Client-Ip
+      GOTRUE_RATE_LIMIT_OTP: ${AUTH_RATE_LIMIT_OTP:-60}
+      GOTRUE_RATE_LIMIT_VERIFY: ${AUTH_RATE_LIMIT_VERIFY:-60}
+      # Shared classroom computers (D-119): signed out after 7 days, or 12 hours without activity.
+      GOTRUE_SESSIONS_TIMEBOX: ${GOTRUE_SESSIONS_TIMEBOX:-168h}
+      GOTRUE_SESSIONS_INACTIVITY_TIMEOUT: ${GOTRUE_SESSIONS_INACTIVITY_TIMEOUT:-12h}
+      # Warnings and errors only (D-119): at `info`, Auth writes the address of every code
+      # request, sign-in and sign-out to the journal. `info` while investigating sign-in
+      # problems (AUTH_LOG_LEVEL in .env), then back.
+      GOTRUE_LOG_LEVEL: ${AUTH_LOG_LEVEL:-warn}
+    healthcheck:
+      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:9999/health']
+      interval: 5s
+      timeout: 5s
+      start_period: 30s
+      retries: 20
+    depends_on:
+      db:
+        condition: service_healthy
+      api-gateway:
+        condition: service_started
+    logging: *logging
+
+  rest:
+    image: postgrest/postgrest:v16.3@sha256:ec0e25a4e24b0a3bc5e4f011369bfc736bd1b19f513bd01079b86329a7636962
+    restart: unless-stopped
+    environment:
+      PGRST_DB_URI: postgres://authenticator:${POSTGRES_PASSWORD}@db:5432/postgres
+      PGRST_DB_SCHEMAS: public
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_DB_EXTRA_SEARCH_PATH: public,extensions
+      PGRST_DB_MAX_ROWS: 1000
+      PGRST_JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      db:
+        condition: service_healthy
+    logging: *logging
+
+  # The API gateway: /auth/v1 to Auth, /rest/v1 to PostgREST, and the e-mail template Auth reads.
+  api-gateway:
+    image: caddy:2.11.4-alpine@sha256:6aeddd44c3078b0f9a35206472a11420648a79c184603ef95957d0a20044cb2b
+    restart: unless-stopped
+    volumes:
+      - ./Caddyfile.api:/etc/caddy/Caddyfile:ro
+      - ../../supabase/templates:/srv/templates:ro
+    healthcheck:
+      test: ['CMD', 'wget', '-q', '--spider', 'http://127.0.0.1:8000/healthz']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    logging: *logging
+
+  # Migrations need Auth's own tables (auth.users) first.
+  migrate:
+    depends_on:
+      auth:
+        condition: service_healthy
+
+  web:
+    environment:
+      # Auth's per-address limits read it (GOTRUE_RATE_LIMIT_HEADER above); never on hosted.
+      AUTH_CLIENT_IP_HEADER_ENABLED: 'true'
+    depends_on:
+      api-gateway:
+        condition: service_healthy
+      rest:
+        condition: service_started
+
+  worker:
+    depends_on:
+      api-gateway:
+        condition: service_healthy
+
+volumes:
+  db-data:

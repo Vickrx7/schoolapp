@@ -1,0 +1,487 @@
+{
+  "slug": "billet-partage-equitable",
+  "type": "exit_ticket",
+  "title": "Billet de sortie : le partage équitable",
+  "summary": "Billet de sortie de trois questions pour vérifier si les élèves résolvent un problème de partage équitable, y compris un partage dont le résultat est un nombre entier et une moitié, et s’ils savent que les parts d’une fraction doivent être égales.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["3"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "B1.6"
+    }
+  ],
+  "durationMinutes": 5,
+  "materials": "Une copie du billet par élève, dans la version prévue pour son groupe; un crayon.",
+  "keywords": "partage équitable, fractions, demi, tiers, quart, parts égales, billet de sortie, vérification des apprentissages",
+  "tags": ["fractions", "evaluation"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je résous des problèmes de partage équitable et je nomme les parts à l’aide de fractions.",
+        "teacherNote": "Billet de sortie pour la fin d’une leçon sur le partage équitable. Les trois questions et les nombres sont les mêmes dans toutes les versions; seule la langue change. Les élèves peuvent faire un dessin dans la marge. La question 2 vérifie un partage dont le résultat est un nombre entier et une moitié (2 et demi). La question 3 se corrige à la main : on attend l’idée que les parts doivent être égales.",
+        "prompt": "Avant de partir, montre comment tu partages de façon équitable. Tu peux faire un dessin dans la marge.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quatre élèves se partagent équitablement une grande crêpe. Quelle part de la crêpe reçoit chaque élève?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "un quart (1/4)"
+              },
+              {
+                "id": "b",
+                "text": "un tiers (1/3)"
+              },
+              {
+                "id": "c",
+                "text": "un demi (1/2)"
+              },
+              {
+                "id": "d",
+                "text": "quatre quarts (4/4)"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Deux élèves se partagent équitablement 5 muffins. Combien de muffins reçoit chaque élève?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Capucine coupe une tarte en 3 morceaux pour 3 personnes. Un des morceaux est beaucoup plus gros que les deux autres. Capucine dit : « Chaque personne a un tiers de la tarte. » A-t-elle raison? Explique.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "La crêpe est partagée en 4 parts égales : chaque élève en reçoit une, soit un quart (1/4). Quatre quarts, c’est la crêpe entière."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "2 muffins et demi chacun : chaque élève reçoit 2 muffins entiers, puis on coupe le dernier muffin en deux parts égales.",
+            "acceptableAnswers": [
+              "2 et demi",
+              "2 et 1/2",
+              "2 1/2",
+              "deux et demi",
+              "2 muffins et demi",
+              "deux muffins et demi",
+              "2 muffins et 1/2"
+            ],
+            "explanation": "5 muffins pour 2 élèves : 2 muffins chacun (4 muffins), puis le 5e muffin est coupé en deux moitiés. Erreur fréquente : répondre 2 en oubliant le muffin qui reste, ou le donner à une seule personne."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. Pour avoir des tiers, il faut couper la tarte en 3 parts égales. Ici, un morceau est plus gros que les autres : ce ne sont pas des tiers, et le partage n’est pas équitable.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire non et expliquer que les 3 parts doivent être égales."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "debutant",
+      "content": {
+        "title": "",
+        "objective": "Je résous des problèmes de partage équitable et je nomme les parts à l’aide de fractions.",
+        "teacherNote": "Version Débutant : phrases courtes, mots fréquents et un indice par question. Mêmes questions et mêmes nombres que les autres versions. Lisez les questions à voix haute au besoin : on évalue le partage, pas la lecture.",
+        "prompt": "Réponds aux 3 questions. Tu peux faire un dessin.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "4 élèves partagent une crêpe. Chaque élève a une part égale. Quelle part de la crêpe reçoit chaque élève?",
+            "hint": "La crêpe est coupée en 4 parts égales.",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "un quart (1/4)"
+              },
+              {
+                "id": "b",
+                "text": "un tiers (1/3)"
+              },
+              {
+                "id": "c",
+                "text": "un demi (1/2)"
+              },
+              {
+                "id": "d",
+                "text": "quatre quarts (4/4)"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "2 élèves partagent 5 muffins. Les deux élèves ont la même quantité. Combien de muffins reçoit chaque élève?",
+            "hint": "Donne d’abord les muffins entiers. Ensuite, coupe le muffin qui reste.",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Capucine coupe une tarte en 3 morceaux pour 3 personnes. Un morceau est plus gros que les autres. Capucine dit : « Chaque personne a un tiers de la tarte. » A-t-elle raison? Écris oui ou non. Explique.",
+            "hint": "Un tiers, c’est une part sur 3 parts égales.",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "La crêpe est partagée en 4 parts égales : chaque élève en reçoit une, soit un quart (1/4). Quatre quarts, c’est la crêpe entière."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "2 muffins et demi chacun : chaque élève reçoit 2 muffins entiers, puis on coupe le dernier muffin en deux parts égales.",
+            "acceptableAnswers": [
+              "2 et demi",
+              "2 et 1/2",
+              "2 1/2",
+              "deux et demi",
+              "2 muffins et demi",
+              "deux muffins et demi",
+              "2 muffins et 1/2"
+            ],
+            "explanation": "5 muffins pour 2 élèves : 2 muffins chacun (4 muffins), puis le 5e muffin est coupé en deux moitiés. Erreur fréquente : répondre 2 en oubliant le muffin qui reste, ou le donner à une seule personne."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. Pour avoir des tiers, il faut couper la tarte en 3 parts égales. Ici, un morceau est plus gros que les autres : ce ne sont pas des tiers, et le partage n’est pas équitable.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire non et expliquer que les 3 parts doivent être égales."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "intermediaire",
+      "content": {
+        "title": "",
+        "objective": "Je résous des problèmes de partage équitable et je nomme les parts à l’aide de fractions.",
+        "teacherNote": "Version Intermédiaire : phrases simples et un indice pour les questions 1 et 2. Mêmes questions et mêmes nombres que les autres versions.",
+        "prompt": "Avant de partir, réponds aux trois questions sur le partage. Tu peux faire un dessin dans la marge.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quatre élèves se partagent équitablement une grande crêpe. Quelle part de la crêpe reçoit chaque élève?",
+            "hint": "En combien de parts égales faut-il couper la crêpe?",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "un quart (1/4)"
+              },
+              {
+                "id": "b",
+                "text": "un tiers (1/3)"
+              },
+              {
+                "id": "c",
+                "text": "un demi (1/2)"
+              },
+              {
+                "id": "d",
+                "text": "quatre quarts (4/4)"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Deux élèves se partagent 5 muffins. Les parts sont égales. Combien de muffins reçoit chaque élève?",
+            "hint": "Partage d’abord les muffins entiers.",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Capucine coupe une tarte en 3 morceaux pour 3 personnes. Un des morceaux est beaucoup plus gros que les deux autres. Capucine dit : « Chaque personne a un tiers de la tarte. » A-t-elle raison? Explique.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "La crêpe est partagée en 4 parts égales : chaque élève en reçoit une, soit un quart (1/4). Quatre quarts, c’est la crêpe entière."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "2 muffins et demi chacun : chaque élève reçoit 2 muffins entiers, puis on coupe le dernier muffin en deux parts égales.",
+            "acceptableAnswers": [
+              "2 et demi",
+              "2 et 1/2",
+              "2 1/2",
+              "deux et demi",
+              "2 muffins et demi",
+              "deux muffins et demi",
+              "2 muffins et 1/2"
+            ],
+            "explanation": "5 muffins pour 2 élèves : 2 muffins chacun (4 muffins), puis le 5e muffin est coupé en deux moitiés. Erreur fréquente : répondre 2 en oubliant le muffin qui reste, ou le donner à une seule personne."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. Pour avoir des tiers, il faut couper la tarte en 3 parts égales. Ici, un morceau est plus gros que les autres : ce ne sont pas des tiers, et le partage n’est pas équitable.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire non et expliquer que les 3 parts doivent être égales."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "avance",
+      "content": {
+        "title": "",
+        "objective": "Je résous des problèmes de partage équitable et je nomme les parts à l’aide de fractions.",
+        "teacherNote": "Version Avancé : même billet que la version de base, écrit dans le français attendu en 3e année.",
+        "prompt": "Avant de partir, montre comment tu partages de façon équitable. Tu peux faire un dessin dans la marge.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quatre élèves se partagent équitablement une grande crêpe. Quelle part de la crêpe reçoit chaque élève?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "un quart (1/4)"
+              },
+              {
+                "id": "b",
+                "text": "un tiers (1/3)"
+              },
+              {
+                "id": "c",
+                "text": "un demi (1/2)"
+              },
+              {
+                "id": "d",
+                "text": "quatre quarts (4/4)"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Deux élèves se partagent équitablement 5 muffins. Combien de muffins reçoit chaque élève?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Capucine coupe une tarte en 3 morceaux pour 3 personnes. Un des morceaux est beaucoup plus gros que les deux autres. Capucine dit : « Chaque personne a un tiers de la tarte. » A-t-elle raison? Explique.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "La crêpe est partagée en 4 parts égales : chaque élève en reçoit une, soit un quart (1/4). Quatre quarts, c’est la crêpe entière."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "2 muffins et demi chacun : chaque élève reçoit 2 muffins entiers, puis on coupe le dernier muffin en deux parts égales.",
+            "acceptableAnswers": [
+              "2 et demi",
+              "2 et 1/2",
+              "2 1/2",
+              "deux et demi",
+              "2 muffins et demi",
+              "deux muffins et demi",
+              "2 muffins et 1/2"
+            ],
+            "explanation": "5 muffins pour 2 élèves : 2 muffins chacun (4 muffins), puis le 5e muffin est coupé en deux moitiés. Erreur fréquente : répondre 2 en oubliant le muffin qui reste, ou le donner à une seule personne."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. Pour avoir des tiers, il faut couper la tarte en 3 parts égales. Ici, un morceau est plus gros que les autres : ce ne sont pas des tiers, et le partage n’est pas équitable.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire non et expliquer que les 3 parts doivent être égales."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "enrichi",
+      "content": {
+        "title": "",
+        "objective": "Je résous des problèmes de partage équitable et je nomme les parts à l’aide de fractions.",
+        "teacherNote": "Version Enrichi : consignes plus précises et justification plus exigeante aux questions 2 et 3. Mêmes questions et mêmes nombres que les autres versions.",
+        "prompt": "Avant de quitter la classe, montre ce que tu as compris du partage équitable. Tu peux appuyer tes réponses sur un croquis dans la marge.",
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quatre élèves se partagent équitablement une grande crêpe. Quelle fraction de la crêpe chaque part représente-t-elle?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "un quart (1/4)"
+              },
+              {
+                "id": "b",
+                "text": "un tiers (1/3)"
+              },
+              {
+                "id": "c",
+                "text": "un demi (1/2)"
+              },
+              {
+                "id": "d",
+                "text": "quatre quarts (4/4)"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Deux élèves se partagent équitablement 5 muffins. Quelle quantité de muffins reçoit chaque élève? Décris ton partage.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Capucine coupe une tarte en 3 morceaux pour 3 personnes, mais un des morceaux est beaucoup plus gros que les deux autres. Elle affirme : « Chaque personne a un tiers de la tarte. » A-t-elle raison? Justifie ta réponse en expliquant ce qu’est un tiers.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "La crêpe est partagée en 4 parts égales : chaque élève en reçoit une, soit un quart (1/4). Quatre quarts, c’est la crêpe entière."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "2 muffins et demi chacun : chaque élève reçoit 2 muffins entiers, puis on coupe le dernier muffin en deux parts égales.",
+            "acceptableAnswers": [
+              "2 et demi",
+              "2 et 1/2",
+              "2 1/2",
+              "deux et demi",
+              "2 muffins et demi",
+              "deux muffins et demi",
+              "2 muffins et 1/2"
+            ],
+            "explanation": "5 muffins pour 2 élèves : 2 muffins chacun (4 muffins), puis le 5e muffin est coupé en deux moitiés. Erreur fréquente : répondre 2 en oubliant le muffin qui reste, ou le donner à une seule personne."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. Pour avoir des tiers, il faut couper la tarte en 3 parts égales. Ici, un morceau est plus gros que les autres : ce ne sont pas des tiers, et le partage n’est pas équitable.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire non et expliquer que les 3 parts doivent être égales."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

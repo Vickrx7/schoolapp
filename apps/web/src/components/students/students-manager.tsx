@@ -26,11 +26,14 @@ export interface StudentItem {
 }
 
 export function StudentsManager({
+  userId,
   classId,
   students,
   levels,
   alertsAvailable,
 }: {
+  /** The signed-in user: drafts are kept per user. */
+  userId: string;
   classId: string;
   students: StudentItem[];
   levels: { id: string; label: string }[];
@@ -67,7 +70,11 @@ export function StudentsManager({
               </Button>
             )
           ) : null}
-          <AddStudentsDialog classId={classId} existingNames={students.map((s) => s.firstName)} />
+          <AddStudentsDialog
+            userId={userId}
+            classId={classId}
+            existingNames={students.map((s) => s.firstName)}
+          />
         </div>
       </div>
 

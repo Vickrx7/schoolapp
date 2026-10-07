@@ -24,3 +24,7 @@ export async function loadPrompt(
   cache.set(file, text);
   return text;
 }
+
+// Pure, in its own module so that features (which the web server imports) can use it without
+// pulling in node:fs.
+export { selectPromptSections } from './prompt-sections';

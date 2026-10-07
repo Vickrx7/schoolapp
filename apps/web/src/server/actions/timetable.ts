@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 import type { z } from 'zod';
 import { fail, okVoid, type ActionResult } from '@/lib/action-result';
 import { reportError } from '../errors';
+import { requireSession } from '../session';
 import { createSupabaseServerClient } from '../supabase';
 import { parseInput } from './validation';
 
@@ -18,6 +19,7 @@ export async function saveTimetableBlock(
   input: z.input<typeof timetableBlockSchema>,
   blockId?: string,
 ): Promise<ActionResult> {
+  await requireSession();
   const parsed = parseInput(timetableBlockSchema, input);
   if (!parsed.ok) return parsed.result;
   const v = parsed.data;
@@ -55,6 +57,7 @@ export async function deleteTimetableBlock(
   classId: string,
   blockId: string,
 ): Promise<ActionResult> {
+  await requireSession();
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from('timetable_blocks')

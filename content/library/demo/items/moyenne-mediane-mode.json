@@ -1,0 +1,1398 @@
+{
+  "slug": "moyenne-mediane-mode",
+  "type": "worksheet",
+  "title": "La moyenne, la médiane et le mode",
+  "summary": "Fiche d’exercices pour déterminer la moyenne, la médiane et le mode de données (livres lus par un club de lecture, hauteur de plants de haricots), choisir la mesure qui convient à une situation et expliquer une idée fausse sur la moyenne.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["5"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "D1.5"
+    }
+  ],
+  "durationMinutes": 40,
+  "materials": "Une copie de la fiche par élève, dans la version prévue pour son groupe; un crayon; une gomme à effacer. Facultatif : une cinquantaine de cubes emboîtables par équipe.",
+  "keywords": "moyenne, médiane, mode, données, mesures de tendance centrale, ordre croissant, nombres décimaux, club de lecture",
+  "tags": ["decimaux", "donnees"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je détermine la moyenne, la médiane et le mode d’un ensemble de données, et j’explique ce que chaque mesure indique.",
+        "teacherNote": "Fiche d’exercices sur la moyenne, la médiane et le mode. Les données et les nombres sont les mêmes dans toutes les versions : seuls la langue et les appuis changent, et la version enrichie ajoute deux défis. Avant la fiche, faites construire une tour de cubes emboîtables par membre du club (5, 4, 11, 2, 9, 4 et 7 cubes), puis faites égaliser les tours en déplaçant des cubes : chaque tour finit avec 6 cubes, ce qui montre la moyenne. Les questions 8 et 9 se corrigent à la main.",
+        "instructions": "Lis chaque question attentivement. Utilise les données du club de lecture pour les questions 1 à 4, et celles des plants de haricots pour les questions 5 et 6. Montre tes calculs dans la marge.",
+        "text": "Le club de lecture. Voici le nombre de livres lus en octobre par les 7 membres du club : Alix, 5 livres; Bastien, 4 livres; Capucine, 11 livres; Désiré, 2 livres; Éloïse, 9 livres; Fabien, 4 livres; Gaëlle, 7 livres.\n\nLes plants de haricots. Voici la hauteur de 5 plants de haricots, trois semaines après la plantation : 12,5 cm; 14 cm; 11,5 cm; 14 cm; 13 cm.\n\nRappel : la moyenne est la somme des données divisée par le nombre de données. La médiane est la donnée du milieu quand les données sont placées en ordre croissant. Le mode est la donnée qui revient le plus souvent; un ensemble de données peut avoir plus d’un mode, ou aucun.",
+        "glossary": [
+          {
+            "term": "une donnée",
+            "definition": "Un renseignement recueilli, par exemple un nombre de livres ou une hauteur."
+          },
+          {
+            "term": "la moyenne",
+            "definition": "La somme des données divisée par le nombre de données."
+          },
+          {
+            "term": "la médiane",
+            "definition": "La donnée du milieu quand les données sont en ordre croissant."
+          },
+          {
+            "term": "le mode",
+            "definition": "La donnée qui revient le plus souvent."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quel est le mode du nombre de livres lus au club de lecture?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "4"
+              },
+              {
+                "id": "b",
+                "text": "5"
+              },
+              {
+                "id": "c",
+                "text": "6"
+              },
+              {
+                "id": "d",
+                "text": "11"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Place les données du club de lecture en ordre croissant, puis trouve la médiane.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Calcule la moyenne du nombre de livres lus au club de lecture. Montre ton calcul.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "Si Capucine avait lu 18 livres au lieu de 11, la médiane serait toujours 5 livres.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes"
+          },
+          {
+            "id": "q5",
+            "kind": "multiple_choice",
+            "prompt": "Quelle est la hauteur moyenne des plants de haricots?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "12,5 cm"
+              },
+              {
+                "id": "b",
+                "text": "13 cm"
+              },
+              {
+                "id": "c",
+                "text": "14 cm"
+              },
+              {
+                "id": "d",
+                "text": "65 cm"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Quels sont la médiane et le mode de la hauteur des plants de haricots?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q7",
+            "kind": "matching",
+            "prompt": "Associe chaque situation à la mesure qui y répond le mieux. Un des choix est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "left": [
+              {
+                "id": "l1",
+                "text": "Un magasin veut savoir quelle pointure de souliers commander en plus grand nombre."
+              },
+              {
+                "id": "l2",
+                "text": "On partage également tous les livres lus entre les membres du club. Combien de livres chaque membre aurait-il?"
+              },
+              {
+                "id": "l3",
+                "text": "On cherche la valeur qui sépare les données en deux groupes de même taille : autant de données au-dessous qu’au-dessus."
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "la médiane"
+              },
+              {
+                "id": "rb",
+                "text": "le total"
+              },
+              {
+                "id": "rc",
+                "text": "le mode"
+              },
+              {
+                "id": "rd",
+                "text": "la moyenne"
+              }
+            ]
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Écris un ensemble de 5 nombres naturels dont la moyenne est 8 et le mode est 10. Montre que ton ensemble fonctionne.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 3
+          },
+          {
+            "id": "q9",
+            "kind": "short_answer",
+            "prompt": "Inès dit : « La moyenne est toujours une des données de l’ensemble. » A-t-elle raison? Explique ta réponse à l’aide d’un exemple.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Des cubes emboîtables : une tour par membre du club (5, 4, 11, 2, 9, 4 et 7 cubes). En égalisant les tours, on voit la moyenne : 6 cubes par tour.",
+          "Une droite numérique de 0 à 12 tracée sur une corde, avec une pince à linge par donnée, pour repérer le mode et la médiane.",
+          "Un tableau d’ancrage qui présente la moyenne, la médiane et le mode avec un court exemple chacun."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "4 revient deux fois (Bastien et Fabien); chacune des autres données ne revient qu’une fois. 6 est la moyenne et 5, la médiane."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "2, 4, 4, 5, 7, 9, 11. La médiane est 5 livres.",
+            "acceptableAnswers": ["5", "5 livres", "la médiane est 5"],
+            "explanation": "Il y a 7 données : la médiane est la 4e donnée en ordre croissant. Erreur fréquente : prendre la donnée du milieu de la liste sans l’avoir placée en ordre (2, celle de Désiré)."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "5 + 4 + 11 + 2 + 9 + 4 + 7 = 42 et 42 ÷ 7 = 6. La moyenne est 6 livres.",
+            "acceptableAnswers": ["6", "6 livres"],
+            "explanation": "On additionne les 7 données (42), puis on divise la somme par 7."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "En ordre croissant : 2, 4, 4, 5, 7, 9, 18. La donnée du milieu est encore 5. La moyenne, elle, changerait : 49 ÷ 7 = 7."
+          },
+          {
+            "questionId": "q5",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "12,5 + 14 + 11,5 + 14 + 13 = 65 et 65 ÷ 5 = 13. 65 cm est la somme des hauteurs, pas la moyenne."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "En ordre croissant : 11,5 cm; 12,5 cm; 13 cm; 14 cm; 14 cm. La médiane est 13 cm et le mode est 14 cm.",
+            "acceptableAnswers": [
+              "médiane 13 cm, mode 14 cm",
+              "13 cm et 14 cm",
+              "13 et 14",
+              "médiane 13, mode 14"
+            ],
+            "explanation": "La médiane est la 3e des 5 données en ordre croissant; 14 cm revient deux fois. Ici, la moyenne et la médiane sont égales (13 cm)."
+          },
+          {
+            "questionId": "q7",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "La pointure la plus fréquente est le mode; le partage égal est la moyenne; la valeur du milieu est la médiane. « Le total » est de trop."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "4, 6, 10, 10, 10 : 4 + 6 + 10 + 10 + 10 = 40 et 40 ÷ 5 = 8. Le mode est 10, car 10 revient trois fois.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la somme des 5 nombres doit être 40, et 10 doit revenir plus souvent que tout autre nombre. Autres exemples : 5, 7, 8, 10, 10 ou 2, 8, 10, 10, 10."
+          },
+          {
+            "questionId": "q9",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. Au club de lecture, la moyenne est 6 livres, mais aucun membre n’a lu exactement 6 livres. La moyenne est un partage égal : elle n’est pas forcément une des données.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire non et donner un exemple où la moyenne n’est pas une des données (celui du club ou un autre, comme 1 et 2, dont la moyenne est 1,5)."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "debutant",
+      "content": {
+        "title": "",
+        "objective": "Je détermine la moyenne, la médiane et le mode d’un ensemble de données, et j’explique ce que chaque mesure indique.",
+        "teacherNote": "Version Débutant : phrases courtes, rappel avec des exemples, glossaire et un indice par question. Mêmes données et mêmes nombres que les autres versions. Lisez les consignes avec les élèves au besoin et laissez-les utiliser les tours de cubes.",
+        "instructions": "Lis chaque question. Les questions 1 à 4 parlent du club de lecture. Les questions 5 et 6 parlent des plants de haricots. Fais tes calculs dans la marge.",
+        "text": "Le club de lecture : 7 membres. Nombre de livres lus en octobre : Alix, 5 livres; Bastien, 4 livres; Capucine, 11 livres; Désiré, 2 livres; Éloïse, 9 livres; Fabien, 4 livres; Gaëlle, 7 livres.\n\nLes plants de haricots : 5 plants. Hauteur de chaque plant : 12,5 cm; 14 cm; 11,5 cm; 14 cm; 13 cm.\n\nLa moyenne : additionne toutes les données. Ensuite, divise par le nombre de données. Exemple : 2, 4 et 6. 2 + 4 + 6 = 12. 12 ÷ 3 = 4. La moyenne est 4.\n\nLa médiane : place les données en ordre, du plus petit au plus grand. La médiane est au milieu. Exemple : 3, 5, 8. La médiane est 5.\n\nLe mode : c’est la donnée qu’on voit le plus souvent. Exemple : 2, 7, 7, 9. Le mode est 7.",
+        "glossary": [
+          {
+            "term": "une donnée",
+            "definition": "Un nombre qu’on a recueilli."
+          },
+          {
+            "term": "la somme",
+            "definition": "Le résultat d’une addition."
+          },
+          {
+            "term": "la moyenne",
+            "definition": "On additionne les données, puis on divise."
+          },
+          {
+            "term": "la médiane",
+            "definition": "La donnée du milieu."
+          },
+          {
+            "term": "le mode",
+            "definition": "La donnée la plus fréquente."
+          },
+          {
+            "term": "un membre",
+            "definition": "Une personne qui fait partie d’un club."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quel est le mode des livres lus?",
+            "hint": "Le mode, c’est le nombre qu’on voit le plus souvent.",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "4"
+              },
+              {
+                "id": "b",
+                "text": "5"
+              },
+              {
+                "id": "c",
+                "text": "6"
+              },
+              {
+                "id": "d",
+                "text": "11"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Écris les nombres de livres en ordre, du plus petit au plus grand. Ensuite, trouve la médiane.",
+            "hint": "Il y a 7 nombres. La médiane est le 4e nombre.",
+            "points": null,
+            "category": "connaissance",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Calcule la moyenne des livres lus. Montre ton calcul.",
+            "hint": "Additionne les 7 nombres. Ensuite, divise par 7.",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "Capucine a lu 18 livres, pas 11. Avec 18, la médiane est encore 5 livres.",
+            "hint": "Écris les nombres en ordre avec 18 à la place de 11.",
+            "points": null,
+            "category": "habiletes"
+          },
+          {
+            "id": "q5",
+            "kind": "multiple_choice",
+            "prompt": "Quelle est la hauteur moyenne des plants?",
+            "hint": "Additionne les 5 hauteurs. Ensuite, divise par 5.",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "12,5 cm"
+              },
+              {
+                "id": "b",
+                "text": "13 cm"
+              },
+              {
+                "id": "c",
+                "text": "14 cm"
+              },
+              {
+                "id": "d",
+                "text": "65 cm"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Trouve la médiane et le mode de la hauteur des plants.",
+            "hint": "Place d’abord les 5 hauteurs en ordre.",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q7",
+            "kind": "matching",
+            "prompt": "Relie chaque situation à la bonne mesure. Un choix ne va avec rien.",
+            "hint": "Moyenne : partage égal. Médiane : milieu. Mode : le plus souvent.",
+            "points": null,
+            "category": "application",
+            "left": [
+              {
+                "id": "l1",
+                "text": "Un magasin veut savoir quelle pointure de souliers commander en plus grand nombre."
+              },
+              {
+                "id": "l2",
+                "text": "On partage également tous les livres lus entre les membres du club. Combien de livres chaque membre aurait-il?"
+              },
+              {
+                "id": "l3",
+                "text": "On cherche la valeur qui sépare les données en deux groupes de même taille : autant de données au-dessous qu’au-dessus."
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "la médiane"
+              },
+              {
+                "id": "rb",
+                "text": "le total"
+              },
+              {
+                "id": "rc",
+                "text": "le mode"
+              },
+              {
+                "id": "rd",
+                "text": "la moyenne"
+              }
+            ]
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Écris 5 nombres. Leur moyenne doit être 8. Leur mode doit être 10. Montre ton calcul.",
+            "hint": "La somme des 5 nombres doit être 40, car 40 ÷ 5 = 8.",
+            "points": null,
+            "category": "application",
+            "lines": 3
+          },
+          {
+            "id": "q9",
+            "kind": "short_answer",
+            "prompt": "Inès dit : « La moyenne est toujours une des données. » A-t-elle raison? Écris oui ou non. Explique avec un exemple.",
+            "hint": "Regarde la moyenne du club de lecture. Un membre a-t-il lu ce nombre de livres?",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Des cubes emboîtables : une tour par membre du club (5, 4, 11, 2, 9, 4 et 7 cubes). En égalisant les tours, on voit la moyenne : 6 cubes par tour.",
+          "Une droite numérique de 0 à 12 tracée sur une corde, avec une pince à linge par donnée, pour repérer le mode et la médiane.",
+          "Un tableau d’ancrage qui présente la moyenne, la médiane et le mode avec un court exemple chacun."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "4 revient deux fois (Bastien et Fabien); chacune des autres données ne revient qu’une fois. 6 est la moyenne et 5, la médiane."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "2, 4, 4, 5, 7, 9, 11. La médiane est 5 livres.",
+            "acceptableAnswers": ["5", "5 livres", "la médiane est 5"],
+            "explanation": "Il y a 7 données : la médiane est la 4e donnée en ordre croissant. Erreur fréquente : prendre la donnée du milieu de la liste sans l’avoir placée en ordre (2, celle de Désiré)."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "5 + 4 + 11 + 2 + 9 + 4 + 7 = 42 et 42 ÷ 7 = 6. La moyenne est 6 livres.",
+            "acceptableAnswers": ["6", "6 livres"],
+            "explanation": "On additionne les 7 données (42), puis on divise la somme par 7."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "En ordre croissant : 2, 4, 4, 5, 7, 9, 18. La donnée du milieu est encore 5. La moyenne, elle, changerait : 49 ÷ 7 = 7."
+          },
+          {
+            "questionId": "q5",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "12,5 + 14 + 11,5 + 14 + 13 = 65 et 65 ÷ 5 = 13. 65 cm est la somme des hauteurs, pas la moyenne."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "En ordre croissant : 11,5 cm; 12,5 cm; 13 cm; 14 cm; 14 cm. La médiane est 13 cm et le mode est 14 cm.",
+            "acceptableAnswers": [
+              "médiane 13 cm, mode 14 cm",
+              "13 cm et 14 cm",
+              "13 et 14",
+              "médiane 13, mode 14"
+            ],
+            "explanation": "La médiane est la 3e des 5 données en ordre croissant; 14 cm revient deux fois. Ici, la moyenne et la médiane sont égales (13 cm)."
+          },
+          {
+            "questionId": "q7",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "La pointure la plus fréquente est le mode; le partage égal est la moyenne; la valeur du milieu est la médiane. « Le total » est de trop."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "4, 6, 10, 10, 10 : 4 + 6 + 10 + 10 + 10 = 40 et 40 ÷ 5 = 8. Le mode est 10, car 10 revient trois fois.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la somme des 5 nombres doit être 40, et 10 doit revenir plus souvent que tout autre nombre. Autres exemples : 5, 7, 8, 10, 10 ou 2, 8, 10, 10, 10."
+          },
+          {
+            "questionId": "q9",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. Au club de lecture, la moyenne est 6 livres, mais aucun membre n’a lu exactement 6 livres. La moyenne est un partage égal : elle n’est pas forcément une des données.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire non et donner un exemple où la moyenne n’est pas une des données (celui du club ou un autre, comme 1 et 2, dont la moyenne est 1,5)."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "intermediaire",
+      "content": {
+        "title": "",
+        "objective": "Je détermine la moyenne, la médiane et le mode d’un ensemble de données, et j’explique ce que chaque mesure indique.",
+        "teacherNote": "Version Intermédiaire : consignes simples, rappel avec des exemples, indices pour les questions 2, 3, 5, 7 et 8. Mêmes données et mêmes nombres que les autres versions.",
+        "instructions": "Lis chaque question. Les questions 1 à 4 portent sur le club de lecture, et les questions 5 et 6 sur les plants de haricots. Montre tes calculs dans la marge.",
+        "text": "Le club de lecture. Nombre de livres lus en octobre par les 7 membres du club : Alix, 5 livres; Bastien, 4 livres; Capucine, 11 livres; Désiré, 2 livres; Éloïse, 9 livres; Fabien, 4 livres; Gaëlle, 7 livres.\n\nLes plants de haricots. Hauteur de 5 plants de haricots, trois semaines après la plantation : 12,5 cm; 14 cm; 11,5 cm; 14 cm; 13 cm.\n\nRappel : pour trouver la moyenne, additionne toutes les données, puis divise la somme par le nombre de données. Exemple : pour 2, 4 et 6, la moyenne est 12 ÷ 3 = 4.\n\nLa médiane est la donnée du milieu quand les données sont placées en ordre croissant. Exemple : pour 3, 5 et 8, la médiane est 5.\n\nLe mode est la donnée qui revient le plus souvent. Exemple : pour 2, 7, 7 et 9, le mode est 7.",
+        "glossary": [
+          {
+            "term": "une donnée",
+            "definition": "Un renseignement recueilli, par exemple un nombre de livres."
+          },
+          {
+            "term": "la moyenne",
+            "definition": "La somme des données divisée par le nombre de données."
+          },
+          {
+            "term": "la médiane",
+            "definition": "La donnée du milieu, en ordre croissant."
+          },
+          {
+            "term": "le mode",
+            "definition": "La donnée qui revient le plus souvent."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quel est le mode du nombre de livres lus au club de lecture?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "4"
+              },
+              {
+                "id": "b",
+                "text": "5"
+              },
+              {
+                "id": "c",
+                "text": "6"
+              },
+              {
+                "id": "d",
+                "text": "11"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Place les données du club de lecture en ordre croissant, puis trouve la médiane.",
+            "hint": "Il y a 7 données : la médiane est la 4e.",
+            "points": null,
+            "category": "connaissance",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Calcule la moyenne du nombre de livres lus au club de lecture. Montre ton calcul.",
+            "hint": "Additionne les 7 données, puis divise la somme par 7.",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "Si Capucine avait lu 18 livres au lieu de 11, la médiane serait encore 5 livres.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes"
+          },
+          {
+            "id": "q5",
+            "kind": "multiple_choice",
+            "prompt": "Quelle est la hauteur moyenne des plants de haricots?",
+            "hint": "Additionne les 5 hauteurs, puis divise par 5.",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "12,5 cm"
+              },
+              {
+                "id": "b",
+                "text": "13 cm"
+              },
+              {
+                "id": "c",
+                "text": "14 cm"
+              },
+              {
+                "id": "d",
+                "text": "65 cm"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Quels sont la médiane et le mode de la hauteur des plants de haricots?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q7",
+            "kind": "matching",
+            "prompt": "Associe chaque situation à la mesure qui convient le mieux. Un des choix est de trop.",
+            "hint": "Moyenne : partage égal. Médiane : milieu. Mode : le plus fréquent.",
+            "points": null,
+            "category": "application",
+            "left": [
+              {
+                "id": "l1",
+                "text": "Un magasin veut savoir quelle pointure de souliers commander en plus grand nombre."
+              },
+              {
+                "id": "l2",
+                "text": "On partage également tous les livres lus entre les membres du club. Combien de livres chaque membre aurait-il?"
+              },
+              {
+                "id": "l3",
+                "text": "On cherche la valeur qui sépare les données en deux groupes de même taille : autant de données au-dessous qu’au-dessus."
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "la médiane"
+              },
+              {
+                "id": "rb",
+                "text": "le total"
+              },
+              {
+                "id": "rc",
+                "text": "le mode"
+              },
+              {
+                "id": "rd",
+                "text": "la moyenne"
+              }
+            ]
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Écris un ensemble de 5 nombres naturels dont la moyenne est 8 et le mode est 10. Montre que ton ensemble fonctionne.",
+            "hint": "La somme des 5 nombres doit être 40, car 40 ÷ 5 = 8.",
+            "points": null,
+            "category": "application",
+            "lines": 3
+          },
+          {
+            "id": "q9",
+            "kind": "short_answer",
+            "prompt": "Inès dit : « La moyenne est toujours une des données de l’ensemble. » A-t-elle raison? Explique ta réponse à l’aide d’un exemple.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Des cubes emboîtables : une tour par membre du club (5, 4, 11, 2, 9, 4 et 7 cubes). En égalisant les tours, on voit la moyenne : 6 cubes par tour.",
+          "Une droite numérique de 0 à 12 tracée sur une corde, avec une pince à linge par donnée, pour repérer le mode et la médiane.",
+          "Un tableau d’ancrage qui présente la moyenne, la médiane et le mode avec un court exemple chacun."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "4 revient deux fois (Bastien et Fabien); chacune des autres données ne revient qu’une fois. 6 est la moyenne et 5, la médiane."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "2, 4, 4, 5, 7, 9, 11. La médiane est 5 livres.",
+            "acceptableAnswers": ["5", "5 livres", "la médiane est 5"],
+            "explanation": "Il y a 7 données : la médiane est la 4e donnée en ordre croissant. Erreur fréquente : prendre la donnée du milieu de la liste sans l’avoir placée en ordre (2, celle de Désiré)."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "5 + 4 + 11 + 2 + 9 + 4 + 7 = 42 et 42 ÷ 7 = 6. La moyenne est 6 livres.",
+            "acceptableAnswers": ["6", "6 livres"],
+            "explanation": "On additionne les 7 données (42), puis on divise la somme par 7."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "En ordre croissant : 2, 4, 4, 5, 7, 9, 18. La donnée du milieu est encore 5. La moyenne, elle, changerait : 49 ÷ 7 = 7."
+          },
+          {
+            "questionId": "q5",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "12,5 + 14 + 11,5 + 14 + 13 = 65 et 65 ÷ 5 = 13. 65 cm est la somme des hauteurs, pas la moyenne."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "En ordre croissant : 11,5 cm; 12,5 cm; 13 cm; 14 cm; 14 cm. La médiane est 13 cm et le mode est 14 cm.",
+            "acceptableAnswers": [
+              "médiane 13 cm, mode 14 cm",
+              "13 cm et 14 cm",
+              "13 et 14",
+              "médiane 13, mode 14"
+            ],
+            "explanation": "La médiane est la 3e des 5 données en ordre croissant; 14 cm revient deux fois. Ici, la moyenne et la médiane sont égales (13 cm)."
+          },
+          {
+            "questionId": "q7",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "La pointure la plus fréquente est le mode; le partage égal est la moyenne; la valeur du milieu est la médiane. « Le total » est de trop."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "4, 6, 10, 10, 10 : 4 + 6 + 10 + 10 + 10 = 40 et 40 ÷ 5 = 8. Le mode est 10, car 10 revient trois fois.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la somme des 5 nombres doit être 40, et 10 doit revenir plus souvent que tout autre nombre. Autres exemples : 5, 7, 8, 10, 10 ou 2, 8, 10, 10, 10."
+          },
+          {
+            "questionId": "q9",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. Au club de lecture, la moyenne est 6 livres, mais aucun membre n’a lu exactement 6 livres. La moyenne est un partage égal : elle n’est pas forcément une des données.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire non et donner un exemple où la moyenne n’est pas une des données (celui du club ou un autre, comme 1 et 2, dont la moyenne est 1,5)."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "avance",
+      "content": {
+        "title": "",
+        "objective": "Je détermine la moyenne, la médiane et le mode d’un ensemble de données, et j’explique ce que chaque mesure indique.",
+        "teacherNote": "Version Avancé : même fiche que la version de base, écrite dans le français attendu en 5e année.",
+        "instructions": "Lis chaque question attentivement. Utilise les données du club de lecture pour les questions 1 à 4, et celles des plants de haricots pour les questions 5 et 6. Montre tes calculs dans la marge.",
+        "text": "Le club de lecture. Voici le nombre de livres lus en octobre par les 7 membres du club : Alix, 5 livres; Bastien, 4 livres; Capucine, 11 livres; Désiré, 2 livres; Éloïse, 9 livres; Fabien, 4 livres; Gaëlle, 7 livres.\n\nLes plants de haricots. Voici la hauteur de 5 plants de haricots, trois semaines après la plantation : 12,5 cm; 14 cm; 11,5 cm; 14 cm; 13 cm.\n\nRappel : la moyenne est la somme des données divisée par le nombre de données. La médiane est la donnée du milieu quand les données sont placées en ordre croissant. Le mode est la donnée qui revient le plus souvent; un ensemble de données peut avoir plus d’un mode, ou aucun.",
+        "glossary": [
+          {
+            "term": "une donnée",
+            "definition": "Un renseignement recueilli, par exemple un nombre de livres ou une hauteur."
+          },
+          {
+            "term": "la moyenne",
+            "definition": "La somme des données divisée par le nombre de données."
+          },
+          {
+            "term": "la médiane",
+            "definition": "La donnée du milieu quand les données sont en ordre croissant."
+          },
+          {
+            "term": "le mode",
+            "definition": "La donnée qui revient le plus souvent."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Quel est le mode du nombre de livres lus au club de lecture?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "4"
+              },
+              {
+                "id": "b",
+                "text": "5"
+              },
+              {
+                "id": "c",
+                "text": "6"
+              },
+              {
+                "id": "d",
+                "text": "11"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Place les données du club de lecture en ordre croissant, puis trouve la médiane.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Calcule la moyenne du nombre de livres lus au club de lecture. Montre ton calcul.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "Si Capucine avait lu 18 livres au lieu de 11, la médiane serait toujours 5 livres.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes"
+          },
+          {
+            "id": "q5",
+            "kind": "multiple_choice",
+            "prompt": "Quelle est la hauteur moyenne des plants de haricots?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "12,5 cm"
+              },
+              {
+                "id": "b",
+                "text": "13 cm"
+              },
+              {
+                "id": "c",
+                "text": "14 cm"
+              },
+              {
+                "id": "d",
+                "text": "65 cm"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Quels sont la médiane et le mode de la hauteur des plants de haricots?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q7",
+            "kind": "matching",
+            "prompt": "Associe chaque situation à la mesure qui y répond le mieux. Un des choix est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "left": [
+              {
+                "id": "l1",
+                "text": "Un magasin veut savoir quelle pointure de souliers commander en plus grand nombre."
+              },
+              {
+                "id": "l2",
+                "text": "On partage également tous les livres lus entre les membres du club. Combien de livres chaque membre aurait-il?"
+              },
+              {
+                "id": "l3",
+                "text": "On cherche la valeur qui sépare les données en deux groupes de même taille : autant de données au-dessous qu’au-dessus."
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "la médiane"
+              },
+              {
+                "id": "rb",
+                "text": "le total"
+              },
+              {
+                "id": "rc",
+                "text": "le mode"
+              },
+              {
+                "id": "rd",
+                "text": "la moyenne"
+              }
+            ]
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Écris un ensemble de 5 nombres naturels dont la moyenne est 8 et le mode est 10. Montre que ton ensemble fonctionne.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 3
+          },
+          {
+            "id": "q9",
+            "kind": "short_answer",
+            "prompt": "Inès dit : « La moyenne est toujours une des données de l’ensemble. » A-t-elle raison? Explique ta réponse à l’aide d’un exemple.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Des cubes emboîtables : une tour par membre du club (5, 4, 11, 2, 9, 4 et 7 cubes). En égalisant les tours, on voit la moyenne : 6 cubes par tour.",
+          "Une droite numérique de 0 à 12 tracée sur une corde, avec une pince à linge par donnée, pour repérer le mode et la médiane.",
+          "Un tableau d’ancrage qui présente la moyenne, la médiane et le mode avec un court exemple chacun."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "4 revient deux fois (Bastien et Fabien); chacune des autres données ne revient qu’une fois. 6 est la moyenne et 5, la médiane."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "2, 4, 4, 5, 7, 9, 11. La médiane est 5 livres.",
+            "acceptableAnswers": ["5", "5 livres", "la médiane est 5"],
+            "explanation": "Il y a 7 données : la médiane est la 4e donnée en ordre croissant. Erreur fréquente : prendre la donnée du milieu de la liste sans l’avoir placée en ordre (2, celle de Désiré)."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "5 + 4 + 11 + 2 + 9 + 4 + 7 = 42 et 42 ÷ 7 = 6. La moyenne est 6 livres.",
+            "acceptableAnswers": ["6", "6 livres"],
+            "explanation": "On additionne les 7 données (42), puis on divise la somme par 7."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "En ordre croissant : 2, 4, 4, 5, 7, 9, 18. La donnée du milieu est encore 5. La moyenne, elle, changerait : 49 ÷ 7 = 7."
+          },
+          {
+            "questionId": "q5",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "12,5 + 14 + 11,5 + 14 + 13 = 65 et 65 ÷ 5 = 13. 65 cm est la somme des hauteurs, pas la moyenne."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "En ordre croissant : 11,5 cm; 12,5 cm; 13 cm; 14 cm; 14 cm. La médiane est 13 cm et le mode est 14 cm.",
+            "acceptableAnswers": [
+              "médiane 13 cm, mode 14 cm",
+              "13 cm et 14 cm",
+              "13 et 14",
+              "médiane 13, mode 14"
+            ],
+            "explanation": "La médiane est la 3e des 5 données en ordre croissant; 14 cm revient deux fois. Ici, la moyenne et la médiane sont égales (13 cm)."
+          },
+          {
+            "questionId": "q7",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "La pointure la plus fréquente est le mode; le partage égal est la moyenne; la valeur du milieu est la médiane. « Le total » est de trop."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "4, 6, 10, 10, 10 : 4 + 6 + 10 + 10 + 10 = 40 et 40 ÷ 5 = 8. Le mode est 10, car 10 revient trois fois.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la somme des 5 nombres doit être 40, et 10 doit revenir plus souvent que tout autre nombre. Autres exemples : 5, 7, 8, 10, 10 ou 2, 8, 10, 10, 10."
+          },
+          {
+            "questionId": "q9",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. Au club de lecture, la moyenne est 6 livres, mais aucun membre n’a lu exactement 6 livres. La moyenne est un partage égal : elle n’est pas forcément une des données.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire non et donner un exemple où la moyenne n’est pas une des données (celui du club ou un autre, comme 1 et 2, dont la moyenne est 1,5)."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "enrichi",
+      "content": {
+        "title": "",
+        "objective": "Je détermine la moyenne, la médiane et le mode d’un ensemble de données, et j’explique ce que chaque mesure indique.",
+        "teacherNote": "Version Enrichi : vocabulaire plus précis (mesures de tendance centrale, valeur aberrante) et deux défis (questions 10 et 11), qui demandent la médiane d’un nombre pair de données. Mêmes données et mêmes nombres que les autres versions pour les questions 1 à 9.",
+        "instructions": "Lis attentivement chaque question. Les questions 1 à 4 portent sur le club de lecture et les questions 5 et 6, sur les plants de haricots. Justifie tes réponses par des calculs. Les deux dernières questions sont des défis.",
+        "text": "Le club de lecture. Nombre de livres lus en octobre par chacun des 7 membres du club : Alix, 5 livres; Bastien, 4 livres; Capucine, 11 livres; Désiré, 2 livres; Éloïse, 9 livres; Fabien, 4 livres; Gaëlle, 7 livres.\n\nLes plants de haricots. Hauteur de 5 plants de haricots mesurée trois semaines après la plantation : 12,5 cm; 14 cm; 11,5 cm; 14 cm; 13 cm.\n\nRappel : la moyenne, la médiane et le mode sont des mesures de tendance centrale. La moyenne est la somme des données divisée par le nombre de données. La médiane est la donnée du milieu d’un ensemble ordonné; quand le nombre de données est pair, elle se situe à mi-chemin entre les deux données du milieu. Le mode est la donnée la plus fréquente; un ensemble peut avoir plusieurs modes, ou aucun.",
+        "glossary": [
+          {
+            "term": "une mesure de tendance centrale",
+            "definition": "Un nombre qui résume le centre d’un ensemble de données : la moyenne, la médiane ou le mode."
+          },
+          {
+            "term": "un ensemble ordonné",
+            "definition": "Des données placées en ordre croissant ou décroissant."
+          },
+          {
+            "term": "une valeur aberrante",
+            "definition": "Une donnée très éloignée des autres. Elle peut beaucoup changer la moyenne."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "multiple_choice",
+            "prompt": "Détermine le mode du nombre de livres lus au club de lecture.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "4"
+              },
+              {
+                "id": "b",
+                "text": "5"
+              },
+              {
+                "id": "c",
+                "text": "6"
+              },
+              {
+                "id": "d",
+                "text": "11"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q2",
+            "kind": "short_answer",
+            "prompt": "Ordonne les données du club de lecture en ordre croissant, puis détermine la médiane.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "lines": 2
+          },
+          {
+            "id": "q3",
+            "kind": "short_answer",
+            "prompt": "Calcule la moyenne du nombre de livres lus au club de lecture. Montre ta démarche.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q4",
+            "kind": "true_false",
+            "prompt": "Si Capucine avait lu 18 livres au lieu de 11, une valeur plus éloignée des autres, la médiane demeurerait 5 livres.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes"
+          },
+          {
+            "id": "q5",
+            "kind": "multiple_choice",
+            "prompt": "Quelle est la hauteur moyenne des plants de haricots?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "12,5 cm"
+              },
+              {
+                "id": "b",
+                "text": "13 cm"
+              },
+              {
+                "id": "c",
+                "text": "14 cm"
+              },
+              {
+                "id": "d",
+                "text": "65 cm"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Quels sont la médiane et le mode de la hauteur des plants de haricots?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 2
+          },
+          {
+            "id": "q7",
+            "kind": "matching",
+            "prompt": "Associe chaque situation à la mesure de tendance centrale qui y répond le mieux. Un des choix est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "left": [
+              {
+                "id": "l1",
+                "text": "Un magasin veut savoir quelle pointure de souliers commander en plus grand nombre."
+              },
+              {
+                "id": "l2",
+                "text": "On partage également tous les livres lus entre les membres du club. Combien de livres chaque membre aurait-il?"
+              },
+              {
+                "id": "l3",
+                "text": "On cherche la valeur qui sépare les données en deux groupes de même taille : autant de données au-dessous qu’au-dessus."
+              }
+            ],
+            "right": [
+              {
+                "id": "ra",
+                "text": "la médiane"
+              },
+              {
+                "id": "rb",
+                "text": "le total"
+              },
+              {
+                "id": "rc",
+                "text": "le mode"
+              },
+              {
+                "id": "rd",
+                "text": "la moyenne"
+              }
+            ]
+          },
+          {
+            "id": "q8",
+            "kind": "short_answer",
+            "prompt": "Écris un ensemble de 5 nombres naturels dont la moyenne est 8 et le mode est 10. Montre que ton ensemble fonctionne.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 3
+          },
+          {
+            "id": "q9",
+            "kind": "short_answer",
+            "prompt": "Inès affirme : « La moyenne est toujours une des données de l’ensemble. » Son affirmation est-elle juste? Justifie ta réponse à l’aide d’un exemple.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          },
+          {
+            "id": "q10",
+            "kind": "short_answer",
+            "prompt": "Défi : un 8e membre se joint au club. Avec ses livres, la moyenne des 8 membres devient 7 livres. Combien de livres ce nouveau membre a-t-il lus? Justifie ta réponse.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          },
+          {
+            "id": "q11",
+            "kind": "short_answer",
+            "prompt": "Défi : avec les données des 8 membres, quelle est la nouvelle médiane? Quel est le nouveau mode?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Des cubes emboîtables : une tour par membre du club (5, 4, 11, 2, 9, 4 et 7 cubes). En égalisant les tours, on voit la moyenne : 6 cubes par tour.",
+          "Une droite numérique de 0 à 12 tracée sur une corde, avec une pince à linge par donnée, pour repérer le mode et la médiane.",
+          "Un tableau d’ancrage qui présente la moyenne, la médiane et le mode avec un court exemple chacun."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "4 revient deux fois (Bastien et Fabien); chacune des autres données ne revient qu’une fois. 6 est la moyenne et 5, la médiane."
+          },
+          {
+            "questionId": "q2",
+            "kind": "short_answer",
+            "sampleAnswer": "2, 4, 4, 5, 7, 9, 11. La médiane est 5 livres.",
+            "acceptableAnswers": ["5", "5 livres", "la médiane est 5"],
+            "explanation": "Il y a 7 données : la médiane est la 4e donnée en ordre croissant. Erreur fréquente : prendre la donnée du milieu de la liste sans l’avoir placée en ordre (2, celle de Désiré)."
+          },
+          {
+            "questionId": "q3",
+            "kind": "short_answer",
+            "sampleAnswer": "5 + 4 + 11 + 2 + 9 + 4 + 7 = 42 et 42 ÷ 7 = 6. La moyenne est 6 livres.",
+            "acceptableAnswers": ["6", "6 livres"],
+            "explanation": "On additionne les 7 données (42), puis on divise la somme par 7."
+          },
+          {
+            "questionId": "q4",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "En ordre croissant : 2, 4, 4, 5, 7, 9, 18. La donnée du milieu est encore 5. La moyenne, elle, changerait : 49 ÷ 7 = 7."
+          },
+          {
+            "questionId": "q5",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "12,5 + 14 + 11,5 + 14 + 13 = 65 et 65 ÷ 5 = 13. 65 cm est la somme des hauteurs, pas la moyenne."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "En ordre croissant : 11,5 cm; 12,5 cm; 13 cm; 14 cm; 14 cm. La médiane est 13 cm et le mode est 14 cm.",
+            "acceptableAnswers": [
+              "médiane 13 cm, mode 14 cm",
+              "13 cm et 14 cm",
+              "13 et 14",
+              "médiane 13, mode 14"
+            ],
+            "explanation": "La médiane est la 3e des 5 données en ordre croissant; 14 cm revient deux fois. Ici, la moyenne et la médiane sont égales (13 cm)."
+          },
+          {
+            "questionId": "q7",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "rc"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "rd"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "ra"
+              }
+            ],
+            "explanation": "La pointure la plus fréquente est le mode; le partage égal est la moyenne; la valeur du milieu est la médiane. « Le total » est de trop."
+          },
+          {
+            "questionId": "q8",
+            "kind": "short_answer",
+            "sampleAnswer": "4, 6, 10, 10, 10 : 4 + 6 + 10 + 10 + 10 = 40 et 40 ÷ 5 = 8. Le mode est 10, car 10 revient trois fois.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la somme des 5 nombres doit être 40, et 10 doit revenir plus souvent que tout autre nombre. Autres exemples : 5, 7, 8, 10, 10 ou 2, 8, 10, 10, 10."
+          },
+          {
+            "questionId": "q9",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. Au club de lecture, la moyenne est 6 livres, mais aucun membre n’a lu exactement 6 livres. La moyenne est un partage égal : elle n’est pas forcément une des données.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire non et donner un exemple où la moyenne n’est pas une des données (celui du club ou un autre, comme 1 et 2, dont la moyenne est 1,5)."
+          },
+          {
+            "questionId": "q10",
+            "kind": "short_answer",
+            "sampleAnswer": "14 livres. Pour une moyenne de 7 livres, les 8 membres doivent avoir lu 8 × 7 = 56 livres en tout. Les 7 premiers en ont lu 42 : 56 − 42 = 14.",
+            "acceptableAnswers": ["14", "14 livres"],
+            "explanation": "On peut aussi raisonner par écarts : le nouveau membre doit fournir 7 livres pour lui-même et 1 livre de plus à chacun des 7 autres membres (7 + 7 = 14)."
+          },
+          {
+            "questionId": "q11",
+            "kind": "short_answer",
+            "sampleAnswer": "En ordre croissant : 2, 4, 4, 5, 7, 9, 11, 14. Les deux données du milieu sont 5 et 7 : la médiane est 6 livres. Le mode reste 4 livres.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : avec 8 données, la médiane est à mi-chemin entre la 4e et la 5e donnée, (5 + 7) ÷ 2 = 6. Le mode ne change pas (4)."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

@@ -1,9 +1,12 @@
 import 'server-only';
 import {
+  addDays,
   assignLessonsToSlots,
   isTeachable,
   isTeachersBlock,
+  mondayOf,
   nextLessons,
+  plannedUnitFor,
   resolveSchoolDay,
   type BlockStatus,
   type CalendarEventType,
@@ -16,6 +19,7 @@ import { localized } from '@/i18n/config';
 import type { SchoolContext, SessionContext } from '../session';
 import { teachingSchools } from '../session';
 import { createSupabaseServerClient } from '../supabase';
+import { fetchAllRows } from './fetch-all';
 import { eventsForSchool, scheduleFor, toCalendarEvent, toTimetableBlock } from './mappers';
 
 export interface TodayLesson {
@@ -27,6 +31,13 @@ export interface TodayLesson {
   unitId: string;
   unitTitle: string;
   taught: boolean;
+  /**
+   * A substitute reported it done and the teacher has not confirmed it yet (D-054): it counts
+   * as done, is confirmed only through the report, never checked off here.
+   */
+  pendingConfirmation: boolean;
+  /** Where to confirm it (null when the report is not hers to read, e.g. a co-teacher's). */
+  pendingReport: { absenceId: string; planId: string } | null;
 }
 
 export interface TodayBlock {
@@ -46,6 +57,11 @@ export interface TodayBlock {
   lesson: TodayLesson | null;
   lessonState: 'taught' | 'assigned' | 'no_active_unit' | 'unit_finished' | null;
   gapTitle: string | null;
+  /**
+   * The class and subject's planned unit due this week (« Mon année », D-126): its window starts
+   * by the week's Friday and has not ended. « Commencer l'unité » starts it; never automatic.
+   */
+  plannedUnit: { id: string; title: string; startsOn: LocalDate } | null;
 }
 
 export interface TodaySchoolDay {
@@ -79,56 +95,91 @@ export async function loadToday(
 
   const { data: teamRows } = await supabase
     .from('class_teachers')
-    .select('class_id, role, classes!inner(id, name, school_id)')
+    .select('class_id, role, classes!inner(id, name, school_id, school_years(starts_on, ends_on))')
     .eq('user_id', session.userId);
-  const myClasses = (teamRows ?? []).filter((r) =>
+  const teachingClasses = (teamRows ?? []).filter((r) =>
     schools.some((s) => s.id === r.classes.school_id),
   );
+  if (teachingClasses.length === 0) return { date, hasClasses: false, schoolDays: [], blocks: [] };
+  // The day's classes are those of its school year (D-055, as amended in the Phase 6 review): a
+  // class kept from an earlier year, with its timetable, shows no block today.
+  const myClasses = teachingClasses.filter((r) => {
+    const year = r.classes.school_years;
+    return !year || (year.starts_on <= date && date <= year.ends_on);
+  });
   const classIds = myClasses.map((r) => r.class_id);
-  if (classIds.length === 0) return { date, hasClasses: false, schoolDays: [], blocks: [] };
+  if (classIds.length === 0) return { date, hasClasses: true, schoolDays: [], blocks: [] };
 
   const homeroom = new Set(myClasses.filter((r) => r.role === 'homeroom').map((r) => r.class_id));
   const classById = new Map(myClasses.map((r) => [r.class_id, r.classes]));
   const schoolIds = [...new Set(myClasses.map((r) => r.classes.school_id))];
 
-  const [blocksRes, anchorsRes, unitsRes, progressRes, subjectsRes, roomsRes] = await Promise.all([
-    supabase
-      .from('timetable_blocks')
-      .select(
-        'id, class_id, day_key, start_time, end_time, kind, subject_id, title, teacher_id, room_id',
-      )
-      .in('class_id', classIds),
-    supabase
-      .from('school_cycle_anchors')
-      .select('school_id, anchor_date, cycle_day')
-      .in('school_id', schoolIds),
-    supabase
-      .from('units')
-      .select(
-        'id, class_id, subject_id, title, unit_lessons(id, sequence_number, title, objectives, materials)',
-      )
-      .in('class_id', classIds)
-      .eq('status', 'active'),
-    supabase
-      .from('lesson_progress')
-      .select('lesson_id, status, taught_on')
-      .in('class_id', classIds),
-    supabase.from('subjects').select('id, label_fr, label_en, color'),
-    supabase.from('rooms').select('id, name').in('school_id', schoolIds),
-  ]);
+  const friday = addDays(mondayOf(date), 4);
+  const [blocksRes, anchorsRes, unitsRes, progressRes, subjectsRes, roomsRes, plannedRes] =
+    await Promise.all([
+      supabase
+        .from('timetable_blocks')
+        .select(
+          'id, class_id, day_key, start_time, end_time, kind, subject_id, title, teacher_id, room_id',
+        )
+        .in('class_id', classIds),
+      supabase
+        .from('school_cycle_anchors')
+        .select('school_id, anchor_date, cycle_day')
+        .in('school_id', schoolIds),
+      supabase
+        .from('units')
+        .select(
+          'id, class_id, subject_id, title, unit_lessons(id, sequence_number, title, objectives, materials)',
+        )
+        .in('class_id', classIds)
+        .eq('status', 'active'),
+      // Every class of hers, page by page: past PostgREST's 1,000 rows in the spring.
+      fetchAllRows((from, to) =>
+        supabase
+          .from('lesson_progress')
+          .select('lesson_id, status, taught_on, sub_reports(sub_plan_id, sub_plans(absence_id))')
+          .in('class_id', classIds)
+          .order('lesson_id')
+          .range(from, to),
+      ),
+      supabase.from('subjects').select('id, label_fr, label_en, color'),
+      supabase.from('rooms').select('id, name').in('school_id', schoolIds),
+      // Planned units whose window touches the date's week (« Mon année », D-126).
+      supabase
+        .from('units')
+        .select('id, class_id, subject_id, title, status, planned_start_on, planned_end_on')
+        .in('class_id', classIds)
+        .eq('status', 'planned')
+        .lte('planned_start_on', friday)
+        .gte('planned_end_on', date),
+    ]);
+  const plannedUnits = (plannedRes.data ?? []).map((u) => ({
+    id: u.id,
+    classId: u.class_id,
+    subjectId: u.subject_id,
+    title: u.title,
+    status: u.status,
+    plannedStartOn: u.planned_start_on,
+    plannedEndOn: u.planned_end_on,
+  }));
 
   const anchors = anchorsRes.data ?? [];
   const earliestAnchor = anchors.reduce<string>(
     (min, a) => (a.anchor_date < min ? a.anchor_date : min),
     date,
   );
-  const { data: eventRows } = await supabase
-    .from('school_calendar_events')
-    .select(
-      'id, board_id, school_id, class_id, event_type, title, starts_on, ends_on, start_time, end_time, affects_schedule',
-    )
-    .lte('starts_on', date)
-    .gte('ends_on', earliestAnchor);
+  const { data: eventRows } = await fetchAllRows((from, to) =>
+    supabase
+      .from('school_calendar_events')
+      .select(
+        'id, board_id, school_id, class_id, event_type, title, starts_on, ends_on, start_time, end_time, affects_schedule',
+      )
+      .lte('starts_on', date)
+      .gte('ends_on', earliestAnchor)
+      .order('id')
+      .range(from, to),
+  );
 
   const subjects = new Map(
     (subjectsRes.data ?? []).map((s) => [
@@ -142,6 +193,20 @@ export async function loadToday(
     (progressRes.data ?? []).map((p) => [p.lesson_id, p.status]),
   );
   const taughtOn = new Map((progressRes.data ?? []).map((p) => [p.lesson_id, p.taught_on]));
+  // Pending lessons and the report to confirm them in (sub_reports is the owner's only, RLS).
+  const pendingReports = new Map(
+    (progressRes.data ?? [])
+      .filter((p) => p.status === 'pending_confirmation')
+      .map((p) => {
+        const report = p.sub_reports;
+        return [
+          p.lesson_id,
+          report?.sub_plans
+            ? { absenceId: report.sub_plans.absence_id, planId: report.sub_plan_id }
+            : null,
+        ] as const;
+      }),
+  );
 
   type LessonWithUnit = TodayLesson;
   const activeUnits = new Map<string, { unitId: string; lessons: LessonWithUnit[] }>();
@@ -157,6 +222,8 @@ export async function loadToday(
         unitId: u.id,
         unitTitle: u.title,
         taught: false,
+        pendingConfirmation: false,
+        pendingReport: null,
       })),
     });
   }
@@ -227,6 +294,9 @@ export async function loadToday(
     const assignment = assignments.get(b.id);
     const unit = b.subjectId ? activeUnits.get(`${b.classId}:${b.subjectId}`) : undefined;
     const gaps = unit ? nextLessons(unit.lessons, progress).gaps : [];
+    const planned = b.subjectId
+      ? plannedUnitFor({ units: plannedUnits, classId: b.classId, subjectId: b.subjectId, date })
+      : null;
     return {
       id: b.id,
       classId: b.classId,
@@ -242,10 +312,18 @@ export async function loadToday(
       affectedBy: b.affectedBy ? { title: b.affectedBy.title, type: b.affectedBy.eventType } : null,
       roomName: b.roomId ? (rooms.get(b.roomId) ?? null) : null,
       lesson: assignment?.lesson
-        ? { ...assignment.lesson, taught: assignment.reason === 'taught' }
+        ? {
+            ...assignment.lesson,
+            taught: assignment.reason === 'taught',
+            pendingConfirmation: pendingReports.has(assignment.lesson.id),
+            pendingReport: pendingReports.get(assignment.lesson.id) ?? null,
+          }
         : null,
       lessonState: assignment?.reason ?? null,
       gapTitle: assignment?.reason === 'assigned' && gaps[0] ? gaps[0].title : null,
+      plannedUnit: planned
+        ? { id: planned.id, title: planned.title, startsOn: planned.plannedStartOn! }
+        : null,
     };
   });
 

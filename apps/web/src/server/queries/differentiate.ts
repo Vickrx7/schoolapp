@@ -34,7 +34,16 @@ export async function loadLanguageLevels(locale: string): Promise<LevelOption[]>
 }
 
 export interface DifferentiateFormContext {
-  schools: { id: string; boardId: string; name: string; aiEnabled: boolean }[];
+  /** Drafts on the device are kept per user. */
+  userId: string;
+  /** `aiEnabled` is the effective state; `boardAllows` says whether the board forbids AI. */
+  schools: {
+    id: string;
+    boardId: string;
+    name: string;
+    aiEnabled: boolean;
+    boardAllows: boolean;
+  }[];
   levels: LevelOption[];
   grades: { code: string; label: string; ordinal: number }[];
   subjects: { id: string; label: string; gradeMin: number; gradeMax: number }[];
@@ -66,11 +75,13 @@ export async function loadDifferentiateForm(
       ?.grade_code ?? null;
 
   return {
+    userId: session.userId,
     schools: aiSchools(session).map((s) => ({
       id: s.id,
       boardId: s.boardId,
       name: s.name,
       aiEnabled: aiOn(session, s),
+      boardAllows: session.boards.find((b) => b.id === s.boardId)?.settings.ai.allowed ?? true,
     })),
     levels: levels.filter((l) => l.active),
     grades: (grades.data ?? []).map((g) => ({
@@ -90,6 +101,7 @@ export async function loadDifferentiateForm(
 
 export interface JobSummary {
   id: string;
+  schoolId: string;
   status: 'queued' | 'running' | 'succeeded' | 'failed';
   errorCode: string | null;
   title: string | null;
@@ -100,12 +112,13 @@ export async function loadRecentJobs(): Promise<JobSummary[]> {
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase
     .from('ai_jobs')
-    .select('id, status, error_code, created_at, input')
+    .select('id, school_id, status, error_code, created_at, input')
     .eq('feature', 'differentiate')
     .order('created_at', { ascending: false })
     .limit(10);
   return (data ?? []).map((j) => ({
     id: j.id,
+    schoolId: j.school_id,
     status: j.status,
     errorCode: j.error_code,
     title:
@@ -118,25 +131,39 @@ export async function loadRecentJobs(): Promise<JobSummary[]> {
 
 export interface SavedSummary {
   id: string;
+  schoolId: string | null;
   title: string;
   updatedAt: string;
 }
 
+/**
+ * « Mes textes différenciés »: the user's library items saved from « Texte différencié »
+ * (D-073), not the other AI resources (« Créer avec l'IA », whose generation's feature is
+ * `library_item`). They open in the library.
+ */
 export async function loadSavedTexts(session: SessionContext): Promise<SavedSummary[]> {
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase
     .from('library_items')
-    .select('id, title, updated_at')
+    .select('id, school_id, title, updated_at, ai_generations!inner(feature)')
     .eq('author_id', session.userId)
     .eq('source', 'ai_generated')
+    .eq('ai_generations.feature', 'differentiate')
     .in('type', ['reading_passage', 'worksheet'])
     .order('updated_at', { ascending: false })
     .limit(30);
-  return (data ?? []).map((i) => ({ id: i.id, title: i.title, updatedAt: i.updated_at }));
+  return (data ?? []).map((i) => ({
+    id: i.id,
+    schoolId: i.school_id,
+    title: i.title,
+    updatedAt: i.updated_at,
+  }));
 }
 
 export interface JobDetail {
   id: string;
+  schoolId: string;
+  createdAt: string;
   status: JobSummary['status'];
   errorCode: string | null;
   input: DifferentiateInput;
@@ -148,68 +175,19 @@ export async function loadJob(jobId: string): Promise<JobDetail | null> {
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase
     .from('ai_jobs')
-    .select('id, status, error_code, input, result, sent_text')
+    .select('id, school_id, created_at, status, error_code, input, result, sent_text')
     .eq('id', jobId)
     .eq('feature', 'differentiate')
     .maybeSingle();
   if (!data) return null;
   return {
     id: data.id,
+    schoolId: data.school_id,
+    createdAt: data.created_at,
     status: data.status,
     errorCode: data.error_code,
     input: data.input as unknown as DifferentiateInput,
     result: (data.result as unknown as DifferentiateOutput | null) ?? null,
     sentText: data.sent_text,
-  };
-}
-
-/** Stored in library_item_versions.content for each language level. */
-export type VersionContent = {
-  schema: 'differentiated_text/v1';
-  objective: string;
-  title: string;
-  text: string;
-  glossary: { term: string; definition: string }[];
-  visualSupports: string[];
-  questions: string[];
-  teacherNote: string;
-};
-
-export interface SavedDetail {
-  id: string;
-  title: string;
-  objective: string;
-  versions: { languageLevelId: string; levelLabel: string; content: VersionContent }[];
-}
-
-export async function loadSavedText(itemId: string, locale: string): Promise<SavedDetail | null> {
-  const supabase = await createSupabaseServerClient();
-  const { data } = await supabase
-    .from('library_items')
-    .select(
-      'id, title, source, library_item_versions(language_level_id, content, language_levels(label_fr, label_en, sort_order, owner_user_id))',
-    )
-    .eq('id', itemId)
-    .eq('source', 'ai_generated')
-    .maybeSingle();
-  if (!data) return null;
-  const versions = data.library_item_versions
-    .filter((v) => v.language_level_id !== null && v.language_levels)
-    .sort(
-      (a, b) =>
-        Number(a.language_levels!.owner_user_id !== null) -
-          Number(b.language_levels!.owner_user_id !== null) ||
-        a.language_levels!.sort_order - b.language_levels!.sort_order,
-    )
-    .map((v) => ({
-      languageLevelId: v.language_level_id!,
-      levelLabel: localized(locale, v.language_levels!.label_fr, v.language_levels!.label_en),
-      content: v.content as unknown as VersionContent,
-    }));
-  return {
-    id: data.id,
-    title: data.title,
-    objective: versions[0]?.content.objective ?? '',
-    versions,
   };
 }

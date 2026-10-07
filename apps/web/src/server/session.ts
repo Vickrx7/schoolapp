@@ -4,11 +4,16 @@ import {
   localDateIn,
   parseBoardSettings,
   parseSchoolSettings,
+  termsState,
   type BoardSettings,
   type SchoolSettings,
 } from '@lynx/domain';
+import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
+import { landingPath, type LandingPath } from '@/lib/landing';
+import { REQUEST_PATH_HEADER, welcomeHref } from '@/lib/request-path';
+import type { LibraryReviewerRole } from './library/view-model';
 import { createSupabaseServerClient } from './supabase';
 
 export interface SchoolContext {
@@ -32,9 +37,22 @@ export interface SessionContext {
   displayName: string;
   honorific: string | null;
   preferredLocale: string;
+  /**
+   * The pilot terms the user accepted (DECISIONS D-109, D-110): the version and when, both null
+   * until « Bienvenue ». `termsState(termsVersion)` (@lynx/domain) says whether to ask or remind.
+   */
+  termsVersion: string | null;
+  termsAcceptedAt: string | null;
+  /** When the user hid the « Pour bien commencer » checklist (D-109). */
+  onboardingDismissedAt: string | null;
   roles: { role: AppRole; boardId: string; schoolId: string | null }[];
   schools: SchoolContext[];
   boards: { id: string; name: string; settings: BoardSettings; isAdmin: boolean }[];
+  /**
+   * The user's own designations as a library reviewer (DECISIONS D-064), for boards where the
+   * user is active staff (as `app.library_reviewer` requires).
+   */
+  libraryReviewer: LibraryReviewerRole[];
 }
 
 export type SessionState =
@@ -50,15 +68,24 @@ export const loadSessionState = cache(async (): Promise<SessionState> => {
   if (!auth.user) return { status: 'anonymous' };
 
   const userId = auth.user.id;
-  const [profile, roles] = await Promise.all([
+  const [profile, onboarding, roles, reviewers] = await Promise.all([
     supabase
       .from('users')
       .select('email, display_name, honorific, preferred_locale, deactivated_at')
       .eq('id', userId)
       .maybeSingle(),
+    // Colleagues may not read these columns (D-109): the person's own, through a function.
+    supabase.rpc('my_onboarding_state').maybeSingle(),
     supabase.from('user_roles').select('role, board_id, school_id').eq('user_id', userId),
+    supabase
+      .from('library_reviewers')
+      .select('board_id, approves_content, reviews_faith')
+      .eq('user_id', userId),
   ]);
   if (!profile.data || profile.data.deactivated_at) return { status: 'inactive' };
+  // Never guess the terms: a failed read would send the person to « Bienvenue » again.
+  if (onboarding.error)
+    throw new Error(`my_onboarding_state failed: ${onboarding.error.code ?? ''}`);
 
   const roleRows = roles.data ?? [];
   const schoolIds = [
@@ -93,6 +120,9 @@ export const loadSessionState = cache(async (): Promise<SessionState> => {
     displayName: profile.data.display_name,
     honorific: profile.data.honorific,
     preferredLocale: profile.data.preferred_locale,
+    termsVersion: onboarding.data?.terms_version ?? null,
+    termsAcceptedAt: onboarding.data?.terms_accepted_at ?? null,
+    onboardingDismissedAt: onboarding.data?.onboarding_dismissed_at ?? null,
     roles: roleRows.map((r) => ({ role: r.role, boardId: r.board_id, schoolId: r.school_id })),
     schools: (schools.data ?? []).map((s) => {
       const today = localDateIn(s.timezone);
@@ -125,6 +155,15 @@ export const loadSessionState = cache(async (): Promise<SessionState> => {
       settings: parseBoardSettings(b.settings),
       isAdmin: roleRows.some((r) => r.board_id === b.id && r.role === 'board_admin'),
     })),
+    libraryReviewer: (reviewers.data ?? [])
+      .filter((r) =>
+        roleRows.some((role) => role.board_id === r.board_id && role.role !== 'parent'),
+      )
+      .map((r) => ({
+        boardId: r.board_id,
+        approvesContent: r.approves_content,
+        reviewsFaith: r.reviews_faith,
+      })),
   };
   return { status: 'active', session };
 });
@@ -134,11 +173,21 @@ export async function getSession(): Promise<SessionContext | null> {
   return state.status === 'active' ? state.session : null;
 }
 
-/** For pages and actions that require a signed-in, active user. */
-export async function requireSession(): Promise<SessionContext> {
+/**
+ * For pages, actions and route handlers that require a signed-in, active user who has accepted
+ * the pilot terms (DECISIONS D-109): until then, « Bienvenue » (`/bienvenue?next=…`, back to the
+ * page asked for). Only « Bienvenue » and its actions pass `beforeTerms`. A newer version of the
+ * terms never blocks: the app shows a banner instead (`termsState` is then `outdated`).
+ */
+export async function requireSession(
+  options: { beforeTerms?: boolean } = {},
+): Promise<SessionContext> {
   const state = await loadSessionState();
   if (state.status === 'anonymous') redirect('/login');
   if (state.status === 'inactive') redirect('/auth/no-access');
+  if (!options.beforeTerms && termsState(state.session.termsVersion) === 'required') {
+    redirect(welcomeHref((await headers()).get(REQUEST_PATH_HEADER)));
+  }
   return state.session;
 }
 
@@ -152,6 +201,15 @@ export const hasModule = (school: SchoolContext, module: ModuleKey) =>
 export const teachingSchools = (session: SessionContext) =>
   session.schools.filter((s) => hasRole(s, 'teacher') && hasModule(s, 'teaching'));
 
+/**
+ * Schools whose « Suppléances » board the user sees: direction and office staff, where the
+ * Teaching module is licensed (DECISIONS D-056, D-060).
+ */
+export const substituteBoardSchools = (session: SessionContext) =>
+  session.schools.filter(
+    (s) => hasRole(s, 'principal', 'vice_principal', 'office_admin') && hasModule(s, 'teaching'),
+  );
+
 /** Whether a school's AI is on: its principal turned it on and its board allows AI. */
 export const aiOn = (session: SessionContext, school: SchoolContext) =>
   school.aiEnabled &&
@@ -161,5 +219,42 @@ export const aiOn = (session: SessionContext, school: SchoolContext) =>
 export const aiSchools = (session: SessionContext) =>
   session.schools.filter((s) => hasRole(s, 'teacher', 'principal', 'vice_principal'));
 
+/**
+ * Schools where the user may use the library (« Banque de ressources », DECISIONS D-078):
+ * teachers and direction, where the Library module is licensed. Office staff have no library
+ * screens.
+ */
+export const librarySchools = (session: SessionContext) =>
+  session.schools.filter(
+    (s) => hasModule(s, 'library') && hasRole(s, 'teacher', 'principal', 'vice_principal'),
+  );
+
+/** Library pages and navigation: a library school, or a reviewer designation (D-078). */
+export const showLibrary = (session: SessionContext) =>
+  librarySchools(session).length > 0 || session.libraryReviewer.length > 0;
+
 export const findSchool = (session: SessionContext, schoolId: string) =>
   session.schools.find((s) => s.id === schoolId) ?? null;
+
+/**
+ * Schools the user directs, as principal or vice-principal: « Direction » and the audit log
+ * (DECISIONS D-102, D-103). Whatever modules the school has.
+ */
+export const directionSchools = (session: SessionContext) =>
+  session.schools.filter((s) => hasRole(s, 'principal', 'vice_principal'));
+
+/** Boards the user administers: « Conseil » and the board's audit log (D-103, D-107). */
+export const adminBoards = (session: SessionContext) => session.boards.filter((b) => b.isAdmin);
+
+/**
+ * Where the user lands after signing in, and from « Aujourd'hui » when not teaching (D-118):
+ * teachers « Aujourd'hui », the direction « Direction », office staff « Suppléances », board
+ * admins « Conseil », anyone else « Calendrier » (`lib/landing.ts`).
+ */
+export const landingFor = (session: SessionContext): LandingPath =>
+  landingPath({
+    teaches: teachingSchools(session).length > 0,
+    directs: directionSchools(session).length > 0,
+    seesSubstituteBoard: substituteBoardSchools(session).length > 0,
+    administersBoard: adminBoards(session).length > 0,
+  });

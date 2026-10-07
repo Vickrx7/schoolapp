@@ -1,0 +1,69 @@
+{
+  "slug": "atelier-arguments-en-or",
+  "type": "learning_centre",
+  "title": "Atelier : mes arguments en or",
+  "summary": "Un centre en dyades pour planifier un texte d’opinion : piger une question, prendre position, trouver trois arguments appuyés, les classer du moins fort au plus fort et présenter son plan à une ou un partenaire qui le reformule.",
+  "source": "teacher_created",
+  "author": "marc.gagnon@demo.lynx.test",
+  "school": "saint-exemple",
+  "status": "draft",
+  "shareScope": "private",
+  "reviewRequested": false,
+  "approvedBy": null,
+  "faithReviewed": false,
+  "gradeCodes": ["5"],
+  "subjectCode": "fra",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "D1.1"
+    },
+    {
+      "grade": "5",
+      "code": "D1.2"
+    }
+  ],
+  "durationMinutes": 30,
+  "materials": "Six cartes-questions, des feuilles blanches, des crayons, une minuterie, le référentiel « Pour convaincre : mon texte d’opinion » et un bac étiqueté « Mes plans ».",
+  "keywords": "texte d’opinion, planifier, organisateur graphique, arguments, prendre position, reformuler, communication orale, dyades",
+  "tags": ["ecriture", "cooperation"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "subFriendly": false,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je planifie un texte d’opinion en choisissant et en classant des arguments appuyés par des exemples ou des faits.",
+        "teacherNote": "Brouillon à terminer : ajouter une carte-question proposée par les élèves et tester le temps en classe. Le centre prépare la rédaction du texte d’opinion; les plans déposés dans le bac servent au premier jet. Chaque élève travaille sur son propre plan, mais la présentation et la reformulation se font en dyades (communication orale). Choisissez des questions qui ne mettent aucun ou aucune élève mal à l’aise et qui touchent la vie de l’école.",
+        "setup": "Installez une table pour 2 à 4 élèves avec les cartes-questions face cachée, les feuilles, les crayons, la minuterie réglée à 25 minutes et le référentiel sur le texte d’opinion. Cartes-questions suggérées : « Devrait-on avoir des devoirs la fin de semaine? », « Devrait-on laisser les élèves de 5e année choisir leur place en classe? », « Chaque école devrait-elle avoir un jardin? », « Faut-il interdire les appareils électroniques pendant la récréation? », « Notre école devrait-elle présenter un spectacle en français pour la communauté? », « La récréation devrait-elle durer 10 minutes de plus? ». Lors de la première visite, montrez comment plier la feuille en six cases : une case pour l’opinion, trois cases pour les arguments, une case pour l’objection et une case pour la conclusion.",
+        "groupSize": "2 à 4 élèves, en dyades",
+        "studentSteps": [
+          "Pige une carte-question et lis-la avec ta ou ton partenaire.",
+          "Choisis ta position : pour ou contre. Écris ton opinion en une phrase dans la première case.",
+          "Trouve trois arguments. Écris chacun dans une case, en mots-clés.",
+          "Sous chaque argument, ajoute un exemple, un fait ou une explication.",
+          "Numérote tes arguments de 1 à 3, du moins fort au plus fort.",
+          "Dans la cinquième case, écris une objection qu’une personne pourrait te faire, et ta réponse.",
+          "Présente ton plan à ta ou ton partenaire en une minute. Elle ou il reformule ton meilleur argument (« Si je comprends bien, tu dis que… »), puis te pose une question.",
+          "Dans la dernière case, écris une phrase de conclusion avec une ouverture, puis dépose ton plan dans le bac « Mes plans »."
+        ],
+        "extension": "Rédige le paragraphe de ton argument le plus fort. Utilise au moins deux marqueurs de relation du référentiel et un fait qui l’appuie.",
+        "cleanup": "Remets la carte-question dans la pile, face cachée, range les crayons et laisse la table prête pour l’équipe suivante."
+      },
+      "answerKey": null
+    }
+  ]
+}

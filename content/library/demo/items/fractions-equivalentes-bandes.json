@@ -1,0 +1,227 @@
+{
+  "slug": "fractions-equivalentes-bandes",
+  "type": "worked_example",
+  "title": "Fractions équivalentes avec des bandes de papier",
+  "summary": "Exemple résolu pas à pas : prouver que 3/4 = 6/8 en pliant des bandes de papier, suivi de cinq questions de pratique.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["5"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "B1.5"
+    }
+  ],
+  "durationMinutes": 30,
+  "materials": "Bandes de papier de même longueur (au moins 4 par élève, environ 3 cm de large, coupées dans le sens de la longueur d’une feuille de format lettre), crayons de couleur, règle facultative.",
+  "keywords": "fractions équivalentes, modèle, bandes de papier, pliage, quarts, huitièmes, sixièmes",
+  "tags": ["fractions"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": false,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je montre que deux fractions sont équivalentes en pliant des bandes de papier de même longueur.",
+        "teacherNote": "Préparer les bandes à l’avance : elles doivent toutes avoir exactement la même longueur, sinon la comparaison ne tient plus. Le pliage rend visible pourquoi on multiplie le numérateur et le dénominateur par le même nombre; ne donner cette règle qu’après que les élèves l’ont observée. Aucune illustration n’est fournie : chaque élève produit ses propres bandes et les garde pour la pratique. La dernière question de pratique (question 5) se corrige à la main.",
+        "problem": "Inès affirme que 3/4 d’une bande de papier a exactement la même longueur que 6/8 d’une bande identique. A-t-elle raison? Vérifie-le en pliant deux bandes de papier de même longueur.",
+        "steps": [
+          {
+            "explanation": "Prends deux bandes de papier de la même longueur. Chaque bande représente un tout.",
+            "work": "Bande A = 1 tout; bande B = 1 tout"
+          },
+          {
+            "explanation": "Plie la bande A en deux, puis encore en deux. Déplie-la : les plis la séparent en 4 parties égales. Chaque partie vaut un quart.",
+            "work": "4 parties égales, donc chaque partie = 1/4"
+          },
+          {
+            "explanation": "Colorie 3 parties de la bande A. La partie coloriée représente 3/4 de la bande.",
+            "work": "3 parties coloriées sur 4 = 3/4"
+          },
+          {
+            "explanation": "Plie la bande B en deux, encore en deux, puis une troisième fois en deux. Déplie-la : tu obtiens 8 parties égales. Chaque partie vaut un huitième.",
+            "work": "8 parties égales, donc chaque partie = 1/8"
+          },
+          {
+            "explanation": "Place la bande B juste sous la bande A, bord à bord. Sur la bande B, colorie des parties, en partant du même bout, jusqu’à ce que la partie coloriée arrive au même endroit que sur la bande A. Compte les parties coloriées.",
+            "work": "6 parties coloriées sur 8 = 6/8"
+          },
+          {
+            "explanation": "Compare les deux bandes : les parties coloriées ont exactement la même longueur. Les deux fractions représentent donc la même partie du tout.",
+            "work": "3/4 = 6/8"
+          },
+          {
+            "explanation": "Observe ce qui s’est passé : le pliage de plus a coupé chaque quart en deux. Il y a deux fois plus de parties en tout et deux fois plus de parties coloriées.",
+            "work": "3/4 = (3 × 2)/(4 × 2) = 6/8"
+          }
+        ],
+        "answer": "Oui, Inès a raison. Sur des bandes identiques, 3/4 et 6/8 ont la même longueur : ce sont des fractions équivalentes.",
+        "practice": [
+          {
+            "id": "p1",
+            "kind": "multiple_choice",
+            "prompt": "Tu plies une bande de papier en deux, puis encore en deux, puis encore en deux. En combien de parties égales la bande est-elle séparée?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "4"
+              },
+              {
+                "id": "b",
+                "text": "6"
+              },
+              {
+                "id": "c",
+                "text": "8"
+              },
+              {
+                "id": "d",
+                "text": "16"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "p2",
+            "kind": "true_false",
+            "prompt": "1/2 d’une bande de papier a la même longueur que 4/8 de la même bande.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "p3",
+            "kind": "matching",
+            "prompt": "Associe chaque fraction à une fraction équivalente en huitièmes. Une des fractions de droite est de trop.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "left": [
+              {
+                "id": "l1",
+                "text": "1/2"
+              },
+              {
+                "id": "l2",
+                "text": "1/4"
+              },
+              {
+                "id": "l3",
+                "text": "3/4"
+              }
+            ],
+            "right": [
+              {
+                "id": "r1",
+                "text": "6/8"
+              },
+              {
+                "id": "r2",
+                "text": "2/8"
+              },
+              {
+                "id": "r3",
+                "text": "3/8"
+              },
+              {
+                "id": "r4",
+                "text": "4/8"
+              }
+            ]
+          },
+          {
+            "id": "p4",
+            "kind": "short_answer",
+            "prompt": "Plie une bande en 3 parties égales, déplie-la et colorie 2 parties : tu as colorié 2/3 de la bande. Replie-la en 3, puis plie-la encore une fois en deux. Déplie-la. Quelle fraction en sixièmes représente la partie coloriée?",
+            "hint": "Pour plier une bande en 3, replie-la en forme de Z, ajuste les trois parties pour qu’elles soient égales, puis aplatis les plis.",
+            "points": null,
+            "category": "application",
+            "lines": 2
+          },
+          {
+            "id": "p5",
+            "kind": "short_answer",
+            "prompt": "Jules dit que 2/4 et 2/8 sont équivalentes parce qu’elles ont le même numérateur. Es-tu d’accord? Explique ta réponse à l’aide de deux bandes de papier.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 4
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "p1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["c"],
+            "explanation": "Chaque pliage double le nombre de parties : 2, puis 4, puis 8."
+          },
+          {
+            "questionId": "p2",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "La moitié de la bande contient 4 des 8 parties égales : 1/2 = 4/8."
+          },
+          {
+            "questionId": "p3",
+            "kind": "matching",
+            "pairs": [
+              {
+                "leftId": "l1",
+                "rightId": "r4"
+              },
+              {
+                "leftId": "l2",
+                "rightId": "r2"
+              },
+              {
+                "leftId": "l3",
+                "rightId": "r1"
+              }
+            ],
+            "explanation": "Pour passer des quarts aux huitièmes, chaque partie est pliée en deux : le numérateur et le dénominateur sont multipliés par 2. 1/2 = 2/4 = 4/8, 1/4 = 2/8 et 3/4 = 6/8. La fraction 3/8 est de trop."
+          },
+          {
+            "questionId": "p4",
+            "kind": "short_answer",
+            "sampleAnswer": "4/6 : la bande a maintenant 6 parties égales, et 4 d’entre elles sont coloriées. 2/3 = 4/6.",
+            "acceptableAnswers": ["4/6", "4 sixièmes", "quatre sixièmes"],
+            "explanation": "Chaque tiers a été plié en deux : il y a 2 fois plus de parties en tout (6) et 2 fois plus de parties coloriées (4)."
+          },
+          {
+            "questionId": "p5",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. Sur une bande, 2/4 couvre la moitié de la bande, mais sur une bande identique, 2/8 n’en couvre que le quart. Les parties coloriées n’ont pas la même longueur, donc ces fractions ne sont pas équivalentes.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit comparer les longueurs coloriées (1/2 et 1/4) sur des bandes de même longueur."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

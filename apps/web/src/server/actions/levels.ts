@@ -72,17 +72,34 @@ export async function updatePersonalLevel(
   return okVoid();
 }
 
+/**
+ * Deletes a personal level that nothing uses. A level still used by a saved text or by one of
+ * the teacher's requests (in progress, or finished and not yet saved: saving needs the level)
+ * can be turned off instead.
+ */
 export async function deletePersonalLevel(levelId: string): Promise<ActionResult> {
   const session = await requireSession();
+  if (!z.uuid().safeParse(levelId).success) return fail('invalid');
   const supabase = await createSupabaseServerClient();
+  // Requests hold their levels in their input (no foreign key), so check them first.
+  const { data: jobs, error: jobsError } = await supabase
+    .from('ai_jobs')
+    .select('id')
+    .eq('feature', 'differentiate')
+    .in('status', ['queued', 'running', 'succeeded'])
+    .contains('input', { levels: [{ languageLevelId: levelId }] })
+    .limit(1);
+  if (jobsError) return fail(reportError('deletePersonalLevel', jobsError));
+  if (jobs.length) return fail('levelInUse');
   const { data, error } = await supabase
     .from('language_levels')
     .delete()
     .eq('id', levelId)
     .eq('owner_user_id', session.userId)
     .select('id');
-  // A saved text still has a version for this level: it can be turned off instead.
-  if (error?.code === '23505') return fail('inUse');
+  // A saved text still has a version for this level: the database refuses (it checks every
+  // saved text, including ones this teacher can't see).
+  if (error?.code === '23503') return fail('levelInUse');
   if (error) return fail(reportError('deletePersonalLevel', error));
   if (!data?.length) return fail('forbidden');
   revalidatePath('/differentiate', 'layout');

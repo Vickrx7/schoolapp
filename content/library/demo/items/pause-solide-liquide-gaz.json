@@ -1,0 +1,51 @@
+{
+  "slug": "pause-solide-liquide-gaz",
+  "type": "brain_break",
+  "title": "Pause active : solide, liquide, gaz",
+  "summary": "Une pause active de 5 minutes, à côté des pupitres : les élèves deviennent des particules de matière et bougent comme dans un solide, un liquide ou un gaz, puis passent d’un état à l’autre au signal. La classe termine par trois respirations calmes.",
+  "source": "board_created",
+  "status": "board_approved",
+  "shareScope": "board",
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "gradeCodes": ["3", "4", "5"],
+  "subjectCode": "sci",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "C2.1"
+    }
+  ],
+  "durationMinutes": 5,
+  "materials": "Aucun matériel particulier.",
+  "keywords": "pause active, états de la matière, solide, liquide, gaz, particules, changements d’état, mouvement, écoute",
+  "tags": ["mouvement", "sciences", "jeu", "matiere"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je bouge pour me dégourdir et je montre avec mon corps comment les particules bougent dans un solide, un liquide et un gaz.",
+        "teacherNote": "Pause active de 5 minutes, sans matériel, à faire debout à côté des pupitres. Conçue pour une personne suppléante : lisez les étapes à voix haute et donnez les signaux. Avant de commencer, rappelez les règles : on reste à sa place, on ne touche personne et on bouge lentement. En 5e année, faites le lien avec les états de la matière : dans un solide, les particules sont serrées et vibrent sur place; dans un liquide, elles restent proches, mais glissent les unes sur les autres; dans un gaz, elles s’éloignent et bougent dans toutes les directions. En 3e et en 4e année, présentez simplement la pause comme un jeu d’écoute. Si une personne doit rester assise, elle fait la version calme.",
+        "space": "desk",
+        "steps": [
+          "Lève-toi et place-toi à côté de ton pupitre. Garde un bras de distance avec les personnes autour de toi.",
+          "Tu es une toute petite particule de matière. Écoute bien le mot que dit l’adulte, et bouge sans quitter ta place.",
+          "« Solide! » : serre les bras contre ton corps, reste immobile et vibre un tout petit peu, comme une particule dans un glaçon.",
+          "« Liquide! » : balance doucement les bras et le haut du corps, comme de l’eau qui coule. Tes pieds restent sur place.",
+          "« Gaz! » : ouvre grand les bras et fais de grands mouvements lents dans toutes les directions, toujours à ta place.",
+          "L’adulte dit les mots de plus en plus vite. Écoute bien et change de mouvement tout de suite!",
+          "Défi : « Fusion! », passe lentement de solide à liquide. « Évaporation! », de liquide à gaz. « Condensation! », de gaz à liquide. « Solidification! », de liquide à solide.",
+          "Pour finir, redeviens un solide bien calme : prends trois grandes respirations lentes, puis assieds-toi sans bruit."
+        ],
+        "calmVariant": "Tout le monde reste assis. « Solide » : les mains serrées l’une contre l’autre vibrent un peu. « Liquide » : les mains glissent doucement l’une sur l’autre. « Gaz » : les mains s’écartent lentement et flottent dans l’air. Terminez par trois respirations lentes."
+      },
+      "answerKey": null
+    }
+  ]
+}

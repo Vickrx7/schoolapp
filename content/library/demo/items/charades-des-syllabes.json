@@ -1,0 +1,206 @@
+{
+  "slug": "charades-des-syllabes",
+  "type": "riddle",
+  "title": "Charades : mon premier, mon second, mon tout",
+  "summary": "Huit charades originales pour jouer avec les syllabes et les sons : on trouve deux petits mots, on les assemble pour former un mot nouveau, puis on compare la façon de l’écrire (chat + eau = château, pin + seau = pinceau).",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["3"],
+  "subjectCode": "fra",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "B2.1"
+    }
+  ],
+  "durationMinutes": 15,
+  "materials": "Une copie par élève ou les charades projetées, un crayon et une ardoise blanche ou une feuille de brouillon.",
+  "keywords": "charades, devinettes, syllabes, sons, homophones, orthographe, correspondance son-lettre, jeu de mots",
+  "tags": ["jeu", "vocabulaire"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je combine des syllabes et des sons pour trouver un mot, puis je vérifie comment il s’écrit.",
+        "teacherNote": "Présentez d’abord le jeu avec une charade faite ensemble au tableau : « mon premier » et « mon second » sont des petits mots qu’on entend dans le mot à trouver; « mon tout » décrit le mot entier. Les élèves travaillent en dyades sur une ardoise : ils et elles écrivent le premier mot, puis le second, puis le mot entier. La partie la plus riche vient après : comparez l’orthographe des petits mots et du mot entier. Le son est le même, mais les lettres changent souvent (seau et ceau dans pinceau, pont et pom dans pompier, parce qu’on écrit m devant p). Conçue pour une personne suppléante : ramassez les feuilles, car le corrigé reste avec l’enseignante ou l’enseignant.",
+        "riddles": [
+          {
+            "id": "r1",
+            "kind": "short_answer",
+            "prompt": "Mon premier chasse les souris. Mon second coule du robinet. Mon tout est la grande maison d’un roi ou d’une reine. Qui suis-je?",
+            "hint": "J’ai souvent des tours et un pont-levis.",
+            "points": null,
+            "category": null,
+            "lines": 1
+          },
+          {
+            "id": "r2",
+            "kind": "short_answer",
+            "prompt": "Mon premier est le contraire de « haut ». Mon second est le contraire de « tard ». Mon tout flotte sur l’eau et transporte des gens. Qui suis-je?",
+            "hint": "Je peux avoir des voiles ou un moteur.",
+            "points": null,
+            "category": null,
+            "lines": 1
+          },
+          {
+            "id": "r3",
+            "kind": "short_answer",
+            "prompt": "Mon premier est un arbre qui garde ses aiguilles tout l’hiver. Mon second sert à transporter de l’eau. Mon tout sert à peindre. Qui suis-je?",
+            "hint": "On me trempe dans la peinture.",
+            "points": null,
+            "category": null,
+            "lines": 1
+          },
+          {
+            "id": "r4",
+            "kind": "short_answer",
+            "prompt": "Mon premier est un petit légume vert et rond. Mon second, c’est ce que tes oreilles entendent. Mon tout nage dans le lac. Qui suis-je?",
+            "hint": "J’ai des nageoires et des écailles.",
+            "points": null,
+            "category": null,
+            "lines": 1
+          },
+          {
+            "id": "r5",
+            "kind": "short_answer",
+            "prompt": "Mon premier permet de traverser une rivière. Mon second est au bout de ta jambe. Mon tout éteint les incendies. Qui suis-je?",
+            "hint": "Je porte un casque et je travaille à la caserne.",
+            "points": null,
+            "category": null,
+            "lines": 1
+          },
+          {
+            "id": "r6",
+            "kind": "short_answer",
+            "prompt": "Mon premier est la note de musique qui vient après « sol ». Mon second se tartine de beurre ou de confiture. Mon tout a de longues oreilles et saute dans le jardin. Qui suis-je?",
+            "hint": "J’aime grignoter des carottes.",
+            "points": null,
+            "category": null,
+            "lines": 1
+          },
+          {
+            "id": "r7",
+            "kind": "short_answer",
+            "prompt": "Mon premier est le contraire de « sur ». Mon second veut dire « attacher avec une corde ». Mon tout se porte au pied. Qui suis-je?",
+            "hint": "On me lace ou on m’attache avant d’aller dehors.",
+            "points": null,
+            "category": null,
+            "lines": 1
+          },
+          {
+            "id": "r8",
+            "kind": "short_answer",
+            "prompt": "Mon premier est un rongeur à longue queue. Mon second est un gros poisson de mer qu’on mange souvent en conserve. Mon tout, suivi du mot « laveur », est un animal qui porte un masque noir. Qui suis-je?",
+            "hint": "La nuit, je fouille parfois dans les poubelles.",
+            "points": null,
+            "category": null,
+            "lines": 1
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "r1",
+            "kind": "short_answer",
+            "sampleAnswer": "Un château (chat + eau).",
+            "acceptableAnswers": ["château", "le château", "un château", "chateau"],
+            "explanation": "Chat + eau = château. Le son « o » s’écrit « eau » dans les deux mots, mais « chat » perd son t et prend un accent circonflexe sur le a."
+          },
+          {
+            "questionId": "r2",
+            "kind": "short_answer",
+            "sampleAnswer": "Un bateau (bas + tôt).",
+            "acceptableAnswers": ["bateau", "le bateau", "un bateau"],
+            "explanation": "Bas + tôt = bateau. Le son « o » de « tôt » s’écrit « eau » dans « bateau »."
+          },
+          {
+            "questionId": "r3",
+            "kind": "short_answer",
+            "sampleAnswer": "Un pinceau (pin + seau).",
+            "acceptableAnswers": ["pinceau", "le pinceau", "un pinceau"],
+            "explanation": "Pin + seau = pinceau. Le son « so » s’écrit « seau » dans le premier mot et « ceau » dans le mot entier."
+          },
+          {
+            "questionId": "r4",
+            "kind": "short_answer",
+            "sampleAnswer": "Un poisson (pois + son).",
+            "acceptableAnswers": ["poisson", "le poisson", "un poisson"],
+            "explanation": "Pois + son = poisson. Entre deux voyelles, on écrit « ss » pour garder le son « s » (sinon on lirait « poison »)."
+          },
+          {
+            "questionId": "r5",
+            "kind": "short_answer",
+            "sampleAnswer": "Un pompier ou une pompière (pont + pied).",
+            "acceptableAnswers": [
+              "pompier",
+              "le pompier",
+              "un pompier",
+              "pompière",
+              "la pompière",
+              "une pompière"
+            ],
+            "explanation": "Pont + pied = pompier. Devant un p, on écrit m plutôt que n : « pon » devient « pom »."
+          },
+          {
+            "questionId": "r6",
+            "kind": "short_answer",
+            "sampleAnswer": "Un lapin (la + pain).",
+            "acceptableAnswers": ["lapin", "le lapin", "un lapin"],
+            "explanation": "La + pain = lapin. « Pain » et « pin » se prononcent de la même façon, mais s’écrivent autrement."
+          },
+          {
+            "questionId": "r7",
+            "kind": "short_answer",
+            "sampleAnswer": "Un soulier (sous + lier).",
+            "acceptableAnswers": [
+              "soulier",
+              "le soulier",
+              "un soulier",
+              "souliers",
+              "des souliers",
+              "les souliers"
+            ],
+            "explanation": "Sous + lier = soulier. Le s de « sous » ne s’entend pas et disparaît dans « soulier »."
+          },
+          {
+            "questionId": "r8",
+            "kind": "short_answer",
+            "sampleAnswer": "Un raton (rat + thon), comme dans « raton laveur ».",
+            "acceptableAnswers": [
+              "raton",
+              "le raton",
+              "un raton",
+              "raton laveur",
+              "le raton laveur",
+              "un raton laveur"
+            ],
+            "explanation": "Rat + thon = raton. On n’entend ni le t final de « rat » ni le h de « thon » : on écrit simplement « raton »."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

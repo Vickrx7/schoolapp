@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
   pull_request:
+  schedule:
+    # Monthly, so the pinned images and the base images' packages are tested again (docker-smoke).
+    - cron: '17 6 1 * *'
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -29,6 +32,12 @@ jobs:
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
+      - name: The demo curriculum and library seeds match their source files
+        run: pnpm library:seed:check
+      - name: No NEXT_PUBLIC_ setting in the web app (D-113)
+        run: bash deploy/ci/no-public-env.sh
+      - name: Migration versions are unique, and new ones sort after the base branch's
+        run: bash deploy/ci/check-migration-order.sh "${{ github.base_ref }}"
 
   database-and-e2e:
     name: Database (RLS) tests, integration and end-to-end
@@ -57,21 +66,35 @@ jobs:
           pnpm db:types:direct
           git diff --exit-code packages/db/src/database.types.ts
 
-      - name: Integration tests (event outbox, AI jobs)
-        run: pnpm test:int
+      - name: Integration tests (event outbox, AI jobs, staff accounts)
+        run: |
+          # Staff accounts (D-107) use Auth's admin API: the local stack's URL and service key.
+          eval "$(pnpm exec supabase status -o env | grep -E '^(API_URL|SERVICE_ROLE_KEY)=' || true)"
+          export SUPABASE_URL="${API_URL:-http://127.0.0.1:54321}"
+          export SUPABASE_SERVICE_ROLE_KEY="${SERVICE_ROLE_KEY:-$(grep '^SUPABASE_SERVICE_ROLE_KEY=' .env.example | cut -d= -f2-)}"
+          pnpm test:int
 
       - name: Configure the web app for the local stack
         run: |
           cp .env.example apps/web/.env.local
           # The defaults in .env.example match the CLI's local keys; prefer live values if present.
           eval "$(pnpm exec supabase status -o env | grep -E '^(API_URL|ANON_KEY)=' || true)"
-          if [ -n "${API_URL:-}" ]; then echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL" >> apps/web/.env.local; fi
-          if [ -n "${ANON_KEY:-}" ]; then echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_KEY" >> apps/web/.env.local; fi
+          if [ -n "${API_URL:-}" ]; then echo "SUPABASE_URL=$API_URL" >> apps/web/.env.local; fi
+          if [ -n "${ANON_KEY:-}" ]; then echo "SUPABASE_ANON_KEY=$ANON_KEY" >> apps/web/.env.local; fi
 
-      - run: pnpm --filter @lynx/web build
+      - name: Build the web app with no setting built in (D-113)
+        run: |
+          # Settings are read at run time (.env.local above): a Supabase address that cannot exist
+          # at build time must leave no trace (the build's own cache aside, which is not shipped).
+          SUPABASE_URL=http://build.invalid pnpm --filter @lynx/web build
+          if grep -rl --exclude-dir=cache build.invalid apps/web/.next; then exit 1; fi
       - run: pnpm --filter @lynx/web exec playwright install --with-deps chromium
       - name: Start the worker (fake AI provider; nothing leaves the runner)
         run: |
+          # Staff accounts (D-107) need Auth's admin API: the local stack's URL and service key.
+          eval "$(pnpm exec supabase status -o env | grep -E '^(API_URL|SERVICE_ROLE_KEY)=' || true)"
+          export SUPABASE_URL="${API_URL:-http://127.0.0.1:54321}"
+          export SUPABASE_SERVICE_ROLE_KEY="${SERVICE_ROLE_KEY:-$(grep '^SUPABASE_SERVICE_ROLE_KEY=' .env.example | cut -d= -f2-)}"
           AI_PROVIDER=fake AI_FAKE_DELAY_MS=300 nohup pnpm --filter @lynx/worker start > worker.log 2>&1 &
           for i in $(seq 1 30); do grep -q 'worker started' worker.log && break; sleep 1; done
           tail -n 5 worker.log
@@ -86,3 +109,227 @@ jobs:
             apps/web/playwright-report
             worker.log
           retention-days: 7
+
+  backup-restore:
+    name: Backup and restore
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres
+      MAILPIT_URL: http://127.0.0.1:54324
+      # The PostgreSQL 17 client (the server is 17): backup.sh and restore.sh read PG_BIN.
+      PG_BIN: /usr/lib/postgresql/17/bin
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: PostgreSQL 17 client and age
+        run: |
+          sudo apt-get update -qq
+          if ! apt-cache show postgresql-client-17 > /dev/null 2>&1; then
+            sudo install -d /etc/apt/keyrings
+            sudo curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc -o /etc/apt/keyrings/pgdg.asc
+            echo "deb [signed-by=/etc/apt/keyrings/pgdg.asc] https://apt.postgresql.org/pub/repos/apt $(. /etc/os-release && echo "$VERSION_CODENAME")-pgdg main" |
+              sudo tee /etc/apt/sources.list.d/pgdg.list
+            sudo apt-get update -qq
+          fi
+          sudo apt-get install -y --no-install-recommends postgresql-client-17 age
+          "$PG_BIN/pg_dump" --version
+
+      - name: Start local Supabase (database, auth, API, mail catcher only)
+        run: pnpm exec supabase start -x realtime,storage-api,imgproxy,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
+
+      - name: The images the Supabase CLI runs (deploy/docker/compose.supabase.yml pins the same)
+        run: docker images --digests --format '{{.Repository}}:{{.Tag}} {{.Digest}}' | sort
+
+      - name: Back up the demo data
+        run: |
+          # A person deactivated but not yet banned, and two recent events (see the file).
+          psql "$DATABASE_URL" -X -q -v ON_ERROR_STOP=1 -f deploy/ci/restore-fixture.sql
+          psql "$DATABASE_URL" -X -A -t -q -f deploy/backup/fingerprint.sql > "$RUNNER_TEMP/before.txt"
+          age-keygen -o "$RUNNER_TEMP/backup-key.txt"
+          # The signing key, as generate-secrets.mjs makes it (the operator keeps a copy).
+          openssl rand -hex 32 > "$RUNNER_TEMP/signing-key.txt"
+          # The copy goes to S3-compatible storage (BACKUP_S3_ENDPOINT): a stand-in that checks the
+          # request's AWS signature and the body's SHA-256, as S3 does.
+          export S3_FAKE_DIR="$RUNNER_TEMP/s3" S3_FAKE_PORT=9000 S3_FAKE_KEY_ID=ci-backup S3_FAKE_SECRET="$(openssl rand -hex 20)"
+          node deploy/ci/s3-fake.mjs 2> "$RUNNER_TEMP/s3-fake.log" &
+          fake=$!
+          for _ in $(seq 1 40); do grep -q listening "$RUNNER_TEMP/s3-fake.log" && break; sleep 0.25; done
+          BACKUP_DATABASE_URL="$DATABASE_URL" BACKUP_DIR="$RUNNER_TEMP/backups" APP_RELEASE=ci \
+            BACKUP_AGE_RECIPIENT="$(age-keygen -y "$RUNNER_TEMP/backup-key.txt")" \
+            BACKUP_SIGNING_KEY="$(cat "$RUNNER_TEMP/signing-key.txt")" \
+            BACKUP_S3_ENDPOINT=http://127.0.0.1:9000 BACKUP_S3_BUCKET=lynx-ci BACKUP_S3_PREFIX=nightly/ \
+            BACKUP_S3_ACCESS_KEY_ID=ci-backup BACKUP_S3_SECRET_ACCESS_KEY="$S3_FAKE_SECRET" deploy/backup/backup.sh
+          test "$(psql "$DATABASE_URL" -X -A -t -c "select count(*) from public.system_heartbeats where component = 'backup'")" = 1
+          backup="$(ls "$RUNNER_TEMP"/backups/lynx-backup-*.tar)"
+          cmp "$backup" "$RUNNER_TEMP/s3/lynx-ci/nightly/$(basename "$backup")"
+          # A wrong secret is refused: the stand-in really checks signatures.
+          code="$(printf 'user = "ci-backup:wrong"\n' | curl --config - -sS -o /dev/null -w '%{http_code}' \
+            --aws-sigv4 "aws:amz:ca-central-1:s3" -H "x-amz-content-sha256: $(sha256sum "$backup" | cut -d' ' -f1)" \
+            -T "$backup" http://127.0.0.1:9000/lynx-ci/refused.tar)"
+          test "$code" = 403
+          cat "$RUNNER_TEMP/s3-fake.log"
+          kill "$fake"
+
+      - name: Altered, unsigned or tampered backups are refused before anything runs
+        run: |
+          deploy/ci/restore-refusals.sh "$RUNNER_TEMP"/backups/lynx-backup-*.tar \
+            "$RUNNER_TEMP/backup-key.txt" "$RUNNER_TEMP/signing-key.txt" "$DATABASE_URL"
+
+      - name: Restore into an empty database
+        run: |
+          pnpm exec supabase db reset --no-seed
+          deploy/backup/restore.sh "$RUNNER_TEMP"/backups/lynx-backup-*.tar \
+            --identity "$RUNNER_TEMP/backup-key.txt" --signing-key "$RUNNER_TEMP/signing-key.txt" \
+            --db-url "$DATABASE_URL" --yes
+
+      - name: The restored database holds what was backed up
+        run: |
+          psql "$DATABASE_URL" -X -A -t -q -f deploy/backup/fingerprint.sql > "$RUNNER_TEMP/after.txt"
+          diff "$RUNNER_TEMP/before.txt" "$RUNNER_TEMP/after.txt"
+          wc -l < "$RUNNER_TEMP/after.txt"
+
+      - name: Restored accounts sign in; removed access stays removed (integration)
+        run: |
+          eval "$(pnpm exec supabase status -o env | grep -E '^(API_URL|ANON_KEY)=' || true)"
+          export SUPABASE_URL="${API_URL:-http://127.0.0.1:54321}"
+          export SUPABASE_ANON_KEY="${ANON_KEY:-$(grep '^SUPABASE_ANON_KEY=' .env.example | cut -d= -f2-)}"
+          RESTORE_SMOKE=1 pnpm test:int restore-smoke
+
+      - name: RLS and schema tests on the restored database (pgTAP)
+        run: pnpm exec supabase test db
+
+  docker-smoke:
+    name: Docker images and the board-hosted install
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      APP_RELEASE: ci-${{ github.run_number }}
+      COMPOSE_ANSI: never
+    defaults:
+      run:
+        working-directory: deploy/docker
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+        working-directory: .
+      - name: age (for the backup key)
+        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends age
+
+      - name: Settings for a CI install (localhost, Caddy's own certificate, test mail, fake AI)
+        run: |
+          node generate-secrets.mjs --ci
+          age-keygen -o "$RUNNER_TEMP/backup-key.txt"
+          sed -i "s|^BACKUP_AGE_RECIPIENT=$|BACKUP_AGE_RECIPIENT=$(age-keygen -y "$RUNNER_TEMP/backup-key.txt")|" .env
+          docker compose config --images
+
+      - name: Build both images
+        run: docker compose build
+
+      - name: Start the install (database, Auth, API, migrate, then web, worker and proxy)
+        run: docker compose up -d --wait
+
+      - name: Load the demo data (CI only), then migrate again for the portal logins it changes
+        run: |
+          docker compose run --rm --no-deps --entrypoint bash migrate -c \
+            'set -e; for f in supabase/seed.sql supabase/seeds/*.sql; do psql "$MIGRATIONS_DATABASE_URL" -X -q -v ON_ERROR_STOP=1 --single-transaction -f "$f"; done'
+          docker compose run --rm --no-deps migrate
+
+      - name: The admin CLI works in the image
+        run: |
+          docker compose run --rm admin create-board --name "Conseil de fumée" --slug ci-smoke
+          # Its replies reach the operator's terminal, though they are never kept in the journal.
+          out="$(docker compose run --rm -T admin invite --email admin.fumee@example.test --name "Admin Fumée" --role board_admin --board ci-smoke)"
+          echo "$out"
+          grep -q 'can now sign in as board_admin' <<< "$out"
+
+      - name: A board is deleted only after its whole audit log is exported (D-122)
+        run: |
+          set +e
+          refused="$(docker compose run --rm -T admin delete-board --board ci-smoke --confirm ci-smoke --exported --yes 2>&1)"
+          code=$?
+          set -e
+          echo "$refused"
+          test "$code" -ne 0
+          grep -q 'export-audit' <<< "$refused"
+          mkdir -p "$RUNNER_TEMP/exports"
+          docker compose run --rm -T --user "$(id -u):$(id -g)" -v "$RUNNER_TEMP/exports:/out" \
+            admin export-audit --board ci-smoke --out /out/journal-ci-smoke.csv
+          head -3 "$RUNNER_TEMP/exports/journal-ci-smoke.csv"
+          test "$(stat -c %a "$RUNNER_TEMP/exports/journal-ci-smoke.csv")" = 600
+          docker compose run --rm -T admin delete-board --board ci-smoke --confirm ci-smoke --exported --yes
+
+      - name: Browser smoke test (@smoke) through Caddy
+        working-directory: apps/web
+        run: |
+          pnpm exec playwright install --with-deps chromium
+          curl -sk -w ' %{http_code}\n' https://localhost/api/health/ready
+          password="$(grep '^POSTGRES_PASSWORD=' ../../deploy/docker/.env | cut -d= -f2-)"
+          E2E_BASE_URL=https://localhost E2E_IGNORE_HTTPS_ERRORS=1 MAILPIT_URL=http://127.0.0.1:54324 \
+            DATABASE_URL="postgresql://postgres:$password@127.0.0.1:54322/postgres" \
+            pnpm exec playwright test --grep @smoke
+
+      - name: A backup in the image records its heartbeat
+        run: |
+          docker compose run --rm backup
+          password="$(grep '^POSTGRES_PASSWORD=' .env | cut -d= -f2-)"
+          test "$(psql "postgresql://postgres:$password@127.0.0.1:54322/postgres" -X -A -t -c \
+            "select beat_at > now() - interval '5 minutes' from public.system_heartbeats where component = 'backup'")" = t
+          docker compose run --rm --no-deps --entrypoint ls backup -l /backups
+
+      - name: The upgrade script (the same release; builds, restarts, checks readiness)
+        run: ./upgrade.sh HEAD
+
+      - name: The worker refuses a database that lacks one of its migrations
+        run: |
+          echo 'select 1;' > "$RUNNER_TEMP/29991231000000_not_applied.sql"
+          set +e
+          docker compose run --rm --no-deps \
+            -v "$RUNNER_TEMP/29991231000000_not_applied.sql:/repo/supabase/migrations/29991231000000_not_applied.sql:ro" \
+            worker > "$RUNNER_TEMP/guard.log" 2>&1
+          code=$?
+          set -e
+          cat "$RUNNER_TEMP/guard.log"
+          test "$code" -eq 1
+          grep -q 'missing migrations of this release' "$RUNNER_TEMP/guard.log"
+
+      - name: The journal holds no e-mail address and no password (D-119)
+        run: |
+          # Every line the install's containers wrote (the CI mail catcher aside): Auth logs
+          # warnings only, the database no statement and no error detail, the admin CLI nothing.
+          sudo journalctl --no-pager -o json |
+            jq -r 'select((.CONTAINER_NAME // "") | test("^lynx-") and (test("mailpit") | not))
+              | "\(.CONTAINER_NAME) \(.MESSAGE | if type == "array" then implode else . end)"' \
+            > "$RUNNER_TEMP/journal.txt"
+          cut -d' ' -f1 "$RUNNER_TEMP/journal.txt" | sed -E 's/-run-[0-9a-f]+$/-run/' | sort | uniq -c
+          if grep -E -i '[a-z0-9._%+-]+@[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}' "$RUNNER_TEMP/journal.txt"; then
+            echo "::error::an e-mail address reached the journal"
+            exit 1
+          fi
+          if grep -i -E "password +'" "$RUNNER_TEMP/journal.txt"; then
+            echo "::error::a password statement reached the journal"
+            exit 1
+          fi
+
+      - name: Logs of every service
+        if: failure()
+        run: |
+          docker compose ps -a
+          # The database's start-up and errors (no statements, D-119): its end only, and the app's last.
+          for service in db auth rest api-gateway mailpit migrate; do
+            docker compose logs --no-color --timestamps --tail=80 "$service"
+          done
+          for service in worker web proxy; do
+            docker compose logs --no-color --timestamps --tail=300 "$service"
+          done

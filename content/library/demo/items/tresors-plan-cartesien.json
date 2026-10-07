@@ -1,0 +1,219 @@
+{
+  "slug": "tresors-plan-cartesien",
+  "type": "game",
+  "title": "Les trésors du plan cartésien",
+  "summary": "Un jeu en équipes de deux : chaque élève cache 3 trésors sur un plan cartésien gradué de 0 à 10, puis cherche ceux de l’autre en nommant des coordonnées et en décrivant des translations. Avec des variantes (autres échelles, trésor voyageur, dessin mystère) et une banque de questions.",
+  "source": "teacher_created",
+  "author": "marc.gagnon@demo.lynx.test",
+  "school": "saint-exemple",
+  "status": "teacher_reviewed",
+  "shareScope": "school",
+  "reviewRequested": false,
+  "approvedBy": null,
+  "faithReviewed": false,
+  "gradeCodes": ["5"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "5",
+      "code": "E1.4"
+    }
+  ],
+  "durationMinutes": 30,
+  "materials": "Par élève : deux feuilles quadrillées (carreaux d’environ 1 cm), un crayon et une règle. Par équipe : un cartable ou une chemise de carton pour cacher les feuilles.",
+  "keywords": "plan cartésien, premier quadrant, coordonnées, axe des x, axe des y, origine, translation, échelle, jeu de repérage",
+  "tags": ["jeu", "geometrie"],
+  "formats": {
+    "printable": true,
+    "projectable": true,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je situe et je lis des points dans le premier quadrant d’un plan cartésien, et je décris des translations.",
+        "teacherNote": "Jeu partagé avec l’école : il convient aussi à une personne suppléante, car il ne demande que du papier quadrillé. Les coordonnées sont écrites avec une virgule, par exemple (4, 7), puisqu’elles sont des nombres naturels; si votre école utilise une autre notation, adaptez les consignes. Pour les élèves qui apprennent le français, affichez les phrases modèles « Je cherche au point (…, …). », « Je me déplace de … unités vers la droite. » et « Tout près! ». Les questions du jeu peuvent servir de réchauffement collectif au tableau.",
+        "grouping": "En équipes de deux, face à face. Deux équipes de deux peuvent aussi s’affronter.",
+        "setup": "Distribuez deux feuilles quadrillées par élève. Sur chacune, faites tracer un plan cartésien : l’axe des x (horizontal) et l’axe des y (vertical) gradués de 0 à 10 sur les lignes du quadrillage (pas dans les carreaux), avec l’origine en bas à gauche. La première feuille s’appelle « Mes trésors », la deuxième « Mes recherches ». Placez un cartable debout entre les deux élèves pour cacher les feuilles « Mes trésors ». Jouez une partie de démonstration au tableau. Rappelez qu’on lit d’abord la coordonnée sur l’axe des x, puis celle sur l’axe des y : on avance, puis on monte.",
+        "rules": [
+          "Sur ta feuille « Mes trésors », cache 3 trésors : place 3 points sur des croisements de lignes, par exemple au point (2, 7). Ne montre pas ta feuille.",
+          "Sous ton plan, écris les coordonnées de tes 3 trésors.",
+          "À tour de rôle, nomme un point avec ses coordonnées, par exemple : « Je cherche au point (4, 6). »",
+          "L’autre élève vérifie sur sa feuille « Mes trésors ». Si un trésor est à ce point, elle ou il dit « Trésor! ». Si un trésor est à 1 unité de ce point, à droite, à gauche, en haut ou en bas, elle ou il dit « Tout près! ». Sinon, elle ou il dit « Rien ».",
+          "Sur ta feuille « Mes recherches », marque chaque point nommé : un X pour « Rien », un cercle pour « Tout près! » et une étoile pour un trésor trouvé.",
+          "Après un « Tout près! », décris à voix haute la translation que tu essaies ensuite, par exemple : « Je me déplace de 1 unité vers le haut : je cherche au point (4, 7). »",
+          "À la fin de la partie, montrez-vous vos feuilles « Mes trésors » et vérifiez ensemble les coordonnées de chaque trésor."
+        ],
+        "howToWin": "La première personne qui trouve les 3 trésors de l’autre gagne la partie.",
+        "variations": [
+          "Le trésor voyageur : après chaque tour, chaque élève déplace un de ses trésors par une translation qu’elle ou il annonce à voix haute, par exemple « Un de mes trésors se déplace de 2 unités vers la gauche ». L’autre élève doit en tenir compte.",
+          "Une autre échelle : graduez les axes de 0 à 20 par bonds de 2, ou de 0 à 50 par bonds de 5. Les trésors doivent être placés sur les lignes graduées.",
+          "Au gymnase : tracez un grand plan cartésien au sol avec du ruban-cache. Les élèves se placent aux points que la classe nomme.",
+          "Le dessin mystère : une personne dicte les coordonnées de 4 à 6 points à relier dans l’ordre. L’autre les place, les relie et nomme la figure obtenue."
+        ],
+        "questions": [
+          {
+            "id": "g1",
+            "kind": "multiple_choice",
+            "prompt": "Le point P est à 4 unités à droite de l’origine et à 7 unités au-dessus. Quelles sont ses coordonnées?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "(4, 7)"
+              },
+              {
+                "id": "b",
+                "text": "(7, 4)"
+              },
+              {
+                "id": "c",
+                "text": "(4, 4)"
+              },
+              {
+                "id": "d",
+                "text": "(0, 7)"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "g2",
+            "kind": "true_false",
+            "prompt": "Le point (0, 5) est situé sur l’axe des y.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "g3",
+            "kind": "short_answer",
+            "prompt": "Un trésor est au point (3, 2). On lui fait subir une translation de 4 unités vers la droite et de 5 unités vers le haut. Quelles sont ses nouvelles coordonnées?",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 1
+          },
+          {
+            "id": "g4",
+            "kind": "multiple_choice",
+            "prompt": "Quelle translation déplace le point (6, 8) jusqu’au point (2, 9)?",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "4 unités vers la gauche et 1 unité vers le haut"
+              },
+              {
+                "id": "b",
+                "text": "4 unités vers la droite et 1 unité vers le bas"
+              },
+              {
+                "id": "c",
+                "text": "1 unité vers la gauche et 4 unités vers le haut"
+              },
+              {
+                "id": "d",
+                "text": "2 unités vers la gauche et 9 unités vers le haut"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "g5",
+            "kind": "ordering",
+            "prompt": "Place ces points du plus bas au plus haut dans le plan cartésien.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "items": [
+              {
+                "id": "a",
+                "text": "(5, 3)"
+              },
+              {
+                "id": "b",
+                "text": "(1, 8)"
+              },
+              {
+                "id": "c",
+                "text": "(9, 0)"
+              },
+              {
+                "id": "d",
+                "text": "(4, 6)"
+              }
+            ]
+          },
+          {
+            "id": "g6",
+            "kind": "short_answer",
+            "prompt": "Yanis dit que les points (2, 5) et (5, 2) sont au même endroit, puisqu’ils ont les mêmes nombres. A-t-il raison? Explique ta réponse.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "g1",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "La première coordonnée indique le déplacement sur l’axe des x (4 vers la droite), la deuxième sur l’axe des y (7 vers le haut). (7, 4) inverse les coordonnées."
+          },
+          {
+            "questionId": "g2",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "La première coordonnée est 0 : le point ne s’éloigne pas de l’axe des y. Il est sur cet axe, 5 unités au-dessus de l’origine."
+          },
+          {
+            "questionId": "g3",
+            "kind": "short_answer",
+            "sampleAnswer": "(7, 7)",
+            "acceptableAnswers": ["(7, 7)", "7, 7", "(7,7)"],
+            "explanation": "3 + 4 = 7 sur l’axe des x et 2 + 5 = 7 sur l’axe des y."
+          },
+          {
+            "questionId": "g4",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a"],
+            "explanation": "De 6 à 2 sur l’axe des x : 4 unités vers la gauche. De 8 à 9 sur l’axe des y : 1 unité vers le haut."
+          },
+          {
+            "questionId": "g5",
+            "kind": "ordering",
+            "orderedIds": ["c", "a", "d", "b"],
+            "explanation": "On compare la deuxième coordonnée : 0 < 3 < 6 < 8. Du plus bas au plus haut : (9, 0), (5, 3), (4, 6), (1, 8)."
+          },
+          {
+            "questionId": "g6",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. Le point (2, 5) est à 2 unités à droite et 5 unités vers le haut, alors que le point (5, 2) est à 5 unités à droite et 2 unités vers le haut. L’ordre des coordonnées compte : ce sont deux points différents.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire non et expliquer que la première coordonnée se lit sur l’axe des x et la deuxième sur l’axe des y."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}

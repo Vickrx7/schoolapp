@@ -5,20 +5,30 @@ import { ShieldCheck, TriangleAlert } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardBody, CardHeader, CardTitle, Notice } from '@/components/ui/card';
 import { Field, Input, Select, Textarea } from '@/components/ui/field';
 import { useAction } from '@/hooks/use-action';
-import { useDraft } from '@/hooks/use-draft';
+import { removeDrafts, useDraft } from '@/hooks/use-draft';
 import {
   previewDifferentiation,
   requestDifferentiation,
   type PreviewResult,
 } from '@/server/actions/differentiate';
-import type { DifferentiateFormContext } from '@/server/queries/differentiate';
+import type { DifferentiateFormContext, JobSummary } from '@/server/queries/differentiate';
+import { aiStatus } from './ai-status';
+import {
+  defaultFormValues,
+  effectiveFormValues,
+  subjectFitsGrade,
+  subjectsForGrade,
+  type FormValues,
+  type ItemType,
+} from './form-values';
 
-type ItemType = 'reading_passage' | 'worksheet';
+/** Drafts saved before they were kept per user: another account's text may be in them. */
+const LEGACY_DRAFT = /^differentiate:(new|job:[0-9a-f-]{36}|saved:[0-9a-f-]{36})$/;
 
 function Segments({ segments }: { segments: Segment[] }) {
   return (
@@ -36,29 +46,38 @@ function Segments({ segments }: { segments: Segment[] }) {
   );
 }
 
-export function DifferentiateForm({ context }: { context: DifferentiateFormContext }) {
+export function DifferentiateForm({
+  context,
+  jobStatuses,
+  resume,
+}: {
+  context: DifferentiateFormContext;
+  /** Status of the recent requests, to know what became of a draft that was sent. */
+  jobStatuses: Record<string, JobSummary['status']>;
+  /** An earlier request to send again (from its page's « Reprendre ce texte »). */
+  resume?: { jobId: string; values: FormValues } | null;
+}) {
   const t = useTranslations('differentiate');
   const tCommon = useTranslations('common');
   const router = useRouter();
-  const boardLevelIds = context.levels.filter((l) => !l.personal).map((l) => l.id);
-  const draft = useDraft('differentiate:new', {
-    schoolId: context.schools.find((s) => s.aiEnabled)?.id ?? context.schools[0]?.id ?? '',
-    title: '',
-    text: '',
-    objective: '',
-    itemType: 'reading_passage' as ItemType,
-    gradeCode: context.defaultGrade ?? context.grades.find((g) => g.code === '3')?.code ?? '',
-    subjectId: '',
-    levelIds: boardLevelIds.slice(0, 6),
+  // Per user (a shared computer), and per reused request so it never overwrites another draft.
+  const draftKey = `differentiate:new:${context.userId}${resume ? `:${resume.jobId}` : ''}`;
+  const draft = useDraft(draftKey, resume?.values ?? defaultFormValues(context), {
+    // A sent draft is kept until its request succeeds; it comes back only if the request failed.
+    sentPolicy: (jobId) => {
+      const status = jobStatuses[jobId];
+      return status === 'failed' ? 'restore' : status === 'succeeded' ? 'drop' : 'keep';
+    },
   });
-  const v = draft.value;
+  // A restored draft can name a school, grade, subject or level that no longer applies.
+  const v = effectiveFormValues(draft.value, context);
   const [preview, setPreview] = useState<PreviewResult | null>(null);
   const school = context.schools.find((s) => s.id === v.schoolId);
   const grade = context.grades.find((g) => g.code === v.gradeCode);
-  const subjects = context.subjects.filter(
-    (s) => !grade || (s.gradeMin <= grade.ordinal && grade.ordinal <= s.gradeMax),
-  );
+  const subjects = subjectsForGrade(context.subjects, grade);
   const schoolLevels = context.levels.filter((l) => !school || l.boardId === school.boardId);
+
+  useEffect(() => removeDrafts((key) => LEGACY_DRAFT.test(key)), []);
 
   const form = () => ({
     schoolId: v.schoolId,
@@ -68,21 +87,32 @@ export function DifferentiateForm({ context }: { context: DifferentiateFormConte
     itemType: v.itemType,
     gradeCode: v.gradeCode,
     subjectId: v.subjectId || null,
-    levelIds: v.levelIds.filter((id) => schoolLevels.some((l) => l.id === id)),
+    levelIds: v.levelIds,
   });
 
   const check = useAction(previewDifferentiation, { onSuccess: setPreview });
   const send = useAction(requestDifferentiation, {
     onSuccess: ({ jobId }) => {
-      draft.clear();
+      // Not cleared yet: if the request fails, the teacher gets their text back (D-035).
+      draft.markSent(jobId, v);
       router.push(`/differentiate/${jobId}`);
     },
   });
 
   // Any change invalidates the preview: what is sent must be what was checked.
-  const update = <K extends keyof typeof v>(key: K, value: (typeof v)[K]) => {
+  const update = <K extends keyof FormValues>(key: K, value: FormValues[K]) => {
     setPreview(null);
     draft.update(key, value);
+  };
+
+  // A subject that isn't taught in the new grade is cleared, not kept out of sight.
+  const changeGrade = (gradeCode: string) => {
+    setPreview(null);
+    draft.setValue((prev) => ({
+      ...prev,
+      gradeCode,
+      subjectId: subjectFitsGrade(context, prev.subjectId, gradeCode) ? prev.subjectId : '',
+    }));
   };
 
   const toggleLevel = (id: string, on: boolean) =>
@@ -93,20 +123,23 @@ export function DifferentiateForm({ context }: { context: DifferentiateFormConte
     void check.run(form());
   };
 
-  const aiOff = !school?.aiEnabled;
+  const ai = school ? aiStatus(school) : 'off';
+  const aiOff = ai !== 'on';
   const fieldError = (name: string) => check.fieldError(name) ?? send.fieldError(name);
 
   return (
     <div className="space-y-4">
       {draft.restored ? (
         <Notice tone="info" className="flex flex-wrap items-center justify-between gap-2">
-          <span>{tCommon('draftRestored')}</span>
-          <Button variant="ghost" size="sm" onClick={() => draft.discard()}>
+          <span>{draft.sentAs ? t('failedDraftRestored') : tCommon('draftRestored')}</span>
+          <Button variant="ghost" onClick={() => draft.discard()}>
             {tCommon('discardDraft')}
           </Button>
         </Notice>
       ) : null}
-      {aiOff ? <Notice tone="warning">{t('aiOffNotice')}</Notice> : null}
+      {resume && !draft.restored ? <Notice tone="info">{t('resumed')}</Notice> : null}
+      {ai === 'boardOff' ? <Notice tone="warning">{t('aiBoardOffNotice')}</Notice> : null}
+      {ai === 'off' ? <Notice tone="warning">{t('aiOffNotice')}</Notice> : null}
 
       <Card>
         <CardBody className="pt-4">
@@ -150,7 +183,7 @@ export function DifferentiateForm({ context }: { context: DifferentiateFormConte
                 <Select
                   id="diff-grade"
                   value={v.gradeCode}
-                  onChange={(e) => update('gradeCode', e.target.value)}
+                  onChange={(e) => changeGrade(e.target.value)}
                 >
                   {context.grades.map((g) => (
                     <option key={g.code} value={g.code}>
@@ -271,7 +304,11 @@ export function DifferentiateForm({ context }: { context: DifferentiateFormConte
                 <ul className="list-disc space-y-1 pl-5">
                   {preview.blocked.map((b, i) => (
                     <li key={i}>
-                      {t(`blocked.${b.kind}`)} : <span className="font-mono">{b.match}</span>
+                      {t.rich('blockedItem', {
+                        kind: t(`blocked.${b.kind}`),
+                        match: b.match,
+                        code: (chunks) => <span className="font-mono">{chunks}</span>,
+                      })}
                     </li>
                   ))}
                 </ul>

@@ -1,0 +1,414 @@
+{
+  "slug": "commentaires-fra-3e-progres",
+  "type": "report_comments",
+  "title": "Commentaires de bulletin : Français, 3e année (bulletin de progrès)",
+  "summary": "Des points forts et des prochaines étapes pour le bulletin de progrès en français, 3e année : lecture de textes informatifs et planification de l’écriture, pour chaque appréciation du progrès. À valider en classe.",
+  "source": "board_created",
+  "status": "board_approved",
+  "shareScope": "board",
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "gradeCodes": ["3"],
+  "subjectCode": "fra",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "C1.1"
+    },
+    {
+      "grade": "3",
+      "code": "C1.2"
+    },
+    {
+      "grade": "3",
+      "code": "C1.3"
+    },
+    {
+      "grade": "3",
+      "code": "D1.1"
+    }
+  ],
+  "durationMinutes": null,
+  "materials": "",
+  "keywords": "bulletin, bulletin de progrès, commentaires, points forts, prochaines étapes, lecture, écriture, texte informatif",
+  "tags": ["evaluation", "lecture", "bulletin"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "subFriendly": false,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "",
+        "teacherNote": "Banque de démonstration à valider en classe. Choisissez au plus un point fort et une prochaine étape par attente travaillée pendant la période, puis adaptez le texte à l’élève. Les entrées sont rédigées au neutre (épicène); {prénom} est remplacé par le prénom de l’élève, et « de {prénom} » devient « d’Éloïse » ou « de Bastien » selon le prénom. Au bulletin de progrès, le commentaire décrit les forces et les prochaines étapes de l’élève depuis la rentrée; l’appréciation (progresse avec difficulté, bien ou très bien) est inscrite dans le bulletin officiel.",
+        "scope": "subject",
+        "period": "progress",
+        "entries": [
+          {
+            "kind": "strength",
+            "skill": null,
+            "level": null,
+            "progress": "with_difficulty",
+            "rating": null,
+            "category": null,
+            "expectationCodes": ["C1.1"],
+            "neutral": "Avec de l’aide, {prénom} fait des prédictions à partir du titre et des illustrations avant de lire.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "strength",
+            "skill": null,
+            "level": null,
+            "progress": "well",
+            "rating": null,
+            "category": null,
+            "expectationCodes": ["C1.1"],
+            "neutral": "{prénom} fait des prédictions plausibles avant la lecture et fait des liens avec ses connaissances.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "strength",
+            "skill": null,
+            "level": null,
+            "progress": "very_well",
+            "rating": null,
+            "category": null,
+            "expectationCodes": ["C1.1"],
+            "neutral": "{prénom} fait des prédictions détaillées avant la lecture, les justifie à l’aide d’indices et active ses connaissances antérieures de façon autonome.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "next_step",
+            "skill": null,
+            "level": null,
+            "progress": "with_difficulty",
+            "rating": null,
+            "category": null,
+            "expectationCodes": ["C1.1"],
+            "neutral": "{prénom} gagnerait à observer la page couverture et à se demander de quoi parlera le livre avant chaque lecture.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "next_step",
+            "skill": null,
+            "level": null,
+            "progress": "well",
+            "rating": null,
+            "category": null,
+            "expectationCodes": ["C1.1"],
+            "neutral": "Pour progresser, {prénom} pourrait vérifier ses prédictions pendant la lecture et les ajuster au besoin.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "next_step",
+            "skill": null,
+            "level": null,
+            "progress": "very_well",
+            "rating": null,
+            "category": null,
+            "expectationCodes": ["C1.1"],
+            "neutral": "{prénom} pourrait maintenant formuler ses propres questions avant la lecture pour guider sa recherche d’information.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "strength",
+            "skill": null,
+            "level": null,
+            "progress": "with_difficulty",
+            "rating": null,
+            "category": null,
+            "expectationCodes": ["C1.2"],
+            "neutral": "Avec du soutien, {prénom} repère quelques détails d’un texte informatif.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "strength",
+            "skill": null,
+            "level": null,
+            "progress": "well",
+            "rating": null,
+            "category": null,
+            "expectationCodes": ["C1.2"],
+            "neutral": "{prénom} repère l’idée principale d’un texte informatif simple et quelques détails importants.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "strength",
+            "skill": null,
+            "level": null,
+            "progress": "very_well",
+            "rating": null,
+            "category": null,
+            "expectationCodes": ["C1.2"],
+            "neutral": "{prénom} repère l’idée principale d’un texte informatif et choisit les détails qui l’appuient le mieux.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "next_step",
+            "skill": null,
+            "level": null,
+            "progress": "with_difficulty",
+            "rating": null,
+            "category": null,
+            "expectationCodes": ["C1.2"],
+            "neutral": "{prénom} gagnerait à relire chaque paragraphe en se demandant de quoi il parle surtout.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "next_step",
+            "skill": null,
+            "level": null,
+            "progress": "well",
+            "rating": null,
+            "category": null,
+            "expectationCodes": ["C1.2"],
+            "neutral": "Pour progresser, {prénom} pourrait distinguer les détails importants des détails secondaires à l’aide d’un organisateur graphique.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "next_step",
+            "skill": null,
+            "level": null,
+            "progress": "very_well",
+            "rating": null,
+            "category": null,
+            "expectationCodes": ["C1.2"],
+            "neutral": "{prénom} pourrait maintenant résumer un texte informatif en quelques phrases, dans ses propres mots.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "strength",
+            "skill": null,
+            "level": null,
+            "progress": "with_difficulty",
+            "rating": null,
+            "category": null,
+            "expectationCodes": ["C1.3"],
+            "neutral": "Avec de l’aide, {prénom} utilise le titre et les images d’un texte informatif pour trouver de l’information.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "strength",
+            "skill": null,
+            "level": null,
+            "progress": "well",
+            "rating": null,
+            "category": null,
+            "expectationCodes": ["C1.3"],
+            "neutral": "{prénom} utilise les titres, les images et les légendes d’un texte informatif pour trouver de l’information.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "strength",
+            "skill": null,
+            "level": null,
+            "progress": "very_well",
+            "rating": null,
+            "category": null,
+            "expectationCodes": ["C1.3"],
+            "neutral": "{prénom} utilise avec aisance les intertitres, les légendes et la table des matières pour trouver rapidement l’information recherchée.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "next_step",
+            "skill": null,
+            "level": null,
+            "progress": "with_difficulty",
+            "rating": null,
+            "category": null,
+            "expectationCodes": ["C1.3"],
+            "neutral": "{prénom} gagnerait à nommer, avec une personne adulte, les parties d’un texte informatif (titre, intertitre, légende) avant de lire.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "next_step",
+            "skill": null,
+            "level": null,
+            "progress": "well",
+            "rating": null,
+            "category": null,
+            "expectationCodes": ["C1.3"],
+            "neutral": "Pour progresser, {prénom} pourrait expliquer à quoi sert chaque caractéristique du texte informatif.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "next_step",
+            "skill": null,
+            "level": null,
+            "progress": "very_well",
+            "rating": null,
+            "category": null,
+            "expectationCodes": ["C1.3"],
+            "neutral": "{prénom} pourrait maintenant utiliser ces caractéristiques dans ses propres textes informatifs.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "strength",
+            "skill": null,
+            "level": null,
+            "progress": "with_difficulty",
+            "rating": null,
+            "category": null,
+            "expectationCodes": ["D1.1"],
+            "neutral": "Avec du soutien, {prénom} note quelques idées dans un organisateur graphique avant d’écrire.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "strength",
+            "skill": null,
+            "level": null,
+            "progress": "well",
+            "rating": null,
+            "category": null,
+            "expectationCodes": ["D1.1"],
+            "neutral": "{prénom} organise ses idées dans un organisateur graphique avant d’écrire et s’en sert pour rédiger.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "strength",
+            "skill": null,
+            "level": null,
+            "progress": "very_well",
+            "rating": null,
+            "category": null,
+            "expectationCodes": ["D1.1"],
+            "neutral": "{prénom} choisit l’organisateur graphique qui convient à son texte et y classe ses idées de façon claire et logique.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "next_step",
+            "skill": null,
+            "level": null,
+            "progress": "with_difficulty",
+            "rating": null,
+            "category": null,
+            "expectationCodes": ["D1.1"],
+            "neutral": "{prénom} gagnerait à dire ses idées à voix haute avant de les noter dans l’organisateur graphique.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "next_step",
+            "skill": null,
+            "level": null,
+            "progress": "well",
+            "rating": null,
+            "category": null,
+            "expectationCodes": ["D1.1"],
+            "neutral": "Pour progresser, {prénom} pourrait regrouper ses idées par sous-thème dans l’organisateur graphique.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "next_step",
+            "skill": null,
+            "level": null,
+            "progress": "very_well",
+            "rating": null,
+            "category": null,
+            "expectationCodes": ["D1.1"],
+            "neutral": "{prénom} pourrait maintenant ajouter des détails précis à chaque idée de son plan avant de rédiger.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "strength",
+            "skill": null,
+            "level": null,
+            "progress": null,
+            "rating": null,
+            "category": null,
+            "expectationCodes": [],
+            "neutral": "{prénom} montre de l’intérêt pour la lecture et choisit des livres variés.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "strength",
+            "skill": null,
+            "level": null,
+            "progress": null,
+            "rating": null,
+            "category": null,
+            "expectationCodes": [],
+            "neutral": "{prénom} participe activement aux discussions sur les textes lus en classe.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "strength",
+            "skill": null,
+            "level": null,
+            "progress": null,
+            "rating": null,
+            "category": null,
+            "expectationCodes": [],
+            "neutral": "{prénom} lit avec de plus en plus d’aisance.",
+            "feminine": "{prénom} est une lectrice de plus en plus à l’aise.",
+            "masculine": "{prénom} est un lecteur de plus en plus à l’aise."
+          },
+          {
+            "kind": "next_step",
+            "skill": null,
+            "level": null,
+            "progress": null,
+            "rating": null,
+            "category": null,
+            "expectationCodes": [],
+            "neutral": "{prénom} gagnerait à relire ses textes pour vérifier la ponctuation et les majuscules.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "next_step",
+            "skill": null,
+            "level": null,
+            "progress": null,
+            "rating": null,
+            "category": null,
+            "expectationCodes": [],
+            "neutral": "À la maison, lire chaque jour avec {prénom} et parler de l’histoire favorisera ses progrès.",
+            "feminine": "",
+            "masculine": ""
+          },
+          {
+            "kind": "general",
+            "skill": null,
+            "level": null,
+            "progress": null,
+            "rating": null,
+            "category": null,
+            "expectationCodes": [],
+            "neutral": "Le début d’année de {prénom} en français est encourageant.",
+            "feminine": "",
+            "masculine": ""
+          }
+        ]
+      }
+    }
+  ]
+}

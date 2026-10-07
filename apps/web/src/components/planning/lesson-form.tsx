@@ -1,13 +1,16 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useMemo, type FormEvent } from 'react';
+import { useEffect, useMemo, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge, Notice } from '@/components/ui/card';
 import { Field, Input, Textarea } from '@/components/ui/field';
 import { useAction } from '@/hooks/use-action';
-import { useDraft } from '@/hooks/use-draft';
+import { removeDrafts, useDraft } from '@/hooks/use-draft';
 import { saveLesson } from '@/server/actions/planning';
+
+/** Drafts saved before they were kept per user: another account's lesson may be in them. */
+const LEGACY_DRAFT = /^lesson:[0-9a-f-]{36}:([0-9a-f-]{36}|new)$/;
 
 export interface LessonDraft {
   title: string;
@@ -29,18 +32,23 @@ export interface ExpectationOption {
 }
 
 export function LessonForm({
+  userId,
   classId,
   unitId,
   lessonId,
   initial,
   expectations,
+  unitExpectationIds = [],
   onDone,
 }: {
+  userId: string;
   classId: string;
   unitId: string;
   lessonId?: string;
   initial?: LessonDraft;
   expectations: ExpectationOption[];
+  /** The attentes the unit aims at (D-123), listed first as « Attentes de l'unité ». */
+  unitExpectationIds?: string[];
   onDone: () => void;
 }) {
   const t = useTranslations('lessons');
@@ -58,7 +66,9 @@ export function LessonForm({
     [initial],
   );
   // Drafts are kept on this device until saved, so nothing is lost if the connection drops.
-  const draft = useDraft(`lesson:${unitId}:${lessonId ?? 'new'}`, start);
+  // Per user, so another account on a shared computer never gets them.
+  const draft = useDraft(`lesson:${userId}:${unitId}:${lessonId ?? 'new'}`, start);
+  useEffect(() => removeDrafts((key) => LEGACY_DRAFT.test(key)), []);
   const v = draft.value;
   const save = useAction(saveLesson, {
     successMessage: t('saved'),
@@ -86,7 +96,21 @@ export function LessonForm({
     );
   };
 
-  const strands = [...new Set(expectations.map((e) => e.strand ?? ''))];
+  // « Attentes de l'unité » first, then the others by domaine.
+  const unitIds = new Set(unitExpectationIds);
+  const groups = [
+    {
+      key: 'unit',
+      label: unitIds.size ? t('unitExpectations') : '',
+      items: expectations.filter((e) => unitIds.has(e.id)),
+    },
+    ...[...new Set(expectations.map((e) => e.strand ?? ''))].map((strand) => ({
+      key: `strand:${strand}`,
+      label: strand,
+      items: expectations.filter((e) => (e.strand ?? '') === strand && !unitIds.has(e.id)),
+    })),
+  ].filter((g) => g.items.length > 0);
+  const others = unitIds.size > 0 && groups.length > 1;
   const toggle = (id: string) =>
     draft.update(
       'expectationIds',
@@ -167,30 +191,41 @@ export function LessonForm({
           <legend className="text-sm font-medium text-slate-700">{t('expectations')}</legend>
           <p className="text-sm text-slate-500">{t('expectationsHint')}</p>
           <div className="max-h-64 space-y-3 overflow-y-auto rounded-lg border border-slate-200 p-3">
-            {strands.map((strand) => (
-              <div key={strand}>
-                {strand ? (
-                  <p className="mb-1 text-xs font-semibold text-slate-500 uppercase">{strand}</p>
+            {groups.map((group, i) => (
+              <div key={group.key}>
+                {others && i === 1 ? (
+                  <p className="mb-1 text-sm font-semibold text-slate-700">
+                    {t('otherExpectations')}
+                  </p>
+                ) : null}
+                {group.label ? (
+                  <p
+                    className={
+                      group.key === 'unit'
+                        ? 'mb-1 text-sm font-semibold text-slate-700'
+                        : 'mb-1 text-xs font-semibold text-slate-500 uppercase'
+                    }
+                  >
+                    {group.label}
+                  </p>
                 ) : null}
                 <ul className="space-y-1">
-                  {expectations
-                    .filter((e) => (e.strand ?? '') === strand)
-                    .map((e) => (
-                      <li key={e.id}>
-                        <label className="flex cursor-pointer items-start gap-2 rounded p-1 text-sm hover:bg-slate-50">
-                          <input
-                            type="checkbox"
-                            className="mt-0.5 size-4 shrink-0"
-                            checked={v.expectationIds.includes(e.id)}
-                            onChange={() => toggle(e.id)}
-                          />
-                          <span>
-                            <span className="font-semibold">{e.code}</span> {e.text}{' '}
-                            {!e.verified ? <Badge tone="warning">{t('unverified')}</Badge> : null}
-                          </span>
-                        </label>
-                      </li>
-                    ))}
+                  {group.items.map((e) => (
+                    <li key={e.id}>
+                      <label className="flex cursor-pointer items-start gap-2 rounded p-1 text-sm hover:bg-slate-50">
+                        <input
+                          type="checkbox"
+                          className="mt-0.5 size-4 shrink-0"
+                          checked={v.expectationIds.includes(e.id)}
+                          onChange={() => toggle(e.id)}
+                        />
+                        <span>
+                          <span className="font-semibold">{e.code}</span> {e.text}{' '}
+                          {!e.verified ? <Badge tone="warning">{t('unverified')}</Badge> : null}
+                        </span>
+                      </label>
+                    </li>
+                  ))}
                 </ul>
               </div>
             ))}

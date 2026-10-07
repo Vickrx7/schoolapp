@@ -7,6 +7,7 @@ import { fail, ok, okVoid, type ActionResult } from '@/lib/action-result';
 import { decryptAlert, encryptAlert, parseKeyRing } from '../alerts-crypto';
 import { serverEnv } from '../env';
 import { reportError } from '../errors';
+import { requireSession } from '../session';
 import { createSupabaseServerClient } from '../supabase';
 import { parseInput } from './validation';
 
@@ -16,6 +17,7 @@ const studentsPath = (classId: string) => `/classes/${classId}/students`;
 export async function addStudents(
   input: z.input<typeof studentImportSchema>,
 ): Promise<ActionResult<{ count: number }>> {
+  await requireSession();
   const parsed = parseInput(studentImportSchema, input);
   if (!parsed.ok) return parsed.result;
   const supabase = await createSupabaseServerClient();
@@ -41,6 +43,7 @@ export async function updateStudent(
   studentId: string,
   input: z.input<typeof updateSchema>,
 ): Promise<ActionResult> {
+  await requireSession();
   const parsed = parseInput(updateSchema, input);
   if (!parsed.ok) return parsed.result;
   const v = parsed.data;
@@ -63,6 +66,7 @@ export async function updateStudent(
 }
 
 export async function deleteStudent(classId: string, studentId: string): Promise<ActionResult> {
+  await requireSession();
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.from('students').delete().eq('id', studentId).select('id');
   if (error) return fail(reportError('deleteStudent', error));
@@ -76,6 +80,7 @@ export async function saveStudentAlert(
   classId: string,
   input: z.input<typeof studentAlertFormSchema>,
 ): Promise<ActionResult<{ id: string }>> {
+  await requireSession();
   const parsed = parseInput(studentAlertFormSchema, input);
   if (!parsed.ok) return parsed.result;
   const ring = parseKeyRing(serverEnv().ALERTS_ENCRYPTION_KEYS);
@@ -97,6 +102,7 @@ export async function saveStudentAlert(
 }
 
 export async function deleteStudentAlert(classId: string, alertId: string): Promise<ActionResult> {
+  await requireSession();
   if (!z.uuid().safeParse(alertId).success) return fail('invalid');
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.rpc('delete_student_alert', { p_alert_id: alertId });
@@ -119,6 +125,7 @@ export interface StudentAlertView {
 export async function revealClassAlerts(
   classId: string,
 ): Promise<ActionResult<StudentAlertView[]>> {
+  await requireSession();
   if (!z.uuid().safeParse(classId).success) return fail('invalid');
   const ring = parseKeyRing(serverEnv().ALERTS_ENCRYPTION_KEYS);
   if (!ring) return fail('alertsKeyMissing');

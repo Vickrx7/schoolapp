@@ -1,0 +1,1414 @@
+{
+  "slug": "ordonner-nombres-1000",
+  "type": "worksheet",
+  "title": "Ordonner des nombres jusqu’à 1 000",
+  "summary": "Fiche d’exercices pour comparer et ordonner des nombres naturels jusqu’à 1 000 : ordre croissant et décroissant, nombres compris entre deux nombres, cartes-chiffres et un problème de la vie courante.",
+  "source": "board_created",
+  "author": null,
+  "school": null,
+  "status": "board_approved",
+  "shareScope": "board",
+  "reviewRequested": false,
+  "approvedBy": "nathalie.roy@demo.lynx.test",
+  "faithReviewed": false,
+  "gradeCodes": ["3"],
+  "subjectCode": "mat",
+  "expectations": [
+    {
+      "grade": "3",
+      "code": "B1.2"
+    }
+  ],
+  "durationMinutes": 30,
+  "materials": "Une copie de la fiche par élève, dans la version prévue pour son groupe; un crayon; une gomme à effacer. Facultatif : des cartes-chiffres de 0 à 9.",
+  "keywords": "ordonner, comparer, ordre croissant, ordre décroissant, valeur de position, nombres naturels",
+  "tags": ["nombres"],
+  "formats": {
+    "printable": true,
+    "projectable": false,
+    "interactive": false
+  },
+  "subFriendly": true,
+  "safetyNotes": null,
+  "faithContent": false,
+  "faithOnStudentSheet": false,
+  "catholicConnection": "",
+  "catholicReference": null,
+  "licence": null,
+  "promptVersion": null,
+  "model": null,
+  "versions": [
+    {
+      "level": null,
+      "content": {
+        "title": "",
+        "objective": "Je compare et j’ordonne des nombres naturels jusqu’à 1 000.",
+        "teacherNote": "Fiche liée à la leçon 5 « Ordonner des nombres » de l’unité « Les nombres jusqu’à 1 000 ». Les nombres des questions sont les mêmes dans toutes les versions : seuls la langue et les appuis changent, et la version enrichie ajoute deux défis. La question 9 se corrige à la main.",
+        "instructions": "Lis chaque question attentivement. Pour comparer des nombres, compare d’abord les centaines, puis les dizaines, puis les unités.",
+        "text": "Rappel : en ordre croissant, on place les nombres du plus petit au plus grand. En ordre décroissant, on les place du plus grand au plus petit.",
+        "glossary": [
+          {
+            "term": "croissant",
+            "definition": "Qui va en augmentant : du plus petit au plus grand."
+          },
+          {
+            "term": "décroissant",
+            "definition": "Qui va en diminuant : du plus grand au plus petit."
+          },
+          {
+            "term": "la valeur de position",
+            "definition": "La valeur d’un chiffre selon sa place dans le nombre (unités, dizaines, centaines)."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "ordering",
+            "prompt": "Place ces nombres en ordre croissant (du plus petit au plus grand).",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "items": [
+              {
+                "id": "a",
+                "text": "472"
+              },
+              {
+                "id": "b",
+                "text": "247"
+              },
+              {
+                "id": "c",
+                "text": "724"
+              },
+              {
+                "id": "d",
+                "text": "427"
+              }
+            ]
+          },
+          {
+            "id": "q2",
+            "kind": "ordering",
+            "prompt": "Place ces nombres en ordre décroissant (du plus grand au plus petit).",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "items": [
+              {
+                "id": "a",
+                "text": "398"
+              },
+              {
+                "id": "b",
+                "text": "93"
+              },
+              {
+                "id": "c",
+                "text": "1 000"
+              },
+              {
+                "id": "d",
+                "text": "389"
+              },
+              {
+                "id": "e",
+                "text": "930"
+              }
+            ]
+          },
+          {
+            "id": "q3",
+            "kind": "multiple_choice",
+            "prompt": "Quel nombre se trouve entre 560 et 580?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "518"
+              },
+              {
+                "id": "b",
+                "text": "575"
+              },
+              {
+                "id": "c",
+                "text": "587"
+              },
+              {
+                "id": "d",
+                "text": "650"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q4",
+            "kind": "multiple_choice",
+            "prompt": "Coche tous les nombres plus grands que 609.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "690"
+              },
+              {
+                "id": "b",
+                "text": "596"
+              },
+              {
+                "id": "c",
+                "text": "610"
+              },
+              {
+                "id": "d",
+                "text": "609"
+              },
+              {
+                "id": "e",
+                "text": "906"
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "q5",
+            "kind": "true_false",
+            "prompt": "808 est plus petit que 880.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Avec les cartes 5, 0 et 8, forme le plus grand nombre de trois chiffres possible. Utilise chaque carte une seule fois.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 1
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Avec les mêmes cartes, forme le plus petit nombre de trois chiffres possible.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 1
+          },
+          {
+            "id": "q8",
+            "kind": "ordering",
+            "prompt": "Trois équipes ont ramassé des canettes vides pour le recyclage : les Aigles en ont ramassé 346, les Loups 364 et les Castors 336. Place les équipes de celle qui en a ramassé le plus à celle qui en a ramassé le moins.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "items": [
+              {
+                "id": "a",
+                "text": "Les Aigles"
+              },
+              {
+                "id": "b",
+                "text": "Les Loups"
+              },
+              {
+                "id": "c",
+                "text": "Les Castors"
+              }
+            ]
+          },
+          {
+            "id": "q9",
+            "kind": "short_answer",
+            "prompt": "Yanis dit : « 99 est plus grand que 201, parce que 9 est plus grand que 2. » A-t-il raison? Explique ta réponse.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Un tableau de valeur de position (centaines, dizaines, unités) affiché au tableau.",
+          "Des cartes-nombres que les élèves peuvent déplacer pour les questions d’ordre.",
+          "Une droite numérique de 0 à 1 000, graduée par centaines, affichée au mur."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "ordering",
+            "orderedIds": ["b", "d", "a", "c"],
+            "explanation": "247 < 427 < 472 < 724. On compare d’abord les centaines (2, 4, 4, 7), puis les dizaines pour 427 et 472."
+          },
+          {
+            "questionId": "q2",
+            "kind": "ordering",
+            "orderedIds": ["c", "e", "a", "d", "b"],
+            "explanation": "1 000 > 930 > 398 > 389 > 93. Le nombre 93 n’a que deux chiffres : il est le plus petit."
+          },
+          {
+            "questionId": "q3",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "560 < 575 < 580. Les nombres 518, 587 et 650 sont en dehors de l’intervalle."
+          },
+          {
+            "questionId": "q4",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "c", "e"],
+            "explanation": "690, 610 et 906 sont plus grands que 609. 596 est plus petit, et 609 est égal à 609."
+          },
+          {
+            "questionId": "q5",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Vrai : les centaines sont égales (8), et 0 dizaine est moins que 8 dizaines."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "850",
+            "acceptableAnswers": ["850"],
+            "explanation": "On place le plus grand chiffre aux centaines (8), puis le suivant aux dizaines (5)."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "508",
+            "acceptableAnswers": ["508"],
+            "explanation": "058 n’est pas un nombre de trois chiffres. On place donc 5 aux centaines, puis 0 aux dizaines et 8 aux unités."
+          },
+          {
+            "questionId": "q8",
+            "kind": "ordering",
+            "orderedIds": ["b", "a", "c"],
+            "explanation": "Les Loups (364) > les Aigles (346) > les Castors (336)."
+          },
+          {
+            "questionId": "q9",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. 201 a 2 centaines, alors que 99 n’a aucune centaine. 201 est donc plus grand que 99. Yanis a comparé des chiffres qui ne sont pas à la même position.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire non et parler des centaines (ou du nombre de chiffres)."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "debutant",
+      "content": {
+        "title": "",
+        "objective": "Je compare et j’ordonne des nombres naturels jusqu’à 1 000.",
+        "teacherNote": "Version Débutant : consignes courtes, exemples dans le rappel, indices et glossaire. Mêmes nombres que les autres versions. Lire les consignes avec les élèves au besoin.",
+        "instructions": "Lis chaque question. Compare les centaines. Ensuite, compare les dizaines. Ensuite, compare les unités.",
+        "text": "Rappel : ordre croissant = du plus petit au plus grand. Exemple : 2, 5, 9.\n\nOrdre décroissant = du plus grand au plus petit. Exemple : 9, 5, 2.",
+        "glossary": [
+          {
+            "term": "croissant",
+            "definition": "Du plus petit au plus grand."
+          },
+          {
+            "term": "décroissant",
+            "definition": "Du plus grand au plus petit."
+          },
+          {
+            "term": "une centaine",
+            "definition": "Un groupe de 100."
+          },
+          {
+            "term": "une dizaine",
+            "definition": "Un groupe de 10."
+          },
+          {
+            "term": "une unité",
+            "definition": "Un seul (1)."
+          },
+          {
+            "term": "une carte",
+            "definition": "Un petit carton avec un chiffre dessus."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "ordering",
+            "prompt": "Place les nombres du plus petit au plus grand.",
+            "hint": "Compare d’abord le chiffre des centaines.",
+            "points": null,
+            "category": "connaissance",
+            "items": [
+              {
+                "id": "a",
+                "text": "472"
+              },
+              {
+                "id": "b",
+                "text": "247"
+              },
+              {
+                "id": "c",
+                "text": "724"
+              },
+              {
+                "id": "d",
+                "text": "427"
+              }
+            ]
+          },
+          {
+            "id": "q2",
+            "kind": "ordering",
+            "prompt": "Place les nombres du plus grand au plus petit.",
+            "hint": "Compte d’abord les chiffres de chaque nombre.",
+            "points": null,
+            "category": "connaissance",
+            "items": [
+              {
+                "id": "a",
+                "text": "398"
+              },
+              {
+                "id": "b",
+                "text": "93"
+              },
+              {
+                "id": "c",
+                "text": "1 000"
+              },
+              {
+                "id": "d",
+                "text": "389"
+              },
+              {
+                "id": "e",
+                "text": "930"
+              }
+            ]
+          },
+          {
+            "id": "q3",
+            "kind": "multiple_choice",
+            "prompt": "Quel nombre est entre 560 et 580?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "518"
+              },
+              {
+                "id": "b",
+                "text": "575"
+              },
+              {
+                "id": "c",
+                "text": "587"
+              },
+              {
+                "id": "d",
+                "text": "650"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q4",
+            "kind": "multiple_choice",
+            "prompt": "Coche tous les nombres plus grands que 609.",
+            "hint": "Il y a trois bonnes réponses.",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "690"
+              },
+              {
+                "id": "b",
+                "text": "596"
+              },
+              {
+                "id": "c",
+                "text": "610"
+              },
+              {
+                "id": "d",
+                "text": "609"
+              },
+              {
+                "id": "e",
+                "text": "906"
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "q5",
+            "kind": "true_false",
+            "prompt": "808 est plus petit que 880.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Tu as trois cartes : 5, 0 et 8. Écris le plus grand nombre possible avec les trois cartes.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 1
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Avec les mêmes cartes, écris le plus petit nombre de trois chiffres.",
+            "hint": "Un nombre de trois chiffres ne commence pas par 0.",
+            "points": null,
+            "category": "application",
+            "lines": 1
+          },
+          {
+            "id": "q8",
+            "kind": "ordering",
+            "prompt": "Trois équipes ramassent des canettes. Les Aigles : 346 canettes. Les Loups : 364 canettes. Les Castors : 336 canettes. Place les équipes. Commence par l’équipe qui a le plus de canettes.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "items": [
+              {
+                "id": "a",
+                "text": "Les Aigles"
+              },
+              {
+                "id": "b",
+                "text": "Les Loups"
+              },
+              {
+                "id": "c",
+                "text": "Les Castors"
+              }
+            ]
+          },
+          {
+            "id": "q9",
+            "kind": "short_answer",
+            "prompt": "Yanis dit : « 99 est plus grand que 201, parce que 9 est plus grand que 2. » A-t-il raison? Écris oui ou non, puis explique.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Un tableau de valeur de position (centaines, dizaines, unités) affiché au tableau.",
+          "Des cartes-nombres que les élèves peuvent déplacer pour les questions d’ordre.",
+          "Une droite numérique de 0 à 1 000, graduée par centaines, affichée au mur."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "ordering",
+            "orderedIds": ["b", "d", "a", "c"],
+            "explanation": "247 < 427 < 472 < 724. On compare d’abord les centaines (2, 4, 4, 7), puis les dizaines pour 427 et 472."
+          },
+          {
+            "questionId": "q2",
+            "kind": "ordering",
+            "orderedIds": ["c", "e", "a", "d", "b"],
+            "explanation": "1 000 > 930 > 398 > 389 > 93. Le nombre 93 n’a que deux chiffres : il est le plus petit."
+          },
+          {
+            "questionId": "q3",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "560 < 575 < 580. Les nombres 518, 587 et 650 sont en dehors de l’intervalle."
+          },
+          {
+            "questionId": "q4",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "c", "e"],
+            "explanation": "690, 610 et 906 sont plus grands que 609. 596 est plus petit, et 609 est égal à 609."
+          },
+          {
+            "questionId": "q5",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Vrai : les centaines sont égales (8), et 0 dizaine est moins que 8 dizaines."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "850",
+            "acceptableAnswers": ["850"],
+            "explanation": "On place le plus grand chiffre aux centaines (8), puis le suivant aux dizaines (5)."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "508",
+            "acceptableAnswers": ["508"],
+            "explanation": "058 n’est pas un nombre de trois chiffres. On place donc 5 aux centaines, puis 0 aux dizaines et 8 aux unités."
+          },
+          {
+            "questionId": "q8",
+            "kind": "ordering",
+            "orderedIds": ["b", "a", "c"],
+            "explanation": "Les Loups (364) > les Aigles (346) > les Castors (336)."
+          },
+          {
+            "questionId": "q9",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. 201 a 2 centaines, alors que 99 n’a aucune centaine. 201 est donc plus grand que 99. Yanis a comparé des chiffres qui ne sont pas à la même position.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire non et parler des centaines (ou du nombre de chiffres)."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "intermediaire",
+      "content": {
+        "title": "",
+        "objective": "Je compare et j’ordonne des nombres naturels jusqu’à 1 000.",
+        "teacherNote": "Version Intermédiaire : consignes simples, rappel avec des exemples, indices pour les questions d’ordre et pour la question 7. Mêmes nombres que les autres versions.",
+        "instructions": "Lis chaque question. Pour comparer deux nombres, regarde d’abord les centaines, puis les dizaines, puis les unités.",
+        "text": "Rappel : en ordre croissant, on place les nombres du plus petit au plus grand. Exemple : 305, 350, 503.\n\nEn ordre décroissant, on les place du plus grand au plus petit. Exemple : 503, 350, 305.",
+        "glossary": [
+          {
+            "term": "croissant",
+            "definition": "Du plus petit au plus grand."
+          },
+          {
+            "term": "décroissant",
+            "definition": "Du plus grand au plus petit."
+          },
+          {
+            "term": "une centaine",
+            "definition": "Un groupe de 100."
+          },
+          {
+            "term": "une dizaine",
+            "definition": "Un groupe de 10."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "ordering",
+            "prompt": "Place ces nombres en ordre croissant (du plus petit au plus grand).",
+            "hint": "Compare d’abord le chiffre des centaines.",
+            "points": null,
+            "category": "connaissance",
+            "items": [
+              {
+                "id": "a",
+                "text": "472"
+              },
+              {
+                "id": "b",
+                "text": "247"
+              },
+              {
+                "id": "c",
+                "text": "724"
+              },
+              {
+                "id": "d",
+                "text": "427"
+              }
+            ]
+          },
+          {
+            "id": "q2",
+            "kind": "ordering",
+            "prompt": "Place ces nombres en ordre décroissant (du plus grand au plus petit).",
+            "hint": "Compte d’abord les chiffres de chaque nombre.",
+            "points": null,
+            "category": "connaissance",
+            "items": [
+              {
+                "id": "a",
+                "text": "398"
+              },
+              {
+                "id": "b",
+                "text": "93"
+              },
+              {
+                "id": "c",
+                "text": "1 000"
+              },
+              {
+                "id": "d",
+                "text": "389"
+              },
+              {
+                "id": "e",
+                "text": "930"
+              }
+            ]
+          },
+          {
+            "id": "q3",
+            "kind": "multiple_choice",
+            "prompt": "Quel nombre se trouve entre 560 et 580?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "518"
+              },
+              {
+                "id": "b",
+                "text": "575"
+              },
+              {
+                "id": "c",
+                "text": "587"
+              },
+              {
+                "id": "d",
+                "text": "650"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q4",
+            "kind": "multiple_choice",
+            "prompt": "Coche tous les nombres plus grands que 609.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "690"
+              },
+              {
+                "id": "b",
+                "text": "596"
+              },
+              {
+                "id": "c",
+                "text": "610"
+              },
+              {
+                "id": "d",
+                "text": "609"
+              },
+              {
+                "id": "e",
+                "text": "906"
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "q5",
+            "kind": "true_false",
+            "prompt": "808 est plus petit que 880.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Avec les cartes 5, 0 et 8, forme le plus grand nombre de trois chiffres possible. Utilise chaque carte une seule fois.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 1
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Avec les mêmes cartes, forme le plus petit nombre de trois chiffres possible.",
+            "hint": "Un nombre de trois chiffres ne commence pas par 0.",
+            "points": null,
+            "category": "application",
+            "lines": 1
+          },
+          {
+            "id": "q8",
+            "kind": "ordering",
+            "prompt": "Trois équipes ont ramassé des canettes pour le recyclage. Les Aigles : 346 canettes. Les Loups : 364 canettes. Les Castors : 336 canettes. Place les équipes de celle qui en a le plus à celle qui en a le moins.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "items": [
+              {
+                "id": "a",
+                "text": "Les Aigles"
+              },
+              {
+                "id": "b",
+                "text": "Les Loups"
+              },
+              {
+                "id": "c",
+                "text": "Les Castors"
+              }
+            ]
+          },
+          {
+            "id": "q9",
+            "kind": "short_answer",
+            "prompt": "Yanis dit : « 99 est plus grand que 201, parce que 9 est plus grand que 2. » A-t-il raison? Explique ta réponse.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Un tableau de valeur de position (centaines, dizaines, unités) affiché au tableau.",
+          "Des cartes-nombres que les élèves peuvent déplacer pour les questions d’ordre.",
+          "Une droite numérique de 0 à 1 000, graduée par centaines, affichée au mur."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "ordering",
+            "orderedIds": ["b", "d", "a", "c"],
+            "explanation": "247 < 427 < 472 < 724. On compare d’abord les centaines (2, 4, 4, 7), puis les dizaines pour 427 et 472."
+          },
+          {
+            "questionId": "q2",
+            "kind": "ordering",
+            "orderedIds": ["c", "e", "a", "d", "b"],
+            "explanation": "1 000 > 930 > 398 > 389 > 93. Le nombre 93 n’a que deux chiffres : il est le plus petit."
+          },
+          {
+            "questionId": "q3",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "560 < 575 < 580. Les nombres 518, 587 et 650 sont en dehors de l’intervalle."
+          },
+          {
+            "questionId": "q4",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "c", "e"],
+            "explanation": "690, 610 et 906 sont plus grands que 609. 596 est plus petit, et 609 est égal à 609."
+          },
+          {
+            "questionId": "q5",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Vrai : les centaines sont égales (8), et 0 dizaine est moins que 8 dizaines."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "850",
+            "acceptableAnswers": ["850"],
+            "explanation": "On place le plus grand chiffre aux centaines (8), puis le suivant aux dizaines (5)."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "508",
+            "acceptableAnswers": ["508"],
+            "explanation": "058 n’est pas un nombre de trois chiffres. On place donc 5 aux centaines, puis 0 aux dizaines et 8 aux unités."
+          },
+          {
+            "questionId": "q8",
+            "kind": "ordering",
+            "orderedIds": ["b", "a", "c"],
+            "explanation": "Les Loups (364) > les Aigles (346) > les Castors (336)."
+          },
+          {
+            "questionId": "q9",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. 201 a 2 centaines, alors que 99 n’a aucune centaine. 201 est donc plus grand que 99. Yanis a comparé des chiffres qui ne sont pas à la même position.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire non et parler des centaines (ou du nombre de chiffres)."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "avance",
+      "content": {
+        "title": "",
+        "objective": "Je compare et j’ordonne des nombres naturels jusqu’à 1 000.",
+        "teacherNote": "Version Avancé : même fiche que la version de base, écrite dans le français attendu en 3e année.",
+        "instructions": "Lis chaque question attentivement. Pour comparer des nombres, compare d’abord les centaines, puis les dizaines, puis les unités.",
+        "text": "Rappel : en ordre croissant, on place les nombres du plus petit au plus grand. En ordre décroissant, on les place du plus grand au plus petit.",
+        "glossary": [
+          {
+            "term": "croissant",
+            "definition": "Qui va en augmentant : du plus petit au plus grand."
+          },
+          {
+            "term": "décroissant",
+            "definition": "Qui va en diminuant : du plus grand au plus petit."
+          },
+          {
+            "term": "la valeur de position",
+            "definition": "La valeur d’un chiffre selon sa place dans le nombre (unités, dizaines, centaines)."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "ordering",
+            "prompt": "Place ces nombres en ordre croissant (du plus petit au plus grand).",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "items": [
+              {
+                "id": "a",
+                "text": "472"
+              },
+              {
+                "id": "b",
+                "text": "247"
+              },
+              {
+                "id": "c",
+                "text": "724"
+              },
+              {
+                "id": "d",
+                "text": "427"
+              }
+            ]
+          },
+          {
+            "id": "q2",
+            "kind": "ordering",
+            "prompt": "Place ces nombres en ordre décroissant (du plus grand au plus petit).",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "items": [
+              {
+                "id": "a",
+                "text": "398"
+              },
+              {
+                "id": "b",
+                "text": "93"
+              },
+              {
+                "id": "c",
+                "text": "1 000"
+              },
+              {
+                "id": "d",
+                "text": "389"
+              },
+              {
+                "id": "e",
+                "text": "930"
+              }
+            ]
+          },
+          {
+            "id": "q3",
+            "kind": "multiple_choice",
+            "prompt": "Quel nombre se trouve entre 560 et 580?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "518"
+              },
+              {
+                "id": "b",
+                "text": "575"
+              },
+              {
+                "id": "c",
+                "text": "587"
+              },
+              {
+                "id": "d",
+                "text": "650"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q4",
+            "kind": "multiple_choice",
+            "prompt": "Coche tous les nombres plus grands que 609.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "690"
+              },
+              {
+                "id": "b",
+                "text": "596"
+              },
+              {
+                "id": "c",
+                "text": "610"
+              },
+              {
+                "id": "d",
+                "text": "609"
+              },
+              {
+                "id": "e",
+                "text": "906"
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "q5",
+            "kind": "true_false",
+            "prompt": "808 est plus petit que 880.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "Avec les cartes 5, 0 et 8, forme le plus grand nombre de trois chiffres possible. Utilise chaque carte une seule fois.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 1
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Avec les mêmes cartes, forme le plus petit nombre de trois chiffres possible.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 1
+          },
+          {
+            "id": "q8",
+            "kind": "ordering",
+            "prompt": "Trois équipes ont ramassé des canettes vides pour le recyclage : les Aigles en ont ramassé 346, les Loups 364 et les Castors 336. Place les équipes de celle qui en a ramassé le plus à celle qui en a ramassé le moins.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "items": [
+              {
+                "id": "a",
+                "text": "Les Aigles"
+              },
+              {
+                "id": "b",
+                "text": "Les Loups"
+              },
+              {
+                "id": "c",
+                "text": "Les Castors"
+              }
+            ]
+          },
+          {
+            "id": "q9",
+            "kind": "short_answer",
+            "prompt": "Yanis dit : « 99 est plus grand que 201, parce que 9 est plus grand que 2. » A-t-il raison? Explique ta réponse.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          }
+        ],
+        "visualSupports": [
+          "Un tableau de valeur de position (centaines, dizaines, unités) affiché au tableau.",
+          "Des cartes-nombres que les élèves peuvent déplacer pour les questions d’ordre.",
+          "Une droite numérique de 0 à 1 000, graduée par centaines, affichée au mur."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "ordering",
+            "orderedIds": ["b", "d", "a", "c"],
+            "explanation": "247 < 427 < 472 < 724. On compare d’abord les centaines (2, 4, 4, 7), puis les dizaines pour 427 et 472."
+          },
+          {
+            "questionId": "q2",
+            "kind": "ordering",
+            "orderedIds": ["c", "e", "a", "d", "b"],
+            "explanation": "1 000 > 930 > 398 > 389 > 93. Le nombre 93 n’a que deux chiffres : il est le plus petit."
+          },
+          {
+            "questionId": "q3",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "560 < 575 < 580. Les nombres 518, 587 et 650 sont en dehors de l’intervalle."
+          },
+          {
+            "questionId": "q4",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "c", "e"],
+            "explanation": "690, 610 et 906 sont plus grands que 609. 596 est plus petit, et 609 est égal à 609."
+          },
+          {
+            "questionId": "q5",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Vrai : les centaines sont égales (8), et 0 dizaine est moins que 8 dizaines."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "850",
+            "acceptableAnswers": ["850"],
+            "explanation": "On place le plus grand chiffre aux centaines (8), puis le suivant aux dizaines (5)."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "508",
+            "acceptableAnswers": ["508"],
+            "explanation": "058 n’est pas un nombre de trois chiffres. On place donc 5 aux centaines, puis 0 aux dizaines et 8 aux unités."
+          },
+          {
+            "questionId": "q8",
+            "kind": "ordering",
+            "orderedIds": ["b", "a", "c"],
+            "explanation": "Les Loups (364) > les Aigles (346) > les Castors (336)."
+          },
+          {
+            "questionId": "q9",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. 201 a 2 centaines, alors que 99 n’a aucune centaine. 201 est donc plus grand que 99. Yanis a comparé des chiffres qui ne sont pas à la même position.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire non et parler des centaines (ou du nombre de chiffres)."
+          }
+        ],
+        "solution": ""
+      }
+    },
+    {
+      "level": "enrichi",
+      "content": {
+        "title": "",
+        "objective": "Je compare et j’ordonne des nombres naturels jusqu’à 1 000.",
+        "teacherNote": "Version Enrichi : vocabulaire mathématique plus précis (inférieur, supérieur, compris entre) et deux défis (questions 10 et 11). Mêmes nombres que les autres versions pour les questions 1 à 9.",
+        "instructions": "Lis chaque question attentivement. Pour comparer des nombres, examine d’abord le chiffre des centaines, puis celui des dizaines, puis celui des unités. Les deux dernières questions sont des défis.",
+        "text": "Rappel : en ordre croissant, on place les nombres du plus petit au plus grand (on peut utiliser le symbole <). En ordre décroissant, on les place du plus grand au plus petit (on peut utiliser le symbole >).",
+        "glossary": [
+          {
+            "term": "inférieur à",
+            "definition": "Plus petit que (symbole <)."
+          },
+          {
+            "term": "supérieur à",
+            "definition": "Plus grand que (symbole >)."
+          },
+          {
+            "term": "compris entre",
+            "definition": "Plus grand que le premier nombre et plus petit que le second."
+          },
+          {
+            "term": "la valeur de position",
+            "definition": "La valeur d’un chiffre selon sa place dans le nombre (unités, dizaines, centaines)."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "kind": "ordering",
+            "prompt": "Range ces nombres en ordre croissant.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "items": [
+              {
+                "id": "a",
+                "text": "472"
+              },
+              {
+                "id": "b",
+                "text": "247"
+              },
+              {
+                "id": "c",
+                "text": "724"
+              },
+              {
+                "id": "d",
+                "text": "427"
+              }
+            ]
+          },
+          {
+            "id": "q2",
+            "kind": "ordering",
+            "prompt": "Range ces nombres en ordre décroissant.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "items": [
+              {
+                "id": "a",
+                "text": "398"
+              },
+              {
+                "id": "b",
+                "text": "93"
+              },
+              {
+                "id": "c",
+                "text": "1 000"
+              },
+              {
+                "id": "d",
+                "text": "389"
+              },
+              {
+                "id": "e",
+                "text": "930"
+              }
+            ]
+          },
+          {
+            "id": "q3",
+            "kind": "multiple_choice",
+            "prompt": "Lequel de ces nombres est compris entre 560 et 580?",
+            "hint": "",
+            "points": null,
+            "category": "connaissance",
+            "choices": [
+              {
+                "id": "a",
+                "text": "518"
+              },
+              {
+                "id": "b",
+                "text": "575"
+              },
+              {
+                "id": "c",
+                "text": "587"
+              },
+              {
+                "id": "d",
+                "text": "650"
+              }
+            ],
+            "multipleAnswers": false
+          },
+          {
+            "id": "q4",
+            "kind": "multiple_choice",
+            "prompt": "Coche tous les nombres supérieurs à 609.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "choices": [
+              {
+                "id": "a",
+                "text": "690"
+              },
+              {
+                "id": "b",
+                "text": "596"
+              },
+              {
+                "id": "c",
+                "text": "610"
+              },
+              {
+                "id": "d",
+                "text": "609"
+              },
+              {
+                "id": "e",
+                "text": "906"
+              }
+            ],
+            "multipleAnswers": true
+          },
+          {
+            "id": "q5",
+            "kind": "true_false",
+            "prompt": "808 est inférieur à 880.",
+            "hint": "",
+            "points": null,
+            "category": "connaissance"
+          },
+          {
+            "id": "q6",
+            "kind": "short_answer",
+            "prompt": "À l’aide des cartes 5, 0 et 8, utilisées chacune une seule fois, forme le plus grand nombre de trois chiffres possible.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 1
+          },
+          {
+            "id": "q7",
+            "kind": "short_answer",
+            "prompt": "Avec les mêmes cartes, forme maintenant le plus petit nombre de trois chiffres possible.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "lines": 1
+          },
+          {
+            "id": "q8",
+            "kind": "ordering",
+            "prompt": "Pour le recyclage, trois équipes ont ramassé des canettes vides : les Aigles en ont ramassé 346, les Loups 364 et les Castors 336. Classe les équipes en ordre décroissant selon le nombre de canettes ramassées.",
+            "hint": "",
+            "points": null,
+            "category": "application",
+            "items": [
+              {
+                "id": "a",
+                "text": "Les Aigles"
+              },
+              {
+                "id": "b",
+                "text": "Les Loups"
+              },
+              {
+                "id": "c",
+                "text": "Les Castors"
+              }
+            ]
+          },
+          {
+            "id": "q9",
+            "kind": "short_answer",
+            "prompt": "Yanis affirme : « 99 est plus grand que 201, parce que 9 est plus grand que 2. » Son raisonnement est-il juste? Justifie ta réponse en parlant de la valeur de position.",
+            "hint": "",
+            "points": null,
+            "category": "communication",
+            "lines": 3
+          },
+          {
+            "id": "q10",
+            "kind": "short_answer",
+            "prompt": "Défi : avec les cartes 3, 7, 0 et 1, forme tous les nombres de trois chiffres compris entre 300 et 400. Utilise chaque carte au plus une fois par nombre, puis écris ces nombres en ordre croissant.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 3
+          },
+          {
+            "id": "q11",
+            "kind": "short_answer",
+            "prompt": "Défi : trouve le nombre compris entre 699 et 710 dont le chiffre des unités est 5.",
+            "hint": "",
+            "points": null,
+            "category": "habiletes",
+            "lines": 1
+          }
+        ],
+        "visualSupports": [
+          "Un tableau de valeur de position (centaines, dizaines, unités) affiché au tableau.",
+          "Des cartes-nombres que les élèves peuvent déplacer pour les questions d’ordre.",
+          "Une droite numérique de 0 à 1 000, graduée par centaines, affichée au mur."
+        ]
+      },
+      "answerKey": {
+        "answers": [
+          {
+            "questionId": "q1",
+            "kind": "ordering",
+            "orderedIds": ["b", "d", "a", "c"],
+            "explanation": "247 < 427 < 472 < 724. On compare d’abord les centaines (2, 4, 4, 7), puis les dizaines pour 427 et 472."
+          },
+          {
+            "questionId": "q2",
+            "kind": "ordering",
+            "orderedIds": ["c", "e", "a", "d", "b"],
+            "explanation": "1 000 > 930 > 398 > 389 > 93. Le nombre 93 n’a que deux chiffres : il est le plus petit."
+          },
+          {
+            "questionId": "q3",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["b"],
+            "explanation": "560 < 575 < 580. Les nombres 518, 587 et 650 sont en dehors de l’intervalle."
+          },
+          {
+            "questionId": "q4",
+            "kind": "multiple_choice",
+            "correctChoiceIds": ["a", "c", "e"],
+            "explanation": "690, 610 et 906 sont plus grands que 609. 596 est plus petit, et 609 est égal à 609."
+          },
+          {
+            "questionId": "q5",
+            "kind": "true_false",
+            "correct": true,
+            "explanation": "Vrai : les centaines sont égales (8), et 0 dizaine est moins que 8 dizaines."
+          },
+          {
+            "questionId": "q6",
+            "kind": "short_answer",
+            "sampleAnswer": "850",
+            "acceptableAnswers": ["850"],
+            "explanation": "On place le plus grand chiffre aux centaines (8), puis le suivant aux dizaines (5)."
+          },
+          {
+            "questionId": "q7",
+            "kind": "short_answer",
+            "sampleAnswer": "508",
+            "acceptableAnswers": ["508"],
+            "explanation": "058 n’est pas un nombre de trois chiffres. On place donc 5 aux centaines, puis 0 aux dizaines et 8 aux unités."
+          },
+          {
+            "questionId": "q8",
+            "kind": "ordering",
+            "orderedIds": ["b", "a", "c"],
+            "explanation": "Les Loups (364) > les Aigles (346) > les Castors (336)."
+          },
+          {
+            "questionId": "q9",
+            "kind": "short_answer",
+            "sampleAnswer": "Non. 201 a 2 centaines, alors que 99 n’a aucune centaine. 201 est donc plus grand que 99. Yanis a comparé des chiffres qui ne sont pas à la même position.",
+            "acceptableAnswers": [],
+            "explanation": "Correction manuelle : la réponse doit dire non et parler des centaines (ou du nombre de chiffres)."
+          },
+          {
+            "questionId": "q10",
+            "kind": "short_answer",
+            "sampleAnswer": "301, 307, 310, 317, 370, 371",
+            "acceptableAnswers": [],
+            "explanation": "Le chiffre des centaines doit être 3. Il reste les cartes 7, 0 et 1 pour les dizaines et les unités, ce qui donne six nombres."
+          },
+          {
+            "questionId": "q11",
+            "kind": "short_answer",
+            "sampleAnswer": "705",
+            "acceptableAnswers": ["705"],
+            "explanation": "Les nombres entre 699 et 710 sont 700 à 709; un seul se termine par 5."
+          }
+        ],
+        "solution": ""
+      }
+    }
+  ]
+}
