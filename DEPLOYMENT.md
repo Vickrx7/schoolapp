@@ -126,11 +126,11 @@ install or from this repository.
 
 **migrate** (also takes the `backup` settings, because it backs up before migrating)
 
-| Variable                                       | Secret  | Default          | What it is                                                                                     |
-| ---------------------------------------------- | ------- | ---------------- | ---------------------------------------------------------------------------------------------- |
-| `MIGRATIONS_DATABASE_URL`                      | **yes** | board: generated | The database as its owner, in session mode                                                     |
-| `SUB_PORTAL_PASSWORD`, `CLASS_PORTAL_PASSWORD` | **yes** | generated        | The portal roles' passwords, set at every `up` as SCRAM verifiers (never in a log)             |
-| `MIGRATE_WITHOUT_BACKUP`                       | no      | empty            | `yes`: migrate a database with data without a backup first. Only when you hold a recent backup |
+| Variable                                       | Secret  | Default          | What it is                                                                                                                                                           |
+| ---------------------------------------------- | ------- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MIGRATIONS_DATABASE_URL`                      | **yes** | board: generated | The database as its owner, in session mode                                                                                                                           |
+| `SUB_PORTAL_PASSWORD`, `CLASS_PORTAL_PASSWORD` | **yes** | generated        | The portal roles' passwords, set at every `up` as SCRAM verifiers (never in a log)                                                                                   |
+| `MIGRATE_WITHOUT_BACKUP`                       | no      | empty            | `yes`: migrate a database with data without a backup first. Only when you hold a recent backup, or on an evaluation install with invented data only (`--ci` sets it) |
 
 **backup**
 

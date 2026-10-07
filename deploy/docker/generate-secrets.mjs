@@ -3,7 +3,8 @@
 //
 //   node generate-secrets.mjs --hosted   # Supabase Pro in Canada; fill in its URL, keys, databases
 //   node generate-secrets.mjs --board    # board-hosted: the self-hosted Supabase's secrets too
-//   node generate-secrets.mjs --ci       # the docker-smoke CI job: localhost, test mail, fake AI
+//   node generate-secrets.mjs --ci       # the docker-smoke CI job and demo laptops: localhost, test
+//                                        # mail, fake AI, invented data only
 //   … [--out <file>]                     # default: .env here
 //
 // The file is created with mode 0600 and never overwritten. Each service's settings are grouped
@@ -136,7 +137,9 @@ const sections = [
     `SUB_PORTAL_PASSWORD=${subPortalPassword}`,
     `CLASS_PORTAL_PASSWORD=${classPortalPassword}`,
     '# yes: migrate a database with data without a backup first (only when you hold a recent one).',
-    'MIGRATE_WITHOUT_BACKUP=',
+    // An evaluation install (--ci: invented data only) has no backup key, so its first upgrade
+    // after loading the demo data would stop; a backup key, when set, still comes first.
+    `MIGRATE_WITHOUT_BACKUP=${mode === 'ci' ? 'yes' : ''}`,
   ],
 
   ['backup (and migrate, which backs up before migrating)'],
