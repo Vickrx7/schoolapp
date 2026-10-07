@@ -148,6 +148,9 @@ services:
         condition: service_healthy
 
   web:
+    environment:
+      # Auth's per-address limits read it (GOTRUE_RATE_LIMIT_HEADER above); never on hosted.
+      AUTH_CLIENT_IP_HEADER_ENABLED: 'true'
     depends_on:
       api-gateway:
         condition: service_healthy

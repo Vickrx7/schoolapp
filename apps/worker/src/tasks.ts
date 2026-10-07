@@ -74,6 +74,16 @@ export function buildTaskList(options: {
     options.context.logger.info('substitute access retention done', { ...rows[0]?.counts });
   };
 
+  // An absence still marked stale 30 minutes on (its refresh job gave up) wakes the worker again,
+  // at most once an hour, until it ends.
+  const subPlanSweep: Task = async (_payload, helpers) => {
+    const { rows } = await helpers.withPgClient((client) =>
+      client.query<{ count: number }>('select app.sweep_stale_absences() as count'),
+    );
+    const count = rows[0]?.count ?? 0;
+    if (count > 0) options.context.logger.warn('stale substitute plans woken again', { count });
+  };
+
   // Class mode (D-089): closes expired sessions (their answers are deleted) and applies retention.
   const classModeMaintenanceTask: Task = async () => {
     await classModeMaintenance({ db: options.context.pool, logger: options.context.logger });
@@ -105,6 +115,7 @@ export function buildTaskList(options: {
     handle_event: handleEvent,
     ai_maintenance: aiMaintenance,
     sub_access_maintenance: subAccessMaintenance,
+    sub_plan_sweep: subPlanSweep,
     class_mode_maintenance: classModeMaintenanceTask,
     library_bulk_tick: libraryBulkTick,
     library_maintenance: libraryMaintenanceTask,

@@ -91,21 +91,22 @@ install or from this repository.
 
 **web**
 
-| Variable                                 | Secret       | Default                          | What it is                                                                                                                       |
-| ---------------------------------------- | ------------ | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `SUPABASE_URL`                           | no           | board: `http://api-gateway:8000` | Supabase's API address. Hosted: `https://<project-ref>.supabase.co`                                                              |
-| `SUPABASE_ANON_KEY`                      | keep private | board: generated                 | The anonymous API key (row level security protects everything; the browser never sees it)                                        |
-| `APP_BASE_URL`                           | no           | `https://${APP_DOMAIN}`          | Set by `compose.yml`. Must be the exact public origin: browser error reports and class devices from any other origin are refused |
-| `APP_NAME`                               | no           | `Lynx École`                     | The product name shown in the app                                                                                                |
-| `APP_RELEASE`                            | no           | the build's                      | Built into the image from `APP_RELEASE` at `docker compose build`                                                                |
-| `SUPPORT_EMAIL`, `PRIVACY_CONTACT_EMAIL` | no           | empty                            | Shown in the app and on « Confidentialité » when set                                                                             |
-| `ALERTS_ENCRYPTION_KEYS`                 | **yes**      | generated                        | `1:<base64 of 32 bytes>`: encrypts alerts and report notes. Losing it makes them unreadable                                      |
-| `SUB_PORTAL_DATABASE_URL`                | **yes**      | generated (board)                | Database login of the substitute portal's role, `lynx_sub_portal`                                                                |
-| `SUB_CODE_HMAC_KEYS`                     | **yes**      | generated                        | `1:<base64>`: hashes substitute codes                                                                                            |
-| `CLASS_PORTAL_DATABASE_URL`              | **yes**      | generated (board)                | Database login of the class devices' role, `lynx_class_portal`                                                                   |
-| `CLASS_PORTAL_HMAC_KEY`                  | **yes**      | generated                        | base64 of 32 bytes: the devices' throttle keys                                                                                   |
-| `CLIENT_IP_HEADER`                       | no           | `x-forwarded-for`                | Set by `compose.yml`                                                                                                             |
-| `TRUSTED_PROXY_HOPS`                     | no           | `1`                              | Proxies in front of the web server that append the client's address: 1 (Caddy), 2 behind a load balancer (section 5)             |
+| Variable                                 | Secret       | Default                          | What it is                                                                                                                                  |
+| ---------------------------------------- | ------------ | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SUPABASE_URL`                           | no           | board: `http://api-gateway:8000` | Supabase's API address. Hosted: `https://<project-ref>.supabase.co`                                                                         |
+| `SUPABASE_ANON_KEY`                      | keep private | board: generated                 | The anonymous API key (row level security protects everything; the browser never sees it)                                                   |
+| `APP_BASE_URL`                           | no           | `https://${APP_DOMAIN}`          | Set by `compose.yml`. Must be the exact public origin: browser error reports and class devices from any other origin are refused            |
+| `APP_NAME`                               | no           | `Lynx École`                     | The product name shown in the app                                                                                                           |
+| `APP_RELEASE`                            | no           | the build's                      | Built into the image from `APP_RELEASE` at `docker compose build`                                                                           |
+| `SUPPORT_EMAIL`, `PRIVACY_CONTACT_EMAIL` | no           | empty                            | Shown in the app and on « Confidentialité » when set                                                                                        |
+| `ALERTS_ENCRYPTION_KEYS`                 | **yes**      | generated                        | `1:<base64 of 32 bytes>`: encrypts alerts and report notes. Losing it makes them unreadable                                                 |
+| `SUB_PORTAL_DATABASE_URL`                | **yes**      | generated (board)                | Database login of the substitute portal's role, `lynx_sub_portal`                                                                           |
+| `SUB_CODE_HMAC_KEYS`                     | **yes**      | generated                        | `1:<base64>`: hashes substitute codes                                                                                                       |
+| `CLASS_PORTAL_DATABASE_URL`              | **yes**      | generated (board)                | Database login of the class devices' role, `lynx_class_portal`                                                                              |
+| `CLASS_PORTAL_HMAC_KEY`                  | **yes**      | generated                        | base64 of 32 bytes: the devices' throttle keys                                                                                              |
+| `CLIENT_IP_HEADER`                       | no           | `x-forwarded-for`                | Set by `compose.yml`                                                                                                                        |
+| `TRUSTED_PROXY_HOPS`                     | no           | `1`                              | Proxies in front of the web server that append the client's address: 1 (Caddy), 2 behind a load balancer (section 5)                        |
+| `AUTH_CLIENT_IP_HEADER_ENABLED`          | no           | `false`                          | Board-hosted only (set by `compose.supabase.yml`): pass the client's address to the self-hosted Auth for its per-address limits (section 5) |
 
 **worker**
 
@@ -410,8 +411,10 @@ proxies from the right; throttling of substitute codes and class devices depends
   delays would no longer hold (the code's strength and the global cap of failures still do).
 - Staff sign-in (D-121) uses the same address: the app's own limits on wrong codes per network,
   and, board-hosted, Supabase Auth's limits per address, which the web server passes to Auth in
-  `X-Lynx-Client-Ip` (`GOTRUE_RATE_LIMIT_HEADER` in `compose.supabase.yml`; Auth is reachable only
-  from inside, so no client can set it). When the address cannot be told (`TRUSTED_PROXY_HOPS`
+  `X-Lynx-Client-Ip` (`GOTRUE_RATE_LIMIT_HEADER` and `AUTH_CLIENT_IP_HEADER_ENABLED` in
+  `compose.supabase.yml`; Auth is reachable only from inside, so no client can set it). The
+  hosted version leaves `AUTH_CLIENT_IP_HEADER_ENABLED` off, so no person's address goes to
+  Supabase. When the address cannot be told (`TRUSTED_PROXY_HOPS`
   wrong), neither applies per network: the per-person limits still do.
 
 ## 6. Backups and restore

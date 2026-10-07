@@ -396,8 +396,9 @@ first.
   administrators. Hosted, Supabase keeps its own logs of the database, the API gateway and the
   sign-in service, which may hold e-mail addresses (section 6). No third-party error service.
 - **Proxy logs:** client IP addresses are masked (/24 for IPv4, /64 for IPv6); cookies,
-  authorization headers, sign-in tokens, substitute codes, search words and the previous page's
-  address are removed.
+  authorization headers, forwarded addresses, the browser's description of itself and its
+  language, sign-in tokens, substitute codes, search words and the previous page's address are
+  removed.
 - **No personal values in addresses:** the app never puts an e-mail address or a name in an API
   address (lookups go in the request body), because gateway logs record addresses; an automated
   code check enforces it. Substitute codes and class links travel after `#`, which browsers never

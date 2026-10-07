@@ -292,13 +292,15 @@ export async function loadNewsletterFacts(
   const y = yearRes.data?.school_years;
   if (!y) return null;
 
-  // The calendar from the earliest cycle anchor (a cycle day is counted from it) to the end of the
-  // dates window: the board's and the school's events, and the class's own.
+  // The calendar from the earliest cycle anchor (a cycle day is counted from it), or from today when
+  // the message is prepared ahead (the days before its Monday use up lessons, so their days off
+  // must be known), to the end of the dates window: the board's and the school's events, and the class's own.
   const anchors = (anchorsRes.data ?? []).map((a) => ({
     anchorDate: a.anchor_date,
     cycleDay: a.cycle_day,
   }));
-  const from = anchors.reduce((min, a) => (a.anchorDate < min ? a.anchorDate : min), weekOf);
+  const start = preparedOn < weekOf ? preparedOn : weekOf;
+  const from = anchors.reduce((min, a) => (a.anchorDate < min ? a.anchorDate : min), start);
   const { data: eventRows, error: eventsError } = await fetchAllRows((first, last) =>
     supabase
       .from('school_calendar_events')

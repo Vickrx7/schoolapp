@@ -134,10 +134,13 @@ Mon Tableau, Cartable, Ardoise). No availability or trademark check has been don
 | `8f07a60` | Review A: the UX and French fixes of the three features                                     |
 | `09b9ac2` | Review B: the in-app texts say what the app does, terms `2026-10-pilote-5`                  |
 | `b257a25` | Review B: the 1,000-row integration test removes the outbox events it emitted               |
-| (latest)  | Review B: the documents say what the code does, « Decisions waiting for Mike »              |
+| `8702004` | Review B: the documents say what the code does, « Decisions waiting for Mike »              |
+| `0e78764` | Marketing: « Mon année », report card comments and « Info-parents » (and 2 follow-ups)      |
+| `dccacc1` | Marketing: the 90-second commercial, French and English (`make_commercial.py`)              |
+| (latest)  | Review C before merging: seven fixes (D-145), pgTAP `39_review_c`                           |
 
-**Verified (locally, from an empty database, and in CI on each pushed commit):** 1623 unit tests
-(none skipped), 1979 pgTAP tests (39 files), 97 integration tests (plus the 3 of `restore-smoke`,
+**Verified (locally, from an empty database, and in CI on each pushed commit):** 1624 unit tests
+(none skipped), 1988 pgTAP tests (40 files), 97 integration tests (plus the 3 of `restore-smoke`,
 which run after a restore: the `backup-restore` CI job and the local drill; the staff-account tests
 talk to the stack's real Auth server), 156 Playwright tests (desktop, phone and tablet, axe on every
 Phase 3, 4 and 5 page, every « Conseil » page, the direction's dashboard and « Journal d'audit », «
@@ -202,6 +205,21 @@ are only listed, and not all of them: « Known issues » below); the English com
 ». « Aujourd'hui » reminds on the week's last two school days. Messages are erased with the
 students' first names. The terms are `2026-10-pilote-4` (D-143). Next: test it with pilot teachers
 (`docs/info-parents.md`, « What to test »), and one real-API translation case when the key is set.
+
+**Review C is done** (2026-10-07, before merging; DECISIONS D-145): a last review of both PRs
+(database access, privacy claims against the code, app logic) found seven problems, none
+critical, all fixed with tests: « Info-parents » counted lessons on days off before the week's
+Monday; an emptied report card draft in one tab stopped another tab saving; a substitute plan
+whose refresh gave up stayed stale for good (now swept every 15 minutes); a board admin could
+delay the students' purge by moving a past year's end; the office could test name lists against
+a school's roster through the feedback check (now 20 a day); the sign-in address went to
+Supabase on hosted installs (now board-hosted only, `AUTH_CLIENT_IP_HEADER_ENABLED`); the proxy
+log kept browser headers.
+
+**The 90-second commercial's videos** (French and English, about 24 MB each, rebuilt 2026-10-07
+from `dccacc1`) and their storyboards are in the project's shared files, `commercial/` (they are
+git-ignored and GitHub releases cannot be made from these sessions). Rebuild with
+`marketing/promo/make_commercial.py` (`marketing/promo/README.md`).
 
 **The post-MVP review is done** (the three features; 43 findings; DECISIONS « Post-MVP review »,
 D-144). Round A (`627ce0a` to `8f07a60`) fixed the code: the title rule fails closed (after a title,

@@ -1,11 +1,9 @@
 'use client';
 
 import {
-  COMMENT_LIMIT_DEFAULT,
   draftExpired,
   dropStalePicks,
   emptyReportDraft,
-  studentsWithWork,
   type LocalDate,
   type ReportDraft,
 } from '@lynx/domain';
@@ -87,13 +85,10 @@ export function useReportDraft({
     try {
       if (!storage) throw new Error('storage unavailable');
       const value = latest.current;
-      // Nothing left to keep: no key at all rather than an empty draft.
-      const empty =
-        studentsWithWork(value).length === 0 &&
-        value.limit === COMMENT_LIMIT_DEFAULT &&
-        value.plainSpaces;
-      if (empty) storage.removeItem(storageKey);
-      else storage.setItem(storageKey, serializeDraft(value));
+      // An emptied draft is kept as an empty draft, never removed: another tab on the same class and
+      // period reads a removed key as a sign-out or « Effacer » and stops saving. Expiry and the
+      // janitor erase it like any other.
+      storage.setItem(storageKey, serializeDraft(value));
       setWriteFailed(false);
     } catch {
       setWriteFailed(true);

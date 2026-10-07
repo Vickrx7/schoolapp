@@ -3334,6 +3334,29 @@ true with the title rule. `PRIVACY.md` (release 0.9, change log) says the same. 
 rule and the lawyer's review need texts that state what the code does, including its limits; a
 promise the code cannot keep is worse than a narrower one it keeps.
 
+## Review C before merging (2026-10-07)
+
+A last review of both pull requests (database access, privacy claims against the code, app logic)
+found seven problems, none critical. All are fixed in `20270201090100_review_c_fixes.sql` and the
+app (pgTAP `39_review_c`).
+
+**D-145 — Review C.** (1) « Info-parents » loads the calendar from the day the message is
+prepared, not its Monday: days off before that Monday no longer use up lessons, which had told
+families about lessons one step ahead. (2) An emptied report card draft is kept as an empty draft
+rather than removed, since another tab on the same class and period read a removed key as a
+sign-out and stopped saving (D-130). (3) A substitute plan whose refresh job used up its attempts
+stayed marked stale for good; the worker now sweeps every 15 minutes and wakes itself again for an
+absence still marked after 30 minutes, at most once an hour, until it ends (D-047). (4) Through
+the API a board admin could move a past school year's end later and delay the students' purge
+indefinitely (D-105): a year lasts at most 400 days and, once ended, its end can only move
+earlier except by the operator. (5) `feedback_student_names` could be used by the office to test
+lists of names against a school's roster (D-116): 20 checks per person per 24 hours. (6) The
+client's address went to Supabase Auth on every install; it now goes only where
+`AUTH_CLIENT_IP_HEADER_ENABLED` is on (board-hosted, `compose.supabase.yml`), never on the hosted
+version (D-121). (7) The proxy's access log also drops forwarded addresses, the browser's
+description of itself and its language. _Why:_ each made a document or a promise untrue, or lost
+work without saying so.
+
 ## Schema additions beyond SPEC section 8
 
 `school_years`, `rooms`, `class_grades`, `school_cycle_anchors`, `unit_lesson_expectations`,
