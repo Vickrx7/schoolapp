@@ -57,16 +57,14 @@ Mon Tableau, Cartable, Ardoise). No availability or trademark check has been don
 
 ## 2. Current state
 
-**Branches and PRs.**
+**Branches and PRs.** Both are merged into `main` (2026-10-07, after review C, CI green on all
+four jobs): [#1](https://github.com/Vickrx7/schoolapp/pull/1) (Phases 1 and 2, branch
+`claude/nifty-fermat-8hhl1l`) and [#2](https://github.com/Vickrx7/schoolapp/pull/2) (everything
+since, branch `claude/serene-ride-3n2fa1`). New work starts from `main`. No release is tagged yet:
+`DEPLOYMENT.md` and the demo script check out `v0.6.0`, so tag `main` before the first install
+(`git tag v0.6.0 && git push origin v0.6.0`).
 
-- [Vickrx7/schoolapp#1](https://github.com/Vickrx7/schoolapp/pull/1) (draft, branch
-  `claude/nifty-fermat-8hhl1l`): Phases 1 and 2. Not merged; no reviews.
-- [Vickrx7/schoolapp#2](https://github.com/Vickrx7/schoolapp/pull/2) (draft, branch
-  `claude/serene-ride-3n2fa1`, stacked on #1): the Phase 2 hardening, Phases 3, 4, 5 and 6, the
-  three post-MVP features (« Mon année », « Commentaires de bulletin », « Info-parents ») and
-  their review. Once #1 is merged, retarget #2 to `main`.
-
-**Commits on #2:**
+**Commits on #2** (and the demo script moved to the Docker install, `224f2d2`):
 
 | Commit    | What                                                                                        |
 | --------- | ------------------------------------------------------------------------------------------- |
@@ -833,7 +831,7 @@ our recommended defaults, which Mike can still change (`docs/phase-3.md`, `docs/
    (`pnpm ai:eval --feature report_comment_bank --case mat-3e-term --yes`, under $1) before the
    ten (about $3–5). Reports go to `packages/ai/eval-results/` (git-ignored):
    send them to Mike. Propose prompt changes first; never edit a used prompt version (add `v2`).
-3. **Get PRs #1 and #2 reviewed and merged.**
+3. **Tag the first release** (`v0.6.0`, from `main`; PRs #1 and #2 are merged).
 4. **Test with real teachers and a real substitute** (`docs/phase-3.md`, `docs/phase-4.md` and
    `docs/phase-5.md`, « What to test »), including a teacher reading five demo resources for
    Ontario French and a class playing a quiz on its own tablets and projector.
