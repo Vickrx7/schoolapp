@@ -399,8 +399,9 @@ the banner and « Ce qui a changé » (D-110).
 - **The CLI's `deactivate` and the restoring `invite` are audited** (the plan left them as they were).
 - **The demo spec reports the absence for the next school day** rather than today, so it passes at
   any hour; the script tells the presenter to use today.
-- **No command loads Catholic references** into a new install (the demo's come from the seed);
-  `DEPLOYMENT.md` § 3.8 says how IP Lynx adds them for a pilot board.
+- **No command loaded Catholic references** into a new install in Phase 6 (the demo's come from
+  the seed). `pnpm admin import-references` came after it (D-146, `docs/catholic-references.md`);
+  `DEPLOYMENT.md` § 3.8 says how IP Lynx loads a pilot board's references.
 - **Payment collection, SSO, a web operator console, a public demo site, a self-hosted error
   tracker and a penetration test** are not in Phase 6, as planned.
 
@@ -426,7 +427,8 @@ from both images, with a browser smoke test, a backup and the upgrade script).
 - **Local versions differ from production:** the lite stack runs PostgreSQL 16 and an older Auth;
   CI runs PostgreSQL 17 and the versions Compose pins.
 - **iPads are not tested** (no WebKit here); phones and tablets are Chromium.
-- **No Catholic references or curriculum ship with a new install** (`DEPLOYMENT.md` § 3.8).
+- **No Catholic references or curriculum ship with a new install:** the operator loads them from
+  the board's files (`import-references`, `import-curriculum`; `DEPLOYMENT.md` § 3.8).
 - **Retention minimums** (a year, and the 60-day deletion of substitutes' notes) wait for the
   lawyer's review.
 - **The worker must run** for invitations, access changes reaching sign-in, plan refreshes and

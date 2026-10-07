@@ -3342,6 +3342,9 @@
         "imported": "Ensemble de ressources importé",
         "exported": "Ensemble de ressources exporté"
       },
+      "catholic_references": {
+        "imported": "Références catholiques importées"
+      },
       "library_bulk_run": {
         "planned": "Génération en lot planifiée",
         "started": "Génération en lot lancée",

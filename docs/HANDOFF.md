@@ -880,8 +880,10 @@ our recommended defaults, which Mike can still change (`docs/phase-3.md`, `docs/
 - **No hosted install exists, and hosted Supabase is untested** (keys, pooler, TLS with Supabase's
   certificate authority, Auth settings, whether the nightly job may purge Auth's log). The
   board-hosted install is tested in CI (`docker-smoke`).
-- **A new install has no curriculum or Catholic references** (the demo's come from the seed);
-  there is no command for Catholic references yet (`DEPLOYMENT.md` § 3.8).
+- **A new install has no curriculum or Catholic references** (the demo's come from the seed). The
+  operator loads them with `import-curriculum` and `import-references` (D-146,
+  `docs/catholic-references.md`); each board's references come from a file the board provides,
+  and `content/catholic-references/sample.json` is fictional (`DEPLOYMENT.md` § 3.8).
 - **Board-hosted, Auth and the database write their own lines to the journal**, not scrubbed:
   Auth warnings and errors only, the database no statements and no error details (D-119 as
   amended). The `docker-smoke` job fails if the install's journal holds an e-mail address or a

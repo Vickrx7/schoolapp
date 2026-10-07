@@ -157,9 +157,11 @@ exit ticket or quiz then misses a level and stays a draft until someone adds it.
 
 - An attente is matched on its exact subject, **curriculum version** (`fra-2023`), grade and code.
   An attente your install does not have is a warning; the resource keeps its other attentes.
-- A Catholic reference is matched on its type and exact title, first among the board's own, then
-  the shared ones. None, or several with that title: the resource is imported without it
-  (warning), and a reviewer can pick one.
+- A Catholic reference is matched on its type and exact title, first among the board's own (a
+  board has one per type and title), then the shared ones. None, or several shared ones with that
+  title: the resource is imported without it (warning), and a reviewer can pick one. Load the
+  board's references before the pack (`pnpm admin import-references`,
+  [docs/catholic-references.md](catholic-references.md)).
 
 ## Later versions of a pack
 

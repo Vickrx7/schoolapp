@@ -3823,6 +3823,10 @@ export type Database = {
         Args: { p_invitation_id: string };
         Returns: undefined;
       };
+      catholic_references_import: {
+        Args: { p_board_id: string; p_references: Json; p_file_sha256: string; p_apply: boolean };
+        Returns: Json;
+      };
       class_mode_link: {
         Args: { p_class_id: string; p_replace?: boolean };
         Returns: string;

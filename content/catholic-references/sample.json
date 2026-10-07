@@ -1,0 +1,98 @@
+{
+  "sample": true,
+  "official": false,
+  "sourceNote": "Texte original de démonstration (IP Lynx), à vérifier par le conseil avant l’usage en classe.",
+  "references": [
+    {
+      "type": "virtue",
+      "title": "Le respect",
+      "textFr": "Je traite les autres comme j’aimerais être traité, en paroles et en gestes.",
+      "textEn": "I treat others the way I would like to be treated, in words and in actions.",
+      "gradeMin": "K1",
+      "gradeMax": "8",
+      "liturgicalSeason": null,
+      "tags": ["respect", "communauté"]
+    },
+    {
+      "type": "virtue",
+      "title": "La persévérance",
+      "textFr": "Quand une tâche est difficile, je continue d’essayer et je demande de l’aide au besoin.",
+      "textEn": "When a task is hard, I keep trying and I ask for help when I need it.",
+      "gradeMin": "1",
+      "gradeMax": "8",
+      "liturgicalSeason": null,
+      "tags": ["persévérance", "effort"]
+    },
+    {
+      "type": "virtue",
+      "title": "La compassion",
+      "textFr": "Je remarque quand quelqu’un a de la peine et je cherche une façon de l’aider.",
+      "textEn": "I notice when someone is sad and I look for a way to help.",
+      "gradeMin": "K1",
+      "gradeMax": "8",
+      "liturgicalSeason": null,
+      "tags": ["compassion", "entraide"]
+    },
+    {
+      "type": "reflection",
+      "title": "Prendre soin de la création",
+      "textFr": "Comment peux-tu prendre soin de la nature et des animaux autour de toi cette semaine?",
+      "textEn": "How can you take care of nature and the animals around you this week?",
+      "gradeMin": "1",
+      "gradeMax": "8",
+      "liturgicalSeason": null,
+      "tags": ["création", "environnement", "sciences"]
+    },
+    {
+      "type": "reflection",
+      "title": "Dire merci",
+      "textFr": "Nomme trois personnes ou trois choses pour lesquelles tu veux dire merci aujourd’hui.",
+      "textEn": "Name three people or three things you want to say thank you for today.",
+      "gradeMin": "K1",
+      "gradeMax": "8",
+      "liturgicalSeason": "temps_ordinaire",
+      "tags": ["gratitude", "action de grâce"]
+    },
+    {
+      "type": "reflection",
+      "title": "Partager pendant le Carême",
+      "textFr": "Pendant le Carême, quel petit geste peux-tu faire chaque jour pour partager avec les autres?",
+      "textEn": "During Lent, what small thing can you do each day to share with others?",
+      "gradeMin": "K1",
+      "gradeMax": "8",
+      "liturgicalSeason": "careme",
+      "tags": ["carême", "partage", "entraide"]
+    },
+    {
+      "type": "prayer",
+      "title": "Prière avant le travail",
+      "textFr": "Seigneur, aide-moi à bien écouter, à faire de mon mieux et à aider mes amis aujourd’hui. Amen.",
+      "textEn": "Lord, help me to listen well, to do my best and to help my friends today. Amen.",
+      "gradeMin": "K1",
+      "gradeMax": "6",
+      "liturgicalSeason": null,
+      "tags": ["prière", "journée"]
+    },
+    {
+      "type": "prayer",
+      "title": "Prière de l’Avent",
+      "textFr": "Seigneur, pendant ce temps d’attente, rends nos cœurs prêts à t’accueillir et à partager avec les autres. Amen.",
+      "textEn": "Lord, during this time of waiting, make our hearts ready to welcome you and to share with others. Amen.",
+      "gradeMin": "K1",
+      "gradeMax": "8",
+      "liturgicalSeason": "avent",
+      "tags": ["avent", "partage"]
+    },
+    {
+      "type": "scripture",
+      "title": "Les Béatitudes (Mt 5, 1-12)",
+      "textFr": "Jésus enseigne sur la montagne qui est vraiment heureux : les personnes au cœur doux, celles qui partagent et celles qui font la paix. Lisez le passage dans la traduction que le conseil a choisie.",
+      "textEn": "Jesus teaches on the mountain who is truly happy: people who are gentle, who share and who make peace. Read the passage in the translation the board has chosen.",
+      "gradeMin": "1",
+      "gradeMax": "8",
+      "liturgicalSeason": null,
+      "tags": ["paix", "bonheur", "partage"],
+      "sourceNote": "Résumé original d’IP Lynx et référence du passage seulement (aucun texte biblique), à vérifier par le conseil."
+    }
+  ]
+}

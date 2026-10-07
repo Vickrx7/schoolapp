@@ -3342,6 +3342,9 @@
         "imported": "Resource pack imported",
         "exported": "Resource pack exported"
       },
+      "catholic_references": {
+        "imported": "Catholic references imported"
+      },
       "library_bulk_run": {
         "planned": "Bulk generation planned",
         "started": "Bulk generation started",

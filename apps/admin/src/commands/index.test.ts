@@ -60,6 +60,7 @@ describe('admin commands', () => {
         'set-library-reviewer',
         'list-library-reviewers',
         'import-curriculum',
+        'import-references',
         ...PHASE_5,
         ...PHASE_6,
       ]),

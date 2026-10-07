@@ -187,10 +187,11 @@ select results_eq(
 -- 3. Staging and the dry run (D-100)
 -- ---------------------------------------------------------------------------------------
 
--- Two references of board A share a title: an item naming it cannot be linked.
+-- Two shared references have the same type and title (a board has one at most since
+-- 20270210090000, D-146), and board A has none: an item naming it cannot be linked.
 insert into public.catholic_references (board_id, type, title, text_fr) values
-  (tests.id('board_a'), 'virtue', 'Le pardon', 'Pardonner.'),
-  (tests.id('board_a'), 'virtue', 'Le pardon', 'Demander pardon.');
+  (null, 'virtue', 'Le pardon', 'Pardonner.'),
+  (null, 'virtue', 'Le pardon', 'Demander pardon.');
 
 -- Pack « essai » 2026.1: 11 items.
 select tests.keep_report('essai-1-items', jsonb_build_array(
@@ -284,7 +285,7 @@ select is(
 );
 select is(
   tests.pack_warnings(tests.report('preview-1'), 'reflexion'), array['referenceAmbiguous'],
-  'a Catholic reference whose title the board has twice is not linked, with a warning'
+  'a Catholic reference found twice (here, among the shared ones) is not linked, with a warning'
 );
 select is(
   tests.pack_warnings(tests.report('preview-1'), 'matiere-inconnue'), array['subjectUnknown:zzz'],

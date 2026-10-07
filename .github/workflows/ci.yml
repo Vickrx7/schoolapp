@@ -254,6 +254,19 @@ jobs:
           echo "$out"
           grep -q 'can now sign in as board_admin' <<< "$out"
 
+      - name: Catholic references load from the image's content folder (D-146)
+        run: |
+          sample=/repo/content/catholic-references/sample.json
+          out="$(docker compose run --rm -T admin import-references --board ci-smoke --file "$sample")"
+          echo "$out"
+          grep -q 'Dry run: nothing was written' <<< "$out"
+          out="$(docker compose run --rm -T admin import-references --board ci-smoke --file "$sample" --apply)"
+          echo "$out"
+          grep -q 'catholic_references.imported' <<< "$out"
+          # The same file again changes nothing.
+          out="$(docker compose run --rm -T admin import-references --board ci-smoke --file "$sample" --apply)"
+          grep -q 'Nothing was written' <<< "$out"
+
       - name: A board is deleted only after its whole audit log is exported (D-122)
         run: |
           set +e

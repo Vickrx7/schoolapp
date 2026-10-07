@@ -31,7 +31,8 @@ export const CLI_OPTIONS = {
   pooling: { type: 'string' },
   month: { type: 'string' },
   csv: { type: 'boolean' },
-  // Library reviewers and the curriculum import (commands/library.ts).
+  // Library reviewers and the curriculum import (commands/library.ts); the Catholic references'
+  // import (commands/references.ts) takes --board --file --apply --confirm-licence.
   content: { type: 'string' },
   faith: { type: 'string' },
   file: { type: 'string' },

@@ -56,7 +56,7 @@ const ACTIONS = actionsOf((fr as unknown as { audit: { actions: Tree } }).audit.
 
 describe('audit sentences (D-103)', () => {
   it('format every action in both languages, whatever the details hold', () => {
-    expect(ACTIONS.length).toBe(61);
+    expect(ACTIONS.length).toBe(62);
     for (const action of ACTIONS) {
       const variants: AuditRow['details'][] = [
         {},

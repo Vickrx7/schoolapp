@@ -30,6 +30,12 @@
  * Français summaries, unverified):
  *   pnpm admin import-curriculum --file tools/fixtures/curriculum-sample.json [--apply] [--confirm-licence]
  *
+ * Catholic references of a board (see DECISIONS.md, D-146; docs/catholic-references.md). A dry
+ * run unless --apply; each reference is matched by type and title, created or updated, and the
+ * board's other references are kept. content/catholic-references/sample.json is an example
+ * (fictional, to check):
+ *   pnpm admin import-references --board csc-exemple --file content/catholic-references/sample.json [--apply]
+ *
  * Library growth (Phase 5; each command's usage is at the top of its module): the coverage
  * report (commands/coverage.ts), bulk generation (commands/bulk.ts) and content packs
  * (commands/packs.ts).

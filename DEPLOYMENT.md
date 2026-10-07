@@ -313,14 +313,20 @@ plans' « Moment de foi » are empty.
 ```bash
 # Curriculum (paraphrased samples, flagged « À vérifier »; a dry run without --apply):
 docker compose run --rm admin import-curriculum --file /repo/content/curriculum/fra-2023-3e.json --apply
+# The board's Catholic references (docs/catholic-references.md), mounted into the container:
+docker compose run --rm -v "$PWD/references.json:/tmp/references.json:ro" admin import-references \
+  --board csc-exemple --file /tmp/references.json --apply
 # Library resources from a content pack (docs/content-packs.md), mounted into the container:
 docker compose run --rm -v "$PWD/pack.json:/tmp/pack.json:ro" admin import-pack --board csc-exemple \
   --file /tmp/pack.json --apply [--approve --approver conseillere@conseil.ca]
 ```
 
-Official curriculum text needs permission first (`--confirm-licence`, D-070). There is no command
-yet to load Catholic references: IP Lynx adds the board's references with `psql` as the database
-owner, recording the access first.
+Official curriculum text needs permission first (`--confirm-licence`, D-070); so do texts copied
+from a Bible or liturgical translation, published prayers or the Catholic graduate expectations
+(D-030). Each import is a dry run without `--apply`; record the access first (section 10). The
+board's references come from its own file: `/repo/content/catholic-references/sample.json` holds
+fictional examples to try the command, not texts for a board. Load the references before a
+content pack whose resources name them.
 
 ### 3.9 External monitoring
 
