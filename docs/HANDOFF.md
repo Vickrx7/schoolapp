@@ -895,10 +895,13 @@ our recommended defaults, which Mike can still change (`docs/phase-3.md`, `docs/
   caught by the teacher at the preview, except after a title in « Traduire en anglais (IA) » and a
   comment bank's note.
 - **Historical figures** who share a student's first name get replaced, then restored.
-- **Very short names** that match a French word once accents are removed (« Tú », « Lê », « An »)
-  replace that word everywhere. A student named « Tú » would make the last check refuse every
-  request for that school (the prompt begins with « Tu aides »). Fix: match such names only with
-  their exact accents.
+- **Very short names** (fewer than three letters) are matched alone only with their exact
+  accents, in any case (D-145): « tu » and « le » stay words for a student named « Tú » or « Lê »,
+  and the last check no longer refuses every request of their school. « Tu » typed for « Tú » is
+  not replaced (the teacher sees it unhighlighted). A very short name spelled like a short word
+  (« An ») is matched only when capitalized, at a sentence's start too: a student whose roster
+  writes « Tu » or « Le » without accents would still make the last check refuse every request
+  for that school (the prompts start sentences with « Tu » and « Le »).
 - **Very short parts of staff names and particles** are replaced on their own only after an
   honorific (« Mme Lê »).
 - **The budget is a soft limit:** checked when a request is made and again when the worker starts

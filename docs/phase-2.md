@@ -96,7 +96,8 @@ pnpm admin ai-usage --board <board> [--month 2026-10] [--csv]
 - **Historical figures** who share a student's first name are replaced, then restored.
 - **Very short names** that match a French word once accents are removed (« Tú », « Lê », « An »)
   replace that word everywhere. A student named « Tú » would make the last check refuse every
-  request from that school, because the prompt begins with « Tu aides ».
+  request from that school, because the prompt begins with « Tu aides ». (Fixed later, D-145:
+  such names are matched only with their exact accents, and « An » only when capitalized.)
 - **Very short parts of staff names and particles** (« Lê », « Au », « Jo »; « De », « La ») are
   replaced on their own only after an honorific (« Mme Lê »): alone they are everyday words. The
   full name, and « De Grandpré » or « La Salle » capitalized, are still replaced.

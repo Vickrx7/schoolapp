@@ -6,6 +6,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { differentiateFeature, type DifferentiateInput } from './features/differentiate';
 import { priceFor } from './pricing';
+import { loadPrompt } from './prompts';
 import { createFakeProvider } from './providers';
 import { checkOutput, prepareCall, runFeature, sentHash } from './run';
 import type { AiProvider, FeatureDefinition, ProviderRequest } from './types';
@@ -74,6 +75,30 @@ const REFUSED: { name: string; input: unknown; code: 'invalidInput' | 'personalI
 ];
 
 describe('prepareCall', () => {
+  it('sends a request from a school with a student named « Tú », whose prompt says « Tu » (D-145)', async () => {
+    const systemPrompt = await loadPrompt('differentiate', 'v1');
+    const prepared = prepareCall(
+      differentiateFeature,
+      { ...input, text: 'Tu observes un castor avec Tú et Lê. Le castor a un an.' },
+      {
+        systemPrompt,
+        people: [
+          ...people,
+          ...['Tú', 'Lê', 'An'].map((name) => ({ name, kind: 'student' as const })),
+        ],
+        now: NOW,
+      },
+    );
+    if (!prepared.ok) throw new Error(`refused: ${prepared.problems.join(', ')}`);
+    expect(prepared.system).toBe(systemPrompt);
+    expect(prepared.user).toContain(
+      'Tu observes un castor avec Élève B et Élève C. Le castor a un an.',
+    );
+    expect(prepared.redactor.restore(prepared.input.text)).toBe(
+      'Tu observes un castor avec Tú et Lê. Le castor a un an.',
+    );
+  });
+
   it.each(REFUSED)(
     'refuses $name exactly as runFeature does, and nothing is sent',
     async ({ input: raw, code }) => {

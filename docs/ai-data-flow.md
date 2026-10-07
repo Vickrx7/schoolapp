@@ -343,6 +343,12 @@ markers), no English text, no event notes and nothing from another message.
   case. Letters such as ł, ø, đ, ı, æ, œ and ß also match their plain form (« Łukasz » and
   « Lukasz »), and names in any alphabet are matched (« Анна », « 李明 »). The words of a name may
   be separated by spaces, any kind of hyphen or dash, apostrophes or underscores.
+- **Very short names, only as spelled.** A name shorter than three letters (« Tú », « Lê ») is
+  matched on its own only with its exact accents, in any case: « TÚ » and « tú » are replaced,
+  « tu » and « le » stay words (D-145). After an honorific, a staff member's is matched with or
+  without them (« Mme Le »). A very short name spelled like a short French or English word
+  (« An », or « Tu » in a roster without accents) is matched only when capitalized: « un an »
+  stays.
 - **Staff by any part of their name.** « Mme Tremblay », « Madame Isabelle », « Tremblay » or
   « Isabelle » alone, and each half of a compound name: « Mme Gagnon » or « Roy » for Anne
   Gagnon-Roy, « Jean » for Jean-François Bélanger.
@@ -439,10 +445,13 @@ can require its own approved cloud account or a model hosted in Canada instead (
   Pierre) is not replaced; the preview shows it unhighlighted.
 - A name disguised with punctuation (« Lé.a ») is not replaced in the preview, but the last check
   refuses to send it.
-- Very short names that match a French word once accents are removed (« Tú » and « tu », « Lê »
-  and « le ») also replace that word everywhere. A student named « Tú » would make the last check
-  refuse every request from that school, because the instructions sent to the AI begin with
-  « Tu aides ».
+- A very short name typed without its accents (« Tu » for a student named « Tú ») is not
+  replaced; the preview shows it unhighlighted, and the teacher removes it.
+- A very short name spelled like a short word is still replaced when capitalized, at the start of
+  a sentence too (« An », or « Tu » in a roster without accents). A student whose roster writes
+  « Tu », « Le », « La », « Un », « En » or « Si » without accents would still make the last check
+  refuse every request from that school, because the instructions sent to the AI start sentences
+  with those words (« Tu aides »).
 - A very short part of a staff name used alone, without an honorific (« Lê » for Minh Lê), is not
   replaced: alone it is an everyday word. The teacher sees it unhighlighted in the preview.
 - The detectors can occasionally block an ordinary text (an English title such as « 9 Supreme

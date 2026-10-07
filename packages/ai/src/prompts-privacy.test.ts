@@ -92,6 +92,14 @@ describe('system prompts and the privacy check', () => {
     ).not.toThrow();
   });
 
+  it.each(files)('%s passes the check with very short first names too (D-145)', (file) => {
+    // Without their accents they are words of every prompt (« Tu aides », « le », « un an »).
+    const names = ['Tú', 'Lê', 'An', 'Hà', 'Mỹ', 'Vũ', 'Đỗ', 'Lý', 'Ai', 'Jo', 'Li'];
+    const short = names.map((name) => ({ name, kind: 'student' as const }));
+    const text = readFileSync(path.join(promptsDir, file), 'utf8');
+    expect(() => new Redactor([...DEMO_PEOPLE, ...short]).assertSafeOutbound(text)).not.toThrow();
+  });
+
   it.each(files)('%s holds no list of character first names', (file) => {
     // The list is sent per request, less the names of people the request knows.
     const text = readFileSync(path.join(promptsDir, file), 'utf8');

@@ -380,6 +380,104 @@ describe('Redactor', () => {
     expect(r.redact(prompt).text).toBe(prompt);
   });
 
+  describe('very short names (D-145)', () => {
+    const shortRoster: KnownPerson[] = [
+      { name: 'Tú', kind: 'student' },
+      { name: 'Lê', kind: 'student' },
+      { name: 'An', kind: 'student' },
+      { name: 'Jo', kind: 'student' },
+    ];
+    const ordinary =
+      'Tu aides le groupe. Un an plus tard, tu le sais : TU LE VOIS. L’an dernier, LE TEXTE ' +
+      'disait « an apple a day ».';
+
+    it('match only as spelled, in any case: « tu » and « le » stay words', () => {
+      const r = new Redactor(shortRoster, NOW);
+      expect(r.redact(ordinary).text).toBe(ordinary);
+      expect(() => r.assertSafeOutbound(ordinary)).not.toThrow();
+      expect(r.replacements()).toEqual([]);
+      const sent = r.redact('Tú, TÚ et tú; Lê, LÊ et lê; An; Jo et jo.').text;
+      expect(sent).toBe(
+        'Élève A, Élève A et Élève A; Élève B, Élève B et Élève B; Élève C; Élève D et Élève D.',
+      );
+      // The roster's spelling comes back.
+      expect(r.restore(sent)).toBe('Tú, Tú et Tú; Lê, Lê et Lê; An; Jo et Jo.');
+    });
+
+    it('match a name spelled like a short word (« An ») only when capitalized, like Pierre', () => {
+      const r = new Redactor(shortRoster, NOW);
+      expect(r.redact('Un an plus tard, An lit.').text).toBe('Un an plus tard, Élève A lit.');
+      // Without their accents, « Tu » and « Le » in the roster are words too.
+      const plain = new Redactor(
+        [
+          { name: 'Tu', kind: 'student' },
+          { name: 'Le', kind: 'student' },
+        ],
+        NOW,
+      );
+      expect(plain.redact('tu le sais, Tú et Lê aussi. Tu et Le lisent.').text).toBe(
+        'tu le sais, Tú et Lê aussi. Élève A et Élève B lisent.',
+      );
+    });
+
+    it('are found by the last check only as spelled', () => {
+      const r = new Redactor(shortRoster, NOW);
+      for (const text of ['Tú lit.', 'TÚ lit.', 'Merci, lê.', 'An lit.', 'jo lit.']) {
+        expect(() => r.assertSafeOutbound(text), text).toThrow(PrivacyViolation);
+        expect(r.mentionsKnownPerson(text), text).toBe(true);
+      }
+      for (const text of ['Tu lis.', 'tu lis.', 'Le chat.', 'un an']) {
+        expect(() => r.assertSafeOutbound(text), text).not.toThrow();
+        expect(r.mentionsKnownPerson(text), text).toBe(false);
+      }
+    });
+
+    it('show « tu » unhighlighted in the preview, and « Tú » as a marker', () => {
+      const r = new Redactor(shortRoster, NOW);
+      expect(r.redact('Tu dis bravo à Tú.').segments).toEqual([
+        { text: 'Tu dis bravo à ' },
+        { text: 'Élève A', placeholder: 'Élève A' },
+        { text: '.' },
+      ]);
+    });
+
+    it('no longer make the last check refuse the real prompt, which begins with « Tu aides »', async () => {
+      const prompt = await loadPrompt('differentiate', 'v1');
+      expect(prompt.startsWith('Tu aides')).toBe(true);
+      const more = ['Hà', 'Mỹ', 'Vũ', 'Đỗ', 'Lý', 'Ai'];
+      const r = new Redactor(
+        [...shortRoster, ...more.map((name) => ({ name, kind: 'student' as const }))],
+        NOW,
+      );
+      expect(() => r.assertSafeOutbound(prompt)).not.toThrow();
+      expect(r.redact(prompt).text).toBe(prompt);
+    });
+
+    it('keep the accent-free match after an honorific and for longer names', () => {
+      const r = new Redactor(
+        [
+          { name: 'Minh Lê', kind: 'staff' },
+          { name: 'Bảo', kind: 'student' },
+          { name: 'Léo', kind: 'student' },
+        ],
+        NOW,
+      );
+      expect(
+        r.redact('Mme Le, M. LÊ et Minh Le parlent à bao, LEO et Léo; le chat dort.').text,
+      ).toBe('Adulte A, Adulte A et Adulte A parlent à Élève A, Élève B et Élève B; le chat dort.');
+      expect(() => r.assertSafeOutbound('Mme Le parle.')).toThrow(PrivacyViolation);
+      expect(() => r.assertSafeOutbound('Bao lit.')).toThrow(PrivacyViolation);
+    });
+
+    // Known limit (docs/HANDOFF.md § 7): a roster name without its accents that is a word the
+    // prompts capitalize at a sentence's start (« Tu », « Le ») still matches there.
+    it('still match « Tu » at a sentence’s start when the roster writes it without its accent', async () => {
+      const prompt = await loadPrompt('differentiate', 'v1');
+      const r = new Redactor([{ name: 'Tu', kind: 'student' }], NOW);
+      expect(() => r.assertSafeOutbound(prompt)).toThrow(PrivacyViolation);
+    });
+  });
+
   it('works with an empty roster', () => {
     const r = new Redactor([], NOW);
     expect(r.redact('Bonjour la classe').text).toBe('Bonjour la classe');
