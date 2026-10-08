@@ -68,7 +68,9 @@ export async function requestLoginCode(rawEmail: string): Promise<SignInResult> 
   if (!email.success) return fail('invalid');
 
   const ip = await requestClientIp();
-  const supabase = await createSupabaseServerClient({ headers: authRateLimitHeaders(ip) });
+  const supabase = await createSupabaseServerClient({
+    headers: authRateLimitHeaders(ip, serverEnv().AUTH_CLIENT_IP_HEADER_ENABLED),
+  });
   const held = await throttled(supabase, 'request', email.data, ip);
   if (held) return held;
   const { error } = await supabase.auth.signInWithOtp({
@@ -110,7 +112,9 @@ export async function verifyLoginCode(
   if (!email.success || !code.success) return fail('invalidCode');
 
   const ip = await requestClientIp();
-  const supabase = await createSupabaseServerClient({ headers: authRateLimitHeaders(ip) });
+  const supabase = await createSupabaseServerClient({
+    headers: authRateLimitHeaders(ip, serverEnv().AUTH_CLIENT_IP_HEADER_ENABLED),
+  });
   const held = await throttled(supabase, 'verify', email.data, ip);
   if (held) return held;
   const { data, error } = await supabase.auth.verifyOtp({
@@ -139,7 +143,10 @@ export async function confirmLoginLink(formData: FormData): Promise<void> {
   if (!/^[A-Za-z0-9_-]{10,200}$/.test(tokenHash)) redirect('/auth/confirm?error=1');
 
   const supabase = await createSupabaseServerClient({
-    headers: authRateLimitHeaders(await requestClientIp()),
+    headers: authRateLimitHeaders(
+      await requestClientIp(),
+      serverEnv().AUTH_CLIENT_IP_HEADER_ENABLED,
+    ),
   });
   const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: 'email' });
   if (!error) {

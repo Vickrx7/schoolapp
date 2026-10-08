@@ -107,6 +107,12 @@ export const webServerEnvSchema = z.preprocess(
      */
     TRUSTED_PROXY_HOPS: z.coerce.number().int().min(0).max(5).default(1),
     /**
+     * Board-hosted only (D-121): pass the client's address to the self-hosted Supabase Auth, for
+     * its per-address limits. Off by default, so a hosted install never sends a person's address
+     * to Supabase's servers.
+     */
+    AUTH_CLIENT_IP_HEADER_ENABLED: bool.default(false),
+    /**
      * Direct Postgres connection for class devices (« Quiz sur les appareils »), as the database
      * role lynx_class_portal (DECISIONS D-083), kept apart from the substitute portal's. Server-only.
      * Unset: quizzes on devices are off, and « Présenter à la classe » still works.

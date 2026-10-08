@@ -5,12 +5,16 @@
 #
 # 1. checks out the tag; 2. builds both images (APP_RELEASE from the tag); 3. stops web and worker;
 # 4. takes a backup of the install as it stands, the previous release's (UPGRADE_WITHOUT_BACKUP=yes
-# skips it); 5. starts everything again: `migrate` runs first and takes a backup when migrations
+# skips it, and so does an evaluation install: no BACKUP_AGE_RECIPIENT and MIGRATE_WITHOUT_BACKUP=yes
+# in .env); 5. starts everything again: `migrate` runs first and takes a backup when migrations
 # are pending; 6. checks that the web server is ready. Evenings and weekends only, never
 # 05:30–09:00 on a school day. Rolling back means the previous tag plus a restore of the backup of
 # step 4. Not migrate's: board-hosted, step 5 starts the release's Auth first, which applies its
 # own migrations, and restore.sh refuses that backup on the previous release's older Auth.
 set -euo pipefail
+
+# A setting from .env, as Compose reads it (KEY=value, the last line wins); empty when absent.
+env_setting() { sed -n "s/^$1=//p" .env 2>/dev/null | tail -n 1; }
 
 # Read whole before running: the checkout below may change this very file.
 main() {
@@ -33,6 +37,9 @@ main() {
   # (--no-deps: the running ones, never new ones); the manifest names that release.
   if [[ "${UPGRADE_WITHOUT_BACKUP:-}" == yes ]]; then
     echo "upgrade: UPGRADE_WITHOUT_BACKUP=yes: no backup of $previous first"
+  elif [[ -z "$(env_setting BACKUP_AGE_RECIPIENT)" && "$(env_setting MIGRATE_WITHOUT_BACKUP)" == yes ]]; then
+    # An evaluation install (generate-secrets.mjs --ci) holds invented data and has no backup key.
+    echo "upgrade: no backup key and MIGRATE_WITHOUT_BACKUP=yes (an evaluation install): no backup first"
   else
     echo "upgrade: a backup of $previous first (the one to restore if you roll back)"
     if ! docker compose run --rm --no-deps -e APP_RELEASE="$previous" backup; then

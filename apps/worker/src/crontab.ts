@@ -8,6 +8,8 @@ export const CRONTAB_LINES: readonly string[] = [
   '17 * * * * ai_maintenance ?jobKey=ai_maintenance',
   // Daily substitute access retention (old codes, sign-in attempts, report notes).
   '43 3 * * * sub_access_maintenance ?jobKey=sub_access_maintenance',
+  // Substitute plans whose refresh gave up stay marked: wake the worker for them again.
+  '*/15 * * * * sub_plan_sweep ?jobKey=sub_plan_sweep',
   // Class mode (D-089): expired sessions lose their answers even if nobody calls again.
   '*/5 * * * * class_mode_maintenance ?jobKey=class_mode_maintenance',
   // Bulk generation (D-095): submits, cancels and collects batches; also woken by its events.

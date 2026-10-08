@@ -1,0 +1,159 @@
+Lynx École commercial, en voice-over (Kokoro af_heart, en-us, speed 0.97)
+
+[  0.60s –   8.97s] 1. papers (chapter 0), scene 0.00–10.08s
+    VO:      Lesson plans. Sub plans. Report cards. The note home on Friday. A teacher's year runs on a thousand pieces of paper.
+    caption: Lesson plans. Sub plans. Report cards. The note home on Friday. / A teacher's year runs on a thousand pieces of paper.
+
+[ 11.28s –  17.70s] 2. title (chapter 0), scene 10.08–18.67s
+    VO:      Lynx École puts it all in one place. It's made for Ontario's French-language Catholic elementary schools.
+    caption: Lynx École puts it all in one place. / Made for Ontario's French-language Catholic elementary schools.
+
+[ 20.57s –  30.06s] 3. today (chapter 1), scene 18.67–30.58s
+    VO:      Your day starts on Today: every period and every routine, from morning prayer and O Canada to the next lesson in each subject, straight from your own planning.
+    caption: Your day starts on Today: every period, every routine, || from morning prayer and O Canada to the next lesson in each subject, / straight from your own planning.
+
+[ 31.18s –  37.48s] 4. calendar (chapter 1), scene 30.58–38.00s
+    VO:      P.A. day, school mass, early dismissal for parent-teacher interviews: your day adjusts on its own.
+    caption: PA day, school mass, early dismissal for parent-teacher interviews: / your day adjusts on its own.
+
+[ 38.70s –  44.92s] 5. taught (chapter 1), scene 38.00–45.50s
+    VO:      Taught it? One tap on Lesson taught, and your plan moves ahead. Changed your mind? Undo is one tap too.
+    caption: Taught it? One tap on Lesson taught, and your plan moves ahead. / Changed your mind? Undo is one tap too.
+
+[ 45.90s –  52.63s] 6. timetable (chapter 1), scene 45.50–53.17s
+    VO:      Weekly schedules or rotating days, rotary periods, combined grades: it follows your real timetable.
+    caption: Weekly schedules or rotating days, rotary periods, combined grades: / it follows your real timetable.
+
+[ 55.07s –  59.33s] 7. unit (chapter 2), scene 53.17–59.92s
+    VO:      Plan your units lesson by lesson, and attach resources from the library.
+    caption: Plan your units lesson by lesson, / and attach resources from the library.
+
+[ 60.32s –  68.13s] 8. year (chapter 2), scene 59.92–68.67s
+    VO:      My year lays your units across the school year, week by week, next to the calendar, the report card dates and the liturgical seasons.
+    caption: My year lays your units across the school year, week by week, || next to the calendar, the report card dates and the liturgical seasons.
+
+[ 69.07s –  79.86s] 9. coverage (chapter 2), scene 68.67–80.42s
+    VO:      Coverage shows, for each curriculum expectation loaded in the app, what you've taught, what's planned, and what isn't planned yet. And your long-range plan prints as a P.D.F.
+    caption: Coverage shows, for each curriculum expectation loaded in the app, / what you've taught, what's planned, and what isn't planned yet. || And your long-range plan prints as a PDF.
+
+[ 82.32s –  87.51s] 10. library (chapter 3), scene 80.42–88.08s
+    VO:      The resource bank is in French, searchable, and filed by curriculum expectation.
+    caption: The resource bank is in French, searchable, / and filed by curriculum expectation.
+
+[ 88.48s –  94.07s] 11. versions (chapter 3), scene 88.08–94.58s
+    VO:      A resource can have a version for each language level, and the student sheet never prints a level name.
+    caption: A resource can have a version for each language level, / and the student sheet never prints a level name.
+
+[ 94.98s – 101.97s] 12. review (chapter 3), scene 94.58–102.50s
+    VO:      Before a resource is shared with the whole board, people your board names approve it, and faith content gets its own review.
+    caption: Before a resource is shared with the whole board, people your board names / approve it, and faith content gets its own review.
+
+[102.90s – 115.27s] 13. differentiate (chapter 3), scene 102.50–116.33s
+    VO:      Need the same text at several language levels? Differentiate asks the A.I. Before anything is sent, you see exactly what goes out: the names the app knows are replaced, and you remove any others.
+    caption: Need the same text at several language levels? Differentiate asks the AI. || Before anything is sent, you see exactly what goes out: / the names the app knows are replaced, and you remove any others.
+
+[116.73s – 125.11s] 14. aicontrols (chapter 3), scene 116.33–125.67s
+    VO:      The A.I. stays off until the principal turns it on. Only staff use it, never students, and a board can forbid it in all its schools.
+    caption: The AI stays off until the principal turns it on. || Only staff use it, never students, / and a board can forbid it in all its schools.
+
+[127.77s – 134.33s] 15. projector (chapter 4), scene 125.67–134.92s
+    VO:      Present to the class: a quiz on the projector, one question at a time, and the answer only when you ask for it.
+    caption: Present to the class: a quiz on the projector, one question at a time, / and the answer only when you ask for it.
+
+[135.32s – 141.66s] 16. tablets (chapter 4), scene 134.92–142.25s
+    VO:      Students can answer on the class tablets with a code. No student accounts: each device is just a number.
+    caption: Students can answer on the class tablets with a code. / No student accounts: each device is just a number.
+
+[144.75s – 148.24s] 17. sick (chapter 5), scene 142.25–149.17s
+    VO:      Six a.m., and you wake up sick? Two taps on your phone.
+    caption: 6 a.m., and you wake up sick? / Two taps on your phone.
+
+[149.57s – 159.07s] 18. plan (chapter 5), scene 149.17–159.58s
+    VO:      Your substitute plan builds itself from where each class left off: the next lessons, the groups by language level, the routines, and the office's phone number.
+    caption: Your substitute plan builds itself from where each class left off: || the next lessons, the groups by language level, the routines, / and the office's phone number.
+
+[159.98s – 166.24s] 19. released (chapter 5), scene 159.58–166.83s
+    VO:      Look it over if you like. It goes out on its own at seven thirty, the default time, or sooner if you choose.
+    caption: Look it over if you like. It goes out on its own at 7:30, / the default time, or sooner if you choose.
+
+[167.23s – 171.72s] 20. code (chapter 5), scene 166.83–172.25s
+    VO:      The office gives the substitute a code for that day only. No account needed.
+    caption: The office gives the substitute a code for that day only. / No account needed.
+
+[172.65s – 178.00s] 21. subphone (chapter 5), scene 172.25–178.58s
+    VO:      On their phone, the substitute sees what's happening now, and what comes next, all day long.
+    caption: On their phone, the substitute sees what's happening now, / and what comes next, all day long.
+
+[178.98s – 188.41s] 22. alerts (chapter 5), scene 178.58–188.92s
+    VO:      If your principal turns them on, medical alerts are encrypted and appear only when tapped. A code opens them for whoever holds it, so every view is logged.
+    caption: If your principal turns them on, medical alerts are encrypted and appear only when tapped. || A code opens them for whoever holds it, / so every view is logged.
+
+[189.32s – 193.08s] 23. report (chapter 5), scene 188.92–193.67s
+    VO:      At the end of the day, the substitute sends a report of what got done.
+    caption: At the end of the day, / the substitute sends a report of what got done.
+
+[194.07s – 197.77s] 24. confirm (chapter 5), scene 193.67–198.33s
+    VO:      It's waiting for you the next morning. You read it, and you confirm it.
+    caption: It's waiting for you the next morning. / You read it, and you confirm it.
+
+[200.23s – 206.64s] 25. bulletins (chapter 6), scene 198.33–207.17s
+    VO:      Report cards: build each student's comment from your board's comment banks, expectation by expectation.
+    caption: Report cards: build each student's comment from your board's comment banks, / expectation by expectation.
+
+[207.57s – 212.79s] 26. ondevice (chapter 6), scene 207.17–213.33s
+    VO:      Those comments are written in your browser. They're never sent to our servers, or to the A.I.
+    caption: Those comments are written in your browser. / They're never sent to our servers, or to the AI.
+
+[213.73s – 220.99s] 27. infoparents (chapter 6), scene 213.33–221.58s
+    VO:      Info-parents drafts your weekly message to families from your class's own week, in French and in English, side by side.
+    caption: « Info-parents » drafts your weekly message to families from your class's own week, / in French and in English, side by side.
+
+[221.98s – 227.03s] 28. print (chapter 6), scene 221.58–227.58s
+    VO:      You read it over, then copy it or print it. The app itself sends nothing to families.
+    caption: You read it over, then copy it or print it. / The app itself sends nothing to families.
+
+[229.48s – 237.62s] 29. direction (chapter 7), scene 227.58–238.17s
+    VO:      For the principal, seven forty-five at a glance: today's absences, each plan's status, the codes issued, and the reports received.
+    caption: For the principal, 7:45 at a glance: today's absences, each plan's status, / the codes issued, and the reports received.
+
+[238.57s – 244.33s] 30. audit (chapter 7), scene 238.17–244.92s
+    VO:      The audit log shows every alert read, with the code used, and flags the codes the office issued.
+    caption: The audit log shows every alert read, with the code used, / and flags the codes the office issued.
+
+[245.32s – 250.67s] 31. yours (chapter 7), scene 244.92–251.25s
+    VO:      And teachers' planning stays theirs: the dashboard never shows units, lessons or progress.
+    caption: And teachers' planning stays theirs: / the dashboard never shows units, lessons or progress.
+
+[253.15s – 258.12s] 32. staff (chapter 8), scene 251.25–258.67s
+    VO:      The board invites its staff, assigns their roles, and can remove a person's access.
+    caption: The board invites its staff, assigns their roles, / and can remove a person's access.
+
+[259.07s – 266.41s] 33. board (chapter 8), scene 258.67–266.92s
+    VO:      It sees A.I. use school by school, the system's health, and what's erased each night once its retention period ends.
+    caption: It sees AI use school by school, the system's health, / and what's erased each night once its retention period ends.
+
+[267.32s – 274.44s] 34. hosting (chapter 8), scene 266.92–275.25s
+    VO:      Lynx École is designed to be hosted in Canada, or on your board's own servers, with encrypted, signed backups.
+    caption: Lynx École is designed to be hosted in Canada, or on your board's own servers, / with encrypted, signed backups.
+
+[277.15s – 287.58s] 35. privacy (chapter 9), scene 275.25–288.42s
+    VO:      Privacy comes first: students are first names only, sensitive access is logged, report card comments stay on your device, and students never use the A.I.
+    caption: Privacy comes first: students are first names only, sensitive access is logged, / report card comments stay on your device, and students never use the AI.
+
+[290.32s – 297.19s] 36. start (chapter 10), scene 288.42–297.75s
+    VO:      Your first sign-in comes with a short checklist, and a sample class you can add to try things out without touching your real one.
+    caption: Your first sign-in comes with a short checklist, and a sample class / you can add to try things out without touching your real one.
+
+[298.15s – 304.88s] 37. bilingual (chapter 10), scene 297.75–305.42s
+    VO:      It's in French first, with English on the sign-in page or in your profile, on a phone, a tablet or a computer.
+    caption: In French first, with English on the sign-in page or in your profile, / on a phone, a tablet or a computer.
+
+[305.82s – 310.29s] 38. feedback (chapter 10), scene 305.42–310.83s
+    VO:      And there's a feedback button on every page, because this pilot is being built with you.
+    caption: And there's a feedback button on every page, / because this pilot is being built with you.
+
+[311.23s – 317.31s] 39. end (chapter 0), scene 310.83–320.42s
+    VO:      Lynx École. Less paperwork, more teaching. It's a pilot build, not online yet. Join the pilot.
+    caption: Lynx École. Less paperwork, more teaching. / A pilot build, not online yet. Join the pilot.
+
+Total 320.42s, 39 scenes, 3845 frames at 12 fps

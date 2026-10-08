@@ -10,15 +10,28 @@ no account.
 
 ## Before the demo
 
-1. Reset the demo data and start everything (`docs/HANDOFF.md` § 3):
+1. Install it with Docker, as a board would (`DEPLOYMENT.md` § 4), in its evaluation settings:
+   localhost, Caddy's own certificate, a mail catcher for the sign-in codes, the fake AI provider
+   and the invented demo data. Docker 24 or later with the Compose plugin, and Node.js 22.
 
    ```bash
-   tools/lite-stack/stack.sh reset
-   pnpm --filter @lynx/web build && (cd apps/web && pnpm start)        # http://localhost:3000
-   (cd apps/worker && set -a && . ../web/.env.local; set +a && AI_PROVIDER=fake pnpm start)
+   git clone https://github.com/Vickrx7/schoolapp lynx-ecole && cd lynx-ecole
+   git checkout v0.6.0          # the release being shown (`main` until a release is tagged)
+   cd deploy/docker
+   node generate-secrets.mjs --ci                 # .env: evaluation settings, MIGRATE_WITHOUT_BACKUP=yes
+   APP_RELEASE=0.6.0 docker compose build
+   docker compose up -d --wait
+   # The demo data (invented people), then migrate again for the portal logins it changes:
+   docker compose run --rm --no-deps --entrypoint bash migrate -c \
+     'set -e; for f in supabase/seed.sql supabase/seeds/*.sql; do psql "$MIGRATIONS_DATABASE_URL" -X -q -v ON_ERROR_STOP=1 --single-transaction -f "$f"; done'
+   docker compose run --rm --no-deps migrate
    ```
 
-   The worker must run with the fake AI provider: nothing leaves the laptop.
+   The app is at `https://localhost` (accept the certificate warning once: it is Caddy's own).
+   The worker runs with the fake AI provider: nothing leaves the laptop. An evaluation install
+   holds invented data only, so it upgrades without a backup key (`./upgrade.sh <tag>`). Never
+   load the demo data into an install with real people. (Developers can still use the lite stack,
+   `docs/HANDOFF.md` § 3; `apps/web/e2e/demo.spec.ts` runs on it.)
 
 2. As Sophie, « École » → « Activer l'IA » (AI is off until the principal turns it on).
 3. As Isabelle, « Classes » → 3e année → « Élèves » → « Alerte de sécurité ou médicale » → add an
@@ -160,8 +173,10 @@ same thing on its own servers."
 
 ## After the demo
 
-`tools/lite-stack/stack.sh reset` puts the demo data back as it was (the alert, the absence, the
-invited teacher and her sample class go).
+To put the demo data back as it was (the alert, the absence, the invited teacher and her sample
+class go), start again from an empty database: `docker compose down -v`, then
+`docker compose up -d --wait` and the two demo data commands of « Before the demo ». (On the lite
+stack: `tools/lite-stack/stack.sh reset`.)
 
 ## Questions boards often ask
 
