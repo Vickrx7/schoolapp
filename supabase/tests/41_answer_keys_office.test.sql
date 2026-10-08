@@ -88,7 +88,7 @@ grant execute on function tests.reads(text[]) to authenticated;
 -- ---------------------------------------------------------------------------------------
 
 select results_eq(
-  $$select policyname::text, cmd from pg_policies
+  $$select policyname::text collate "default", cmd from pg_policies
     where schemaname = 'public' and tablename = 'library_item_answer_keys'$$,
   $$values ('library_item_answer_keys_select', 'SELECT')$$,
   'the keys have one policy, for reading'
