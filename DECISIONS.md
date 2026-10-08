@@ -351,6 +351,8 @@ before any call (`packages/ai/src/privacy.ts`):
   D'Amour) is matched alone only when capitalized. Particles and parts shorter than three letters
   (« Lê », « Au », « Tạ ») are matched alone only after an honorific (« Mme Lê »), so a staff
   member's name can't turn « de », « la » or « au » into a name everywhere.
+  _Amended (D-145): a name shorter than three letters is matched on its own only with its exact
+  accents; one spelled like a two-letter word only when capitalized._
 - Text is normalized before any check (invisible characters removed, hyphens inside words made
   plain), and the normalized text is what is sent.
 - Emails, phone numbers, long identifiers (OEN, health card), postal codes, street addresses in
@@ -756,6 +758,8 @@ links to the item, so office staff and substitutes never receive one. Staff who 
 can read its keys through the API (they are not personal data). _Why:_ SPEC §9.3 and §11; a rule
 enforced by table and by function signature can be tested.
 
+_Amended (D-149): keys only for the author, the board's reviewers, and the teachers and direction the sharing reaches._
+
 **D-063 — Library content is written only through database functions (amends D-012).**
 `authenticated` keeps `select` on the library tables and the author's `delete` of drafts,
 sent-back and archived items; it has no `insert` or `update` on `library_items` and no write on
@@ -863,6 +867,8 @@ Phase 5:_ the board's own items are those marked `board_owned` (the seed's board
 drafts and pack imports), which its content reviewers read, edit and keep at any status;
 approving one makes it board-shared, and until then it is private; an item whose author was
 deleted is not the board's and stays unreadable (D-091).
+
+_Amended (D-149): office and facilities staff still read shared items through the API, but not their answer keys._
 
 **D-066 — Sharing: reviewed items only, a first-name guard with a confirmation per name, board
 levels only (Assumption).** Only reviewed items are shared. Before sharing, proposing to the board
@@ -2291,6 +2297,8 @@ logs the statements of its first start, its own `ALTER USER supabase_admin WITH 
 (our first-start script turns that logging off for its own statements; the journal keeps it 14
 days).
 
+_Amended (D-148): Dependabot proposes monthly updates of the pinned images, which CI tests and IP Lynx releases; `upgrade.sh` backs up before starting a release._
+
 **D-115 — Backups: nightly encrypted logical dumps; Supabase's own backups remain the primary path
 on hosted; restores are tested in CI (Assumption: RPO 24 h, RTO 4 h, 30 days).**
 `deploy/backup/backup.sh` dumps the data of `public` and `auth` (without `auth.schema_migrations`,
@@ -3333,6 +3341,51 @@ app does not recognize the names it does not know and that the teacher removes t
 true with the title rule. `PRIVACY.md` (release 0.9, change log) says the same. _Why:_ the owner's
 rule and the lawyer's review need texts that state what the code does, including its limits; a
 promise the code cannot keep is worse than a narrower one it keeps.
+
+## Production readiness (2026-10-08)
+
+Five gaps from `docs/HANDOFF.md` § 7 and `docs/phase-6.md` « What remains » that needed no decision from Mike, each built, reviewed by a second agent and fixed, then tested together (unit, pgTAP, integration, generated types) on branch `claude/production-readiness`.
+
+**D-145 — Very short names are matched only as spelled (amends D-038).** A name shorter than three letters, ideographs aside, is matched on its own only with its exact accents, in any case. This is the threshold D-038 already uses for parts of staff names (`veryShort` in `packages/ai/src/privacy.ts`). For a student « Tú », « Tú », « TÚ » and « tú » are replaced; « tu » and « TU » are not. « Lê » is never « le ». The first pass, the last check before sending (`assertSafeOutbound`) and `mentionsKnownPerson` all use this rule. So do the previews and the other users of the redactor: the first-name guard, pilot feedback, the students' activity sheets and the pack export. The preview therefore never promises more than the worker does. After an honorific (« Mme Le », « M. LÊ »), a staff member's very short name or part still matches with or without accents, because there it cannot be the article. A very short name spelled like a two-letter French or English word (`SHORT_WORDS`: « An », or « Tu » and « Le » in a roster without accents) is matched only when capitalized, like Pierre and Claire. So « un an », « l'an dernier » and English « an » stay words. Names of three letters or more keep their matching. _Why:_ without accents « Tú » is « tu », and every prompt begins with « Tu ». A student named « Tú » made the last check refuse every AI request of that school, and a student « Lê » turned every « le » into a marker. Exact accents remove the clash. For a name with no accent, a capital letter is the only sign left that it is a name. _Limits:_ a very short name typed without its accents (« Tu » for « Tú ») is not replaced; the teacher sees it unhighlighted in the preview and removes it. A roster that writes « Tu », « Le », « La », « Un », « En » or « Si » without accents still makes the last check refuse every request, because the prompts start sentences with those words. If that happens, there are two options: new prompt versions that avoid those words at a sentence's start, or a last check that skips the fixed prompt text, which holds no input.
+
+_Amended in review (same day):_ initials written as one word follow the very short rule (« T. Ú » is « TÚ », never « tu »; a staff member's « M.-È. » only after an honorific); after an honorific, a very short whole name without its accents is matched only when capitalized (« Mme Le » is replaced, « M. le maire » stays); « Ð » and « Đ » are one letter for a very short name. _Still open:_ « Tu » and « Le » in a roster without accents refuse every request, other capitalized two-letter words (« Un », « La », « Si », « En »…) the features whose prompt starts a sentence with them, and a longer name whose accent-free form is a prompt word (« Liên » and « lien ») refuses that feature's requests (`prompts-privacy.test.ts` pins it). Fixing these needs new prompt versions or a last check that skips the fixed prompt text: a decision for Mike.
+
+**D-146 — The operator loads a board's Catholic references from a file (amends D-058; applies D-030 and D-103).** `pnpm admin import-references --board <slug> --file <x.json> [--apply] [--confirm-licence]` (`docker compose run --rm admin import-references …`) loads a board's references. It replaces adding rows with psql (DEPLOYMENT.md § 3.8).
+
+- **The file:** JSON with `sample`, `official`, a default `sourceNote`, and 1 to 500 `references`. Each reference has `type`, `title`, `textFr`, and optionally `textEn`, `gradeMin` and `gradeMax` (grade codes K1, K2, 1 to 8; every grade by default), `liturgicalSeason`, up to 12 `tags`, `sourceNote` and `active`.
+- **The check:** the CLI checks the whole file with zod before it reaches the database. Each problem names the reference by its number, type and title. A file that says `"official": true` (texts copied from a Bible or liturgical translation, published prayers or the Catholic graduate expectations) is refused without `--confirm-licence`, and the warning is printed even when confirmed (D-030). Typography is noted, not blocking.
+- **The key:** a board has one reference per type and title (unique index `catholic_references_board_type_title`). Type and title are what content packs already match on (D-100). Shared references (no board) are IP Lynx's, written by migrations only, and stay unconstrained. The migration stops, naming them, if a board already has duplicates.
+- **The import:** `public.catholic_references_import` (service role only) works in one transaction, one import at a time per board. Each reference is created, updated in place (same id, so plans and library resources keep it, and the changed fields are reported) or left unchanged. The board's references the file does not name are kept and listed. `"active": false` retires a reference; nothing is ever deleted. The dry run is the default: the same writes, rolled back. Re-importing the same file changes nothing.
+- **The audit line:** an import that writes something is recorded as `catholic_references.imported {created, updated, unchanged, file_sha256}`, actor `service`. Its catalogue entry is category `library`, audience `board`: the board's admins read « Références catholiques importées » in « Journal d'audit ». The operator still records the access first with `log-operator-access` (DEPLOYMENT.md § 10).
+- **The sample:** `content/catholic-references/sample.json` is a sample (`"sample": true`): the seed's seven references plus two originals, every text « à vérifier », scripture cited (« Mt 5, 1-12 ») and never quoted. The board's own file is what goes into production.
+
+_Why:_ without references, a new install's plans, faith links and « Info-parents » faith moments stayed empty, and psql as the database owner was neither checked nor audited for the board. Type and title already identify a reference across installs (content packs), so making them unique per board also removes the ambiguous case for a board's own references.
+
+_Assumption:_ boards provide their own texts, and IP Lynx loads shared references only through migrations.
+
+**D-147 — The operator's name on its audit entries (amends D-103, D-106, D-122).** The admin CLI reads `OPERATOR_NAME`. By default it is « IP Lynx ». It is trimmed and must be 1 to 80 characters, with no Unicode control, format, line or paragraph separator character. An invalid value stops every command before it starts (`operatorNameFrom` in `packages/config`). The CLI's service-role client sends the name with every request in the header `x-lynx-operator-name`, as base64 of its UTF-8 (a header carries ASCII only). Migration `20270210090100_operator_name.sql` adds `audit_log.operator_name`. It is nullable, and a check allows it on `service` entries only: 1 to 80 characters, no space at either end, none of the characters the CLI refuses. A `before insert` trigger (`audit_log_operator_name`) fills it from the header, only for `service` entries written by a `service_role` request. In every other case it sets null, so no other writer (a signed-in person, psql as the owner) can name the operator. A header that is not base64 of UTF-8 is refused (22023), and a name the check refuses fails the insert (23514): nothing the request did is kept. `list_audit_entries` returns the name as a `service` entry's `actor_label`, and `operator_export_audit` as its `actor_name`. « Journal d'audit », the direction's dashboard and the CSV's « Personne » column show it; `export-audit` writes it in `actor_name`. Entries written before the setting (null) read « IP Lynx » (`DEFAULT_OPERATOR_NAME`). The actor type `service` is now labelled « Gestionnaire du serveur » ("Server operator") in the filter and in the CSV's « Type ». `operator.access` reads « Accès aux données du conseil (raison) »; the actor says who. `generate-secrets.mjs --hosted` writes `OPERATOR_NAME=IP Lynx`. `--board` and `--ci` write `Service informatique du conseil`, and `--board` asks the board to put its IT team's name. `compose.yml` passes the setting to the `admin` service only, the only one that writes the operator's entries. The `docker-smoke` CI job records an access and checks that the export names the operator from `.env`. _Why:_ on a board's own servers the board's IT runs the command line, and a log that says IP Lynx did it misleads the board, which is responsible for the records. A column rather than a `details` key: the database can check it, and the details whitelist and guard stay as they were. A trigger rather than a parameter: entries that triggers write (modules, budgets, settings) are named too, without changing every operator function. Tests: pgTAP `40_operator_name`, `packages/config/src/index.test.ts`, `apps/admin/src/cli.test.ts`, `apps/admin/src/commands/staff.test.ts`, `apps/web/src/server/audit/{labels,csv}.test.ts`.
+
+_Limit:_ the entry names the install's setting, not the person who typed the command. When IP Lynx works on a board's own servers, it runs its commands with `OPERATOR_NAME="IP Lynx"` so its access is recorded under its own name (`DEPLOYMENT.md` § 2, § 10).
+
+**D-148 — Dependabot proposes updates of the pinned images and CI's actions (amends D-114).** `.github/dependabot.yml` checks monthly (the 1st), on the default branch (`main`). Three ecosystems get version updates. `docker` covers the Dockerfile's base in `deploy/docker` (group `base-image`); it never proposes a new Node major, which moves by hand with `.nvmrc` and CI. `docker-compose` covers `compose.yml` and `compose.supabase.yml`: Dependabot changes tag and digest together, and one pull request changes every file that names an image. Its group `supabase` (`supabase/*`, `postgrest/*`) and group `compose` (the rest) take minor and patch updates; other majors come one per pull request, and never a new `supabase/postgres` major, which cannot start on the old one's data. `github-actions` has one group, `actions`. The commit prefixes are `Images`, `CI` and `Deps`; at most 2, 4 and 2 pull requests are open at a time. npm packages (the pnpm lockfile) get security updates only: `open-pull-requests-limit: 0` turns version updates off, and a group with `applies-to: security-updates` puts every fix in one pull request. Security updates are a repository setting that this file only shapes, and Dependabot has none for images. There is no `target-branch`: a `target-branch` would stop the entry's settings applying to security updates. CI needs no secret on `pull_request` (Dependabot's pull requests get none), so every job runs on them. No check compares `compose.supabase.yml` with the Supabase CLI's images (the `backup-restore` job only lists them). D-114's "the versions the Supabase CLI runs in CI" becomes their starting point: the board-hosted images may be newer than CI's database tests until the CLI is updated by hand, and only `docker-smoke`, on an empty database, runs them. `DEPLOYMENT.md` § 7 has the review steps, including an in-place upgrade of a throw-away install before tagging a new `supabase/postgres` or `supabase/gotrue`. _Why:_ the images' security fixes reach installs only through a release. A monthly proposal that CI tests makes that routine, and nothing changes without review. Version updates of the npm packages would bring dozens of pull requests a month.
+
+_Amended in review (same day):_ `upgrade.sh` takes a backup after stopping web and worker and before `up`, against the running database and Auth, with the previous release in its manifest (`UPGRADE_WITHOUT_BACKUP=yes` skips it). A release that bumps `supabase/gotrue` starts an Auth that migrates its own tables before `migrate`'s backup, and `restore.sh` refuses that backup on the previous release's older Auth, so a rollback restores the backup `upgrade.sh` took (`DEPLOYMENT.md` § 7). The pins that stay manual: the Supabase CLI, `tools/lite-stack`, pnpm in the Dockerfile and `.nvmrc`.
+
+**D-149 — Answer keys follow the library's screens (amends D-062 and D-065).** These people read a resource's answer keys (`library_item_answer_keys`):
+
+- its author;
+- a reviewer designated by its board, content or faith, for the items she can read;
+- the teachers, principals and vice-principals the sharing reaches: a role at the item's school for an item shared with the school, anywhere in its board for one shared with the board. These are the roles with library screens (D-078).
+
+Office and facilities staff, and board admins who are not reviewers, still read shared resources through the API (D-065), but not their keys. A person who teaches in one school and works in the office of another reads a school-shared resource's keys only where she teaches. « Adapter » copies keys only for someone who may read them, so a copy cannot bring them back.
+
+The predicate is `app.library_item_keys_readable_by(user, item)` (service role only). Row level security uses `app.can_read_library_item_keys(item)`, and the policy keeps its name, `library_item_answer_keys_select`.
+
+Unchanged: the item page's « Guide et corrigé », the teacher print and PDF and « Afficher la réponse » read keys as the user. Changed in review: `start_class_session`, a definer function, read the key for any teacher of the class; a teacher in one school who is office staff in another could grade a device quiz with a resource shared only where she is office staff. It now leaves the key null unless `app.library_item_keys_readable_by` allows it, so no question counts for points and nothing is revealed, as « Lancer »'s preview already says. Substitute plans only learn whether a key exists (D-062). Pack exports are the operator's (D-099).
+
+As built: `20270210090200_answer_keys_office.sql`, pgTAP `41_answer_keys_office`.
+
+_Why:_ keys are not personal data, but a quiz's or a test's answers belong with the people who teach or review with them. Those are the people who have the library's screens, and the API should not give more than the app shows.
 
 ## Schema additions beyond SPEC section 8
 

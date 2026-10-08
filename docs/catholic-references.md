@@ -73,7 +73,9 @@ One JSON file per board, in UTF-8. `content/catholic-references/sample.json` is 
 - **`references`**: 1 to 500 references. No field other than those above is accepted.
 - Texts are trimmed, and an empty `textEn` or `sourceNote` means none.
 - Write in Canadian French: `’` rather than `'`, a no-break space inside « » and before `:`, no
-  space before `?`, `!` or `;`. The command lists what to check, without refusing the file.
+  space before `?`, `!` or `;`. The command points out straight apostrophes, the spaces inside
+  « » and before `:`, ordinals, France's grade names and words that are not Canadian French,
+  without refusing the file; the spaces before `?`, `!` and `;` are yours to check.
 
 ## Rights to the texts
 
@@ -148,10 +150,13 @@ The command checks the whole file before it reaches the database. Each problem n
 reference by its number in the file, its type and its title:
 
 ```
-Error: references.json is not a valid Catholic references file (2 problems; nothing was written):
+Error: references.json is not a valid Catholic references file (1 problem; nothing was written):
   reference 2 (virtue « La joie »), textFr: required
-  reference 7 (virtue « Le respect »), title: reference 1 has the same type and title (a board has one of each)
 ```
+
+Two references with the same type and title are reported once every reference passes its own
+checks, for example
+`reference 7 (virtue « Le respect »), title: reference 1 has the same type and title (a board has one of each)`.
 
 | Message                                      | What to do                                                    |
 | -------------------------------------------- | ------------------------------------------------------------- |
