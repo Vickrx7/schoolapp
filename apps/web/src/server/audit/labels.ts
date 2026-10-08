@@ -8,6 +8,7 @@
  * student only as « Élève · <classe> ». Pure (no server-only import): unit tested with the real
  * message files.
  */
+import { DEFAULT_OPERATOR_NAME } from '@lynx/config';
 import { formatLocalDate, formatTime, instantInZone } from '../../lib/format';
 import type { AuditActorType, AuditRow } from './rows';
 
@@ -92,11 +93,16 @@ export function auditSentence(entry: AuditRow, t: AuditT): string {
   return t.has(key) ? t(key, sentenceValues(entry, t)) : entry.action;
 }
 
-/** « Personnel », « Personne suppléante », « Système », « IP Lynx ». */
+/** « Personnel », « Personne suppléante », « Système », « Gestionnaire du serveur ». */
 export const actorTypeLabel = (type: AuditActorType, t: AuditT) => t(`audit.actorTypes.${type}`);
 
-/** Who did it: a staff member's name, or what acted (a substitute, the system, IP Lynx). */
+/**
+ * Who did it: a staff member's name; for the operator (the admin CLI), the name its
+ * `OPERATOR_NAME` recorded, « IP Lynx » for entries written before it was (DECISIONS D-147); else
+ * what acted (a substitute, the system).
+ */
 export function auditActor(entry: AuditRow, t: AuditT): string {
+  if (entry.actor_type === 'service') return entry.actor_label ?? DEFAULT_OPERATOR_NAME;
   if (entry.actor_type !== 'user') return actorTypeLabel(entry.actor_type, t);
   return entry.actor_label ?? t('audit.formerPerson');
 }

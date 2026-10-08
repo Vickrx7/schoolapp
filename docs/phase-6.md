@@ -375,9 +375,9 @@ the banner and « Ce qui a changé » (D-110).
 - **Hosted Supabase keeps its own logs and backups**, whose location and contents we cannot set;
   Supabase's written answer is a go-live gate (`DEPLOYMENT.md` § 3.11).
 - **The operator's recording of access is a rule, not a lock** (the security review's "Not
-  fixed"), and board-hosted installs label the operator's entries « IP Lynx » whoever runs the
-  command line (a setting for the operator's name would fix it; no board-hosted install exists
-  yet).
+  fixed"). The operator's entries now name whoever runs the command line: `OPERATOR_NAME` (IP Lynx
+  by default; on a board's servers, its IT) is recorded with each entry (D-147). Entries written
+  before keep « IP Lynx ».
 - **S6 (`?next=` keeps its query string)** is unchanged, and **S7 (Supabase's per-address limits
   count the web server's address, hosted)** stays covered by the app's own throttle (round A).
 - **Security updates of the images** arrive only when IP Lynx updates the pinned versions; no

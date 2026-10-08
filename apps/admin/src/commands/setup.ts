@@ -142,7 +142,7 @@ export const setupCommands: Record<string, Command> = {
     const email = need(ctx, 'email').toLowerCase();
     const userId = await accountIdByEmail(ctx, email);
     if (!userId) throw new CliError(`user ${email}: not found`);
-    // As « Retirer l'accès »: audited for the board and the school with IP Lynx as the actor
+    // As « Retirer l'accès »: audited for the board and the school with the operator as the actor
     // (D-106), plans refreshed, the worker told.
     const { data: changed, error } = await ctx.db.rpc('operator_set_staff_active', {
       p_user_id: userId,

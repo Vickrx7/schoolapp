@@ -146,7 +146,12 @@ install or from this repository.
 | `HEARTBEAT_URL_BACKUP`                                   | keep private | empty            | A monitor's URL, pinged after each successful backup                                                                                   |
 
 **admin:** `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `AI_PROVIDER`, `AI_MODEL`, `AI_PRICE_*`,
-`BULK_MAX_RUN_USD`, as above. Its replies are shown to the operator and never kept in the journal.
+`BULK_MAX_RUN_USD`, as above, and its own setting below. Its replies are shown to the operator and
+never kept in the journal.
+
+| Variable        | Secret | Default                                                   | What it is                                                                                                                                                                                                                                |
+| --------------- | ------ | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `OPERATOR_NAME` | no     | `IP Lynx`; board: `Service informatique du conseil` (set) | Who the board's audit log names for each entry the admin commands write (D-147): the team or person who runs them. 1 to 80 characters, no control characters; an invalid one stops every command. Entries written before keep « IP Lynx » |
 
 **Self-hosted Supabase** (board-hosted only)
 
@@ -374,13 +379,17 @@ git clone https://github.com/Vickrx7/schoolapp /opt/lynx-ecole && cd /opt/lynx-e
 git checkout v0.6.0 && cd deploy/docker
 node generate-secrets.mjs --board          # .env (mode 0600) with COMPOSE_FILE=compose.yml:compose.supabase.yml
 # fill in APP_DOMAIN, ACME_EMAIL, SMTP_HOST, SMTP_ADMIN_EMAIL (and SMTP_USER/SMTP_PASS over STARTTLS),
-# SUPPORT_EMAIL, PRIVACY_CONTACT_EMAIL, BACKUP_AGE_RECIPIENT
+# SUPPORT_EMAIL, PRIVACY_CONTACT_EMAIL, BACKUP_AGE_RECIPIENT; check OPERATOR_NAME (your IT team's name)
 APP_RELEASE=0.6.0 docker compose build
 docker compose up -d --wait
 docker compose run --rm admin create-board …     # then create-school, create-year,
 docker compose run --rm admin invite --role board_admin …   # as in 3.6
 ```
 
+- **The operator's name:** the board's audit log names `OPERATOR_NAME` for every entry an admin
+  command writes (access records, settings, modules, deleted accounts). The script writes
+  `Service informatique du conseil`; put the name of the team or person who runs the commands.
+  Unset, entries read « IP Lynx », which does not run this install (section 2).
 - **The journal:** `deploy/host/journald-lynx.conf` as in 3.3. The database writes no statements
   and no error details there (`compose.supabase.yml`), so its first start no longer logs its own
   `ALTER USER supabase_admin WITH PASSWORD …`, and Auth writes warnings and errors only; the

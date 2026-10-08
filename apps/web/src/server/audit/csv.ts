@@ -3,14 +3,15 @@
  * first, with the labels the viewer may read and nothing else. The file format is the shared one
  * (`server/csv.ts`: a byte order mark, `;` in French and `,` in English, a `'` before a cell that
  * starts like a formula). Columns: the time on the school's clock, the action's code and its
- * sentence, who acted and as what, who issued the code, the person concerned, the school, the
- * item's kind and label, the whitelisted details (`key=value; …`) and the flags. Pure: unit
- * tested.
+ * sentence, who acted (a person, or the operator's recorded name, D-147) and as what, who issued
+ * the code, the person concerned, the school, the item's kind and label, the whitelisted details
+ * (`key=value; …`) and the flags. Pure: unit tested.
  */
 import { instantInZone } from '../../lib/format';
 import { csvDocument } from '../csv';
 import {
   actorTypeLabel,
+  auditActor,
   auditDetailsText,
   auditEntity,
   auditFlags,
@@ -50,7 +51,7 @@ export function auditCsv(
           `${at.date} ${at.time}`,
           row.action,
           auditSentence(row, t),
-          row.actor_type === 'user' ? (row.actor_label ?? t('audit.formerPerson')) : '',
+          row.actor_type === 'user' || row.actor_type === 'service' ? auditActor(row, t) : '',
           actorTypeLabel(row.actor_type, t),
           issuer
             ? issuer.name

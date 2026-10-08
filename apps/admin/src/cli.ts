@@ -45,12 +45,14 @@
  * board's retention settings and the operator's status (commands/ops.ts).
  *
  * Settings: SUPABASE_URL (or the older NEXT_PUBLIC_SUPABASE_URL) and SUPABASE_SERVICE_ROLE_KEY,
- * from apps/web/.env.local when it exists.
+ * from apps/web/.env.local when it exists. OPERATOR_NAME (IP Lynx by default; 1 to 80 characters)
+ * is who the board's audit log names for each entry a command writes (DECISIONS D-147): on a
+ * board's own servers, its IT. An invalid one stops any command before it starts.
  *
  * The commands live in commands/ (one module per group, registered in commands/index.ts); the
  * options in args.ts; the database client and shared helpers in context.ts.
  */
-import { EnvError } from '@lynx/config';
+import { EnvError, operatorNameFrom } from '@lynx/config';
 import { z } from 'zod';
 import { parseCli, type CliValues } from './args';
 import { commands } from './commands';
@@ -75,6 +77,8 @@ if (!run) {
   process.exit(1);
 }
 try {
+  // The name every entry of this command will carry: checked before anything runs (D-147).
+  operatorNameFrom(process.env);
   console.log(await run(createContext(parsed.values)));
 } catch (err) {
   if (err instanceof z.ZodError)

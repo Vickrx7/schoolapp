@@ -14,9 +14,11 @@
  *
  * Addresses travel in request bodies (`accountIdByEmail`), never in a URL (D-119). The database
  * deletes the data (`operator_delete_staff_account`, `operator_delete_board`); this command then
- * deletes the Auth accounts, which hold the address and sign-in history.
+ * deletes the Auth accounts, which hold the address and sign-in history. The board's log names
+ * the operator as `OPERATOR_NAME` says (D-147).
  */
 import { writeFileSync } from 'node:fs';
+import { DEFAULT_OPERATOR_NAME } from '@lynx/config';
 import {
   accountIdByEmail,
   boardBySlug,
@@ -132,6 +134,7 @@ export interface AuditExportRow {
   school_name: string | null;
   actor_type: string;
   actor_user_id: string | null;
+  /** The acting person's name; for the operator's entries, the name its CLI was set up with. */
   actor_name: string | null;
   entity_type: string | null;
   entity_id: string | null;
@@ -166,7 +169,8 @@ function textCell(value: string | number | null): string {
 
 /**
  * The board's records (D-122): UTF-8 with a byte order mark (accents in Excel), comma-separated,
- * one line per entry, oldest first; the details as JSON, as stored.
+ * one line per entry, oldest first; the details as JSON, as stored. An operator's entry written
+ * before its name was recorded reads « IP Lynx », as in « Journal d'audit » (D-147).
  */
 export function auditExportCsv(rows: readonly AuditExportRow[]): string {
   const lines = rows.map((r) =>
@@ -180,7 +184,7 @@ export function auditExportCsv(rows: readonly AuditExportRow[]): string {
       r.school_name,
       r.actor_type,
       r.actor_user_id,
-      r.actor_name,
+      r.actor_name ?? (r.actor_type === 'service' ? DEFAULT_OPERATOR_NAME : null),
       r.entity_type,
       r.entity_id,
       JSON.stringify(r.details ?? {}),
@@ -225,7 +229,7 @@ export const staffCommands: Record<string, Command> = {
       p_reason: reason,
     });
     if (error) throw new CliError(`log operator access: ${error.message}`);
-    return `Recorded: IP Lynx accesses the data of ${board.name} (${reason}). The board's admins see it in their audit log.`;
+    return `Recorded: ${ctx.env.OPERATOR_NAME} accesses the data of ${board.name} (${reason}). The board's admins see it in their audit log.`;
   },
 
   async 'delete-user'(ctx) {

@@ -195,6 +195,9 @@ services:
       AI_PRICE_INPUT_PER_MTOK: ${AI_PRICE_INPUT_PER_MTOK:-}
       AI_PRICE_OUTPUT_PER_MTOK: ${AI_PRICE_OUTPUT_PER_MTOK:-}
       BULK_MAX_RUN_USD: ${BULK_MAX_RUN_USD:-}
+      # Who the board's audit log names for every entry these commands write (D-147); empty:
+      # IP Lynx. Only this service writes the operator's entries.
+      OPERATOR_NAME: ${OPERATOR_NAME:-}
 
   # Catches the sign-in e-mails in the CI smoke test (profile mail-catcher); never in production.
   mailpit:

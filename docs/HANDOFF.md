@@ -823,9 +823,10 @@ our recommended defaults, which Mike can still change (`docs/phase-3.md`, `docs/
    Canada Central, a Lightsail server in `ca-central-1`, SES, S3), including its go-live gates
    (a restore drill into a staging project, Supabase's written answer on logs, backups and TLS,
    Anthropic's zero-data-retention answer, the lawyer's review). Hosted Supabase is untested.
-6. **What the final Phase 6 review left** (`docs/phase-6.md` « What remains »): a setting for the
-   operator's name on board-hosted installs, automated updates of the pinned images, and the
-   hosted checks. « Essayer comme les élèves » (a Phase 4 hook, D-081) was not built in Phase 5.
+6. **What the final Phase 6 review left** (`docs/phase-6.md` « What remains »): automated updates
+   of the pinned images, and the hosted checks (the operator's name is now a setting,
+   `OPERATOR_NAME`, D-147). « Essayer comme les élèves » (a Phase 4 hook, D-081) was not built in
+   Phase 5.
 7. **Name.** Once chosen: check availability, then rename `APP_NAME`, the icon, the
    login email template and the promo.
 8. **« Mon année » with pilot teachers** (`docs/mon-annee.md`, « What to test »): one teacher

@@ -540,9 +540,11 @@ substitute plan, with the code's issuer and role; codes issued and revoked; repo
 class team changes and class deletions; roles granted and revoked; access removed and restored;
 invitations; AI and alert switches; library approvals and reviewers; the operator's access and
 settings changes; retention runs (counts); exports of the log itself. An entry holds who, when,
-what, and ids and short codes. **Never** a student's name, an alert's text, a note or a title: a
-database check refuses the usual free-text fields (names, notes, titles, messages) and long
-strings in new entries. A deleted class's entry keeps the class's name as the teacher typed it.
+what, and ids and short codes. The operator's entries name whoever runs the admin command line,
+as its `OPERATOR_NAME` setting says (IP Lynx, or the board's IT on its own servers); those written
+before that setting read « IP Lynx ». **Never** a student's name, an alert's text, a note or a
+title: a database check refuses the usual free-text fields (names, notes, titles, messages) and
+long strings in new entries. A deleted class's entry keeps the class's name as the teacher typed it.
 
 **Who reads it.** Nobody reads the table directly. One database function serves it, and each kind
 of entry has an audience:

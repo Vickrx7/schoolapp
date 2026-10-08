@@ -329,6 +329,7 @@ export type Database = {
           entity_type: string | null;
           entity_id: string | null;
           details: Json;
+          operator_name: string | null;
         };
         Insert: {
           id?: never;
@@ -341,6 +342,7 @@ export type Database = {
           entity_type?: string | null;
           entity_id?: string | null;
           details?: Json;
+          operator_name?: string | null;
         };
         Update: {
           id?: never;
@@ -353,6 +355,7 @@ export type Database = {
           entity_type?: string | null;
           entity_id?: string | null;
           details?: Json;
+          operator_name?: string | null;
         };
         Relationships: [];
       };
