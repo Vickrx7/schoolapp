@@ -47,7 +47,8 @@ updates:
     commit-message:
       prefix: Images
 
-  # The actions in .github/workflows, pinned by major version.
+  # The actions in .github/workflows, pinned by major version (@v4): every proposal is a new major,
+  # and they all come in the one group.
   - package-ecosystem: github-actions
     directory: /
     schedule:

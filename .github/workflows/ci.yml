@@ -306,7 +306,7 @@ jobs:
             "select beat_at > now() - interval '5 minutes' from public.system_heartbeats where component = 'backup'")" = t
           docker compose run --rm --no-deps --entrypoint ls backup -l /backups
 
-      - name: The upgrade script (the same release; builds, restarts, checks readiness)
+      - name: The upgrade script (the same release; builds, backs up, restarts, checks readiness)
         run: ./upgrade.sh HEAD
 
       - name: The worker refuses a database that lacks one of its migrations

@@ -387,7 +387,9 @@ the banner and « Ce qui a changé » (D-110).
   the release, and each operator installs it with `./upgrade.sh`: an install that is not upgraded
   keeps its old images. `docker-smoke` tests the new images on an empty database, not on an install
   upgraded in place, and CI's database tests run on the Supabase CLI's images, not on the
-  board-hosted ones.
+  board-hosted ones. `upgrade.sh` now takes a backup before starting the release: a rollback
+  restores it, since `migrate`'s backup comes after a new Auth has applied its migrations, which
+  the previous release's Auth lacks.
 - **Untested here:** hosted Supabase, Amazon SES and S3 themselves (the upload is tested against a
   stand-in), the real AI API, iPads.
 
