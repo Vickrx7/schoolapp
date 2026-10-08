@@ -15,7 +15,7 @@
  * Addresses travel in request bodies (`accountIdByEmail`), never in a URL (D-119). The database
  * deletes the data (`operator_delete_staff_account`, `operator_delete_board`); this command then
  * deletes the Auth accounts, which hold the address and sign-in history. The board's log names
- * the operator as `OPERATOR_NAME` says (D-147).
+ * the operator as `OPERATOR_NAME` says (D-148).
  */
 import { writeFileSync } from 'node:fs';
 import { DEFAULT_OPERATOR_NAME } from '@lynx/config';
@@ -170,7 +170,7 @@ function textCell(value: string | number | null): string {
 /**
  * The board's records (D-122): UTF-8 with a byte order mark (accents in Excel), comma-separated,
  * one line per entry, oldest first; the details as JSON, as stored. An operator's entry written
- * before its name was recorded reads « IP Lynx », as in « Journal d'audit » (D-147).
+ * before its name was recorded reads « IP Lynx », as in « Journal d'audit » (D-148).
  */
 export function auditExportCsv(rows: readonly AuditExportRow[]): string {
   const lines = rows.map((r) =>

@@ -98,7 +98,7 @@ export const actorTypeLabel = (type: AuditActorType, t: AuditT) => t(`audit.acto
 
 /**
  * Who did it: a staff member's name; for the operator (the admin CLI), the name its
- * `OPERATOR_NAME` recorded, « IP Lynx » for entries written before it was (DECISIONS D-147); else
+ * `OPERATOR_NAME` recorded, « IP Lynx » for entries written before it was (DECISIONS D-148); else
  * what acted (a substitute, the system).
  */
 export function auditActor(entry: AuditRow, t: AuditT): string {

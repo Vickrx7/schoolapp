@@ -2,7 +2,7 @@
 -- the admin CLI sends OPERATOR_NAME (header x-lynx-operator-name, base64 of its UTF-8); the
 -- database records it on the `service` entries of that request only, checks it, and returns it to
 -- « Journal d'audit » and the board's whole export. Older entries keep null (« IP Lynx »).
--- DECISIONS: D-103, D-106, D-122, D-147.
+-- DECISIONS: D-103, D-106, D-122, D-148.
 begin;
 \ir _helpers.psql
 select plan(27);
@@ -72,7 +72,7 @@ grant execute on all functions in schema tests to authenticated, service_role;
 
 select has_column('public', 'audit_log', 'operator_name', 'entries have the operator''s name');
 select col_is_null('public', 'audit_log', 'operator_name',
-  'it may be null (entries of people, the system, and the operator before D-147)');
+  'it may be null (entries of people, the system, and the operator before D-148)');
 select ok(exists (select 1 from pg_constraint
     where conrelid = 'public.audit_log'::regclass and conname = 'audit_log_operator_name_check'
       and contype = 'c'),

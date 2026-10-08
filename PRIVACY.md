@@ -174,7 +174,7 @@ it to.
 
 A shared resource's answer keys reach only its author, the board's reviewers, and the teachers
 and direction the sharing reaches; office and facilities staff read shared resources without them
-(D-149).
+(D-150).
 
 `docs/ai-data-flow.md` is the detailed annex: exactly what each AI feature sends.
 
@@ -589,7 +589,7 @@ kept 730 days.
   (`PRIVACY_CONTACT_EMAIL`), or the board's own privacy office.
 - **Support:** the address shown in the app (`SUPPORT_EMAIL`).
 - **Decisions behind this document:** `DECISIONS.md` (D-012 to D-019, D-037 to D-046, D-049 to
-  D-059, D-065, D-083 to D-093, D-102 to D-144, D-149).
+  D-059, D-065, D-083 to D-093, D-102 to D-144, D-150).
 
 | Date       | Release | Change                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | ---------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

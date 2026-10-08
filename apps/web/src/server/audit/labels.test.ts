@@ -188,7 +188,7 @@ describe('audit sentences (D-103)', () => {
     ).toBe('Class team role changed: Paul Leblanc (Subject teacher → Support)');
   });
 
-  it('name the operator as its command line was set up, IP Lynx before that (D-147)', () => {
+  it('name the operator as its command line was set up, IP Lynx before that (D-148)', () => {
     const access = row({
       action: 'operator.access',
       category: 'access',

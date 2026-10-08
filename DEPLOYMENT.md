@@ -151,7 +151,7 @@ never kept in the journal.
 
 | Variable        | Secret | Default                                                   | What it is                                                                                                                                                                                                                                                                       |
 | --------------- | ------ | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `OPERATOR_NAME` | no     | `IP Lynx`; board: `Service informatique du conseil` (set) | Who the board's audit log names for each entry the admin commands write (D-147): the team that runs them; anyone else passes their own name (section 10). 1 to 80 characters, no control characters; an invalid one stops every command. Entries written before keep « IP Lynx » |
+| `OPERATOR_NAME` | no     | `IP Lynx`; board: `Service informatique du conseil` (set) | Who the board's audit log names for each entry the admin commands write (D-148): the team that runs them; anyone else passes their own name (section 10). 1 to 80 characters, no control characters; an invalid one stops every command. Entries written before keep « IP Lynx » |
 
 **Self-hosted Supabase** (board-hosted only)
 
@@ -516,7 +516,7 @@ pending) and checks that the web server is ready.
   `supabase/gotrue` can only roll back to a backup taken before it.
 - Security updates of the images come as releases. Every image is pinned by tag and digest (the
   Dockerfile's base, `compose.yml`, `compose.supabase.yml`), so rebuilding without a release
-  fetches the same bytes. On the 1st of each month, Dependabot (`.github/dependabot.yml`, D-148)
+  fetches the same bytes. On the 1st of each month, Dependabot (`.github/dependabot.yml`, D-149)
   proposes the newer versions as pull requests: the Dockerfile's base, the Supabase images, the
   other Compose images, and CI's actions. CI tests each one like any change: `docker-smoke` builds
   the images and runs the board-hosted install with the new pins, a backup in the image and
@@ -553,7 +553,7 @@ pending) and checks that the web server is ready.
   release's `restore.sh` for them until they age out (30 days). Board-hosted, also add
   `AUTH_RATE_LIMIT_OTP=60` and `AUTH_RATE_LIMIT_VERIFY=60` (or leave them out: those are the
   defaults).
-- **Board-hosted, upgrading an install made before the operator's name (D-147):** add
+- **Board-hosted, upgrading an install made before the operator's name (D-148):** add
   `OPERATOR_NAME=<your IT team>` to `.env` (section 4); without it, new entries still read
   « IP Lynx ». Entries written before keep « IP Lynx ».
 - Record the access first (`--reason migration`).

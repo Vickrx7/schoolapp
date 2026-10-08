@@ -3,7 +3,7 @@
  * first, with the labels the viewer may read and nothing else. The file format is the shared one
  * (`server/csv.ts`: a byte order mark, `;` in French and `,` in English, a `'` before a cell that
  * starts like a formula). Columns: the time on the school's clock, the action's code and its
- * sentence, who acted (a person, or the operator's recorded name, D-147) and as what, who issued
+ * sentence, who acted (a person, or the operator's recorded name, D-148) and as what, who issued
  * the code, the person concerned, the school, the item's kind and label, the whitelisted details
  * (`key=value; …`) and the flags. Pure: unit tested.
  */

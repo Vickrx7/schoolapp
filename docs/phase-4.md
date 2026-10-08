@@ -175,7 +175,7 @@ draft « Brouillon créé par l'IA : relisez-le… ».
 | Data                                                        | Where                                                       | Who                                                                                                                         | Kept                                       |
 | ----------------------------------------------------------- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
 | Resources: title, summary, keywords, materials, links       | `library_items`, `_grades`, `_expectations`, `_tags`        | D-065 (author, school or board staff by sharing, reviewer)                                                                  | until deleted by its author (or archived)  |
-| Content per version, answer keys                            | `library_item_versions`, `library_item_answer_keys`         | same, but keys only for the author, reviewers, teachers and the direction (D-149); never on student sheets, plans or search | with the resource                          |
+| Content per version, answer keys                            | `library_item_versions`, `library_item_answer_keys`         | same, but keys only for the author, reviewers, teachers and the direction (D-150); never on student sheets, plans or search | with the resource                          |
 | Review state: request, decision, reviewer's note            | `library_items` (`review_*`, `approved_*`, `faith_*`)       | author, the board's reviewers                                                                                               | with the resource (the note until changed) |
 | Reviewer designations (user, content, faith)                | `library_reviewers`                                         | board staff (read); the operator writes                                                                                     | until removed                              |
 | Search document (title, summary, keywords, attentes, text)  | `library_items.search_document`                             | nobody reads it directly; search returns usable items only                                                                  | rebuilt on every change                    |
@@ -207,7 +207,7 @@ names she typed; nobody else reads them, board admins included. PDFs are never s
 - **Answer keys:** read by the item page's « Guide et corrigé », the teacher print and PDF, and
   the editor only. Student sheets (`loadItemForStudentSheet`, `renderStudentDoc`) never read the
   key table; substitute plans only learn whether a key exists; search never indexes keys. Since
-  D-149 (`20270210090200_answer_keys_office.sql`, test 41), row level security gives keys to the
+  D-150 (`20270210090200_answer_keys_office.sql`, test 42), row level security gives keys to the
   author, the board's reviewers, and the teachers and direction the sharing reaches. Office and
   facilities staff, and board admins who are not reviewers, read shared resources without their
   keys; « Adapter » copies keys only for someone who may read them, and a device quiz is graded,

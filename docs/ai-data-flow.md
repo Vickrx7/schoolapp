@@ -345,7 +345,7 @@ markers), no English text, no event notes and nothing from another message.
   be separated by spaces, any kind of hyphen or dash, apostrophes or underscores.
 - **Very short names, only as spelled.** A name shorter than three letters (« Tú », « Lê ») is
   matched on its own only with its exact accents, in any case: « TÚ » and « tú » are replaced,
-  « tu » and « le » stay words (D-145). Initials written as one word follow the same rule
+  « tu » and « le » stay words (D-146). Initials written as one word follow the same rule
   (« TÚ » for « T. Ú », never « tu »). After an honorific, a staff member's is matched with or
   without them when capitalized (« Mme Le », but not « M. le maire »). A very short name spelled
   like a short French or English word (« An », or « Tu » in a roster without accents) is matched

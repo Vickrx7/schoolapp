@@ -1,7 +1,7 @@
 -- Catholic references loaded by the operator: one reference per board, type and title; who may
 -- run the import; the dry run, the writes, updates in place, retiring, the references it keeps,
 -- its audit line, and what it refuses
--- (supabase/migrations/20270210090000_catholic_references_import.sql; DECISIONS D-146, D-103).
+-- (supabase/migrations/20270210090000_catholic_references_import.sql; DECISIONS D-147, D-103).
 begin;
 \ir _helpers.psql
 select plan(43);

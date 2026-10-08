@@ -231,7 +231,7 @@ function significant(name: string): boolean {
 /**
  * Fewer than three letters (« Tú », « Lê », « Au »), ideographs aside (« 明 » is a whole name).
  * Without its accents such a name is often a French word (« tu », « le », « au »), so it is
- * matched alone only as spelled (D-145); a part of a staff name, only after an honorific.
+ * matched alone only as spelled (D-146); a part of a staff name, only after an honorific.
  */
 function veryShort(letters: string): boolean {
   return letters.length < 3 && !IDEOGRAPHIC.test(letters);
@@ -590,7 +590,7 @@ export class Redactor {
     // Fewer than three letters, alone or written as one word (« Tú », or « T. Ú » as « TÚ »).
     const short = veryShort(words.join('').replace(/\P{L}/gu, ''));
     // A very short whole name is matched alone only as the roster spells it: « Tú » is never
-    // « tu » (D-145). A very short part of a staff name, only after an honorific.
+    // « tu » (D-146). A very short part of a staff name, only after an honorific.
     const exact =
       short && !partial && name !== undefined
         ? (name.match(WORD) ?? []).map(spelling).join('')
@@ -764,7 +764,7 @@ export class Redactor {
     } else if (entry.capital >= 0 && !afterHonorific && !capitalized(entry.capital)) {
       return -1;
     }
-    // « Tú », not « tu »; after an honorific and capitalized, any accents: « Mme Le » (D-145).
+    // « Tú », not « tu »; after an honorific and capitalized, any accents: « Mme Le » (D-146).
     if (
       entry.exact !== null &&
       spelling(words[i]!.raw) !== entry.exact &&

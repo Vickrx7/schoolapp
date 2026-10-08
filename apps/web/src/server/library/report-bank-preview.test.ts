@@ -60,7 +60,7 @@ describe('« Vérifier avant d’envoyer » for « Créer une banque avec l’IA
     expect(prepared.user).toContain('Comme Adulte A, des exemples concrets. Merci à Sophie.');
   });
 
-  it('replaces « Tú » but not « tu », as the worker does, which sends the request (D-145)', async () => {
+  it('replaces « Tú » but not « tu », as the worker does, which sends the request (D-146)', async () => {
     const school: KnownPerson[] = [...people, { name: 'Tú', kind: 'student' }];
     const input = request('Tu peux t’inspirer des progrès de Tú. Un an de travail.');
     const preview = buildReportBankPreview(input, school, NOW);

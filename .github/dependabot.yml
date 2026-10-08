@@ -1,4 +1,4 @@
-# Dependabot (DECISIONS D-148): monthly pull requests for the pinned images and CI's actions.
+# Dependabot (DECISIONS D-149): monthly pull requests for the pinned images and CI's actions.
 # Dependabot proposes, CI tests the pull request like any change (docker-smoke builds the images
 # and runs the board-hosted install with the new pins), IP Lynx merges and tags a release, and
 # operators install it with ./upgrade.sh (DEPLOYMENT.md § 7). Dependabot reads this file on the

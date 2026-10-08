@@ -181,7 +181,7 @@ export const workerEnvSchema = z.preprocess(
 export type WorkerEnv = z.infer<typeof workerEnvSchema>;
 
 /**
- * Who a board's audit log names for the entries the admin CLI writes (DECISIONS D-147): IP Lynx,
+ * Who a board's audit log names for the entries the admin CLI writes (DECISIONS D-148): IP Lynx,
  * which runs the hosted install, unless `OPERATOR_NAME` says otherwise (a board's IT on its own
  * servers). Entries written before the setting existed read « IP Lynx » too.
  */
@@ -216,7 +216,7 @@ export const adminEnvSchema = z.preprocess(
   z.object({
     SUPABASE_URL: z.url(),
     SUPABASE_SERVICE_ROLE_KEY: z.string().min(20),
-    /** Sent with every request, recorded on each entry the CLI writes as the operator (D-147). */
+    /** Sent with every request, recorded on each entry the CLI writes as the operator (D-148). */
     OPERATOR_NAME: operatorNameSchema,
     BULK_MAX_RUN_USD: bulkMaxRunUsd,
     /**

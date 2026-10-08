@@ -9,7 +9,7 @@ A board's **Catholic references** are short texts the app suggests in three plac
 A new install has none: the demo's come from `supabase/seed.sql`, which never runs in production.
 Until a board has references, those three places stay empty. This page is for the operator who
 loads them, and for the board staff who prepare the file. Decisions: DECISIONS.md, D-058 (the
-references), D-030 (rights to the texts) and D-146 (this import).
+references), D-030 (rights to the texts) and D-147 (this import).
 
 Everything happens in the admin command line (`pnpm admin …` from a trusted machine, or
 `docker compose run --rm admin …` on a board-hosted server). There is no screen to edit them yet.

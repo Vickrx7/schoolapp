@@ -92,7 +92,7 @@ describe('system prompts and the privacy check', () => {
     ).not.toThrow();
   });
 
-  it.each(files)('%s passes the check with very short first names too (D-145)', (file) => {
+  it.each(files)('%s passes the check with very short first names too (D-146)', (file) => {
     // Without their accents they are words of every prompt (« Tu aides », « le », « un an »).
     const names = ['Tú', 'Lê', 'An', 'Hà', 'Mỹ', 'Vũ', 'Đỗ', 'Lý', 'Ai', 'Jo', 'Li'];
     const short = names.map((name) => ({ name, kind: 'student' as const }));

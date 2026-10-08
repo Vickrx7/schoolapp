@@ -1,7 +1,7 @@
 # Catholic references (import files)
 
 `sample.json` is an example of the file `pnpm admin import-references` loads into a board
-(DECISIONS D-146). The format, the rights to the texts and the steps are in
+(DECISIONS D-147). The format, the rights to the texts and the steps are in
 [docs/catholic-references.md](../../docs/catholic-references.md).
 
 **This is a sample, not a board's references.** It says `"sample": true`, and every text is to

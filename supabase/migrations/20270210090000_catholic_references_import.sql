@@ -1,4 +1,4 @@
--- Catholic references: the operator loads a board's references from a file (DECISIONS D-146).
+-- Catholic references: the operator loads a board's references from a file (DECISIONS D-147).
 --
 -- A new install has none (the demo's come from supabase/seed.sql), so the plans' « Moment de foi »,
 -- the library's « Ajouter un lien avec la foi » and the faith moment of « Info-parents » stayed
@@ -16,7 +16,7 @@
 -- Errors: 22023 an unknown board, or a list the CLI never sends (not 1 to 500 references, a field
 -- of the wrong kind or out of range, a type and title twice). LXQ00 is internal: it rolls a dry
 -- run back and never leaves the function.
--- Tests: supabase/tests/39_catholic_references_import.test.sql
+-- Tests: supabase/tests/40_catholic_references_import.test.sql
 
 -- ---------------------------------------------------------------------------------------
 -- 1. One reference per board, type and title

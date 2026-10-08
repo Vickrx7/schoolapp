@@ -808,17 +808,17 @@ our recommended defaults, which Mike can still change (`docs/phase-3.md`, `docs/
 **Production readiness (2026-10-08, PR #3).** Five gaps that needed no decision from Mike are
 fixed, each built and reviewed by separate agents, then tested together here: unit (1,674),
 pgTAP (42 files, 2,089), integration (97) and the generated types. CI's `docker-smoke` and browser
-jobs run on the PR. The decisions are D-145 to D-149 (« Production readiness » in `DECISIONS.md`):
+jobs run on the PR. The decisions are D-146 to D-150 (« Production readiness » in `DECISIONS.md`):
 
-- **D-145:** very short names (« Tú », « Lê ») are matched only with their exact accents, so a
+- **D-146:** very short names (« Tú », « Lê ») are matched only with their exact accents, so a
   student « Tú » no longer makes every AI request refused.
-- **D-146:** `pnpm admin import-references` loads a board's Catholic references from a file
+- **D-147:** `pnpm admin import-references` loads a board's Catholic references from a file
   (`docs/catholic-references.md`), replacing psql.
-- **D-147:** `OPERATOR_NAME` names the operator on its audit entries, so a board-hosted log says
+- **D-148:** `OPERATOR_NAME` names the operator on its audit entries, so a board-hosted log says
   who runs its servers.
-- **D-148:** Dependabot proposes monthly updates of the pinned images and CI's actions;
+- **D-149:** Dependabot proposes monthly updates of the pinned images and CI's actions;
   `upgrade.sh` backs up before starting a release so a rollback can restore.
-- **D-149:** office and facilities staff no longer read shared resources' answer keys, through
+- **D-150:** office and facilities staff no longer read shared resources' answer keys, through
   the API or a device quiz.
 
 What is still open for production, in order:
@@ -830,13 +830,13 @@ What is still open for production, in order:
    leak, alerts already stored stay readable with the old key). Not built: the admin command line
    does not hold that key today (`PRIVACY.md` § 8 says only the web server does), so where it runs
    is a decision first.
-4. **D-145's remaining limit,** a decision for Mike: « Tu » or « Le » in a roster without accents
+4. **D-146's remaining limit,** a decision for Mike: « Tu » or « Le » in a roster without accents
    still refuses every request, other capitalized two-letter words the features whose prompt
    starts a sentence with them, and a longer name whose accent-free form is a prompt word
    (« Liên », « lien ») that feature's requests. Options: new prompt versions, or a last check
    that skips the fixed prompt text.
 5. **Small notes the reviews left** (low severity): `import-references` accepts a file that is
-   not UTF-8 without a warning; two audit counts in pgTAP 39 count the whole database (fine on
+   not UTF-8 without a warning; two audit counts in pgTAP 40 count the whole database (fine on
    CI's fresh one); `catholic_references_board_id_idx` is now redundant with the new unique index;
    the README's admin command list lacks `import-references` and `OPERATOR_NAME`.
 6. **Not run here:** the Docker images (this sandbox's network blocks builds) and the browser
@@ -863,8 +863,8 @@ What is still open for production, in order:
     (a restore drill into a staging project, Supabase's written answer on logs, backups and TLS,
     Anthropic's zero-data-retention answer, the lawyer's review). Hosted Supabase is untested.
 12. **What the final Phase 6 review left** (`docs/phase-6.md` « What remains »): the hosted
-    checks. The operator's name is now a setting (`OPERATOR_NAME`, D-147). The pinned images now
-    get monthly update proposals (`.github/dependabot.yml`, D-148): Dependabot proposes, CI tests
+    checks. The operator's name is now a setting (`OPERATOR_NAME`, D-148). The pinned images now
+    get monthly update proposals (`.github/dependabot.yml`, D-149): Dependabot proposes, CI tests
     (`docker-smoke` runs the board-hosted install with the new pins; the other jobs run on the
     Supabase CLI's images and cover the actions and npm pull requests), IP Lynx merges and tags a
     release, operators install it with `./upgrade.sh`, which now takes a backup first: the one a
@@ -928,7 +928,7 @@ What is still open for production, in order:
   certificate authority, Auth settings, whether the nightly job may purge Auth's log). The
   board-hosted install is tested in CI (`docker-smoke`).
 - **A new install has no curriculum or Catholic references** (the demo's come from the seed). The
-  operator loads them with `import-curriculum` and `import-references` (D-146,
+  operator loads them with `import-curriculum` and `import-references` (D-147,
   `docs/catholic-references.md`); each board's references come from a file the board provides,
   and `content/catholic-references/sample.json` is fictional (`DEPLOYMENT.md` § 3.8).
 - **Board-hosted, Auth and the database write their own lines to the journal**, not scrubbed:
@@ -945,7 +945,7 @@ What is still open for production, in order:
   comment bank's note.
 - **Historical figures** who share a student's first name get replaced, then restored.
 - **Very short names** (fewer than three letters, initials written as one word too) are matched
-  alone only with their exact accents, in any case (D-145): « tu » and « le » stay words for a
+  alone only with their exact accents, in any case (D-146): « tu » and « le » stay words for a
   student named « Tú » or « Lê », and the last check no longer refuses every request of their
   school. « Tu » typed for « Tú » is not replaced (the teacher sees it unhighlighted). After an
   honorific, a staff member's is matched without its accents only when capitalized (« Mme Le »,

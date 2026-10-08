@@ -25,7 +25,7 @@ export type Command = (ctx: CliContext) => Promise<string>;
 
 /**
  * The request header the database reads the operator's name from (trigger
- * `audit_log_operator_name`, DECISIONS D-147): base64 of the name's UTF-8, since a header carries
+ * `audit_log_operator_name`, DECISIONS D-148): base64 of the name's UTF-8, since a header carries
  * ASCII only.
  */
 export const OPERATOR_NAME_HEADER = 'x-lynx-operator-name';

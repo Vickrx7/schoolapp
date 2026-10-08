@@ -240,7 +240,7 @@ describe('loadEnv', () => {
     ).toThrow(/ANTHROPIC_API_KEY/);
   });
 
-  it('names the operator from OPERATOR_NAME, IP Lynx by default (D-147)', () => {
+  it('names the operator from OPERATOR_NAME, IP Lynx by default (D-148)', () => {
     const admin = {
       SUPABASE_URL: 'http://127.0.0.1:54321',
       SUPABASE_SERVICE_ROLE_KEY: 'x'.repeat(40),
@@ -262,7 +262,7 @@ describe('loadEnv', () => {
     ).toBe('Marc Gagnon (TI)');
   });
 
-  it('refuses a blank, long or hidden-character operator name (D-147)', () => {
+  it('refuses a blank, long or hidden-character operator name (D-148)', () => {
     for (const bad of [
       '   ',
       'é'.repeat(81),

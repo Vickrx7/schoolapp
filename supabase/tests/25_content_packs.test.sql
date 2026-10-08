@@ -188,7 +188,7 @@ select results_eq(
 -- ---------------------------------------------------------------------------------------
 
 -- Two shared references have the same type and title (a board has one at most since
--- 20270210090000, D-146), and board A has none: an item naming it cannot be linked.
+-- 20270210090000, D-147), and board A has none: an item naming it cannot be linked.
 insert into public.catholic_references (board_id, type, title, text_fr) values
   (null, 'virtue', 'Le pardon', 'Pardonner.'),
   (null, 'virtue', 'Le pardon', 'Demander pardon.');

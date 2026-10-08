@@ -253,10 +253,10 @@ jobs:
           out="$(docker compose run --rm -T admin invite --email admin.fumee@example.test --name "Admin Fumée" --role board_admin --board ci-smoke)"
           echo "$out"
           grep -q 'can now sign in as board_admin' <<< "$out"
-          # Recorded with the operator's name from .env (D-147); the export below shows it.
+          # Recorded with the operator's name from .env (D-148); the export below shows it.
           docker compose run --rm -T admin log-operator-access --board ci-smoke --reason support
 
-      - name: Catholic references load from the image's content folder (D-146)
+      - name: Catholic references load from the image's content folder (D-147)
         run: |
           sample=/repo/content/catholic-references/sample.json
           out="$(docker compose run --rm -T admin import-references --board ci-smoke --file "$sample")"
@@ -283,7 +283,7 @@ jobs:
             admin export-audit --board ci-smoke --out /out/journal-ci-smoke.csv
           head -3 "$RUNNER_TEMP/exports/journal-ci-smoke.csv"
           test "$(stat -c %a "$RUNNER_TEMP/exports/journal-ci-smoke.csv")" = 600
-          # The operator's entry names the operator as .env does, through the API gateway (D-147).
+          # The operator's entry names the operator as .env does, through the API gateway (D-148).
           grep -q ',operator.access,board,access,,,service,,Service informatique du conseil,board,' \
             "$RUNNER_TEMP/exports/journal-ci-smoke.csv"
           docker compose run --rm -T admin delete-board --board ci-smoke --confirm ci-smoke --exported --yes

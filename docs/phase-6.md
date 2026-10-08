@@ -377,13 +377,13 @@ the banner and « Ce qui a changé » (D-110).
 - **The operator's recording of access is a rule, not a lock** (the security review's "Not
   fixed"). The operator's entries now name the operator as the command line's `OPERATOR_NAME`
   setting says (IP Lynx by default; on a board's servers, its IT), recorded with each entry
-  (D-147). It is set once per install, so another operator passes their own name with each
+  (D-148). It is set once per install, so another operator passes their own name with each
   command (IP Lynx on a board's servers: `DEPLOYMENT.md` § 10). Entries written before keep
   « IP Lynx ».
 - **S6 (`?next=` keeps its query string)** is unchanged, and **S7 (Supabase's per-address limits
   count the web server's address, hosted)** stays covered by the app's own throttle (round A).
 - **Security updates of the images** still need a release. Dependabot now proposes the newer pinned
-  versions every month and CI tests them (D-148, `DEPLOYMENT.md` § 7), but IP Lynx merges and tags
+  versions every month and CI tests them (D-149, `DEPLOYMENT.md` § 7), but IP Lynx merges and tags
   the release, and each operator installs it with `./upgrade.sh`: an install that is not upgraded
   keeps its old images. `docker-smoke` tests the new images on an empty database, not on an install
   upgraded in place, and CI's database tests run on the Supabase CLI's images, not on the
@@ -408,7 +408,7 @@ the banner and « Ce qui a changé » (D-110).
 - **The demo spec reports the absence for the next school day** rather than today, so it passes at
   any hour; the script tells the presenter to use today.
 - **No command loaded Catholic references** into a new install in Phase 6 (the demo's come from
-  the seed). `pnpm admin import-references` came after it (D-146, `docs/catholic-references.md`);
+  the seed). `pnpm admin import-references` came after it (D-147, `docs/catholic-references.md`);
   `DEPLOYMENT.md` § 3.8 says how IP Lynx loads a pilot board's references.
 - **Payment collection, SSO, a web operator console, a public demo site, a self-hosted error
   tracker and a penetration test** are not in Phase 6, as planned.

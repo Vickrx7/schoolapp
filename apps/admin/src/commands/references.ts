@@ -1,5 +1,5 @@
 /**
- * Catholic references (DECISIONS D-058, D-146): a board's references for the plans' « Moment de
+ * Catholic references (DECISIONS D-058, D-147): a board's references for the plans' « Moment de
  * foi », the library's « Ajouter un lien avec la foi » and the faith moment of « Info-parents »,
  * loaded from one JSON file. A dry run unless --apply; the board's IT guide is
  * docs/catholic-references.md, and content/catholic-references/sample.json is an example

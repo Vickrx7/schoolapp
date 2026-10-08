@@ -380,7 +380,7 @@ describe('Redactor', () => {
     expect(r.redact(prompt).text).toBe(prompt);
   });
 
-  describe('very short names (D-145)', () => {
+  describe('very short names (D-146)', () => {
     const shortRoster: KnownPerson[] = [
       { name: 'Tú', kind: 'student' },
       { name: 'Lê', kind: 'student' },

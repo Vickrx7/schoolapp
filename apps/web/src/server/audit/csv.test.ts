@@ -111,7 +111,7 @@ describe('auditCsv (D-103)', () => {
     expect(first).toContain(',alert_count=2; issued_by_role=office,Code issued by the office');
   });
 
-  it('names the operator as its command line was set up, IP Lynx before that (D-147)', () => {
+  it('names the operator as its command line was set up, IP Lynx before that (D-148)', () => {
     const access: AuditRow = {
       ...roleGranted,
       action: 'operator.access',

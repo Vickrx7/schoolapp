@@ -75,7 +75,7 @@ const REFUSED: { name: string; input: unknown; code: 'invalidInput' | 'personalI
 ];
 
 describe('prepareCall', () => {
-  it('sends a request from a school with a student named « Tú », whose prompt says « Tu » (D-145)', async () => {
+  it('sends a request from a school with a student named « Tú », whose prompt says « Tu » (D-146)', async () => {
     const systemPrompt = await loadPrompt('differentiate', 'v1');
     const prepared = prepareCall(
       differentiateFeature,

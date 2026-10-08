@@ -1,5 +1,5 @@
--- The operator's name on its audit entries (DECISIONS D-147).
--- Tests: supabase/tests/40_operator_name.test.sql
+-- The operator's name on its audit entries (DECISIONS D-148).
+-- Tests: supabase/tests/41_operator_name.test.sql
 --
 -- The admin CLI's entries (actor `service`) read « IP Lynx » in « Journal d'audit », its CSV and
 -- the board's whole export, whoever ran the command. On a board's own servers the operator is the
@@ -35,7 +35,7 @@ alter table public.audit_log add column operator_name text
     ));
 
 comment on column public.audit_log.operator_name is
-  'The operator, as the admin CLI''s OPERATOR_NAME says (service entries only; null: IP Lynx). D-147.';
+  'The operator, as the admin CLI''s OPERATOR_NAME says (service entries only; null: IP Lynx). D-148.';
 
 -- ---------------------------------------------------------------------------------------
 -- 2. Filled from the operator's request
@@ -83,7 +83,7 @@ from public, anon, authenticated, service_role;
 -- ---------------------------------------------------------------------------------------
 
 -- As in 20261201090200_audit_retention.sql, except the actor's label: a `service` entry's is the
--- operator's recorded name (null before D-147: the app says « IP Lynx »).
+-- operator's recorded name (null before D-148: the app says « IP Lynx »).
 create or replace function public.list_audit_entries(p_filters jsonb,
   p_before_id bigint default null, p_limit integer default 50)
 returns table (
@@ -196,7 +196,7 @@ end;
 $$;
 
 -- As in 20261201090600_phase6_board_audit_export.sql, except `actor_name`: for a `service` entry,
--- the operator's recorded name (null before D-147: the CLI writes « IP Lynx »).
+-- the operator's recorded name (null before D-148: the CLI writes « IP Lynx »).
 create or replace function public.operator_export_audit(p_board_id uuid,
   p_after_id bigint default 0, p_limit integer default 1000)
 returns table (

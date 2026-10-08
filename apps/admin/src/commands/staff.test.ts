@@ -265,7 +265,7 @@ describe('auditExportCsv', () => {
     expect(header).toBe(
       'id,occurred_at,action,audience,category,school_id,school_name,actor_type,actor_user_id,actor_name,entity_type,entity_id,details',
     );
-    // The operator's entry from before its name was recorded reads « IP Lynx » (D-147).
+    // The operator's entry from before its name was recorded reads « IP Lynx » (D-148).
     expect(first).toBe(
       '7,2026-10-02T13:00:00+00:00,operator.access,board,access,,,service,,IP Lynx,staff_invitation,,"{""reason"":""support""}"',
     );
@@ -275,7 +275,7 @@ describe('auditExportCsv', () => {
   });
 });
 
-describe('the operator’s name (D-147)', () => {
+describe('the operator’s name (D-148)', () => {
   const env = {
     SUPABASE_URL: 'https://api.example.test',
     SUPABASE_SERVICE_ROLE_KEY: 'service-role-key',

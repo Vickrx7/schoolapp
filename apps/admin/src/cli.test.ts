@@ -1,5 +1,5 @@
 /**
- * `pnpm admin` refuses an invalid OPERATOR_NAME before any command starts (DECISIONS D-147). Run
+ * `pnpm admin` refuses an invalid OPERATOR_NAME before any command starts (DECISIONS D-148). Run
  * as the operator runs it, without the database's settings: a command that started would fail on
  * those instead.
  */
@@ -31,7 +31,7 @@ function admin(operatorName: string) {
   );
 }
 
-describe('pnpm admin and OPERATOR_NAME (D-147)', () => {
+describe('pnpm admin and OPERATOR_NAME (D-148)', () => {
   it('stops before the command when the name is invalid, and goes on when it is valid', () => {
     for (const name of ['x'.repeat(81), '   ', 'IP‮Lynx']) {
       const run = admin(name);

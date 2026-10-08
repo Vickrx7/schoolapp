@@ -1,4 +1,4 @@
--- Answer keys follow the library's screens (D-149, amending D-062 and D-065).
+-- Answer keys follow the library's screens (D-150, amending D-062 and D-065).
 --
 -- Until now, whoever could read an item read its answer keys: office and facilities staff, and
 -- board admins who are not reviewers, read the keys of every resource shared with their school or
@@ -28,8 +28,8 @@
 -- the readiness checks need an editor or a reviewer; substitute plans only learn whether a key
 -- exists (app.sub_plan_library_sources, D-062); content pack exports are the operator's (D-099).
 --
--- DECISIONS: D-149 (amending D-062 and D-065).
--- Tests: supabase/tests/41_answer_keys_office.test.sql
+-- DECISIONS: D-150 (amending D-062 and D-065).
+-- Tests: supabase/tests/42_answer_keys_office.test.sql
 
 -- ---------------------------------------------------------------------------------------
 -- 1. Who reads an item's keys
@@ -136,7 +136,7 @@ begin
     raise exception 'licence' using errcode = 'LXM02';
   end if;
   -- Someone who may not read the original's keys (office or facilities staff, a board admin who
-  -- is not a reviewer) gets a copy without them (D-149).
+  -- is not a reviewer) gets a copy without them (D-150).
   v_keys := app.library_item_keys_readable_by(v_user, v_src.id);
 
   -- The cap: the original's audience, unless the user owns it or it reaches the whole board; a
@@ -271,7 +271,7 @@ begin
   if v_version is null then
     raise exception 'unknown version' using errcode = '22023';
   end if;
-  -- The key only for someone who may read it (D-149): the class's team is checked at the class's
+  -- The key only for someone who may read it (D-150): the class's team is checked at the class's
   -- school, and the resource may be shared only where the teacher is office staff. Without it,
   -- no question counts for points and the projector reveals nothing.
   if not app.library_item_keys_readable_by(v_user, p_item_id) then
