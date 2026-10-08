@@ -210,7 +210,8 @@ names she typed; nobody else reads them, board admins included. PDFs are never s
   D-149 (`20270210090200_answer_keys_office.sql`, test 41), row level security gives keys to the
   author, the board's reviewers, and the teachers and direction the sharing reaches. Office and
   facilities staff, and board admins who are not reviewers, read shared resources without their
-  keys; « Adapter » copies keys only for someone who may read them.
+  keys; « Adapter » copies keys only for someone who may read them, and a device quiz is graded,
+  and its answers shown, only with a key its teacher may read.
 - **First-name check:** runs on the web server before sharing, proposing and saving a shared
   resource; personal details always block (D-066).
 - **Audit:** every workflow step and designation is audited with ids, scope and counts; notes,

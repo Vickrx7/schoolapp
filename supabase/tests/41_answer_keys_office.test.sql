@@ -3,18 +3,19 @@
 -- are not reviewers, read shared resources without their keys; the author, the teachers and the
 -- direction the sharing reaches, and the board's reviewers keep reading them. The paths that read
 -- keys still work: the item page, the print and the PDF (as the user), « Afficher la réponse »,
--- the device quiz and « Adapter », which no longer copies keys for someone who may not read them.
+-- the device quiz, which is graded only with a key its teacher may read, and « Adapter », which no
+-- longer copies keys for someone who may not read them.
 begin;
 \ir _helpers.psql
 \ir _class_mode_helpers.psql
-select plan(34);
+select plan(40);
 select tests.build_fixture();
 select tests.build_library_fixture();
 
 -- More staff of board A: a teacher at school_a2; a vice-principal and facilities staff at
 -- school_a1; a board admin who reviews nothing; a teacher at school_a1 who is office staff at
--- school_a2; office staff at school_a2 who approve the board's content; office staff at school_a1
--- who review faith content.
+-- school_a2, in class_a_other's team; office staff at school_a2 who approve the board's content;
+-- office staff at school_a1 who review faith content.
 do $$
 begin
   perform tests.create_user('teacher_a2');
@@ -33,6 +34,8 @@ begin
     (tests.id('teacher_office_a2'), 'office_admin', tests.id('board_a'), tests.id('school_a2')),
     (tests.id('office_reviewer_a'), 'office_admin', tests.id('board_a'), tests.id('school_a2')),
     (tests.id('office_faith_a'), 'office_admin', tests.id('board_a'), tests.id('school_a1'));
+  insert into public.class_teachers (class_id, user_id, role) values
+    (tests.id('class_a_other'), tests.id('teacher_office_a2'), 'subject');
   insert into public.library_reviewers (board_id, user_id, approves_content, reviews_faith) values
     (tests.id('board_a'), tests.id('office_reviewer_a'), true, false),
     (tests.id('board_a'), tests.id('office_faith_a'), false, true);
@@ -57,6 +60,11 @@ select tests.library_item('board_draft_key', null, 'riddle');
 select tests.library_item('office_draft_key', 'office_a', 'riddle');
 -- The battle quiz: approved for the board, the board's own, five versions with their keys.
 select tests.battle_quiz('battle', null);
+-- The same quiz, reviewed by teacher_a2 and shared with school_a2 only.
+select tests.battle_quiz('a2_quiz', 'teacher_a2', 'school_a2');
+update public.library_items
+set status = 'teacher_reviewed', share_scope = 'school', approved_at = null
+where id = tests.id('a2_quiz');
 
 -- What the current user reads of each item, in order: the item (row level security), and how
 -- many of its keys, joined to their versions as the item page, the print and the PDF read them.
@@ -277,6 +285,50 @@ select throws_ok(
   '42501', null, 'nor does the direction: the device quiz stays with the class team'
 );
 select tests.clear_authentication();
+
+-- A teacher in one school who is office staff in another: her class is at school_a1, the quiz is
+-- shared only with school_a2, where she is office staff. She may use it, not read its key, and
+-- the database does not grade with it for her (its definer function reads the key).
+select tests.authenticate_as('teacher_office_a2');
+select results_eq(
+  $$select * from tests.reads(array['a2_quiz'])$$,
+  $$values (true, 0)$$,
+  'a teacher reads a quiz shared where she is office staff, without its keys'
+);
+select lives_ok(
+  $$select tests.remember('office_quiz_s', (select session_id from public.start_class_session(
+      tests.id('class_a_other'), tests.id('a2_quiz'), null, 'solo')))$$,
+  'she can still play it on her class''s devices'
+);
+select tests.clear_authentication();
+select results_eq(
+  $$select x.q ->> 'id', (x.q ->> 'scorable')::boolean
+    from public.class_sessions s, jsonb_array_elements(s.questions) with ordinality x (q, n)
+    where s.id = tests.id('office_quiz_s') order by x.n$$,
+  $$values ('q1', false), ('q2', false), ('q3', false), ('q4', false), ('q5', false)$$,
+  'no question counts for points: the quiz is not graded with a key she may not read'
+);
+select is(
+  (select k.answers from public.class_session_keys k where k.session_id = tests.id('office_quiz_s')),
+  '{}'::jsonb,
+  'the session keeps no key, so the projector has no answer to reveal'
+);
+
+-- The same teacher's quiz shared with the board, where she teaches, is graded as before.
+select tests.authenticate_as('teacher_office_a2');
+select lives_ok(
+  $$select tests.remember('teacher_quiz_s', (select session_id from public.start_class_session(
+      tests.id('class_a_other'), tests.id('battle'), null, 'solo', p_replace_open => true)))$$,
+  'she starts a device quiz with a board resource in the same class'
+);
+select tests.clear_authentication();
+select results_eq(
+  $$select x.q ->> 'id', (x.q ->> 'scorable')::boolean
+    from public.class_sessions s, jsonb_array_elements(s.questions) with ordinality x (q, n)
+    where s.id = tests.id('teacher_quiz_s') order by x.n$$,
+  $$values ('q1', true), ('q2', true), ('q3', true), ('q4', true), ('q5', false)$$,
+  'that one is graded with the key she may read'
+);
 
 -- ---------------------------------------------------------------------------------------
 -- 5. « Adapter »: the copy has keys only for someone who may read them
