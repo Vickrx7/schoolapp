@@ -149,9 +149,9 @@ install or from this repository.
 `BULK_MAX_RUN_USD`, as above, and its own setting below. Its replies are shown to the operator and
 never kept in the journal.
 
-| Variable        | Secret | Default                                                   | What it is                                                                                                                                                                                                                                |
-| --------------- | ------ | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `OPERATOR_NAME` | no     | `IP Lynx`; board: `Service informatique du conseil` (set) | Who the board's audit log names for each entry the admin commands write (D-147): the team or person who runs them. 1 to 80 characters, no control characters; an invalid one stops every command. Entries written before keep « IP Lynx » |
+| Variable        | Secret | Default                                                   | What it is                                                                                                                                                                                                                                                                       |
+| --------------- | ------ | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `OPERATOR_NAME` | no     | `IP Lynx`; board: `Service informatique du conseil` (set) | Who the board's audit log names for each entry the admin commands write (D-147): the team that runs them; anyone else passes their own name (section 10). 1 to 80 characters, no control characters; an invalid one stops every command. Entries written before keep « IP Lynx » |
 
 **Self-hosted Supabase** (board-hosted only)
 
@@ -387,8 +387,11 @@ docker compose run --rm admin invite --role board_admin …   # as in 3.6
 ```
 
 - **The operator's name:** the board's audit log names `OPERATOR_NAME` for every entry an admin
-  command writes (access records, settings, modules, deleted accounts). The script writes
-  `Service informatique du conseil`; put the name of the team or person who runs the commands.
+  command writes (access records, settings, modules, deleted accounts): the name `.env` gives,
+  not whoever typed the command. The script writes `Service informatique du conseil`; put the
+  name of the team that runs the commands. Anyone else who runs them on this install passes
+  their own name with each command, IP Lynx included when the board grants it access
+  (section 10): `docker compose run --rm -e OPERATOR_NAME='IP Lynx' admin log-operator-access --board <slug> --reason support`.
   Unset, entries read « IP Lynx », which does not run this install (section 2).
 - **The journal:** `deploy/host/journald-lynx.conf` as in 3.3. The database writes no statements
   and no error details there (`compose.supabase.yml`), so its first start no longer logs its own
@@ -515,6 +518,9 @@ first, which takes a backup when migrations are pending) and checks that the web
   `restore.sh` for them until they age out (30 days). Board-hosted, also add
   `AUTH_RATE_LIMIT_OTP=60` and `AUTH_RATE_LIMIT_VERIFY=60` (or leave them out: those are the
   defaults).
+- **Board-hosted, upgrading an install made before the operator's name (D-147):** add
+  `OPERATOR_NAME=<your IT team>` to `.env` (section 4); without it, new entries still read
+  « IP Lynx ». Entries written before keep « IP Lynx ».
 - Record the access first (`--reason migration`).
 
 ## 8. Secrets and rotation
@@ -564,6 +570,11 @@ Generate a key: `node -e "console.log(require('crypto').randomBytes(32).toString
   changes a board's data, connecting to its database, or opening its data in Supabase's dashboard
   (the table or SQL editor) counts as access. After a restore, record it once the database is
   back (section 6).
+- **Run the commands under your own name.** The board's audit log names each command's entries
+  as `OPERATOR_NAME` says, which is the `.env` setting, not whoever typed the command
+  (section 4). Where that names someone else, pass your own with every command you run, the
+  access record first; on a board's servers, IP Lynx always does:
+  `docker compose run --rm -e OPERATOR_NAME='IP Lynx' admin log-operator-access --board <slug> --reason support`.
 - The service key and the database password stay on the server and in the operator's password
   manager. Never paste them in a chat, an e-mail or a ticket.
 - Only named operators have SSH access; remove an operator's access the day they leave.

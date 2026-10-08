@@ -34,7 +34,8 @@ export const operatorNameHeader = (name: string) => Buffer.from(name, 'utf8').to
 
 /**
  * The service role's client. Every request carries `OPERATOR_NAME`, so each entry the database
- * writes for the operator names who ran the command (the board's IT on its own servers).
+ * writes for the operator names it as that setting says (the board's IT on its own servers; another
+ * operator passes their own name, DEPLOYMENT.md § 10).
  */
 export function serviceClient(
   env: Pick<AdminEnv, 'SUPABASE_URL' | 'SUPABASE_SERVICE_ROLE_KEY' | 'OPERATOR_NAME'>,

@@ -64,7 +64,9 @@ the exact text before it is sent and must remove the name herself (section 5).
   board's instructions and uses the data only to provide the service.
 - **Board-hosted installs:** the board's IT runs the app on the board's servers. IP Lynx has no
   access unless the board grants it, and our rule is to record every such access in the board's
-  audit log first (`operator.access`, section 14).
+  audit log first (`operator.access`, section 14), under IP Lynx's own name: the install's
+  `OPERATOR_NAME` setting names the board's IT, so IP Lynx passes « IP Lynx » with every command
+  it runs there (`DEPLOYMENT.md` § 10).
 - **During the pilot, IP Lynx may hold the board administrator role** (« Administration du
   conseil ») for a pilot board, if the board asks: Mike McLeod, for IP Lynx. It then sees what
   section 7 lists for board admins: the staff list (names, e-mail addresses, roles, access),
@@ -540,21 +542,22 @@ substitute plan, with the code's issuer and role; codes issued and revoked; repo
 class team changes and class deletions; roles granted and revoked; access removed and restored;
 invitations; AI and alert switches; library approvals and reviewers; the operator's access and
 settings changes; retention runs (counts); exports of the log itself. An entry holds who, when,
-what, and ids and short codes. The operator's entries name whoever runs the admin command line,
-as its `OPERATOR_NAME` setting says (IP Lynx, or the board's IT on its own servers); those written
-before that setting read « IP Lynx ». **Never** a student's name, an alert's text, a note or a
-title: a database check refuses the usual free-text fields (names, notes, titles, messages) and
-long strings in new entries. A deleted class's entry keeps the class's name as the teacher typed it.
+what, and ids and short codes. The operator's entries name the operator as the admin command
+line's `OPERATOR_NAME` setting says (IP Lynx, or the board's IT on its own servers; section 2);
+those written before that setting read « IP Lynx ». **Never** a student's name, an alert's text,
+a note or a title: a database check refuses the usual free-text fields (names, notes, titles,
+messages) and long strings in new entries. A deleted class's entry keeps the class's name as the
+teacher typed it.
 
 **Who reads it.** Nobody reads the table directly. One database function serves it, and each kind
 of entry has an audience:
 
-| Audience                                      | Reads                                                                                                               |
-| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| The school's principal and VPs                | Alerts, absences, substitute plans, codes, sessions and reports, class team changes, class deletions and purges     |
-| The school's direction and the board's admins | Roles, access, invitations, the AI and alert switches, exports of the log                                           |
-| The board's admins only                       | Library approvals and reviewers, content packs and bulk runs, IP Lynx's access and settings changes, retention runs |
-| Nobody through the app (IP Lynx only)         | A teacher's private professional activity: drafting and sharing steps, AI requests, class mode, terms acceptance    |
+| Audience                                      | Reads                                                                                                                                                                    |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| The school's principal and VPs                | Alerts, absences, substitute plans, codes, sessions and reports, class team changes, class deletions and purges                                                          |
+| The school's direction and the board's admins | Roles, access, invitations, the AI and alert switches, exports of the log                                                                                                |
+| The board's admins only                       | Library approvals and reviewers, content packs and bulk runs, the operator's access and settings changes (IP Lynx, or the board's IT on its own servers), retention runs |
+| Nobody through the app (IP Lynx only)         | A teacher's private professional activity: drafting and sharing steps, AI requests, class mode, terms acceptance                                                         |
 
 So a board admin never sees sick days, substitute activity or alert reads. Labels follow the same
 rules: a student appears only as their class (« Élève · 3e année »). A substitute's entry whose
@@ -593,3 +596,4 @@ kept 730 days.
 | 2026-10-03 | 0.8     | « Commentaires de bulletin »: comment banks in the library (phrases with `{prénom}`, no student data), « Créer une banque avec l'IA » (curriculum labels and the teacher's note only), and « Bulletins », which composes report card comments in the teacher's browser only (sections 1, 3, 4, 5, 9, 13). The notice, the terms and « Bienvenue » changed with it (terms version `2026-10-pilote-3`).                                                                                                                                                                                                            |
 | 2026-10-03 | 0.9     | « Info-parents »: a class's weekly message to families, drafted from the class's data and kept with the class team, erased with the students' first names; the app sends nothing to families (sections 3, 4, 9, 13). « Traduire en anglais (IA) » sends only the message's French paragraphs with known names replaced, never a paragraph with a detected detail, nor one where it recognizes a title before a name it does not know (sections 5, 13). The notice and the terms changed with it (terms version `2026-10-pilote-4`).                                                                              |
 | 2026-10-03 | 0.9     | After the post-MVP review: the title rule leaves out a paragraph (and refuses a bank's note) when a title is not followed by a name the app knows, with more titles and no exception after a title; its remaining limits are written out (sections 5, 13). Report card comments: every first name of the class is stored in template form, and the device's erasure is described as it works: at sign-out, or the next time the app opens in that browser (sections 1, 4, 9). Access requests include the « Info-parents » messages (section 11). The notice changed with it (terms version `2026-10-pilote-5`). |
+| 2026-10-08 | 0.9     | The operator's entries in the audit log carry the operator's name, from the admin command line's `OPERATOR_NAME` setting (IP Lynx, or the board's IT on its own servers), and IP Lynx records its access to a board's own servers under its own name (sections 2, 14). Nothing about students or the app's users; the pilot terms are unchanged.                                                                                                                                                                                                                                                                 |

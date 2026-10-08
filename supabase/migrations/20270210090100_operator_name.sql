@@ -35,7 +35,7 @@ alter table public.audit_log add column operator_name text
     ));
 
 comment on column public.audit_log.operator_name is
-  'Who ran the admin CLI, as its OPERATOR_NAME says (service entries only; null: IP Lynx). D-147.';
+  'The operator, as the admin CLI''s OPERATOR_NAME says (service entries only; null: IP Lynx). D-147.';
 
 -- ---------------------------------------------------------------------------------------
 -- 2. Filled from the operator's request

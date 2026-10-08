@@ -149,6 +149,7 @@ Production installs run with Docker Compose, which gives each service only its o
 | `AI_PRICE_INPUT_PER_MTOK`, `AI_PRICE_OUTPUT_PER_MTOK`   | worker, admin          | Prices (USD per million tokens) for a model the app does not know; without them such a model is refused  |
 | `AI_FAKE_DELAY_MS`                                      | worker                 | Optional latency of the fake provider (800)                                                              |
 | `BULK_MAX_RUN_USD`                                      | worker, admin          | The most one bulk generation run may cost at its worst case, in USD (100; at most 1000)                  |
+| `OPERATOR_NAME`                                         | admin CLI              | Who the board's audit log names for the CLI's entries (IP Lynx by default; 1 to 80 characters; D-147)    |
 | `WORKER_HEALTH_PORT`                                    | worker                 | Port of the worker's `/healthz` (0 = off; D-112)                                                         |
 | `HEARTBEAT_URL_WORKER`                                  | worker                 | Optional external monitor pinged after each heartbeat; it receives no data (D-112)                       |
 
