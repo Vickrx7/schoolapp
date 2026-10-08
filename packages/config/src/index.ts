@@ -186,12 +186,44 @@ export const workerEnvSchema = z.preprocess(
 
 export type WorkerEnv = z.infer<typeof workerEnvSchema>;
 
+/**
+ * Who a board's audit log names for the entries the admin CLI writes (DECISIONS D-148): IP Lynx,
+ * which runs the hosted install, unless `OPERATOR_NAME` says otherwise (a board's IT on its own
+ * servers). Entries written before the setting existed read « IP Lynx » too.
+ */
+export const DEFAULT_OPERATOR_NAME = 'IP Lynx';
+
+/** Control characters, and the invisible ones that can reorder or hide text (U+202E, U+200B…). */
+const HIDDEN_CHARACTERS = /[\p{Cc}\p{Cf}\p{Zl}\p{Zp}]/u;
+
+/**
+ * `OPERATOR_NAME`: trimmed, 1 to 80 characters, none of them hidden. The database checks the same
+ * (`audit_log.operator_name`); unset or empty, « IP Lynx ».
+ */
+export const operatorNameSchema = z
+  .string()
+  .trim()
+  .min(1, 'must not be blank (leave it unset for IP Lynx)')
+  .max(80, 'at most 80 characters')
+  .refine((name) => !HIDDEN_CHARACTERS.test(name), 'no control or invisible characters')
+  .default(DEFAULT_OPERATOR_NAME);
+
+/**
+ * The operator's name from the environment alone, so the admin CLI refuses an invalid one before
+ * a command starts (EnvError), whatever else the command needs.
+ */
+export function operatorNameFrom(source: EnvSource = process.env): string {
+  return loadEnv(z.object({ OPERATOR_NAME: operatorNameSchema }), source).OPERATOR_NAME;
+}
+
 /** Settings the admin CLI needs (`pnpm admin`, run only from a trusted machine). */
 export const adminEnvSchema = z.preprocess(
   withLegacyNames,
   z.object({
     SUPABASE_URL: z.url(),
     SUPABASE_SERVICE_ROLE_KEY: z.string().min(20),
+    /** Sent with every request, recorded on each entry the CLI writes as the operator (D-148). */
+    OPERATOR_NAME: operatorNameSchema,
     BULK_MAX_RUN_USD: bulkMaxRunUsd,
     /**
      * The worker's AI settings, read by `pnpm admin bulk-plan` to price a run's worst case as the

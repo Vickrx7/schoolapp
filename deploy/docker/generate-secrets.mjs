@@ -161,6 +161,17 @@ const sections = [
     'BACKUP_KEEP_DAYS=30',
     'HEARTBEAT_URL_BACKUP=',
   ],
+
+  [
+    'admin (docker compose run --rm admin …; also SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY above)',
+  ],
+  [
+    '# Who the board’s audit log names for every entry the admin commands write (1 to 80 characters).',
+    selfHosted
+      ? '# On the board’s servers: its IT team, or the person who runs the commands.'
+      : '# IP Lynx runs the hosted install.',
+    `OPERATOR_NAME=${selfHosted ? 'Service informatique du conseil' : 'IP Lynx'}`,
+  ],
 ];
 
 if (selfHosted) {
@@ -216,5 +227,6 @@ const blanks = text
 process.stderr.write(
   `wrote ${out} (mode 0600). Fill in what your install uses among: ${blanks.join(', ')}` +
     (text.includes('<project-ref>') ? '; and replace each <project-ref>' : '') +
+    (mode === 'board' ? '; and put your IT team’s name (or yours) in OPERATOR_NAME' : '') +
     '\n',
 );

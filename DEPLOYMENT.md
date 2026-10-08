@@ -147,7 +147,12 @@ install or from this repository.
 | `HEARTBEAT_URL_BACKUP`                                   | keep private | empty            | A monitor's URL, pinged after each successful backup                                                                                   |
 
 **admin:** `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `AI_PROVIDER`, `AI_MODEL`, `AI_PRICE_*`,
-`BULK_MAX_RUN_USD`, as above. Its replies are shown to the operator and never kept in the journal.
+`BULK_MAX_RUN_USD`, as above, and its own setting below. Its replies are shown to the operator and
+never kept in the journal.
+
+| Variable        | Secret | Default                                                   | What it is                                                                                                                                                                                                                                                                       |
+| --------------- | ------ | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `OPERATOR_NAME` | no     | `IP Lynx`; board: `Service informatique du conseil` (set) | Who the board's audit log names for each entry the admin commands write (D-148): the team that runs them; anyone else passes their own name (section 10). 1 to 80 characters, no control characters; an invalid one stops every command. Entries written before keep « IP Lynx » |
 
 **Self-hosted Supabase** (board-hosted only)
 
@@ -314,14 +319,20 @@ plans' « Moment de foi » are empty.
 ```bash
 # Curriculum (paraphrased samples, flagged « À vérifier »; a dry run without --apply):
 docker compose run --rm admin import-curriculum --file /repo/content/curriculum/fra-2023-3e.json --apply
+# The board's Catholic references (docs/catholic-references.md), mounted into the container:
+docker compose run --rm -v "$PWD/references.json:/tmp/references.json:ro" admin import-references \
+  --board csc-exemple --file /tmp/references.json --apply
 # Library resources from a content pack (docs/content-packs.md), mounted into the container:
 docker compose run --rm -v "$PWD/pack.json:/tmp/pack.json:ro" admin import-pack --board csc-exemple \
   --file /tmp/pack.json --apply [--approve --approver conseillere@conseil.ca]
 ```
 
-Official curriculum text needs permission first (`--confirm-licence`, D-070). There is no command
-yet to load Catholic references: IP Lynx adds the board's references with `psql` as the database
-owner, recording the access first.
+Official curriculum text needs permission first (`--confirm-licence`, D-070); so do texts copied
+from a Bible or liturgical translation, published prayers or the Catholic graduate expectations
+(D-030). Each import is a dry run without `--apply`; record the access first (section 10). The
+board's references come from its own file: `/repo/content/catholic-references/sample.json` holds
+fictional examples to try the command, not texts for a board. Load the references before a
+content pack whose resources name them.
 
 ### 3.9 External monitoring
 
@@ -369,13 +380,20 @@ git clone https://github.com/Vickrx7/schoolapp /opt/lynx-ecole && cd /opt/lynx-e
 git checkout v0.6.0 && cd deploy/docker
 node generate-secrets.mjs --board          # .env (mode 0600) with COMPOSE_FILE=compose.yml:compose.supabase.yml
 # fill in APP_DOMAIN, ACME_EMAIL, SMTP_HOST, SMTP_ADMIN_EMAIL (and SMTP_USER/SMTP_PASS over STARTTLS),
-# SUPPORT_EMAIL, PRIVACY_CONTACT_EMAIL, BACKUP_AGE_RECIPIENT
+# SUPPORT_EMAIL, PRIVACY_CONTACT_EMAIL, BACKUP_AGE_RECIPIENT; check OPERATOR_NAME (your IT team's name)
 APP_RELEASE=0.6.0 docker compose build
 docker compose up -d --wait
 docker compose run --rm admin create-board …     # then create-school, create-year,
 docker compose run --rm admin invite --role board_admin …   # as in 3.6
 ```
 
+- **The operator's name:** the board's audit log names `OPERATOR_NAME` for every entry an admin
+  command writes (access records, settings, modules, deleted accounts): the name `.env` gives,
+  not whoever typed the command. The script writes `Service informatique du conseil`; put the
+  name of the team that runs the commands. Anyone else who runs them on this install passes
+  their own name with each command, IP Lynx included when the board grants it access
+  (section 10): `docker compose run --rm -e OPERATOR_NAME='IP Lynx' admin log-operator-access --board <slug> --reason support`.
+  Unset, entries read « IP Lynx », which does not run this install (section 2).
 - **The journal:** `deploy/host/journald-lynx.conf` as in 3.3. The database writes no statements
   and no error details there (`compose.supabase.yml`), so its first start no longer logs its own
   `ALTER USER supabase_admin WITH PASSWORD …`, and Auth writes warnings and errors only; the
@@ -486,23 +504,63 @@ backup. Keep a copy with the backup key, offline.
 cd /opt/lynx-ecole/deploy/docker && ./upgrade.sh v0.6.1
 ```
 
-It checks out the tag, builds both images, stops web and worker, starts everything again (`migrate`
-first, which takes a backup when migrations are pending) and checks that the web server is ready.
+It checks out the tag, builds both images, stops web and worker, takes a backup of the install as
+it stands, starts everything again (`migrate` first, which takes another backup when migrations are
+pending) and checks that the web server is ready.
 
 - Evenings or weekends only, **never 05:30 to 09:00 on a school day** (absences are reported then).
-- Rolling back means the previous tag plus a restore of the backup `migrate` took.
-- Security updates of the images come as releases. Every image is pinned by digest (the
+- Rolling back means the previous tag plus a restore (section 6, into a new `db-data` volume) of the
+  backup `upgrade.sh` took before starting the release; its manifest names the previous release.
+  Not `migrate`'s: board-hosted, the release's Auth starts first and applies its own migrations,
+  and `restore.sh` refuses a backup holding Auth migrations the previous release's Auth lacks. A
+  release that changes only images makes `migrate` take no backup at all.
+- `UPGRADE_WITHOUT_BACKUP=yes ./upgrade.sh <tag>` skips that backup (an install without backup
+  settings, or one you have just backed up with web and worker stopped). An evaluation install
+  (no `BACKUP_AGE_RECIPIENT` and `MIGRATE_WITHOUT_BACKUP=yes` in `.env`, as `--ci` writes it)
+  skips it on its own. Then a release that changes
+  `supabase/gotrue` can only roll back to a backup taken before it.
+- Security updates of the images come as releases. Every image is pinned by tag and digest (the
   Dockerfile's base, `compose.yml`, `compose.supabase.yml`), so rebuilding without a release
-  fetches the same bytes: IP Lynx updates the pinned versions in a release, and the operator
-  installs it with `./upgrade.sh <tag>`. IP Lynx plans to review the pinned versions monthly; no
-  automation does it yet. The server's own system updates itself (unattended upgrades).
+  fetches the same bytes. On the 1st of each month, Dependabot (`.github/dependabot.yml`, D-149)
+  proposes the newer versions as pull requests: the Dockerfile's base, the Supabase images, the
+  other Compose images, and CI's actions. CI tests each one like any change: `docker-smoke` builds
+  the images and runs the board-hosted install with the new pins, a backup in the image and
+  `upgrade.sh` included; the other jobs (lint and unit tests; pgTAP, integration, end-to-end, backup
+  and restore on the Supabase CLI's images) cover the actions and npm pull requests, not the pins.
+  IP Lynx merges, tags a release, and the operator installs it with `./upgrade.sh <tag>`. The
+  release notes say when a release changes `supabase/gotrue` or `supabase/postgres`: rolling it back
+  needs the backup `upgrade.sh` took. The server's own system updates itself (unattended upgrades).
+- **Reviewing Dependabot's pull requests** (IP Lynx):
+  - Dependabot never proposes a new major of Node (it moves by hand, with `.nvmrc` and CI) or of
+    PostgreSQL (a new major cannot start on the old one's data). Other new majors of the Compose
+    images come one per pull request, outside the monthly groups: read their release notes first.
+    CI's actions are pinned by major (`@v4`), so every proposal for them is a new major; they come
+    together in the `actions` group: read each one's release notes.
+  - Only `docker-smoke` runs the Supabase images (`supabase/postgres`, `supabase/gotrue`,
+    `postgrest`). The database tests (pgTAP, integration, backup and restore) run on the Supabase
+    CLI's own images (`supabase` in `package.json`), which the `backup-restore` job lists. No check
+    requires the two to match: after the merge, the board-hosted versions are newer than CI's
+    until someone updates the CLI (`pnpm up supabase`).
+  - `docker-smoke` starts from an empty database. Before tagging a new `supabase/postgres` or
+    `supabase/gotrue`, upgrade a throw-away install of the previous release, with data, to the
+    merged commit (`./upgrade.sh <commit>`), then roll it back (the previous tag, a new `db-data`
+    volume, a restore of the backup `upgrade.sh` took), on a workstation as for the monthly drill
+    (section 6). Name these images in the release notes.
+  - Update the versions this guide names (sections 1, 3.4 and 6) in the same pull request.
+  - npm packages get security updates only, in one pull request, when an advisory names a package
+    of `pnpm-lock.yaml`; they need "Dependabot security updates" turned on in the repository's
+    settings (Advanced Security). Images have no security updates in Dependabot: the monthly
+    proposals are how their fixes arrive.
 - **Upgrading an install made before backups were signed:** add `BACKUP_SIGNING_KEY`
   (`openssl rand -hex 32`) to `.env` under the backup settings, and copy it next to the age key,
-  before the upgrade: `migrate` takes a signed backup, and `backup.sh` refuses to run without the
-  key. Older backups have no signature and `restore.sh` refuses them; keep the previous release's
-  `restore.sh` for them until they age out (30 days). Board-hosted, also add
+  before the upgrade: `upgrade.sh` and `migrate` take signed backups, and `backup.sh` refuses to run
+  without the key. Older backups have no signature and `restore.sh` refuses them; keep the previous
+  release's `restore.sh` for them until they age out (30 days). Board-hosted, also add
   `AUTH_RATE_LIMIT_OTP=60` and `AUTH_RATE_LIMIT_VERIFY=60` (or leave them out: those are the
   defaults).
+- **Board-hosted, upgrading an install made before the operator's name (D-148):** add
+  `OPERATOR_NAME=<your IT team>` to `.env` (section 4); without it, new entries still read
+  « IP Lynx ». Entries written before keep « IP Lynx ».
 - Record the access first (`--reason migration`).
 
 ## 8. Secrets and rotation
@@ -552,6 +610,11 @@ Generate a key: `node -e "console.log(require('crypto').randomBytes(32).toString
   changes a board's data, connecting to its database, or opening its data in Supabase's dashboard
   (the table or SQL editor) counts as access. After a restore, record it once the database is
   back (section 6).
+- **Run the commands under your own name.** The board's audit log names each command's entries
+  as `OPERATOR_NAME` says, which is the `.env` setting, not whoever typed the command
+  (section 4). Where that names someone else, pass your own with every command you run, the
+  access record first; on a board's servers, IP Lynx always does:
+  `docker compose run --rm -e OPERATOR_NAME='IP Lynx' admin log-operator-access --board <slug> --reason support`.
 - The service key and the database password stay on the server and in the operator's password
   manager. Never paste them in a chat, an e-mail or a ticket.
 - Only named operators have SSH access; remove an operator's access the day they leave.

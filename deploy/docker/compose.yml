@@ -14,7 +14,8 @@
 # Each service gets only its own settings, from .env by interpolation: no shared env_file. Only
 # the proxy is reachable from outside (80 and 443). Images are pinned by digest here and in
 # compose.supabase.yml, the only place production image versions are set (the docker-smoke CI
-# job runs exactly these); `docker compose config --images` lists them.
+# job runs exactly these); `docker compose config --images` lists them. Dependabot proposes newer
+# ones monthly (.github/dependabot.yml).
 name: lynx
 
 x-logging: &logging # The host's journal, kept 14 days (deploy/host/journald-lynx.conf; D-119).
@@ -195,6 +196,9 @@ services:
       AI_PRICE_INPUT_PER_MTOK: ${AI_PRICE_INPUT_PER_MTOK:-}
       AI_PRICE_OUTPUT_PER_MTOK: ${AI_PRICE_OUTPUT_PER_MTOK:-}
       BULK_MAX_RUN_USD: ${BULK_MAX_RUN_USD:-}
+      # Who the board's audit log names for every entry these commands write (D-148); empty:
+      # IP Lynx. Only this service writes the operator's entries.
+      OPERATOR_NAME: ${OPERATOR_NAME:-}
 
   # Catches the sign-in e-mails in the CI smoke test (profile mail-catcher); never in production.
   mailpit:

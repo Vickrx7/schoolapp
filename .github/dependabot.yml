@@ -1,0 +1,77 @@
+# Dependabot (DECISIONS D-149): monthly pull requests for the pinned images and CI's actions.
+# Dependabot proposes, CI tests the pull request like any change (docker-smoke builds the images
+# and runs the board-hosted install with the new pins), IP Lynx merges and tags a release, and
+# operators install it with ./upgrade.sh (DEPLOYMENT.md § 7). Dependabot reads this file on the
+# default branch (main) and targets it. No `target-branch`: one would also stop these settings
+# from applying to security updates.
+version: 2
+
+updates:
+  # The Dockerfile's base image, pinned by tag and digest: Dependabot changes both.
+  - package-ecosystem: docker
+    directory: /deploy/docker
+    schedule:
+      interval: monthly
+    ignore:
+      # Node's major version moves by hand, with .nvmrc (CI) and the engines in package.json.
+      - dependency-name: node
+        update-types: ['version-update:semver-major']
+    groups:
+      base-image:
+        patterns: ['*']
+    open-pull-requests-limit: 2
+    commit-message:
+      prefix: Images
+
+  # The images of compose.yml and compose.supabase.yml, by tag and digest. One pull request
+  # changes every file that names an image (Caddy is in both).
+  - package-ecosystem: docker-compose
+    directory: /deploy/docker
+    schedule:
+      interval: monthly
+    ignore:
+      # A new PostgreSQL major cannot start on the old one's data files.
+      - dependency-name: supabase/postgres
+        update-types: ['version-update:semver-major']
+    groups:
+      # The self-hosted Supabase (board-hosted). CI's database tests run the Supabase CLI's own
+      # images, so only docker-smoke tests these (DEPLOYMENT.md § 7).
+      supabase:
+        patterns: ['supabase/*', 'postgrest/*']
+        update-types: [minor, patch]
+      compose:
+        patterns: ['*']
+        update-types: [minor, patch]
+    # Other major versions come one per pull request, outside the groups.
+    open-pull-requests-limit: 4
+    commit-message:
+      prefix: Images
+
+  # The actions in .github/workflows, pinned by major version (@v4): every proposal is a new major,
+  # and they all come in the one group.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ['*']
+    open-pull-requests-limit: 2
+    commit-message:
+      prefix: CI
+
+  # npm packages (pnpm-lock.yaml): security updates only, in one pull request, when an advisory
+  # names a package of the lockfile. No version updates (limit 0): dozens of pull requests a
+  # month. Security updates are turned on in the repository's settings, not here; this entry only
+  # shapes their pull requests.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 0
+    groups:
+      npm-security:
+        applies-to: security-updates
+        patterns: ['*']
+    commit-message:
+      prefix: Deps

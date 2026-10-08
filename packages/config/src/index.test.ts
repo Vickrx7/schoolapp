@@ -3,8 +3,10 @@ import {
   adminEnvSchema,
   appNameFrom,
   appReleaseFrom,
+  DEFAULT_OPERATOR_NAME,
   EnvError,
   loadEnv,
+  operatorNameFrom,
   webServerEnvSchema,
   workerEnvSchema,
 } from './index';
@@ -236,6 +238,57 @@ describe('loadEnv', () => {
     expect(() =>
       loadEnv(workerEnvSchema, { DATABASE_URL: 'postgres://x', AI_PROVIDER: 'anthropic' }),
     ).toThrow(/ANTHROPIC_API_KEY/);
+  });
+
+  it('names the operator from OPERATOR_NAME, IP Lynx by default (D-148)', () => {
+    const admin = {
+      SUPABASE_URL: 'http://127.0.0.1:54321',
+      SUPABASE_SERVICE_ROLE_KEY: 'x'.repeat(40),
+    };
+    expect(loadEnv(adminEnvSchema, admin).OPERATOR_NAME).toBe('IP Lynx');
+    expect(DEFAULT_OPERATOR_NAME).toBe('IP Lynx');
+    expect(operatorNameFrom({})).toBe('IP Lynx');
+    // Compose passes an unset setting as an empty string.
+    expect(operatorNameFrom({ OPERATOR_NAME: '' })).toBe('IP Lynx');
+    expect(operatorNameFrom({ OPERATOR_NAME: '  Service informatique du CSC Exemple ' })).toBe(
+      'Service informatique du CSC Exemple',
+    );
+    expect(operatorNameFrom({ OPERATOR_NAME: 'Équipe TI — Conseil d’Exemple' })).toBe(
+      'Équipe TI — Conseil d’Exemple',
+    );
+    expect(operatorNameFrom({ OPERATOR_NAME: 'é'.repeat(80) })).toHaveLength(80);
+    expect(
+      loadEnv(adminEnvSchema, { ...admin, OPERATOR_NAME: 'Marc Gagnon (TI)' }).OPERATOR_NAME,
+    ).toBe('Marc Gagnon (TI)');
+  });
+
+  it('refuses a blank, long or hidden-character operator name (D-148)', () => {
+    for (const bad of [
+      '   ',
+      'é'.repeat(81),
+      'IP\nLynx',
+      'IP\tLynx',
+      'IP Lynx\u0007',
+      'IP\u0085Lynx',
+      'xnyL PI\u202E',
+      'IP\u200BLynx',
+      'IP\u2028Lynx',
+      'IP\uFEFFLynx',
+    ]) {
+      expect(() => operatorNameFrom({ OPERATOR_NAME: bad }), JSON.stringify(bad)).toThrow(
+        /OPERATOR_NAME/,
+      );
+    }
+    expect(() => operatorNameFrom({ OPERATOR_NAME: ' \t ' })).toThrow(/must not be blank/);
+    expect(() => operatorNameFrom({ OPERATOR_NAME: 'a\u0000b' })).toThrow(/invisible/);
+    // The whole admin environment refuses it too, so no command runs with it.
+    expect(() =>
+      loadEnv(adminEnvSchema, {
+        SUPABASE_URL: 'http://127.0.0.1:54321',
+        SUPABASE_SERVICE_ROLE_KEY: 'x'.repeat(40),
+        OPERATOR_NAME: 'x'.repeat(81),
+      }),
+    ).toThrow(EnvError);
   });
 
   it('lists every problem in one readable error', () => {

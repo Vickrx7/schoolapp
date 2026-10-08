@@ -13,7 +13,8 @@
  * - no names: the builder never prints the roster; it reads it only to take out a first name that
  *   the answer holds (answers come back with real names in place of their markers). Names are
  *   found as the privacy layer finds them: in any case and with or without accents, except names
- *   that are everyday words (Claire, Pierre), which count only when capitalized.
+ *   that are everyday words (Claire, Pierre), which count only when capitalized, and very short
+ *   names (« Tú », « Lê »), which count only as spelled (D-146).
  * A word taken out becomes « … ». Student copies are in French, the content's language, whatever
  * the reader's language (D-046): nothing on the pages comes from the message files.
  *

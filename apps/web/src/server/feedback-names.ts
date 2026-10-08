@@ -2,10 +2,11 @@
  * Pilot feedback keeps no student's first name (DECISIONS D-116, as amended in the Phase 6
  * review): the names of the students of the sender's schools are replaced with a marker before
  * the message is stored, with the AI privacy tools' matching (accents, case, « Marie-Ève » and
- * « Marie Eve », names that are everyday words only when capitalized). Staff names stay. The
- * roster comes from `feedback_student_names` (office staff included, who cannot read students).
- * Personal details (an address, a phone number…) are reported, not replaced: the sender removes
- * them. Pure, so it is unit-tested.
+ * « Marie Eve », names that are everyday words only when capitalized, very short names only as
+ * spelled: « Tú » but not « tu »). Staff names stay. The roster comes from
+ * `feedback_student_names` (office staff included, who cannot read students). Personal details
+ * (an address, a phone number…) are reported, not replaced: the sender removes them. Pure, so it
+ * is unit-tested.
  */
 import { Redactor, type BlockedKind } from '@lynx/ai/privacy';
 

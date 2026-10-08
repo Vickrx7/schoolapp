@@ -329,6 +329,7 @@ export type Database = {
           entity_type: string | null;
           entity_id: string | null;
           details: Json;
+          operator_name: string | null;
         };
         Insert: {
           id?: never;
@@ -341,6 +342,7 @@ export type Database = {
           entity_type?: string | null;
           entity_id?: string | null;
           details?: Json;
+          operator_name?: string | null;
         };
         Update: {
           id?: never;
@@ -353,6 +355,7 @@ export type Database = {
           entity_type?: string | null;
           entity_id?: string | null;
           details?: Json;
+          operator_name?: string | null;
         };
         Relationships: [];
       };
@@ -3822,6 +3825,10 @@ export type Database = {
       cancel_staff_invitation: {
         Args: { p_invitation_id: string };
         Returns: undefined;
+      };
+      catholic_references_import: {
+        Args: { p_board_id: string; p_references: Json; p_file_sha256: string; p_apply: boolean };
+        Returns: Json;
       };
       class_mode_link: {
         Args: { p_class_id: string; p_replace?: boolean };

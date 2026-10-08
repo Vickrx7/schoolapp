@@ -30,6 +30,12 @@
  * Français summaries, unverified):
  *   pnpm admin import-curriculum --file tools/fixtures/curriculum-sample.json [--apply] [--confirm-licence]
  *
+ * Catholic references of a board (see DECISIONS.md, D-147; docs/catholic-references.md). A dry
+ * run unless --apply; each reference is matched by type and title, created or updated, and the
+ * board's other references are kept. content/catholic-references/sample.json is an example
+ * (fictional, to check):
+ *   pnpm admin import-references --board csc-exemple --file content/catholic-references/sample.json [--apply]
+ *
  * Library growth (Phase 5; each command's usage is at the top of its module): the coverage
  * report (commands/coverage.ts), bulk generation (commands/bulk.ts) and content packs
  * (commands/packs.ts).
@@ -39,12 +45,14 @@
  * board's retention settings and the operator's status (commands/ops.ts).
  *
  * Settings: SUPABASE_URL (or the older NEXT_PUBLIC_SUPABASE_URL) and SUPABASE_SERVICE_ROLE_KEY,
- * from apps/web/.env.local when it exists.
+ * from apps/web/.env.local when it exists. OPERATOR_NAME (IP Lynx by default; 1 to 80 characters)
+ * is who the board's audit log names for each entry a command writes (DECISIONS D-148): on a
+ * board's own servers, its IT. An invalid one stops any command before it starts.
  *
  * The commands live in commands/ (one module per group, registered in commands/index.ts); the
  * options in args.ts; the database client and shared helpers in context.ts.
  */
-import { EnvError } from '@lynx/config';
+import { EnvError, operatorNameFrom } from '@lynx/config';
 import { z } from 'zod';
 import { parseCli, type CliValues } from './args';
 import { commands } from './commands';
@@ -69,6 +77,8 @@ if (!run) {
   process.exit(1);
 }
 try {
+  // The name every entry of this command will carry: checked before anything runs (D-148).
+  operatorNameFrom(process.env);
   console.log(await run(createContext(parsed.values)));
 } catch (err) {
   if (err instanceof z.ZodError)

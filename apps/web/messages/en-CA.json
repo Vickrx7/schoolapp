@@ -3180,7 +3180,7 @@
       "user": "Staff",
       "substitute": "Substitute",
       "system": "System",
-      "service": "IP Lynx"
+      "service": "Server operator"
     },
     "formerPerson": "Person who no longer has access",
     "invitedPerson": "Invited person",
@@ -3316,7 +3316,7 @@
         "operator_exported": "Whole audit log exported for the board ({count, plural, one {# entry} other {# entries}})"
       },
       "operator": {
-        "access": "IP Lynx accessed the board’s data ({reason})"
+        "access": "Board data accessed ({reason})"
       },
       "board": {
         "settings_changed": "Board settings changed (AI or data retention)"
@@ -3341,6 +3341,9 @@
       "content_pack": {
         "imported": "Resource pack imported",
         "exported": "Resource pack exported"
+      },
+      "catholic_references": {
+        "imported": "Catholic references imported"
       },
       "library_bulk_run": {
         "planned": "Bulk generation planned",

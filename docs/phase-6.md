@@ -375,13 +375,21 @@ the banner and « Ce qui a changé » (D-110).
 - **Hosted Supabase keeps its own logs and backups**, whose location and contents we cannot set;
   Supabase's written answer is a go-live gate (`DEPLOYMENT.md` § 3.11).
 - **The operator's recording of access is a rule, not a lock** (the security review's "Not
-  fixed"), and board-hosted installs label the operator's entries « IP Lynx » whoever runs the
-  command line (a setting for the operator's name would fix it; no board-hosted install exists
-  yet).
+  fixed"). The operator's entries now name the operator as the command line's `OPERATOR_NAME`
+  setting says (IP Lynx by default; on a board's servers, its IT), recorded with each entry
+  (D-148). It is set once per install, so another operator passes their own name with each
+  command (IP Lynx on a board's servers: `DEPLOYMENT.md` § 10). Entries written before keep
+  « IP Lynx ».
 - **S6 (`?next=` keeps its query string)** is unchanged, and **S7 (Supabase's per-address limits
   count the web server's address, hosted)** stays covered by the app's own throttle (round A).
-- **Security updates of the images** arrive only when IP Lynx updates the pinned versions; no
-  automation does it yet.
+- **Security updates of the images** still need a release. Dependabot now proposes the newer pinned
+  versions every month and CI tests them (D-149, `DEPLOYMENT.md` § 7), but IP Lynx merges and tags
+  the release, and each operator installs it with `./upgrade.sh`: an install that is not upgraded
+  keeps its old images. `docker-smoke` tests the new images on an empty database, not on an install
+  upgraded in place, and CI's database tests run on the Supabase CLI's images, not on the
+  board-hosted ones. `upgrade.sh` now takes a backup before starting the release: a rollback
+  restores it, since `migrate`'s backup comes after a new Auth has applied its migrations, which
+  the previous release's Auth lacks.
 - **Untested here:** hosted Supabase, Amazon SES and S3 themselves (the upload is tested against a
   stand-in), the real AI API, iPads.
 
@@ -399,8 +407,9 @@ the banner and « Ce qui a changé » (D-110).
 - **The CLI's `deactivate` and the restoring `invite` are audited** (the plan left them as they were).
 - **The demo spec reports the absence for the next school day** rather than today, so it passes at
   any hour; the script tells the presenter to use today.
-- **No command loads Catholic references** into a new install (the demo's come from the seed);
-  `DEPLOYMENT.md` § 3.8 says how IP Lynx adds them for a pilot board.
+- **No command loaded Catholic references** into a new install in Phase 6 (the demo's come from
+  the seed). `pnpm admin import-references` came after it (D-147, `docs/catholic-references.md`);
+  `DEPLOYMENT.md` § 3.8 says how IP Lynx loads a pilot board's references.
 - **Payment collection, SSO, a web operator console, a public demo site, a self-hosted error
   tracker and a penetration test** are not in Phase 6, as planned.
 
@@ -426,7 +435,8 @@ from both images, with a browser smoke test, a backup and the upgrade script).
 - **Local versions differ from production:** the lite stack runs PostgreSQL 16 and an older Auth;
   CI runs PostgreSQL 17 and the versions Compose pins.
 - **iPads are not tested** (no WebKit here); phones and tablets are Chromium.
-- **No Catholic references or curriculum ship with a new install** (`DEPLOYMENT.md` § 3.8).
+- **No Catholic references or curriculum ship with a new install:** the operator loads them from
+  the board's files (`import-references`, `import-curriculum`; `DEPLOYMENT.md` § 3.8).
 - **Retention minimums** (a year, and the 60-day deletion of substitutes' notes) wait for the
   lawyer's review.
 - **The worker must run** for invitations, access changes reaching sign-in, plan refreshes and

@@ -3180,7 +3180,7 @@
       "user": "Personnel",
       "substitute": "Personne suppléante",
       "system": "Système",
-      "service": "IP Lynx"
+      "service": "Gestionnaire du serveur"
     },
     "formerPerson": "Personne qui n’a plus accès",
     "invitedPerson": "Personne invitée",
@@ -3316,7 +3316,7 @@
         "operator_exported": "Journal d’audit complet exporté pour le conseil ({count, plural, one {# entrée} other {# entrées}})"
       },
       "operator": {
-        "access": "Accès d’IP Lynx aux données du conseil ({reason})"
+        "access": "Accès aux données du conseil ({reason})"
       },
       "board": {
         "settings_changed": "Paramètres du conseil modifiés (IA ou conservation des données)"
@@ -3341,6 +3341,9 @@
       "content_pack": {
         "imported": "Ensemble de ressources importé",
         "exported": "Ensemble de ressources exporté"
+      },
+      "catholic_references": {
+        "imported": "Références catholiques importées"
       },
       "library_bulk_run": {
         "planned": "Génération en lot planifiée",

@@ -172,18 +172,18 @@ draft « Brouillon créé par l'IA : relisez-le… ».
 
 ## Data inventory (for the privacy document)
 
-| Data                                                        | Where                                                       | Who                                                        | Kept                                       |
-| ----------------------------------------------------------- | ----------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------ |
-| Resources: title, summary, keywords, materials, links       | `library_items`, `_grades`, `_expectations`, `_tags`        | D-065 (author, school or board staff by sharing, reviewer) | until deleted by its author (or archived)  |
-| Content per version, answer keys                            | `library_item_versions`, `library_item_answer_keys`         | same; keys never on student sheets, plans or search        | with the resource                          |
-| Review state: request, decision, reviewer's note            | `library_items` (`review_*`, `approved_*`, `faith_*`)       | author, the board's reviewers                              | with the resource (the note until changed) |
-| Reviewer designations (user, content, faith)                | `library_reviewers`                                         | board staff (read); the operator writes                    | until removed                              |
-| Search document (title, summary, keywords, attentes, text)  | `library_items.search_document`                             | nobody reads it directly; search returns usable items only | rebuilt on every change                    |
-| Resource links in planning, usage count                     | `unit_lessons.library_item_id`, `library_items.usage_count` | the teacher; the count is on the resource                  | with the lesson                            |
-| AI requests (ids and choices, the input the database built) | `ai_jobs` (input, answer, exact text sent)                  | the requester                                              | 30 days (`AI_JOB_RETENTION_DAYS`)          |
-| AI provenance (prompt version, model, usage row)            | `library_items`, `ai_generations`                           | the author; usage rows hold no text                        | with the resource; usage rows kept         |
-| Snapshots of a resource in a substitute plan (no key)       | `sub_plans.plan`                                            | D-056                                                      | with the plan (1 year, D-059)              |
-| Workflow audit (ids, scope, counts; never notes or titles)  | `audit_log`                                                 | Phase 6 viewer                                             | 2 years                                    |
+| Data                                                        | Where                                                       | Who                                                                                                                         | Kept                                       |
+| ----------------------------------------------------------- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| Resources: title, summary, keywords, materials, links       | `library_items`, `_grades`, `_expectations`, `_tags`        | D-065 (author, school or board staff by sharing, reviewer)                                                                  | until deleted by its author (or archived)  |
+| Content per version, answer keys                            | `library_item_versions`, `library_item_answer_keys`         | same, but keys only for the author, reviewers, teachers and the direction (D-150); never on student sheets, plans or search | with the resource                          |
+| Review state: request, decision, reviewer's note            | `library_items` (`review_*`, `approved_*`, `faith_*`)       | author, the board's reviewers                                                                                               | with the resource (the note until changed) |
+| Reviewer designations (user, content, faith)                | `library_reviewers`                                         | board staff (read); the operator writes                                                                                     | until removed                              |
+| Search document (title, summary, keywords, attentes, text)  | `library_items.search_document`                             | nobody reads it directly; search returns usable items only                                                                  | rebuilt on every change                    |
+| Resource links in planning, usage count                     | `unit_lessons.library_item_id`, `library_items.usage_count` | the teacher; the count is on the resource                                                                                   | with the lesson                            |
+| AI requests (ids and choices, the input the database built) | `ai_jobs` (input, answer, exact text sent)                  | the requester                                                                                                               | 30 days (`AI_JOB_RETENTION_DAYS`)          |
+| AI provenance (prompt version, model, usage row)            | `library_items`, `ai_generations`                           | the author; usage rows hold no text                                                                                         | with the resource; usage rows kept         |
+| Snapshots of a resource in a substitute plan (no key)       | `sub_plans.plan`                                            | D-056                                                                                                                       | with the plan (1 year, D-059)              |
+| Workflow audit (ids, scope, counts; never notes or titles)  | `audit_log`                                                 | Phase 6 viewer                                                                                                              | 2 years                                    |
 
 Resources hold no student data by design: the first-name check runs before sharing, and AI
 content may contain no « Élève A » marker (D-066, D-072). A teacher's private drafts can hold
@@ -206,7 +206,12 @@ names she typed; nobody else reads them, board admins included. PDFs are never s
   pages or PDFs (e2e).
 - **Answer keys:** read by the item page's « Guide et corrigé », the teacher print and PDF, and
   the editor only. Student sheets (`loadItemForStudentSheet`, `renderStudentDoc`) never read the
-  key table; substitute plans only learn whether a key exists; search never indexes keys.
+  key table; substitute plans only learn whether a key exists; search never indexes keys. Since
+  D-150 (`20270210090200_answer_keys_office.sql`, test 42), row level security gives keys to the
+  author, the board's reviewers, and the teachers and direction the sharing reaches. Office and
+  facilities staff, and board admins who are not reviewers, read shared resources without their
+  keys; « Adapter » copies keys only for someone who may read them, and a device quiz is graded,
+  and its answers shown, only with a key its teacher may read.
 - **First-name check:** runs on the web server before sharing, proposing and saving a shared
   resource; personal details always block (D-066).
 - **Audit:** every workflow step and designation is audited with ids, scope and counts; notes,
@@ -228,8 +233,6 @@ names she typed; nobody else reads them, board admins included. PDFs are never s
 - **Faith content depends on the author's checkbox**, the keyword suggestion and reviewers'
   « Signaler du contenu de foi ». Sharing with the school stays under the teacher's authority.
 - **Math has no drawings** (number lines, grids) until visual blocks exist (Phase 5).
-- **Office staff can read shared resources' keys through the API** (not personal data; they have
-  no library screens).
 - **Substitute plans:** a resource changed between reading and publishing shows at the next
   rebuild; days that can no longer change do not count for « once per absence » (D-077).
 - **Licences:** every demo resource's `licence` is empty until question 5 below is answered.

@@ -6,7 +6,13 @@ import type { Database } from '@lynx/db';
 import { createClient } from '@supabase/supabase-js';
 import { describe, expect, it } from 'vitest';
 import { parseCli } from '../args';
-import { CliError, createContext, type CliContext } from '../context';
+import {
+  CliError,
+  createContext,
+  OPERATOR_NAME_HEADER,
+  serviceClient,
+  type CliContext,
+} from '../context';
 import {
   auditExportCsv,
   deleteBoardErrorMessage,
@@ -259,11 +265,69 @@ describe('auditExportCsv', () => {
     expect(header).toBe(
       'id,occurred_at,action,audience,category,school_id,school_name,actor_type,actor_user_id,actor_name,entity_type,entity_id,details',
     );
+    // The operator's entry from before its name was recorded reads « IP Lynx » (D-148).
     expect(first).toBe(
-      '7,2026-10-02T13:00:00+00:00,operator.access,board,access,,,service,,,staff_invitation,,"{""reason"":""support""}"',
+      '7,2026-10-02T13:00:00+00:00,operator.access,board,access,,,service,,IP Lynx,staff_invitation,,"{""reason"":""support""}"',
     );
     // Commas quoted; a formula typed as a name stays text.
     expect(second).toContain(',"É.É.C. Saint-Exemple, Ottawa",');
     expect(second).toContain(`,"'=HYPERLINK(""x"")",`);
+  });
+});
+
+describe('the operator’s name (D-148)', () => {
+  const env = {
+    SUPABASE_URL: 'https://api.example.test',
+    SUPABASE_SERVICE_ROLE_KEY: 'service-role-key',
+    OPERATOR_NAME: 'Équipe TI — Conseil d’Exemple',
+  } as AdminEnv;
+
+  it('goes with every request, and log-operator-access names it', async () => {
+    const seen: { path: string; operator: string | null }[] = [];
+    const fetch = async (input: string | URL | Request, init?: RequestInit) => {
+      const request = new Request(input, init);
+      const url = new URL(request.url);
+      seen.push({ path: url.pathname, operator: request.headers.get(OPERATOR_NAME_HEADER) });
+      if (url.pathname === '/rest/v1/boards') {
+        return new Response(JSON.stringify(BOARD), {
+          headers: { 'content-type': 'application/json' },
+        });
+      }
+      return new Response(null, { status: 204 });
+    };
+    const { values } = parseCli([
+      'log-operator-access',
+      '--board',
+      'csc-x',
+      '--reason',
+      'incident',
+    ]);
+    const outcome = await staffCommands['log-operator-access']!({
+      values,
+      env,
+      db: serviceClient(env, fetch),
+    });
+    expect(outcome).toBe(
+      "Recorded: Équipe TI — Conseil d’Exemple accesses the data of Conseil exemple (incident). The board's admins see it in their audit log.",
+    );
+    expect(seen.map((s) => s.path)).toEqual([
+      '/rest/v1/boards',
+      '/rest/v1/rpc/log_operator_access',
+    ]);
+    // Base64 of its UTF-8: a header carries ASCII only; the database decodes it.
+    for (const { operator } of seen) {
+      expect(operator).toMatch(/^[A-Za-z0-9+/]+=*$/);
+      expect(Buffer.from(operator!, 'base64').toString('utf8')).toBe(env.OPERATOR_NAME);
+    }
+  });
+
+  it('is in the export for the operator’s newer entries, and only theirs default to IP Lynx', () => {
+    const csv = auditExportCsv([
+      entry(9, { actor_type: 'service', actor_user_id: null, actor_name: env.OPERATOR_NAME }),
+      entry(10, { actor_type: 'system', actor_user_id: null, actor_name: null }),
+    ]);
+    const [, operator, system] = csv.slice(1).trimEnd().split('\r\n');
+    expect(operator).toContain(',service,,Équipe TI — Conseil d’Exemple,');
+    expect(system).toContain(',system,,,');
   });
 });

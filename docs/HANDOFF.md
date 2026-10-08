@@ -2,7 +2,9 @@
 
 Written 2026-09-28 by the session that built Phases 1 and 2 (branch `claude/nifty-fermat-8hhl1l`);
 updated 2026-10-03 by the session that built Phases 3, 4, 5 and 6, « Mon année », « Commentaires
-de bulletin » and « Info-parents », and their review (branch `claude/serene-ride-3n2fa1`). Read
+de bulletin » and « Info-parents », and their review (branch `claude/serene-ride-3n2fa1`);
+updated 2026-10-08 with five production-readiness fixes (branch `claude/production-readiness`,
+draft PR #3 into `main`; see « Production readiness » in section 7). Read
 `SPEC.md` and `DECISIONS.md` first; this file covers what they don't: the conversation with Mike,
 the current state, how to run things in these containers, what's next, and the decisions waiting
 for Mike (section 6). Phase notes: `docs/phase-1.md` to `docs/phase-6.md`, then
@@ -819,6 +821,42 @@ our recommended defaults, which Mike can still change (`docs/phase-3.md`, `docs/
 
 ## 7. Next steps (in order)
 
+**Production readiness (2026-10-08, PR #3).** Five gaps that needed no decision from Mike are
+fixed, each built and reviewed by separate agents, then tested together here: unit (1,674),
+pgTAP (42 files, 2,089), integration (97) and the generated types. CI's `docker-smoke` and browser
+jobs run on the PR. Review C, merged to `main` first, took D-145. The decisions are D-146 to D-150 (« Production readiness » in `DECISIONS.md`):
+
+- **D-146:** very short names (« Tú », « Lê ») are matched only with their exact accents, so a
+  student « Tú » no longer makes every AI request refused.
+- **D-147:** `pnpm admin import-references` loads a board's Catholic references from a file
+  (`docs/catholic-references.md`), replacing psql.
+- **D-148:** `OPERATOR_NAME` names the operator on its audit entries, so a board-hosted log says
+  who runs its servers.
+- **D-149:** Dependabot proposes monthly updates of the pinned images and CI's actions;
+  `upgrade.sh` backs up before starting a release so a rollback can restore.
+- **D-150:** office and facilities staff no longer read shared resources' answer keys, through
+  the API or a device quiz.
+
+Still open for production (the numbered steps below come after them where they overlap):
+
+- **Review and merge PR #3** into `main`; then tag the first release (step 3). Dependabot starts
+  once its file is on `main`.
+- **A re-encryption command** for `ALERTS_ENCRYPTION_KEYS` (`DEPLOYMENT.md` § 8: after a key
+  leak, alerts already stored stay readable with the old key). Not built: the admin command line
+  does not hold that key today (`PRIVACY.md` § 8 says only the web server does), so where it runs
+  is a decision first.
+- **D-146's remaining limit,** a decision for Mike: « Tu » or « Le » in a roster without accents
+  still refuses every request, other capitalized two-letter words the features whose prompt
+  starts a sentence with them, and a longer name whose accent-free form is a prompt word
+  (« Liên », « lien ») that feature's requests. Options: new prompt versions, or a last check
+  that skips the fixed prompt text.
+- **Small notes the reviews left** (low severity): `import-references` accepts a file that is
+  not UTF-8 without a warning; two audit counts in pgTAP 40 count the whole database (fine on
+  CI's fresh one); `catholic_references_board_id_idx` is now redundant with the new unique index;
+  the README's admin command list lacks `import-references` and `OPERATOR_NAME`.
+- **Not run in the session that built them:** the Docker images (its network blocked builds) and
+  the browser tests; CI runs both on PR #3.
+
 1. **Show Mike Phases 3 to 6 and the three post-MVP features** (« Mon année », « Commentaires de
    bulletin », « Info-parents ») with a short summary each, then go through section 6 with him:
    the 16 answers given on his behalf and the six Phase 6 questions. `docs/PILOT.md` is his guide.
@@ -839,9 +877,16 @@ our recommended defaults, which Mike can still change (`docs/phase-3.md`, `docs/
    Canada Central, a Lightsail server in `ca-central-1`, SES, S3), including its go-live gates
    (a restore drill into a staging project, Supabase's written answer on logs, backups and TLS,
    Anthropic's zero-data-retention answer, the lawyer's review). Hosted Supabase is untested.
-6. **What the final Phase 6 review left** (`docs/phase-6.md` « What remains »): a setting for the
-   operator's name on board-hosted installs, automated updates of the pinned images, and the
-   hosted checks. « Essayer comme les élèves » (a Phase 4 hook, D-081) was not built in Phase 5.
+6. **What the final Phase 6 review left** (`docs/phase-6.md` « What remains »): the hosted
+   checks. The operator's name is now a setting (`OPERATOR_NAME`, D-148, PR #3). The pinned images
+   get monthly update proposals once PR #3 is on `main` (`.github/dependabot.yml`, D-149):
+   Dependabot proposes, CI tests (`docker-smoke` runs the board-hosted install with the new pins;
+   the other jobs run on the Supabase CLI's images and cover the actions and npm pull requests),
+   IP Lynx merges and tags a release, operators install it with `./upgrade.sh`, which now takes a
+   backup first: the one a rollback restores, since `migrate`'s comes after a new Auth has
+   migrated (`DEPLOYMENT.md` § 7). Then turn on Dependabot alerts and security updates in the
+   repository's settings (Advanced Security), if they are off, for the npm packages' security
+   fixes. « Essayer comme les élèves » (a Phase 4 hook, D-081) was not built in Phase 5.
 7. **Name.** Once chosen: check availability, then rename `APP_NAME`, the icon, the
    login email template and the promo.
 8. **« Mon année » with pilot teachers** (`docs/mon-annee.md`, « What to test »): one teacher
@@ -896,8 +941,10 @@ our recommended defaults, which Mike can still change (`docs/phase-3.md`, `docs/
 - **No hosted install exists, and hosted Supabase is untested** (keys, pooler, TLS with Supabase's
   certificate authority, Auth settings, whether the nightly job may purge Auth's log). The
   board-hosted install is tested in CI (`docker-smoke`).
-- **A new install has no curriculum or Catholic references** (the demo's come from the seed);
-  there is no command for Catholic references yet (`DEPLOYMENT.md` § 3.8).
+- **A new install has no curriculum or Catholic references** (the demo's come from the seed). The
+  operator loads them with `import-curriculum` and `import-references` (D-147,
+  `docs/catholic-references.md`); each board's references come from a file the board provides,
+  and `content/catholic-references/sample.json` is fictional (`DEPLOYMENT.md` § 3.8).
 - **Board-hosted, Auth and the database write their own lines to the journal**, not scrubbed:
   Auth warnings and errors only, the database no statements and no error details (D-119 as
   amended). The `docker-smoke` job fails if the install's journal holds an e-mail address or a
@@ -911,10 +958,24 @@ our recommended defaults, which Mike can still change (`docs/phase-3.md`, `docs/
   caught by the teacher at the preview, except after a title in « Traduire en anglais (IA) » and a
   comment bank's note.
 - **Historical figures** who share a student's first name get replaced, then restored.
-- **Very short names** that match a French word once accents are removed (« Tú », « Lê », « An »)
-  replace that word everywhere. A student named « Tú » would make the last check refuse every
-  request for that school (the prompt begins with « Tu aides »). Fix: match such names only with
-  their exact accents.
+- **Very short names** (fewer than three letters, initials written as one word too) are matched
+  alone only with their exact accents, in any case (D-146): « tu » and « le » stay words for a
+  student named « Tú » or « Lê », and the last check no longer refuses every request of their
+  school. « Tu » typed for « Tú » is not replaced (the teacher sees it unhighlighted). After an
+  honorific, a staff member's is matched without its accents only when capitalized (« Mme Le »,
+  not « M. le maire »). A very short name spelled like a short word (« An ») is matched only when
+  capitalized, at a sentence's start too: a student whose roster writes « Tu » or « Le » without
+  accents would still make the last check refuse every request for that school (every prompt
+  starts sentences with them), and one written « Un », « Ne », « La », « Si », « Ce », « Au » or
+  « En »… the requests of the features whose prompt starts a sentence with that word.
+- **Longer names whose accent-free form is a word of a prompt** still make the last check refuse
+  that feature's requests: names of three letters or more keep their accent-free matching. A
+  student named « Liên » gets every « Créer avec l'IA » and comment-bank request of the school
+  refused (« un lien avec la foi », « le lien se fait »). A name that is an everyday word counts
+  only capitalized (« Sơn » as « Son »), which no prompt has at a sentence's start today.
+  `prompts-privacy.test.ts` checks common Vietnamese first names against every prompt and pins
+  the « Liên » case. Possible fixes: prompt versions without such words, exact accents whenever a
+  name's accent-free form is a word of a prompt, or not scanning the fixed system prompt.
 - **Very short parts of staff names and particles** are replaced on their own only after an
   honorific (« Mme Lê »).
 - **The budget is a soft limit:** checked when a request is made and again when the worker starts
@@ -928,8 +989,6 @@ our recommended defaults, which Mike can still change (`docs/phase-3.md`, `docs/
 - **The library's first-name check knows the teacher's own students only;** faith content relies
   on the author's box, the keyword suggestion and reviewers' flag (docs/phase-4.md).
 - **Who owns shared resources is open** (Phase 4 question 5): licences are empty.
-- **Office staff can read shared resources' answer keys through the API** (not personal data; no
-  library screens).
 
 **Waiting on Mike:** section 6 (the 16 answers given for him on the three features, the six
 Phase 6 questions, and the other open items), above all real first names before a principal
@@ -940,7 +999,7 @@ agrees, the AI translation of « Info-parents », the hosting accounts and the p
 Paste something like this (adjust the task):
 
 ```
-Continue the school app project (Vickrx7/schoolapp) on branch claude/serene-ride-3n2fa1 (draft PR #2, stacked on #1). Read docs/HANDOFF.md, SPEC.md, DECISIONS.md, docs/phase-3.md, docs/phase-4.md, docs/phase-5.md and docs/phase-6.md first.
+Continue the school app project (Vickrx7/schoolapp) on branch claude/production-readiness (draft PR #3 into main; PRs #1 and #2 are merged). Read docs/HANDOFF.md, SPEC.md, DECISIONS.md, docs/phase-3.md, docs/phase-4.md, docs/phase-5.md and docs/phase-6.md first.
 
-Phases 3 (substitute hand-off), 4 (library core), 5 (library growth and class mode) and 6 (pilot readiness, with its final review) are done, then « Mon année », « Commentaires de bulletin » and « Info-parents » with their review (docs/mon-annee.md, docs/report-comments.md, docs/info-parents.md), and CI is green. Read docs/phase-6.md, PRIVACY.md and DEPLOYMENT.md too. Next: my answers to HANDOFF section 6 (« Decisions waiting for Mike »), then the hosted beta once I have the accounts. Never print or commit ANTHROPIC_API_KEY.
+Phases 3 (substitute hand-off), 4 (library core), 5 (library growth and class mode) and 6 (pilot readiness, with its final review) are done, then « Mon année », « Commentaires de bulletin » and « Info-parents » with their review (docs/mon-annee.md, docs/report-comments.md, docs/info-parents.md), and CI is green. Read docs/phase-6.md, PRIVACY.md and DEPLOYMENT.md too, and « Production readiness » at the top of HANDOFF section 7. Next: my answers to HANDOFF section 6 (« Decisions waiting for Mike »), then the hosted beta once I have the accounts. Never print or commit ANTHROPIC_API_KEY.
 ```

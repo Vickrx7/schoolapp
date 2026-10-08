@@ -56,7 +56,7 @@ const ACTIONS = actionsOf((fr as unknown as { audit: { actions: Tree } }).audit.
 
 describe('audit sentences (D-103)', () => {
   it('format every action in both languages, whatever the details hold', () => {
-    expect(ACTIONS.length).toBe(61);
+    expect(ACTIONS.length).toBe(62);
     for (const action of ACTIONS) {
       const variants: AuditRow['details'][] = [
         {},
@@ -138,7 +138,6 @@ describe('audit sentences (D-103)', () => {
     expect(auditActor(row(), tFr)).toBe('Sophie Lavoie');
     expect(auditActor(row({ actor_label: null }), tFr)).toBe('Personne qui n’a plus accès');
     expect(auditActor(row({ actor_type: 'system', actor_label: null }), tFr)).toBe('Système');
-    expect(auditActor(row({ actor_type: 'service', actor_label: null }), tFr)).toBe('IP Lynx');
     expect(
       auditSentence(
         row({
@@ -189,6 +188,28 @@ describe('audit sentences (D-103)', () => {
     ).toBe('Class team role changed: Paul Leblanc (Subject teacher → Support)');
   });
 
+  it('name the operator as its command line was set up, IP Lynx before that (D-148)', () => {
+    const access = row({
+      action: 'operator.access',
+      category: 'access',
+      actor_type: 'service',
+      actor_user_id: null,
+      actor_label: 'Service informatique du CSC Exemple',
+      entity_type: 'board',
+      entity_label: 'CSC Exemple',
+      details: { reason: 'support' },
+    });
+    expect(auditActor(access, tFr)).toBe('Service informatique du CSC Exemple');
+    expect(auditActor({ ...access, actor_label: null }, tFr)).toBe('IP Lynx');
+    expect(auditActor({ ...access, actor_label: null }, tEn)).toBe('IP Lynx');
+    // The sentence names nobody: the actor says who.
+    expect(auditSentence(access, tFr)).toBe('Accès aux données du conseil (soutien)');
+    expect(auditSentence(access, tEn)).toBe('Board data accessed (support)');
+    const view = auditEntryView(access, { t: tFr, locale: 'fr-CA', timeZone: 'America/Toronto' });
+    expect(view.actor).toBe('Service informatique du CSC Exemple');
+    expect(view.actorType).toBe('service');
+  });
+
   it('show a student only by their class, never by name', () => {
     const alert = row({
       action: 'student_alert.created',
@@ -221,7 +242,7 @@ describe('audit sentences (D-103)', () => {
     ).toBe('Resource library module turned off for the school');
     expect(
       auditSentence(row({ action: 'operator.access', details: { reason: 'incident' } }), tFr),
-    ).toBe('Accès d’IP Lynx aux données du conseil (incident)');
+    ).toBe('Accès aux données du conseil (incident)');
     expect(
       auditSentence(row({ action: 'sub_plan.deleted', details: { reason: 'retention' } }), tFr),
     ).toBe('Plan de suppléance supprimé (conservation des données)');

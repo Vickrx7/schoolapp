@@ -5,8 +5,9 @@
 #
 #   COMPOSE_FILE=compose.yml:compose.supabase.yml      (written into .env by generate-secrets.mjs --board)
 #
-# The image versions are the ones the Supabase CLI's local stack runs in CI (`supabase start`),
-# pinned by digest, so the hosted, CI and board-hosted databases stay aligned.
+# The images are pinned by digest. They started as the versions the Supabase CLI's local stack runs
+# in CI (`supabase start`); Dependabot now proposes newer ones monthly (never a new PostgreSQL
+# major), and only the docker-smoke CI job runs them (.github/dependabot.yml, DEPLOYMENT.md § 7).
 x-logging: &logging
   driver: ${LOG_DRIVER:-journald}
 

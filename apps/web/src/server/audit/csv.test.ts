@@ -111,6 +111,35 @@ describe('auditCsv (D-103)', () => {
     expect(first).toContain(',alert_count=2; issued_by_role=office,Code issued by the office');
   });
 
+  it('names the operator as its command line was set up, IP Lynx before that (D-148)', () => {
+    const access: AuditRow = {
+      ...roleGranted,
+      action: 'operator.access',
+      actor_type: 'service',
+      actor_user_id: null,
+      actor_label: 'Service informatique du CSC Exemple',
+      school_id: null,
+      school_name: null,
+      entity_type: 'board',
+      entity_label: 'CSC Exemple',
+      details: { reason: 'incident' },
+    };
+    const csv = auditCsv([access, { ...access, actor_label: null }], {
+      locale: 'fr-CA',
+      timeZone: 'America/Toronto',
+      t: tFr,
+    });
+    const [, named, older] = lines(csv);
+    expect(named).toContain(
+      ';Accès aux données du conseil (incident);Service informatique du CSC Exemple;Gestionnaire du serveur;',
+    );
+    expect(older).toContain(';IP Lynx;Gestionnaire du serveur;');
+    const english = lines(auditCsv([access], { locale: 'en-CA', timeZone: 'UTC', t: tEn }))[1];
+    expect(english).toContain(
+      ',Board data accessed (incident),Service informatique du CSC Exemple,Server operator,',
+    );
+  });
+
   it('shows a student only as their class', () => {
     const csv = auditCsv(
       [

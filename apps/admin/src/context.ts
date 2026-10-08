@@ -23,6 +23,33 @@ export interface CliContext {
 /** An admin command: what it prints on success. */
 export type Command = (ctx: CliContext) => Promise<string>;
 
+/**
+ * The request header the database reads the operator's name from (trigger
+ * `audit_log_operator_name`, DECISIONS D-148): base64 of the name's UTF-8, since a header carries
+ * ASCII only.
+ */
+export const OPERATOR_NAME_HEADER = 'x-lynx-operator-name';
+
+export const operatorNameHeader = (name: string) => Buffer.from(name, 'utf8').toString('base64');
+
+/**
+ * The service role's client. Every request carries `OPERATOR_NAME`, so each entry the database
+ * writes for the operator names it as that setting says (the board's IT on its own servers; another
+ * operator passes their own name, DEPLOYMENT.md § 10).
+ */
+export function serviceClient(
+  env: Pick<AdminEnv, 'SUPABASE_URL' | 'SUPABASE_SERVICE_ROLE_KEY' | 'OPERATOR_NAME'>,
+  fetchImpl?: typeof fetch,
+): SupabaseClient<Database> {
+  return createClient<Database>(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false },
+    global: {
+      headers: { [OPERATOR_NAME_HEADER]: operatorNameHeader(env.OPERATOR_NAME) },
+      ...(fetchImpl ? { fetch: fetchImpl } : {}),
+    },
+  });
+}
+
 /** The settings are read, and the client created, the first time a command asks for them. */
 export function createContext(values: CliValues): CliContext {
   let env: AdminEnv | undefined;
@@ -34,9 +61,7 @@ export function createContext(values: CliValues): CliContext {
       return env;
     },
     get db() {
-      db ??= createClient<Database>(this.env.SUPABASE_URL, this.env.SUPABASE_SERVICE_ROLE_KEY, {
-        auth: { persistSession: false, autoRefreshToken: false },
-      });
+      db ??= serviceClient(this.env);
       return db;
     },
   };

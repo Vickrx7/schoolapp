@@ -138,6 +138,22 @@ const EVERYDAY_WORDS = new Set(
 );
 
 /**
+ * Two-letter words of French and English, as spelled (lowercase, accents kept). A very short
+ * name spelled like one of them (« An », or « Tu » and « Le » without their accents) is matched
+ * only when capitalized, like Pierre: « un an », « l'an dernier », « tu » and « le » stay words.
+ * « Tú » and « Lê » are not words: spelled exactly, they are names in any case (see `veryShort`).
+ */
+const SHORT_WORDS = new Set(
+  [
+    'ah ai an as au bu ça çà ce ci de du dû eh en es et eu ex il je la là le lu ma me mi mû ne',
+    'né ni nu oh on or os ou où pu qu sa se si su ta te tu un us va vu',
+    'am at be by do go he hi if in is it my no of ok so to up we',
+  ]
+    .join(' ')
+    .split(' '),
+);
+
+/**
  * Particles in staff names (« De » in Marc De Grandpré, « La » in Marie La Salle, « D' » in
  * D'Amour, « Saint » in Saint-Pierre): everyday words, never a name on their own. Folded.
  */
@@ -212,14 +228,32 @@ function significant(name: string): boolean {
   return letters.length >= 2 || IDEOGRAPHIC.test(letters);
 }
 
+/**
+ * Fewer than three letters (« Tú », « Lê », « Au »), ideographs aside (« 明 » is a whole name).
+ * Without its accents such a name is often a French word (« tu », « le », « au »), so it is
+ * matched alone only as spelled (D-146); a part of a staff name, only after an honorific.
+ */
+function veryShort(letters: string): boolean {
+  return letters.length < 3 && !IDEOGRAPHIC.test(letters);
+}
+
+/**
+ * A word as spelled, for very short names: lowercase, accents kept (« TÚ » → « tú »). The
+ * Icelandic « Ð » looks exactly like the Vietnamese « Đ »: both are « đ » here, so « Ðỗ » is
+ * still « Đỗ ».
+ */
+function spelling(word: string): string {
+  return word.normalize('NFKC').toLowerCase().replace(/ð/gu, 'đ');
+}
+
 interface NameEntry {
   person: number;
   /** Folded words, e.g. ["marie", "eve"]. */
   words: string[];
   /**
    * The word that must start with a capital letter, or -1 for none: the first word of a name
-   * that is an everyday word (« Pierre », « Parent »), the word after a particle (« Salle » in
-   * « La Salle »). An honorific lifts it: « Mme parent ».
+   * that is an everyday word (« Pierre », « Parent », « An »), the word after a particle
+   * (« Salle » in « La Salle »). An honorific lifts it: « Mme parent ».
    */
   capital: number;
   /**
@@ -227,6 +261,12 @@ interface NameEntry {
    * letters (« Mme Lê », « M. Au »). Alone they are everyday words (« le », « au », « de »).
    */
   titledOnly: boolean;
+  /**
+   * A very short whole name as spelled (« tú », « lê », « tú » for « T. Ú » written as one
+   * word), or null: alone, only this spelling matches, in any case, so « tu » and « le » stay
+   * words. After an honorific and capitalized (« Mme Le », not « M. le maire »), any accents do.
+   */
+  exact: string | null;
   /** One part of a staff name ("Tremblay", "Jean"), not the whole name. */
   partial: boolean;
   /** May follow an honorific: "Mme Tremblay", "Madame Isabelle" (staff only). */
@@ -533,39 +573,54 @@ export class Redactor {
   }
 
   /**
-   * One name: a whole name, or (with `piece`) one part of a staff name. `afterParticle`: the
-   * part follows a particle (« Salle » in « La Salle »), so it may be an everyday word.
+   * One name: a whole name (`name`, as the roster writes it), or (with `piece`) one part of a
+   * staff name. `afterParticle`: the part follows a particle (« Salle » in « La Salle »), so it
+   * may be an everyday word.
    */
   private addName(
     person: number,
     words: string[],
     kind: PersonKind,
     piece?: { afterParticle: boolean },
+    name?: string,
   ) {
     const titled = kind === 'staff';
     const partial = piece !== undefined;
     const single = words.length === 1 ? words[0]! : null;
-    const letters = words.join('').replace(/\P{L}/gu, '');
-    const titledOnly =
-      partial &&
-      single !== null &&
-      (NAME_PARTICLES.has(single) || (letters.length < 3 && !IDEOGRAPHIC.test(letters)));
-    let capital = single !== null && EVERYDAY_WORDS.has(single) ? 0 : -1;
+    // Fewer than three letters, alone or written as one word (« Tú », or « T. Ú » as « TÚ »).
+    const short = veryShort(words.join('').replace(/\P{L}/gu, ''));
+    // A very short whole name is matched alone only as the roster spells it: « Tú » is never
+    // « tu » (D-146). A very short part of a staff name, only after an honorific.
+    const exact =
+      short && !partial && name !== undefined
+        ? (name.match(WORD) ?? []).map(spelling).join('')
+        : null;
+    const titledOnly = partial && single !== null && (NAME_PARTICLES.has(single) || short);
+    let capital =
+      single !== null && (exact === null ? EVERYDAY_WORDS.has(single) : SHORT_WORDS.has(exact))
+        ? 0
+        : -1;
     if (piece) {
       // « De Grandpré », « La Salle »: the word after the particles is capitalized.
       const lead = words.findIndex((w) => !NAME_PARTICLES.has(w));
       if (lead > 0) capital = lead;
       else if (piece.afterParticle) capital = 0;
     }
-    this.add({ person, words, capital, titledOnly, partial, titled });
+    // `exact` is checked on one word: a name of several (« T. Ú ») has it only as one word.
+    const one = single === null ? null : exact;
+    this.add({ person, words, capital, titledOnly, exact: one, partial, titled });
     // Also written as one word: "MarieÈve", or "Marie Ève" once an invisible separator is gone
-    // ("LaSalle": capitalized, like "La Salle").
+    // ("LaSalle": capitalized, like "La Salle"). A very short one follows the rule of « Tú »:
+    // « T. Ú » is « TÚ », never « tu »; « M.-È. » of a staff member is only « Mme MÈ », never
+    // « me ».
     if (words.length > 1) {
+      const joinedCapital = exact === null ? capital >= 0 : SHORT_WORDS.has(exact);
       this.add({
         person,
         words: [words.join('')],
-        capital: capital >= 0 ? 0 : -1,
-        titledOnly: false,
+        capital: joinedCapital ? 0 : -1,
+        titledOnly: partial && short,
+        exact,
         partial,
         titled,
       });
@@ -574,7 +629,7 @@ export class Redactor {
 
   private addVariants(name: string, person: number, kind: PersonKind) {
     const full = nameWords(name);
-    this.addName(person, full, kind);
+    this.addName(person, full, kind, undefined, name);
     if (kind !== 'staff') return;
     // Staff are often named by one part, with or without an honorific (see scan): "Mme
     // Tremblay", "Tremblay", "Isabelle", "Madame Isabelle". Each half of a compound part
@@ -707,6 +762,14 @@ export class Redactor {
     if (entry.titledOnly) {
       if (!afterHonorific || !capitalized(0)) return -1;
     } else if (entry.capital >= 0 && !afterHonorific && !capitalized(entry.capital)) {
+      return -1;
+    }
+    // « Tú », not « tu »; after an honorific and capitalized, any accents: « Mme Le » (D-146).
+    if (
+      entry.exact !== null &&
+      spelling(words[i]!.raw) !== entry.exact &&
+      !(afterHonorific && capitalized(0))
+    ) {
       return -1;
     }
     return i + entry.words.length - 1;
