@@ -2,7 +2,9 @@
 
 Written 2026-09-28 by the session that built Phases 1 and 2 (branch `claude/nifty-fermat-8hhl1l`);
 updated 2026-10-03 by the session that built Phases 3, 4, 5 and 6, « Mon année », « Commentaires
-de bulletin » and « Info-parents », and their review (branch `claude/serene-ride-3n2fa1`). Read
+de bulletin » and « Info-parents », and their review (branch `claude/serene-ride-3n2fa1`);
+updated 2026-10-08 with five production-readiness fixes (branch `claude/production-readiness`,
+draft PR #3 stacked on #2; see « Production readiness » in section 7). Read
 `SPEC.md` and `DECISIONS.md` first; this file covers what they don't: the conversation with Mike,
 the current state, how to run things in these containers, what's next, and the decisions waiting
 for Mike (section 6). Phase notes: `docs/phase-1.md` to `docs/phase-6.md`, then
@@ -803,10 +805,47 @@ our recommended defaults, which Mike can still change (`docs/phase-3.md`, `docs/
 
 ## 7. Next steps (in order)
 
-1. **Show Mike Phases 3 to 6 and the three post-MVP features** (« Mon année », « Commentaires de
+**Production readiness (2026-10-08, PR #3).** Five gaps that needed no decision from Mike are
+fixed, each built and reviewed by separate agents, then tested together here: unit (1,674),
+pgTAP (42 files, 2,089), integration (97) and the generated types. CI's `docker-smoke` and browser
+jobs run on the PR. The decisions are D-145 to D-149 (« Production readiness » in `DECISIONS.md`):
+
+- **D-145:** very short names (« Tú », « Lê ») are matched only with their exact accents, so a
+  student « Tú » no longer makes every AI request refused.
+- **D-146:** `pnpm admin import-references` loads a board's Catholic references from a file
+  (`docs/catholic-references.md`), replacing psql.
+- **D-147:** `OPERATOR_NAME` names the operator on its audit entries, so a board-hosted log says
+  who runs its servers.
+- **D-148:** Dependabot proposes monthly updates of the pinned images and CI's actions;
+  `upgrade.sh` backs up before starting a release so a rollback can restore.
+- **D-149:** office and facilities staff no longer read shared resources' answer keys, through
+  the API or a device quiz.
+
+What is still open for production, in order:
+
+1. **Review and merge PRs #1, #2 and #3**, then tag a release (`v0.6.0`; none is tagged yet).
+   Dependabot starts once its file is on `main`.
+2. **The hosted beta and its go-live gates** (step 5 below): accounts, letters, lawyer.
+3. **A re-encryption command** for `ALERTS_ENCRYPTION_KEYS` (`DEPLOYMENT.md` § 8: after a key
+   leak, alerts already stored stay readable with the old key). Not built: the admin command line
+   does not hold that key today (`PRIVACY.md` § 8 says only the web server does), so where it runs
+   is a decision first.
+4. **D-145's remaining limit,** a decision for Mike: « Tu » or « Le » in a roster without accents
+   still refuses every request, other capitalized two-letter words the features whose prompt
+   starts a sentence with them, and a longer name whose accent-free form is a prompt word
+   (« Liên », « lien ») that feature's requests. Options: new prompt versions, or a last check
+   that skips the fixed prompt text.
+5. **Small notes the reviews left** (low severity): `import-references` accepts a file that is
+   not UTF-8 without a warning; two audit counts in pgTAP 39 count the whole database (fine on
+   CI's fresh one); `catholic_references_board_id_idx` is now redundant with the new unique index;
+   the README's admin command list lacks `import-references` and `OPERATOR_NAME`.
+6. **Not run here:** the Docker images (this sandbox's network blocks builds) and the browser
+   tests; CI runs both on PR #3.
+
+7. **Show Mike Phases 3 to 6 and the three post-MVP features** (« Mon année », « Commentaires de
    bulletin », « Info-parents ») with a short summary each, then go through section 6 with him:
    the 16 answers given on his behalf and the six Phase 6 questions. `docs/PILOT.md` is his guide.
-2. **Real-API evaluation**, once `ANTHROPIC_API_KEY` is set and Mike agrees: `pnpm ai:eval --yes`
+8. **Real-API evaluation**, once `ANTHROPIC_API_KEY` is set and Mike agrees: `pnpm ai:eval --yes`
    (11 cases, about $1.60), `pnpm ai:eval --feature sub_plan --yes` (11 cases, about $2), then
    one library case alone (`pnpm ai:eval --feature library_item --case quiz-5e --yes`, under $1)
    before `--feature library_item` and `--feature library_levels` (about $3–5 together), and one
@@ -815,38 +854,38 @@ our recommended defaults, which Mike can still change (`docs/phase-3.md`, `docs/
    (`pnpm ai:eval --feature report_comment_bank --case mat-3e-term --yes`, under $1) before the
    ten (about $3–5). Reports go to `packages/ai/eval-results/` (git-ignored):
    send them to Mike. Propose prompt changes first; never edit a used prompt version (add `v2`).
-3. **Get PRs #1 and #2 reviewed and merged.**
-4. **Test with real teachers and a real substitute** (`docs/phase-3.md`, `docs/phase-4.md` and
-   `docs/phase-5.md`, « What to test »), including a teacher reading five demo resources for
-   Ontario French and a class playing a quiz on its own tablets and projector.
-5. **Hosted beta**, when Mike provides the accounts: follow `DEPLOYMENT.md` § 3 (Supabase Pro in
-   Canada Central, a Lightsail server in `ca-central-1`, SES, S3), including its go-live gates
-   (a restore drill into a staging project, Supabase's written answer on logs, backups and TLS,
-   Anthropic's zero-data-retention answer, the lawyer's review). Hosted Supabase is untested.
-6. **What the final Phase 6 review left** (`docs/phase-6.md` « What remains »): the hosted
-   checks. The operator's name is now a setting (`OPERATOR_NAME`, D-147). The pinned images now
-   get monthly update proposals (`.github/dependabot.yml`, D-148): Dependabot proposes, CI tests
-   (`docker-smoke` runs the board-hosted install with the new pins; the other jobs run on the
-   Supabase CLI's images and cover the actions and npm pull requests), IP Lynx merges and tags a
-   release, operators install it with `./upgrade.sh`, which now takes a backup first: the one a
-   rollback restores, since `migrate`'s comes after a new Auth has migrated (`DEPLOYMENT.md` § 7).
-   Dependabot starts once the file is on `main`; then turn on Dependabot alerts and security
-   updates in the repository's settings (Advanced Security), if they are off, for the npm
-   packages' security fixes. « Essayer comme les élèves » (a Phase 4 hook, D-081) was not built in
-   Phase 5.
-7. **Name.** Once chosen: check availability, then rename `APP_NAME`, the icon, the
-   login email template and the promo.
-8. **« Mon année » with pilot teachers** (`docs/mon-annee.md`, « What to test »): one teacher
-   checking the « à vérifier » attentes of her grade, the report dates for each pilot board, the
-   long-range plan with a principal. « Reprendre le plan de l'an dernier » is needed before August
-   2027; AI for the year plan waits for real curriculum (D-128).
-9. **« Commentaires de bulletin » with pilot teachers** before the 1re étape (saisie 5 February
-   2027; `docs/report-comments.md`, « What to test »): a homeroom teacher writes a whole class's
-   comments and pastes them into the board's report card system (counts, spaces, the 1,000
-   default); a subject teacher; a bank made with the AI; a shared computer. The lawyer confirms the
-   device copies' erasure rules (Q5). Per-student AI (D-133) waits for Mike, a board and the lawyer.
+9. **Get PRs #1 and #2 reviewed and merged.**
+10. **Test with real teachers and a real substitute** (`docs/phase-3.md`, `docs/phase-4.md` and
+    `docs/phase-5.md`, « What to test »), including a teacher reading five demo resources for
+    Ontario French and a class playing a quiz on its own tablets and projector.
+11. **Hosted beta**, when Mike provides the accounts: follow `DEPLOYMENT.md` § 3 (Supabase Pro in
+    Canada Central, a Lightsail server in `ca-central-1`, SES, S3), including its go-live gates
+    (a restore drill into a staging project, Supabase's written answer on logs, backups and TLS,
+    Anthropic's zero-data-retention answer, the lawyer's review). Hosted Supabase is untested.
+12. **What the final Phase 6 review left** (`docs/phase-6.md` « What remains »): the hosted
+    checks. The operator's name is now a setting (`OPERATOR_NAME`, D-147). The pinned images now
+    get monthly update proposals (`.github/dependabot.yml`, D-148): Dependabot proposes, CI tests
+    (`docker-smoke` runs the board-hosted install with the new pins; the other jobs run on the
+    Supabase CLI's images and cover the actions and npm pull requests), IP Lynx merges and tags a
+    release, operators install it with `./upgrade.sh`, which now takes a backup first: the one a
+    rollback restores, since `migrate`'s comes after a new Auth has migrated (`DEPLOYMENT.md` § 7).
+    Dependabot starts once the file is on `main`; then turn on Dependabot alerts and security
+    updates in the repository's settings (Advanced Security), if they are off, for the npm
+    packages' security fixes. « Essayer comme les élèves » (a Phase 4 hook, D-081) was not built in
+    Phase 5.
+13. **Name.** Once chosen: check availability, then rename `APP_NAME`, the icon, the
+    login email template and the promo.
+14. **« Mon année » with pilot teachers** (`docs/mon-annee.md`, « What to test »): one teacher
+    checking the « à vérifier » attentes of her grade, the report dates for each pilot board, the
+    long-range plan with a principal. « Reprendre le plan de l'an dernier » is needed before August
+    2027; AI for the year plan waits for real curriculum (D-128).
+15. **« Commentaires de bulletin » with pilot teachers** before the 1re étape (saisie 5 February
+    2027; `docs/report-comments.md`, « What to test »): a homeroom teacher writes a whole class's
+    comments and pastes them into the board's report card system (counts, spaces, the 1,000
+    default); a subject teacher; a bank made with the AI; a shared computer. The lawyer confirms the
+    device copies' erasure rules (Q5). Per-student AI (D-133) waits for Mike, a board and the lawyer.
 
-10. **« Info-parents » with pilot teachers** (`docs/info-parents.md`, « What to test »): how close
+16. **« Info-parents » with pilot teachers** (`docs/info-parents.md`, « What to test »): how close
     the first draft is to what they write, whether they translate, whether the « Non envoyé » rule
     and the capitalized words catch the names they write, and where the message goes. One real-API
     case (`pnpm ai:eval --feature newsletter_translate --case semaine-3e-complete --yes`) once the
@@ -946,7 +985,7 @@ agrees, the AI translation of « Info-parents », the hosting accounts and the p
 Paste something like this (adjust the task):
 
 ```
-Continue the school app project (Vickrx7/schoolapp) on branch claude/serene-ride-3n2fa1 (draft PR #2, stacked on #1). Read docs/HANDOFF.md, SPEC.md, DECISIONS.md, docs/phase-3.md, docs/phase-4.md, docs/phase-5.md and docs/phase-6.md first.
+Continue the school app project (Vickrx7/schoolapp) on branch claude/production-readiness (draft PR #3, stacked on #2, which is stacked on #1). Read docs/HANDOFF.md, SPEC.md, DECISIONS.md, docs/phase-3.md, docs/phase-4.md, docs/phase-5.md and docs/phase-6.md first.
 
-Phases 3 (substitute hand-off), 4 (library core), 5 (library growth and class mode) and 6 (pilot readiness, with its final review) are done, then « Mon année », « Commentaires de bulletin » and « Info-parents » with their review (docs/mon-annee.md, docs/report-comments.md, docs/info-parents.md), and CI is green. Read docs/phase-6.md, PRIVACY.md and DEPLOYMENT.md too. Next: my answers to HANDOFF section 6 (« Decisions waiting for Mike »), then the hosted beta once I have the accounts. Never print or commit ANTHROPIC_API_KEY.
+Phases 3 (substitute hand-off), 4 (library core), 5 (library growth and class mode) and 6 (pilot readiness, with its final review) are done, then « Mon année », « Commentaires de bulletin » and « Info-parents » with their review (docs/mon-annee.md, docs/report-comments.md, docs/info-parents.md), and CI is green. Read docs/phase-6.md, PRIVACY.md and DEPLOYMENT.md too, and « Production readiness » at the top of HANDOFF section 7. Next: my answers to HANDOFF section 6 (« Decisions waiting for Mike »), then the hosted beta once I have the accounts. Never print or commit ANTHROPIC_API_KEY.
 ```
