@@ -14,7 +14,8 @@
 # Each service gets only its own settings, from .env by interpolation: no shared env_file. Only
 # the proxy is reachable from outside (80 and 443). Images are pinned by digest here and in
 # compose.supabase.yml, the only place production image versions are set (the docker-smoke CI
-# job runs exactly these); `docker compose config --images` lists them.
+# job runs exactly these); `docker compose config --images` lists them. Dependabot proposes newer
+# ones monthly (.github/dependabot.yml).
 name: lynx
 
 x-logging: &logging # The host's journal, kept 14 days (deploy/host/journald-lynx.conf; D-119).

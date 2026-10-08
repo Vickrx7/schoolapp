@@ -10,7 +10,8 @@
 # repository root as context. APP_RELEASE names the release (footer, /api/health, logs).
 
 # ---------------------------------------------------------------------------------------------
-# Node 22 on Debian 12, pinned by digest; nothing reports usage anywhere (D-111).
+# Node 22 on Debian 12, pinned by digest (Dependabot proposes newer Node 22 versions monthly);
+# nothing reports usage anywhere (D-111).
 FROM node:22.23.3-bookworm-slim@sha256:43ac6c60b8f89723f746e8a92ce91abd5017e627ce1ddfe4238355d3a30b772c AS runtime
 ENV NEXT_TELEMETRY_DISABLED=1 \
     DO_NOT_TRACK=1 \

@@ -382,8 +382,12 @@ the banner and « Ce qui a changé » (D-110).
   « IP Lynx ».
 - **S6 (`?next=` keeps its query string)** is unchanged, and **S7 (Supabase's per-address limits
   count the web server's address, hosted)** stays covered by the app's own throttle (round A).
-- **Security updates of the images** arrive only when IP Lynx updates the pinned versions; no
-  automation does it yet.
+- **Security updates of the images** still need a release. Dependabot now proposes the newer pinned
+  versions every month and CI tests them (D-148, `DEPLOYMENT.md` § 7), but IP Lynx merges and tags
+  the release, and each operator installs it with `./upgrade.sh`: an install that is not upgraded
+  keeps its old images. `docker-smoke` tests the new images on an empty database, not on an install
+  upgraded in place, and CI's database tests run on the Supabase CLI's images, not on the
+  board-hosted ones.
 - **Untested here:** hosted Supabase, Amazon SES and S3 themselves (the upload is tested against a
   stand-in), the real AI API, iPads.
 

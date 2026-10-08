@@ -506,11 +506,31 @@ first, which takes a backup when migrations are pending) and checks that the web
 
 - Evenings or weekends only, **never 05:30 to 09:00 on a school day** (absences are reported then).
 - Rolling back means the previous tag plus a restore of the backup `migrate` took.
-- Security updates of the images come as releases. Every image is pinned by digest (the
+- Security updates of the images come as releases. Every image is pinned by tag and digest (the
   Dockerfile's base, `compose.yml`, `compose.supabase.yml`), so rebuilding without a release
-  fetches the same bytes: IP Lynx updates the pinned versions in a release, and the operator
-  installs it with `./upgrade.sh <tag>`. IP Lynx plans to review the pinned versions monthly; no
-  automation does it yet. The server's own system updates itself (unattended upgrades).
+  fetches the same bytes. On the 1st of each month, Dependabot (`.github/dependabot.yml`, D-148)
+  proposes the newer versions as pull requests: the Dockerfile's base, the Supabase images, the
+  other Compose images, and CI's actions. CI tests each one like any change (`docker-smoke` builds
+  the images and runs the board-hosted install with the new pins; `backup-restore` backs up and
+  restores). IP Lynx merges, tags a release, and the operator installs it with
+  `./upgrade.sh <tag>`. The server's own system updates itself (unattended upgrades).
+- **Reviewing Dependabot's pull requests** (IP Lynx):
+  - Dependabot never proposes a new major of Node (it moves by hand, with `.nvmrc` and CI) or of
+    PostgreSQL (a new major cannot start on the old one's data). Other new majors come one per pull
+    request, outside the monthly groups: read their release notes first.
+  - Only `docker-smoke` runs the Supabase images (`supabase/postgres`, `supabase/gotrue`,
+    `postgrest`). The database tests (pgTAP, integration, backup and restore) run on the Supabase
+    CLI's own images (`supabase` in `package.json`), which the `backup-restore` job lists. No check
+    requires the two to match: after the merge, the board-hosted versions are newer than CI's
+    until someone updates the CLI (`pnpm up supabase`).
+  - `docker-smoke` starts from an empty database. Before tagging a new `supabase/postgres` or
+    `supabase/gotrue`, upgrade a throw-away install of the previous release to the merged commit
+    (`./upgrade.sh <commit>`), on a workstation as for the monthly drill (section 6).
+  - Update the versions this guide names (sections 1, 3.4 and 6) in the same pull request.
+  - npm packages get security updates only, in one pull request, when an advisory names a package
+    of `pnpm-lock.yaml`; they need "Dependabot security updates" turned on in the repository's
+    settings (Advanced Security). Images have no security updates in Dependabot: the monthly
+    proposals are how their fixes arrive.
 - **Upgrading an install made before backups were signed:** add `BACKUP_SIGNING_KEY`
   (`openssl rand -hex 32`) to `.env` under the backup settings, and copy it next to the age key,
   before the upgrade: `migrate` takes a signed backup, and `backup.sh` refuses to run without the

@@ -144,7 +144,7 @@ jobs:
       - name: Start local Supabase (database, auth, API, mail catcher only)
         run: pnpm exec supabase start -x realtime,storage-api,imgproxy,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
 
-      - name: The images the Supabase CLI runs (deploy/docker/compose.supabase.yml pins the same)
+      - name: The images the Supabase CLI runs (to compare with deploy/docker/compose.supabase.yml)
         run: docker images --digests --format '{{.Repository}}:{{.Tag}} {{.Digest}}' | sort
 
       - name: Back up the demo data
