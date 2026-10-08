@@ -469,6 +469,49 @@ describe('Redactor', () => {
       expect(() => r.assertSafeOutbound('Bao lit.')).toThrow(PrivacyViolation);
     });
 
+    it('match a staff member’s one-word name without its accents only after a capitalized honorific', () => {
+      const r = new Redactor([{ name: 'Lê', kind: 'staff' }], NOW);
+      expect(r.redact('Mme Le, M. LE et Mx Lê parlent; le chat dort.').text).toBe(
+        'Adulte A, Adulte A et Adulte A parlent; le chat dort.',
+      );
+      // « M. le maire », « Mme la directrice »: after an honorific, lowercase stays a word.
+      expect(r.redact('M. le maire et Mme lê.').text).toBe('M. le maire et Adulte A.');
+      expect(() => r.assertSafeOutbound('Mme Le parle.')).toThrow(PrivacyViolation);
+      expect(() => r.assertSafeOutbound('M. LE parle.')).toThrow(PrivacyViolation);
+      for (const text of ['M. le maire parle.', 'Le chat dort.', 'le chat']) {
+        expect(() => r.assertSafeOutbound(text), text).not.toThrow();
+      }
+    });
+
+    it('follow the same rule when initials are written as one word (« M.-È. », « T. Ú »)', async () => {
+      const r = new Redactor(
+        [
+          { name: 'M.-È. Gagnon', kind: 'staff' },
+          { name: 'T. Ú', kind: 'student' },
+        ],
+        NOW,
+      );
+      const ordinary = 'Il me dit que tu le sais.';
+      expect(r.redact(ordinary).text).toBe(ordinary);
+      expect(() => r.assertSafeOutbound(ordinary)).not.toThrow();
+      expect(r.redact('Mme MÈ et TÚ lisent; Mme Gagnon aussi.').text).toBe(
+        'Adulte A et Élève A lisent; Adulte A aussi.',
+      );
+      expect(() => r.assertSafeOutbound('Mme MÈ lit.')).toThrow(PrivacyViolation);
+      expect(() => r.assertSafeOutbound('Tú lit.')).toThrow(PrivacyViolation);
+      const prompt = await loadPrompt('differentiate', 'v1');
+      expect(() => r.assertSafeOutbound(prompt)).not.toThrow();
+    });
+
+    it('treat the Icelandic « Ð » as the Vietnamese « Đ », which looks the same', () => {
+      const r = new Redactor([{ name: 'Đỗ', kind: 'student' }], NOW);
+      // U+00D0 and U+00F0, then U+0110 and U+0111.
+      expect(r.redact('Ðỗ, ðỗ, Đỗ et đỗ lisent. Do it.').text).toBe(
+        'Élève A, Élève A, Élève A et Élève A lisent. Do it.',
+      );
+      expect(() => r.assertSafeOutbound('Ðỗ lit.')).toThrow(PrivacyViolation);
+    });
+
     // Known limit (docs/HANDOFF.md § 7): a roster name without its accents that is a word the
     // prompts capitalize at a sentence's start (« Tu », « Le ») still matches there.
     it('still match « Tu » at a sentence’s start when the roster writes it without its accent', async () => {

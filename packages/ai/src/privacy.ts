@@ -237,9 +237,13 @@ function veryShort(letters: string): boolean {
   return letters.length < 3 && !IDEOGRAPHIC.test(letters);
 }
 
-/** A word as spelled, for very short names: lowercase, accents kept (« TÚ » → « tú »). */
+/**
+ * A word as spelled, for very short names: lowercase, accents kept (« TÚ » → « tú »). The
+ * Icelandic « Ð » looks exactly like the Vietnamese « Đ »: both are « đ » here, so « Ðỗ » is
+ * still « Đỗ ».
+ */
 function spelling(word: string): string {
-  return word.normalize('NFKC').toLowerCase();
+  return word.normalize('NFKC').toLowerCase().replace(/ð/gu, 'đ');
 }
 
 interface NameEntry {
@@ -258,9 +262,9 @@ interface NameEntry {
    */
   titledOnly: boolean;
   /**
-   * A very short whole name as spelled (« tú », « lê »), or null: alone, only this spelling
-   * matches, in any case, so « tu » and « le » stay words. After an honorific (« Mme Le »), any
-   * accents do.
+   * A very short whole name as spelled (« tú », « lê », « tú » for « T. Ú » written as one
+   * word), or null: alone, only this spelling matches, in any case, so « tu » and « le » stay
+   * words. After an honorific and capitalized (« Mme Le », not « M. le maire »), any accents do.
    */
   exact: string | null;
   /** One part of a staff name ("Tremblay", "Jean"), not the whole name. */
@@ -583,12 +587,15 @@ export class Redactor {
     const titled = kind === 'staff';
     const partial = piece !== undefined;
     const single = words.length === 1 ? words[0]! : null;
-    const letters = words.join('').replace(/\P{L}/gu, '');
-    const short = single !== null && veryShort(letters);
+    // Fewer than three letters, alone or written as one word (« Tú », or « T. Ú » as « TÚ »).
+    const short = veryShort(words.join('').replace(/\P{L}/gu, ''));
+    // A very short whole name is matched alone only as the roster spells it: « Tú » is never
+    // « tu » (D-145). A very short part of a staff name, only after an honorific.
+    const exact =
+      short && !partial && name !== undefined
+        ? (name.match(WORD) ?? []).map(spelling).join('')
+        : null;
     const titledOnly = partial && single !== null && (NAME_PARTICLES.has(single) || short);
-    // « Tú » alone is « Tú », never « tu » (D-145).
-    const spelled = short && name !== undefined ? (name.match(WORD) ?? []).map(spelling) : [];
-    const exact = !partial && spelled.length === 1 ? spelled[0]! : null;
     let capital =
       single !== null && (exact === null ? EVERYDAY_WORDS.has(single) : SHORT_WORDS.has(exact))
         ? 0
@@ -599,16 +606,21 @@ export class Redactor {
       if (lead > 0) capital = lead;
       else if (piece.afterParticle) capital = 0;
     }
-    this.add({ person, words, capital, titledOnly, exact, partial, titled });
+    // `exact` is checked on one word: a name of several (« T. Ú ») has it only as one word.
+    const one = single === null ? null : exact;
+    this.add({ person, words, capital, titledOnly, exact: one, partial, titled });
     // Also written as one word: "MarieÈve", or "Marie Ève" once an invisible separator is gone
-    // ("LaSalle": capitalized, like "La Salle").
+    // ("LaSalle": capitalized, like "La Salle"). A very short one follows the rule of « Tú »:
+    // « T. Ú » is « TÚ », never « tu »; « M.-È. » of a staff member is only « Mme MÈ », never
+    // « me ».
     if (words.length > 1) {
+      const joinedCapital = exact === null ? capital >= 0 : SHORT_WORDS.has(exact);
       this.add({
         person,
         words: [words.join('')],
-        capital: capital >= 0 ? 0 : -1,
-        titledOnly: false,
-        exact: null,
+        capital: joinedCapital ? 0 : -1,
+        titledOnly: partial && short,
+        exact,
         partial,
         titled,
       });
@@ -752,7 +764,12 @@ export class Redactor {
     } else if (entry.capital >= 0 && !afterHonorific && !capitalized(entry.capital)) {
       return -1;
     }
-    if (entry.exact !== null && !afterHonorific && spelling(words[i]!.raw) !== entry.exact) {
+    // « Tú », not « tu »; after an honorific and capitalized, any accents: « Mme Le » (D-145).
+    if (
+      entry.exact !== null &&
+      spelling(words[i]!.raw) !== entry.exact &&
+      !(afterHonorific && capitalized(0))
+    ) {
       return -1;
     }
     return i + entry.words.length - 1;

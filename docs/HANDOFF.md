@@ -895,13 +895,24 @@ our recommended defaults, which Mike can still change (`docs/phase-3.md`, `docs/
   caught by the teacher at the preview, except after a title in « Traduire en anglais (IA) » and a
   comment bank's note.
 - **Historical figures** who share a student's first name get replaced, then restored.
-- **Very short names** (fewer than three letters) are matched alone only with their exact
-  accents, in any case (D-145): « tu » and « le » stay words for a student named « Tú » or « Lê »,
-  and the last check no longer refuses every request of their school. « Tu » typed for « Tú » is
-  not replaced (the teacher sees it unhighlighted). A very short name spelled like a short word
-  (« An ») is matched only when capitalized, at a sentence's start too: a student whose roster
-  writes « Tu » or « Le » without accents would still make the last check refuse every request
-  for that school (the prompts start sentences with « Tu » and « Le »).
+- **Very short names** (fewer than three letters, initials written as one word too) are matched
+  alone only with their exact accents, in any case (D-145): « tu » and « le » stay words for a
+  student named « Tú » or « Lê », and the last check no longer refuses every request of their
+  school. « Tu » typed for « Tú » is not replaced (the teacher sees it unhighlighted). After an
+  honorific, a staff member's is matched without its accents only when capitalized (« Mme Le »,
+  not « M. le maire »). A very short name spelled like a short word (« An ») is matched only when
+  capitalized, at a sentence's start too: a student whose roster writes « Tu » or « Le » without
+  accents would still make the last check refuse every request for that school (every prompt
+  starts sentences with them), and one written « Un », « Ne », « La », « Si », « Ce », « Au » or
+  « En »… the requests of the features whose prompt starts a sentence with that word.
+- **Longer names whose accent-free form is a word of a prompt** still make the last check refuse
+  that feature's requests: names of three letters or more keep their accent-free matching. A
+  student named « Liên » gets every « Créer avec l'IA » and comment-bank request of the school
+  refused (« un lien avec la foi », « le lien se fait »). A name that is an everyday word counts
+  only capitalized (« Sơn » as « Son »), which no prompt has at a sentence's start today.
+  `prompts-privacy.test.ts` checks common Vietnamese first names against every prompt and pins
+  the « Liên » case. Possible fixes: prompt versions without such words, exact accents whenever a
+  name's accent-free form is a word of a prompt, or not scanning the fixed system prompt.
 - **Very short parts of staff names and particles** are replaced on their own only after an
   honorific (« Mme Lê »).
 - **The budget is a soft limit:** checked when a request is made and again when the worker starts

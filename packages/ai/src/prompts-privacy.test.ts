@@ -100,6 +100,35 @@ describe('system prompts and the privacy check', () => {
     expect(() => new Redactor([...DEMO_PEOPLE, ...short]).assertSafeOutbound(text)).not.toThrow();
   });
 
+  it.each(files)('%s passes the check with common Vietnamese first names too', (file) => {
+    // Without their accents some are French words (« Sơn », « Âu », « Lê »). « Liên » is apart:
+    // see the known limit below.
+    const names = [
+      ...['Sơn', 'Âu', 'Thư', 'Hưng', 'Lâm', 'Như', 'Phúc', 'Đức', 'Bình', 'Châu', 'Ngọc'],
+      ...['Thảo', 'Trâm', 'Uyên', 'Hải', 'Nam', 'Linh', 'Lan', 'Mai', 'Tâm', 'Thanh', 'Việt'],
+      ...['Anh', 'Bảo', 'Huy', 'Minh', 'Vân', 'Xuân', 'Hân', 'Ân', 'Sĩ', 'Thy', 'Vy'],
+    ];
+    const vietnamese = names.map((name) => ({ name, kind: 'student' as const }));
+    const text = readFileSync(path.join(promptsDir, file), 'utf8');
+    expect(() =>
+      new Redactor([...DEMO_PEOPLE, ...vietnamese]).assertSafeOutbound(text),
+    ).not.toThrow();
+  });
+
+  // Known limit (docs/HANDOFF.md § 7): a name of three letters or more is still matched without
+  // its accents, so « Liên » finds « lien » (« un lien avec la foi ») and its school's requests
+  // for these features are refused. Update this list when a prompt changes.
+  it('still refuses the prompts that say « lien » for a student named « Liên »', () => {
+    const refused = files.filter((file) => {
+      const text = readFileSync(path.join(promptsDir, file), 'utf8');
+      return new Redactor([{ name: 'Liên', kind: 'student' }]).mentionsKnownPerson(text);
+    });
+    expect(refused.sort()).toEqual([
+      path.join('library_item', 'v1.md'),
+      path.join('report_comment_bank', 'v1.md'),
+    ]);
+  });
+
   it.each(files)('%s holds no list of character first names', (file) => {
     // The list is sent per request, less the names of people the request knows.
     const text = readFileSync(path.join(promptsDir, file), 'utf8');
