@@ -168,7 +168,7 @@ select is((tests.ref_report('apply') ->> 'dryRun')::boolean, false, 'the report 
 select results_eq(
   $$select type::text, title, text_fr, text_en, grade_min::integer, grade_max::integer,
       liturgical_season::text, tags, source_note, active
-    from public.catholic_references where board_id = tests.id('board_a') order by type, title$$,
+    from public.catholic_references c where c.board_id = tests.id('board_a') order by c.type, c.title$$,
   $$values
     ('virtue', 'Le respect', 'Respecter chaque personne.', null::text, -1, 8, null::text,
      '{}'::text[], null::text, true),

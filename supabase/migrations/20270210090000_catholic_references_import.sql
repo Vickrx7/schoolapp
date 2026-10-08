@@ -136,12 +136,12 @@ begin
       or coalesce(jsonb_typeof(v_item -> 'textEn'), '') not in ('string', 'null')
       or v_min is null or v_max is null or v_max < v_min
       or (v_season is null and jsonb_typeof(v_item -> 'liturgicalSeason') is distinct from 'null')
-      or case when jsonb_typeof(v_item -> 'tags') = 'array' then
+      or (case when jsonb_typeof(v_item -> 'tags') = 'array' then
            jsonb_array_length(v_item -> 'tags') > 12
            or exists (select 1 from jsonb_array_elements(v_item -> 'tags') t
                       where jsonb_typeof(t) <> 'string'
                         or char_length(t #>> '{}') not between 1 and 40)
-         else true end
+         else true end)
       or coalesce(jsonb_typeof(v_item -> 'sourceNote'), '') not in ('string', 'null')
       or jsonb_typeof(v_item -> 'active') is distinct from 'boolean'
     then
