@@ -936,8 +936,6 @@ our recommended defaults, which Mike can still change (`docs/phase-3.md`, `docs/
 - **The library's first-name check knows the teacher's own students only;** faith content relies
   on the author's box, the keyword suggestion and reviewers' flag (docs/phase-4.md).
 - **Who owns shared resources is open** (Phase 4 question 5): licences are empty.
-- **Office staff can read shared resources' answer keys through the API** (not personal data; no
-  library screens).
 
 **Waiting on Mike:** section 6 (the 16 answers given for him on the three features, the six
 Phase 6 questions, and the other open items), above all real first names before a principal
